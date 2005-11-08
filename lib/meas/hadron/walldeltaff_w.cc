@@ -1,4 +1,4 @@
-// $Id: walldeltaff_w.cc,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: walldeltaff_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
@@ -145,7 +145,7 @@ LatticeSpinMatrix deltaContract(const T1& u1,
  * \param u_x2               forward U quark propagator evaluated at sink  ( Read )
  * \param d_x2               forward D quark propagator evaluated at sink  ( Read )
  * \param phases             fourier transform phase factors ( Read )
- * \param t_source           coordinates of the source ( Read )
+ * \param t0                 time slice of the source ( Read )
  * \param wall_source        true if using a wall source ( Read )
  */
 
@@ -158,7 +158,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 		      const Propagator& u_x2,
 		      const Propagator& d_x2,
 		      const SftMom& phases,
-		      const multi1d<int>& t_source,
+		      int t0,
 		      bool wall_source)
 {
   START_CODE();
@@ -432,7 +432,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	    QDPIO::cout << "Time(before sft): " << swatch.getTimeInMicroseconds() << " s" << endl;
             swatch.start();
 	    wallFormFacSft(momenta, corr_local_fn, corr_nonlocal_fn, phases,
-			   compute_nonlocal, t_source);
+			   compute_nonlocal, t0);
             swatch.stop();
 	    QDPIO::cout << "Time(after sft): " << swatch.getTimeInMicroseconds() << " s" << endl;
             swatch.start();

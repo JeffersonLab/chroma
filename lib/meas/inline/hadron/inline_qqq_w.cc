@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_qqq_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -180,6 +180,7 @@ namespace Chroma
     QQQBarcomp_t  qqq;
     qqq.Dirac_basis = false;
     qqq.forward_props.resize(Nprops);
+
     for(int i=0; i < Nprops; ++i)
     {
       QDPIO::cout << InlineQQQEnv::name << ": parse id = " << params.named_obj.prop_ids[i] << endl;
@@ -222,10 +223,9 @@ namespace Chroma
     write(xml_out, "Propagator_input", qqq);
 
     // Derived from input prop
-    int j_decay = qqq.forward_props[0].source_header.j_decay;
     multi1d<int> boundary = getFermActBoundary(qqq.forward_props[0].prop_header.fermact);
-    multi1d<int> t_source = qqq.forward_props[0].source_header.t_source;
-    int t0      = t_source[j_decay];
+    int t0                = qqq.forward_props[0].source_header.t_source;
+    int j_decay           = qqq.forward_props[0].source_header.j_decay;
     int bc_spec = boundary[j_decay];
 
     // Initialize the slow Fourier transform phases

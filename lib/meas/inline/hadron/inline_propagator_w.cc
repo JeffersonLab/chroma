@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 2.1 2005-10-19 04:58:37 edwards Exp $
+// $Id: inline_propagator_w.cc,v 2.2 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -215,7 +215,7 @@ namespace Chroma
 
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
 	j_decay = source_header.j_decay;
-	t0 = source_header.t_source[j_decay];
+	t0 = source_header.t_source;
 	make_sourceP = true;
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
@@ -373,7 +373,7 @@ namespace Chroma
       }
       catch (const std::string& e) 
       {
-	QDPIO::cout << "4D: " << e << endl;
+	QDPIO::cout << InlinePropagatorEnv::name << ": caught exception around quarkprop: " << e << endl;
       }
     }
 

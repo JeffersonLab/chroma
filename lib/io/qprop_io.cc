@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 2.0 2005-09-25 21:04:32 edwards Exp $
+// $Id: qprop_io.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -49,93 +49,46 @@ namespace Chroma
   }
 
 
+
   // Initialize header with default values
   PropSource_t::PropSource_t()
   {
-    source_type = SRC_TYPE_POINT_SOURCE;
-    wave_state  = WAVE_TYPE_S_WAVE;
-
-    j_decay         = 0;
-    direction       = 0;
-    laplace_power   = 0;
-    disp_length     = 0;
-    disp_dir        = 0;
-    link_smear_fact = 0;
-    link_smear_num  = 0;
-    t_source.resize(Nd);
-    t_source        = 0;
-    nrow            = Layout::lattSize();
+    j_decay   = -1;
+    t_source  = -1;
+//    nrow      = Layout::lattSize();
   }
+
+  // Given a prop source xml in string form, return the t_srce
+  multi1d<int> PropSource_t::getTSrce()
+  {
+    //
+    // Initialize source xml
+    //
+    std::istringstream  xml_s(source);
+    XMLReader  sourcetop(xml_s);
+
+    multi1d<int> t_srce;
+
+    try
+    {
+      XMLReader  top(sourcetop, "/Source");
+
+      read(top, "t_srce", t_srce);
+    }
+    catch (const std::string& e) 
+    {
+      QDPIO::cerr << "Error reading source: " << e << endl;
+      throw e;
+    }
+
+    return t_srce;
+  }
+
 
   // Initialize header with default values
   PropSink_t::PropSink_t()
   {
-    sink_type     = SNK_TYPE_POINT_SINK;
-    wave_state    = WAVE_TYPE_S_WAVE;
-
-    direction       = 0;
-    laplace_power   = 0;
-    disp_length     = 0;
-    disp_dir        = 0;
-    link_smear_fact = 0;
-    link_smear_num  = 0;
-    nrow            = Layout::lattSize();
-  }
-
-  // Initialize header with default values
-  PropSink_t::PropSink_t(const PropSource_t& source)
-  {
-    // Convert the source to a sink type
-    switch(source.source_type)
-    {
-    case SRC_TYPE_POINT_SOURCE:
-      sink_type = SNK_TYPE_POINT_SINK;
-      break;
-    case SRC_TYPE_WALL_SOURCE:
-      sink_type = SNK_TYPE_WALL_SINK;
-      break;
-    case SRC_TYPE_SHELL_SOURCE:
-      sink_type = SNK_TYPE_SHELL_SINK;
-      break;
-    case SRC_TYPE_BNDST_SOURCE:
-      sink_type = SNK_TYPE_BNDST_SINK;
-      break;
-    case SRC_TYPE_POINT_AND_BNDST_SOURCE:
-      sink_type = SNK_TYPE_POINT_AND_BNDST_SINK;
-      break;
-    case SRC_TYPE_SHELL_AND_BNDST_SOURCE:
-      sink_type = SNK_TYPE_SHELL_AND_BNDST_SINK;
-      break;
-    case SRC_TYPE_POINT_AND_SHELL_AND_BNDST_SOURCE:
-      sink_type = SNK_TYPE_POINT_AND_SHELL_AND_BNDST_SINK;
-      break;
-    }
-
-    // description (same order):
-    // wave_state: "S_WAVE", "P_WAVE", or "D_WAVE"
-    // smearing params
-    //   smearing width
-    //   number of iteration for smearing
-    //   number of iteration for smearing
-    // decay direction
-    // power of laplacian operator
-    // displacement length
-    // displacement direction: x(0),y(1),z(2)
-    // sink_dir: direction of derivative at sink
-    // smearing factor
-    // number of smearing hits
-    // Maximum number of blocking/smearing iterations
-    // Blocking/smearing accuracy
-
-    wave_state      = source.wave_state;
-    sinkSmearParam  = source.sourceSmearParam;
-    direction       = source.direction;
-    laplace_power   = source.laplace_power;
-    disp_length     = source.disp_length;
-    disp_dir        = source.disp_dir;
-    link_smear_fact = source.link_smear_fact;
-    link_smear_num  = source.link_smear_num;
-    nrow            = Layout::lattSize();
+    j_decay = -1;
   }
 
 
@@ -143,7 +96,7 @@ namespace Chroma
   // Initialize header with default values
   ChromaProp_t::ChromaProp_t()
   {
-    nrow        = Layout::lattSize();
+//    nrow        = Layout::lattSize();
     obsvP       = true;
     // Create an document with an empty state info tag
   }
@@ -151,7 +104,7 @@ namespace Chroma
   // Initialize header with default values
   ChromaMultiProp_t::ChromaMultiProp_t()
   {
-    nrow        = Layout::lattSize();
+//    nrow        = Layout::lattSize();
   }
 
 
@@ -171,6 +124,346 @@ namespace Chroma
   }
 
 
+  // Anonymous namespace
+  namespace 
+  {
+    //! V5 Source header read 
+    /*! This routine is SOLELY for backwards compatibility. It should go. */
+    void readV5(XMLReader& xml, const string& path, PropSource_t& header)
+    {
+      XMLReader paramtop(xml, path);
+
+      int version;
+      read(paramtop, "version", version);
+
+      read(paramtop, "source_type", header.source_type);
+
+      std::string wave_state;
+      read(paramtop, "wave_state", wave_state);
+      if (wave_state != "S_WAVE")
+      {
+	throw std::string("version 5 only supports S_WAVE");
+      }
+
+      multi1d<int> t_srce;
+      read(paramtop, "j_decay",  header.j_decay);
+      read(paramtop, "t_source", t_srce);
+
+//	read(paramtop, "nrow", header.nrow);
+
+      if (header.source_type == "SHELL_SOURCE")
+      {
+	XMLReader shelltop(paramtop, "ShellSource");
+
+	std::string wvf_kind;
+	Real wvf_param;
+	int  wvfIntPar;
+	{
+	  XMLReader smeartop(shelltop, "SourceSmearingParam");
+	    
+	  read(smeartop, "wvf_kind", wvf_kind);
+	  read(smeartop, "wvf_param", wvf_param);
+	  read(smeartop, "wvfIntPar", wvfIntPar);
+	}
+
+	int laplace_power;
+	read(shelltop, "laplace_power", laplace_power);
+	if (laplace_power != 0)
+	  throw std::string("only laplace_power=0 supported");
+
+	Real link_smear_fact;
+	int link_smear_num;
+	read(shelltop, "link_smear_fact", link_smear_fact);
+	read(shelltop, "link_smear_num", link_smear_num);
+
+	int disp_length;
+	int disp_dir;
+	read(shelltop, "disp_length", disp_length);
+	read(shelltop, "disp_dir", disp_dir);
+
+	XMLReader xml_readback;
+	{
+	  XMLBufferWriter xml_tmp;
+	  push(xml_tmp, "Param");
+	  write(xml_tmp, "version", 6);
+	  push(xml_tmp, "Source");
+	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "SourceType", header.source_type);
+
+	  {
+	    push(xml_tmp, "SmearingParam");
+	    write(xml_tmp, "wvf_kind", wvf_kind);
+	    write(xml_tmp, "wvf_param", wvf_param);
+	    write(xml_tmp, "wvfIntPar", wvfIntPar);
+	    write(xml_tmp, "no_smear_dir", header.j_decay);
+	    pop(xml_tmp);
+	  }
+
+	  write(xml_tmp, "disp_length", disp_length);
+	  write(xml_tmp, "disp_dir", disp_dir);
+
+	  {
+	    push(xml_tmp, "LinkSmearing");
+	    write(xml_tmp, "LinkSmearingType", "APE_SMEAR");
+	    write(xml_tmp, "link_smear_num", link_smear_num);
+	    write(xml_tmp, "link_smear_fact", link_smear_fact);
+	    write(xml_tmp, "no_smear_dir", header.j_decay);
+	    pop(xml_tmp);
+	  }
+
+	  write(xml_tmp, "t_srce",  t_srce);
+	  write(xml_tmp, "j_decay",  header.j_decay);
+
+	  pop(xml_tmp);  // Source
+	  pop(xml_tmp);  // Param
+
+	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+
+	  xml_readback.open(xml_tmp);
+	}
+
+	// Recurse back in to re-read
+	read(xml_readback, "/Param", header);
+      }
+      else if (header.source_type == "POINT_SOURCE")
+      {
+	XMLReader xml_readback;
+	{
+	  XMLBufferWriter xml_tmp;
+	  push(xml_tmp, "Param");
+	  write(xml_tmp, "version", 6);
+	  push(xml_tmp, "Source");
+	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "SourceType", header.source_type);
+
+	  write(xml_tmp, "t_srce",  t_srce);
+	  write(xml_tmp, "j_decay",  header.j_decay);
+
+	  pop(xml_tmp);  // Source
+	  pop(xml_tmp);  // Param
+
+	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+
+	  xml_readback.open(xml_tmp);
+	}
+
+	// Recurse back in to re-read
+	read(xml_readback, "/Param", header);
+      }
+      else if (header.source_type == "WALL_SOURCE")
+      {
+	XMLReader xml_readback;
+	{
+	  XMLBufferWriter xml_tmp;
+	  push(xml_tmp, "Param");
+	  write(xml_tmp, "version", 6);
+	  push(xml_tmp, "Source");
+	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "SourceType", header.source_type);
+
+	  write(xml_tmp, "t_source",  t_srce[header.j_decay]);
+	  write(xml_tmp, "j_decay",  header.j_decay);
+
+	  pop(xml_tmp);  // Source
+	  pop(xml_tmp);  // Param
+
+	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+
+	  xml_readback.open(xml_tmp);
+	}
+
+	// Recurse back in to re-read
+	read(xml_readback, "/Param", header);
+      }
+      else if (header.source_type == "RAND_Z2_WALL_SOURCE")
+      {
+	XMLReader xml_readback;
+	{
+	  XMLBufferWriter xml_tmp;
+	  push(xml_tmp, "Param");
+	  write(xml_tmp, "version", 6);
+	  push(xml_tmp, "Source");
+	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "SourceType", header.source_type);
+
+	  write(xml_tmp, "t_source",  t_srce[header.j_decay]);
+	  write(xml_tmp, "j_decay",  header.j_decay);
+
+	  pop(xml_tmp);  // Source
+	  pop(xml_tmp);  // Param
+
+	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+
+	  xml_readback.open(xml_tmp);
+	}
+
+	// Recurse back in to re-read
+	read(xml_readback, "/Param", header);
+      }
+      else
+      {
+	std::ostringstream  os;
+	os << "Unsupported source type= " << header.source_type 
+	   << "  in file= " << __FILE__ 
+	   << "  at line= " << __LINE__
+	   << endl;
+	throw os.str();
+      }
+    }
+
+
+    //! V4 Sink header read 
+    /*! This routine is SOLELY for backwards compatibility. It should go. */
+    void readV4(XMLReader& xml, const string& path, PropSink_t& header)
+    {
+      XMLReader paramtop(xml, path);
+
+      int version;
+      read(paramtop, "version", version);
+
+      read(paramtop, "sink_type", header.sink_type);
+
+      std::string wave_state;
+      read(paramtop, "wave_state", wave_state);
+      if (wave_state != "S_WAVE")
+      {
+	throw std::string("version 4 only supports S_WAVE");
+      }
+
+      read(paramtop, "j_decay", header.j_decay);
+
+//	read(paramtop, "nrow", header.nrow);
+
+      if (header.sink_type == "SHELL_SINK")
+      {
+	XMLReader shelltop(paramtop, "ShellSink");
+
+	std::string wvf_kind;
+	Real wvf_param;
+	int  wvfIntPar;
+	{
+	  XMLReader smeartop(shelltop, "SinkSmearingParam");
+	    
+	  read(smeartop, "wvf_kind", wvf_kind);
+	  read(smeartop, "wvf_param", wvf_param);
+	  read(smeartop, "wvfIntPar", wvfIntPar);
+	}
+
+	int laplace_power;
+	read(shelltop, "laplace_power", laplace_power);
+	if (laplace_power != 0)
+	  throw std::string("only laplace_power=0 supported");
+
+	Real link_smear_fact;
+	int link_smear_num;
+	read(shelltop, "link_smear_fact", link_smear_fact);
+	read(shelltop, "link_smear_num", link_smear_num);
+
+	int disp_length;
+	int disp_dir;
+	read(shelltop, "disp_length", disp_length);
+	read(shelltop, "disp_dir", disp_dir);
+
+	XMLReader xml_readback;
+	{
+	  XMLBufferWriter xml_tmp;
+	  push(xml_tmp, "Param");
+	  write(xml_tmp, "version", 6);
+	  push(xml_tmp, "Sink");
+	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "SinkType", header.sink_type);
+
+	  {
+	    push(xml_tmp, "SmearingParam");
+	    write(xml_tmp, "wvf_kind", wvf_kind);
+	    write(xml_tmp, "wvf_param", wvf_param);
+	    write(xml_tmp, "wvfIntPar", wvfIntPar);
+	    write(xml_tmp, "no_smear_dir", header.j_decay);
+	    pop(xml_tmp);
+	  }
+
+	  write(xml_tmp, "disp_length", disp_length);
+	  write(xml_tmp, "disp_dir", disp_dir);
+
+	  {
+	    push(xml_tmp, "LinkSmearing");
+	    write(xml_tmp, "LinkSmearingType", "APE_SMEAR");
+	    write(xml_tmp, "link_smear_num", link_smear_num);
+	    write(xml_tmp, "link_smear_fact", link_smear_fact);
+	    write(xml_tmp, "no_smear_dir", header.j_decay);
+	    pop(xml_tmp);
+	  }
+
+	  pop(xml_tmp);  // Sink
+	  pop(xml_tmp);  // Param
+
+	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+
+	  xml_readback.open(xml_tmp);
+	}
+
+	// Recurse back in to re-read
+	read(xml_readback, "/Param", header);
+      }
+      else if (header.sink_type == "POINT_SINK")
+      {
+	XMLReader xml_readback;
+	{
+	  XMLBufferWriter xml_tmp;
+	  push(xml_tmp, "Param");
+	  write(xml_tmp, "version", 6);
+	  push(xml_tmp, "Sink");
+	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "SinkType", header.sink_type);
+
+	  write(xml_tmp, "j_decay",  header.j_decay);
+
+	  pop(xml_tmp);  // Sink
+	  pop(xml_tmp);  // Param
+
+	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+
+	  xml_readback.open(xml_tmp);
+	}
+
+	// Recurse back in to re-read
+	read(xml_readback, "/Param", header);
+      }
+      else if (header.sink_type == "WALL_SINK")
+      {
+	XMLReader xml_readback;
+	{
+	  XMLBufferWriter xml_tmp;
+	  push(xml_tmp, "Param");
+	  write(xml_tmp, "version", 6);
+	  push(xml_tmp, "Sink");
+	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "SinkType", header.sink_type);
+
+	  pop(xml_tmp);  // Sink
+	  pop(xml_tmp);  // Param
+
+	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+
+	  xml_readback.open(xml_tmp);
+	}
+
+	// Recurse back in to re-read
+	read(xml_readback, "/Param", header);
+      }
+      else
+      {
+	std::ostringstream  os;
+	os << "Unsupported sink type= " << header.sink_type 
+	   << "  in file= " << __FILE__ 
+	   << "  at line= " << __LINE__
+	   << endl;
+	throw os.str();
+      }
+    }
+  }
+
+
 
   // Source header read
   void read(XMLReader& xml, const string& path, PropSource_t& header)
@@ -180,43 +473,56 @@ namespace Chroma
     int version;
     read(paramtop, "version", version);
 
-    switch (version) 
+    try
     {
-      /**************************************************************************/
-    case 5:
-      /**************************************************************************/
+      switch (version) 
+      {
+      case 5:
+	readV5(xml, path, header);
+	break;
+
+      case 6:
+      {
+	XMLReader xml_tmp(paramtop, "Source");
+	std::ostringstream os;
+	xml_tmp.print(os);
+	read(xml_tmp, "SourceType", header.source_type);
+	read(xml_tmp, "j_decay", header.j_decay);
+	if (xml_tmp.count("t_source") != 0)
+	{
+	  read(xml_tmp, "t_source", header.t_source);
+	}
+	else if (xml_tmp.count("t_srce") != 0)
+	{
+	  multi1d<int> t_srce;
+	  read(xml_tmp, "t_srce", t_srce);
+	  if (t_srce.size() != Nd)
+	  {
+	    throw string("t_srce not expected size");
+	  }
+	  header.t_source = t_srce[header.j_decay];
+	}
+	else
+	{
+	  throw string("neither t_source nor t_srce found");
+	}
+	header.source = os.str();
+      }
+//      read(paramtop, "nrow", header.nrow);
       break;
 
-    default:
-      /**************************************************************************/
-      QDPIO::cerr << "PropSource parameter version " << version 
-		  << " unsupported." << endl;
+      default:
+	/**************************************************************************/
+	QDPIO::cerr << "PropSource parameter version " << version 
+		    << " unsupported." << endl;
+	QDP_abort(1);
+      }
+    }
+    catch (const std::string& e) 
+    {
+      QDPIO::cerr << "PropSource: Error reading source: " << e << endl;
       QDP_abort(1);
     }
-
-    read(paramtop, "wave_state", header.wave_state);
-    if (header.wave_state != WAVE_TYPE_S_WAVE)
-    {
-      read(paramtop, "direction",  header.direction);
-    }
-
-    read(paramtop, "source_type", header.source_type);
-    if (header.source_type == SRC_TYPE_SHELL_SOURCE)
-    {
-      XMLReader shelltop(paramtop, "ShellSource");
-
-      read(shelltop, "SourceSmearingParam", header.sourceSmearParam);
-      read(shelltop, "laplace_power", header.laplace_power);
-      read(shelltop, "link_smear_fact", header.link_smear_fact);
-      read(shelltop, "link_smear_num", header.link_smear_num);
-      read(shelltop, "disp_length", header.disp_length);
-      read(shelltop, "disp_dir", header.disp_dir);
-    }		
-
-    read(paramtop, "j_decay",  header.j_decay);
-    read(paramtop, "t_source", header.t_source);
-
-    read(paramtop, "nrow", header.nrow);
   }
 
   // Source header read
@@ -227,39 +533,39 @@ namespace Chroma
     int version;
     read(paramtop, "version", version);
 
-    switch (version) 
+    try
     {
-      /**************************************************************************/
-    case 4:
-      /**************************************************************************/
+      switch (version) 
+      {
+      case 4:
+	readV4(xml, path, header);
+	break;
+
+      case 5:
+      {
+	XMLReader xml_tmp(paramtop, "Sink");
+	std::ostringstream os;
+	xml_tmp.print(os);
+	read(xml_tmp, "SinkType", header.sink_type); 
+	read(xml_tmp, "j_decay", header.j_decay);
+	header.sink = os.str();
+      }
       break;
 
-    default:
-      /**************************************************************************/
-      QDPIO::cerr << "PropSink parameter version " << version 
-		  << " unsupported." << endl;
+      default:
+	/**************************************************************************/
+	QDPIO::cerr << "PropSink parameter version " << version 
+		    << " unsupported." << endl;
+	QDP_abort(1);
+      }
+    }
+    catch (const std::string& e) 
+    {
+      QDPIO::cerr << "PropSink: Error reading sink: " << e << endl;
       QDP_abort(1);
     }
 
-    read(paramtop, "wave_state", header.wave_state);
-    if (header.wave_state != WAVE_TYPE_S_WAVE)
-    {
-      read(paramtop, "direction",  header.direction);
-    }
-
-    read(paramtop, "sink_type", header.sink_type);
-    if (header.sink_type == SNK_TYPE_SHELL_SINK)
-    {
-      XMLReader shelltop(paramtop, "ShellSink");
-
-      read(shelltop, "SinkSmearingParam", header.sinkSmearParam);
-      read(shelltop, "laplace_power", header.laplace_power);
-      read(shelltop, "link_smear_fact", header.link_smear_fact);
-      read(shelltop, "link_smear_num", header.link_smear_num);
-      read(shelltop, "disp_length", header.disp_length);
-      read(shelltop, "disp_dir", header.disp_dir);
-    }		
-    read(paramtop, "nrow", header.nrow);
+//    read(paramtop, "nrow", header.nrow);
   }
 
   //! SeqPropagator header reader
@@ -290,7 +596,7 @@ namespace Chroma
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "t_sink", param.t_sink);
     read(paramtop, "sink_mom", param.sink_mom);
-    read(paramtop, "nrow", param.nrow);
+//    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -318,7 +624,7 @@ namespace Chroma
     read(paramtop, "seq_src", param.seq_src);
     read(paramtop, "t_sink", param.t_sink);
     read(paramtop, "sink_mom", param.sink_mom);
-    read(paramtop, "nrow", param.nrow);
+//    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -345,7 +651,7 @@ namespace Chroma
 
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
 
       XMLBufferWriter xml_out;
       push(xml_out,"FermionAction");
@@ -356,7 +662,7 @@ namespace Chroma
     }
     break;
 
-      /**************************************************************************/
+    /**************************************************************************/
     case 5:
     {
       // In this modified version of v4, the fermion action specific stuff
@@ -365,7 +671,7 @@ namespace Chroma
 
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
 
@@ -385,7 +691,7 @@ namespace Chroma
       read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
 
@@ -408,7 +714,7 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "InvertParam", param.invParam);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
       read(paramtop, "nonRelProp", param.nonRelProp);
 
       if (paramtop.count("obsvP") != 0)
@@ -432,7 +738,7 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "InvertParam", param.invParam);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
       read(paramtop, "nonRelProp", param.nonRelProp);
       read(paramtop, "obsvP", param.obsvP);
 
@@ -474,7 +780,7 @@ namespace Chroma
       param.nonRelProp = false;
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
 
@@ -497,7 +803,7 @@ namespace Chroma
       read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
 
@@ -523,7 +829,7 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "InvertParam", param.invParam);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
       read(paramtop, "nonRelProp", param.nonRelProp);
 
       if (paramtop.count("boundary") != 0)
@@ -545,9 +851,9 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "InvertParam", param.invParam);
-      read(paramtop, "nrow", param.nrow);
+//      read(paramtop, "nrow", param.nrow);
       read(paramtop, "nonRelProp", param.nonRelProp);
-     }
+    }
     break;
 
     default:
@@ -685,31 +991,13 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 5;
+    int version = 6;
     write(xml, "version", version);
-    write(xml, "wave_state", header.wave_state);
-    if (header.wave_state != WAVE_TYPE_S_WAVE)
-    {
-      write(xml, "direction",  header.direction);
-    }
+    xml << header.source;
+    write(xml, "j_decay", header.j_decay);
+    write(xml, "t_source", header.t_source);
 
-    write(xml, "source_type", header.source_type);
-    if (header.source_type == SRC_TYPE_SHELL_SOURCE)
-    {
-      push(xml, "ShellSource");
-      write(xml, "SourceSmearingParam", header.sourceSmearParam);
-      write(xml, "laplace_power", header.laplace_power);
-      write(xml, "link_smear_fact", header.link_smear_fact);
-      write(xml, "link_smear_num", header.link_smear_num);
-      write(xml, "disp_length", header.disp_length);
-      write(xml, "disp_dir", header.disp_dir);
-      pop(xml);
-    }
-
-    write(xml, "j_decay",  header.j_decay);
-    write(xml, "t_source",  header.t_source);
-
-    write(xml, "nrow",  header.nrow);
+//    write(xml, "nrow",  header.nrow);
 
     pop(xml);
   }
@@ -720,28 +1008,14 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 4;
+    int version = 5;
     write(xml, "version", version);
-    write(xml, "wave_state", header.wave_state);
-    if (header.wave_state != WAVE_TYPE_S_WAVE)
-    {
-      write(xml, "direction",  header.direction);
-    }
 
-    write(xml, "sink_type", header.sink_type);
-    if (header.sink_type == SNK_TYPE_SHELL_SINK)
-    {
-      push(xml, "ShellSink");
-      write(xml, "SinkSmearingParam", header.sinkSmearParam);
-      write(xml, "laplace_power", header.laplace_power);
-      write(xml, "link_smear_fact", header.link_smear_fact);
-      write(xml, "link_smear_num", header.link_smear_num);
-      write(xml, "disp_length", header.disp_length);
-      write(xml, "disp_dir", header.disp_dir);
-      pop(xml);
-    }
+    write(xml, "SinkType", header.sink_type);
+    xml << header.sink;
+    write(xml, "j_decay", header.j_decay);
 
-    write(xml, "nrow",  header.nrow);
+//    write(xml, "nrow",  header.nrow);
 
     pop(xml);
   }
@@ -758,7 +1032,7 @@ namespace Chroma
     write(xml, "obsvP", header.obsvP);           // new - measured 5D stuff
     xml << header.fermact;
     write(xml, "InvertParam", header.invParam);
-    write(xml, "nrow", header.nrow);
+//    write(xml, "nrow", header.nrow);
 
     pop(xml);
   }
@@ -774,7 +1048,7 @@ namespace Chroma
     write(xml, "MultiMasses", header.MultiMasses);
     xml << header.fermact;
     write(xml, "InvertParam", header.invParam);
-    write(xml, "nrow", header.nrow);
+//    write(xml, "nrow", header.nrow);
 
     pop(xml);
   }
@@ -792,7 +1066,7 @@ namespace Chroma
     write(xml, "InvertParam", param.invParam);
     write(xml, "t_sink", param.t_sink);
     write(xml, "sink_mom", param.sink_mom);
-    write(xml, "nrow", param.nrow);
+//    write(xml, "nrow", param.nrow);
 
     pop(xml);
   }
@@ -808,7 +1082,7 @@ namespace Chroma
     write(xml, "seq_src", param.seq_src);
     write(xml, "t_sink", param.t_sink);
     write(xml, "sink_mom", param.sink_mom);
-    write(xml, "nrow", param.nrow);
+//    write(xml, "nrow", param.nrow);
 
     pop(xml);
   }

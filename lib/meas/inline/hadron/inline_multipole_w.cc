@@ -1,4 +1,4 @@
-// $Id: inline_multipole_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_multipole_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurement
  */
@@ -257,8 +257,8 @@ namespace Chroma
 
 
     // Derived from input prop
-    int  j_decay = source_header.j_decay;
-    multi1d<int> t_source = source_header.t_source;
+    int j_decay  = source_header.j_decay;
+    int t_source = source_header.t_source;
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
@@ -359,7 +359,7 @@ namespace Chroma
 	
       // Now the 3pt contractions
       multipole(quark_propagator, seq_quark_prop, params.pole.seqprops[seq_src_ctr].GammaInsertion, 
-		params.param.max_L, j_decay, t_source[j_decay], xml_seq_src, "Multipole");
+		params.param.max_L, j_decay, t_source, xml_seq_src, "Multipole");
 
       pop(xml_seq_src);   // elem
     } // end loop over sequential sources

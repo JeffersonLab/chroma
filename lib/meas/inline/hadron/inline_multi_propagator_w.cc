@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_multi_propagator_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -187,8 +187,6 @@ namespace Chroma
     // Read in the source along with relevant information.
     // 
     XMLReader source_file_xml, source_record_xml;
-    int t0;
-    int j_decay;
     bool make_sourceP = false;
     bool seqsourceP = false;
     try
@@ -207,24 +205,13 @@ namespace Chroma
 	PropSource_t source_header;
 
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
-	j_decay = source_header.j_decay;
-	t0 = source_header.t_source[j_decay];
 	make_sourceP = true;
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
       {
-	ChromaProp_t prop_header;
-	PropSource_t source_header;
 	SeqSource_t seqsource_header;
 
 	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
-	// Any source header will do for j_decay
-	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
-	     prop_header);
-	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
-	     source_header);
-	j_decay = source_header.j_decay;
-	t0 = seqsource_header.t_sink;
 	seqsourceP = true;
       }
       else
@@ -399,7 +386,7 @@ namespace Chroma
 	out_param.invParam.MROver = params.param.invParam.MROver;
 	out_param.invParam.MaxCG = params.param.invParam.MaxCG;
 	out_param.invParam.RsdCG = params.param.invParam.RsdCG[m];
-	out_param.nrow =params.param.nrow ;
+//	out_param.nrow =params.param.nrow ;
       
       
 	write(record_xml, "ForwardProp", out_param);

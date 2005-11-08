@@ -1,17 +1,17 @@
-// $Id: inline_seqsource_w.cc,v 2.3 2005-10-19 04:58:37 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 2.4 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
  * Sequential source construction
  */
 
+#include "handle.h"
 #include "meas/inline/hadron/inline_seqsource_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
-#include "meas/smear/sink_smear2.h"
-#include "meas/hadron/wall_qprop_w.h"
 #include "meas/hadron/seqsrc_funcmap_w.h"
 #include "meas/hadron/hadseqsrc_w.h"
+#include "meas/sinks/sink_smearing_factory.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/io/named_objmap.h"
@@ -196,8 +196,7 @@ namespace Chroma
     QDPIO::cout << "Forward propagator successfully read and parsed" << endl;
 
     // Derived from input prop
-    int  j_decay = source_header[0].j_decay;
-    multi1d<int> t_source = source_header[0].t_source;
+    int j_decay  = source_header[0].j_decay;
 
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, j_decay);
@@ -217,111 +216,72 @@ namespace Chroma
     pop(xml_out);
 
     // A sanity check
-    if (params.param.t_sink < 0 || params.param.t_sink >= params.param.nrow[j_decay]) 
+    if (params.param.t_sink < 0 || params.param.t_sink >= QDP::Layout::lattSize()[j_decay]) 
     {
       QDPIO::cerr << "Sink time coordinate incorrect." << endl;
       QDPIO::cerr << "t_sink = " << params.param.t_sink << endl;
       QDP_abort(1);
     }
 
-    // Only support simple s-wave states
-    if (params.sink_header.wave_state != WAVE_TYPE_S_WAVE)
-    {
-      QDPIO::cerr << "Only support simple s-wave states" << endl;
-      QDP_abort(1);
-    }
-
-
 
     //------------------ Start main body of calculations -----------------------------
 
-    // Do the sink smearing BEFORE the interpolating operator
-    for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
+    LatticePropagator quark_prop_src;
+
+    try
     {
-      switch (params.sink_header.sink_type)
+      // Sink smear the forward propagators
+      // NOTE: The smearing construction is pulled outside the loop
+      // for efficiency. However, I'm anticipating that we will 
+      // have different smearings at the sink of the forward props.
+      // In that case, the loop needs to be in inverted.
+      std::istringstream  xml_s(params.sink_header.sink);
+      XMLReader  sinktop(xml_s);
+      const string sink_path = "/Sink";
+      QDPIO::cout << "Sink = " << params.sink_header.sink_type << endl;
+	
+      Handle< QuarkSourceSink<LatticePropagator> >
+	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(params.sink_header.sink_type,
+									 sinktop,
+									 sink_path,
+									 u));
+
+      // Do the sink smearing BEFORE the interpolating operator
+      for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
       {
-      case SNK_TYPE_SHELL_SINK:
-      {
-	QDPIO::cout << "SeqSource: do shell sink smearing" << endl;
-
-	sink_smear2(u, forward_props[loop], 
-		    params.sink_header.sinkSmearParam.wvf_kind, 
-		    params.sink_header.sinkSmearParam.wvf_param, 
-		    params.sink_header.sinkSmearParam.wvfIntPar, 
-		    j_decay);
+	(*sinkSmearing)(forward_props[loop]);
       }
-      break;
-
-      case SNK_TYPE_WALL_SINK:
-      {
-	QDPIO::cout << "SeqSource: do wall sink smearing" << endl;
-
-	for(int i=0; i < params.param.sink_mom.size(); ++i)
-	  if (params.param.sink_mom[i] != 0)
-	  {
-	    QDPIO::cerr << "Do not currently support non-zero momenta wall-sink smearing" << endl;
-	    QDP_abort(1);
-	  }
-
-	LatticePropagator tmp_prop = forward_props[loop];
-	wall_qprop(forward_props[loop], tmp_prop, phases);
-      }
-      break;
-
-      default:
-	break;
-      }
-    }
     
   
-    //
-    // Construct the sequential source
-    //
-    QDPIO::cout << "Sequential source = " << params.param.seq_src << endl;
+      //
+      // Construct the sequential source
+      //
+      QDPIO::cout << "Sequential source = " << params.param.seq_src << endl;
 
-    swatch.reset();
-    swatch.start();
-    LatticePropagator quark_prop_src = 
-      hadSeqSource(forward_props, 
-		   params.param.t_sink, 
-		   params.param.sink_mom, 
-		   j_decay, 
-		   params.param.seq_src);
-    swatch.stop();
+      swatch.reset();
+      swatch.start();
+      quark_prop_src = hadSeqSource(forward_props, 
+				    params.param.t_sink, 
+				    params.param.sink_mom, 
+				    j_decay, 
+				    params.param.seq_src);
+      swatch.stop();
     
-    QDPIO::cout << "Hadron sequential source computed: time= " 
-		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+      QDPIO::cout << "Hadron sequential source computed: time= " 
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
 
-    // Do the sink smearing AFTER the interpolating operator
-    switch (params.sink_header.sink_type)
-    {
-    case SNK_TYPE_SHELL_SINK:
-    {
-      sink_smear2(u, quark_prop_src, 
-		  params.sink_header.sinkSmearParam.wvf_kind, 
-		  params.sink_header.sinkSmearParam.wvf_param, 
-		  params.sink_header.sinkSmearParam.wvfIntPar, 
-		  j_decay);
+
+      // Do the sink smearing AFTER the interpolating operator
+      (*sinkSmearing)(quark_prop_src);
+
     }
-    break;
-
-    case SNK_TYPE_WALL_SINK:
+    catch(const std::string& e) 
     {
-//    LatticePropagator tmp_prop = quark_prop_src;
-//    wall_qprop(quark_prop_src, tmp_prop, phases);
-
-      int t_sink = params.param.t_sink;
-
-      // Project propagator onto zero momentum: Do a slice-wise sum.
-      DPropagator dprop_slice = sum(quark_prop_src, phases.getSet()[t_sink]);
-      quark_prop_src[phases.getSet()[t_sink]] = dprop_slice;
+      QDPIO::cerr << InlineSeqSourceEnv::name << ": Caught Exception in sink: " << e << endl;
+      QDP_abort(1);
     }
-    break;
-
-    default:
-      break;
-    }
+    
     
     // Sanity check - write out the norm2 of the propagator source in the j_decay direction
     // Use this for any possible verification

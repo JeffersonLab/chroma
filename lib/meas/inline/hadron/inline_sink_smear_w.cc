@@ -1,22 +1,17 @@
-// $Id: inline_sink_smear_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_sink_smear_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of sink_smear
  *
  * Sink smear propagators
  */
 
+#include "handle.h"
 #include "meas/inline/hadron/inline_sink_smear_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
+#include "meas/sinks/sink_smearing_factory.h"
+#include "meas/sinks/sink_smearing_aggregate.h"
 #include "meas/glue/mesplq.h"
-#include "meas/smear/ape_smear.h"
-#include "meas/smear/gaus_smear.h"
-#include "meas/smear/displacement.h"
-#include "meas/smear/laplacian.h"
-#include "meas/hadron/D_j_w.h"
-#include "meas/hadron/DjDk_w.h"
-#include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
-#include "util/info/proginfo.h"
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -30,8 +25,16 @@ namespace Chroma
       return new InlineSinkSmear(InlineSinkSmearParams(xml_in, path));
     }
 
+    bool registerAll()
+    {
+      bool foo = true;
+      foo &= QuarkSinkSmearingEnv::registered;
+      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+      return foo;
+    }
+
     const std::string name = "SINK_SMEAR";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+    const bool registered = registerAll();
   };
 
 
@@ -158,7 +161,6 @@ namespace Chroma
 
     // Derived from input prop
     int  j_decay = source_header.j_decay;
-    multi1d<int> t_source = source_header.t_source;
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
@@ -175,78 +177,31 @@ namespace Chroma
     }
 
 
-
-    /*
-     * Smear the gauge field if needed
-     */
-    multi1d<LatticeColorMatrix> u_smr(Nd);
-    u_smr = u;
-
-    if (params.param.sink_type == SNK_TYPE_SHELL_SINK &&
-	params.param.link_smear_num > 0)
+    //
+    // Sink smear the propagator
+    //
+    try
     {
-      int BlkMax = 100;	// Maximum number of blocking/smearing iterations
-      Real BlkAccu = 1.0e-5;	// Blocking/smearing accuracy
+      QDPIO::cout << "Sink_xml = " << params.param.sink << endl;
 
-      for(int i=0; i < params.param.link_smear_num; ++i)
-      {
-	multi1d<LatticeColorMatrix> u_tmp(Nd);
+      std::istringstream  xml_s(params.param.sink);
+      XMLReader  sinktop(xml_s);
+      const string sink_path = "/Sink";
+      QDPIO::cout << "Sink = " << params.param.sink_type << endl;
 
-	for(int mu = 0; mu < Nd; ++mu)
-	  if ( mu != j_decay )
-	    APE_Smear(u_smr, u_tmp[mu], mu, 0,
-		      params.param.link_smear_fact, BlkAccu, BlkMax, 
-		      j_decay);
-	  else
-	    u_tmp[mu] = u_smr[mu];
-      
-	u_smr = u_tmp;
-      }
-      QDPIO::cout << "Gauge field APE-smeared!" << endl;
+      Handle< QuarkSourceSink<LatticePropagator> >
+	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(params.param.sink_type,
+									 sinktop,
+									 sink_path,
+									 u));
+      (*sinkSmearing)(quark_propagator);
     }
-
-
-    /*
-     * Now apply appropriate sink smearing
-     */
-    if(params.param.sink_type == SNK_TYPE_SHELL_SINK)
+    catch(const std::string& e) 
     {
-      // There should be a call to maksrc2 or some-such for general source smearing
-      gausSmear(u_smr, quark_propagator, 
-		params.param.sinkSmearParam.wvf_param, 
-		params.param.sinkSmearParam.wvfIntPar, 
-		j_decay);
-      laplacian(u_smr, quark_propagator, 
-		j_decay, params.param.laplace_power);
-      displacement(u_smr, quark_propagator,
-		   params.param.disp_length, params.param.disp_dir);
-    }
-	
-    // Apply any sink constructions
-    switch(params.param.wave_state)
-    {
-    case WAVE_TYPE_S_WAVE:
-      break;
-    case WAVE_TYPE_P_WAVE:
-    {
-      LatticePropagator temp;
-      temp = quark_propagator;
-      D_j(u_smr, temp, quark_propagator, params.param.direction);
-    }
-    break;
-    case WAVE_TYPE_D_WAVE:   
-    {
-      LatticePropagator temp;
-      temp = quark_propagator;
-      DjDk(u_smr, temp, quark_propagator, params.param.direction);
-    }
-    break;
-    default: 
-      QDPIO::cerr << "Invalid wave_state" << endl;
+      QDPIO::cerr << InlineSinkSmearEnv::name << ": Caught Exception creating sink: " << e << endl;
       QDP_abort(1);
-      break;
-    } 
-  
+    }
+
 
     /*
      * Save sink smeared propagator

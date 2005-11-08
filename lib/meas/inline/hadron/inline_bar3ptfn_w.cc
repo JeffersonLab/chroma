@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 2.1 2005-10-19 04:58:37 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 2.2 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -290,7 +290,7 @@ namespace Chroma
 
     // Derived from input prop
     int  j_decay = source_header.j_decay;
-    multi1d<int> t_source = source_header.t_source;
+    multi1d<int> t_source = source_header.getTSrce();  // do not really need whole source - t0 sufficient
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification

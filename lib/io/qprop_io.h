@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
+// $Id: qprop_io.h,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -7,11 +7,8 @@
 #ifndef __qprop_io_h__
 #define __qprop_io_h__
 
-#include "io/smearing_io.h"
-#include "io/enum_io/enum_io.h"
-#include "meas/sources/srcsnktype.h"
-#include "meas/sources/wavetype.h"
-#include "meas/smear/wvfkind.h"
+#include "io/enum_io/enum_invtype_io.h"
+#include "io/enum_io/enum_qdpvolfmt_io.h"
 
 namespace Chroma {
 
@@ -27,63 +24,50 @@ namespace Chroma {
 //! Propagator source header
 struct PropSource_t
 {
-  PropSource_t();                 // default constructor
-  SourceType       source_type;   // Point, Shell, Wall, etc.
-  WaveStateType    wave_state;    // S-wave or P-wave
-  SmearingParam_t  sourceSmearParam;
-  // wvf-function smearing type (Gaussian, Exponential, etc.)
-  // smearing width
-  // number of iteration for smearing
-  int              j_decay;         // Decay direction
-  int              direction;       // S-wave;   P-wave x(0) y(1) z(2)
-  int              laplace_power;   // power=1 implies 1 laplacian
-  int              disp_length;     // displacement length
-  int              disp_dir;        // x(0), y(1), z(2)
-  Real             link_smear_fact; // smearing factor
-  int              link_smear_num;  // number of smearing hits
-  multi1d<int>     t_source;        // source location
-  multi1d<int>     nrow;            // lattice size
-};
+  PropSource_t();                   /*!< default constructor */
 
+  multi1d<int> getTSrce();          /*!< return 4D coords of source (may not exist) */
+
+  std::string      source;          /*!< string holding source xml */
+  std::string      source_type;     /*!< source type */
+
+  int              j_decay;         /*!< decay direction */
+  int              t_source;        /*!< source slice location */
+
+//  multi1d<int>     nrow;            /*!< lattice size */
+};
 
 //! Propagator sink header
 struct PropSink_t
 {
-  PropSink_t();                     // default constructor
-  PropSink_t(const PropSource_t& source); // from a prop source
+  PropSink_t();                     /*!< default constructor */
 
-  SinkType         sink_type;       // Point, Shell, Wall, etc.
-  WaveStateType    wave_state;      // S-wave or P-wave
-  SmearingParam_t  sinkSmearParam;
-  // wvf-function smearing type (Gaussian, Exponential, etc.)
-  // smearing width
-  // number of iteration for smearing
-  int              direction;       // S-wave;   P-wave x(0) y(1) z(2)
-  int              laplace_power;   // power=1 implies 1 laplacian
-  int              disp_length;     // displacement length
-  int              disp_dir;        // x(0), y(1), z(2)
-  Real             link_smear_fact; // smearing factor
-  int              link_smear_num;  // number of smearing hits
-  multi1d<int>     nrow;            // lattice size
+  std::string      sink;            /*!< string holding sink smearing xml */
+  std::string      sink_type;       /*!< sink type */
+
+  int              j_decay;         /*!< decay direction */
+
+//  multi1d<int>     nrow;            /*!< lattice size */
 };
 
 
+//! Multiple propagator header
 struct ChromaMultiProp_t 
 { 
   ChromaMultiProp_t();          // default constructor
   bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
 
-  // String holding XML of the FermionAction section
+  //! String holding XML of the FermionAction section
   std::string     fermact;
 
   MultiInvertParam_t   invParam;   // Inverter parameters
-  multi1d<int>    nrow;          // lattice size
+//  multi1d<int>    nrow;          // lattice size
  
   multi1d<Real>   MultiMasses;
 };
 
 
-//! Propagator inversion parameters
+//! Propagator header with action
 struct ChromaProp_t 
 { 
   ChromaProp_t();               // default constructor
@@ -96,7 +80,7 @@ struct ChromaProp_t
   
   // String holding XML for auxiliary state information
   InvertParam_t   invParam;     // Inverter parameters
-  multi1d<int>    nrow;         // lattice size
+//  multi1d<int>    nrow;         // lattice size
 };
 
 
@@ -106,7 +90,7 @@ struct SeqSource_t
   std::string      seq_src;
   multi1d<int>     sink_mom;
   int              t_sink;
-  multi1d<int>     nrow;
+//  multi1d<int>     nrow;
 };
 
 
@@ -118,7 +102,7 @@ struct ChromaSeqProp_t
   std::string      seq_src;
   multi1d<int>     sink_mom;
   int              t_sink;
-  multi1d<int>     nrow;
+//  multi1d<int>     nrow;
 };
 
 
@@ -170,7 +154,6 @@ struct QQbarMescomp_t
 
 //! Given a fermion action in string form, return the boundary
 multi1d<int> getFermActBoundary(const std::string& fermact);
-
 
 //! Propagator source read
 void read(XMLReader& xml, const std::string& path, PropSource_t& header);

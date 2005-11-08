@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 2.1 2005-10-19 04:58:37 edwards Exp $
+// $Id: inline_spectrumOct_w.cc,v 2.2 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -372,10 +372,10 @@ namespace Chroma
     }
     // Derived from input prop
     int j_decay = source_header[0].j_decay;
-    multi1d<int> t_source = source_header[0].t_source;
-    int t0      = t_source[j_decay];
+    int t0      = source_header[0].t_source;
     int bc_spec = bc[0][j_decay] ;
-    for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
+    for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
+    {
       if(source_header[loop].j_decay!=j_decay){
 	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
 	throw;
@@ -384,11 +384,11 @@ namespace Chroma
 	QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
 	throw;
       }
-      for(int d(0);d<Nd;d++)
-	if(source_header[loop].t_source[d]!=t_source[d]){
-	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
-	  throw;
-	}
+      int t_src_0 = source_header[loop].t_source;
+      if(t_src_0!=t0){
+	QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
+	throw;
+      }
     }
   
     // Initialize the slow Fourier transform phases
@@ -402,7 +402,7 @@ namespace Chroma
     //write(xml_array, "loop", loop);
     push(xml_out,"Propagator_info") ;
     write(xml_array, "Masses", Mass);
-    write(xml_array, "t_source", t_source);
+    write(xml_array, "t0", t0);
     for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop){
       push(xml_out, "Propagator");
       // Save prop input
@@ -424,25 +424,18 @@ namespace Chroma
     
     //light quark determines the source type....
     //this is a problem that has to be fixed!
-    switch (source_header[0].source_type)
-    {
-    case SRC_TYPE_POINT_SOURCE:
+    if (source_header[0].source_type == "POINT_SOURCE")
       Pt_src = true;
-      break;
-	
-    case SRC_TYPE_SHELL_SOURCE:
+    else if (source_header[0].source_type == "SHELL_SOURCE")
       Sl_src = true;
-      break;
-	
-    case SRC_TYPE_WALL_SOURCE:
+    else if (source_header[0].source_type == "WALL_SOURCE")
       Wl_src = true;
-      break;
-	
-    default:
+    else
+    {
       QDPIO::cerr << "Unsupported source type" << endl;
       QDP_abort(1);
     }
-    
+   
     
     // Do the mesons first
     if (params.param.MesonP) 

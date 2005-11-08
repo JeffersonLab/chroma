@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_make_source_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_make_source_w.h,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -38,6 +38,8 @@ namespace Chroma
     {
       std::string     source_id;
     } named_obj;
+
+    std::string xml_file;  // Alternate XML file pattern
   };
 
   //! Inline measurement of Wilson loops
@@ -56,6 +58,13 @@ namespace Chroma
 		    XMLBufferWriter& gauge_xml,
 		    const unsigned long update_no,
 		    XMLWriter& xml_out); 
+
+  protected:
+    //! Do the measurement
+    void func(const multi1d<LatticeColorMatrix>& u,
+	      XMLBufferWriter& gauge_xml,
+	      const unsigned long update_no,
+	      XMLWriter& xml_out); 
 
   private:
     InlineMakeSourceParams params;

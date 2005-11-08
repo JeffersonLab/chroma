@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 2.2 2005-10-19 04:58:38 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 2.3 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -353,10 +353,10 @@ namespace Chroma
       QDPIO::cout << "Propagator successfully read and parsed" << endl;
 
       // Derived from input prop
-      int j_decay = source_header.j_decay;
+      int j_decay           = source_header.j_decay;
+      int t0                = source_header.t_source;
       multi1d<int> boundary = getFermActBoundary(prop_header.fermact);
-      multi1d<int> t_source = source_header.t_source;
-
+      
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
@@ -404,7 +404,6 @@ namespace Chroma
       QDPIO::cout << "Mass = " << Mass << endl;
 
       // Flags
-      int t0      = t_source[j_decay];
       int bc_spec = boundary[j_decay];
 
       // Initialize the slow Fourier transform phases
@@ -417,7 +416,7 @@ namespace Chroma
       push(xml_array);
       write(xml_array, "loop", loop);
       write(xml_array, "Mass_mes", Mass);
-      write(xml_array, "t_source", t_source);
+      write(xml_array, "t0", t0);
 
       // Save prop input
       write(xml_array, "ForwardProp", prop_header);
@@ -439,21 +438,14 @@ namespace Chroma
       bool Sl_src = false;
       bool Wl_src = false;
 
-      switch (source_header.source_type)
-      {
-      case SRC_TYPE_POINT_SOURCE:
+      if (source_header.source_type == "POINT_SOURCE")
 	Pt_src = true;
-	break;
-
-      case SRC_TYPE_SHELL_SOURCE:
+      else if (source_header.source_type == "SHELL_SOURCE")
 	Sl_src = true;
-	break;
-
-      case SRC_TYPE_WALL_SOURCE:
+      else if (source_header.source_type == "WALL_SOURCE")
 	Wl_src = true;
-	break;
-
-      default:
+      else
+      {
 	QDPIO::cerr << "Unsupported source type" << endl;
 	QDP_abort(1);
       }
@@ -601,12 +593,14 @@ namespace Chroma
 	// Construct {Point|Shell}-Point hybrid mesons, if desired
 	if (params.param.Pt_snk) 
 	{
+	  multi1d<int> t_srce  = source_header.getTSrce();
+
 	  if (Pt_src)
-	    hybmeson(f, u_smr, quark_propagator, quark_propagator, phases, t_source,
+	    hybmeson(f, u_smr, quark_propagator, quark_propagator, phases, t_srce,
 		     xml_array, "Point_Point_Wilson_Hybrid_Mesons");
         
 	  if (Sl_src)
-	    hybmeson(f, u_smr, quark_propagator, quark_propagator, phases, t_source,
+	    hybmeson(f, u_smr, quark_propagator, quark_propagator, phases, t_srce,
 		     xml_array, "Shell_Point_Wilson_Hybrid_Mesons");
         
 	  if (Wl_src)
@@ -627,12 +621,13 @@ namespace Chroma
 		      params.param.wvfIntPar[loop], 
 		      j_decay);
 
+	  multi1d<int> t_srce  = source_header.getTSrce();
 	  if (Pt_src)
-	    hybmeson(f, u_smr, quark_prop_smr, quark_prop_smr, phases, t_source,
+	    hybmeson(f, u_smr, quark_prop_smr, quark_prop_smr, phases, t_srce,
 		     xml_array, "Point_Shell_Wilson_Hybrid_Mesons");
 
 	  if (Sl_src)
-	    hybmeson(f, u_smr, quark_prop_smr, quark_prop_smr, phases, t_source,
+	    hybmeson(f, u_smr, quark_prop_smr, quark_prop_smr, phases, t_srce,
 		     xml_array, "Shell_Shell_Wilson_Hybrid_Mesons");
 
 	  if (Wl_src)

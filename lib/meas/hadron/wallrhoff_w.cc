@@ -1,4 +1,4 @@
-// $Id: wallrhoff_w.cc,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: wallrhoff_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  *  \brief Wall-sink rho-> gamma+rho form-factors 
  *
@@ -26,7 +26,7 @@ namespace Chroma {
  * \param u_x2               forward U quark propagator evaluated at sink  ( Read )
  * \param d_x2               forward D quark propagator evaluated at sink  ( Read )
  * \param phases             fourier transform phase factors ( Read )
- * \param t_source           coordinates of the source ( Read )
+ * \param t0                 time slice of the source ( Read )
  * \param wall_source        true if using a wall source ( Read )
  */
 
@@ -39,7 +39,7 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
 		    const Propagator& u_x2,
 		    const Propagator& d_x2,
 		    const SftMom& phases,
-		    const multi1d<int>& t_source,
+		    int t0,
 		    bool wall_source)
 {
   START_CODE();
@@ -268,7 +268,7 @@ void wallRhoFormFac(WallFormFac_formfacs_t& form,
 	    multi1d<WallFormFac_momenta_t>& momenta = insertion.momenta;
 
 	    wallFormFacSft(momenta, corr_local_fn, corr_nonlocal_fn, phases,
-			   compute_nonlocal, t_source);
+			   compute_nonlocal, t0);
 
 	  } // end for(proj)
 	} // end for(lorz)

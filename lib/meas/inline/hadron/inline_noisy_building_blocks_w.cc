@@ -1,4 +1,4 @@
-// $Id: inline_noisy_building_blocks_w.cc,v 2.1 2005-10-21 15:55:39 flemingg Exp $
+// $Id: inline_noisy_building_blocks_w.cc,v 2.2 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -608,10 +608,12 @@ namespace Chroma
 //  }
 
     BuildingBlocks( S, F, U, GammaInsertions, Flavors,
-      params.param.links_max, AllNoisyLinkPatterns, Phases, PhasesCanonical,
-      Files, T1, T2,
-      theSourceTypeMap::Instance().lookUpString(source_header.source_type),
-      SnkMom, DecayDir);
+		    params.param.links_max, AllNoisyLinkPatterns, Phases, PhasesCanonical,
+		    Files, T1, T2, 
+		    source_header.source_type,
+		    SnkMom, DecayDir);
+
+//      theSourceTypeMap::Instance().lookUpString(source_header.source_type),
 
     swatch.stop();
 

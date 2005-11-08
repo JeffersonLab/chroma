@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -259,6 +259,8 @@ namespace Chroma
     push(xml_array, "Wilson_hadron_measurements");
 
     // Now loop over the various fermion masses
+    multi1d<string> sink_type(Nprops);
+
     for(int loop=0; loop < Nprops; ++loop)
     {
       QDPIO::cout << "Attempt to parse forward propagator = " << params.named_obj.prop_ids[loop] << endl;
@@ -277,6 +279,8 @@ namespace Chroma
 	// Also pull out the id of this source
 	{
 	  read(prop_record_xml, "/SinkSmear", prop_header[loop]);
+
+	  read(prop_record_xml, "/SinkSmear/PropSource/Source/SinkType", sink_type[loop]);
 	}
       }
       catch( std::bad_cast ) 
@@ -356,15 +360,13 @@ namespace Chroma
     //
     for (int loop(1); loop < params.named_obj.prop_ids.size(); ++loop)
     {
-      if (prop_header[loop].source_header.source_type != 
-	  prop_header[0].source_header.source_type)
+      if (prop_header[loop].source_header.source_type != prop_header[0].source_header.source_type)
       {
 	QDPIO::cerr << "HADSPEC: prop source smearing types do not agree" << endl;
 	QDP_abort(1);
       }
 
-      if (prop_header[loop].sink_header.sink_type != 
-	  prop_header[0].sink_header.sink_type)
+      if (sink_type[loop] != sink_type[0])
       {
 	QDPIO::cerr << "HADSPEC: prop sink smearing types do not agree" << endl;
 	QDP_abort(1);
@@ -374,8 +376,7 @@ namespace Chroma
 
     // Derived from input prop
     int j_decay = prop_header[0].source_header.j_decay;
-    multi1d<int> t_source = prop_header[0].source_header.t_source;
-    int t0      = t_source[j_decay];
+    int t0      = prop_header[0].source_header.t_source;
     int bc_spec = bc[0][j_decay] ;
     for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
     {
@@ -389,13 +390,10 @@ namespace Chroma
 	QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
 	QDP_abort(1);
       }
-      for(int d(0); d < Nd; d++)
+      if (prop_header[loop].source_header.t_source != prop_header[0].source_header.t_source)
       {
-	if (prop_header[loop].source_header.t_source[d] != t_source[d])
-	{
-	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
-	  QDP_abort(1);
-	}
+	QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
+	QDP_abort(1);
       }
     }
   
@@ -409,7 +407,7 @@ namespace Chroma
     // Next array element - name auto-written
     push(xml_array);
     write(xml_array, "Masses", Mass);
-    write(xml_array, "t_source", t_source);
+    write(xml_array, "t0", t0);
 
     // Save prop input
     write(xml_array, "ForwardProp", prop_header);
@@ -431,53 +429,39 @@ namespace Chroma
 
 
     // Construct group name for output
-    string source_type;
-    switch (prop_header[0].source_header.source_type)
+    string src_type;
+    if (prop_header[0].source_header.source_type == "POINT_SOURCE")
+      src_type = "Point";
+    else if (prop_header[0].source_header.source_type == "SHELL_SOURCE")
+      src_type = "Shell";
+    else if (prop_header[0].source_header.source_type == "WALL_SOURCE")
+      src_type = "Wall";
+    else
     {
-    case SRC_TYPE_POINT_SOURCE:
-      source_type = "Point";
-      break;
-	    
-    case SRC_TYPE_SHELL_SOURCE:
-      source_type = "Shell";
-      break;
-	    
-    case SRC_TYPE_WALL_SOURCE:
-      source_type = "Wall";
-      break;
-	
-    default:
       QDPIO::cerr << "Unsupported source type" << endl;
       QDP_abort(1);
     }
 
-    string sink_type;
-    switch (prop_header[0].sink_header.sink_type)
+    string snk_type;
+    if (sink_type[0] == "POINT_SOURCE")
+      snk_type = "Point";
+    else if (sink_type[0] == "SHELL_SINK")
+      snk_type = "Shell";
+    else if (sink_type[0] == "WALL_SINK")
+      snk_type = "Wall";
+    else
     {
-    case SNK_TYPE_POINT_SINK:
-      sink_type = "Point";
-      break;
-	    
-    case SNK_TYPE_SHELL_SINK:
-      sink_type = "Shell";
-      break;
-	    
-    case SNK_TYPE_WALL_SINK:
-      sink_type = "Wall";
-      break;
-	
-    default:
       QDPIO::cerr << "Unsupported sink type" << endl;
       QDP_abort(1);
     }
 
-    string source_sink_type = source_type + "_" + sink_type;
-    QDPIO::cout << "Source type = " << source_type << endl;
-    QDPIO::cout << "Sink type = "   << sink_type << endl;
+    string source_sink_type = src_type + "_" + snk_type;
+    QDPIO::cout << "Source type = " << src_type << endl;
+    QDPIO::cout << "Sink type = "   << snk_type << endl;
 
     push(xml_array, "SourceSinkType");
     write(xml_array, "source_type", prop_header[0].source_header.source_type);
-    write(xml_array, "sink_type", prop_header[0].sink_header.sink_type);
+    write(xml_array, "sink_type", sink_type[0]);
     pop(xml_array);
 
     // Do the mesons first
@@ -492,11 +476,11 @@ namespace Chroma
     if (params.param.CurrentP) 
     {
       // Construct the rho vector-current and the pion axial current divergence
-      if (prop_header[0].sink_header.sink_type == SNK_TYPE_POINT_SINK)
+      if (sink_type[0] == "POINT_SINK")
       {
 	curcor2(u, quark_propagator[0], quark_propagator[1], phases, 
 		t0, 3,
-		xml_array, source_type + "_Point_Meson_Currents");
+		xml_array, src_type + "_Point_Meson_Currents");
       }
     } // end if (CurrentP)
 
@@ -541,13 +525,14 @@ namespace Chroma
 	taproj(f[i]);
       }
 
-      if (prop_header[0].sink_header.sink_type == SNK_TYPE_WALL_SINK)
+      if (sink_type[0] == "WALL_SINK")
       {
 	QDPIO::cerr << "Wall-source hybrid mesons not supported" << endl;
 	QDP_abort(1);
       }
 
-      hybmeson(f, u_smr, quark_propagator[0], quark_propagator[1], phases, t_source,
+      multi1d<int> t_srce  = prop_header[0].source_header.getTSrce();
+      hybmeson(f, u_smr, quark_propagator[0], quark_propagator[1], phases, t_srce,
 	       xml_array, source_sink_type + "_Wilson_Hybrid_Mesons");
     } // end if (HybMesP)
 

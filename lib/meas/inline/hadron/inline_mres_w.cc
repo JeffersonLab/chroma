@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_mres_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -270,9 +270,7 @@ namespace Chroma
 
     // Basic parameters
     int j_decay = source_header.j_decay;
-    multi1d<int> t_source = source_header.t_source;
-    // Flags
-    int t0      = t_source[j_decay];
+    int t0      = source_header.t_source;
 
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, j_decay);
@@ -397,10 +395,9 @@ namespace Chroma
     multi1d<Real> shifted_pseudo(length);
     multi1d<Real> shifted_delta(length);
     multi1d<Real> shifted_deltaSq(length);
-    int t_src = t_source[j_decay];
   
     for(int t=0; t<length; t++){
-      int t_eff( (t - t_src + length) % length ) ;
+      int t_eff( (t - t0 + length) % length ) ;
       shifted_pseudo[t_eff] = real(pseudo_prop_corr[t]);
       shifted_delta[t_eff]  = real(delta_prop_corr[t]);
       shifted_deltaSq[t_eff]= real(deltaSq_prop_corr[t]);

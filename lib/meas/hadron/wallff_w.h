@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wallff_w.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: wallff_w.h,v 2.1 2005-11-08 05:39:44 edwards Exp $
 /*! \file
  *  \brief Structures for wall-sink/source form-factors
  *
@@ -95,14 +95,14 @@ LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u,
  * \param corr_nonlocal_fn   contracted nonlocal current insertion ( Read )
  * \param phases             fourier transform phase factors ( Read )
  * \param compute_nonlocal   compute the nonlocal current stuff?? ( Read )
- * \param t_source           coordinates of the source ( Read )
+ * \param t0                 time slice of the source ( Read )
  */
 void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
 		    const LatticeComplex& corr_local_fn,
 		    const LatticeComplex& corr_nonlocal_fn,
 		    const SftMom& phases,
 		    bool compute_nonlocal,
-		    const multi1d<int>& t_source);
+		    int t0);
 
 
 // Writers
