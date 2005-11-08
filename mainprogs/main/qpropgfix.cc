@@ -1,4 +1,4 @@
-// $Id: qpropgfix.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: qpropgfix.cc,v 2.1 2005-11-08 05:40:49 edwards Exp $
 /*! \file
  *  \brief Applies gauge transformation matrices on a propagator
  */
@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
 
   // Derived from input prop
   int j_decay = source_header.j_decay;
-  multi1d<int> t_source = source_header.t_source;
+  multi1d<int> t_srce = source_header.getTSrce();
 
 
   // Sanity check - write out the propagator (pion) correlator in the j_decay direction
@@ -223,7 +223,7 @@ int main(int argc, char *argv[])
    * Gauge transform the beasty
    */
   {
-    LatticePropagator tmp = g * prop * adj(peekSite(g,t_source));
+    LatticePropagator tmp = g * prop * adj(peekSite(g,t_srce));
     prop = tmp;
   }
 

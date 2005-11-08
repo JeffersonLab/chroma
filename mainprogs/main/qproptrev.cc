@@ -1,4 +1,4 @@
-// $Id: qproptrev.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: qproptrev.cc,v 2.1 2005-11-08 05:40:49 edwards Exp $
 /*! \file
  *  \brief Time-reverse a propagator
  */
@@ -168,8 +168,8 @@ int main(int argc, char *argv[])
   }
 
   // Derived from input prop
-  int j_decay = source_header.j_decay;
-  multi1d<int> t_source = source_header.t_source;
+  int j_decay  = source_header.j_decay;
+  int t_source = source_header.t_source;
 
 
   // Initialize the slow Fourier transform phases
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
     write(prop_out_file_xml, "id", id);
     pop(prop_out_file_xml);
 
-    source_header.t_source[j_decay] = (length - source_header.t_source[j_decay]) % length;
+    source_header.t_source = (length - source_header.t_source) % length;
 
     XMLBufferWriter prop_out_record_xml;
     push(prop_out_record_xml, "Propagator");

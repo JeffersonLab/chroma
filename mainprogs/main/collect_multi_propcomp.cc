@@ -1,6 +1,9 @@
-// $Id: collect_multi_propcomp.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: collect_multi_propcomp.cc,v 2.1 2005-11-08 05:40:49 edwards Exp $
 // $Log: collect_multi_propcomp.cc,v $
-// Revision 2.0  2005-09-25 21:04:45  edwards
+// Revision 2.1  2005-11-08 05:40:49  edwards
+// Update to use new source mechanism.
+//
+// Revision 2.0  2005/09/25 21:04:45  edwards
 // Moved to version 2.0
 //
 // Revision 1.9  2005/03/02 00:44:18  edwards
@@ -240,8 +243,6 @@ int main(int argc, char **argv)
 
   // Try to invert this record XML into a source struct
   // Also pull out the id of this source
-  int t0;
-  int j_decay;
   bool make_sourceP = false;;
   bool seqsourceP = false;
   {
@@ -261,24 +262,13 @@ int main(int argc, char **argv)
 	PropSource_t source_header;
 
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
-	j_decay = source_header.j_decay;
-	t0 = source_header.t_source[j_decay];
 	make_sourceP = true;
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
       {
-	ChromaProp_t prop_header;
-	PropSource_t source_header;
 	SeqSource_t seqsource_header;
 
 	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
-	// Any source header will do for j_decay
-	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
-	     prop_header);
-	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
-	     source_header);
-	j_decay = source_header.j_decay;
-	t0 = seqsource_header.t_sink;
 	seqsourceP = true;
       }
       else

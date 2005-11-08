@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: wallformfac.cc,v 2.1 2005-11-08 05:40:49 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -317,15 +317,15 @@ int main(int argc, char *argv[])
   }
 
   // Sanity check
-  if (input.param.wall_source && forward_source_header.source_type != SRC_TYPE_WALL_SOURCE)
+  if (input.param.wall_source && forward_source_header.source_type != "WALL_SOURCE")
   {
     QDPIO::cerr << "Wallformfac: wall_source flag set but not a wall source forward prop" << endl;
     QDP_abort(1);
   }
 
   // Derived from input prop
-  int  j_decay = forward_source_header.j_decay;
-  multi1d<int> t_source = forward_source_header.t_source;
+  int  j_decay  = forward_source_header.j_decay;
+  int  t_source = forward_source_header.t_source;
 
   // Sanity check - write out the norm2 of the forward prop in the j_decay direction
   // Use this for any possible verification
@@ -375,14 +375,14 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Backward propagator successfully read" << endl;
    
   // Sanity check
-  if (! input.param.wall_source && backward_source_header.source_type != SRC_TYPE_WALL_SOURCE)
+  if (! input.param.wall_source && backward_source_header.source_type != "WALL_SOURCE")
   {
     QDPIO::cerr << "Wallformfac: wall_source flag false but not a wall source backward prop" << endl;
     QDP_abort(1);
   }
 
   // Derived from input prop
-  multi1d<int> t_sink = backward_source_header.t_source;
+  int t_sink = backward_source_header.t_source;
 
   // Sanity check - write out the norm2 of the backward prop in the j_decay direction
   // Use this for any possible verification
@@ -437,34 +437,48 @@ int main(int argc, char *argv[])
     // used for the backward prop
     LatticePropagator forward_quark_tmp = forward_quark_prop;
 
-    switch (backward_source_header.source_type)
+    // Sink smear the propagator
+    try
     {
-    case SRC_TYPE_POINT_SOURCE:
-      // Do nothing
-      break;
+      std::istringstream  xml_s(backward_source_header.source);
+      XMLReader  sinktop(xml_s);
+      const string sink_path = "/Source";
+      QDPIO::cout << "Source = " << backward_source_header.source_type << endl;
 
-    case SRC_TYPE_SHELL_SOURCE:
+      Handle< QuarkSourceSink<LatticePropagator> >
+	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(backward_source_header.source_type,
+									 sinktop,
+									 sink_path,
+									 u));
+      (*sinkSmearing)(forward_quark_tmp);
+    }
+    catch(const std::string& e) 
+    {
+      QDPIO::cerr << "wallformfac: Caught Exception creating sink smear: " << e << endl;
+      QDP_abort(1);
+    }
+
+#if 0
+    // OLD code - just for reference
+    if (backward_source_header.source_type == "SHELL_SOURCE")
+    {
       sink_smear2(u, forward_quark_tmp, 
 		  backward_source_header.sourceSmearParam.wvf_kind, 
 		  backward_source_header.sourceSmearParam.wvf_param, 
 		  backward_source_header.sourceSmearParam.wvfIntPar, 
 		  j_decay);
-      break;
-
-    default:
-      QDPIO::cerr << "wallFormFac: unsupported smearing of sink prop" << endl;
-      QDP_abort(1);
-      break;
     }
+#endif
 
     // Grab the smeared forward prop at the sink location
-    forward_quark_x2 = peekSite(forward_quark_tmp, t_sink);
+    multi1d<int> t_snk = backward_source_header.getTSrce();
+    forward_quark_x2 = peekSite(forward_quark_tmp, t_snk);
   }
   else
   {
     // Sink is a wall
     // Project forward propagator onto zero momentum: Do a slice-wise sum.
-    forward_quark_x2 = sum(forward_quark_prop, phases.getSet()[t_sink[phases.getDir()]]);
+    forward_quark_x2 = sum(forward_quark_prop, phases.getSet()[t_sink]);
   }
     
 
