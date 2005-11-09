@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: cfgtransf.cc,v 2.1 2005-11-09 16:13:33 dgr Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -82,7 +82,9 @@ int main(int argc, char **argv)
 	      << " (18) Kentucky gauge configuration FE\n"
 	      << " (19) UKQCD gauge configuration FE\n"
 	      << " (20) Single-precision UKQCD gauge configuration FE\n"
-	      << " (21) SZIN config in QIO format\n";
+	      << " (21) SZIN config in QIO format\n"
+	      << " (22) Uniform back ground field\n";
+  
   QDPIO::cin >> input_type;
   
 
@@ -158,12 +160,26 @@ int main(int argc, char **argv)
   QDPIO::cout << "Enter output file name\n";
   QDPIO::cin >> cfg_output_file;
   
+  bool CGaugeP;			// Flat for Complex Conjugate
+  bool HGaugeP;			// Flag for Hermitian Conjugate
   bool RGaugeP;
-  if ( input_type > 3 )
-  {
-    QDPIO::cout << "Random gauge transform of config?\n";
-    QDPIO::cin >> RGaugeP;
+  multi2d<Real> theta(2,Nd);		// An array of angles for each dir
+
+
+  if(input_type > 1){
+    QDPIO::cout << "Complex conjugate of config?\n";
+    QDPIO::cin >> CGaugeP;
+
+    QDPIO::cout << "Hermitian conjugate of config?\n";
+    QDPIO::cin >> HGaugeP;
+
+    if ( input_type > 3 )
+      {
+	QDPIO::cout << "Random gauge transform of config?\n";
+	QDPIO::cin >> RGaugeP;
+      }
   }
+
 
   bool GSmearP;
   QDPIO::cout << "APE gauge smearing?\n";
@@ -500,6 +516,23 @@ int main(int argc, char **argv)
     szin_gauge_header_initP = true;
     break;
 
+  case 22:
+    // Here we have a uniform, diagonal background field
+    // with each direction written as 
+    // U = diag(exp(i t_1), exp(i t_2), exp(-i(t_1 + t_2))
+
+    for(int mu = 0; mu < Nd; mu++){
+      QDPIO::cout << "Enter angles for direction " << mu << endl;
+      QDPIO::cin >> theta(0, mu) >> theta(1, mu);
+    }
+
+    push(xml_out,"Const_diag_gauge");
+    write(xml_out, "input_type", input_type);
+    pop(xml_out);
+    QDPIO::cout << "Creating constant diagonal gauge\n";
+    constgauge(u, theta);
+    break;
+
   default:
     QDP_error_exit("unknown input type", input_type);
   }
@@ -518,6 +551,43 @@ int main(int argc, char **argv)
     rgauge (u);
     MesPlq(xml_out, "Rand_Gtransf_observables", u);
   }
+
+  if(CGaugeP){
+    conjgauge(u);
+    MesPlq(xml_out, "Conj_GTansf_observables",u);
+  }
+
+  if(HGaugeP){
+    LatticeColorMatrix u_tmp;
+    for(int mu = 0; mu < Nd; mu++){
+
+      multi1d<int> posn(Nd);
+      posn = (0,0,0,0);
+      ColorMatrix uin;
+      ColorMatrix uout;
+      u_tmp = adj(u[mu]);
+
+      uin = peekSite(u[mu], posn);
+      uout = peekSite(u_tmp, posn);
+
+      QDPIO::cout << "MU IS " << mu << endl << endl;
+      Complex element_in, element_out;
+      for(int i = 0; i < Nc; i++)
+	for(int j = 0; j < Nc; j++){
+
+	  element_in = peekColor(uin, i, j);
+	  element_out = peekColor(uout, i ,j);
+	  QDPIO::cout << "(i,j)= " << i << j <<
+	    ", U is " << element_in << ",U dagger is "
+		      << element_out << endl;
+	}
+      u[mu] = u_tmp;
+    
+    }
+
+    MesPlq(xml_out, "Herm_Gtransf_observables", u);
+  }
+    
 
   if ( GSmearP )
   {

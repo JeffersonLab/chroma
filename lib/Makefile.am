@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.12 2005-11-08 21:15:55 edwards Exp $
+# $Id: Makefile.am,v 2.13 2005-11-09 16:13:31 dgr Exp $
 #
 # Path for all files used in building the library
 
@@ -164,6 +164,7 @@ nobase_include_HEADERS = \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h \
+	util/gauge/conjgauge.h util/gauge/constgauge.h \
         util/info/info.h util/info/proginfo.h util/info/printgeom.h \
         util/util.h \
 	update/update.h \
@@ -600,6 +601,7 @@ libchroma_a_SOURCES = \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
+	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
         update/heatbath/su3over.cc \
 	update/heatbath/u_staple.cc \

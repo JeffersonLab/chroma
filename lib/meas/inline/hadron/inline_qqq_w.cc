@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_qqq_w.cc,v 2.2 2005-11-09 16:13:32 dgr Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -260,7 +260,7 @@ namespace Chroma
       for(int i=0; i < Nprops; ++i)
       {
 	q_tmp = adj(U) * quark_propagator[i] * U;   // DeGrand-Rossi ---> Dirac
-	quark_propagator = q_tmp;
+	quark_propagator[i] = q_tmp;
       }
     }
 
