@@ -37,15 +37,20 @@ _RSDCG=1.0e-7
 _MAXCG=1000
 
 _APE_FACT=2.5
-_APE_NUM=5
+_APE_NUM=0
 _GAUS_RAD_SRC=__GAUSS_RAD__
 _GAUS_ITR_SRC=__GAUSS_ITR__
 #
 #  Where we store the data
-#_ARCHROOT=/raid3/dgr/
+
+#CMU
+_ARCHROOT=/raid3/dgr/
+_SERVER=qcdsvr:
+
 #_ARCHROOT=/home/dgr/qcd/data/
-_ARCHROOT=/cache/LHPC/
-_SERVER=hpcdata3:
+#JLAB
+#_ARCHROOT=/cache/LHPC/
+#_SERVER=hpcdata3:
 #
 # Filenames
 PROP_ROOT=prop
@@ -73,13 +78,17 @@ echo ------------------------------------------------------
 #  Here we have the launch command for the MYRINET cluster
 #LAUNCH="/usr/local/mpich-gm-1.2.5/bin/mpirun -machinefile $PBS_NODEFILE"
 #PROGDIR=$HOME/qcd/src/chroma/parscalar-gm/mainprogs/main
+#SCP=rcp
 
 #  gigE test cluster
-LAUNCH="/usr/local/qmp/bin/QMP_run.gige --qmp-l /etc/qmp/2x2x2-bigMem/3d_list_l --qmp-f /etc/qmp/2x2x2-bigMem/3d_conf_l"
-PROGDIR=$HOME/qcd/src/chroma/parscalar-gigE/mainprogs/main
+#LAUNCH="/usr/local/qmp/bin/QMP_run.gige --qmp-l /etc/qmp/2x2x2-bigMem/3d_list_l --qmp-f /etc/qmp/2x2x2-bigMem/3d_conf_l"
+#PROGDIR=$HOME/qcd/src/chroma/parscalar-gigE/mainprogs/main
+#SCP=rcp
 
-
-SCP=rcp				# Note rcp on the cluster
+#  CMU cluster
+LAUNCH=
+PROGDIR=$HOME/qcd/src/chroma/scalar/mainprogs/main
+SCP=/usr/bin/scp
 
 #
 #  Now the machine-dependent directory cluster
@@ -96,15 +105,12 @@ echo ------------------------------------------------------
 #
 #  Create the work directories on the scratch nodes
 
-pbs_create $PBS_NODEFILE $WORKDIR
+#pbs_create $PBS_NODEFILE $WORKDIR
 
 cd $WORKDIR
 
 echo "Working in $WORKDIR"
 echo
-
-echo "Copy over input file"
-${SCP} $HOME/simulation_inputs/qqq_props .
 
 #
 #
@@ -130,25 +136,31 @@ cat > src_template <<EOF
 <Name>MAKE_SOURCE</Name>
 <Frequency>1</Frequency>
 <Param>
- <version>5</version>
- <wave_state>S_WAVE</wave_state>
- <source_type>SHELL_SOURCE</source_type>
+ <version>6</version>
+ <Source>
+ <version>1</version>
+ <SourceType>SHELL_SOURCE</SourceType>
  <j_decay>3</j_decay>
- <direction>2</direction>
- <t_source>0 0 0 0</t_source>
+ <t_srce>0 0 0 0</t_srce>
 
- <ShellSource>
-   <SourceSmearingParam>
+   <SmearingParam>
      <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
      <wvf_param>${_GAUS_RAD_SRC}</wvf_param>
      <wvfIntPar>${_GAUS_ITR_SRC}</wvfIntPar>
-   </SourceSmearingParam>
-   <laplace_power>0</laplace_power>
-   <link_smear_fact>${_APE_FACT}</link_smear_fact>
-   <link_smear_num>${_APE_NUM}</link_smear_num>
+     <no_smear_dir>3</no_smear_dir>
+   </SmearingParam>
+
    <disp_length>_DISP_LENGTH</disp_length>
    <disp_dir>_DISP_DIR</disp_dir>
- </ShellSource>
+  
+   <LinkSmearing>
+      <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+      <link_smear_fact>${_APE_FACT}</link_smear_fact>
+      <link_smear_num>${_APE_NUM}</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+   </LinkSmearing>
+
+ </Source>
  <nrow>${LSIZE} ${LSIZE} ${LSIZE} ${TSIZE}</nrow>
 </Param>
 <NamedObject>
@@ -214,23 +226,26 @@ cat > snk_template <<EOF
   <Name>SINK_SMEAR</Name>
   <Frequency>1</Frequency>
 <Param>
- <version>4</version>
- <wave_state>S_WAVE</wave_state>
- <sink_type>SHELL_SINK</sink_type>
- <direction>2</direction>
-
- <ShellSink>
-   <SinkSmearingParam>
+ <version>5</version>
+ <Sink>
+ <version>1</version>
+ <SinkType>SHELL_SINK</SinkType>
+ <j_decay>3</j_decay>
+   <SmearingParam>
      <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
      <wvf_param>${_GAUS_RAD_SRC}</wvf_param>
      <wvfIntPar>${_GAUS_ITR_SRC}</wvfIntPar>
-   </SinkSmearingParam>
-     <laplace_power>0</laplace_power>
-     <link_smear_fact>${_APE_FACT}</link_smear_fact>
-     <link_smear_num>${_APE_NUM}</link_smear_num>
+     <no_smear_dir>3</no_smear_dir>
+   </SmearingParam>
      <disp_length>_DISP_LENGTH</disp_length>
      <disp_dir>_DISP_DIR</disp_dir>
- </ShellSink>
+ <LinkSmearing>
+ <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+<link_smear_fact>${_APE_FACT}</link_smear_fact>
+<link_smear_num>${_APE_NUM}</link_smear_num>
+<no_smear_dir>3</no_smear_dir>
+</LinkSmearing>
+ </Sink>
  <nrow>${LSIZE} ${LSIZE} ${LSIZE} ${TSIZE}</nrow>
 </Param>
 <NamedObject>
