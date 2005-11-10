@@ -1,4 +1,4 @@
-// $Id: rndz2wall_source_const.cc,v 2.1 2005-11-08 05:29:02 edwards Exp $
+// $Id: rndz2wall_source_const.cc,v 2.2 2005-11-10 04:54:54 edwards Exp $
 /*! \file
  *  \brief Random Z2 wall source construction
  */
@@ -192,6 +192,7 @@ namespace Chroma
     LatticeFermion quark_source = zero;
 
     QDPIO::cerr << "RandZ2WallQuarkSourceConst<LatticeFermion> not implemented" << endl;
+    QDP_abort(1);
 
     return quark_source;
   }
