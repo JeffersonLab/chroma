@@ -1,4 +1,4 @@
-// $Id: inline_make_source_ferm_w.cc,v 2.1 2005-11-08 21:16:23 edwards Exp $
+// $Id: inline_make_source_ferm_w.cc,v 2.2 2005-11-16 02:29:44 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source for lattice fermions
  *
@@ -119,9 +119,9 @@ namespace Chroma
   // Function call
   void 
   InlineMakeSourceFerm::operator()(const multi1d<LatticeColorMatrix>& u,
-			       XMLBufferWriter& gauge_xml,
-			       unsigned long update_no,
-			       XMLWriter& xml_out) 
+				   XMLBufferWriter& gauge_xml,
+				   unsigned long update_no,
+				   XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
@@ -146,9 +146,9 @@ namespace Chroma
   // Real work done here
   void 
   InlineMakeSourceFerm::func(const multi1d<LatticeColorMatrix>& u,
-			 XMLBufferWriter& gauge_xml,
-			 unsigned long update_no,
-			 XMLWriter& xml_out) 
+			     XMLBufferWriter& gauge_xml,
+			     unsigned long update_no,
+			     XMLWriter& xml_out) 
   {
     START_CODE();
 
