@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_fermact_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: prec_parwilson_fermact_w.cc,v 2.1 2005-11-16 16:53:33 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -54,10 +54,7 @@ namespace Chroma
   {
     XMLReader paramtop(xml, path);
 
-#if 0
-    read(paramtop, "Mass", Mass);
     read(paramtop, "H", H);
-#endif
 
     // Read the stuff for the action
     if (paramtop.count("Mass") != 0) 
