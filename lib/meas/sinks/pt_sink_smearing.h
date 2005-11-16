@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_sink_smearing.h,v 1.6 2005-11-08 18:51:44 edwards Exp $
+// $Id: pt_sink_smearing.h,v 1.7 2005-11-16 02:34:58 edwards Exp $
 /*! \file
  *  \brief Point sink smearing
  */
@@ -12,84 +12,68 @@
 namespace Chroma
 {
 
-  //! Point sink parameters
-  /*! @ingroup sinks */
-  struct PointQuarkSinkSmearingParams
-  {
-    PointQuarkSinkSmearingParams();
-    PointQuarkSinkSmearingParams(XMLReader& in, const std::string& path);
-
-    std::string      link_smearing;        /*!< link smearing xml */
-    std::string      link_smearing_type;   /*!< link smearing type name */
-
-    int              disp_length;          /*!< displacement length */
-    int              disp_dir;             /*!< x(0), y(1), z(2) */   
-  };
-
-
-  //! Reader
-  /*! @ingroup sinks */
-  void read(XMLReader& xml, const string& path, PointQuarkSinkSmearingParams& param);
-
-  //! Writer
-  /*! @ingroup sinks */
-  void write(XMLWriter& xml, const string& path, const PointQuarkSinkSmearingParams& param);
-
-
-
   //! Name and registration
   /*! @ingroup sinks */
   namespace PointQuarkSinkSmearingEnv
   {
     extern const std::string name;
     extern const bool registered;
-  }
 
 
-  //! Point sink smearing
-  /*! @ingroup sinks
-   *
-   * Create a point propagator sink
-   */
-  template<typename T>
-  class PointQuarkSinkSmearing : public QuarkSourceSink<T>
-  {
-  public:
-    //! Full constructor
-    PointQuarkSinkSmearing(const PointQuarkSinkSmearingParams& p, 
-			   const multi1d<LatticeColorMatrix>& u) :
-      params(p), u_smr(u) 
-      {
-	this->create(u_smr, params.link_smearing, params.link_smearing_type);
-      }
+    //! Point sink parameters
+    /*! @ingroup sinks */
+    struct Params
+    {
+      Params();
+      Params(XMLReader& in, const std::string& path);
+      void writeXML(XMLWriter& in, const std::string& path) const;
 
-    //! Smear the sink
-    void operator()(T& obj) const;
+      std::string      link_smearing;        /*!< link smearing xml */
+      std::string      link_smearing_type;   /*!< link smearing type name */
 
-  protected:
-#if 0
-    //! Potentially smear the gauge field
-    /*!
-     * \param u                   Gauge field to smear ( Modify )
-     * \param link_smearing       XML of link smearing ( Read )
-     * \param link_smearing_type  link smearing type ( Read )
+      int              disp_length;          /*!< displacement length */
+      int              disp_dir;             /*!< x(0), y(1), z(2) */   
+    };
+
+
+    //! Point sink smearing
+    /*! @ingroup sinks
+     *
+     * Create a point propagator sink
      */
-    void create(multi1d<LatticeColorMatrix>& u,
-		std::string link_smearing,
-		std::string link_smearing_type);
-#endif
+    template<typename T>
+    class SinkSmear : public QuarkSourceSink<T>
+    {
+    public:
+      //! Full constructor
+      SinkSmear(const Params& p, const multi1d<LatticeColorMatrix>& u) :
+	params(p), u_smr(u) 
+	{
+	  this->create(u_smr, params.link_smearing, params.link_smearing_type);
+	}
 
-  private:
-    //! Hide partial constructor
-    PointQuarkSinkSmearing() {}
+      //! Smear the sink
+      void operator()(T& obj) const;
 
-  private:
-    PointQuarkSinkSmearingParams  params;   /*!< sink params */
-    multi1d<LatticeColorMatrix>   u_smr;    /*!< hold a smeared copy for efficiency */
-  };
+    private:
+      //! Hide partial constructor
+      SinkSmear() {}
 
-//  class PointQuarkSinkSmearing<LatticePropagator>;
-//  class PointQuarkSinkSmearing<LatticeFermion>;
+    private:
+      Params  params;                         /*!< sink params */
+      multi1d<LatticeColorMatrix>   u_smr;    /*!< hold a smeared copy for efficiency */
+    };
+
+  } // end namespace
+
+
+  //! Reader
+  /*! @ingroup sinks */
+  void read(XMLReader& xml, const string& path, PointQuarkSinkSmearingEnv::Params& param);
+
+  //! Writer
+  /*! @ingroup sinks */
+  void write(XMLWriter& xml, const string& path, const PointQuarkSinkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

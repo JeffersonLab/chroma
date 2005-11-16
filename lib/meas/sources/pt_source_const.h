@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_const.h,v 2.3 2005-11-08 05:29:02 edwards Exp $
+// $Id: pt_source_const.h,v 2.4 2005-11-16 02:34:58 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -12,64 +12,66 @@
 namespace Chroma
 {
 
-  //! Point source parameters
-  /*! @ingroup sources */
-  struct PointQuarkSourceConstParams
-  {
-    PointQuarkSourceConstParams();
-    PointQuarkSourceConstParams(XMLReader& in, const std::string& path);
-    
-    std::string      link_smearing;        /*!< link smearing xml */
-    std::string      link_smearing_type;   /*!< link smearing type name */
-
-    int              disp_length;          /*!< displacement length */
-    int              disp_dir;             /*!< x(0), y(1), z(2) */   
-
-    int              j_decay;              /*!< decay direction */
-    multi1d<int>     t_srce;               /*!< source location */
-  };
-
-
-  //! Reader
-  /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, PointQuarkSourceConstParams& param);
-
-  //! Writer
-  /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const PointQuarkSourceConstParams& param);
-
-
   //! Name and registration
   /*! @ingroup sources */
   namespace PointQuarkSourceConstEnv
   {
     extern const std::string name;
     extern const bool registered;
-  }
 
   
-  //! Point source construction
-  /*! @ingroup sources
-   *
-   * Create a point propagator source
-   */
-  template<typename T>
-  class PointQuarkSourceConst : public QuarkSourceConstruction<T>
-  {
-  public:
-    //! Full constructor
-    PointQuarkSourceConst(const PointQuarkSourceConstParams& p) : params(p) {}
+    //! Point source parameters
+    /*! @ingroup sources */
+    struct Params
+    {
+      Params();
+      Params(XMLReader& in, const std::string& path);
+      void writeXML(XMLWriter& in, const std::string& path) const;
+    
+      std::string      link_smearing;        /*!< link smearing xml */
+      std::string      link_smearing_type;   /*!< link smearing type name */
 
-    //! Construct the source
-    T operator()(const multi1d<LatticeColorMatrix>& u) const;
+      int              disp_length;          /*!< displacement length */
+      int              disp_dir;             /*!< x(0), y(1), z(2) */   
 
-  private:
-    //! Hide partial constructor
-    PointQuarkSourceConst() {}
+      int              j_decay;              /*!< decay direction */
+      multi1d<int>     t_srce;               /*!< source location */
+    };
 
-  private:
-    PointQuarkSourceConstParams  params;   /*!< source params */
-  };
+
+    //! Point source construction
+    /*! @ingroup sources
+     *
+     * Create a point propagator source
+     */
+    template<typename T>
+    class SourceConst : public QuarkSourceConstruction<T>
+    {
+    public:
+      //! Full constructor
+      SourceConst(const Params& p) : params(p) {}
+
+      //! Construct the source
+      T operator()(const multi1d<LatticeColorMatrix>& u) const;
+
+    private:
+      //! Hide partial constructor
+      SourceConst() {}
+
+    private:
+      Params  params;   /*!< source params */
+    };
+
+  }  // end namespace
+
+
+  //! Reader
+  /*! @ingroup sources */
+  void read(XMLReader& xml, const string& path, PointQuarkSourceConstEnv::Params& param);
+
+  //! Writer
+  /*! @ingroup sources */
+  void write(XMLWriter& xml, const string& path, const PointQuarkSourceConstEnv::Params& param);
 
 }  // end namespace Chroma
 

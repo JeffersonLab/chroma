@@ -1,4 +1,4 @@
-// $Id: hyp_link_smearing.cc,v 1.2 2005-11-08 05:33:19 edwards Exp $
+// $Id: hyp_link_smearing.cc,v 1.3 2005-11-16 02:34:58 edwards Exp $
 /*! \file
  *  \brief Hyp link smearing
  */
@@ -12,6 +12,21 @@
 
 namespace Chroma
 {
+
+  // Read parameters
+  void read(XMLReader& xml, const string& path, HypLinkSmearingEnv::Params& param)
+  {
+    HypLinkSmearingEnv::Params tmp(xml, path);
+    param = tmp;
+  }
+
+  //! Parameters for running code
+  void write(XMLWriter& xml, const string& path, const HypLinkSmearingEnv::Params& param)
+  {
+    param.writeXML(xml, path);
+  }
+
+
   //! Hooks to register the class
   namespace HypLinkSmearingEnv
   {
@@ -19,7 +34,7 @@ namespace Chroma
     LinkSmearing* createSource(XMLReader& xml_in,
 			       const std::string& path)
     {
-      return new HypLinkSmearing(HypLinkSmearingParams(xml_in, path));
+      return new LinkSmear(Params(xml_in, path));
     }
 
     //! Name to be used
@@ -33,100 +48,94 @@ namespace Chroma
 
     //! Register the source construction
     const bool registered = registerAll();
-  }
 
 
-  //! Parameters for running code
-  HypLinkSmearingParams::HypLinkSmearingParams(XMLReader& xml, const string& path)
-  {
-    XMLReader paramtop(xml, path);
-
-    int version;
-    read(paramtop, "version", version);
-    param.num_smear = 1;
-    param.no_smear_dir = -1;
-
-    switch (version) 
+    //! Parameters for running code
+    Params::Params(XMLReader& xml, const string& path)
     {
-    case 2:
-      break;
+      XMLReader paramtop(xml, path);
 
-    case 3:
-      read(paramtop, "num_smear", param.num_smear);
-      break;
+      int version;
+      read(paramtop, "version", version);
+      num_smear = 1;
+      no_smear_dir = -1;
 
-    case 4:
-      read(paramtop, "num_smear", param.num_smear);
-      read(paramtop, "no_smear_dir", param.no_smear_dir);
-      break;
-
-    default :
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
-      QDP_abort(1);
-    }
-
-    read(paramtop, "alpha1", param.alpha1);
-    read(paramtop, "alpha2", param.alpha2);
-    read(paramtop, "alpha3", param.alpha3);
-  }
-
-  // Read parameters
-  void read(XMLReader& xml, const string& path, HypLinkSmearingParams& param)
-  {
-    HypLinkSmearingParams tmp(xml, path);
-    param = tmp;
-  }
-
-  //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const HypLinkSmearingParams::Param_t& param)
-  {
-    push(xml, path);
-
-    int version = 4;
-    write(xml, "version", version);
-    write(xml, "LinkSmearingType", HypLinkSmearingEnv::name);
-
-    /* this version allows a variable num_smear */
-    write(xml, "num_smear", param.num_smear);
-    write(xml, "alpha1", param.alpha1);
-    write(xml, "alpha2", param.alpha2);
-    write(xml, "alpha3", param.alpha3);
-    write(xml, "no_smear_dir", param.num_smear);
-
-    pop(xml);
-  }
-
-
-  //! Smear the links
-  void
-  HypLinkSmearing::operator()(multi1d<LatticeColorMatrix>& u) const
-  {
-    // Now hyp smear
-    if (params.param.num_smear > 0)
-    {
-      QDPIO::cout << "Hyp Smear gauge field" << endl;
-
-      int BlkMax = 100;
-      Real BlkAccu = 1.0e-5;
-
-      for (int n = 0; n < params.param.num_smear; n++)
+      switch (version) 
       {
-	multi1d<LatticeColorMatrix> u_hyp(Nd);
+      case 2:
+	break;
 
-	if (params.param.no_smear_dir < 0 || params.param.no_smear_dir >= Nd)
-	  Hyp_Smear(u, u_hyp, 
-		    params.param.alpha1, params.param.alpha2, params.param.alpha3, 
-		    BlkAccu, BlkMax);
-	else
-	  Hyp_Smear3d(u, u_hyp, 
-		      params.param.alpha1, params.param.alpha2, params.param.alpha3, 
-		      BlkAccu, BlkMax, params.param.no_smear_dir);
+      case 3:
+	read(paramtop, "num_smear", num_smear);
+	break;
 
-	u = u_hyp;
+      case 4:
+	read(paramtop, "num_smear", num_smear);
+	read(paramtop, "no_smear_dir", no_smear_dir);
+	break;
+
+      default :
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDP_abort(1);
       }
 
-      QDPIO::cout << "Gauge field Hyp-smeared!" << endl;
+      read(paramtop, "alpha1", alpha1);
+      read(paramtop, "alpha2", alpha2);
+      read(paramtop, "alpha3", alpha3);
     }
-  }
 
+
+    //! Parameters for running code
+    void Params::writeXML(XMLWriter& xml, const string& path) const
+    {
+      push(xml, path);
+
+      int version = 4;
+      write(xml, "version", version);
+      write(xml, "LinkSmearingType", name);
+
+      /* this version allows a variable num_smear */
+      write(xml, "num_smear", num_smear);
+      write(xml, "alpha1", alpha1);
+      write(xml, "alpha2", alpha2);
+      write(xml, "alpha3", alpha3);
+      write(xml, "no_smear_dir", num_smear);
+
+      pop(xml);
+    }
+
+
+    //! Smear the links
+    void
+    LinkSmear::operator()(multi1d<LatticeColorMatrix>& u) const
+    {
+      // Now hyp smear
+      if (params.num_smear > 0)
+      {
+	QDPIO::cout << "Hyp Smear gauge field" << endl;
+
+	int BlkMax = 100;
+	Real BlkAccu = 1.0e-5;
+
+	for (int n = 0; n < params.num_smear; n++)
+	{
+	  multi1d<LatticeColorMatrix> u_hyp(Nd);
+
+	  if (params.no_smear_dir < 0 || params.no_smear_dir >= Nd)
+	    Hyp_Smear(u, u_hyp, 
+		      params.alpha1, params.alpha2, params.alpha3, 
+		      BlkAccu, BlkMax);
+	  else
+	    Hyp_Smear3d(u, u_hyp, 
+			params.alpha1, params.alpha2, params.alpha3, 
+			BlkAccu, BlkMax, params.no_smear_dir);
+
+	  u = u_hyp;
+	}
+
+	QDPIO::cout << "Gauge field Hyp-smeared!" << endl;
+      }
+    }
+
+  }
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_link_smearing.h,v 1.1 2005-11-07 18:05:42 edwards Exp $
+// $Id: stout_link_smearing.h,v 1.2 2005-11-16 02:34:58 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -17,56 +17,55 @@ namespace Chroma
   {
     extern const std::string name;
     extern const bool registered;
-    //! Name to be used
-  }
   
-  //! Params for Stout link smearing
-  /*! @ingroup smear */
-  struct StoutLinkSmearingParams
-  {
-    StoutLinkSmearingParams() {}
-    StoutLinkSmearingParams(XMLReader& in, const std::string& path);
-    
-    struct Param_t
+
+    //! Params for Stout link smearing
+    /*! @ingroup smear */
+    struct Params
     {
+      Params() {}
+      Params(XMLReader& in, const std::string& path);
+      void writeXML(XMLWriter& in, const std::string& path) const;
+    
       Real link_smear_fact;		/*!< Smearing parameters */
       int  link_smear_num;              /*!< Number of smearing hits */
       int  no_smear_dir;		/*!< Decay direction */
-    } param;
+    };
 
-  };
+
+
+    //! Stout link smearing
+    /*! @ingroup smear
+     *
+     * Stout link smearing object
+     */
+    class LinkSmear : public LinkSmearing
+    {
+    public:
+      //! Full constructor
+      LinkSmear(const Params& p) : params(p) {}
+
+      //! Smear the links
+      void operator()(multi1d<LatticeColorMatrix>& u) const;
+
+    private:
+      //! Hide partial constructor
+      LinkSmear() {}
+
+    private:
+      Params  params;   /*!< smearing params */
+    };
+
+  }  // end namespace
 
 
   //! Reader
   /*! @ingroup smear */
-  void read(XMLReader& xml, const string& path, StoutLinkSmearingParams& param);
+  void read(XMLReader& xml, const string& path, StoutLinkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write(XMLWriter& xml, const string& path, const StoutLinkSmearingParams& param);
-
-
-  //! Stout link smearing
-  /*! @ingroup smear
-   *
-   * Stout link smearing object
-   */
-  class StoutLinkSmearing : public LinkSmearing
-  {
-  public:
-    //! Full constructor
-    StoutLinkSmearing(const StoutLinkSmearingParams& p) : params(p) {}
-
-    //! Smear the links
-    void operator()(multi1d<LatticeColorMatrix>& u) const;
-
-  private:
-    //! Hide partial constructor
-    StoutLinkSmearing() {}
-
-  private:
-    StoutLinkSmearingParams  params;   /*!< smearing params */
-  };
+  void write(XMLWriter& xml, const string& path, const StoutLinkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

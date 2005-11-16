@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ape_link_smearing.h,v 1.2 2005-11-07 06:40:55 edwards Exp $
+// $Id: ape_link_smearing.h,v 1.3 2005-11-16 02:34:58 edwards Exp $
 /*! \file
  *  \brief APE link smearing
  */
@@ -17,55 +17,53 @@ namespace Chroma
   {
     extern const std::string name;
     extern const bool registered;
-    //! Name to be used
-  }
   
-  //! Params for APE link smearing
-  /*! @ingroup smear */
-  struct APELinkSmearingParams
-  {
-    APELinkSmearingParams() {}
-    APELinkSmearingParams(XMLReader& in, const std::string& path);
-    
-    struct Param_t
+    //! Params for APE link smearing
+    /*! @ingroup smear */
+    struct Params
     {
+      Params() {}
+      Params(XMLReader& in, const std::string& path);
+      void writeXML(XMLWriter& in, const std::string& path) const;
+    
       int link_smear_num;               /*!< Smearing hits */
       Real link_smear_fact;		/*!< Smearing parameters */
       int no_smear_dir;			/*!< Direction to not smear */
-    } param;
-  };
+    };
+
+
+    //! APE link smearing
+    /*! @ingroup smear
+     *
+     * APE link smearing object
+     */
+    class LinkSmear : public LinkSmearing
+    {
+    public:
+      //! Full constructor
+      LinkSmear(const Params& p) : params(p) {}
+
+      //! Smear the links
+      void operator()(multi1d<LatticeColorMatrix>& u) const;
+
+    private:
+      //! Hide partial constructor
+      LinkSmear() {}
+
+    private:
+      Params  params;   /*!< smearing params */
+    };
+
+  }  // end namespace
 
 
   //! Reader
   /*! @ingroup smear */
-  void read(XMLReader& xml, const string& path, APELinkSmearingParams& param);
+  void read(XMLReader& xml, const string& path, APELinkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write(XMLWriter& xml, const string& path, const APELinkSmearingParams& param);
-
-
-  //! APE link smearing
-  /*! @ingroup smear
-   *
-   * APE link smearing object
-   */
-  class APELinkSmearing : public LinkSmearing
-  {
-  public:
-    //! Full constructor
-    APELinkSmearing(const APELinkSmearingParams& p) : params(p) {}
-
-    //! Smear the links
-    void operator()(multi1d<LatticeColorMatrix>& u) const;
-
-  private:
-    //! Hide partial constructor
-    APELinkSmearing() {}
-
-  private:
-    APELinkSmearingParams  params;   /*!< smearing params */
-  };
+  void write(XMLWriter& xml, const string& path, const APELinkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

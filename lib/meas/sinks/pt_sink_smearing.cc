@@ -1,4 +1,4 @@
-// $Id: pt_sink_smearing.cc,v 1.4 2005-11-08 18:32:29 edwards Exp $
+// $Id: pt_sink_smearing.cc,v 1.5 2005-11-16 02:34:58 edwards Exp $
 /*! \file
  *  \brief Point sink construction
  */
@@ -13,70 +13,17 @@
 
 namespace Chroma
 {
-  //! Initialize
-  PointQuarkSinkSmearingParams::PointQuarkSinkSmearingParams()
-  {
-    disp_length = disp_dir = 0;
-  }
-
-
-  //! Read parameters
-  PointQuarkSinkSmearingParams::PointQuarkSinkSmearingParams(XMLReader& xml, const string& path)
-  {
-    XMLReader paramtop(xml, path);
-
-    int version;
-    read(paramtop, "version", version);
-
-    switch (version) 
-    {
-    case 1:
-      break;
-
-    default:
-      QDPIO::cerr << __func__ << ": parameter version " << version 
-		  << " unsupported." << endl;
-      QDP_abort(1);
-    }
-
-    if (paramtop.count("disp_length") != 0)
-      read(paramtop, "disp_length", disp_length);
-    else
-      disp_length = 0;
-
-    if (paramtop.count("disp_dir") != 0)
-      read(paramtop, "disp_dir", disp_dir);
-    else
-      disp_dir = 0;
-
-    if (paramtop.count("LinkSmearing") != 0)
-    {
-      XMLReader xml_tmp(paramtop, "LinkSmearing");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      read(xml_tmp, "LinkSmearingType", link_smearing_type);
-      link_smearing = os.str();
-    }
-  }
-
   // Read parameters
-  void read(XMLReader& xml, const string& path, PointQuarkSinkSmearingParams& param)
+  void read(XMLReader& xml, const string& path, PointQuarkSinkSmearingEnv::Params& param)
   {
-    PointQuarkSinkSmearingParams tmp(xml, path);
+    PointQuarkSinkSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const PointQuarkSinkSmearingParams& param)
+  void write(XMLWriter& xml, const string& path, const PointQuarkSinkSmearingEnv::Params& param)
   {
-    push(xml, path);
-    int version = 1;
-    write(xml, "version", version);
-
-    write(xml, "disp_length", param.disp_length);
-    write(xml, "disp_dir", param.disp_dir);
-    xml << param.link_smearing;
-    pop(xml);
+    param.writeXML(xml, path);
   }
 
 
@@ -88,15 +35,7 @@ namespace Chroma
 						   const std::string& path,
 						   const multi1d<LatticeColorMatrix>& u)
     {
-      return new PointQuarkSinkSmearing<LatticePropagator>(PointQuarkSinkSmearingParams(xml_in, path), u);
-    }
-
-    //! Callback function
-    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
-						const std::string& path,
-						const multi1d<LatticeColorMatrix>& u)
-    {
-      return new PointQuarkSinkSmearing<LatticeFermion>(PointQuarkSinkSmearingParams(xml_in, path), u);
+      return new SinkSmear<LatticePropagator>(Params(xml_in, path), u);
     }
 
     //! Name to be used
@@ -108,37 +47,84 @@ namespace Chroma
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
       foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
-      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
       return true;
     }
 
     //! Register the sink smearing
     const bool registered = registerAll();
+
+
+    //! Initialize
+    Params::Params()
+    {
+      disp_length = disp_dir = 0;
+    }
+
+
+    //! Read parameters
+    Params::Params(XMLReader& xml, const string& path)
+    {
+      XMLReader paramtop(xml, path);
+
+      int version;
+      read(paramtop, "version", version);
+
+      switch (version) 
+      {
+      case 1:
+	break;
+
+      default:
+	QDPIO::cerr << __func__ << ": parameter version " << version 
+		    << " unsupported." << endl;
+	QDP_abort(1);
+      }
+
+      if (paramtop.count("disp_length") != 0)
+	read(paramtop, "disp_length", disp_length);
+      else
+	disp_length = 0;
+
+      if (paramtop.count("disp_dir") != 0)
+	read(paramtop, "disp_dir", disp_dir);
+      else
+	disp_dir = 0;
+
+      if (paramtop.count("LinkSmearing") != 0)
+      {
+	XMLReader xml_tmp(paramtop, "LinkSmearing");
+	std::ostringstream os;
+	xml_tmp.print(os);
+	read(xml_tmp, "LinkSmearingType", link_smearing_type);
+	link_smearing = os.str();
+      }
+    }
+
+
+    // Writer
+    void Params::writeXML(XMLWriter& xml, const string& path) const
+    {
+      push(xml, path);
+      int version = 1;
+      write(xml, "version", version);
+
+      write(xml, "disp_length", disp_length);
+      write(xml, "disp_dir", disp_dir);
+      xml << link_smearing;
+      pop(xml);
+    }
+
+
+    //! Construct the sink smearing
+    template<>
+    void
+    SinkSmear<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
+    {
+      QDPIO::cout << "Point sink" << endl;
+
+      displacement(u_smr, quark_sink,
+		   params.disp_length, params.disp_dir);
+    }
+
   }
-
-
-  //! Construct the sink smearing
-  template<>
-  void
-  PointQuarkSinkSmearing<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
-  {
-    QDPIO::cout << "Point sink" << endl;
-
-    displacement(u_smr, quark_sink,
-		 params.disp_length, params.disp_dir);
-  }
-
-
-
-  //! Construct the sink smearing
-  template<>
-  void
-  PointQuarkSinkSmearing<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
-  {
-    QDPIO::cout << "Point sink" << endl;
-
-    displacement(u_smr, quark_sink,
-		 params.disp_length, params.disp_dir);
-  }
-
 }

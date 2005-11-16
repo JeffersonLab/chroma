@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 2.5 2005-11-08 18:51:44 edwards Exp $
+// $Id: pt_source_smearing.cc,v 2.6 2005-11-16 02:34:58 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -13,60 +13,16 @@
 
 namespace Chroma
 {
-  //! Read parameters
-  PointQuarkSourceSmearingParams::PointQuarkSourceSmearingParams()
-  {
-    disp_length = disp_dir = 0;
-  }
-
-  //! Read parameters
-  PointQuarkSourceSmearingParams::PointQuarkSourceSmearingParams(XMLReader& xml, const string& path)
-  {
-    XMLReader paramtop(xml, path);
-
-    int version;
-    read(paramtop, "version", version);
-
-    switch (version) 
-    {
-    case 1:
-      break;
-
-    default:
-      QDPIO::cerr << __func__ << ": parameter version " << version 
-		  << " unsupported." << endl;
-      QDP_abort(1);
-    }
-
-    if (paramtop.count("disp_length") != 0)
-      read(paramtop, "disp_length", disp_length);
-    else
-      disp_length = 0;
-
-    if (paramtop.count("disp_dir") != 0)
-      read(paramtop, "disp_dir", disp_dir);
-    else
-      disp_dir = 0;
-
-    if (paramtop.count("LinkSmearing") != 0)
-    {
-      XMLReader xml_tmp(paramtop, "LinkSmearing");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      read(xml_tmp, "LinkSmearingType", link_smearing_type);
-      link_smearing = os.str();
-    }
-  }
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, PointQuarkSourceSmearingParams& param)
+  void read(XMLReader& xml, const string& path, PointQuarkSourceSmearingEnv::Params& param)
   {
-    PointQuarkSourceSmearingParams tmp(xml, path);
+    PointQuarkSourceSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const PointQuarkSourceSmearingParams& param)
+  void write(XMLWriter& xml, const string& path, const PointQuarkSourceSmearingEnv::Params& param)
   {
     push(xml, path);
     int version = 1;
@@ -79,6 +35,7 @@ namespace Chroma
   }
 
 
+
   //! Hooks to register the class with the fermact factory
   namespace PointQuarkSourceSmearingEnv
   {
@@ -87,17 +44,9 @@ namespace Chroma
 						   const std::string& path,
 						   const multi1d<LatticeColorMatrix>& u)
     {
-      return new PointQuarkSourceSmearing<LatticePropagator>(PointQuarkSourceSmearingParams(xml_in, path), u);
+      return new SourceSmear<LatticePropagator>(Params(xml_in, path), u);
     }
 
-    //! Callback function
-    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
-						const std::string& path,
-						const multi1d<LatticeColorMatrix>& u)
-    {
-      return new PointQuarkSourceSmearing<LatticeFermion>(PointQuarkSourceSmearingParams(xml_in, path), u);
-    }
-    
     //! Name to be used
     const std::string name("POINT_SINK");
 
@@ -107,41 +56,87 @@ namespace Chroma
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
       foo &= Chroma::ThePropSourceSmearingFactory::Instance().registerObject(name, createProp);
-      foo &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
       return true;
     }
 
     //! Register the sink smearing
     const bool registered = registerAll();
-  }
 
 
-  //! Construct the source smearing
-  template<>
-  void
-  PointQuarkSourceSmearing<LatticePropagator>::operator()(LatticePropagator& quark_source) const
-  {
-    QDPIO::cout << "Point source" << endl;
+    //! Read parameters
+    Params::Params()
+    {
+      disp_length = disp_dir = 0;
+    }
 
-    // displace the point source first, then smear
-    // displacement has to be taken along negative direction.
-    displacement(u_smr, quark_source,
-		 (-1)*params.disp_length, params.disp_dir);
-  }
+    //! Read parameters
+    Params::Params(XMLReader& xml, const string& path)
+    {
+      XMLReader paramtop(xml, path);
+
+      int version;
+      read(paramtop, "version", version);
+
+      switch (version) 
+      {
+      case 1:
+	break;
+
+      default:
+	QDPIO::cerr << __func__ << ": parameter version " << version 
+		    << " unsupported." << endl;
+	QDP_abort(1);
+      }
+
+      if (paramtop.count("disp_length") != 0)
+	read(paramtop, "disp_length", disp_length);
+      else
+	disp_length = 0;
+
+      if (paramtop.count("disp_dir") != 0)
+	read(paramtop, "disp_dir", disp_dir);
+      else
+	disp_dir = 0;
+
+      if (paramtop.count("LinkSmearing") != 0)
+      {
+	XMLReader xml_tmp(paramtop, "LinkSmearing");
+	std::ostringstream os;
+	xml_tmp.print(os);
+	read(xml_tmp, "LinkSmearingType", link_smearing_type);
+	link_smearing = os.str();
+      }
+    }
+
+
+    // Writer
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
+    {
+      push(xml, path);
+      int version = 1;
+      write(xml, "version", version);
+
+      write(xml, "disp_length", disp_length);
+      write(xml, "disp_dir", disp_dir);
+      xml << link_smearing;
+      pop(xml);
+    }
 
 
 
-  //! Construct the source smearing
-  template<>
-  void
-  PointQuarkSourceSmearing<LatticeFermion>::operator()(LatticeFermion& quark_source) const
-  {
-    QDPIO::cout << "Point source" << endl;
+    //! Construct the source smearing
+    template<>
+    void
+    SourceSmear<LatticePropagator>::operator()(LatticePropagator& quark_source) const
+    {
+      QDPIO::cout << "Point source" << endl;
 
-    // displace the point source first, then smear
-    // displacement has to be taken along negative direction.
-    displacement(u_smr, quark_source,
-		 (-1)*params.disp_length, params.disp_dir);
-  }
+      // displace the point source first, then smear
+      // displacement has to be taken along negative direction.
+      displacement(u_smr, quark_source,
+		   (-1)*params.disp_length, params.disp_dir);
+    }
 
-}
+  }  // end namespace
+
+} // end namespace Chroma

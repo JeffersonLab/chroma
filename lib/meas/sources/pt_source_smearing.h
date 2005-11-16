@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_smearing.h,v 2.5 2005-11-08 18:51:44 edwards Exp $
+// $Id: pt_source_smearing.h,v 2.6 2005-11-16 02:34:58 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -12,69 +12,70 @@
 namespace Chroma
 {
 
-  //! Point sink parameters
-  /*! @ingroup sinks */
-  struct PointQuarkSourceSmearingParams
-  {
-    PointQuarkSourceSmearingParams();
-    PointQuarkSourceSmearingParams(XMLReader& in, const std::string& path);
-
-    std::string      link_smearing;        /*!< link smearing xml */
-    std::string      link_smearing_type;   /*!< link smearing type name */
-
-    int              disp_length;          /*!< displacement length */
-    int              disp_dir;             /*!< x(0), y(1), z(2) */   
-  };
-
-
-  //! Reader
-  /*! @ingroup sinks */
-  void read(XMLReader& xml, const string& path, PointQuarkSourceSmearingParams& param);
-
-  //! Writer
-  /*! @ingroup sinks */
-  void write(XMLWriter& xml, const string& path, const PointQuarkSourceSmearingParams& param);
-
-
-
   //! Name and registration
   /*! @ingroup sources */
   namespace PointQuarkSourceSmearingEnv
   {
     extern const std::string name;
     extern const bool registered;
-  }
   
 
-  //! Point source smearing
-  /*! @ingroup sources
-   *
-   * Point source smearing. Really not a smearing; however, there can be
-   * displacements which use smeared links
-   */
-  template<typename T>
-  class PointQuarkSourceSmearing : public QuarkSourceSink<T>
-  {
-  public:
-    //! Full constructor
-    PointQuarkSourceSmearing(const PointQuarkSourceSmearingParams& p, 
-			     const multi1d<LatticeColorMatrix>& u) :
-      params(p), u_smr(u) 
-      {
-	this->create(u_smr, params.link_smearing, params.link_smearing_type);
-      }
+    //! Point sink parameters
+    /*! @ingroup sinks */
+    struct Params
+    {
+      Params();
+      Params(XMLReader& in, const std::string& path);
+      void writeXML(XMLWriter& in, const std::string& path) const;
 
-    //! Construct the source
-    void operator()(T& obj) const;
+      std::string      link_smearing;        /*!< link smearing xml */
+      std::string      link_smearing_type;   /*!< link smearing type name */
 
-  private:
-    //! Hide partial constructor
-    PointQuarkSourceSmearing() {}
+      int              disp_length;          /*!< displacement length */
+      int              disp_dir;             /*!< x(0), y(1), z(2) */   
+    };
 
-  private:
-    PointQuarkSourceSmearingParams  params;   /*!< source params */
-    multi1d<LatticeColorMatrix>     u_smr;    /*!< hold a smeared copy for efficiency */
-  };
+
+    //! Point source smearing
+    /*! @ingroup sources
+     *
+     * Point source smearing. Really not a smearing; however, there can be
+     * displacements which use smeared links
+     */
+    template<typename T>
+    class SourceSmear : public QuarkSourceSink<T>
+    {
+    public:
+      //! Full constructor
+      SourceSmear(const Params& p, const multi1d<LatticeColorMatrix>& u) :
+	params(p), u_smr(u) 
+	{
+	  this->create(u_smr, params.link_smearing, params.link_smearing_type);
+	}
+
+      //! Construct the source
+      void operator()(T& obj) const;
+
+    private:
+      //! Hide partial constructor
+      SourceSmear() {}
+
+    private:
+      Params  params;                           /*!< source params */
+      multi1d<LatticeColorMatrix>     u_smr;    /*!< hold a smeared copy for efficiency */
+    };
+
+
+  }  // end namespace Chroma
+
+
+  //! Reader
+  /*! @ingroup sinks */
+  void read(XMLReader& xml, const string& path, PointQuarkSourceSmearingEnv::Params& param);
+
+  //! Writer
+  /*! @ingroup sinks */
+  void write(XMLWriter& xml, const string& path, const PointQuarkSourceSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 
