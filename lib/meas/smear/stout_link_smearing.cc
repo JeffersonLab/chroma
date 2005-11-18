@@ -1,4 +1,4 @@
-// $Id: stout_link_smearing.cc,v 1.3 2005-11-16 02:34:58 edwards Exp $
+// $Id: stout_link_smearing.cc,v 1.4 2005-11-18 02:04:16 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -54,19 +54,16 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-      int version;
-      read(paramtop, "version", version);
-
-      switch (version) 
-      {
-      case 2:
-	break;
-
-      default :
-
-	QDPIO::cerr << "Input version " << version << " unsupported." << endl;
-	QDP_abort(1);
-      }
+//      int version;
+//      read(paramtop, "version", version);
+//      switch (version) 
+//      {
+//      case 2:
+//	break;
+//      default :
+//	QDPIO::cerr << "Input version " << version << " unsupported." << endl;
+//	QDP_abort(1);
+//      }
 
       read(paramtop, "link_smear_num", link_smear_num);
       read(paramtop, "link_smear_fact", link_smear_fact);
