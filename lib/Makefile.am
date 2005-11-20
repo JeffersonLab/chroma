@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.14 2005-11-12 06:32:17 edwards Exp $
+# $Id: Makefile.am,v 2.15 2005-11-20 18:20:39 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -144,11 +144,12 @@ nobase_include_HEADERS = \
         meas/sources/srcfil.h \
 	meas/sources/wavetype.h \
         meas/sources/z2_src.h \
+        meas/sources/zN_src.h \
 	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
-	meas/sources/dilutez2_source_const.h \
+	meas/sources/dilutezN_source_const.h \
 	meas/sources/rndz2wall_source_const.h \
 	meas/sources/wall_source_const.h \
 	meas/sources/source_const_aggregate.h \
@@ -587,13 +588,14 @@ libchroma_a_SOURCES = \
         meas/sources/pt_source_smearing.cc \
         meas/sources/sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
-        meas/sources/dilutez2_source_const.cc \
+        meas/sources/dilutezN_source_const.cc \
         meas/sources/rndz2wall_source_const.cc \
         meas/sources/wall_source_const.cc \
 	meas/sources/source_const_aggregate.cc \
 	meas/sources/source_smearing_aggregate.cc \
         meas/sources/srcfil.cc \
         meas/sources/z2_src.cc \
+        meas/sources/zN_src.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
