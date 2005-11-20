@@ -58,7 +58,7 @@ bin_PROGRAMS += qpropqio qproptransf wallformfac
 ## These are programs still under development. They won't compile in
 ## the check_PROGRAMS line, so we put them here to keep from breaking
 ## make check
-EXTRA_PROGRAMS = qpropadd 
+EXTRA_PROGRAMS = qpropadd stoch_meson
 
 
 # Wilson specific programs
@@ -87,6 +87,7 @@ qpropqio_SOURCES= qpropqio.cc
 qpropadd_SOURCES= qpropadd.cc
 qpropgfix_SOURCES= qpropgfix.cc
 qproptrev_SOURCES= qproptrev.cc
+stoch_meson_SOURCES= stoch_meson.cc
 cfgtransf_SOURCES= cfgtransf.cc
 
 #mainparam_io_SOURCES= mainparam_io.cc
