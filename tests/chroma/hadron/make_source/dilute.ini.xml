@@ -9,13 +9,17 @@ Make a dilute source
   <InlineMeasurements>
 
     <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source
+      </annotation>
       <Name>MAKE_SOURCE_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
         <version>6</version>
         <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
           <version>1</version>
-          <SourceType>RAND_DILUTE_Z2_SOURCE</SourceType>
+          <N>4</N>
           <j_decay>3</j_decay>
           <t_source>0</t_source>
           <ran_seed>
