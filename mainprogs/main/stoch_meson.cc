@@ -1,4 +1,4 @@
-// $Id: stoch_meson.cc,v 1.1 2005-11-18 21:15:17 edwards Exp $
+// $Id: stoch_meson.cc,v 1.2 2005-11-20 18:28:07 edwards Exp $
 /*! \file
  * \brief Stochastically estimate a meson operator
  *
@@ -189,18 +189,22 @@ int main(int argc, char *argv[])
   // Read the source and solutions
   //
   multi1d<QuarkSourceSolutions_t>  quarks(input.prop.soln_files.size());
+  QDPIO::cout << "num_quarks= " << input.prop.soln_files.size() << endl;
 
   try
   {
+    QDPIO::cout << "quarks.size= " << quarks.size() << endl;
     for(int n=0; n < quarks.size(); ++n)
     {
       QDPIO::cout << "Attempt to read solutions for source number=" << n << endl;
-      quarks[n].dilutions.resize(input.prop.soln_files.size());
+      quarks[n].dilutions.resize(input.prop.soln_files[n].size());
 
+      QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << endl;
       for(int i=0; i < quarks[n].dilutions.size(); ++i)
       {
 	XMLReader file_xml, record_xml;
 
+	QDPIO::cout << "reading file= " << input.prop.soln_files[n][i] << endl;
 	QDPFileReader from(file_xml, input.prop.soln_files[n][i], QDPIO_SERIAL);
 	read(from, record_xml, quarks[n].dilutions[i].quark);
 	close(from);
@@ -250,42 +254,53 @@ int main(int argc, char *argv[])
     for(int n=0; n < quarks.size(); ++n)
     {
       bool first = true;
+      int  N;
       Seed source_seed;
       LatticeFermion quark_noise;      // noisy source on entire lattice
 
       for(int i=0; i < quarks[n].dilutions.size(); ++i)
       {
-	std::istringstream  xml_s(quarks[n].dilutions[0].source_header.source);
+	std::istringstream  xml_s(quarks[n].dilutions[i].source_header.source);
 	XMLReader  sourcetop(xml_s);
 	const string source_path = "/Source";
-	QDPIO::cout << "Source = " << quarks[n].dilutions[0].source_header.source_type << endl;
+	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source_type << endl;
 
-	if (quarks[n].dilutions[0].source_header.source_type != DiluteZ2QuarkSourceConstEnv::name)
+	if (quarks[n].dilutions[i].source_header.source_type != DiluteZNQuarkSourceConstEnv::name)
 	{
-	  QDPIO::cerr << "Expected source_type = " << DiluteZ2QuarkSourceConstEnv::name << endl;
+	  QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
 	  QDP_abort(1);
 	}
 
 	// Manually create the params so I can peek into them and use the source constructor
-	DiluteZ2QuarkSourceConstEnv::Params       srcParams(sourcetop, source_path);
-	DiluteZ2QuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
+	DiluteZNQuarkSourceConstEnv::Params       srcParams(sourcetop, source_path);
+	DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
       
 	if (first) 
 	{
 	  first = false;
+
+	  // Grab N
+	  N = srcParams.N;
 
 	  // Set the seed to desired value
 	  source_seed = srcParams.ran_seed;
 	  QDP::RNG::setrn(source_seed);
 
 	  // Create the noisy quark source on the entire lattice
-	  z2_src(quark_noise);
+	  zN_src(quark_noise, N);
 	}
 
 	// The seeds must always agree - here the seed is the unique id of the source
 	if ( toBool(srcParams.ran_seed != source_seed) )
 	{
 	  QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << endl;
+	  QDP_abort(1);
+	}
+
+	// The N's must always agree
+	if ( toBool(srcParams.N != N) )
+	{
+	  QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << endl;
 	  QDP_abort(1);
 	}
 
@@ -297,7 +312,7 @@ int main(int argc, char *argv[])
       } // end for i
 
       Double dcnt = norm2(quark_noise);
-      if (toDouble(dcnt) != 0.0)
+      if (toDouble(dcnt) != 0.0)  // problematic - seems to work with unnormalized sources 
       {
 	QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
 	QDP_abort(1);
