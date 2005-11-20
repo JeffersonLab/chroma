@@ -1,6 +1,9 @@
-//  $Id: mesons_w.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
+//  $Id: mesons_w.cc,v 2.1 2005-11-20 18:29:00 edwards Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 2.0  2005-09-25 21:04:35  edwards
+//  Revision 2.1  2005-11-20 18:29:00  edwards
+//  Added parenthesis
+//
+//  Revision 2.0  2005/09/25 21:04:35  edwards
 //  Moved to version 2.0
 //
 //  Revision 1.21  2005/02/28 03:35:25  edwards
@@ -125,8 +128,8 @@ void mesons(const LatticePropagator& quark_prop_1,
 
     // Construct the meson correlation function
     LatticeComplex corr_fn;
-    corr_fn = trace(adj(anti_quark_prop) * Gamma(gamma_value) *
-                    quark_prop_1 * Gamma(gamma_value));
+    corr_fn = trace(adj(anti_quark_prop) * (Gamma(gamma_value) *
+                    quark_prop_1 * Gamma(gamma_value)));
 
     multi2d<DComplex> hsum;
     hsum = phases.sft(corr_fn);
