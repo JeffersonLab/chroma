@@ -1,28 +1,28 @@
 // -*- C++ -*-
-// $Id: dilutez2_source_const.h,v 2.2 2005-11-16 02:34:58 edwards Exp $
+// $Id: dilutezN_source_const.h,v 2.1 2005-11-20 18:28:38 edwards Exp $
 /*! \file
- *  \brief Random complex Z(2) source construction using dilution
+ *  \brief Random Z(N) source construction using dilution
  *
  * Uses the Dublin "dilution" stochastic source strategy of hep-lat/0505023
  */
 
-#ifndef __dilutez2_source_const_h__
-#define __dilutez2_source_const_h__
+#ifndef __dilutezN_source_const_h__
+#define __dilutezN_source_const_h__
 
 #include "meas/sources/source_construction.h"
 
 namespace Chroma
 {
 
-  //! Dilute Z2 quark source namespace, parameters, and classes
+  //! Dilute Z(N) quark source namespace, parameters, and classes
   /*! @ingroup sources */
-  namespace DiluteZ2QuarkSourceConstEnv
+  namespace DiluteZNQuarkSourceConstEnv
   {
     extern const std::string name;
     extern const bool registered;
 
   
-    //! Random complex Z(2) sources using dilution
+    //! Random complex Z(N) sources using dilution
     /*! @ingroup sources */
     struct Params
     {
@@ -31,6 +31,7 @@ namespace Chroma
       void writeXML(XMLWriter& in, const std::string& path) const;
     
       Seed                     ran_seed;             /*!< Set the seed to this value */
+      int                      N;                    /*!< Z(N) */
 
       multi1d<int>             spatial_mask_size;    /*!< Spatial size of periodic mask */
       multi1d< multi1d<int> >  spatial_mask;         /*!< Sites included in site mask */
@@ -42,10 +43,10 @@ namespace Chroma
     };
 
 
-    //! Random complex Z(2) sources using dilution
+    //! Random complex Z(N) sources using dilution
     /*! @ingroup sources
      *
-     * Create a random Z(2) using dilution
+     * Create a random Z(N) using dilution
      */
     template<typename T>
     class SourceConst : public QuarkSourceConstruction<T>
@@ -65,16 +66,16 @@ namespace Chroma
       Params  params;   /*!< source params */
     };
 
-  }  // end namespace DiluteZ2QuarkSourceConstEnv
+  }  // end namespace DiluteZNQuarkSourceConstEnv
 
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, DiluteZ2QuarkSourceConstEnv::Params& param);
+  void read(XMLReader& xml, const string& path, DiluteZNQuarkSourceConstEnv::Params& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const DiluteZ2QuarkSourceConstEnv::Params& param);
+  void write(XMLWriter& xml, const string& path, const DiluteZNQuarkSourceConstEnv::Params& param);
 
 }  // end namespace Chroma
 

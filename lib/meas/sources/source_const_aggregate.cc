@@ -1,4 +1,4 @@
-// $Id: source_const_aggregate.cc,v 2.4 2005-11-12 06:31:57 edwards Exp $
+// $Id: source_const_aggregate.cc,v 2.5 2005-11-20 18:28:38 edwards Exp $
 /*! \file
  *  \brief All make source constructors
  */
@@ -10,7 +10,7 @@
 #include "meas/sources/wall_source_const.h"
 
 #include "meas/sources/rndz2wall_source_const.h"
-#include "meas/sources/dilutez2_source_const.h"
+#include "meas/sources/dilutezN_source_const.h"
 
 namespace Chroma
 {
@@ -27,7 +27,7 @@ namespace Chroma
       success &= ShellQuarkSourceConstEnv::registered;
       success &= RandZ2WallQuarkSourceConstEnv::registered;
       success &= WallQuarkSourceConstEnv::registered;
-      success &= DiluteZ2QuarkSourceConstEnv::registered;
+      success &= DiluteZNQuarkSourceConstEnv::registered;
 
       return success;
     }

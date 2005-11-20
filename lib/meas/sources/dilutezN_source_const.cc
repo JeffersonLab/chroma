@@ -1,25 +1,25 @@
-// $Id: dilutez3_source_const.cc,v 1.1 2005-11-18 21:31:10 edwards Exp $
+// $Id: dilutezN_source_const.cc,v 2.1 2005-11-20 18:28:38 edwards Exp $
 /*! \file
- *  \brief Random Z2 wall source construction
+ *  \brief Random ZN wall source construction
  */
 
 #include "chromabase.h"
 
 #include "meas/sources/source_const_factory.h"
-#include "meas/sources/dilutez2_source_const.h"
-#include "meas/sources/z2_src.h"
+#include "meas/sources/dilutezN_source_const.h"
+#include "meas/sources/zN_src.h"
 
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, DiluteZ2QuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const string& path, DiluteZNQuarkSourceConstEnv::Params& param)
   {
-    DiluteZ2QuarkSourceConstEnv::Params tmp(xml, path);
+    DiluteZNQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const DiluteZ2QuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const string& path, const DiluteZNQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -27,7 +27,7 @@ namespace Chroma
 
 
   // Hooks to register the class
-  namespace DiluteZ2QuarkSourceConstEnv
+  namespace DiluteZNQuarkSourceConstEnv
   {
     // Anonymous namespace
     namespace
@@ -49,7 +49,7 @@ namespace Chroma
     }  // end namespace
 
     //! Name to be used
-    const std::string name("RAND_DILUTE_Z2_SOURCE");
+    const std::string name("RAND_DILUTE_ZN_SOURCE");
 
     //! Register the source construction
     const bool registered = registerAll();
@@ -83,6 +83,7 @@ namespace Chroma
       }
 
       read(paramtop, "ran_seed", ran_seed);
+      read(paramtop, "N", N);
       read(paramtop, "j_decay", j_decay);
       read(paramtop, "t_source", t_source);
 
@@ -101,6 +102,7 @@ namespace Chroma
       int version = 1;
       write(xml, "version", version);
       write(xml, "ran_seed", ran_seed);
+      write(xml, "N", N);
       write(xml, "j_decay", j_decay);
       write(xml, "t_source", t_source);
 
@@ -118,7 +120,7 @@ namespace Chroma
     LatticeFermion
     SourceConst<LatticeFermion>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Diluted random complex Z2 source" << endl;
+      QDPIO::cout << "Diluted random complex ZN source" << endl;
 
       //
       // Sanity checks
@@ -185,7 +187,7 @@ namespace Chroma
 
       // Create the noisy quark source on the entire lattice
       LatticeFermion quark_noise;
-      z2_src(quark_noise);
+      zN_src(quark_noise, params.N);
 
       // This is the filtered noise source to return
       LatticeFermion quark_source = zero;
