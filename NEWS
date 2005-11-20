@@ -1,3 +1,11 @@
+11/20/2005 -- Robert Edwards
+	Version 2.5.1. Some library routines require qdp-1.18.X . Rearranged diluted
+        source construction.
+
+11/17/2005 -- Robert Edwards
+	Version 2.5.0. Some new main programs require qdp-1.18.X . The features are
+        new binary ops on Seeds.
+
 11/16/2005 -- Robert Edwards
 	Version 2.4.3. Changed names in smearing and source/sink constructions.
 
