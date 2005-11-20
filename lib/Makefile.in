@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.16 2005-11-12 06:33:52 edwards Exp $
+# $Id: Makefile.in,v 2.17 2005-11-20 18:25:40 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -198,18 +198,18 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
-	meas/sources/dilutez2_source_const.cc \
+	meas/sources/dilutezN_source_const.cc \
 	meas/sources/rndz2wall_source_const.cc \
 	meas/sources/wall_source_const.cc \
 	meas/sources/source_const_aggregate.cc \
 	meas/sources/source_smearing_aggregate.cc \
 	meas/sources/srcfil.cc meas/sources/z2_src.cc \
-	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
-	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
-	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
-	util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
-	util/gauge/reunit.cc util/gauge/rgauge.cc \
+	meas/sources/zN_src.cc util/ferm/diractodr.cc \
+	util/ferm/paulitodr.cc util/ferm/tdiractodr.cc \
+	util/ferm/transf.cc util/ft/sftmom.cc util/gauge/eesu3.cc \
+	util/gauge/eeu1.cc util/gauge/expm12.cc util/gauge/expmat.cc \
+	util/gauge/expsu3.cc util/gauge/gauge_startup.cc \
+	util/gauge/hotst.cc util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
@@ -480,21 +480,22 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	quark_smearing_aggregate.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) pt_source_const.$(OBJEXT) \
 	pt_source_smearing.$(OBJEXT) sh_source_const.$(OBJEXT) \
-	sh_source_smearing.$(OBJEXT) dilutez2_source_const.$(OBJEXT) \
+	sh_source_smearing.$(OBJEXT) dilutezN_source_const.$(OBJEXT) \
 	rndz2wall_source_const.$(OBJEXT) wall_source_const.$(OBJEXT) \
 	source_const_aggregate.$(OBJEXT) \
 	source_smearing_aggregate.$(OBJEXT) srcfil.$(OBJEXT) \
-	z2_src.$(OBJEXT) diractodr.$(OBJEXT) paulitodr.$(OBJEXT) \
-	tdiractodr.$(OBJEXT) transf.$(OBJEXT) sftmom.$(OBJEXT) \
-	eesu3.$(OBJEXT) eeu1.$(OBJEXT) expm12.$(OBJEXT) \
-	expmat.$(OBJEXT) expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) \
-	hotst.$(OBJEXT) reunit.$(OBJEXT) rgauge.$(OBJEXT) \
-	su2extract.$(OBJEXT) su3proj.$(OBJEXT) sunfill.$(OBJEXT) \
-	sun_proj.$(OBJEXT) taproj.$(OBJEXT) unit_check.$(OBJEXT) \
-	conjgauge.$(OBJEXT) constgauge.$(OBJEXT) printgeom.$(OBJEXT) \
-	proginfo.$(OBJEXT) su3over.$(OBJEXT) u_staple.$(OBJEXT) \
-	su2_hb_update.$(OBJEXT) su3_hb_sweep.$(OBJEXT) \
-	mciter.$(OBJEXT) gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
+	z2_src.$(OBJEXT) zN_src.$(OBJEXT) diractodr.$(OBJEXT) \
+	paulitodr.$(OBJEXT) tdiractodr.$(OBJEXT) transf.$(OBJEXT) \
+	sftmom.$(OBJEXT) eesu3.$(OBJEXT) eeu1.$(OBJEXT) \
+	expm12.$(OBJEXT) expmat.$(OBJEXT) expsu3.$(OBJEXT) \
+	gauge_startup.$(OBJEXT) hotst.$(OBJEXT) reunit.$(OBJEXT) \
+	rgauge.$(OBJEXT) su2extract.$(OBJEXT) su3proj.$(OBJEXT) \
+	sunfill.$(OBJEXT) sun_proj.$(OBJEXT) taproj.$(OBJEXT) \
+	unit_check.$(OBJEXT) conjgauge.$(OBJEXT) constgauge.$(OBJEXT) \
+	printgeom.$(OBJEXT) proginfo.$(OBJEXT) su3over.$(OBJEXT) \
+	u_staple.$(OBJEXT) su2_hb_update.$(OBJEXT) \
+	su3_hb_sweep.$(OBJEXT) mciter.$(OBJEXT) \
+	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
 	integrator_aggregate.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
 	lcm_pqp_leapfrog.$(OBJEXT) lcm_sexton_weingarten.$(OBJEXT) \
 	lcm_minimum_norm2_integrator.$(OBJEXT) \
@@ -746,11 +747,12 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/smear/quark_source_sink.h meas/sources/sources.h \
 	meas/sources/srcsnktype.h meas/sources/source_construction.h \
 	meas/sources/srcfil.h meas/sources/wavetype.h \
-	meas/sources/z2_src.h meas/sources/pt_source_const.h \
+	meas/sources/z2_src.h meas/sources/zN_src.h \
+	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
-	meas/sources/dilutez2_source_const.h \
+	meas/sources/dilutezN_source_const.h \
 	meas/sources/rndz2wall_source_const.h \
 	meas/sources/wall_source_const.h \
 	meas/sources/source_const_aggregate.h \
@@ -1256,11 +1258,12 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/smear/quark_source_sink.h meas/sources/sources.h \
 	meas/sources/srcsnktype.h meas/sources/source_construction.h \
 	meas/sources/srcfil.h meas/sources/wavetype.h \
-	meas/sources/z2_src.h meas/sources/pt_source_const.h \
+	meas/sources/z2_src.h meas/sources/zN_src.h \
+	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
-	meas/sources/dilutez2_source_const.h \
+	meas/sources/dilutezN_source_const.h \
 	meas/sources/rndz2wall_source_const.h \
 	meas/sources/wall_source_const.h \
 	meas/sources/source_const_aggregate.h \
@@ -1660,18 +1663,18 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
-	meas/sources/dilutez2_source_const.cc \
+	meas/sources/dilutezN_source_const.cc \
 	meas/sources/rndz2wall_source_const.cc \
 	meas/sources/wall_source_const.cc \
 	meas/sources/source_const_aggregate.cc \
 	meas/sources/source_smearing_aggregate.cc \
 	meas/sources/srcfil.cc meas/sources/z2_src.cc \
-	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
-	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
-	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
-	util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
-	util/gauge/reunit.cc util/gauge/rgauge.cc \
+	meas/sources/zN_src.cc util/ferm/diractodr.cc \
+	util/ferm/paulitodr.cc util/ferm/tdiractodr.cc \
+	util/ferm/transf.cc util/ft/sftmom.cc util/gauge/eesu3.cc \
+	util/gauge/eeu1.cc util/gauge/expm12.cc util/gauge/expmat.cc \
+	util/gauge/expsu3.cc util/gauge/gauge_startup.cc \
+	util/gauge/hotst.cc util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
@@ -1976,7 +1979,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cppacs_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilutez2_source_const.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilutezN_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diractodr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_fermact_qprop_array_w.Po@am__quote@
@@ -2326,6 +2329,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/z2_src.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zN_src.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zero_guess_predictor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zolotarev_coeffs.Po@am__quote@
 
@@ -4149,19 +4153,19 @@ sh_source_smearing.obj: meas/sources/sh_source_smearing.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_source_smearing.obj `if test -f 'meas/sources/sh_source_smearing.cc'; then $(CYGPATH_W) 'meas/sources/sh_source_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/sh_source_smearing.cc'; fi`
 
-dilutez2_source_const.o: meas/sources/dilutez2_source_const.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilutez2_source_const.o -MD -MP -MF "$(DEPDIR)/dilutez2_source_const.Tpo" -c -o dilutez2_source_const.o `test -f 'meas/sources/dilutez2_source_const.cc' || echo '$(srcdir)/'`meas/sources/dilutez2_source_const.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/dilutez2_source_const.Tpo" "$(DEPDIR)/dilutez2_source_const.Po"; else rm -f "$(DEPDIR)/dilutez2_source_const.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/dilutez2_source_const.cc' object='dilutez2_source_const.o' libtool=no @AMDEPBACKSLASH@
+dilutezN_source_const.o: meas/sources/dilutezN_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilutezN_source_const.o -MD -MP -MF "$(DEPDIR)/dilutezN_source_const.Tpo" -c -o dilutezN_source_const.o `test -f 'meas/sources/dilutezN_source_const.cc' || echo '$(srcdir)/'`meas/sources/dilutezN_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/dilutezN_source_const.Tpo" "$(DEPDIR)/dilutezN_source_const.Po"; else rm -f "$(DEPDIR)/dilutezN_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/dilutezN_source_const.cc' object='dilutezN_source_const.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilutez2_source_const.o `test -f 'meas/sources/dilutez2_source_const.cc' || echo '$(srcdir)/'`meas/sources/dilutez2_source_const.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilutezN_source_const.o `test -f 'meas/sources/dilutezN_source_const.cc' || echo '$(srcdir)/'`meas/sources/dilutezN_source_const.cc
 
-dilutez2_source_const.obj: meas/sources/dilutez2_source_const.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilutez2_source_const.obj -MD -MP -MF "$(DEPDIR)/dilutez2_source_const.Tpo" -c -o dilutez2_source_const.obj `if test -f 'meas/sources/dilutez2_source_const.cc'; then $(CYGPATH_W) 'meas/sources/dilutez2_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/dilutez2_source_const.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/dilutez2_source_const.Tpo" "$(DEPDIR)/dilutez2_source_const.Po"; else rm -f "$(DEPDIR)/dilutez2_source_const.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/dilutez2_source_const.cc' object='dilutez2_source_const.obj' libtool=no @AMDEPBACKSLASH@
+dilutezN_source_const.obj: meas/sources/dilutezN_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilutezN_source_const.obj -MD -MP -MF "$(DEPDIR)/dilutezN_source_const.Tpo" -c -o dilutezN_source_const.obj `if test -f 'meas/sources/dilutezN_source_const.cc'; then $(CYGPATH_W) 'meas/sources/dilutezN_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/dilutezN_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/dilutezN_source_const.Tpo" "$(DEPDIR)/dilutezN_source_const.Po"; else rm -f "$(DEPDIR)/dilutezN_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/dilutezN_source_const.cc' object='dilutezN_source_const.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilutez2_source_const.obj `if test -f 'meas/sources/dilutez2_source_const.cc'; then $(CYGPATH_W) 'meas/sources/dilutez2_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/dilutez2_source_const.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilutezN_source_const.obj `if test -f 'meas/sources/dilutezN_source_const.cc'; then $(CYGPATH_W) 'meas/sources/dilutezN_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/dilutezN_source_const.cc'; fi`
 
 rndz2wall_source_const.o: meas/sources/rndz2wall_source_const.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rndz2wall_source_const.o -MD -MP -MF "$(DEPDIR)/rndz2wall_source_const.Tpo" -c -o rndz2wall_source_const.o `test -f 'meas/sources/rndz2wall_source_const.cc' || echo '$(srcdir)/'`meas/sources/rndz2wall_source_const.cc; \
@@ -4246,6 +4250,20 @@ z2_src.obj: meas/sources/z2_src.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/z2_src.cc' object='z2_src.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o z2_src.obj `if test -f 'meas/sources/z2_src.cc'; then $(CYGPATH_W) 'meas/sources/z2_src.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/z2_src.cc'; fi`
+
+zN_src.o: meas/sources/zN_src.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zN_src.o -MD -MP -MF "$(DEPDIR)/zN_src.Tpo" -c -o zN_src.o `test -f 'meas/sources/zN_src.cc' || echo '$(srcdir)/'`meas/sources/zN_src.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/zN_src.Tpo" "$(DEPDIR)/zN_src.Po"; else rm -f "$(DEPDIR)/zN_src.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/zN_src.cc' object='zN_src.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zN_src.o `test -f 'meas/sources/zN_src.cc' || echo '$(srcdir)/'`meas/sources/zN_src.cc
+
+zN_src.obj: meas/sources/zN_src.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zN_src.obj -MD -MP -MF "$(DEPDIR)/zN_src.Tpo" -c -o zN_src.obj `if test -f 'meas/sources/zN_src.cc'; then $(CYGPATH_W) 'meas/sources/zN_src.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/zN_src.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/zN_src.Tpo" "$(DEPDIR)/zN_src.Po"; else rm -f "$(DEPDIR)/zN_src.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/zN_src.cc' object='zN_src.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zN_src.obj `if test -f 'meas/sources/zN_src.cc'; then $(CYGPATH_W) 'meas/sources/zN_src.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/zN_src.cc'; fi`
 
 diractodr.o: util/ferm/diractodr.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT diractodr.o -MD -MP -MF "$(DEPDIR)/diractodr.Tpo" -c -o diractodr.o `test -f 'util/ferm/diractodr.cc' || echo '$(srcdir)/'`util/ferm/diractodr.cc; \
