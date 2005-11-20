@@ -8,15 +8,15 @@ with cvs tags labelled as
 
     major-minor-maintenance 
 
-Chroma version 1.18 requires QDP++ 1.11.5 or higher and
+Chroma version 2.5 requires QDP++ 1.18 or higher and
 QMP 2.X or higher . The latter follows the version 2.X specification
 of the API. QDP++ and Chroma no longer support the 1.X QMP API
 
 In JLab CVS module name and tag-ology, the current compatibility is
 
 module        tag                          description
-chroma        chroma1-18-X  or higher
-qdp++         qdp1-11-5     or higher
+chroma        chroma2-5-X  or higher
+qdp++         qdp1-18-0    or higher
 qmp           qmp2-0-X                     MPI and single node versions
 qmp-mvia-mesh qmp-mvia-mesh-2-0  or higher GigE version
 
@@ -48,7 +48,7 @@ of QDP++.
 
 To build a main program
 
-% cd chroma/scalar-build/mainprogs/tests/t_mesplq
+% cd chroma/scalar-build/mainprogs/tests
 % make t_mesplq
 
 which will build the executable "t_mesplq" using "t_mesplq.cc" as
