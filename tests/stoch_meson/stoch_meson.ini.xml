@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<stoch_meson>
+<annotation>
+;
+; $Id: stoch_meson.ini.xml,v 1.1 2005-11-20 18:19:04 edwards Exp $ test input for stoch_meson code
+;
+</annotation>
+<Param> 
+  <version>1</version>
+  <nrow>4 4 4 8</nrow>
+</Param>
+<Prop>
+  <soln_files>
+    <elem>
+      <elem>./zN_prop_0</elem>
+      <elem>./zN_prop_1</elem>
+      <elem>./zN_prop_2</elem>
+      <elem>./zN_prop_3</elem>
+      <elem>./zN_prop_4</elem>
+      <elem>./zN_prop_5</elem>
+      <elem>./zN_prop_6</elem>
+      <elem>./zN_prop_7</elem>
+    </elem>
+  </soln_files>
+</Prop>
+<Cfg>
+  <cfg_type>SZIN</cfg_type>
+  <cfg_file>../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</stoch_meson>

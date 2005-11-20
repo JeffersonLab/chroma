@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+
+
+<stoch_meson>
+  <ProgramInfo>
+    <code_version>
+      <chroma>2.5</chroma>
+      <qdp>1.18.0</qdp>
+    </code_version>
+    <run_date>20 Nov 05 12:37:02 EST</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <Input><stoch_meson>
+<annotation>
+;
+; $Id: stoch_meson.out.xml,v 1.1 2005-11-20 18:19:04 edwards Exp $ test input for stoch_meson code
+;
+</annotation>
+<Param> 
+  <version>1</version>
+  <nrow>4 4 4 8</nrow>
+</Param>
+<Prop>
+  <soln_files>
+    <elem>
+      <elem>./zN_prop_0</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_1</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_2</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_3</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_4</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_5</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_6</elem>
+      <elem>./zN_prop_7</elem>
+    </elem>
+  </soln_files>
+</Prop>
+<Cfg>
+  <cfg_type>SZIN</cfg_type>
+  <cfg_file>../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</stoch_meson>
+
+  </Input>
+  <Output_version>
+    <out_version>1</out_version>
+  </Output_version>
+  <soln_files>
+    <elem>
+      <elem>./zN_prop_0</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_1</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_2</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_3</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_4</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_5</elem>
+    </elem>
+    <elem>
+      <elem>./zN_prop_6</elem>
+      <elem>./zN_prop_7</elem>
+    </elem>
