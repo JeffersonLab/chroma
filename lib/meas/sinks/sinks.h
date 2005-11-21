@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sinks.h,v 1.1 2005-11-07 06:24:09 edwards Exp $
+// $Id: sinks.h,v 1.2 2005-11-21 21:07:06 edwards Exp $
 
 /*! \file
  * \brief Quark sinks
@@ -17,5 +17,6 @@
 #define __sinks_h__
 
 #include "sink_smearing_factory.h"
+#include "sink_smearing_aggregate.h"
 
 #endif

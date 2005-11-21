@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sources.h,v 2.5 2005-11-20 18:28:38 edwards Exp $
+// $Id: sources.h,v 2.6 2005-11-21 21:07:06 edwards Exp $
 
 /*! \file
  * \brief Quark sources
@@ -26,6 +26,9 @@
 #include "source_construction.h"
 #include "source_const_factory.h"
 #include "source_smearing_factory.h"
+
+#include "source_const_aggregate.h"
+#include "source_smearing_aggregate.h"
 
 #include "pt_source_const.h"
 #include "sh_source_const.h"
