@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 2.7 2005-11-21 18:33:52 edwards Exp $
+// $Id: pt_source_smearing.cc,v 2.8 2005-11-21 21:07:38 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -40,11 +40,11 @@ namespace Chroma
   namespace PointQuarkSourceSmearingEnv
   {
     //! Callback function
-    QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
-						   const std::string& path,
-						   const multi1d<LatticeColorMatrix>& u)
+    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
+						const std::string& path,
+						const multi1d<LatticeColorMatrix>& u)
     {
-      return new SourceSmear<LatticePropagator>(Params(xml_in, path), u);
+      return new SourceSmear<LatticeFermion>(Params(xml_in, path), u);
     }
 
     //! Name to be used
@@ -55,7 +55,7 @@ namespace Chroma
     {
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
-      foo &= Chroma::ThePropSourceSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
       return true;
     }
 
@@ -127,9 +127,9 @@ namespace Chroma
     //! Construct the source smearing
     template<>
     void
-    SourceSmear<LatticePropagator>::operator()(LatticePropagator& quark_source) const
+    SourceSmear<LatticeFermion>::operator()(LatticeFermion& quark_source) const
     {
-      QDPIO::cout << "Point source" << endl;
+//      QDPIO::cout << "Point source" << endl;
 
       // displace the point source first, then smear
       // displacement has to be taken along negative direction.

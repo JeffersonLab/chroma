@@ -1,4 +1,4 @@
-// $Id: pt_sink_smearing.cc,v 1.5 2005-11-16 02:34:58 edwards Exp $
+// $Id: pt_sink_smearing.cc,v 1.6 2005-11-21 21:07:38 edwards Exp $
 /*! \file
  *  \brief Point sink construction
  */
@@ -38,6 +38,14 @@ namespace Chroma
       return new SinkSmear<LatticePropagator>(Params(xml_in, path), u);
     }
 
+    //! Callback function
+    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
+						const std::string& path,
+						const multi1d<LatticeColorMatrix>& u)
+    {
+      return new SinkSmear<LatticeFermion>(Params(xml_in, path), u);
+    }
+
     //! Name to be used
     const std::string name("POINT_SINK");
 
@@ -47,6 +55,7 @@ namespace Chroma
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
       foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
       return true;
     }
 
@@ -121,6 +130,18 @@ namespace Chroma
     SinkSmear<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
     {
       QDPIO::cout << "Point sink" << endl;
+
+      displacement(u_smr, quark_sink,
+		   params.disp_length, params.disp_dir);
+    }
+
+
+    //! Construct the sink smearing
+    template<>
+    void
+    SinkSmear<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
+    {
+//      QDPIO::cout << "Point sink" << endl;
 
       displacement(u_smr, quark_sink,
 		   params.disp_length, params.disp_dir);

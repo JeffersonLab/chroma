@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 2.6 2005-11-16 02:34:58 edwards Exp $
+// $Id: sh_source_smearing.cc,v 2.7 2005-11-21 21:07:38 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -39,11 +39,11 @@ namespace Chroma
   namespace ShellQuarkSourceSmearingEnv
   {
     //! Callback function
-    QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
-						   const std::string& path,
-						   const multi1d<LatticeColorMatrix>& u)
+    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
+						const std::string& path,
+						const multi1d<LatticeColorMatrix>& u)
     {
-      return new SourceSmearing<LatticePropagator>(Params(xml_in, path), u);
+      return new SourceSmearing<LatticeFermion>(Params(xml_in, path), u);
     }
 
     //! Name to be used
@@ -55,7 +55,7 @@ namespace Chroma
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
       foo &= QuarkSmearingEnv::registered;
-      foo &= Chroma::ThePropSourceSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
       return foo;
     }
 
@@ -141,9 +141,9 @@ namespace Chroma
     //! Smear the source
     template<>
     void
-    SourceSmearing<LatticePropagator>::operator()(LatticePropagator& quark_source) const
+    SourceSmearing<LatticeFermion>::operator()(LatticeFermion& quark_source) const
     {
-      QDPIO::cout << "Shell source smearing" << endl;
+//      QDPIO::cout << "Shell source smearing" << endl;
  
       try
       {
@@ -154,8 +154,8 @@ namespace Chroma
 	XMLReader  smeartop(xml_s);
 	const string smear_path = "/SmearingParam";
 	
-	Handle< QuarkSmearing<LatticePropagator> >
-	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing_type,
+	Handle< QuarkSmearing<LatticeFermion> >
+	  quarkSmearing(TheFermSmearingFactory::Instance().createObject(params.quark_smearing_type,
 									smeartop,
 									smear_path));
 

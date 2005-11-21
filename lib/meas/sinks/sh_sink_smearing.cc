@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 1.6 2005-11-16 02:34:58 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 1.7 2005-11-21 21:07:38 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -46,6 +46,14 @@ namespace Chroma
       return new SinkSmear<LatticePropagator>(Params(xml_in, path), u);
     }
 
+    //! Callback function
+    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
+						const std::string& path,
+						const multi1d<LatticeColorMatrix>& u)
+    {
+      return new SinkSmear<LatticeFermion>(Params(xml_in, path), u);
+    }
+
     //! Name to be used
     const std::string name("SHELL_SINK");
 
@@ -56,6 +64,7 @@ namespace Chroma
       foo &= LinkSmearingEnv::registered;
       foo &= QuarkSmearingEnv::registered;
       foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
       return foo;
     }
 
@@ -159,6 +168,45 @@ namespace Chroma
 	
 	Handle< QuarkSmearing<LatticePropagator> >
 	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing_type,
+									smeartop,
+									smear_path));
+
+	//
+	// Sink smear quark
+	//
+	(*quarkSmearing)(quark_sink, u_smr);
+
+	displacement(u_smr, quark_sink,
+		     params.disp_length, params.disp_dir);
+
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDP_abort(1);
+      }
+    }
+
+
+
+    //! Smear the sink
+    template<>
+    void
+    SinkSmear<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
+    {
+//      QDPIO::cout << "Shell sink" << endl;
+
+      try
+      {
+	//
+	// Create the quark smearing object
+	//
+	std::istringstream  xml_s(params.quark_smearing);
+	XMLReader  smeartop(xml_s);
+	const string smear_path = "/SmearingParam";
+	
+	Handle< QuarkSmearing<LatticeFermion> >
+	  quarkSmearing(TheFermSmearingFactory::Instance().createObject(params.quark_smearing_type,
 									smeartop,
 									smear_path));
 
