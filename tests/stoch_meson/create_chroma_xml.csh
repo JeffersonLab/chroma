@@ -37,6 +37,8 @@ cat << **EOF**
 **EOF**
 
 foreach n (1 2)
+foreach c (0 1 2)
+foreach s (0 1 2 3)
 
 if ($n == 1) then
   set rnd = (11 13 15 17)
@@ -77,8 +79,8 @@ cat << **EOF**
              <elem>0 0 0</elem>
           </spatial_mask>
 
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
+          <color_mask>${c}</color_mask>
+          <spin_mask>${s}</spin_mask>
         </Source>
       </Param>
       <NamedObject>
@@ -135,7 +137,7 @@ cat << **EOF**
         <object_type>LatticeFermion</object_type>
       </NamedObject>
       <File>
-        <file_name>./zN_prop_${n}_${t}</file_name>
+        <file_name>./zN_prop_q${n}_t${t}_c${c}_s${s}</file_name>
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
     </elem>
@@ -146,6 +148,8 @@ cat << **EOF**
 
 end  # while(t < Lt)
 
+end  # foreach s
+end  # foreach c
 end  # foreach n
 
 # Close up data file
