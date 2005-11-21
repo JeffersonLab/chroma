@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 2.6 2005-11-16 02:34:58 edwards Exp $
+// $Id: pt_source_smearing.cc,v 2.7 2005-11-21 18:33:52 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -48,7 +48,7 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name("POINT_SINK");
+    const std::string name("POINT_SOURCE");
 
     //! Register all the factories
     bool registerAll()
@@ -59,7 +59,7 @@ namespace Chroma
       return true;
     }
 
-    //! Register the sink smearing
+    //! Register the source smearing
     const bool registered = registerAll();
 
 
