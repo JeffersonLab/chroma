@@ -1,16 +1,15 @@
 #!/bin/tcsh
 
-set gauge_type = SZIN
-#set gauge_type = UNIT
+#set gauge_type = SZIN
+set gauge_type = UNIT
 set gauge_cfg = ../test_purgaug.cfg1
 
 set anisoP = "false"
 set Kappa = 0.11
 set xi_0 = 1
 set nu = 1
-set bc = "1 1 1 -1"
+set bc = "1 1 1 1"
 
-set rnd = (11 13 15 17)
 set N = 4
 
 set nrow = (4 4 4 8)
@@ -36,6 +35,16 @@ cat << **EOF**
   <InlineMeasurements>
 
 **EOF**
+
+foreach n (1 2)
+
+if ($n == 1) then
+  set rnd = (11 13 15 17)
+endif
+
+if ($n == 2) then
+  set rnd = (113 115 117 119)
+endif
 
 set t = 0
 while ($t < $nrow[4])
@@ -126,7 +135,7 @@ cat << **EOF**
         <object_type>LatticeFermion</object_type>
       </NamedObject>
       <File>
-        <file_name>./zN_prop_$t</file_name>
+        <file_name>./zN_prop_${n}_${t}</file_name>
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
     </elem>
@@ -136,6 +145,8 @@ cat << **EOF**
 @ t ++
 
 end  # while(t < Lt)
+
+end  # foreach n
 
 # Close up data file
 cat << **EOF** 

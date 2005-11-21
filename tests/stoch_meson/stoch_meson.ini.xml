@@ -2,29 +2,47 @@
 <stoch_meson>
 <annotation>
 ;
-; $Id: stoch_meson.ini.xml,v 1.1 2005-11-20 18:19:04 edwards Exp $ test input for stoch_meson code
+; $Id: stoch_meson.ini.xml,v 1.2 2005-11-21 00:24:31 edwards Exp $ test input for stoch_meson code
 ;
 </annotation>
 <Param> 
   <version>1</version>
-  <nrow>4 4 4 8</nrow>
+  <mom2_max>0</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
 </Param>
 <Prop>
-  <soln_files>
+  <operator>
     <elem>
-      <elem>./zN_prop_0</elem>
-      <elem>./zN_prop_1</elem>
-      <elem>./zN_prop_2</elem>
-      <elem>./zN_prop_3</elem>
-      <elem>./zN_prop_4</elem>
-      <elem>./zN_prop_5</elem>
-      <elem>./zN_prop_6</elem>
-      <elem>./zN_prop_7</elem>
+      <operator_file>meson_opA.dat</operator_file>
+      <soln_files>
+        <elem>./zN_prop_1_0</elem>
+        <elem>./zN_prop_1_1</elem>
+        <elem>./zN_prop_1_2</elem>
+        <elem>./zN_prop_1_3</elem>
+        <elem>./zN_prop_1_4</elem>
+        <elem>./zN_prop_1_5</elem>
+        <elem>./zN_prop_1_6</elem>
+        <elem>./zN_prop_1_7</elem>
+      </soln_files>
     </elem>
-  </soln_files>
+    <elem>
+      <operator_file>meson_opB.dat</operator_file>
+      <soln_files>
+        <elem>./zN_prop_2_0</elem>
+        <elem>./zN_prop_2_1</elem>
+        <elem>./zN_prop_2_2</elem>
+        <elem>./zN_prop_2_3</elem>
+        <elem>./zN_prop_2_4</elem>
+        <elem>./zN_prop_2_5</elem>
+        <elem>./zN_prop_2_6</elem>
+        <elem>./zN_prop_2_7</elem>
+      </soln_files>
+    </elem>
+  </operator>
 </Prop>
 <Cfg>
-  <cfg_type>SZIN</cfg_type>
+  <cfg_type>UNIT</cfg_type>
   <cfg_file>../test_purgaug.cfg1</cfg_file>
 </Cfg>
+<nrow>4 4 4 8</nrow>
 </stoch_meson>
