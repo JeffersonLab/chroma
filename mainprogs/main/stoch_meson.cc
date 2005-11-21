@@ -1,4 +1,4 @@
-// $Id: stoch_meson.cc,v 1.3 2005-11-21 00:24:11 edwards Exp $
+// $Id: stoch_meson.cc,v 1.4 2005-11-21 21:06:24 edwards Exp $
 /*! \file
  * \brief Stochastically estimate a meson operator
  *
@@ -18,21 +18,20 @@ using namespace Chroma;
 //! Parameters for running program
 struct Param_t
 {
-  int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
-  bool avg_equiv_mom;      // average over equivalent momenta
-};
-
-//! Operators
-struct Operator_t
-{
-  multi1d<std::string> soln_files;
-  std::string          op_file;
+  int mom2_max;            // (mom)^2 <= mom2_max
 };
 
 
 //! Propagators
 struct Prop_t
 {
+  //! Operators
+  struct Operator_t
+  {
+    multi1d<std::string> soln_files;
+    std::string          op_file;
+  };
+
   multi1d<Operator_t>  op;
 };
 
@@ -40,16 +39,18 @@ struct Prop_t
 //! Mega-structure of all input
 struct StochMeson_input_t
 {
-  Param_t     param;
-  Prop_t      prop;
-  Cfg_t       cfg;
+  Param_t       param;
+  PropSource_t  source_smearing;
+  PropSink_t    sink_smearing;
+  Prop_t        prop;
+  Cfg_t         cfg;
 
   multi1d<int> nrow;
 };
 
 
 //! Operator parameters
-void read(XMLReader& xml, const string& path, Operator_t& input)
+void read(XMLReader& xml, const string& path, Prop_t::Operator_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -89,7 +90,6 @@ void read(XMLReader& xml, const string& path, Param_t& param)
   }
 
   read(paramtop, "mom2_max", param.mom2_max);
-  read(paramtop, "avg_equiv_mom", param.avg_equiv_mom);
 }
 
 
@@ -103,6 +103,15 @@ void read(XMLReader& xml, const string& path, StochMeson_input_t& input)
   {
     // Read program parameters
     read(inputtop, "Param", input.param);
+
+    // Source smearing
+    read(inputtop, "SourceSmearing", input.source_smearing);
+
+    // Sink smearing
+    read(inputtop, "SinkSmearing", input.sink_smearing);
+
+    // Read in the propagator(s) info
+    read(inputtop, "Prop", input.prop);
 
     // Read in the propagator(s) info
     read(inputtop, "Prop", input.prop);
@@ -123,38 +132,50 @@ void read(XMLReader& xml, const string& path, StochMeson_input_t& input)
 //--------------------------------------------------------------
 
 
-//! Structure holding solutions
-struct QuarkSolution_t
-{
-  LatticeFermion  source;
-  LatticeFermion  soln;
-  PropSource_t    source_header;
-  ChromaProp_t    prop_header;
-};
-
 //! Structure holding a source and its solutions
 struct QuarkSourceSolutions_t
 {
+  //! Structure holding solutions
+  struct QuarkSolution_t
+  {
+    LatticeFermion  source;
+    LatticeFermion  soln;
+    PropSource_t    source_header;
+    ChromaProp_t    prop_header;
+  };
+
   int   j_decay;
   Seed  seed;
   multi1d<QuarkSolution_t>  dilutions;
 };
 
-//! Meson operator
-struct MesonOperatorElement_t
-{
-  multi2d<DComplex> elem;
-};
 
 //! Meson operator
 struct MesonOperator_t
 {
+  //! Meson operator
+  struct MesonOperatorElement_t
+  {
+    multi2d<DComplex> elem;
+  };
+
   int   j_decay;
   Seed  seed_l;
   Seed  seed_r;
   multi2d<MesonOperatorElement_t> op;
 };
 
+
+bool linkageHack(void)
+{
+  bool foo = true;
+
+  // Source and sink smearing
+  foo &= QuarkSourceSmearingEnv::registered;
+  foo &= QuarkSinkSmearingEnv::registered;
+
+  return foo;
+}
 
 //! Stochastically estimate meson operators
 /*! \defgroup stochastic Stochastically estimate meson operators
@@ -165,10 +186,12 @@ struct MesonOperator_t
 
 int main(int argc, char *argv[])
 {
+  START_CODE();
+
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-  START_CODE();
+  linkageHack();
 
   XMLReader xml_in;
 
@@ -203,15 +226,6 @@ int main(int argc, char *argv[])
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "stoch_meson");
 
-  // Start up the config
-  multi1d<LatticeColorMatrix> u(Nd);
-  XMLReader gauge_file_xml, gauge_xml;
-
-  // Start up the gauge field
-  QDPIO::cout << "Attempt to read gauge field" << endl;
-  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
-  QDPIO::cout << "Gauge field successfully read" << endl;
-
   proginfo(xml_out);    // Print out basic program info
 
   // Write out the input
@@ -220,6 +234,33 @@ int main(int argc, char *argv[])
   push(xml_out, "Output_version");
   write(xml_out, "out_version", 1);
   pop(xml_out);
+
+  xml_out.flush();
+
+  // Start up the config
+  StopWatch swatch;
+  swatch.reset();
+  multi1d<LatticeColorMatrix> u(Nd);
+  XMLReader gauge_file_xml, gauge_xml;
+
+  // Start up the gauge field
+  QDPIO::cout << "Attempt to read gauge field" << endl;
+  swatch.start();
+  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+  swatch.stop();
+
+  QDPIO::cout << "Gauge field successfully read: time= " 
+	      << swatch.getTimeInSeconds() 
+	      << " secs" << endl;
+
+  // Write out the config header
+  push(xml_out, "Config_info");
+  write(xml_out, "file_xml", gauge_file_xml);
+  write(xml_out, "gauge_xml", gauge_xml);
+  pop(xml_out);
+  
+  // Calculate some gauge invariant observables
+  MesPlq(xml_out, "Observables", u);
 
   xml_out.flush();
 
@@ -262,15 +303,6 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
   QDPIO::cout << "Sources and solutions successfully read\n" << endl;
-
-
-#if 0
-  // Save prop input
-  push(xml_out, "Propagators");
-  write(xml_out, "ForwardProp", soln_prop_headers);
-  write(xml_out, "PropSource", soln_source_headers);
-  pop(xml_out);
-#endif
 
 
   //
@@ -342,7 +374,7 @@ int main(int argc, char *argv[])
 	quarks[n].dilutions[i].source = srcConst(u);
 	quark_noise -= quarks[n].dilutions[i].source;
 
-#if 1
+#if 0
 	// Diagnostic
 	{
 	  // Keep a copy of the phases with NO momenta
@@ -388,7 +420,7 @@ int main(int argc, char *argv[])
   int j_decay = quarks[0].j_decay;
 
   // Initialize the slow Fourier transform phases
-  SftMom phases(input.param.mom2_max, input.param.avg_equiv_mom, j_decay);
+  SftMom phases(input.param.mom2_max, false, j_decay);
     
   // Length of lattice in decay direction
   int length = phases.numSubsets();
@@ -415,22 +447,41 @@ int main(int argc, char *argv[])
   }
 
   // Construct operator A
+  try
   {
     int G5 = Ns*Ns-1;
     int gamma = 0;   // need to understand this convention - I thought I should use G5 for a pion
+
+    std::istringstream  xml_s(input.source_smearing.source);
+    XMLReader  sourcetop(xml_s);
+    const string source_path = "/Source";
+    QDPIO::cout << "Source = " << input.source_smearing.source_type << endl;
+
+    Handle< QuarkSourceSink<LatticeFermion> >
+      sourceSmearing(TheFermSourceSmearingFactory::Instance().createObject(
+		       input.source_smearing.source_type,
+		       sourcetop,
+		       source_path,
+		       u));
 
     push(xml_out, "OperatorA");
 
     // Could have some optimizations for time slice dilutions
     for(int i=0; i < meson_opA.op.size2(); ++i)
     {
+      LatticeFermion source_tmp = quarks[1].dilutions[i].source;
+      (*sourceSmearing)(source_tmp);
+
       for(int j=0; j < meson_opA.op.size1(); ++j)
       {
-	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * quarks[0].dilutions[j].soln); // do lots of stuff here
-	LatticeComplex corr_fn = localInnerProduct(quarks[1].dilutions[i].source, z);
+	LatticeFermion soln_tmp = quarks[0].dilutions[j].soln;
+	(*sourceSmearing)(soln_tmp);
+
+	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * soln_tmp); // do lots of stuff here
+	LatticeComplex corr_fn = localInnerProduct(source_tmp, z);
 	meson_opA.op(i,j).elem = phases.sft(corr_fn);
 
-#if 1
+#if 0
 	// Diagnostic
 	{
 	  push(xml_out, "elem");
@@ -445,6 +496,11 @@ int main(int argc, char *argv[])
 
     pop(xml_out); // OperatorA
   } // opA
+  catch(const std::string& e) 
+  {
+    QDPIO::cerr << ": Caught Exception creating source smearing: " << e << endl;
+    QDP_abort(1);
+  }
 
 
   // Operator B
@@ -466,18 +522,36 @@ int main(int argc, char *argv[])
     int G5 = Ns*Ns-1;
     int gamma = 0;   // need to understand this convention - I thought I should use G5 for a pion
 
+    std::istringstream  xml_s(input.sink_smearing.sink);
+    XMLReader  sinktop(xml_s);
+    const string sink_path = "/Sink";
+    QDPIO::cout << "Sink = " << input.sink_smearing.sink_type << endl;
+
+    Handle< QuarkSourceSink<LatticeFermion> >
+      sinkSmearing(TheFermSinkSmearingFactory::Instance().createObject(
+		     input.sink_smearing.sink_type,
+		     sinktop,
+		     sink_path,
+		     u));
+
     push(xml_out, "OperatorB");
 
     // Could have some optimizations for time slice dilutions
     for(int j=0; j < meson_opB.op.size2(); ++j)
     {
+      LatticeFermion source_tmp = quarks[0].dilutions[j].source;
+      (*sinkSmearing)(source_tmp);
+
       for(int i=0; i < meson_opB.op.size1(); ++i)
       {
-	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * quarks[1].dilutions[i].soln); // do lots of stuff here
-	LatticeComplex corr_fn = localInnerProduct(quarks[0].dilutions[j].source, z);
+	LatticeFermion soln_tmp = quarks[1].dilutions[i].soln;
+	(*sinkSmearing)(soln_tmp);
+
+	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * soln_tmp); // do lots of stuff here
+	LatticeComplex corr_fn = localInnerProduct(source_tmp, z);
 	meson_opB.op(j,i).elem = phases.sft(corr_fn);
 
-#if 1
+#if 0
 	// Diagnostic
 	{
 	  push(xml_out, "elem");
