@@ -1,4 +1,4 @@
-// $Id: stout_link_smearing.cc,v 1.4 2005-11-18 02:04:16 edwards Exp $
+// $Id: stout_link_smearing.cc,v 1.5 2005-11-22 18:42:41 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -8,6 +8,8 @@
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/smear/stout_link_smearing.h"
 #include "meas/smear/stout_smear.h"
+
+#include "meas/glue/mesplq.h"
 
 namespace Chroma
 {
@@ -120,5 +122,6 @@ namespace Chroma
       }
     }
 
+    u = u_stout;
   }
 }
