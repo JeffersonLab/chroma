@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: link_smearing_factory.cc,v 2.1 2005-11-07 06:40:55 edwards Exp $
+// $Id: link_smearing_factory.cc,v 2.2 2005-11-22 19:16:04 edwards Exp $
 /*! \file
  *  \brief Factory for producing link smearing objects
  */
@@ -7,6 +7,8 @@
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "handle.h"
+
+#include "meas/glue/mesplq.h"
 
 namespace Chroma
 {
@@ -36,6 +38,20 @@ namespace Chroma
       QDPIO::cerr << __func__ << ": Caught Exception smearing: " << e << endl;
       QDP_abort(1);
     }
+
+
+    // Paranoia check
+    if (link_xml != "")
+    {
+      Double w_plaq, s_plaq, t_plaq, link;
+      MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+
+      QDPIO::cout << __func__ << ": w_plaq=" << w_plaq << " s_plaq=" << s_plaq
+		  << " t_plaq=" << t_plaq
+		  << " link=" << link
+		  << endl;
+    }
+
   }
 
 
