@@ -1,4 +1,4 @@
-// $Id: stoch_meson.cc,v 1.4 2005-11-21 21:06:24 edwards Exp $
+// $Id: stoch_meson.cc,v 1.5 2005-11-22 22:02:53 edwards Exp $
 /*! \file
  * \brief Stochastically estimate a meson operator
  *
@@ -466,6 +466,14 @@ int main(int argc, char *argv[])
 
     push(xml_out, "OperatorA");
 
+    // Source smear all the solutions up front
+    multi1d<LatticeFermion> smeared_solns(meson_opA.op.size1());
+    for(int j=0; j < meson_opA.op.size1(); ++j)
+    {
+      smeared_solns[j] = quarks[0].dilutions[j].soln;
+      (*sourceSmearing)(smeared_solns[j]);
+    }
+
     // Could have some optimizations for time slice dilutions
     for(int i=0; i < meson_opA.op.size2(); ++i)
     {
@@ -474,10 +482,7 @@ int main(int argc, char *argv[])
 
       for(int j=0; j < meson_opA.op.size1(); ++j)
       {
-	LatticeFermion soln_tmp = quarks[0].dilutions[j].soln;
-	(*sourceSmearing)(soln_tmp);
-
-	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * soln_tmp); // do lots of stuff here
+	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * smeared_solns[j]); // do lots of stuff here
 	LatticeComplex corr_fn = localInnerProduct(source_tmp, z);
 	meson_opA.op(i,j).elem = phases.sft(corr_fn);
 
@@ -536,6 +541,14 @@ int main(int argc, char *argv[])
 
     push(xml_out, "OperatorB");
 
+    // Sink smear all the solutions up front
+    multi1d<LatticeFermion> smeared_solns(meson_opB.op.size1());
+    for(int i=0; i < meson_opB.op.size1(); ++i)
+    {
+      smeared_solns[i] = quarks[1].dilutions[i].soln;
+      (*sinkSmearing)(smeared_solns[i]);
+    }
+
     // Could have some optimizations for time slice dilutions
     for(int j=0; j < meson_opB.op.size2(); ++j)
     {
@@ -544,10 +557,7 @@ int main(int argc, char *argv[])
 
       for(int i=0; i < meson_opB.op.size1(); ++i)
       {
-	LatticeFermion soln_tmp = quarks[1].dilutions[i].soln;
-	(*sinkSmearing)(soln_tmp);
-
-	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * soln_tmp); // do lots of stuff here
+	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * smeared_solns[i]); // do lots of stuff here
 	LatticeComplex corr_fn = localInnerProduct(source_tmp, z);
 	meson_opB.op(j,i).elem = phases.sft(corr_fn);
 
