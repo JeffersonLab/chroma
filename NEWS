@@ -1,4 +1,9 @@
 11/20/2005 -- Robert Edwards
+	Version 2.5.2. Bug fixes. Hyp_smear3d didn't set the time link correctly.
+        Fixed stout smearing when called from quark smearing - otherwise it was
+        fine. Added LINK_SMEAR inline to replace all the separate inlines.
+
+11/20/2005 -- Robert Edwards
 	Version 2.5.1. Some library routines require qdp-1.18.X . Rearranged diluted
         source construction.
 
