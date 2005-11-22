@@ -1,4 +1,4 @@
-//  $Id: hyp_smear3d.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
+//  $Id: hyp_smear3d.cc,v 2.1 2005-11-22 21:59:30 edwards Exp $
 /*! \file
  *  \brief Hyp-smearing of the gauge configuration
  */
@@ -54,6 +54,8 @@ void Hyp_Smear3d(const multi1d<LatticeColorMatrix>& u,
    * with staples only in one orthogonal direction, nu
    */
   QDPIO::cout << "HYP-smearing-3D only involving spatial links!" << endl;
+
+  u_hyp = u;   // only need to make sure j_decay direction is set
 
   ftmp1 = 1.0 - alpha3;
   ftmp2 = alpha3 / 2;
