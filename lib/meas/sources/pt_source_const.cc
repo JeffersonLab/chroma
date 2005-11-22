@@ -1,4 +1,4 @@
-// $Id: pt_source_const.cc,v 2.4 2005-11-16 02:34:58 edwards Exp $
+// $Id: pt_source_const.cc,v 2.5 2005-11-22 22:00:27 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -134,7 +134,7 @@ namespace Chroma
 
       // Possibly smear the links for the displacement
       multi1d<LatticeColorMatrix> u_smr = u;
-      linkSmear(u_smr, params.link_smearing, params.link_smearing_type);
+      linkSmear(u_smr, std::string("/LinkSmearing"), params.link_smearing, params.link_smearing_type);
 
       // Create the quark source
       LatticePropagator quark_source;

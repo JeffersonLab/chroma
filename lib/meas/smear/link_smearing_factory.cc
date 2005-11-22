@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: link_smearing_factory.cc,v 2.2 2005-11-22 19:16:04 edwards Exp $
+// $Id: link_smearing_factory.cc,v 2.3 2005-11-22 22:00:27 edwards Exp $
 /*! \file
  *  \brief Factory for producing link smearing objects
  */
@@ -14,7 +14,8 @@ namespace Chroma
 {
 
   // Convenience function to smear link
-  void linkSmear(multi1d<LatticeColorMatrix>& u, const std::string& link_xml, const std::string& link_type)
+  void linkSmear(multi1d<LatticeColorMatrix>& u, const std::string& path,
+		 const std::string& link_xml, const std::string& link_type)
   {
     bool foo = LinkSmearingEnv::registered;  // make sure all link smearings are loaded
 
@@ -24,12 +25,11 @@ namespace Chroma
       {
 	std::istringstream  xml_s(link_xml);
 	XMLReader  linktop(xml_s);
-	const string link_path = "/LinkSmearing";
 	
 	Handle< LinkSmearing >
 	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(link_type,
 								       linktop,
-								       link_path));
+								       path));
 	(*linkSmearing)(u);
       }
     }

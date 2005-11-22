@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: link_smearing_factory.h,v 1.2 2005-11-07 06:40:55 edwards Exp $
+// $Id: link_smearing_factory.h,v 1.3 2005-11-22 22:00:27 edwards Exp $
 /*! \file
  *  \brief Factory for producing link smearing objects
  */
@@ -28,7 +28,8 @@ namespace Chroma
 
   //! Convenience function to smear link
   /*! @ingroup smear */
-  void linkSmear(multi1d<LatticeColorMatrix>& u, const std::string& link_xml, const std::string& link_type);
+  void linkSmear(multi1d<LatticeColorMatrix>& u, const std::string& path,
+		 const std::string& link_xml, const std::string& link_type);
 
 }
 

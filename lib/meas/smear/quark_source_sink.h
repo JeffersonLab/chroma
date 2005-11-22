@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quark_source_sink.h,v 2.2 2005-11-08 18:32:29 edwards Exp $
+// $Id: quark_source_sink.h,v 2.3 2005-11-22 22:00:27 edwards Exp $
 
 /*! @file
  * @brief Quark source or sink smearing
@@ -45,7 +45,7 @@ namespace Chroma
 			std::string link_smearing,
 			std::string link_smearing_type)
     {
-      linkSmear(u, link_smearing, link_smearing_type);
+      linkSmear(u, std::string("/LinkSmearing"), link_smearing, link_smearing_type);
     }
 
 
