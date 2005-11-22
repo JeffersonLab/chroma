@@ -36,10 +36,10 @@ APE smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.3</chroma>
-      <qdp>1.17.1</qdp>
+      <chroma>2.5</chroma>
+      <qdp>1.18.0</qdp>
     </code_version>
-    <run_date>08 Nov 05 00:26:18 EST</run_date>
+    <run_date>22 Nov 05 14:13:56 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -132,10 +132,10 @@ APE smear task
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.5</chroma>
+            <qdp>1.18.0</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:26:18 EST</run_date>
+          <run_date>22 Nov 05 14:13:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -230,7 +230,7 @@ APE smear task
           <link_smear_fact>2.5</link_smear_fact>
           <j_decay>3</j_decay>
         </Smearing_parameters>
-        <Observables>
+        <APE_observables>
           <w_plaq>0.985158</w_plaq>
           <s_plaq>0.999212</s_plaq>
           <t_plaq>0.971105</t_plaq>
@@ -253,7 +253,7 @@ APE smear task
               <im>0.00215502</im>
             </elem>
           </pollp>
-        </Observables>
+        </APE_observables>
       </apesmear>
     </elem>
   </InlineObservables>
