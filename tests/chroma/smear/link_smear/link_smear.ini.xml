@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Stout smear task
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </Param>
+      <NamedObject>
+        <linksmear_id>ape</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
+        <version>4</version>
+        <alpha1>0.75</alpha1>
+        <alpha2>0.6</alpha2>
+        <alpha3>0.3</alpha3>
+        <num_smear>1</num_smear>
+        <no_smear_dir>3</no_smear_dir>
+      </Param>
+      <NamedObject>
+        <linksmear_id>hyp_3</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
+        <version>4</version>
+        <alpha1>0.75</alpha1>
+        <alpha2>0.6</alpha2>
+        <alpha3>0.3</alpha3>
+        <num_smear>1</num_smear>
+        <no_smear_dir>-1</no_smear_dir>
+      </Param>
+      <NamedObject>
+        <linksmear_id>hyp_4</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+        <link_smear_fact>0.15625</link_smear_fact>
+        <link_smear_num>16</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </Param>
+      <NamedObject>
+        <linksmear_id>stout</linksmear_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>SZIN</cfg_type>
+ <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</chroma>
+
+
