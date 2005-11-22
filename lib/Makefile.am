@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.15 2005-11-20 18:20:39 edwards Exp $
+# $Id: Makefile.am,v 2.16 2005-11-22 22:02:12 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -447,6 +447,7 @@ nobase_include_HEADERS += \
         meas/inline/io/szin_write_obj_funcmap.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
+	meas/inline/smear/inline_link_smear.h \
 	meas/inline/smear/inline_ape_smear.h \
 	meas/inline/smear/inline_hyp_smear.h \
 	meas/inline/smear/inline_stout_smear.h
@@ -805,6 +806,7 @@ libchroma_a_SOURCES += \
         meas/inline/io/szin_read_obj_funcmap.cc \
         meas/inline/io/szin_write_obj_funcmap.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
+	meas/inline/smear/inline_link_smear.cc \
 	meas/inline/smear/inline_ape_smear.cc \
 	meas/inline/smear/inline_hyp_smear.cc \
 	meas/inline/smear/inline_stout_smear.cc
