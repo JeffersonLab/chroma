@@ -1,4 +1,4 @@
-// $Id: inline_stout_smear.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: inline_stout_smear.cc,v 2.1 2005-11-22 19:15:28 edwards Exp $
 /*! \file
  *  \brief Inline Stout smearing
  */
@@ -191,7 +191,7 @@ namespace Chroma
     unitarityCheck(u_stout);
   
     // Again calculate some gauge invariant observables
-    MesPlq(xml_out, "Observables", u_stout);
+    MesPlq(xml_out, "Stout_observables", u_stout);
 
     // Now store the configuration to a memory object
     {

@@ -1,4 +1,4 @@
-// $Id: inline_ape_smear.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: inline_ape_smear.cc,v 2.1 2005-11-22 19:15:28 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -190,7 +190,7 @@ namespace Chroma
     unitarityCheck(u_ape);
   
     // Again calculate some gauge invariant observables
-    MesPlq(xml_out, "Observables", u_ape);
+    MesPlq(xml_out, "APE_observables", u_ape);
 
     // Now store the configuration to a memory object
     {
