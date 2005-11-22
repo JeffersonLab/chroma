@@ -1,4 +1,4 @@
-// $Id: stout_link_smearing.cc,v 1.5 2005-11-22 18:42:41 edwards Exp $
+// $Id: stout_link_smearing.cc,v 1.6 2005-11-22 18:55:35 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -120,8 +120,8 @@ namespace Chroma
 	}
 	QDPIO::cout << "Gauge field Stout-smeared!" << endl;
       }
-    }
 
-    u = u_stout;
+      u = u_stout;
+    }
   }
 }
