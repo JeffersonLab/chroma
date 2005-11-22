@@ -41,7 +41,7 @@ foreach c (0 1 2)
 foreach s (0 1 2 3)
 
 if ($n == 1) then
-  set rnd = (11 13 15 17)
+  set rnd = (201 213 215 217)
 endif
 
 if ($n == 2) then
