@@ -1,4 +1,4 @@
-// $Id: stoch_meson.cc,v 1.5 2005-11-22 22:02:53 edwards Exp $
+// $Id: stoch_meson.cc,v 1.6 2005-11-24 03:56:34 edwards Exp $
 /*! \file
  * \brief Stochastically estimate a meson operator
  *
@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
   try
   {
     int G5 = Ns*Ns-1;
-    int gamma = 0;   // need to understand this convention - I thought I should use G5 for a pion
+    int gamma = G5;
 
     std::istringstream  xml_s(input.source_smearing.source);
     XMLReader  sourcetop(xml_s);
@@ -482,7 +482,7 @@ int main(int argc, char *argv[])
 
       for(int j=0; j < meson_opA.op.size1(); ++j)
       {
-	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * smeared_solns[j]); // do lots of stuff here
+	LatticeFermion z = Gamma(gamma) * smeared_solns[j]; // do lots of stuff here
 	LatticeComplex corr_fn = localInnerProduct(source_tmp, z);
 	meson_opA.op(i,j).elem = phases.sft(corr_fn);
 
@@ -525,7 +525,7 @@ int main(int argc, char *argv[])
   // Construct operator B
   {
     int G5 = Ns*Ns-1;
-    int gamma = 0;   // need to understand this convention - I thought I should use G5 for a pion
+    int gamma = G5;
 
     std::istringstream  xml_s(input.sink_smearing.sink);
     XMLReader  sinktop(xml_s);
@@ -557,7 +557,7 @@ int main(int argc, char *argv[])
 
       for(int i=0; i < meson_opB.op.size1(); ++i)
       {
-	LatticeFermion z = Gamma(G5) * (Gamma(gamma) * smeared_solns[i]); // do lots of stuff here
+	LatticeFermion z = Gamma(gamma) * smeared_solns[i]; // do lots of stuff here
 	LatticeComplex corr_fn = localInnerProduct(source_tmp, z);
 	meson_opB.op(j,i).elem = phases.sft(corr_fn);
 
