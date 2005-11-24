@@ -37,8 +37,6 @@ cat << **EOF**
 **EOF**
 
 foreach n (1 2)
-foreach c (0 1 2)
-foreach s (0 1 2 3)
 
 if ($n == 1) then
   set rnd = (201 213 215 217)
@@ -47,6 +45,9 @@ endif
 if ($n == 2) then
   set rnd = (113 115 117 119)
 endif
+
+foreach c (0 1 2)
+foreach s (0 1 2 3)
 
 set t = 0
 while ($t < $nrow[4])
