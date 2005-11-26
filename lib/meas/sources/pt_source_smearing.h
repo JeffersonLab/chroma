@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_smearing.h,v 2.6 2005-11-16 02:34:58 edwards Exp $
+// $Id: pt_source_smearing.h,v 2.7 2005-11-26 03:10:48 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -21,7 +21,7 @@ namespace Chroma
   
 
     //! Point sink parameters
-    /*! @ingroup sinks */
+    /*! @ingroup sources */
     struct Params
     {
       Params();
@@ -70,11 +70,11 @@ namespace Chroma
 
 
   //! Reader
-  /*! @ingroup sinks */
+  /*! @ingroup sources */
   void read(XMLReader& xml, const string& path, PointQuarkSourceSmearingEnv::Params& param);
 
   //! Writer
-  /*! @ingroup sinks */
+  /*! @ingroup sources */
   void write(XMLWriter& xml, const string& path, const PointQuarkSourceSmearingEnv::Params& param);
 
 }  // end namespace Chroma
