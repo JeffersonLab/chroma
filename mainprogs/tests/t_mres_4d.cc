@@ -1,4 +1,4 @@
-// $Id: t_mres_4d.cc,v 2.0 2005-09-25 21:04:47 edwards Exp $
+// $Id: t_mres_4d.cc,v 2.1 2005-11-30 04:47:27 edwards Exp $
 
 #include "chroma.h"
 
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 
   LatticePropagator quark_propagator;
   ChromaProp_t prop_header;
-  PropSource_t source_header;
+  PropSourceConst_t source_header;
 
   {
     XMLReader prop_file_xml, prop_record_xml;

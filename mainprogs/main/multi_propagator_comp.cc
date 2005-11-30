@@ -1,6 +1,10 @@
-// $Id: multi_propagator_comp.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: multi_propagator_comp.cc,v 2.1 2005-11-30 04:47:27 edwards Exp $
 // $Log: multi_propagator_comp.cc,v $
-// Revision 2.0  2005-09-25 21:04:45  edwards
+// Revision 2.1  2005-11-30 04:47:27  edwards
+// Changed PropSource_t to PropSourceConst_t and added a new PropSourceSmear_t.
+// Renamed PropSink_t to PropSinkSmear_t .
+//
+// Revision 2.0  2005/09/25 21:04:45  edwards
 // Moved to version 2.0
 //
 // Revision 1.10  2005/04/11 02:01:30  edwards
@@ -254,7 +258,7 @@ int main(int argc, char **argv)
 
   // Try to invert this record XML into a source struct
   // Also pull out the id of this source
-  PropSource_t source_header;
+  PropSourceConst_t source_header;
 
   try
   {

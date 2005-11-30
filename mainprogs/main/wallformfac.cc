@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 2.1 2005-11-08 05:40:49 edwards Exp $
+// $Id: wallformfac.cc,v 2.2 2005-11-30 04:47:27 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -294,7 +294,7 @@ int main(int argc, char *argv[])
   XMLReader forwprop_file_xml, forwprop_record_xml;
   LatticePropagator forward_quark_prop;
   ChromaProp_t forward_prop_header;
-  PropSource_t forward_source_header;
+  PropSourceConst_t forward_source_header;
   {
     QDPIO::cout << "Attempt to read forward propagator" << endl;
     readQprop(forwprop_file_xml, 
@@ -352,7 +352,7 @@ int main(int argc, char *argv[])
   XMLReader backprop_file_xml, backprop_record_xml;
   LatticePropagator backward_quark_prop;
   ChromaProp_t backward_prop_header;
-  PropSource_t backward_source_header;
+  PropSourceConst_t backward_source_header;
   {
     QDPIO::cout << "Attempt to read backward propagator" << endl;
     readQprop(backprop_file_xml, 

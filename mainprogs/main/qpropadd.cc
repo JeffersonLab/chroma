@@ -1,4 +1,4 @@
-// $Id: qpropadd.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: qpropadd.cc,v 2.1 2005-11-30 04:47:27 edwards Exp $
 /*! \file
  * \brief Add two quark propagators
  *
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
   XMLReader prop_file_xml1, prop_record_xml1;
   LatticePropagator quark_propagator1;
   ChromaProp_t prop_header1;
-  PropSource_t source_header1;
+  PropSourceConst_t source_header1;
   {
     QDPIO::cout << "Attempt to read first forward propagator" << endl;
     readQprop(prop_file_xml1, 
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
   XMLReader prop_file_xml2, prop_record_xml2;
   LatticePropagator quark_propagator2;
   ChromaProp_t prop_header2;
-  PropSource_t source_header2;
+  PropSourceConst_t source_header2;
   {
     QDPIO::cout << "Attempt to read second forward propagator" << endl;
     readQprop(prop_file_xml2, 
@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
    */
   LatticePropagator  quark_propagator = 0.5*(quark_propagator1 + quark_propagator2);
   ChromaProp_t prop_header = prop_header1;
-  PropSource_t source_header = source_header1;
+  PropSourceConst_t source_header = source_header1;
 
 
   // Save the propagator

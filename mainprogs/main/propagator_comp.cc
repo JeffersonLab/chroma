@@ -1,6 +1,10 @@
-// $Id: propagator_comp.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: propagator_comp.cc,v 2.1 2005-11-30 04:47:27 edwards Exp $
 // $Log: propagator_comp.cc,v $
-// Revision 2.0  2005-09-25 21:04:45  edwards
+// Revision 2.1  2005-11-30 04:47:27  edwards
+// Changed PropSource_t to PropSourceConst_t and added a new PropSourceSmear_t.
+// Renamed PropSink_t to PropSinkSmear_t .
+//
+// Revision 2.0  2005/09/25 21:04:45  edwards
 // Moved to version 2.0
 //
 // Revision 1.13  2005/04/11 02:01:30  edwards
@@ -296,7 +300,7 @@ int main(int argc, char **argv)
       // First identify what kind of source might be here
       if (source_record_xml.count("/MakeSource") != 0)
       {
-	PropSource_t source_header;
+	PropSourceConst_t source_header;
 
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
 	j_decay = source_header.j_decay;
@@ -306,9 +310,9 @@ int main(int argc, char **argv)
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
       {
-	ChromaProp_t prop_header;
-	PropSource_t source_header;
-	SeqSource_t seqsource_header;
+	ChromaProp_t       prop_header;
+	PropSourceConst_t  source_header;
+	SeqSource_t        seqsource_header;
 
 	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
 	// Any source header will do for j_decay

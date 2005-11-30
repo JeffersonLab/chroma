@@ -1,6 +1,10 @@
-// $Id: collect_propcomp.cc,v 2.2 2005-11-08 06:30:59 edwards Exp $
+// $Id: collect_propcomp.cc,v 2.3 2005-11-30 04:47:27 edwards Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 2.2  2005-11-08 06:30:59  edwards
+// Revision 2.3  2005-11-30 04:47:27  edwards
+// Changed PropSource_t to PropSourceConst_t and added a new PropSourceSmear_t.
+// Renamed PropSink_t to PropSinkSmear_t .
+//
+// Revision 2.2  2005/11/08 06:30:59  edwards
 // Moved nrow to outer structure.
 //
 // Revision 2.1  2005/11/08 05:40:49  edwards
@@ -266,7 +270,7 @@ int main(int argc, char **argv)
       // First identify what kind of source might be here
       if (source_record_xml.count("/MakeSource") != 0)
       {
-	PropSource_t source_header;
+	PropSourceConst_t source_header;
 
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
 	make_sourceP = true;

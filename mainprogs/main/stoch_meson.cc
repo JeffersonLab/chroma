@@ -1,4 +1,4 @@
-// $Id: stoch_meson.cc,v 1.6 2005-11-24 03:56:34 edwards Exp $
+// $Id: stoch_meson.cc,v 1.7 2005-11-30 04:47:27 edwards Exp $
 /*! \file
  * \brief Stochastically estimate a meson operator
  *
@@ -29,9 +29,9 @@ struct Prop_t
   struct Operator_t
   {
     multi1d<std::string> soln_files;
-    std::string          op_file;
   };
 
+  std::string          op_file;
   multi1d<Operator_t>  op;
 };
 
@@ -39,11 +39,11 @@ struct Prop_t
 //! Mega-structure of all input
 struct StochMeson_input_t
 {
-  Param_t       param;
-  PropSource_t  source_smearing;
-  PropSink_t    sink_smearing;
-  Prop_t        prop;
-  Cfg_t         cfg;
+  Param_t            param;
+  PropSourceSmear_t  source_smearing;
+  PropSinkSmear_t    sink_smearing;
+  Prop_t             prop;
+  Cfg_t              cfg;
 
   multi1d<int> nrow;
 };
@@ -55,7 +55,6 @@ void read(XMLReader& xml, const string& path, Prop_t::Operator_t& input)
   XMLReader inputtop(xml, path);
 
   read(inputtop, "soln_files", input.soln_files);
-  read(inputtop, "operator_file", input.op_file);
 }
 
 
@@ -64,6 +63,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
+  read(inputtop, "operator_file", input.op_file);
   read(inputtop, "operator", input.op);
 }
 
@@ -113,9 +113,6 @@ void read(XMLReader& xml, const string& path, StochMeson_input_t& input)
     // Read in the propagator(s) info
     read(inputtop, "Prop", input.prop);
 
-    // Read in the propagator(s) info
-    read(inputtop, "Prop", input.prop);
-
     // Read the gauge field
     read(inputtop, "Cfg", input.cfg);
 
@@ -138,10 +135,10 @@ struct QuarkSourceSolutions_t
   //! Structure holding solutions
   struct QuarkSolution_t
   {
-    LatticeFermion  source;
-    LatticeFermion  soln;
-    PropSource_t    source_header;
-    ChromaProp_t    prop_header;
+    LatticeFermion     source;
+    LatticeFermion     soln;
+    PropSourceConst_t  source_header;
+    ChromaProp_t       prop_header;
   };
 
   int   j_decay;
@@ -153,17 +150,86 @@ struct QuarkSourceSolutions_t
 //! Meson operator
 struct MesonOperator_t
 {
+  //! Serialize generalized operator object
+  multi1d<Complex> serialize();
+
   //! Meson operator
-  struct MesonOperatorElement_t
+  struct MesonOperatorInsertion_t
   {
-    multi2d<DComplex> elem;
+    //! Meson operator element
+    struct MesonOperatorElement_t
+    {
+      multi2d<DComplex> elem;
+    };
+    
+    multi2d<MesonOperatorElement_t> op;
   };
 
-  int   j_decay;
-  Seed  seed_l;
-  Seed  seed_r;
-  multi2d<MesonOperatorElement_t> op;
+  std::string   smearing_l;        /*!< string holding smearing xml */
+  std::string   smearing_r;        /*!< string holding smearing xml */
+
+  int           mom2_max;
+  int           j_decay;
+  Seed          seed_l;
+  Seed          seed_r;
+  multi1d<MesonOperatorInsertion_t> inser;  // outside array is over gammas
 };
+
+
+//! Serialize generalized operator object
+multi1d<Complex> MesonOperator_t::serialize()
+{
+  int inser_size = inser.size();
+  int op_size2   = inser[0].op.size2();
+  int op_size1   = inser[0].op.size1();
+  int elem_size2 = inser[0].op(0,0).elem.size2();
+  int elem_size1 = inser[0].op(0,0).elem.size1();
+
+  // dreadful hack - use a complex to hold an int
+  Complex inser_sizes, op_sizes, elem_sizes;
+  inser_sizes = cmplx(Real(inser.size()), Real(zero));
+  op_sizes    = cmplx(Real(op_size2), Real(op_size1));
+  elem_sizes  = cmplx(Real(elem_size2), Real(elem_size1));
+
+  multi1d<Complex> mesprop_1d(3 + inser_size*op_size2*op_size1*elem_size2*elem_size1);
+
+  int cnt = 0;
+
+  mesprop_1d[cnt++] = inser_sizes;
+  mesprop_1d[cnt++] = op_sizes;
+  mesprop_1d[cnt++] = elem_sizes;
+
+  for(int g=0; g < inser.size(); ++g)             // inser
+    for(int i=0; i < inser[g].op.size2(); ++i)             // op_l
+      for(int j=0; j < inser[g].op.size1(); ++j)           // op_r
+	for(int k=0; k < inser[g].op(i,j).elem.size2(); ++k)    // elem_l
+	  for(int l=0; l < inser[g].op(i,j).elem.size1(); ++l)  // elem_r
+	    mesprop_1d[cnt++] = inser[g].op(i,j).elem(k,l);
+
+  return mesprop_1d;
+}
+
+
+//! MesonOperator header writer
+void write(XMLWriter& xml, const string& path, const MesonOperator_t& param)
+{
+  if( path != "." )
+    push(xml, path);
+
+  int version = 1;
+  write(xml, "version", version);
+  write(xml, "mom2_max", param.mom2_max);
+  write(xml, "j_decay", param.j_decay);
+  write(xml, "seed_l", param.seed_l);
+  write(xml, "seed_r", param.seed_r);
+  write(xml, "smearing_l", param.smearing_l);
+  write(xml, "smearing_r", param.smearing_r);
+
+  if( path != "." )
+    pop(xml);
+}
+
+
 
 
 bool linkageHack(void)
@@ -195,6 +261,10 @@ int main(int argc, char *argv[])
 
   XMLReader xml_in;
 
+  StopWatch snoop;
+  snoop.reset();
+  snoop.start();
+
   // Input parameter structure
   StochMeson_input_t  input;
 
@@ -219,7 +289,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(input.nrow);
   Layout::create();
 
-  QDPIO::cout << " STOCHMESON: stochastically estimate a meson operator" << endl;
+  QDPIO::cout << " STOCH_MESON: stochastically estimate a meson operator" << endl;
 
   // Instantiate XML writer for XMLDAT
   // XMLFileWriter  xml_out(Chroma::getXMLOutputFileName());
@@ -271,6 +341,7 @@ int main(int argc, char *argv[])
   //
   // Read the source and solutions
   //
+  swatch.start();
   multi1d<QuarkSourceSolutions_t>  quarks(input.prop.op.size());
   QDPIO::cout << "num_quarks= " << input.prop.op.size() << endl;
 
@@ -302,13 +373,20 @@ int main(int argc, char *argv[])
     QDPIO::cerr << "Error extracting headers: " << e << endl;
     QDP_abort(1);
   }
-  QDPIO::cout << "Sources and solutions successfully read\n" << endl;
+  swatch.stop();
+
+  QDPIO::cout << "Sources and solutions successfully read: time= "
+	      << swatch.getTimeInSeconds() 
+	      << " secs" << endl;
+
 
 
   //
   // Check for each quark source that the solutions have their diluted
   // on every site only once
   //
+  swatch.start();
+
   try
   {
     push(xml_out, "Norms");
@@ -413,6 +491,12 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
 
+  swatch.stop();
+
+  QDPIO::cout << "Sources saturated: time= "
+	      << swatch.getTimeInSeconds() 
+	      << " secs" << endl;
+
 
   //
   // Meson operators
@@ -432,12 +516,17 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
 
+
   // Operator A
+  swatch.start();
   MesonOperator_t  meson_opA;
-  meson_opA.j_decay = j_decay;
-  meson_opA.seed_l  = quarks[1].seed;
-  meson_opA.seed_r  = quarks[0].seed;
-  meson_opA.op.resize(quarks[1].dilutions.size(), quarks[0].dilutions.size());
+  meson_opA.mom2_max    = input.param.mom2_max;
+  meson_opA.j_decay     = j_decay;
+  meson_opA.seed_l      = quarks[1].seed;
+  meson_opA.seed_r      = quarks[0].seed;
+  meson_opA.smearing_l  = input.source_smearing.source;
+  meson_opA.smearing_r  = input.source_smearing.source;
+  meson_opA.inser.resize(Ns*Ns);
 
   // Sanity check
   if ( toBool(meson_opA.seed_l == meson_opA.seed_r) )
@@ -450,7 +539,6 @@ int main(int argc, char *argv[])
   try
   {
     int G5 = Ns*Ns-1;
-    int gamma = G5;
 
     std::istringstream  xml_s(input.source_smearing.source);
     XMLReader  sourcetop(xml_s);
@@ -466,38 +554,40 @@ int main(int argc, char *argv[])
 
     push(xml_out, "OperatorA");
 
+    // Source smear all the sources up front
+    multi1d<LatticeFermion> smeared_sources(quarks[1].dilutions.size());
+    for(int i=0; i < smeared_sources.size(); ++i)
+    {
+      smeared_sources[i] = quarks[1].dilutions[i].source;
+      (*sourceSmearing)(smeared_sources[i]);
+    }
+
     // Source smear all the solutions up front
-    multi1d<LatticeFermion> smeared_solns(meson_opA.op.size1());
-    for(int j=0; j < meson_opA.op.size1(); ++j)
+    multi1d<LatticeFermion> smeared_solns(quarks[0].dilutions.size());
+    for(int j=0; j < smeared_solns.size(); ++j)
     {
       smeared_solns[j] = quarks[0].dilutions[j].soln;
       (*sourceSmearing)(smeared_solns[j]);
     }
 
-    // Could have some optimizations for time slice dilutions
-    for(int i=0; i < meson_opA.op.size2(); ++i)
+    QDPIO::cout << "source smearings done" << endl;
+
+    for(int gamma_value=0; gamma_value < Ns*Ns; ++gamma_value)
     {
-      LatticeFermion source_tmp = quarks[1].dilutions[i].source;
-      (*sourceSmearing)(source_tmp);
+      meson_opA.inser[gamma_value].op.resize(smeared_sources.size(), smeared_solns.size());
 
-      for(int j=0; j < meson_opA.op.size1(); ++j)
+      for(int i=0; i < smeared_sources.size(); ++i)
       {
-	LatticeFermion z = Gamma(gamma) * smeared_solns[j]; // do lots of stuff here
-	LatticeComplex corr_fn = localInnerProduct(source_tmp, z);
-	meson_opA.op(i,j).elem = phases.sft(corr_fn);
-
-#if 0
-	// Diagnostic
+	for(int j=0; j < smeared_solns.size(); ++j)
 	{
-	  push(xml_out, "elem");
-	  write(xml_out, "i", i);
-	  write(xml_out, "j", j);
-	  write(xml_out, "opA", meson_opA.op(i,j).elem[0]);
-	  pop(xml_out);
-	}
-#endif
-      } // end for j
-    } // end for i
+	  // Optimize by restricting operations to source time slice
+	  LatticeComplex corr_fn = zero;
+	  corr_fn[phases.getSet()[quarks[1].dilutions[i].source_header.t_source]] = 
+		  localInnerProduct(smeared_sources[i], Gamma(gamma_value) * smeared_solns[j]);
+	  meson_opA.inser[gamma_value].op(i,j).elem = phases.sft(corr_fn);
+	} // end for j
+      } // end for i
+    } // end for g
 
     pop(xml_out); // OperatorA
   } // opA
@@ -506,14 +596,29 @@ int main(int argc, char *argv[])
     QDPIO::cerr << ": Caught Exception creating source smearing: " << e << endl;
     QDP_abort(1);
   }
+  catch(...)
+  {
+    QDPIO::cerr << ": Caught generic exception creating source smearing" << endl;
+    QDP_abort(1);
+  }
+
+  swatch.stop();
+
+  QDPIO::cout << "Operator A computed: time= "
+	      << swatch.getTimeInSeconds() 
+	      << " secs" << endl;
 
 
   // Operator B
+  swatch.start();
   MesonOperator_t  meson_opB;
-  meson_opB.j_decay = j_decay;
-  meson_opB.seed_l  = quarks[0].seed;
-  meson_opB.seed_r  = quarks[1].seed;
-  meson_opB.op.resize(quarks[0].dilutions.size(), quarks[1].dilutions.size());
+  meson_opB.mom2_max    = input.param.mom2_max;
+  meson_opB.j_decay     = j_decay;
+  meson_opB.seed_l      = quarks[0].seed;
+  meson_opB.seed_r      = quarks[1].seed;
+  meson_opB.smearing_l  = input.sink_smearing.sink;
+  meson_opB.smearing_r  = input.sink_smearing.sink;
+  meson_opB.inser.resize(Ns*Ns);
 
   // Sanity check
   if ( toBool(meson_opB.seed_l == meson_opB.seed_r) )
@@ -525,7 +630,6 @@ int main(int argc, char *argv[])
   // Construct operator B
   {
     int G5 = Ns*Ns-1;
-    int gamma = G5;
 
     std::istringstream  xml_s(input.sink_smearing.sink);
     XMLReader  sinktop(xml_s);
@@ -541,93 +645,96 @@ int main(int argc, char *argv[])
 
     push(xml_out, "OperatorB");
 
+    // Sink smear all the sources up front
+    multi1d<LatticeFermion> smeared_sources(quarks[0].dilutions.size());
+    for(int j=0; j < smeared_sources.size(); ++j)
+    {
+      smeared_sources[j] = quarks[0].dilutions[j].source;
+      (*sinkSmearing)(smeared_sources[j]);
+    }
+
     // Sink smear all the solutions up front
-    multi1d<LatticeFermion> smeared_solns(meson_opB.op.size1());
-    for(int i=0; i < meson_opB.op.size1(); ++i)
+    multi1d<LatticeFermion> smeared_solns(quarks[1].dilutions.size());
+    for(int i=0; i < smeared_solns.size(); ++i)
     {
       smeared_solns[i] = quarks[1].dilutions[i].soln;
       (*sinkSmearing)(smeared_solns[i]);
     }
 
-    // Could have some optimizations for time slice dilutions
-    for(int j=0; j < meson_opB.op.size2(); ++j)
+    QDPIO::cout << "sink smearings done" << endl;
+
+    for(int gamma_value=0; gamma_value < Ns*Ns; ++gamma_value)
     {
-      LatticeFermion source_tmp = quarks[0].dilutions[j].source;
-      (*sinkSmearing)(source_tmp);
+      meson_opB.inser[gamma_value].op.resize(smeared_sources.size(), smeared_solns.size());
 
-      for(int i=0; i < meson_opB.op.size1(); ++i)
+      for(int j=0; j < smeared_sources.size(); ++j)
       {
-	LatticeFermion z = Gamma(gamma) * smeared_solns[i]; // do lots of stuff here
-	LatticeComplex corr_fn = localInnerProduct(source_tmp, z);
-	meson_opB.op(j,i).elem = phases.sft(corr_fn);
-
-#if 0
-	// Diagnostic
+	for(int i=0; i < smeared_solns.size(); ++i)
 	{
-	  push(xml_out, "elem");
-	  write(xml_out, "j", j);
-	  write(xml_out, "i", i);
-	  write(xml_out, "opB", meson_opB.op(j,i).elem[0]);
-	  pop(xml_out);
-	}
-#endif
-      } // end for i
-    } // end for j
+	  // Optimize by restricting operations to source time slice
+	  LatticeComplex corr_fn = zero;
+	  corr_fn[phases.getSet()[quarks[0].dilutions[j].source_header.t_source]] = 
+		  localInnerProduct(smeared_sources[j], Gamma(gamma_value) * smeared_solns[i]);
+	  meson_opB.inser[gamma_value].op(j,i).elem = phases.sft(corr_fn);
+	} // end for i
+      } // end for j
+    } // end for g
 
     pop(xml_out); // OperatorB
   } // opB
 
+  swatch.stop();
+
+  QDPIO::cout << "Operator B computed: time= "
+	      << swatch.getTimeInSeconds() 
+	      << " secs" << endl;
 
 
-  //
-  // For now, compute a pion correlator. This part should be moved to ADAT
-  //
+  // Save the operators
+  // ONLY SciDAC output format is supported!
+  swatch.start();
   {
-    push(xml_out, "Mesons");
+    XMLBufferWriter file_xml;
+    push(file_xml, "meson_operator");
+    write(file_xml, "Config_info", gauge_xml);
+    pop(file_xml);
 
-    // Loop over sink momenta
-    XMLArrayWriter xml_sink_mom(xml_out,phases.numMom());
-    push(xml_sink_mom, "momenta");
+    QDPFileWriter to(file_xml, input.prop.op_file,     // are there one or two files???
+		     QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
 
-    // The momenta loop is not handled correctly yet
-    for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
+    // Write the scalar data
     {
-      push(xml_sink_mom);
-      write(xml_sink_mom, "sink_mom_num", sink_mom_num);
-      write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num));
+      XMLBufferWriter record_xml;
+      write(record_xml, "SourceMesonOperator", meson_opA);
+      write(to, record_xml, meson_opA.serialize());
+    }
 
-      multi1d<Double> mesprop(length);
-      multi1d<DComplex> cmesprop(length);
-      mesprop = zero;
-      cmesprop = zero;
+    // Write the scalar data
+    {
+      XMLBufferWriter record_xml;
+      write(record_xml, "SinkMesonOperator", meson_opB);
+      write(to, record_xml, meson_opB.serialize());
+    }
 
-      for(int dt=0; dt < length; ++dt) 
-	for(int t=0; t < length; ++t) 
-	  for(int i=0; i < meson_opA.op.size2(); ++i)
-	    for(int j=0; j < meson_opA.op.size1(); ++j)
-	    {
-	      cmesprop[dt] += (meson_opA.op(i,j).elem[sink_mom_num][t] *
-			       meson_opB.op(j,i).elem[sink_mom_num][(t+dt) % length]);
-
-	      mesprop[dt] += real(meson_opA.op(i,j).elem[sink_mom_num][t] *
-				  meson_opB.op(j,i).elem[sink_mom_num][(t+dt) % length]);
-	    }
-
-      write(xml_sink_mom, "cmesprop", cmesprop);
-      write(xml_sink_mom, "mesprop", mesprop);
-      pop(xml_sink_mom);
-    } // end for(sink_mom_num)
-      
-    pop(xml_sink_mom);
-    pop(xml_out); // Mesons
+    close(to);
   }
 
+  swatch.stop();
+
+  QDPIO::cout << "Operators written: time= "
+	      << swatch.getTimeInSeconds() 
+	      << " secs" << endl;
 
   // Close the namelist output file XMLDAT
   pop(xml_out);     // StochMeson
 
   xml_in.close();
   xml_out.close();
+
+  snoop.stop();
+  QDPIO::cout << "stoch_meson: total time= "
+	      << snoop.getTimeInSeconds() 
+	      << " secs" << endl;
 
   END_CODE();
 

@@ -1,4 +1,4 @@
-// $Id: t_seqsource.cc,v 2.0 2005-09-25 21:04:49 edwards Exp $
+// $Id: t_seqsource.cc,v 2.1 2005-11-30 04:47:27 edwards Exp $
 //! \file
 //  \brief Test the sequential-source and resulting seqprop
 //
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
   XMLReader prop_file_xml, prop_record_xml;
   LatticePropagator quark_propagator;
   ChromaProp_t prop_header;
-  PropSource_t source_header;
+  PropSourceConst_t source_header;
   {
     QDPIO::cout << "Attempt to read forward propagator" << endl;
     readQprop(prop_file_xml, 

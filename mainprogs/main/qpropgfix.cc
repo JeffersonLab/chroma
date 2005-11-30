@@ -1,4 +1,4 @@
-// $Id: qpropgfix.cc,v 2.1 2005-11-08 05:40:49 edwards Exp $
+// $Id: qpropgfix.cc,v 2.2 2005-11-30 04:47:27 edwards Exp $
 /*! \file
  *  \brief Applies gauge transformation matrices on a propagator
  */
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
   // Try to invert this record XML into a source struct
   // Also pull out the id of this source
   ChromaProp_t prop_header;
-  PropSource_t source_header;
+  PropSourceConst_t source_header;
   try
   {
     read(prop_in_xml, "/Propagator/ForwardProp", prop_header);
