@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
+// $Id: qprop_io.cc,v 2.2 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -51,7 +51,7 @@ namespace Chroma
 
 
   // Initialize header with default values
-  PropSource_t::PropSource_t()
+  PropSourceConst_t::PropSourceConst_t()
   {
     j_decay   = -1;
     t_source  = -1;
@@ -59,7 +59,7 @@ namespace Chroma
   }
 
   // Given a prop source xml in string form, return the t_srce
-  multi1d<int> PropSource_t::getTSrce()
+  multi1d<int> PropSourceConst_t::getTSrce()
   {
     //
     // Initialize source xml
@@ -86,7 +86,14 @@ namespace Chroma
 
 
   // Initialize header with default values
-  PropSink_t::PropSink_t()
+  PropSourceSmear_t::PropSourceSmear_t()
+  {
+    j_decay   = -1;
+  }
+
+
+  // Initialize header with default values
+  PropSinkSmear_t::PropSinkSmear_t()
   {
     j_decay = -1;
   }
@@ -129,7 +136,7 @@ namespace Chroma
   {
     //! V5 Source header read 
     /*! This routine is SOLELY for backwards compatibility. It should go. */
-    void readV5(XMLReader& xml, const string& path, PropSource_t& header)
+    void readV5(XMLReader& xml, const string& path, PropSourceConst_t& header)
     {
       XMLReader paramtop(xml, path);
 
@@ -314,7 +321,7 @@ namespace Chroma
 
     //! V4 Sink header read 
     /*! This routine is SOLELY for backwards compatibility. It should go. */
-    void readV4(XMLReader& xml, const string& path, PropSink_t& header)
+    void readV4(XMLReader& xml, const string& path, PropSinkSmear_t& header)
     {
       XMLReader paramtop(xml, path);
 
@@ -466,7 +473,7 @@ namespace Chroma
 
 
   // Source header read
-  void read(XMLReader& xml, const string& path, PropSource_t& header)
+  void read(XMLReader& xml, const string& path, PropSourceConst_t& header)
   {
     XMLReader paramtop(xml, path);
 
@@ -513,20 +520,51 @@ namespace Chroma
 
       default:
 	/**************************************************************************/
-	QDPIO::cerr << "PropSource parameter version " << version 
+	QDPIO::cerr << "PropSourceConst parameter version " << version 
 		    << " unsupported." << endl;
 	QDP_abort(1);
       }
     }
     catch (const std::string& e) 
     {
-      QDPIO::cerr << "PropSource: Error reading source: " << e << endl;
+      QDPIO::cerr << "PropSourceConst: Error reading source: " << e << endl;
       QDP_abort(1);
     }
   }
 
+
   // Source header read
-  void read(XMLReader& xml, const string& path, PropSink_t& header)
+  void read(XMLReader& xml, const string& path, PropSourceSmear_t& header)
+  {
+    XMLReader paramtop(xml, path);
+
+    int version;
+    read(paramtop, "version", version);
+
+    switch (version) 
+    {
+    case 6:
+    {
+      XMLReader xml_tmp(paramtop, "Source");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      read(xml_tmp, "SourceType", header.source_type);
+      read(xml_tmp, "j_decay", header.j_decay);
+      header.source = os.str();
+    }
+    break;
+
+    default:
+      /**************************************************************************/
+      QDPIO::cerr << "PropSourceSmear parameter version " << version 
+		  << " unsupported." << endl;
+      QDP_abort(1);
+    }
+  }
+
+
+  // Source header read
+  void read(XMLReader& xml, const string& path, PropSinkSmear_t& header)
   {
     XMLReader paramtop(xml, path);
 
@@ -554,14 +592,14 @@ namespace Chroma
 
       default:
 	/**************************************************************************/
-	QDPIO::cerr << "PropSink parameter version " << version 
+	QDPIO::cerr << "PropSinkSmear parameter version " << version 
 		    << " unsupported." << endl;
 	QDP_abort(1);
       }
     }
     catch (const std::string& e) 
     {
-      QDPIO::cerr << "PropSink: Error reading sink: " << e << endl;
+      QDPIO::cerr << "PropSinkSmear: Error reading sink: " << e << endl;
       QDP_abort(1);
     }
 
@@ -987,7 +1025,7 @@ namespace Chroma
 
   //---------------------------------------------------------------------------
   // Source header writer
-  void write(XMLWriter& xml, const string& path, const PropSource_t& header)
+  void write(XMLWriter& xml, const string& path, const PropSourceConst_t& header)
   {
     push(xml, path);
 
@@ -1004,7 +1042,21 @@ namespace Chroma
 
 
   // Source header writer
-  void write(XMLWriter& xml, const string& path, const PropSink_t& header)
+  void write(XMLWriter& xml, const string& path, const PropSourceSmear_t& header)
+  {
+    push(xml, path);
+
+    int version = 6;
+    write(xml, "version", version);
+    xml << header.source;
+    write(xml, "j_decay", header.j_decay);
+
+    pop(xml);
+  }
+
+
+  // Source header writer
+  void write(XMLWriter& xml, const string& path, const PropSinkSmear_t& header)
   {
     push(xml, path);
 
@@ -1096,7 +1148,7 @@ namespace Chroma
 
     int version = 1;
     write(xml, "version", version);
-    write(xml, "PropSink", param.sink_header);
+    write(xml, "PropSinkSmear", param.sink_header);
     write(xml, "ForwardProp", param.prop_header);
     write(xml, "PropSource", param.source_header);
 

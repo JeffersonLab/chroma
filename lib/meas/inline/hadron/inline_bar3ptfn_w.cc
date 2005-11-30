@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 2.2 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 2.3 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -251,7 +251,7 @@ namespace Chroma
     XMLReader prop_file_xml, prop_record_xml;
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
-    PropSource_t source_header;
+    PropSourceConst_t source_header;
     QDPIO::cout << "Attempt to parse forward propagator" << endl;
     try
     {

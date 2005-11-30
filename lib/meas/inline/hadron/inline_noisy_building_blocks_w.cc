@@ -1,4 +1,4 @@
-// $Id: inline_noisy_building_blocks_w.cc,v 2.2 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_noisy_building_blocks_w.cc,v 2.3 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -343,7 +343,7 @@ namespace Chroma
 
     LatticePropagator F;
     ChromaProp_t prop_header;
-    PropSource_t source_header_check;
+    PropSourceConst_t source_header_check;
     QDPIO::cout << "Attempt to parse forward propagator" << endl;
     Out << "parsing forward propagator " << params.bb.FrwdPropId
       << " ... " << "\n";
@@ -403,7 +403,7 @@ namespace Chroma
     //######################################################################//
 
     multi1d<LatticePropagator> S( 1 );
-    PropSource_t source_header;
+    PropSourceConst_t source_header;
     QDPIO::cout << "Attempt to parse noisy source" << endl;
     Out << "parsing noisy source " << params.bb.NoisySrcId << " ... " << "\n";
     Out.flush();

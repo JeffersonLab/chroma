@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_make_source_ferm_w.h,v 2.1 2005-11-08 21:16:23 edwards Exp $
+// $Id: inline_make_source_ferm_w.h,v 2.2 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source for lattice fermions
  *
@@ -31,7 +31,7 @@ namespace Chroma
 
     unsigned long frequency;
 
-    PropSource_t  param;
+    PropSourceConst_t  param;
 
     struct NamedObject_t
     {

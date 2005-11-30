@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_multi_propagator_w.cc,v 2.2 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -202,7 +202,7 @@ namespace Chroma
       // First identify what kind of source might be here
       if (source_record_xml.count("/MakeSource") != 0)
       {
-	PropSource_t source_header;
+	PropSourceConst_t source_header;
 
 	read(source_record_xml, "/MakeSource/PropSource", source_header);
 	make_sourceP = true;

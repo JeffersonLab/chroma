@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_sink_smear_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_sink_smear_w.h,v 2.1 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline sink_smear propagators
  *
@@ -32,7 +32,7 @@ namespace Chroma
 
     unsigned long   frequency;
 
-    PropSink_t      param;
+    PropSinkSmear_t param;
 
     struct NamedObject_t
     {

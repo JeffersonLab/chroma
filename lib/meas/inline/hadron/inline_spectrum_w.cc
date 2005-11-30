@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 2.3 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 2.4 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -314,7 +314,7 @@ namespace Chroma
     {
       // Read the quark propagator and extract headers
       ChromaProp_t prop_header;
-      PropSource_t source_header;
+      PropSourceConst_t source_header;
       QDPIO::cout << "Attempt to read propagator info" << endl;
       try
       {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_seqsource_w.h,v 2.1 2005-09-26 04:46:03 edwards Exp $
+// $Id: inline_seqsource_w.h,v 2.2 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -33,7 +33,7 @@ namespace Chroma
     unsigned long      frequency;
 
     SeqSource_t        param;
-    PropSink_t         sink_header;
+    PropSinkSmear_t    sink_header;
 
     struct NamedObject_t
     {

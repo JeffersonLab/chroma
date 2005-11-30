@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 2.1 2005-11-08 05:39:44 edwards Exp $
+// $Id: qprop_io.h,v 2.2 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -21,10 +21,10 @@ namespace Chroma {
  */
 
 
-//! Propagator source header
-struct PropSource_t
+//! Propagator source construction header
+struct PropSourceConst_t
 {
-  PropSource_t();                   /*!< default constructor */
+  PropSourceConst_t();              /*!< default constructor */
 
   multi1d<int> getTSrce();          /*!< return 4D coords of source (may not exist) */
 
@@ -37,17 +37,28 @@ struct PropSource_t
 //  multi1d<int>     nrow;            /*!< lattice size */
 };
 
-//! Propagator sink header
-struct PropSink_t
+//! Propagator source smearing header
+struct PropSourceSmear_t
 {
-  PropSink_t();                     /*!< default constructor */
+  PropSourceSmear_t();              /*!< default constructor */
+
+  std::string      source;          /*!< string holding source xml */
+  std::string      source_type;     /*!< source type */
+
+  int              j_decay;         /*!< decay direction */
+};
+
+//! Propagator sink header
+struct PropSinkSmear_t
+{
+  PropSinkSmear_t();                /*!< default constructor */
 
   std::string      sink;            /*!< string holding sink smearing xml */
   std::string      sink_type;       /*!< sink type */
 
   int              j_decay;         /*!< decay direction */
 
-//  multi1d<int>     nrow;            /*!< lattice size */
+//  multi1d<int>     nrow;          /*!< lattice size */
 };
 
 
@@ -109,27 +120,27 @@ struct ChromaSeqProp_t
 //! Mega structure holding a full forward prop (except gauge)
 struct ForwardProp_t
 {
-  PropSink_t       sink_header;
-  ChromaProp_t     prop_header;
-  PropSource_t     source_header;
+  PropSinkSmear_t     sink_header;
+  ChromaProp_t        prop_header;
+  PropSourceConst_t   source_header;
 };
 
 
 //! Mega structure holding a full sequential source (except gauge)
 struct SequentialSource_t
 {
-  PropSink_t       sink_header;
-  SeqSource_t      seqsource_header;
-  multi1d<ForwardProp_t> forward_props;
+  PropSinkSmear_t         sink_header;
+  SeqSource_t             seqsource_header;
+  multi1d<ForwardProp_t>  forward_props;
 };
 
 
 //! Mega structure holding a full sequential prop (except gauge)
 struct SequentialProp_t
 {
-  ChromaProp_t     seqprop_header;
-  PropSink_t       sink_header;
-  SeqSource_t      seqsource_header;
+  ChromaProp_t           seqprop_header;
+  PropSinkSmear_t        sink_header;
+  SeqSource_t            seqsource_header;
   multi1d<ForwardProp_t> forward_props;
 };
 
@@ -156,17 +167,24 @@ struct QQbarMescomp_t
 multi1d<int> getFermActBoundary(const std::string& fermact);
 
 //! Propagator source read
-void read(XMLReader& xml, const std::string& path, PropSource_t& header);
+void read(XMLReader& xml, const std::string& path, PropSourceConst_t& header);
 
 //! Propagator source writer
-void write(XMLWriter& xml, const std::string& path, const PropSource_t& header);
+void write(XMLWriter& xml, const std::string& path, const PropSourceConst_t& header);
+
+
+//! Propagator source smearing read
+void read(XMLReader& xml, const std::string& path, PropSourceSmear_t& header);
+
+//! Propagator source smearing writer
+void write(XMLWriter& xml, const std::string& path, const PropSourceSmear_t& header);
 
 
 //! Propagator sink reader
-void read(XMLReader& xml, const std::string& path, PropSink_t& header);
+void read(XMLReader& xml, const std::string& path, PropSinkSmear_t& header);
 
 //! Propagator sink writer
-void write(XMLWriter& xml, const std::string& path, const PropSink_t& header);
+void write(XMLWriter& xml, const std::string& path, const PropSinkSmear_t& header);
 
 
 //! Propagator header read

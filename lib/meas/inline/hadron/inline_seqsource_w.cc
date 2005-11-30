@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 2.4 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 2.5 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -151,7 +151,7 @@ namespace Chroma
     //
     multi1d<LatticePropagator> forward_props(params.named_obj.prop_ids.size());
     multi1d<ChromaProp_t> prop_header(params.named_obj.prop_ids.size());
-    multi1d<PropSource_t> source_header(params.named_obj.prop_ids.size());
+    multi1d<PropSourceConst_t> source_header(params.named_obj.prop_ids.size());
     push(xml_out, "Forward_prop_infos");
     for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
     {

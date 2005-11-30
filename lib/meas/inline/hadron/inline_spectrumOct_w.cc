@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 2.2 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_spectrumOct_w.cc,v 2.3 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -280,7 +280,7 @@ namespace Chroma
     push(xml_array, "Wilson_hadron_measurements");
 
     multi1d<ChromaProp_t> prop_header(params.named_obj.prop_ids.size());
-    multi1d<PropSource_t> source_header(params.named_obj.prop_ids.size());
+    multi1d<PropSourceConst_t> source_header(params.named_obj.prop_ids.size());
     multi1d<LatticePropagator> qprop(params.named_obj.prop_ids.size());
     multi1d<Real> Mass(params.named_obj.prop_ids.size());
     

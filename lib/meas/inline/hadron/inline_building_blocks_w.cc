@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 2.5 2005-10-19 02:26:52 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 2.6 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -329,7 +329,7 @@ namespace Chroma
 
     LatticePropagator F;
     ChromaProp_t prop_header;
-    PropSource_t source_header;
+    PropSourceConst_t source_header;
     QDPIO::cout << "Attempt to parse forward propagator" << endl;
     Out << "parsing forward propagator " << params.bb.FrwdPropId << " ... " << "\n";  Out.flush();
 

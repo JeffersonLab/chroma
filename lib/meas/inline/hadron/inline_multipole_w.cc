@@ -1,4 +1,4 @@
-// $Id: inline_multipole_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_multipole_w.cc,v 2.2 2005-11-30 04:46:39 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurement
  */
@@ -212,7 +212,7 @@ namespace Chroma
     //
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
-    PropSource_t source_header;
+    PropSourceConst_t source_header;
     try
     {
       // Snarf the data into a copy
