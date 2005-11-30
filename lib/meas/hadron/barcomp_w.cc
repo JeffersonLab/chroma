@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
+//  $Id: barcomp_w.cc,v 2.1 2005-11-30 04:45:59 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -11,7 +11,7 @@ namespace Chroma
  
   //! Convert generalized correlator object
   void convertBarcomp(multi1d<Complex>& barprop_1d, const multiNd<Complex>& barprop, 
-		      const int j_decay)
+		      int j_decay)
   {
     /*
      * Local variables
