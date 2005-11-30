@@ -1,4 +1,8 @@
 11/30/2005 -- Robert Edwards
+	Version 2.5.4. Renamed PropSource_t and PropSink_t to PropSourceConst_t and
+        PropSinkSmear_t. Added new PropSourceSmear_t . Updates of stochastic codes.
+
+11/30/2005 -- Robert Edwards
 	Version 2.5.3. Minutae.
 
 11/20/2005 -- Robert Edwards
