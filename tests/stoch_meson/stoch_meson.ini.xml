@@ -2,7 +2,7 @@
 <stoch_meson>
 <annotation>
 ;
-; $Id: stoch_meson.ini.xml,v 1.4 2005-11-22 22:03:42 edwards Exp $ test input for stoch_meson code
+; $Id: stoch_meson.ini.xml,v 1.5 2005-11-30 04:48:16 edwards Exp $ test input for stoch_meson code
 ;
 </annotation>
 <Param> 
@@ -15,11 +15,9 @@
     <version>1</version>
     <SourceType>POINT_SOURCE</SourceType>
     <j_decay>3</j_decay>
-    <t_source>0</t_source>
   </Source>
 </SourceSmearing>
 
-<annotation>
 <SinkSmearing>
   <version>5</version>
   <Sink>
@@ -28,8 +26,8 @@
     <j_decay>3</j_decay>
   </Sink>
 </SinkSmearing>
-</annotation>
 
+<annotation>
 <SinkSmearing>
   <version>5</version>
         <Sink>
@@ -55,11 +53,12 @@
           </LinkSmearing>
         </Sink>
 </SinkSmearing>
+</annotation>
 
 <Prop>
+  <operator_file>meson_operator.dat</operator_file>
   <operator>
     <elem>
-      <operator_file>meson_opA.dat</operator_file>
       <soln_files>
         <elem>./zN_prop_q1_t0_c0_s0</elem>
         <elem>./zN_prop_q1_t0_c0_s1</elem>
@@ -167,7 +166,6 @@
       </soln_files>
     </elem>
     <elem>
-      <operator_file>meson_opB.dat</operator_file>
       <soln_files>
         <elem>./zN_prop_q2_t0_c0_s0</elem>
         <elem>./zN_prop_q2_t0_c0_s1</elem>
@@ -277,7 +275,7 @@
   </operator>
 </Prop>
 <Cfg>
-  <cfg_type>UNIT</cfg_type>
+  <cfg_type>SZIN</cfg_type>
   <cfg_file>../test_purgaug.cfg1</cfg_file>
 </Cfg>
 <nrow>4 4 4 8</nrow>
