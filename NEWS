@@ -1,3 +1,6 @@
+11/30/2005 -- Robert Edwards
+	Version 2.5.3. Minutae.
+
 11/20/2005 -- Robert Edwards
 	Version 2.5.2. Bug fixes. Hyp_smear3d didn't set the time link correctly.
         Fixed stout smearing when called from quark smearing - otherwise it was
