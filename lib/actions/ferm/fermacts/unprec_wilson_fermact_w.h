@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_fermact_w.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: unprec_wilson_fermact_w.h,v 2.1 2005-12-03 21:19:38 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -8,6 +8,7 @@
 #define __unprec_wilson_fermact_w_h__
 
 #include "fermact.h"
+#include "actions/ferm/fermacts/wilson_fermact_params_w.h"
 #include "actions/ferm/linop/lgherm_w.h"
 #include "io/aniso_io.h"
 
@@ -20,22 +21,6 @@ namespace Chroma
     extern const std::string name;
     extern const bool registered;
   }
-
-
-  //! Params for wilson ferm acts
-  struct UnprecWilsonFermActParams
-  {
-    UnprecWilsonFermActParams() {}
-    UnprecWilsonFermActParams(XMLReader& in, const std::string& path);
-    
-    Real Mass;
-    AnisoParam_t anisoParam;
-  };
-
-
-  // Reader/writers
-  void read(XMLReader& xml, const string& path, UnprecWilsonFermActParams& param);
-  void write(XMLWriter& xml, const string& path, const UnprecWilsonFermActParams& param);
 
 
   //! Unpreconditioned Wilson fermion action
@@ -53,7 +38,7 @@ namespace Chroma
 
     //! General FermBC
     UnprecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
-			const UnprecWilsonFermActParams& param_) : 
+			const WilsonFermActParams& param_) : 
       fbc(fbc_), param(param_) {}
 
     //! Copy constructor
@@ -87,7 +72,7 @@ namespace Chroma
    
   private:
     Handle< FermBC<LatticeFermion> >  fbc;
-    UnprecWilsonFermActParams param;
+    WilsonFermActParams param;
   };
 
 }

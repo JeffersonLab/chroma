@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 2.1 2005-10-24 06:25:50 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 2.2 2005-12-03 21:19:38 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -8,8 +8,8 @@
 #define __prec_wilson_fermact_w_h__
 
 #include "fermact.h"
+#include "actions/ferm/fermacts/wilson_fermact_params_w.h"
 #include "actions/ferm/linop/lgherm_w.h"
-#include "io/aniso_io.h"
 
 
 namespace Chroma
@@ -22,25 +22,6 @@ namespace Chroma
     extern const bool registered;   /*!< Name to be used */
   }
   
-
-  //! Params for wilson ferm acts
-  /*! \ingroup fermacts */
-  struct EvenOddPrecWilsonFermActParams
-  {
-    EvenOddPrecWilsonFermActParams() {}
-    EvenOddPrecWilsonFermActParams(XMLReader& in, const std::string& path);
-    
-    Real Mass;
-    AnisoParam_t anisoParam;
-  };
-
-
-  // Reader/writers
-  /*! \ingroup fermacts */
-  void read(XMLReader& xml, const string& path, EvenOddPrecWilsonFermActParams& param);
-  /*! \ingroup fermacts */
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecWilsonFermActParams& param);
-
 
   //! Even-odd preconditioned Wilson fermion action
   /*! \ingroup fermacts
@@ -58,7 +39,7 @@ namespace Chroma
 
     //! General FermBC with Anisotropy
     EvenOddPrecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
-			     const EvenOddPrecWilsonFermActParams& param_) :
+			     const WilsonFermActParams& param_) :
       fbc(fbc_), param(param_) {}
 
     //! Copy constructor
@@ -92,7 +73,7 @@ namespace Chroma
 
   private:
     Handle< FermBC<LatticeFermion> >  fbc;
-    EvenOddPrecWilsonFermActParams param;
+    WilsonFermActParams param;
   };
 
 }

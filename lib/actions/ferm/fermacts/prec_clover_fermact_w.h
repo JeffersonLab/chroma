@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: prec_clover_fermact_w.h,v 2.1 2005-12-03 21:19:38 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -9,7 +9,7 @@
 
 #include "fermact.h"
 #include "actions/ferm/linop/lgherm_w.h"
-
+#include "actions/ferm/fermacts/clover_fermact_params_w.h"
 
 namespace Chroma 
 { 
@@ -25,26 +25,27 @@ namespace Chroma
   public:
     //! General FermBC
     EvenOddPrecCloverFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
-			     const Real& Mass_, const Real& ClovCoeff_, const Real& u0_) : 
-      fbc(fbc_), Mass(Mass_), ClovCoeff(ClovCoeff_), u0(u0_) {}
+			     const CloverFermActParams& param_) : 
+      fbc(fbc_), param(param_) {}
 
     //! Copy constructor
     EvenOddPrecCloverFermAct(const EvenOddPrecCloverFermAct& a) : 
-      fbc(a.fbc), Mass(a.Mass), ClovCoeff(a.ClovCoeff), u0(a.u0) {}
+      fbc(a.fbc), param(a.param) {}
 
     //! Assignment
     EvenOddPrecCloverFermAct& operator=(const EvenOddPrecCloverFermAct& a)
-    {fbc=a.fbc; Mass=a.Mass; ClovCoeff=a.ClovCoeff; u0=a.u0; return *this;}
+      {fbc=a.fbc; param=a.param; return *this;}
 
     //! Return the fermion BC object for this action
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecLinearOperator<LatticeFermion> linOp(Handle<const ConnectState> state) const;
+    const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
-    const LinearOperator<LatticeFermion> lMdagM(Handle<const ConnectState> state) const;
+    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
+    //! Produce the gamma_5 hermitian operator H_w
     const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
       return new lgherm<LatticeFermion>(linOp(state));
     }
@@ -54,9 +55,7 @@ namespace Chroma
 
   private:
     Handle< FermBC<LatticeFermion> >  fbc;
-    Real Mass;
-    Real ClovCoeff;
-    Real u0;
+    CloverFermActParams param;
   };
 
 }; // End Namespace Chroma

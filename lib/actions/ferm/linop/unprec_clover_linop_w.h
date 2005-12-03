@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: prec_clover_linop_w.h,v 2.1 2005-12-03 21:19:38 edwards Exp $
+// $Id: unprec_clover_linop_w.h,v 2.1 2005-12-03 21:19:38 edwards Exp $
 /*! \file
- *  \brief Even-odd preconditioned Clover fermion linear operator
+ *  \brief Unpreconditioned Clover fermion linear operator
  */
 
-#ifndef __prec_clover_linop_w_h__
-#define __prec_clover_linop_w_h__
+#ifndef __unprec_clover_linop_w_h__
+#define __unprec_clover_linop_w_h__
 
 #include "linearop.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
@@ -14,7 +14,7 @@
 
 namespace Chroma 
 { 
-  //! Even-odd preconditioned Clover-Dirac operator
+  //! Unpreconditioned Clover-Dirac operator
   /*!
    * \ingroup linop
    *
@@ -24,19 +24,18 @@ namespace Chroma
    *
    *      M  =  (d+M) - (1/2) D'
    */
-  class EvenOddPrecCloverLinOp : public EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecCloverLinOp : public UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Full constructor
-    EvenOddPrecCloverLinOp(const multi1d<LatticeColorMatrix>& u_, const CloverFermActParams& param_)
+    UnprecCloverLinOp(const multi1d<LatticeColorMatrix>& u_, const CloverFermActParams& param_)
       {create(u_,param_);}
 
     //! Destructor is automatic
-    ~EvenOddPrecCloverLinOp() {}
+    ~UnprecCloverLinOp() {}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 	
-		const CloverFermActParams& param_);
+    void create(const multi1d<LatticeColorMatrix>& u_, const CloverFermActParams& param_);
 
     //! Apply the the even-even block onto a source vector
     inline
@@ -112,14 +111,13 @@ namespace Chroma
     }
 
   private:
-    Real fact;  // tmp holding  Nd+Mass
-    Real invfact;  // tmp holding  1/(Nd+Mass)
-
+    Real fact;
+    Real invfact;
     CloverFermActParams param;
     WilsonDslash D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

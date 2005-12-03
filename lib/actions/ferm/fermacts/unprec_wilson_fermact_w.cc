@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 2.1 2005-12-03 21:19:38 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -24,7 +24,7 @@ namespace Chroma
 										    const std::string& path)
     {
       return new UnprecWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
-				     UnprecWilsonFermActParams(xml_in, path));
+				     WilsonFermActParams(xml_in, path));
     }
 
     //! Callback function
@@ -48,48 +48,6 @@ namespace Chroma
     //! Register the fermact
     const bool registered = registerAll();
   }
-
-
-  //! Read parameters
-  UnprecWilsonFermActParams::UnprecWilsonFermActParams(XMLReader& xml, const string& path)
-  {
-    XMLReader paramtop(xml, path);
-
-    // Read the stuff for the action
-    if (paramtop.count("Mass") != 0) 
-    {
-      read(paramtop, "Mass", Mass);
-      if (paramtop.count("Kappa") != 0) 
-      {
-	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
-	QDP_abort(1);
-      }
-    }
-    else if (paramtop.count("Kappa") != 0)
-    {
-      Real Kappa;
-      read(paramtop, "Kappa", Kappa);
-      Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-    }
-    else
-    {
-      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
-      QDP_abort(1);
-    }
-
-    //  Read optional aniso
-    if (paramtop.count("AnisoParam") != 0) 
-      read(paramtop, "AnisoParam", anisoParam);
-  }
-
-
-  //! Read parameters
-  void read(XMLReader& xml, const string& path, UnprecWilsonFermActParams& param)
-  {
-    UnprecWilsonFermActParams tmp(xml, path);
-    param = tmp;
-  }
-
 
 
   //! Produce a linear operator for this action

@@ -1,23 +1,22 @@
-// $Id: prec_clover_linop_w.cc,v 2.1 2005-12-03 21:19:38 edwards Exp $
+// $Id: unprec_clover_linop_w.cc,v 2.1 2005-12-03 21:19:38 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
 
 #include "chromabase.h"
-#include "actions/ferm/linop/prec_clover_linop_w.h"
+#include "actions/ferm/linop/unprec_clover_linop_w.h"
 
 using namespace QDP::Hints;
 
 namespace Chroma 
 { 
-
   //! Creation routine with Anisotropy
   /*!
    * \param u_ 	    gauge field     	       (Read)
-   * \param param_  fermion kappa   	       (Read)
+   * \param param_  parameters   	       (Read)
    */
-  void EvenOddPrecCloverLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
-				      const CloverFermActParams& param_)
+  void UnprecCloverLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+				 const CloverFermActParams& param_)
   {
     param = param_;
 
@@ -40,55 +39,20 @@ namespace Chroma
   }
 
 
-  //! Apply even-odd linop component
+
+  //! Apply unpreconditioned Clover fermion linear operator
   /*!
-   * The operator acts on the entire even sublattice
+   * \ingroup linop
    *
-   * \param chi 	  Pseudofermion field     	       (Write)
+   * The operator acts on the entire lattice
+   *
+   * \param chi 	  Pseudofermion field     	       (Read)
    * \param psi 	  Pseudofermion field     	       (Read)
    * \param isign   Flag ( PLUS | MINUS )   	       (Read)
    */
-  void 
-  EvenOddPrecCloverLinOp::evenOddLinOp(LatticeFermion& chi, 
-				       const LatticeFermion& psi, 
-				       enum PlusMinus isign) const
-  {
-    START_CODE();
-
-    Real mhalf = -0.5;
-
-    D.apply(chi, psi, isign, 0);
-    chi[rb[0]] *= mhalf;
-  
-    END_CODE();
-  }
-
-  //! Apply odd-even linop component
-  /*!
-   * The operator acts on the entire odd sublattice
-   *
-   * \param chi 	  Pseudofermion field     	       (Write)
-   * \param psi 	  Pseudofermion field     	       (Read)
-   * \param isign   Flag ( PLUS | MINUS )   	       (Read)
-   */
-  void 
-  EvenOddPrecCloverLinOp::oddEvenLinOp(LatticeFermion& chi, 
-				       const LatticeFermion& psi, 
-				       enum PlusMinus isign) const
-  {
-    START_CODE();
-
-    Real mhalf = -0.5;
-
-    D.apply(chi, psi, isign, 1);
-    chi[rb[1]] *= mhalf;
-  
-    END_CODE();
-  }
-
-  void EvenOddPrecCloverLinOp::operator()(LatticeFermion & chi, 
-					  const LatticeFermion& psi, 
-					  enum PlusMinus isign) const
+  void UnprecCloverLinOp::operator()(LatticeFermion & chi, 
+				     const LatticeFermion& psi, 
+				     enum PlusMinus isign) const
   {
     LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
     LatticeFermion tmp2; moveToFastMemoryHint(tmp2);

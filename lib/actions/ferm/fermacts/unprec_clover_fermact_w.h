@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 2.1 2005-12-03 21:19:38 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -9,7 +9,7 @@
 
 #include "fermact.h"
 #include "actions/ferm/linop/lgherm_w.h"
-
+#include "actions/ferm/fermacts/clover_fermact_params_w.h"
 
 namespace Chroma
 {
@@ -19,23 +19,6 @@ namespace Chroma
     extern const std::string name;
     extern const bool registered;
   }
-
-
-  //! Params for wilson ferm acts
-  struct UnprecCloverFermActParams
-  {
-    UnprecCloverFermActParams(XMLReader& in, const std::string& path);
-    
-    Real Mass;
-    Real ClovCoeff;
-    Real u0;
-  };
-
-
-  // Reader/writers
-  void read(XMLReader& xml, const string& path, UnprecCloverFermActParams& param);
-  void write(XMLWriter& xml, const string& path, const UnprecCloverFermActParams& param);
-
 
   //! Unpreconditioned Clover fermion action
   /*! \ingroup fermacts
@@ -48,7 +31,7 @@ namespace Chroma
     //! General FermBC
     /*! Isotropic action */
     UnprecCloverFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
-			const UnprecCloverFermActParams& param_) : 
+			const CloverFermActParams& param_) : 
       fbc(fbc_), param(param_) {}
 
     //! Copy constructor
@@ -81,7 +64,7 @@ namespace Chroma
 
   private:
     Handle< FermBC<LatticeFermion> >  fbc;
-    UnprecCloverFermActParams param;
+    CloverFermActParams param;
   };
 
 }
