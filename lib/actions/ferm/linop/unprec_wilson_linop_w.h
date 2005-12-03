@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 2.1 2005-12-03 18:47:10 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -63,7 +63,6 @@ namespace Chroma
 
   private:
     Real Mass;
-    multi1d<LatticeColorMatrix> u;
     WilsonDslash D;
   };
 
