@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 2.3 2005-10-24 06:26:33 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.4 2005-12-03 04:20:20 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -11,6 +11,8 @@
 #include "actions/ferm/fermacts/unprec_dwftransf_fermact_w.h"
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
+
+#include "actions/ferm/fermacts/unprec_hamberwu_fermact_w.h"
 
 #include "actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h"
 
@@ -57,6 +59,8 @@ namespace Chroma
       success &= OvlapPartFrac4DFermActEnv::registered;
       success &= EvenOddPrecParWilsonFermActEnv::registered;
       success &= UnprecParWilsonFermActEnv::registered;
+
+      success &= UnprecHamberWuFermActEnv::registered;
 
       // Stouting
       success &= UnprecStoutWilsonTypeFermActEnv::registered;
