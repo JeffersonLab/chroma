@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.17 2005-12-03 04:20:34 edwards Exp $
+# $Id: Makefile.am,v 2.18 2005-12-03 21:23:32 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -218,6 +218,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
+	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_nef_fermact_array_w.h \
@@ -225,6 +226,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
+	actions/ferm/fermacts/wilson_fermact_params_w.h \
 	actions/ferm/fermacts/prec_wilson_fermact_w.h \
 	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
@@ -276,6 +278,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lwldslash_base_array_w.h \
 	actions/ferm/linop/lwldslash_array_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
+	actions/ferm/linop/prec_clover_linop_w.h \
 	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
 	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
@@ -284,6 +287,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/prec_wilson_linop_w.h \
 	actions/ferm/linop/prec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovext_linop_array_w.h \
+	actions/ferm/linop/unprec_clover_linop_w.h \
 	actions/ferm/linop/unprec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
@@ -650,15 +654,19 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
+	actions/ferm/fermacts/clover_fermact_params_w.cc \
+	actions/ferm/fermacts/prec_clover_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_kno_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_parwilson_fermact_w.cc \
+	actions/ferm/fermacts/wilson_fermact_params_w.cc \
 	actions/ferm/fermacts/prec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_ovext_fermact_array_w.cc \
+	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.cc \
@@ -686,6 +694,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/lwldslash_base_array_w.cc \
 	actions/ferm/linop/lwldslash_array_w.cc \
 	actions/ferm/linop/overlapbu_linop_w.cc \
+	actions/ferm/linop/prec_clover_linop_w.cc \
 	actions/ferm/linop/prec_dwf_linop_array_w.cc \
 	actions/ferm/linop/prec_nef_general_linop_array_w.cc \
 	actions/ferm/linop/prec_nef_linop_array_w.cc \
@@ -695,6 +704,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/prec_parwilson_linop_w.cc \
 	actions/ferm/linop/prec_wilson_linop_w.cc \
 	actions/ferm/linop/prec_ovext_linop_array_w.cc \
+	actions/ferm/linop/unprec_clover_linop_w.cc \
 	actions/ferm/linop/unprec_dwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_dwftransf_linop_w.cc \
 	actions/ferm/linop/unprec_dwf_linop_array_w.cc \
@@ -749,8 +759,6 @@ libchroma_a_SOURCES += \
 #        meas/hadron/multipole_w.cc
 
 # Stuff not yet incorporated but lying around
-#	actions/ferm/fermacts/unprec_clover_fermact_w.cc
-#	actions/ferm/fermacts/prec_clover_fermact_w.cc
 #	meas/pbp/mespbg5p_w.cc meas/pbp/mespbp_w.cc
 #	meas/pbp/ovpbg5p_w.cc meas/pbp/pbg5p_w.cc
 
