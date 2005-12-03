@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.18 2005-11-22 22:02:20 edwards Exp $
+# $Id: Makefile.in,v 2.19 2005-12-03 04:21:01 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -255,6 +255,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
+	actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermbcs/fermbcs_w.cc \
@@ -297,6 +298,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/unprec_parwilson_linop_w.cc \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
+	actions/ferm/linop/unprec_hamberwu_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
@@ -526,6 +528,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_ovext_fermact_array_w.$(OBJEXT) \
 	unprec_ovlap_contfrac5d_fermact_array_w.$(OBJEXT) \
 	unprec_parwilson_fermact_w.$(OBJEXT) \
+	unprec_hamberwu_fermact_w.$(OBJEXT) \
 	unprec_wilson_fermact_w.$(OBJEXT) \
 	unprec_zolo_nef_fermact_array_w.$(OBJEXT) fermbcs_w.$(OBJEXT) \
 	simple_fermbc_w.$(OBJEXT) twisted_fermbc_w.$(OBJEXT) \
@@ -557,6 +560,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_parwilson_linop_w.$(OBJEXT) \
 	unprec_pdwf4d_linop_w.$(OBJEXT) \
 	unprec_ppdwf4d_linop_w.$(OBJEXT) \
+	unprec_hamberwu_linop_w.$(OBJEXT) \
 	unprec_wilson_linop_w.$(OBJEXT) \
 	dwf_fermact_qprop_array_w.$(OBJEXT) dwf_quarkprop4_w.$(OBJEXT) \
 	nef_quarkprop4_w.$(OBJEXT) quarkprop4_multi_w.$(OBJEXT) \
@@ -826,6 +830,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovext_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_hamberwu_fermact_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
@@ -877,6 +882,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
+	actions/ferm/linop/unprec_hamberwu_linop_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.h \
@@ -1338,6 +1344,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovext_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_hamberwu_fermact_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
@@ -1389,6 +1396,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
+	actions/ferm/linop/unprec_hamberwu_linop_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.h \
@@ -1722,6 +1730,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
+	actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermbcs/fermbcs_w.cc \
@@ -1764,6 +1773,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/unprec_parwilson_linop_w.cc \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
+	actions/ferm/linop/unprec_hamberwu_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
@@ -2287,6 +2297,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwf_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwftransf_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_dwftransf_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_hamberwu_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_hamberwu_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ht_contfrac5d_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ht_contfrac5d_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_nef_fermact_array_w.Po@am__quote@
@@ -5194,6 +5206,20 @@ unprec_parwilson_fermact_w.obj: actions/ferm/fermacts/unprec_parwilson_fermact_w
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_parwilson_fermact_w.obj `if test -f 'actions/ferm/fermacts/unprec_parwilson_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/unprec_parwilson_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/unprec_parwilson_fermact_w.cc'; fi`
 
+unprec_hamberwu_fermact_w.o: actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_hamberwu_fermact_w.o -MD -MP -MF "$(DEPDIR)/unprec_hamberwu_fermact_w.Tpo" -c -o unprec_hamberwu_fermact_w.o `test -f 'actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_hamberwu_fermact_w.Tpo" "$(DEPDIR)/unprec_hamberwu_fermact_w.Po"; else rm -f "$(DEPDIR)/unprec_hamberwu_fermact_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc' object='unprec_hamberwu_fermact_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_hamberwu_fermact_w.o `test -f 'actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc
+
+unprec_hamberwu_fermact_w.obj: actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_hamberwu_fermact_w.obj -MD -MP -MF "$(DEPDIR)/unprec_hamberwu_fermact_w.Tpo" -c -o unprec_hamberwu_fermact_w.obj `if test -f 'actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_hamberwu_fermact_w.Tpo" "$(DEPDIR)/unprec_hamberwu_fermact_w.Po"; else rm -f "$(DEPDIR)/unprec_hamberwu_fermact_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc' object='unprec_hamberwu_fermact_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_hamberwu_fermact_w.obj `if test -f 'actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc'; fi`
+
 unprec_wilson_fermact_w.o: actions/ferm/fermacts/unprec_wilson_fermact_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_wilson_fermact_w.o -MD -MP -MF "$(DEPDIR)/unprec_wilson_fermact_w.Tpo" -c -o unprec_wilson_fermact_w.o `test -f 'actions/ferm/fermacts/unprec_wilson_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/unprec_wilson_fermact_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_wilson_fermact_w.Tpo" "$(DEPDIR)/unprec_wilson_fermact_w.Po"; else rm -f "$(DEPDIR)/unprec_wilson_fermact_w.Tpo"; exit 1; fi
@@ -5781,6 +5807,20 @@ unprec_ppdwf4d_linop_w.obj: actions/ferm/linop/unprec_ppdwf4d_linop_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/unprec_ppdwf4d_linop_w.cc' object='unprec_ppdwf4d_linop_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_ppdwf4d_linop_w.obj `if test -f 'actions/ferm/linop/unprec_ppdwf4d_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/unprec_ppdwf4d_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/unprec_ppdwf4d_linop_w.cc'; fi`
+
+unprec_hamberwu_linop_w.o: actions/ferm/linop/unprec_hamberwu_linop_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_hamberwu_linop_w.o -MD -MP -MF "$(DEPDIR)/unprec_hamberwu_linop_w.Tpo" -c -o unprec_hamberwu_linop_w.o `test -f 'actions/ferm/linop/unprec_hamberwu_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/unprec_hamberwu_linop_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_hamberwu_linop_w.Tpo" "$(DEPDIR)/unprec_hamberwu_linop_w.Po"; else rm -f "$(DEPDIR)/unprec_hamberwu_linop_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/unprec_hamberwu_linop_w.cc' object='unprec_hamberwu_linop_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_hamberwu_linop_w.o `test -f 'actions/ferm/linop/unprec_hamberwu_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/unprec_hamberwu_linop_w.cc
+
+unprec_hamberwu_linop_w.obj: actions/ferm/linop/unprec_hamberwu_linop_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_hamberwu_linop_w.obj -MD -MP -MF "$(DEPDIR)/unprec_hamberwu_linop_w.Tpo" -c -o unprec_hamberwu_linop_w.obj `if test -f 'actions/ferm/linop/unprec_hamberwu_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/unprec_hamberwu_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/unprec_hamberwu_linop_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/unprec_hamberwu_linop_w.Tpo" "$(DEPDIR)/unprec_hamberwu_linop_w.Po"; else rm -f "$(DEPDIR)/unprec_hamberwu_linop_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/unprec_hamberwu_linop_w.cc' object='unprec_hamberwu_linop_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_hamberwu_linop_w.obj `if test -f 'actions/ferm/linop/unprec_hamberwu_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/unprec_hamberwu_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/unprec_hamberwu_linop_w.cc'; fi`
 
 unprec_wilson_linop_w.o: actions/ferm/linop/unprec_wilson_linop_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_wilson_linop_w.o -MD -MP -MF "$(DEPDIR)/unprec_wilson_linop_w.Tpo" -c -o unprec_wilson_linop_w.o `test -f 'actions/ferm/linop/unprec_wilson_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/unprec_wilson_linop_w.cc; \
