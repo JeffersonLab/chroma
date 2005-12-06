@@ -1,4 +1,4 @@
-// $Id: gaus_quark_smearing.cc,v 2.5 2005-11-16 02:34:58 edwards Exp $
+// $Id: gaus_quark_smearing.cc,v 2.6 2005-12-06 04:44:40 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -93,6 +93,7 @@ namespace Chroma
 
 
     //! Smear the quark
+    template<>
     void
     QuarkSmear<LatticePropagator>::operator()(LatticePropagator& quark,
 					      const multi1d<LatticeColorMatrix>& u) const
@@ -101,6 +102,7 @@ namespace Chroma
     }
 
     //! Smear the quark
+    template<>
     void
     QuarkSmear<LatticeFermion>::operator()(LatticeFermion& quark,
 					   const multi1d<LatticeColorMatrix>& u) const
@@ -109,6 +111,7 @@ namespace Chroma
     }
 
     //! Smear the color-vector
+    template<>
     void
     QuarkSmear<LatticeColorVector>::operator()(LatticeColorVector& quark,
 					       const multi1d<LatticeColorMatrix>& u) const
