@@ -1,4 +1,4 @@
-// $Id: rndz2wall_source_const.cc,v 2.3 2005-11-16 02:34:58 edwards Exp $
+// $Id: rndz2wall_source_const.cc,v 2.4 2005-12-06 20:44:57 osborn Exp $
 /*! \file
  *  \brief Random Z2 wall source construction
  */
@@ -111,6 +111,7 @@ namespace Chroma
 
 
     //! Construct the source
+    template<>
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
@@ -121,25 +122,16 @@ namespace Chroma
 
       multi1d<LatticeColorVector> tmp_color_vec(Nc);
 
-      //multi1d<int> crd(Nd); crd = 0;
+      LatticeReal rnd;
+      LatticeReal ar, ai;
       LatticeComplex z;
-      LatticeReal r1, r2;
-      gaussian(r1);
-      //cout << peekSite(r1,crd) << endl;
-      r1 /= sqrt(2.)*fabs(r1);
-      //cout << peekSite(r1,crd) << endl;
-      gaussian(r2);
-      //cout << peekSite(r2,crd) << endl;
-      r2 /= sqrt(2.)*fabs(r2);
-      //cout << peekSite(r2,crd) << endl;
-      //z = r1;
-      //cout << peekSite(z,crd) << endl;
-      //z += timesI(r2); 
-      //cout << peekSite(z,crd) << endl;
-      z = cmplx(r1,0) + timesI(r2); // cmplx used to avoid bug in older qdp++
-      //cout << peekSite(z,crd) << endl;
-      //r1 = sqrt(localNorm2(z));
-      //cout << peekSite(r1,crd) << endl;
+
+      random(rnd);
+      ar = where( rnd>0.5, LatticeReal(sqrt(0.5)), LatticeReal(-sqrt(0.5)) );
+      random(rnd);
+      ai = where( rnd>0.5, LatticeReal(sqrt(0.5)), LatticeReal(-sqrt(0.5)) );
+      z = cmplx(ar, ai);
+
       for(int i=0; i<Nc; i++) {
 	tmp_color_vec[i] = zero;
 	pokeColor(tmp_color_vec[i], z, i);
