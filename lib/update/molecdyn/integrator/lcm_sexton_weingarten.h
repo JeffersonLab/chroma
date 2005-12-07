@@ -223,7 +223,7 @@ namespace Chroma
 
     //! Does [ U_short(dt/n) ]^n
     inline void U_short(const Real& dtbyN, 
-			const int N,
+			int N,
 			AbsFieldState<multi1d<LatticeColorMatrix>,
 			multi1d<LatticeColorMatrix> >&  s) {
 

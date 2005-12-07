@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: abs_integrator.h,v 2.1 2005-12-07 03:51:47 edwards Exp $
 
 /*! @file
  * @brief Integrators
@@ -139,7 +139,7 @@ namespace Chroma
     virtual const Real getStepSize(void) const = 0;
 
     //! Get the number of timesteps
-    virtual const int getNumSteps(void) const = 0;
+    virtual int getNumSteps(void) const = 0;
   };
 
 

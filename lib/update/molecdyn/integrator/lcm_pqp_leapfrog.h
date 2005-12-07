@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_pqp_leapfrog.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: lcm_pqp_leapfrog.h,v 2.1 2005-12-07 03:51:47 edwards Exp $
 
 /*! @file
  * @brief Leapfrog integrator
@@ -57,7 +57,7 @@ namespace Chroma
   public:
 
     // Simplest Constructor
-    LatColMatPQPLeapfrogIntegrator(const int  n_steps_, 
+    LatColMatPQPLeapfrogIntegrator(int  n_steps_, 
 				   const Real& tau_,
 				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_ ) : n_steps(n_steps_), tau0(tau_), H_MD(H_) {};
 
@@ -109,7 +109,7 @@ namespace Chroma
     }
 
     //! Get the number of steps
-    const int getNumSteps(void) const { 
+    int getNumSteps(void) const { 
       return n_steps;
     }
 

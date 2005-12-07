@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: circular_buffer.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
+// $Id: circular_buffer.h,v 2.1 2005-12-07 03:51:48 edwards Exp $
 /*! \file
  * \brief Circular buffers
  *
@@ -76,12 +76,12 @@ namespace Chroma
     // at some stage
     
     //! Get the maximum number of data items one can store
-    const int sizeMax(void) const { // Maximum number of elements
+    int sizeMax(void) const { // Maximum number of elements
       return size_max;
     }
     
     //! Get the current number of items stored
-    const int size(void) const {  // THe current number of elements
+    int size(void) const {  // THe current number of elements
       return size_internal;
     }
     
@@ -238,12 +238,12 @@ namespace Chroma
     // at some stage
     
     //! Get the maximum number of data items one can store
-    const int sizeMax(void) const { // Maximum number of elements
+    int sizeMax(void) const { // Maximum number of elements
       return size_max;
     }
     
     //! Get the current number of items stored
-    const int size(void) const {  // THe current number of elements
+    int size(void) const {  // THe current number of elements
       return size_internal;
     }
     
