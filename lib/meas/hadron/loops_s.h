@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
+// $Id: loops_s.h,v 2.1 2005-12-07 03:59:59 edwards Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H
@@ -123,6 +123,7 @@ namespace Chroma {
 	  QDP_abort(1);
 	}
 
+       return zero;   // make compiler happy
     }
 
 
