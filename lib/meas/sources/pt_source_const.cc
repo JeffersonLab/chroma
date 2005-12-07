@@ -1,4 +1,4 @@
-// $Id: pt_source_const.cc,v 2.5 2005-11-22 22:00:27 edwards Exp $
+// $Id: pt_source_const.cc,v 2.6 2005-12-07 04:24:59 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -127,6 +127,7 @@ namespace Chroma
 
 
     //! Construct the source
+    template<>
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {

@@ -1,4 +1,4 @@
-// $Id: wall_source_const.cc,v 2.2 2005-11-16 02:34:58 edwards Exp $
+// $Id: wall_source_const.cc,v 2.3 2005-12-07 04:24:59 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -98,6 +98,7 @@ namespace Chroma
 
 
     //! Construct the source
+    template<>
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {

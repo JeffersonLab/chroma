@@ -1,4 +1,4 @@
-// $Id: dilutezN_source_const.cc,v 2.1 2005-11-20 18:28:38 edwards Exp $
+// $Id: dilutezN_source_const.cc,v 2.2 2005-12-07 04:24:58 edwards Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
@@ -117,6 +117,7 @@ namespace Chroma
 
 
     //! Construct the source
+    template<>
     LatticeFermion
     SourceConst<LatticeFermion>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
