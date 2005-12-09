@@ -1,3 +1,6 @@
+12/08/2005 -- Robert Edwards
+	Version 2.5.5. Small cleanups to make gcc4.0 happy.
+
 11/30/2005 -- Robert Edwards
 	Version 2.5.4. Renamed PropSource_t and PropSink_t to PropSourceConst_t and
         PropSinkSmear_t. Added new PropSourceSmear_t . Updates of stochastic codes.
