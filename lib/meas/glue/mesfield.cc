@@ -1,4 +1,4 @@
-// $Id: mesfield.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
+// $Id: mesfield.cc,v 2.1 2005-12-11 16:40:38 edwards Exp $
 /*! \file
  *  \brief Calculates the antihermitian field strength tensor  iF(mu,nu)
  */
@@ -11,6 +11,8 @@ namespace Chroma
 
   //! Calculates the antihermitian field strength tensor  iF(mu,nu)
   /*
+   * \ingroup glue
+   *
    *    F(mu,nu) =  (1/4) sum_p (1/2) [ U_p(x) - U^dag_p(x) ]
    *
    *  where
