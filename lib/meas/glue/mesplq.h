@@ -1,21 +1,22 @@
 // -*- C++ -*-
-// $Id: mesplq.h,v 2.0 2005-09-25 21:04:34 edwards Exp $
+// $Id: mesplq.h,v 2.1 2005-12-11 16:40:12 edwards Exp $
 
 #ifndef __mesplq_h__
 #define __mesplq_h__
 
-namespace Chroma {
+namespace Chroma 
+{
 
- //! Return the value of the average plaquette normalized to 1
- /*!
-  * \ingroup glue
-  *
-  * \param u         gauge field (Read)
-  * \param w_plaq    plaquette average (Write)
-  * \param s_plaq    space-like plaquette average (Write)
-  * \param t_plaq    time-like plaquette average (Write)
-  * \param link      space-time average link (Write)
-  */
+  //! Return the value of the average plaquette normalized to 1
+  /*!
+   * \ingroup glue
+   *
+   * \param u         gauge field (Read)
+   * \param w_plaq    plaquette average (Write)
+   * \param s_plaq    space-like plaquette average (Write)
+   * \param t_plaq    time-like plaquette average (Write)
+   * \param link      space-time average link (Write)
+   */
   void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
 	      Double& t_plaq, Double& link);
 
