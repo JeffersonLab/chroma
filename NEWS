@@ -1,3 +1,8 @@
+12/14/2005 -- Robert Edwards
+	Version 2.6.0. Changed FermionAction (fermact.h) interface to use a
+        quarkSpinType instead of a nonRelProp. Now, there can be FULL,UPPER,LOWER
+        quark prop calculations.
+
 12/08/2005 -- Robert Edwards
 	Version 2.5.5. Small cleanups to make gcc4.0 happy.
 
