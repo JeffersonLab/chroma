@@ -1,6 +1,10 @@
-// $Id: collect_propcomp.cc,v 2.3 2005-11-30 04:47:27 edwards Exp $
+// $Id: collect_propcomp.cc,v 2.4 2005-12-15 04:04:22 edwards Exp $
 // $Log: collect_propcomp.cc,v $
-// Revision 2.3  2005-11-30 04:47:27  edwards
+// Revision 2.4  2005-12-15 04:04:22  edwards
+// New QuarkSpinType to replace the "bool nonRelProp". Now choices
+// of how to compute quark prop - FULL,UPPER,LOWER.
+//
+// Revision 2.3  2005/11/30 04:47:27  edwards
 // Changed PropSource_t to PropSourceConst_t and added a new PropSourceSmear_t.
 // Renamed PropSink_t to PropSinkSmear_t .
 //
@@ -353,20 +357,33 @@ int main(int argc, char **argv)
   XMLReader file_xml_in;
   XMLReader record_xml_in;
 
-  int max_spin;
+  int start_spin;
+  int end_spin;
   if( make_sourceP ) { 
-    max_spin = Ns;
+    start_spin = 0;
+    end_spin = Ns;
   }
   else if (seqsourceP ) { 
-    if( input.param.nonRelProp ) {
-      max_spin = Ns/2;
-    }
-    else {
-      max_spin = Ns;
+    switch (input.param.quarkSpinType)
+    {
+    case QUARK_SPIN_TYPE_FULL:
+      start_spin = 0;
+      end_spin = Ns;
+      break;
+
+    case QUARK_SPIN_TYPE_UPPER:
+      start_spin = 0;
+      end_spin = Ns/2;
+      break;
+
+    case QUARK_SPIN_TYPE_LOWER:
+      start_spin = Ns/2;
+      end_spin = Ns;
+      break;
     }
   }
 
-  for(int spin=0; spin < max_spin; spin++) { 
+  for(int spin=start_spin; spin < end_spin; spin++) { 
     for(int color=0; color < Nc; color++) {
       ostringstream filename ;
       filename << input.prop.prop_file << "_component_s" << spin
@@ -382,17 +399,41 @@ int main(int argc, char **argv)
     }
   }
 
-  if( seqsourceP ) {
-    if( input.param.nonRelProp ) { 
-      for(int spin = max_spin; spin < Ns; spin++) {
-	for(int color =0; color < Nc; color++) { 
-	  
-	  PropToFerm(quark_prop,psi, color, spin-max_spin);
-	  
-	  FermToProp((-psi), quark_prop, color, spin);
+  if( seqsourceP ) 
+  {
+    switch (input.param.quarkSpinType)
+    {
+    case QUARK_SPIN_TYPE_FULL:
+      // Do nothing here
+      break;
+
+    case QUARK_SPIN_TYPE_UPPER:
+    {
+      for(int color_source = 0; color_source < Nc ; ++color_source) 
+      {
+	for(int spin_source = Ns/2; spin_source < Ns; ++spin_source) 
+	{ 
+         PropToFerm(quark_prop,psi, color_source, spin_source-Ns/2);
+         FermToProp((-psi), quark_prop, color_source, spin_source);
 	}
       }
     }
+    break;
+
+    case QUARK_SPIN_TYPE_LOWER:
+    {
+      // NOT SURE THIS IS CORRECT
+      for(int color_source = 0; color_source < Nc ; ++color_source) 
+      {
+	for(int spin_source = 0; spin_source < Ns/2; ++spin_source) 
+	{ 
+         PropToFerm(quark_prop,psi, color_source, spin_source+Ns/2);
+         FermToProp((-psi), quark_prop, color_source, spin_source);
+	}
+      }
+    }
+    break;
+    }  // end switch(quarkSpinType)
   }
 
   SftMom phases(0, true, Nd-1);

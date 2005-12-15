@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson-v7.ini.xml,v 2.2 2005-11-08 05:40:25 edwards Exp $
+; $Id: prec_wilson-v9.ini.xml,v 1.1 2005-12-15 04:04:22 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -49,8 +49,8 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
