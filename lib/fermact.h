@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 2.0 2005-09-25 21:04:24 edwards Exp $
+// $Id: fermact.h,v 2.1 2005-12-15 04:03:27 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -14,7 +14,7 @@
 #include "linearop.h"
 #include "syssolver.h"
 #include "fermbc.h"
-
+#include "io/enum_io/enum_quarkspintype_io.h"
 
 namespace Chroma
 {
@@ -69,7 +69,7 @@ namespace Chroma
      * \param xml_out  diagnostic output ( Modify )
      * \param state    gauge connection state ( Read )
      * \param invParam inverter parameters ( Read )
-     * \param nonRelProp compute only a non-relativistic prop ( Read )
+     * \param quarkSpinType compute only a non-relativistic prop ( Read )
      * \param ncg_had  number of solver iterations ( Write )
      */
     virtual void quarkProp(typename PropTypeTraits<T>::Type_t& q_sol,
@@ -77,7 +77,7 @@ namespace Chroma
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   Handle<const ConnectState> state,
 			   const InvertParam_t& invParam,
-			   bool nonRelProp,
+			   QuarkSpinType quarkSpinType,
 			   int& ncg_had) = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
@@ -91,7 +91,7 @@ namespace Chroma
      * \param j_decay  direction of decay ( Read )
      * \param state    gauge connection state ( Read )
      * \param invParam inverter parameters ( Read )
-     * \param nonRelProp compute only a non-relativistic prop ( Read )
+     * \param quarkSpinType compute only a non-relativistic prop ( Read )
      * \param obsvP    compute currents and residual mass ( Read )
      * \param ncg_had  number of solver iterations ( Write )
      */
@@ -101,11 +101,11 @@ namespace Chroma
 			   int t_src, int j_decay,
 			   Handle<const ConnectState> state,
 			   const InvertParam_t& invParam,
-			   bool nonRelProp,
+			   QuarkSpinType quarkSpinType,
 			   bool obsvP,
 			   int& ncg_had)
     {
-      quarkProp(q_sol, xml_out, q_src, state, invParam, nonRelProp, ncg_had);
+      quarkProp(q_sol, xml_out, q_src, state, invParam, quarkSpinType, ncg_had);
     }
 
   };
@@ -324,7 +324,7 @@ namespace Chroma
      * \param xml_out  diagnostic output ( Modify )
      * \param state    gauge connection state ( Read )
      * \param invParam inverter parameters ( Read )
-     * \param nonRelProp compute only a non-relativistic prop ( Read )
+     * \param quarkSpinType compute only a non-relativistic prop ( Read )
      * \param ncg_had  number of solver iterations ( Write )
      */
     virtual void quarkProp(typename PropTypeTraits<T>::Type_t& q_sol,
@@ -332,7 +332,7 @@ namespace Chroma
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   Handle<const ConnectState> state,
 			   const InvertParam_t& invParam,
-			   bool nonRelProp,
+			   QuarkSpinType quarkSpinType,
 			   int& ncg_had);
   };
 
@@ -371,7 +371,7 @@ namespace Chroma
      * \param xml_out  diagnostic output ( Modify )
      * \param state    gauge connection state ( Read )
      * \param invParam inverter parameters ( Read )
-     * \param nonRelProp compute only a non-relativistic prop ( Read )
+     * \param quarkSpinType compute only a non-relativistic prop ( Read )
      * \param ncg_had  number of solver iterations ( Write )
      */
     virtual void quarkProp(typename PropTypeTraits<T>::Type_t& q_sol,
@@ -379,7 +379,7 @@ namespace Chroma
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   Handle<const ConnectState> state,
 			   const InvertParam_t& invParam,
-			   bool nonRelProp,
+			   QuarkSpinType quarkSpinType,
 			   int& ncg_had);
   };
 
@@ -504,7 +504,7 @@ namespace Chroma
      * \param xml_out  diagnostic output ( Modify )
      * \param state    gauge connection state ( Read )
      * \param invParam inverter parameters ( Read )
-     * \param nonRelProp compute only a non-relativistic prop ( Read )
+     * \param quarkSpinType compute only a non-relativistic prop ( Read )
      * \param ncg_had  number of solver iterations ( Write )
      */
     virtual void quarkProp(typename PropTypeTraits<T>::Type_t& q_sol,
@@ -512,7 +512,7 @@ namespace Chroma
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   Handle<const ConnectState> state,
 			   const InvertParam_t& invParam,
-			   bool nonRelProp,
+			   QuarkSpinType quarkSpinType,
 			   int& ncg_had);
   };
 

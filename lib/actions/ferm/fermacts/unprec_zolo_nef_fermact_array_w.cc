@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 2.1 2005-12-15 04:03:27 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -376,7 +376,7 @@ namespace Chroma
 				       int t_src, int j_decay,
 				       Handle<const ConnectState> state,
 				       const InvertParam_t& invParam,
-				       bool nonRelProp,
+				       QuarkSpinType quarkSpinType,
 				       bool obsvP,
 				       int& ncg_had)
   {
@@ -385,7 +385,7 @@ namespace Chroma
     else
     {
       Handle< const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
-      quarkProp4(q_sol, xml_out, q_src, qprop, nonRelProp, ncg_had);
+      quarkProp4(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
     }
   }
 

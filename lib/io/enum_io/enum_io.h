@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_io.h,v 2.0 2005-09-25 21:04:33 edwards Exp $
+// $Id: enum_io.h,v 2.1 2005-12-15 04:03:28 edwards Exp $
 
 /*! \file
  * \brief Enums
@@ -35,4 +35,6 @@
 #include "enum_gaugebc_io.h"
 #include "enum_md_integrator_type_io.h"
 #include "enum_inner_solver_type_io.h"
+#include "enum_quarkspintype_io.h"
+
 #endif

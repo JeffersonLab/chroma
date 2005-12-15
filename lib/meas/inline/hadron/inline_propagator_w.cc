@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 2.3 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_propagator_w.cc,v 2.4 2005-12-15 04:03:28 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -361,7 +361,7 @@ namespace Chroma
 		       t0, j_decay,
 		       state, 
 		       params.param.invParam, 
-		       params.param.nonRelProp,
+		       params.param.quarkSpinType,
 		       params.param.obsvP,
 		       ncg_had);
 	swatch.stop();

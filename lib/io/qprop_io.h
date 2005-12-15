@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 2.2 2005-11-30 04:46:39 edwards Exp $
+// $Id: qprop_io.h,v 2.3 2005-12-15 04:03:28 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -9,6 +9,7 @@
 
 #include "io/enum_io/enum_invtype_io.h"
 #include "io/enum_io/enum_qdpvolfmt_io.h"
+#include "io/enum_io/enum_quarkspintype_io.h"
 
 namespace Chroma {
 
@@ -66,7 +67,7 @@ struct PropSinkSmear_t
 struct ChromaMultiProp_t 
 { 
   ChromaMultiProp_t();          // default constructor
-  bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
+  QuarkSpinType   quarkSpinType;   // why spin components to compute
 
   //! String holding XML of the FermionAction section
   std::string     fermact;
@@ -82,7 +83,7 @@ struct ChromaMultiProp_t
 struct ChromaProp_t 
 { 
   ChromaProp_t();               // default constructor
-  bool            nonRelProp;   // compute only the nonrelativistic portion of this prop?
+  QuarkSpinType   quarkSpinType;   // why spin components to compute
 
   // String holding XML of the FermionAction section
   std::string     fermact;
@@ -108,7 +109,7 @@ struct SeqSource_t
 //! Structure for writing to seqprop files
 struct ChromaSeqProp_t
 {
-  bool             nonRelSeqProp;
+  QuarkSpinType    quarkSpinType;   // which spin components to compute
   InvertParam_t    invParam;
   std::string      seq_src;
   multi1d<int>     sink_mom;

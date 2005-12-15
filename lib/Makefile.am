@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.18 2005-12-03 21:23:32 edwards Exp $
+# $Id: Makefile.am,v 2.19 2005-12-15 04:03:27 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -90,6 +90,7 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_gaugeacttype_io.h \
 	io/enum_io/enum_invtype_io.h \
 	io/enum_io/enum_wvfkind_io.h \
+	io/enum_io/enum_quarkspintype_io.h \
 	io/enum_io/enum_qdpvolfmt_io.h \
 	io/enum_io/enum_srcsnktype_io.h \
 	io/enum_io/enum_wavetype_io.h \
@@ -554,6 +555,7 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_invtype_io.cc \
 	io/enum_io/enum_md_integrator_type_io.cc \
 	io/enum_io/enum_proptype_io.cc io/enum_io/enum_qdpvolfmt_io.cc \
+	io/enum_io/enum_quarkspintype_io.cc \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_srcsnktype_io.cc io/enum_io/enum_wavetype_io.cc \
 	io/enum_io/enum_wvfkind_io.cc \

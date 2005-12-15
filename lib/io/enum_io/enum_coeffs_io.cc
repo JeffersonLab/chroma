@@ -8,10 +8,10 @@ namespace Chroma {
 
     bool registerAll(void) 
     {
-      bool success; 
-      success = theCoeffTypeMap::Instance().registerPair(string("ZOLOTAREV"), COEFF_TYPE_ZOLOTAREV );
+      bool success = true; 
+      success &= theCoeffTypeMap::Instance().registerPair(string("ZOLOTAREV"), COEFF_TYPE_ZOLOTAREV );
       success &= theCoeffTypeMap::Instance().registerPair(string("TANH"), COEFF_TYPE_TANH);
-      success &- theCoeffTypeMap::Instance().registerPair(string("TANH_UNSCALED"), COEFF_TYPE_TANH_UNSCALED);
+      success &= theCoeffTypeMap::Instance().registerPair(string("TANH_UNSCALED"), COEFF_TYPE_TANH_UNSCALED);
       return success;
     }
 

@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 2.2 2005-11-30 04:46:39 edwards Exp $
+// $Id: qprop_io.cc,v 2.3 2005-12-15 04:03:27 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -621,9 +621,22 @@ namespace Chroma
       // in production needs this support.
 
     case 3:
-      read(paramtop, "nonRelSeqProp", param.nonRelSeqProp);
+    {
+      bool nonRelProp;
+      read(paramtop, "nonRelSeqProp", nonRelProp); // new - is this prop non-relativistic
+      if (nonRelProp)
+	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
+
       read(paramtop, "seq_src", param.seq_src);
-      break;
+    }
+    break;
+
+    case 4:
+    {
+      read(paramtop, "quarkSpinType", param.quarkSpinType);
+      read(paramtop, "seq_src", param.seq_src);
+    }
+    break;
 
     default:
       QDPIO::cerr << "ChromaSeqProp parameter version " << version 
@@ -676,6 +689,7 @@ namespace Chroma
 
     multi1d<int> boundary;
 
+    param.quarkSpinType = QUARK_SPIN_TYPE_FULL;
     param.obsvP = true;
 
     switch (version) 
@@ -685,8 +699,6 @@ namespace Chroma
     {
       // In V4 the fermion action specific stuff is within the <Param> tag and not
       // in a <FermionAction> tag beneath <Param>
-      param.nonRelProp = false;
-
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
 //      read(paramtop, "nrow", param.nrow);
@@ -705,8 +717,6 @@ namespace Chroma
     {
       // In this modified version of v4, the fermion action specific stuff
       // goes into a <FermionAction> tag beneath <Param>
-      param.nonRelProp = false;
-
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
 //      read(paramtop, "nrow", param.nrow);
@@ -726,7 +736,11 @@ namespace Chroma
     /**************************************************************************/
     case 6:
     {
-      read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
+      bool nonRelProp;
+      read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
+      if (nonRelProp)
+	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
+
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
 //      read(paramtop, "nrow", param.nrow);
@@ -753,7 +767,11 @@ namespace Chroma
 
       read(paramtop, "InvertParam", param.invParam);
 //      read(paramtop, "nrow", param.nrow);
-      read(paramtop, "nonRelProp", param.nonRelProp);
+
+      bool nonRelProp;
+      read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
+      if (nonRelProp)
+	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
 
       if (paramtop.count("obsvP") != 0)
       {
@@ -775,9 +793,33 @@ namespace Chroma
       xml_tmp.print(os);
       param.fermact = os.str();
 
+      bool nonRelProp;
+      read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
+      if (nonRelProp)
+	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
+
       read(paramtop, "InvertParam", param.invParam);
 //      read(paramtop, "nrow", param.nrow);
-      read(paramtop, "nonRelProp", param.nonRelProp);
+      read(paramtop, "obsvP", param.obsvP);
+
+      if (paramtop.count("boundary") != 0)
+      {
+	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
+	QDP_abort(1);
+      }
+    }
+    break;
+
+    case 9:
+    {
+      XMLReader xml_tmp(paramtop, "FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      param.fermact = os.str();
+
+      read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
+      read(paramtop, "InvertParam", param.invParam);
+//      read(paramtop, "nrow", param.nrow);
       read(paramtop, "obsvP", param.obsvP);
 
       if (paramtop.count("boundary") != 0)
@@ -805,6 +847,7 @@ namespace Chroma
     int version;
     read(paramtop, "version", version);
 
+    param.quarkSpinType = QUARK_SPIN_TYPE_FULL;
     multi1d<int> boundary;
 
     switch (version) 
@@ -815,7 +858,6 @@ namespace Chroma
     {
       read(paramtop, "MultiMasses", param.MultiMasses);
     
-      param.nonRelProp = false;
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
 //      read(paramtop, "nrow", param.nrow);
@@ -838,7 +880,11 @@ namespace Chroma
     {
       read(paramtop, "MultiMasses", param.MultiMasses);
 
-      read(paramtop, "nonRelProp", param.nonRelProp); // new - is this prop non-relativistic
+      bool nonRelProp;
+      read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
+      if (nonRelProp)
+	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
+
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
 //      read(paramtop, "nrow", param.nrow);
@@ -868,7 +914,11 @@ namespace Chroma
 
       read(paramtop, "InvertParam", param.invParam);
 //      read(paramtop, "nrow", param.nrow);
-      read(paramtop, "nonRelProp", param.nonRelProp);
+
+      bool nonRelProp;
+      read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
+      if (nonRelProp)
+	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
 
       if (paramtop.count("boundary") != 0)
       {
@@ -890,7 +940,29 @@ namespace Chroma
 
       read(paramtop, "InvertParam", param.invParam);
 //      read(paramtop, "nrow", param.nrow);
-      read(paramtop, "nonRelProp", param.nonRelProp);
+
+      bool nonRelProp;
+      read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
+      if (nonRelProp)
+	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
+    }
+    break;
+
+
+    /* Compatibility with non MultiQprop */
+    case 9:
+    {
+      read(paramtop, "MultiMasses", param.MultiMasses);
+
+      XMLReader xml_tmp(paramtop, "FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      param.fermact = os.str();
+
+      read(paramtop, "InvertParam", param.invParam);
+//      read(paramtop, "nrow", param.nrow);
+
+      read(paramtop, "quarkSpinType", param.quarkSpinType); // quark spin components
     }
     break;
 
@@ -1078,9 +1150,9 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 8;
+    int version = 9;
     write(xml, "version", version);
-    write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
+    write(xml, "quarkSpinType", header.quarkSpinType);
     write(xml, "obsvP", header.obsvP);           // new - measured 5D stuff
     xml << header.fermact;
     write(xml, "InvertParam", header.invParam);
@@ -1094,9 +1166,9 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 7;
+    int version = 8;
     write(xml, "version", version);
-    write(xml, "nonRelProp", header.nonRelProp); // new - is this prop non-relativistic
+    write(xml, "quarkSpinType", header.quarkSpinType);
     write(xml, "MultiMasses", header.MultiMasses);
     xml << header.fermact;
     write(xml, "InvertParam", header.invParam);
@@ -1111,9 +1183,9 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 3;
+    int version = 4;
     write(xml, "version", version);
-    write(xml, "nonRelSeqProp", param.nonRelSeqProp);
+    write(xml, "quarkSpinType", param.quarkSpinType);
     write(xml, "seq_src", param.seq_src);
     write(xml, "InvertParam", param.invParam);
     write(xml, "t_sink", param.t_sink);

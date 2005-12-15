@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 2.2 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_multi_propagator_w.cc,v 2.3 2005-12-15 04:03:28 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -375,7 +375,7 @@ namespace Chroma
 	// ChromaProp_t out_param(input.param, m);
       
 	ChromaProp_t out_param;
-	out_param.nonRelProp = params.param.nonRelProp;
+	out_param.quarkSpinType = params.param.quarkSpinType;
 	out_param.fermact = params.param.fermact;
 	// I need a way to glom a mass into an XML document
 	//

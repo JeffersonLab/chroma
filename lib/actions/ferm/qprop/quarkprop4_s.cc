@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: quarkprop4_s.cc,v 2.1 2005-12-15 04:03:27 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -33,7 +33,7 @@ namespace Chroma
 		   const FermionAction<T>& S_f,
 		   Handle<const ConnectState> state,
 		   const InvertParam_t& invParam,
-		   bool nonRelProp,
+		   QuarkSpinType quarkSpinType,
 		   int& ncg_had)
   {
     START_CODE();
@@ -107,10 +107,10 @@ namespace Chroma
 		  const StaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >& S_f,
 		  Handle<const ConnectState> state,
 		  const InvertParam_t& invParam,
-		  bool nonRelProp,
+		  QuarkSpinType quarkSpinType,
 		  int& ncg_had)
   {
-    quarkProp_a<LatticeStaggeredFermion>(q_sol, xml_out, q_src, S_f, state, invParam, nonRelProp, ncg_had);
+    quarkProp_a<LatticeStaggeredFermion>(q_sol, xml_out, q_src, S_f, state, invParam, quarkSpinType, ncg_had);
   }
 
 
@@ -133,10 +133,10 @@ namespace Chroma
     const LatticeStaggeredPropagator& q_src,
     Handle<const ConnectState> state,
     const InvertParam_t& invParam,
-    bool nonRelProp,
+    QuarkSpinType quarkSpinType,
     int& ncg_had)
   {
-    quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, nonRelProp, ncg_had);
+    quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, quarkSpinType, ncg_had);
   }
 
 
