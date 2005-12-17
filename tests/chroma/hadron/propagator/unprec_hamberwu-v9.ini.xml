@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: unprec_hamberwu-v9.ini.xml,v 1.2 2005-12-17 21:59:10 edwards Exp $
+; $Id: unprec_hamberwu-v9.ini.xml,v 1.3 2005-12-17 22:14:17 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -52,7 +52,7 @@
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
-         <Kappa>0.17</Kappa>
+         <Kappa>0.16</Kappa>
          <u0>0.95</u0>
          <AnisoParam>
            <anisoP>false</anisoP>

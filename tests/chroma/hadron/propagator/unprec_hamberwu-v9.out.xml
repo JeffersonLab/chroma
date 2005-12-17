@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_hamberwu-v9.out.xml,v 1.2 2005-12-17 21:59:10 edwards Exp $
+; $Id: unprec_hamberwu-v9.out.xml,v 1.3 2005-12-17 22:14:17 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -55,7 +55,7 @@
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
-         <Kappa>0.17</Kappa>
+         <Kappa>0.16</Kappa>
          <u0>0.95</u0>
          <AnisoParam>
            <anisoP>false</anisoP>
@@ -118,7 +118,7 @@
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 16:56:14 EST</run_date>
+    <run_date>17 Dec 05 17:13:03 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -179,7 +179,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 16:56:14 EST</run_date>
+          <run_date>17 Dec 05 17:13:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -268,7 +268,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 16:56:14 EST</run_date>
+          <run_date>17 Dec 05 17:13:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -283,7 +283,7 @@
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
-      <Kappa>0.17</Kappa>
+      <Kappa>0.16</Kappa>
       <u0>0.95</u0>
       <AnisoParam>
         <anisoP>false</anisoP>
@@ -396,47 +396,47 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>326</n_count>
+            <n_count>231</n_count>
           </Qprop>
           <Qprop>
-            <n_count>328</n_count>
+            <n_count>231</n_count>
           </Qprop>
           <Qprop>
-            <n_count>331</n_count>
+            <n_count>233</n_count>
           </Qprop>
           <Qprop>
-            <n_count>329</n_count>
+            <n_count>233</n_count>
           </Qprop>
           <Qprop>
-            <n_count>328</n_count>
+            <n_count>233</n_count>
           </Qprop>
           <Qprop>
-            <n_count>327</n_count>
+            <n_count>231</n_count>
           </Qprop>
           <Qprop>
-            <n_count>326</n_count>
+            <n_count>230</n_count>
           </Qprop>
           <Qprop>
-            <n_count>329</n_count>
+            <n_count>232</n_count>
           </Qprop>
           <Qprop>
-            <n_count>326</n_count>
+            <n_count>231</n_count>
           </Qprop>
           <Qprop>
-            <n_count>328</n_count>
+            <n_count>231</n_count>
           </Qprop>
           <Qprop>
-            <n_count>326</n_count>
+            <n_count>231</n_count>
           </Qprop>
           <Qprop>
-            <n_count>327</n_count>
+            <n_count>231</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>3931</ncg_had>
+          <ncg_had>2778</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0458452 0.010862 0.00209486 0.000384608 0.000135226 0.000375284 0.0021701 0.0108727</prop_corr>
+          <prop_corr>0.0392181 0.0074653 0.00109573 0.000144655 4.05311e-05 0.000143619 0.00112316 0.00740642</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

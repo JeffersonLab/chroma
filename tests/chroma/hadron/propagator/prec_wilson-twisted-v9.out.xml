@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson-twisted-v9.out.xml,v 1.1 2005-12-17 21:00:25 edwards Exp $
+; $Id: prec_wilson-twisted-v9.out.xml,v 1.2 2005-12-17 22:14:17 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -104,7 +104,7 @@
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 15:54:16 EST</run_date>
+    <run_date>17 Dec 05 17:02:38 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -188,7 +188,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 15:54:16 EST</run_date>
+          <run_date>17 Dec 05 17:02:38 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -265,7 +265,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 15:54:16 EST</run_date>
+          <run_date>17 Dec 05 17:02:38 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
