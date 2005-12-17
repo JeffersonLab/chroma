@@ -1,4 +1,4 @@
-// $Id: constgauge.cc,v 2.1 2005-11-09 16:13:32 dgr Exp $
+// $Id: constgauge.cc,v 2.2 2005-12-17 22:46:40 edwards Exp $
 /*! \file
  *  \brief Constant diagonal gauge field
  */
@@ -21,10 +21,14 @@ namespace Chroma
    *  \param theta      Angles                        (Read)
    */
 
-  void constgauge(multi1d<LatticeColorMatrix>& u, const multi2d<Real> theta){
+  void constgauge(multi1d<LatticeColorMatrix>& u, const multi2d<Real> theta)
+  {
     START_CODE();
 
-    for(int mu = 0; mu < Nd; mu++){ // Loop over the directions
+    u.resize(Nd);
+
+    for(int mu = 0; mu < Nd; mu++)   // Loop over the directions
+    {
 
       multi1d<Complex> phase(Nc); // the phases
       Complex tmp_u;
