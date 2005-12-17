@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson-v9.ini.xml,v 1.1 2005-12-15 04:04:22 edwards Exp $
+; $Id: prec_wilson-v9.ini.xml,v 1.2 2005-12-17 19:23:56 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -37,8 +37,6 @@
             <no_smear_dir>3</no_smear_dir>
           </noLinkSmearing>
         </Source>
-
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -54,16 +52,16 @@
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
+         <Kappa>0.135</Kappa>
          <AnisoParam>
-           <anisoP>false</anisoP>
+           <anisoP>true</anisoP>
            <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
          </AnisoParam>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
+           <boundary>1 1 1 -1</boundary>
          </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -71,7 +69,6 @@
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -106,8 +103,8 @@
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>DISORDERED</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
