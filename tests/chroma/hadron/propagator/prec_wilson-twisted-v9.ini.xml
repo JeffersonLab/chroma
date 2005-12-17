@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson-twisted-v7.ini.xml,v 1.2 2005-11-08 05:40:25 edwards Exp $
+; $Id: prec_wilson-twisted-v9.ini.xml,v 1.1 2005-12-17 21:00:25 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -26,7 +26,6 @@
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
         </Source>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>pt_source_0</source_id>
@@ -37,8 +36,8 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
@@ -57,7 +56,6 @@
           <RsdCG>1.0e-7</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>pt_source_0</source_id>
