@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_hamberwu-v9.out.xml,v 1.2 2005-12-17 21:59:10 edwards Exp $
+; $Id: prec_parwilson-v9.out.xml,v 1.1 2005-12-17 21:59:10 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -54,14 +54,14 @@
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
-         <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
-         <Kappa>0.17</Kappa>
-         <u0>0.95</u0>
+         <FermAct>PARWILSON</FermAct>
+         <Kappa>0.205</Kappa>
+         <H>0.01</H>
          <AnisoParam>
-           <anisoP>false</anisoP>
+           <anisoP>true</anisoP>
            <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
          </AnisoParam>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
@@ -118,7 +118,7 @@
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 16:56:14 EST</run_date>
+    <run_date>17 Dec 05 16:58:44 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -179,7 +179,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 16:56:14 EST</run_date>
+          <run_date>17 Dec 05 16:58:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -268,7 +268,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 16:56:14 EST</run_date>
+          <run_date>17 Dec 05 16:58:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -282,14 +282,14 @@
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
-      <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
-      <Kappa>0.17</Kappa>
-      <u0>0.95</u0>
+      <FermAct>PARWILSON</FermAct>
+      <Kappa>0.205</Kappa>
+      <H>0.01</H>
       <AnisoParam>
-        <anisoP>false</anisoP>
+        <anisoP>true</anisoP>
         <t_dir>3</t_dir>
-        <xi_0>1.0</xi_0>
-        <nu>1.0</nu>
+        <xi_0>2.464</xi_0>
+        <nu>0.95</nu>
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
@@ -396,47 +396,47 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>326</n_count>
+            <n_count>152</n_count>
           </Qprop>
           <Qprop>
-            <n_count>328</n_count>
+            <n_count>150</n_count>
           </Qprop>
           <Qprop>
-            <n_count>331</n_count>
+            <n_count>153</n_count>
           </Qprop>
           <Qprop>
-            <n_count>329</n_count>
+            <n_count>151</n_count>
           </Qprop>
           <Qprop>
-            <n_count>328</n_count>
+            <n_count>152</n_count>
           </Qprop>
           <Qprop>
-            <n_count>327</n_count>
+            <n_count>151</n_count>
           </Qprop>
           <Qprop>
-            <n_count>326</n_count>
+            <n_count>151</n_count>
           </Qprop>
           <Qprop>
-            <n_count>329</n_count>
+            <n_count>152</n_count>
           </Qprop>
           <Qprop>
-            <n_count>326</n_count>
+            <n_count>153</n_count>
           </Qprop>
           <Qprop>
-            <n_count>328</n_count>
+            <n_count>151</n_count>
           </Qprop>
           <Qprop>
-            <n_count>326</n_count>
+            <n_count>153</n_count>
           </Qprop>
           <Qprop>
-            <n_count>327</n_count>
+            <n_count>153</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>3931</ncg_had>
+          <ncg_had>1822</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0458452 0.010862 0.00209486 0.000384608 0.000135226 0.000375284 0.0021701 0.0108727</prop_corr>
+          <prop_corr>0.0793223 0.0137613 0.0035749 0.000878082 0.000410197 0.000882428 0.00350698 0.0132934</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
