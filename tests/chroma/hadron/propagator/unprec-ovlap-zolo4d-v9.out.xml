@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec-ovlap-zolo4d-v8.out.xml,v 1.1 2005-11-16 22:41:44 edwards Exp $
+; $Id: unprec-ovlap-zolo4d-v9.out.xml,v 1.1 2005-12-17 20:52:36 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -40,8 +40,6 @@
             <no_smear_dir>3</no_smear_dir>
           </noLinkSmearing>
         </Source>
-
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -60,7 +58,7 @@
           <IsChiral>false</IsChiral>
           <ApproximationType>ZOLOTAREV</ApproximationType>
           <Mass>0.06</Mass>
-          <RatPolyDeg>6</RatPolyDeg>
+          <RatPolyDeg>4</RatPolyDeg>
           <ApproxMin>0.66</ApproxMin>
           <ApproxMax>6.46357</ApproxMax>
           <InnerSolve>
@@ -70,7 +68,7 @@
           </InnerSolve>	
           <AuxFermAct>
             <FermAct>UNPRECONDITIONED_WILSON</FermAct>
-            <Mass>-1.4</Mass>
+            <Mass>-0.3</Mass>
             <FermionBC>
               <FermBC>SIMPLE_FERMBC</FermBC>
               <boundary>1 1 1 -1</boundary>
@@ -96,7 +94,6 @@
             <eigen_volfmt>SINGLEFILE</eigen_volfmt>
           </Eig>
         </StateInfo>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -131,18 +128,18 @@
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>DISORDERED</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.4</chroma>
-      <qdp>1.17.1</qdp>
+      <chroma>2.6</chroma>
+      <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>16 Nov 05 17:36:10 EST</run_date>
+    <run_date>17 Dec 05 15:02:22 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -160,72 +157,37 @@
     </Seed>
   </RNG>
   <Config_info>
-    <file_xml>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
 
     </file_xml>
-    <gauge_xml><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+    <gauge_xml><disordered>
+</disordered>
 
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.902263</w_plaq>
-    <s_plaq>0.862579</s_plaq>
-    <t_plaq>0.941947</t_plaq>
-    <link>0.734641</link>
+    <w_plaq>-0.00379757</w_plaq>
+    <s_plaq>-0.00327781</s_plaq>
+    <t_plaq>-0.00431733</t_plaq>
+    <link>0.104803</link>
     <pollp>
       <elem>
-        <re>0.790237</re>
-        <im>0.00288483</im>
+        <re>0.040209</re>
+        <im>-0.0193806</im>
       </elem>
       <elem>
-        <re>0.785869</re>
-        <im>-0.00015866</im>
+        <re>0.0258227</re>
+        <im>0.031735</im>
       </elem>
       <elem>
-        <re>0.80393</re>
-        <im>0.00160447</im>
+        <re>-0.000155889</re>
+        <im>0.00880705</im>
       </elem>
       <elem>
-        <re>0.864752</re>
-        <im>0.00215502</im>
+        <re>0.0281716</re>
+        <im>-0.0108409</im>
       </elem>
     </pollp>
   </Observables>
@@ -235,10 +197,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.4</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>16 Nov 05 17:36:10 EST</run_date>
+          <run_date>17 Dec 05 15:02:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -249,10 +211,10 @@
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>11</elem>
-            <elem>11</elem>
-            <elem>11</elem>
-            <elem>0</elem>
+            <elem>3787</elem>
+            <elem>2588</elem>
+            <elem>2567</elem>
+            <elem>60</elem>
           </Seed>
         </RNG>
         <Input>
@@ -285,74 +247,37 @@
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><disordered>
+</disordered>
 
 
         </Config_info>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>-0.00379757</w_plaq>
+          <s_plaq>-0.00327781</s_plaq>
+          <t_plaq>-0.00431733</t_plaq>
+          <link>0.104803</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.040209</re>
+              <im>-0.0193806</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.0258227</re>
+              <im>0.031735</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>-0.000155889</re>
+              <im>0.00880705</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.0281716</re>
+              <im>-0.0108409</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
+          <source_corr>1.15313 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -361,10 +286,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.4</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>16 Nov 05 17:36:10 EST</run_date>
+          <run_date>17 Dec 05 15:02:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -375,14 +300,14 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>OVERLAP_PARTIAL_FRACTION_4D</FermAct>
       <IsChiral>false</IsChiral>
       <ApproximationType>ZOLOTAREV</ApproximationType>
       <Mass>0.06</Mass>
-      <RatPolyDeg>6</RatPolyDeg>
+      <RatPolyDeg>4</RatPolyDeg>
       <ApproxMin>0.66</ApproxMin>
       <ApproxMax>6.46357</ApproxMax>
       <InnerSolve>
@@ -392,7 +317,7 @@
       </InnerSolve>
       <AuxFermAct>
         <FermAct>UNPRECONDITIONED_WILSON</FermAct>
-        <Mass>-1.4</Mass>
+        <Mass>-0.3</Mass>
         <FermionBC>
           <FermBC>SIMPLE_FERMBC</FermBC>
           <boundary>1 1 1 -1</boundary>
@@ -420,45 +345,8 @@
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><disordered>
+</disordered>
 
 
         </Config_info>
@@ -466,26 +354,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>-0.00379757</w_plaq>
+          <s_plaq>-0.00327781</s_plaq>
+          <t_plaq>-0.00431733</t_plaq>
+          <link>0.104803</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.040209</re>
+              <im>-0.0193806</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.0258227</re>
+              <im>0.031735</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>-0.000155889</re>
+              <im>0.00880705</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.0281716</re>
+              <im>-0.0108409</im>
             </elem>
           </pollp>
         </Observables>
@@ -522,102 +410,65 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>3787</elem>
+          <elem>2588</elem>
+          <elem>2567</elem>
+          <elem>60</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <disordered>
+</disordered>
       </Config_info>
     </MakeSource>
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
+          <source_corr>1.15313 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
           <Qprop>
-            <n_count>61</n_count>
+            <n_count>9</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>732</ncg_had>
+          <ncg_had>108</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.101015 0.244519 0.168113 0.140014 0.133425 0.143944 0.169137 0.243023</prop_corr>
+          <prop_corr>0.0126808 0.00350931 5.47981e-05 1.44416e-06 1.16046e-07 1.45108e-06 5.40803e-05 0.00349726</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

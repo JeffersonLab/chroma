@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: unprec-ovlap-zolo4d-v8.ini.xml,v 1.1 2005-11-16 22:41:44 edwards Exp $
+; $Id: unprec_hamberwu-v9.ini.xml,v 1.1 2005-12-17 20:52:36 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -37,8 +37,6 @@
             <no_smear_dir>3</no_smear_dir>
           </noLinkSmearing>
         </Source>
-
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -49,51 +47,29 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
-          <FermAct>OVERLAP_PARTIAL_FRACTION_4D</FermAct>
-          <IsChiral>false</IsChiral>
-          <ApproximationType>ZOLOTAREV</ApproximationType>
-          <Mass>0.06</Mass>
-          <RatPolyDeg>6</RatPolyDeg>
-          <ApproxMin>0.66</ApproxMin>
-          <ApproxMax>6.46357</ApproxMax>
-          <InnerSolve>
-            <MaxCG>1000</MaxCG>
-            <RsdCG>1.0e-7</RsdCG>
-            <ReorthFreq>20</ReorthFreq>
-          </InnerSolve>	
-          <AuxFermAct>
-            <FermAct>UNPRECONDITIONED_WILSON</FermAct>
-            <Mass>-1.4</Mass>
-            <FermionBC>
-              <FermBC>SIMPLE_FERMBC</FermBC>
-              <boundary>1 1 1 -1</boundary>
-            </FermionBC>
-          </AuxFermAct>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
+         <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
+         <Kappa>0.07</Kappa>
+         <u0>0.95</u0>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <StateInfo>
-          <!-- The ApproxMin and ApproxMax are ignored if NWilsVec &gt 0 -->
-          <ApproxMin>0.66</ApproxMin>
-          <ApproxMax>6.46357</ApproxMax>
-          <NWilsVec>0</NWilsVec>
-          <Eig>
-            <eigen_file_stem>../t_ritz/g5_wils_eigen</eigen_file_stem>
-            <eigen_volfmt>SINGLEFILE</eigen_volfmt>
-          </Eig>
-        </StateInfo>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -128,8 +104,8 @@
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>DISORDERED</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 

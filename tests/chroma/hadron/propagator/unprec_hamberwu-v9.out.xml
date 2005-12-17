@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_dwf-v9.out.xml,v 1.2 2005-12-17 20:52:35 edwards Exp $
+; $Id: unprec_hamberwu-v9.out.xml,v 1.1 2005-12-17 20:52:36 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -50,19 +50,18 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
-        <quarkSpinType>FULL</quarkSpinType>
+        <version>8</version>
+        <nonRelProp>false</nonRelProp>
         <obsvP>false</obsvP>
         <FermionAction>
-         <FermAct>DWF</FermAct>
-         <OverMass>1.5</OverMass>
-         <Mass>0.002</Mass>
-         <N5>4</N5>
+         <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
+         <Kappa>0.11</Kappa>
+         <u0>0.95</u0>
          <AnisoParam>
-           <anisoP>true</anisoP>
+           <anisoP>false</anisoP>
            <t_dir>3</t_dir>
-           <xi_0>2.464</xi_0>
-           <nu>1.2</nu>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
          </AnisoParam>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
@@ -79,6 +78,19 @@
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_prop_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
     </elem>
 
   </InlineMeasurements>
@@ -106,7 +118,7 @@
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 14:46:00 EST</run_date>
+    <run_date>17 Dec 05 15:13:23 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -202,7 +214,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 14:46:00 EST</run_date>
+          <run_date>17 Dec 05 15:13:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -328,7 +340,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 14:46:00 EST</run_date>
+          <run_date>17 Dec 05 15:13:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -342,15 +354,14 @@
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
-      <FermAct>DWF</FermAct>
-      <OverMass>1.5</OverMass>
-      <Mass>0.002</Mass>
-      <N5>4</N5>
+      <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
+      <Kappa>0.11</Kappa>
+      <u0>0.95</u0>
       <AnisoParam>
-        <anisoP>true</anisoP>
+        <anisoP>false</anisoP>
         <t_dir>3</t_dir>
-        <xi_0>2.464</xi_0>
-        <nu>1.2</nu>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
@@ -531,49 +542,55 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>189</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>189</n_count>
           </Qprop>
           <Qprop>
-            <n_count>79</n_count>
+            <n_count>188</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>189</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>189</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>179</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>186</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>189</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>182</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>189</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>189</n_count>
           </Qprop>
           <Qprop>
-            <n_count>78</n_count>
+            <n_count>188</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>937</ncg_had>
+          <ncg_had>2246</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0152987 0.0748352 0.0280277 0.0252046 0.0236509 0.0255722 0.0283471 0.0749613</prop_corr>
+          <prop_corr>0.10599 0.0193718 0.0089922 0.00392299 0.0026395 0.00397621 0.00896834 0.0192709</prop_corr>
         </Prop_correlator>
       </propagator>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>sh_prop_0</object_id>
+      </qio_write_named_obj>
     </elem>
   </InlineObservables>
 </chroma>
