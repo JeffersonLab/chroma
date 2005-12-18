@@ -49,7 +49,7 @@ check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_ape_smear$(EXEEXT) \
 	t_precact$(EXEEXT) t_dwf4d$(EXEEXT) t_propagator_s$(EXEEXT) \
 	t_disc_loop_s$(EXEEXT) t_remez$(EXEEXT) t_ritz$(EXEEXT) \
-	t_dwflocality$(EXEEXT)
+	t_dwflocality$(EXEEXT) t_leapfrog$(EXEEXT)
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
@@ -72,10 +72,9 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_unprec_wilson_force$(EXEEXT) t_prec_wilson_force$(EXEEXT) \
 	t_unprec_twoflav_wilson_monomial$(EXEEXT) \
 	t_prec_twoflav_wilson_monomial$(EXEEXT) t_hamiltonian$(EXEEXT) \
-	t_leapfrog$(EXEEXT) t_hmc$(EXEEXT) \
-	t_propagator_twisted$(EXEEXT) t_gauge_force$(EXEEXT) \
-	t_circular_buffer$(EXEEXT) t_precnef$(EXEEXT) \
-	t_preccfz$(EXEEXT) t_stout_state$(EXEEXT)
+	t_hmc$(EXEEXT) t_propagator_twisted$(EXEEXT) \
+	t_gauge_force$(EXEEXT) t_circular_buffer$(EXEEXT) \
+	t_precnef$(EXEEXT) t_preccfz$(EXEEXT) t_stout_state$(EXEEXT)
 subdir = mainprogs/tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
