@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.21 2005-12-15 04:02:08 edwards Exp $
+# $Id: Makefile.in,v 2.22 2005-12-18 03:50:15 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -215,9 +215,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
-	util/info/printgeom.cc util/info/proginfo.cc \
-	update/heatbath/su3over.cc update/heatbath/u_staple.cc \
-	update/heatbath/su2_hb_update.cc \
+	util/gauge/weak_field.cc util/info/printgeom.cc \
+	util/info/proginfo.cc update/heatbath/su3over.cc \
+	update/heatbath/u_staple.cc update/heatbath/su2_hb_update.cc \
 	update/heatbath/su3_hb_sweep.cc update/heatbath/mciter.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
@@ -502,8 +502,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	rgauge.$(OBJEXT) su2extract.$(OBJEXT) su3proj.$(OBJEXT) \
 	sunfill.$(OBJEXT) sun_proj.$(OBJEXT) taproj.$(OBJEXT) \
 	unit_check.$(OBJEXT) conjgauge.$(OBJEXT) constgauge.$(OBJEXT) \
-	printgeom.$(OBJEXT) proginfo.$(OBJEXT) su3over.$(OBJEXT) \
-	u_staple.$(OBJEXT) su2_hb_update.$(OBJEXT) \
+	weak_field.$(OBJEXT) printgeom.$(OBJEXT) proginfo.$(OBJEXT) \
+	su3over.$(OBJEXT) u_staple.$(OBJEXT) su2_hb_update.$(OBJEXT) \
 	su3_hb_sweep.$(OBJEXT) mciter.$(OBJEXT) \
 	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
 	integrator_aggregate.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
@@ -785,14 +785,15 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/gauge/hotst.h util/gauge/reunit.h util/gauge/rgauge.h \
 	util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
-	util/gauge/unit_check.h util/gauge/conjgauge.h \
-	util/gauge/constgauge.h util/info/info.h util/info/proginfo.h \
-	util/info/printgeom.h util/util.h update/update.h \
-	update/heatbath/heatbath.h update/heatbath/su3over.h \
-	update/heatbath/su3hb.h update/heatbath/u_staple.h \
-	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
-	update/heatbath/su3_hb_sweep.h update/heatbath/mciter.h \
-	update/molecdyn/molecdyn.h update/molecdyn/field_state.h \
+	util/gauge/unit_check.h util/gauge/weak_field.h \
+	util/gauge/conjgauge.h util/gauge/constgauge.h \
+	util/info/info.h util/info/proginfo.h util/info/printgeom.h \
+	util/util.h update/update.h update/heatbath/heatbath.h \
+	update/heatbath/su3over.h update/heatbath/su3hb.h \
+	update/heatbath/u_staple.h update/heatbath/hb_params.h \
+	update/heatbath/su2_hb_update.h update/heatbath/su3_hb_sweep.h \
+	update/heatbath/mciter.h update/molecdyn/molecdyn.h \
+	update/molecdyn/field_state.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -1305,14 +1306,15 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/gauge/hotst.h util/gauge/reunit.h util/gauge/rgauge.h \
 	util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
-	util/gauge/unit_check.h util/gauge/conjgauge.h \
-	util/gauge/constgauge.h util/info/info.h util/info/proginfo.h \
-	util/info/printgeom.h util/util.h update/update.h \
-	update/heatbath/heatbath.h update/heatbath/su3over.h \
-	update/heatbath/su3hb.h update/heatbath/u_staple.h \
-	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
-	update/heatbath/su3_hb_sweep.h update/heatbath/mciter.h \
-	update/molecdyn/molecdyn.h update/molecdyn/field_state.h \
+	util/gauge/unit_check.h util/gauge/weak_field.h \
+	util/gauge/conjgauge.h util/gauge/constgauge.h \
+	util/info/info.h util/info/proginfo.h util/info/printgeom.h \
+	util/util.h update/update.h update/heatbath/heatbath.h \
+	update/heatbath/su3over.h update/heatbath/su3hb.h \
+	update/heatbath/u_staple.h update/heatbath/hb_params.h \
+	update/heatbath/su2_hb_update.h update/heatbath/su3_hb_sweep.h \
+	update/heatbath/mciter.h update/molecdyn/molecdyn.h \
+	update/molecdyn/field_state.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -1713,9 +1715,9 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
-	util/info/printgeom.cc util/info/proginfo.cc \
-	update/heatbath/su3over.cc update/heatbath/u_staple.cc \
-	update/heatbath/su2_hb_update.cc \
+	util/gauge/weak_field.cc util/info/printgeom.cc \
+	util/info/proginfo.cc update/heatbath/su3over.cc \
+	update/heatbath/u_staple.cc update/heatbath/su2_hb_update.cc \
 	update/heatbath/su3_hb_sweep.cc update/heatbath/mciter.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
@@ -2375,6 +2377,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallpionff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallrhoff_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallrhopiff_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/weak_field.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilslp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_fermact_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gaugeact.Po@am__quote@
@@ -4639,6 +4642,20 @@ constgauge.obj: util/gauge/constgauge.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/constgauge.cc' object='constgauge.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o constgauge.obj `if test -f 'util/gauge/constgauge.cc'; then $(CYGPATH_W) 'util/gauge/constgauge.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/constgauge.cc'; fi`
+
+weak_field.o: util/gauge/weak_field.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT weak_field.o -MD -MP -MF "$(DEPDIR)/weak_field.Tpo" -c -o weak_field.o `test -f 'util/gauge/weak_field.cc' || echo '$(srcdir)/'`util/gauge/weak_field.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/weak_field.Tpo" "$(DEPDIR)/weak_field.Po"; else rm -f "$(DEPDIR)/weak_field.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/weak_field.cc' object='weak_field.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o weak_field.o `test -f 'util/gauge/weak_field.cc' || echo '$(srcdir)/'`util/gauge/weak_field.cc
+
+weak_field.obj: util/gauge/weak_field.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT weak_field.obj -MD -MP -MF "$(DEPDIR)/weak_field.Tpo" -c -o weak_field.obj `if test -f 'util/gauge/weak_field.cc'; then $(CYGPATH_W) 'util/gauge/weak_field.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/weak_field.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/weak_field.Tpo" "$(DEPDIR)/weak_field.Po"; else rm -f "$(DEPDIR)/weak_field.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/weak_field.cc' object='weak_field.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o weak_field.obj `if test -f 'util/gauge/weak_field.cc'; then $(CYGPATH_W) 'util/gauge/weak_field.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/weak_field.cc'; fi`
 
 printgeom.o: util/info/printgeom.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT printgeom.o -MD -MP -MF "$(DEPDIR)/printgeom.Tpo" -c -o printgeom.o `test -f 'util/info/printgeom.cc' || echo '$(srcdir)/'`util/info/printgeom.cc; \
