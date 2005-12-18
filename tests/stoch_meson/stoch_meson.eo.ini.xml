@@ -1,0 +1,463 @@
+<?xml version="1.0"?>
+<stoch_meson>
+<annotation>
+;
+; $Id: stoch_meson.eo.ini.xml,v 1.1 2005-12-18 23:56:28 edwards Exp $ test input for stoch_meson code
+;
+</annotation>
+<Param> 
+  <version>1</version>
+  <mom2_max>0</mom2_max>
+</Param>
+<SourceSmearing>
+  <version>6</version>
+  <Source>
+    <version>1</version>
+    <SourceType>POINT_SOURCE</SourceType>
+    <j_decay>3</j_decay>
+    <t_source>0</t_source>
+  </Source>
+</SourceSmearing>
+<SinkSmearing>
+  <version>5</version>
+  <Sink>
+    <version>1</version>
+    <SinkType>POINT_SINK</SinkType>
+    <j_decay>3</j_decay>
+  </Sink>
+</SinkSmearing>
+<Prop>
+  <operator>
+    <elem>
+      <operator_file>meson_opA.dat</operator_file>
+      <soln_files>
+        <elem>./zN_prop_q1_e_t0_c0_s0</elem>
+        <elem>./zN_prop_q1_e_t0_c0_s1</elem>
+        <elem>./zN_prop_q1_e_t0_c0_s2</elem>
+        <elem>./zN_prop_q1_e_t0_c0_s3</elem>
+        <elem>./zN_prop_q1_e_t0_c1_s0</elem>
+        <elem>./zN_prop_q1_e_t0_c1_s1</elem>
+        <elem>./zN_prop_q1_e_t0_c1_s2</elem>
+        <elem>./zN_prop_q1_e_t0_c1_s3</elem>
+        <elem>./zN_prop_q1_e_t0_c2_s0</elem>
+        <elem>./zN_prop_q1_e_t0_c2_s1</elem>
+        <elem>./zN_prop_q1_e_t0_c2_s2</elem>
+        <elem>./zN_prop_q1_e_t0_c2_s3</elem>
+
+        <elem>./zN_prop_q1_e_t1_c0_s0</elem>
+        <elem>./zN_prop_q1_e_t1_c0_s1</elem>
+        <elem>./zN_prop_q1_e_t1_c0_s2</elem>
+        <elem>./zN_prop_q1_e_t1_c0_s3</elem>
+        <elem>./zN_prop_q1_e_t1_c1_s0</elem>
+        <elem>./zN_prop_q1_e_t1_c1_s1</elem>
+        <elem>./zN_prop_q1_e_t1_c1_s2</elem>
+        <elem>./zN_prop_q1_e_t1_c1_s3</elem>
+        <elem>./zN_prop_q1_e_t1_c2_s0</elem>
+        <elem>./zN_prop_q1_e_t1_c2_s1</elem>
+        <elem>./zN_prop_q1_e_t1_c2_s2</elem>
+        <elem>./zN_prop_q1_e_t1_c2_s3</elem>
+
+        <elem>./zN_prop_q1_e_t2_c0_s0</elem>
+        <elem>./zN_prop_q1_e_t2_c0_s1</elem>
+        <elem>./zN_prop_q1_e_t2_c0_s2</elem>
+        <elem>./zN_prop_q1_e_t2_c0_s3</elem>
+        <elem>./zN_prop_q1_e_t2_c1_s0</elem>
+        <elem>./zN_prop_q1_e_t2_c1_s1</elem>
+        <elem>./zN_prop_q1_e_t2_c1_s2</elem>
+        <elem>./zN_prop_q1_e_t2_c1_s3</elem>
+        <elem>./zN_prop_q1_e_t2_c2_s0</elem>
+        <elem>./zN_prop_q1_e_t2_c2_s1</elem>
+        <elem>./zN_prop_q1_e_t2_c2_s2</elem>
+        <elem>./zN_prop_q1_e_t2_c2_s3</elem>
+
+        <elem>./zN_prop_q1_e_t3_c0_s0</elem>
+        <elem>./zN_prop_q1_e_t3_c0_s1</elem>
+        <elem>./zN_prop_q1_e_t3_c0_s2</elem>
+        <elem>./zN_prop_q1_e_t3_c0_s3</elem>
+        <elem>./zN_prop_q1_e_t3_c1_s0</elem>
+        <elem>./zN_prop_q1_e_t3_c1_s1</elem>
+        <elem>./zN_prop_q1_e_t3_c1_s2</elem>
+        <elem>./zN_prop_q1_e_t3_c1_s3</elem>
+        <elem>./zN_prop_q1_e_t3_c2_s0</elem>
+        <elem>./zN_prop_q1_e_t3_c2_s1</elem>
+        <elem>./zN_prop_q1_e_t3_c2_s2</elem>
+        <elem>./zN_prop_q1_e_t3_c2_s3</elem>
+
+        <elem>./zN_prop_q1_e_t4_c0_s0</elem>
+        <elem>./zN_prop_q1_e_t4_c0_s1</elem>
+        <elem>./zN_prop_q1_e_t4_c0_s2</elem>
+        <elem>./zN_prop_q1_e_t4_c0_s3</elem>
+        <elem>./zN_prop_q1_e_t4_c1_s0</elem>
+        <elem>./zN_prop_q1_e_t4_c1_s1</elem>
+        <elem>./zN_prop_q1_e_t4_c1_s2</elem>
+        <elem>./zN_prop_q1_e_t4_c1_s3</elem>
+        <elem>./zN_prop_q1_e_t4_c2_s0</elem>
+        <elem>./zN_prop_q1_e_t4_c2_s1</elem>
+        <elem>./zN_prop_q1_e_t4_c2_s2</elem>
+        <elem>./zN_prop_q1_e_t4_c2_s3</elem>
+
+        <elem>./zN_prop_q1_e_t5_c0_s0</elem>
+        <elem>./zN_prop_q1_e_t5_c0_s1</elem>
+        <elem>./zN_prop_q1_e_t5_c0_s2</elem>
+        <elem>./zN_prop_q1_e_t5_c0_s3</elem>
+        <elem>./zN_prop_q1_e_t5_c1_s0</elem>
+        <elem>./zN_prop_q1_e_t5_c1_s1</elem>
+        <elem>./zN_prop_q1_e_t5_c1_s2</elem>
+        <elem>./zN_prop_q1_e_t5_c1_s3</elem>
+        <elem>./zN_prop_q1_e_t5_c2_s0</elem>
+        <elem>./zN_prop_q1_e_t5_c2_s1</elem>
+        <elem>./zN_prop_q1_e_t5_c2_s2</elem>
+        <elem>./zN_prop_q1_e_t5_c2_s3</elem>
+
+        <elem>./zN_prop_q1_e_t6_c0_s0</elem>
+        <elem>./zN_prop_q1_e_t6_c0_s1</elem>
+        <elem>./zN_prop_q1_e_t6_c0_s2</elem>
+        <elem>./zN_prop_q1_e_t6_c0_s3</elem>
+        <elem>./zN_prop_q1_e_t6_c1_s0</elem>
+        <elem>./zN_prop_q1_e_t6_c1_s1</elem>
+        <elem>./zN_prop_q1_e_t6_c1_s2</elem>
+        <elem>./zN_prop_q1_e_t6_c1_s3</elem>
+        <elem>./zN_prop_q1_e_t6_c2_s0</elem>
+        <elem>./zN_prop_q1_e_t6_c2_s1</elem>
+        <elem>./zN_prop_q1_e_t6_c2_s2</elem>
+        <elem>./zN_prop_q1_e_t6_c2_s3</elem>
+
+        <elem>./zN_prop_q1_e_t7_c0_s0</elem>
+        <elem>./zN_prop_q1_e_t7_c0_s1</elem>
+        <elem>./zN_prop_q1_e_t7_c0_s2</elem>
+        <elem>./zN_prop_q1_e_t7_c0_s3</elem>
+        <elem>./zN_prop_q1_e_t7_c1_s0</elem>
+        <elem>./zN_prop_q1_e_t7_c1_s1</elem>
+        <elem>./zN_prop_q1_e_t7_c1_s2</elem>
+        <elem>./zN_prop_q1_e_t7_c1_s3</elem>
+        <elem>./zN_prop_q1_e_t7_c2_s0</elem>
+        <elem>./zN_prop_q1_e_t7_c2_s1</elem>
+        <elem>./zN_prop_q1_e_t7_c2_s2</elem>
+        <elem>./zN_prop_q1_e_t7_c2_s3</elem>
+
+        <elem>./zN_prop_q1_o_t0_c0_s0</elem>
+        <elem>./zN_prop_q1_o_t0_c0_s1</elem>
+        <elem>./zN_prop_q1_o_t0_c0_s2</elem>
+        <elem>./zN_prop_q1_o_t0_c0_s3</elem>
+        <elem>./zN_prop_q1_o_t0_c1_s0</elem>
+        <elem>./zN_prop_q1_o_t0_c1_s1</elem>
+        <elem>./zN_prop_q1_o_t0_c1_s2</elem>
+        <elem>./zN_prop_q1_o_t0_c1_s3</elem>
+        <elem>./zN_prop_q1_o_t0_c2_s0</elem>
+        <elem>./zN_prop_q1_o_t0_c2_s1</elem>
+        <elem>./zN_prop_q1_o_t0_c2_s2</elem>
+        <elem>./zN_prop_q1_o_t0_c2_s3</elem>
+
+        <elem>./zN_prop_q1_o_t1_c0_s0</elem>
+        <elem>./zN_prop_q1_o_t1_c0_s1</elem>
+        <elem>./zN_prop_q1_o_t1_c0_s2</elem>
+        <elem>./zN_prop_q1_o_t1_c0_s3</elem>
+        <elem>./zN_prop_q1_o_t1_c1_s0</elem>
+        <elem>./zN_prop_q1_o_t1_c1_s1</elem>
+        <elem>./zN_prop_q1_o_t1_c1_s2</elem>
+        <elem>./zN_prop_q1_o_t1_c1_s3</elem>
+        <elem>./zN_prop_q1_o_t1_c2_s0</elem>
+        <elem>./zN_prop_q1_o_t1_c2_s1</elem>
+        <elem>./zN_prop_q1_o_t1_c2_s2</elem>
+        <elem>./zN_prop_q1_o_t1_c2_s3</elem>
+
+        <elem>./zN_prop_q1_o_t2_c0_s0</elem>
+        <elem>./zN_prop_q1_o_t2_c0_s1</elem>
+        <elem>./zN_prop_q1_o_t2_c0_s2</elem>
+        <elem>./zN_prop_q1_o_t2_c0_s3</elem>
+        <elem>./zN_prop_q1_o_t2_c1_s0</elem>
+        <elem>./zN_prop_q1_o_t2_c1_s1</elem>
+        <elem>./zN_prop_q1_o_t2_c1_s2</elem>
+        <elem>./zN_prop_q1_o_t2_c1_s3</elem>
+        <elem>./zN_prop_q1_o_t2_c2_s0</elem>
+        <elem>./zN_prop_q1_o_t2_c2_s1</elem>
+        <elem>./zN_prop_q1_o_t2_c2_s2</elem>
+        <elem>./zN_prop_q1_o_t2_c2_s3</elem>
+
+        <elem>./zN_prop_q1_o_t3_c0_s0</elem>
+        <elem>./zN_prop_q1_o_t3_c0_s1</elem>
+        <elem>./zN_prop_q1_o_t3_c0_s2</elem>
+        <elem>./zN_prop_q1_o_t3_c0_s3</elem>
+        <elem>./zN_prop_q1_o_t3_c1_s0</elem>
+        <elem>./zN_prop_q1_o_t3_c1_s1</elem>
+        <elem>./zN_prop_q1_o_t3_c1_s2</elem>
+        <elem>./zN_prop_q1_o_t3_c1_s3</elem>
+        <elem>./zN_prop_q1_o_t3_c2_s0</elem>
+        <elem>./zN_prop_q1_o_t3_c2_s1</elem>
+        <elem>./zN_prop_q1_o_t3_c2_s2</elem>
+        <elem>./zN_prop_q1_o_t3_c2_s3</elem>
+
+        <elem>./zN_prop_q1_o_t4_c0_s0</elem>
+        <elem>./zN_prop_q1_o_t4_c0_s1</elem>
+        <elem>./zN_prop_q1_o_t4_c0_s2</elem>
+        <elem>./zN_prop_q1_o_t4_c0_s3</elem>
+        <elem>./zN_prop_q1_o_t4_c1_s0</elem>
+        <elem>./zN_prop_q1_o_t4_c1_s1</elem>
+        <elem>./zN_prop_q1_o_t4_c1_s2</elem>
+        <elem>./zN_prop_q1_o_t4_c1_s3</elem>
+        <elem>./zN_prop_q1_o_t4_c2_s0</elem>
+        <elem>./zN_prop_q1_o_t4_c2_s1</elem>
+        <elem>./zN_prop_q1_o_t4_c2_s2</elem>
+        <elem>./zN_prop_q1_o_t4_c2_s3</elem>
+
+        <elem>./zN_prop_q1_o_t5_c0_s0</elem>
+        <elem>./zN_prop_q1_o_t5_c0_s1</elem>
+        <elem>./zN_prop_q1_o_t5_c0_s2</elem>
+        <elem>./zN_prop_q1_o_t5_c0_s3</elem>
+        <elem>./zN_prop_q1_o_t5_c1_s0</elem>
+        <elem>./zN_prop_q1_o_t5_c1_s1</elem>
+        <elem>./zN_prop_q1_o_t5_c1_s2</elem>
+        <elem>./zN_prop_q1_o_t5_c1_s3</elem>
+        <elem>./zN_prop_q1_o_t5_c2_s0</elem>
+        <elem>./zN_prop_q1_o_t5_c2_s1</elem>
+        <elem>./zN_prop_q1_o_t5_c2_s2</elem>
+        <elem>./zN_prop_q1_o_t5_c2_s3</elem>
+
+        <elem>./zN_prop_q1_o_t6_c0_s0</elem>
+        <elem>./zN_prop_q1_o_t6_c0_s1</elem>
+        <elem>./zN_prop_q1_o_t6_c0_s2</elem>
+        <elem>./zN_prop_q1_o_t6_c0_s3</elem>
+        <elem>./zN_prop_q1_o_t6_c1_s0</elem>
+        <elem>./zN_prop_q1_o_t6_c1_s1</elem>
+        <elem>./zN_prop_q1_o_t6_c1_s2</elem>
+        <elem>./zN_prop_q1_o_t6_c1_s3</elem>
+        <elem>./zN_prop_q1_o_t6_c2_s0</elem>
+        <elem>./zN_prop_q1_o_t6_c2_s1</elem>
+        <elem>./zN_prop_q1_o_t6_c2_s2</elem>
+        <elem>./zN_prop_q1_o_t6_c2_s3</elem>
+
+        <elem>./zN_prop_q1_o_t7_c0_s0</elem>
+        <elem>./zN_prop_q1_o_t7_c0_s1</elem>
+        <elem>./zN_prop_q1_o_t7_c0_s2</elem>
+        <elem>./zN_prop_q1_o_t7_c0_s3</elem>
+        <elem>./zN_prop_q1_o_t7_c1_s0</elem>
+        <elem>./zN_prop_q1_o_t7_c1_s1</elem>
+        <elem>./zN_prop_q1_o_t7_c1_s2</elem>
+        <elem>./zN_prop_q1_o_t7_c1_s3</elem>
+        <elem>./zN_prop_q1_o_t7_c2_s0</elem>
+        <elem>./zN_prop_q1_o_t7_c2_s1</elem>
+        <elem>./zN_prop_q1_o_t7_c2_s2</elem>
+        <elem>./zN_prop_q1_o_t7_c2_s3</elem>
+      </soln_files>
+    </elem>
+    <elem>
+      <operator_file>meson_opB.dat</operator_file>
+      <soln_files>
+        <elem>./zN_prop_q2_e_t0_c0_s0</elem>
+        <elem>./zN_prop_q2_e_t0_c0_s1</elem>
+        <elem>./zN_prop_q2_e_t0_c0_s2</elem>
+        <elem>./zN_prop_q2_e_t0_c0_s3</elem>
+        <elem>./zN_prop_q2_e_t0_c1_s0</elem>
+        <elem>./zN_prop_q2_e_t0_c1_s1</elem>
+        <elem>./zN_prop_q2_e_t0_c1_s2</elem>
+        <elem>./zN_prop_q2_e_t0_c1_s3</elem>
+        <elem>./zN_prop_q2_e_t0_c2_s0</elem>
+        <elem>./zN_prop_q2_e_t0_c2_s1</elem>
+        <elem>./zN_prop_q2_e_t0_c2_s2</elem>
+        <elem>./zN_prop_q2_e_t0_c2_s3</elem>
+
+        <elem>./zN_prop_q2_e_t1_c0_s0</elem>
+        <elem>./zN_prop_q2_e_t1_c0_s1</elem>
+        <elem>./zN_prop_q2_e_t1_c0_s2</elem>
+        <elem>./zN_prop_q2_e_t1_c0_s3</elem>
+        <elem>./zN_prop_q2_e_t1_c1_s0</elem>
+        <elem>./zN_prop_q2_e_t1_c1_s1</elem>
+        <elem>./zN_prop_q2_e_t1_c1_s2</elem>
+        <elem>./zN_prop_q2_e_t1_c1_s3</elem>
+        <elem>./zN_prop_q2_e_t1_c2_s0</elem>
+        <elem>./zN_prop_q2_e_t1_c2_s1</elem>
+        <elem>./zN_prop_q2_e_t1_c2_s2</elem>
+        <elem>./zN_prop_q2_e_t1_c2_s3</elem>
+
+        <elem>./zN_prop_q2_e_t2_c0_s0</elem>
+        <elem>./zN_prop_q2_e_t2_c0_s1</elem>
+        <elem>./zN_prop_q2_e_t2_c0_s2</elem>
+        <elem>./zN_prop_q2_e_t2_c0_s3</elem>
+        <elem>./zN_prop_q2_e_t2_c1_s0</elem>
+        <elem>./zN_prop_q2_e_t2_c1_s1</elem>
+        <elem>./zN_prop_q2_e_t2_c1_s2</elem>
+        <elem>./zN_prop_q2_e_t2_c1_s3</elem>
+        <elem>./zN_prop_q2_e_t2_c2_s0</elem>
+        <elem>./zN_prop_q2_e_t2_c2_s1</elem>
+        <elem>./zN_prop_q2_e_t2_c2_s2</elem>
+        <elem>./zN_prop_q2_e_t2_c2_s3</elem>
+
+        <elem>./zN_prop_q2_e_t3_c0_s0</elem>
+        <elem>./zN_prop_q2_e_t3_c0_s1</elem>
+        <elem>./zN_prop_q2_e_t3_c0_s2</elem>
+        <elem>./zN_prop_q2_e_t3_c0_s3</elem>
+        <elem>./zN_prop_q2_e_t3_c1_s0</elem>
+        <elem>./zN_prop_q2_e_t3_c1_s1</elem>
+        <elem>./zN_prop_q2_e_t3_c1_s2</elem>
+        <elem>./zN_prop_q2_e_t3_c1_s3</elem>
+        <elem>./zN_prop_q2_e_t3_c2_s0</elem>
+        <elem>./zN_prop_q2_e_t3_c2_s1</elem>
+        <elem>./zN_prop_q2_e_t3_c2_s2</elem>
+        <elem>./zN_prop_q2_e_t3_c2_s3</elem>
+
+        <elem>./zN_prop_q2_e_t4_c0_s0</elem>
+        <elem>./zN_prop_q2_e_t4_c0_s1</elem>
+        <elem>./zN_prop_q2_e_t4_c0_s2</elem>
+        <elem>./zN_prop_q2_e_t4_c0_s3</elem>
+        <elem>./zN_prop_q2_e_t4_c1_s0</elem>
+        <elem>./zN_prop_q2_e_t4_c1_s1</elem>
+        <elem>./zN_prop_q2_e_t4_c1_s2</elem>
+        <elem>./zN_prop_q2_e_t4_c1_s3</elem>
+        <elem>./zN_prop_q2_e_t4_c2_s0</elem>
+        <elem>./zN_prop_q2_e_t4_c2_s1</elem>
+        <elem>./zN_prop_q2_e_t4_c2_s2</elem>
+        <elem>./zN_prop_q2_e_t4_c2_s3</elem>
+
+        <elem>./zN_prop_q2_e_t5_c0_s0</elem>
+        <elem>./zN_prop_q2_e_t5_c0_s1</elem>
+        <elem>./zN_prop_q2_e_t5_c0_s2</elem>
+        <elem>./zN_prop_q2_e_t5_c0_s3</elem>
+        <elem>./zN_prop_q2_e_t5_c1_s0</elem>
+        <elem>./zN_prop_q2_e_t5_c1_s1</elem>
+        <elem>./zN_prop_q2_e_t5_c1_s2</elem>
+        <elem>./zN_prop_q2_e_t5_c1_s3</elem>
+        <elem>./zN_prop_q2_e_t5_c2_s0</elem>
+        <elem>./zN_prop_q2_e_t5_c2_s1</elem>
+        <elem>./zN_prop_q2_e_t5_c2_s2</elem>
+        <elem>./zN_prop_q2_e_t5_c2_s3</elem>
+
+        <elem>./zN_prop_q2_e_t6_c0_s0</elem>
+        <elem>./zN_prop_q2_e_t6_c0_s1</elem>
+        <elem>./zN_prop_q2_e_t6_c0_s2</elem>
+        <elem>./zN_prop_q2_e_t6_c0_s3</elem>
+        <elem>./zN_prop_q2_e_t6_c1_s0</elem>
+        <elem>./zN_prop_q2_e_t6_c1_s1</elem>
+        <elem>./zN_prop_q2_e_t6_c1_s2</elem>
+        <elem>./zN_prop_q2_e_t6_c1_s3</elem>
+        <elem>./zN_prop_q2_e_t6_c2_s0</elem>
+        <elem>./zN_prop_q2_e_t6_c2_s1</elem>
+        <elem>./zN_prop_q2_e_t6_c2_s2</elem>
+        <elem>./zN_prop_q2_e_t6_c2_s3</elem>
+
+        <elem>./zN_prop_q2_e_t7_c0_s0</elem>
+        <elem>./zN_prop_q2_e_t7_c0_s1</elem>
+        <elem>./zN_prop_q2_e_t7_c0_s2</elem>
+        <elem>./zN_prop_q2_e_t7_c0_s3</elem>
+        <elem>./zN_prop_q2_e_t7_c1_s0</elem>
+        <elem>./zN_prop_q2_e_t7_c1_s1</elem>
+        <elem>./zN_prop_q2_e_t7_c1_s2</elem>
+        <elem>./zN_prop_q2_e_t7_c1_s3</elem>
+        <elem>./zN_prop_q2_e_t7_c2_s0</elem>
+        <elem>./zN_prop_q2_e_t7_c2_s1</elem>
+        <elem>./zN_prop_q2_e_t7_c2_s2</elem>
+        <elem>./zN_prop_q2_e_t7_c2_s3</elem>
+
+
+        <elem>./zN_prop_q2_o_t0_c0_s0</elem>
+        <elem>./zN_prop_q2_o_t0_c0_s1</elem>
+        <elem>./zN_prop_q2_o_t0_c0_s2</elem>
+        <elem>./zN_prop_q2_o_t0_c0_s3</elem>
+        <elem>./zN_prop_q2_o_t0_c1_s0</elem>
+        <elem>./zN_prop_q2_o_t0_c1_s1</elem>
+        <elem>./zN_prop_q2_o_t0_c1_s2</elem>
+        <elem>./zN_prop_q2_o_t0_c1_s3</elem>
+        <elem>./zN_prop_q2_o_t0_c2_s0</elem>
+        <elem>./zN_prop_q2_o_t0_c2_s1</elem>
+        <elem>./zN_prop_q2_o_t0_c2_s2</elem>
+        <elem>./zN_prop_q2_o_t0_c2_s3</elem>
+
+        <elem>./zN_prop_q2_o_t1_c0_s0</elem>
+        <elem>./zN_prop_q2_o_t1_c0_s1</elem>
+        <elem>./zN_prop_q2_o_t1_c0_s2</elem>
+        <elem>./zN_prop_q2_o_t1_c0_s3</elem>
+        <elem>./zN_prop_q2_o_t1_c1_s0</elem>
+        <elem>./zN_prop_q2_o_t1_c1_s1</elem>
+        <elem>./zN_prop_q2_o_t1_c1_s2</elem>
+        <elem>./zN_prop_q2_o_t1_c1_s3</elem>
+        <elem>./zN_prop_q2_o_t1_c2_s0</elem>
+        <elem>./zN_prop_q2_o_t1_c2_s1</elem>
+        <elem>./zN_prop_q2_o_t1_c2_s2</elem>
+        <elem>./zN_prop_q2_o_t1_c2_s3</elem>
+
+        <elem>./zN_prop_q2_o_t2_c0_s0</elem>
+        <elem>./zN_prop_q2_o_t2_c0_s1</elem>
+        <elem>./zN_prop_q2_o_t2_c0_s2</elem>
+        <elem>./zN_prop_q2_o_t2_c0_s3</elem>
+        <elem>./zN_prop_q2_o_t2_c1_s0</elem>
+        <elem>./zN_prop_q2_o_t2_c1_s1</elem>
+        <elem>./zN_prop_q2_o_t2_c1_s2</elem>
+        <elem>./zN_prop_q2_o_t2_c1_s3</elem>
+        <elem>./zN_prop_q2_o_t2_c2_s0</elem>
+        <elem>./zN_prop_q2_o_t2_c2_s1</elem>
+        <elem>./zN_prop_q2_o_t2_c2_s2</elem>
+        <elem>./zN_prop_q2_o_t2_c2_s3</elem>
+
+        <elem>./zN_prop_q2_o_t3_c0_s0</elem>
+        <elem>./zN_prop_q2_o_t3_c0_s1</elem>
+        <elem>./zN_prop_q2_o_t3_c0_s2</elem>
+        <elem>./zN_prop_q2_o_t3_c0_s3</elem>
+        <elem>./zN_prop_q2_o_t3_c1_s0</elem>
+        <elem>./zN_prop_q2_o_t3_c1_s1</elem>
+        <elem>./zN_prop_q2_o_t3_c1_s2</elem>
+        <elem>./zN_prop_q2_o_t3_c1_s3</elem>
+        <elem>./zN_prop_q2_o_t3_c2_s0</elem>
+        <elem>./zN_prop_q2_o_t3_c2_s1</elem>
+        <elem>./zN_prop_q2_o_t3_c2_s2</elem>
+        <elem>./zN_prop_q2_o_t3_c2_s3</elem>
+
+        <elem>./zN_prop_q2_o_t4_c0_s0</elem>
+        <elem>./zN_prop_q2_o_t4_c0_s1</elem>
+        <elem>./zN_prop_q2_o_t4_c0_s2</elem>
+        <elem>./zN_prop_q2_o_t4_c0_s3</elem>
+        <elem>./zN_prop_q2_o_t4_c1_s0</elem>
+        <elem>./zN_prop_q2_o_t4_c1_s1</elem>
+        <elem>./zN_prop_q2_o_t4_c1_s2</elem>
+        <elem>./zN_prop_q2_o_t4_c1_s3</elem>
+        <elem>./zN_prop_q2_o_t4_c2_s0</elem>
+        <elem>./zN_prop_q2_o_t4_c2_s1</elem>
+        <elem>./zN_prop_q2_o_t4_c2_s2</elem>
+        <elem>./zN_prop_q2_o_t4_c2_s3</elem>
+
+        <elem>./zN_prop_q2_o_t5_c0_s0</elem>
+        <elem>./zN_prop_q2_o_t5_c0_s1</elem>
+        <elem>./zN_prop_q2_o_t5_c0_s2</elem>
+        <elem>./zN_prop_q2_o_t5_c0_s3</elem>
+        <elem>./zN_prop_q2_o_t5_c1_s0</elem>
+        <elem>./zN_prop_q2_o_t5_c1_s1</elem>
+        <elem>./zN_prop_q2_o_t5_c1_s2</elem>
+        <elem>./zN_prop_q2_o_t5_c1_s3</elem>
+        <elem>./zN_prop_q2_o_t5_c2_s0</elem>
+        <elem>./zN_prop_q2_o_t5_c2_s1</elem>
+        <elem>./zN_prop_q2_o_t5_c2_s2</elem>
+        <elem>./zN_prop_q2_o_t5_c2_s3</elem>
+
+        <elem>./zN_prop_q2_o_t6_c0_s0</elem>
+        <elem>./zN_prop_q2_o_t6_c0_s1</elem>
+        <elem>./zN_prop_q2_o_t6_c0_s2</elem>
+        <elem>./zN_prop_q2_o_t6_c0_s3</elem>
+        <elem>./zN_prop_q2_o_t6_c1_s0</elem>
+        <elem>./zN_prop_q2_o_t6_c1_s1</elem>
+        <elem>./zN_prop_q2_o_t6_c1_s2</elem>
+        <elem>./zN_prop_q2_o_t6_c1_s3</elem>
+        <elem>./zN_prop_q2_o_t6_c2_s0</elem>
+        <elem>./zN_prop_q2_o_t6_c2_s1</elem>
+        <elem>./zN_prop_q2_o_t6_c2_s2</elem>
+        <elem>./zN_prop_q2_o_t6_c2_s3</elem>
+
+        <elem>./zN_prop_q2_o_t7_c0_s0</elem>
+        <elem>./zN_prop_q2_o_t7_c0_s1</elem>
+        <elem>./zN_prop_q2_o_t7_c0_s2</elem>
+        <elem>./zN_prop_q2_o_t7_c0_s3</elem>
+        <elem>./zN_prop_q2_o_t7_c1_s0</elem>
+        <elem>./zN_prop_q2_o_t7_c1_s1</elem>
+        <elem>./zN_prop_q2_o_t7_c1_s2</elem>
+        <elem>./zN_prop_q2_o_t7_c1_s3</elem>
+        <elem>./zN_prop_q2_o_t7_c2_s0</elem>
+        <elem>./zN_prop_q2_o_t7_c2_s1</elem>
+        <elem>./zN_prop_q2_o_t7_c2_s2</elem>
+        <elem>./zN_prop_q2_o_t7_c2_s3</elem>
+      </soln_files>
+    </elem>
+  </operator>
+</Prop>
+<Cfg>
+  <cfg_type>UNIT</cfg_type>
+  <cfg_file>../test_purgaug.cfg1</cfg_file>
+</Cfg>
+<nrow>4 4 4 8</nrow>
+</stoch_meson>
