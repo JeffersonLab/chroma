@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.1 2005-12-17 18:51:23 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.2 2005-12-18 21:06:52 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -22,8 +22,8 @@ $top_builddir = $ARGV[1];
 die "$top_srcdir does not exist" unless -d $top_srcdir;
 die "$top_builddir does not exist" unless -d $top_builddir;
 
-printf "top_srcdir = %s\n", $top_srcdir;
-printf "top_builddir = %s\n", $top_builddir;
+printf "Source directory = %s\n", $top_srcdir;
+printf "Build directory = %s\n", $top_builddir;
 
 
 # location of xmldiff
@@ -37,18 +37,20 @@ if( ! -x $xmldiff)
     exit(1) ;
 }
 
-# at some stage this should be factored into another perl script
-
 $test_dir = "$top_srcdir/tests";
 $regres_dir = "$top_builddir/regres";
+
+printf "Regression test directory = %s\n", $regres_dir;
+
+# at some stage this should be factored into another perl script
 
 #
 # Each test has a name, input file name, output file name,
 # and the good output that is tested against.
 #
 
-%HoH = (
-	1 => {
+@HoH = (
+	{
 	    exec_path   => "$top_builddir/mainprogs/main" , 
 	    execute     => "chroma" , 
 	    input       => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.ini.xml" , 
@@ -56,7 +58,47 @@ $regres_dir = "$top_builddir/regres";
 	    metric      => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.metric.xml" ,
 	    controlfile => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.out.xml" ,
 	},
-	) ; 
+	{
+	    exec_path   => "$top_builddir/mainprogs/main" , 
+	    execute     => "chroma" , 
+	    input       => "$test_dir/chroma/hadron/propagator/prec_wilson-twisted-v9.ini.xml" , 
+	    output      => "prec_wilson-twisted-v9.candidate.xml",
+	    metric      => "$test_dir/chroma/hadron/propagator/prec_wilson-twisted-v9.metric.xml" ,
+	    controlfile => "$test_dir/chroma/hadron/propagator/prec_wilson-twisted-v9.out.xml" ,
+	},
+	{
+	    exec_path   => "$top_builddir/mainprogs/main" , 
+	    execute     => "chroma" , 
+	    input       => "$test_dir/chroma/hadron/propagator/unprec-ovlap-zolo4d-v9.ini.xml" , 
+	    output      => "unprec-ovlap-zolo4d-v9.candidate.xml",
+	    metric      => "$test_dir/chroma/hadron/propagator/unprec-ovlap-zolo4d-v9.metric.xml" ,
+	    controlfile => "$test_dir/chroma/hadron/propagator/unprec-ovlap-zolo4d-v9.out.xml" ,
+	},
+	{
+	    exec_path   => "$top_builddir/mainprogs/main" , 
+	    execute     => "chroma" , 
+	    input       => "$test_dir/chroma/hadron/propagator/unprec_hamberwu-v9.ini.xml" , 
+	    output      => "unprec_hamberwu-v9.candidate.xml",
+	    metric      => "$test_dir/chroma/hadron/propagator/unprec_hamberwu-v9.metric.xml" ,
+	    controlfile => "$test_dir/chroma/hadron/propagator/unprec_hamberwu-v9.out.xml" ,
+	},
+	{
+	    exec_path   => "$top_builddir/mainprogs/main" , 
+	    execute     => "chroma" , 
+	    input       => "$test_dir/chroma/hadron/propagator/prec_dwf-v9.ini.xml" , 
+	    output      => "prec_dwf-v9.candidate.xml",
+	    metric      => "$test_dir/chroma/hadron/propagator/prec_dwf-v9.metric.xml" ,
+	    controlfile => "$test_dir/chroma/hadron/propagator/prec_dwf-v9.out.xml" ,
+	},
+	{
+	    exec_path   => "$top_builddir/mainprogs/main" , 
+	    execute     => "chroma" , 
+	    input       => "$test_dir/chroma/hadron/propagator/prec_parwilson-v9.ini.xml" , 
+	    output      => "prec_parwilson-v9.candidate.xml",
+	    metric      => "$test_dir/chroma/hadron/propagator/prec_parwilson-v9.metric.xml" ,
+	    controlfile => "$test_dir/chroma/hadron/propagator/prec_parwilson-v9.out.xml" ,
+	},
+	); 
 
 
 # Clear out the regression test dir
@@ -65,43 +107,35 @@ if ( -d $regres_dir )
 {
     rmtree([$regres_dir]);
 }
-printf "regres=$regres_dir\n";
-mkpath([$regres_dir], 1, 0755);
+#printf "regres=$regres_dir\n";
+mkpath([$regres_dir], 0, 0755);
     
 
 # run the tests
-print "Test   conclusion\n" ; 
-foreach $a ( keys %HoH ) 
+printf "\n%-15s %-40s         %s\n", "Program", "Candidate","Conclusion";
+for $h (@HoH) 
 {
-    &xmldiff($regres_dir,*HoH,$a);
-}
+    my($exec_path) =  $h->{"exec_path"} ; 
+    my($execute)   =  $h->{"execute"} ; 
+    my($candidate) =  $h->{"output"} ; 
+    my($outdir)    =  $h->{"output"} ; 
+    my($metric)    =  $h->{"metric"} ; 
+    my($control)   =  $h->{"controlfile"} ; 
+    my($input)     =  $h->{"input"} ; 
 
+    my $canddir = "$regres_dir/$outdir";
 
-exit(0);
+#    printf "exec_path=$exec_path\n";
+#    printf "canddir=$canddir\n";
 
-sub xmldiff
-{
-    local($rundir,*obj,$k) = @_;
-
-    my($exec_path) =  $obj{$k}{"exec_path"} ; 
-    my($execute)   =  $obj{$k}{"execute"} ; 
-    my($candidate) =  $obj{$k}{"output"} ; 
-    my($outdir)    =  $obj{$k}{"output"} ; 
-    my($metric)    =  $obj{$k}{"metric"} ; 
-    my($control)   =  $obj{$k}{"controlfile"} ; 
-    my($input)     =  $obj{$k}{"input"} ; 
-
-    use File::Path;
-
-    my $canddir = "$rundir/$outdir";
     if (-d $canddir)
     {
 	rmtree([$canddir]);
     }
-    mkpath([$canddir], 1, 0755);
+    mkpath([$canddir], 0, 0755);
     chdir($canddir) || die "error cd $canddir : $!\n";
 
-    print "$execute \t\t";
+    printf "%-15s %-40s      ", $execute, $candidate;
     if (-x "$exec_path/$execute")
     {
 	if( $input ne "NOTHING" )
@@ -115,7 +149,7 @@ sub xmldiff
 	
 
 	my($log) = "$canddir/$execute"  ; 
-	$exe = "$exec_path/$execute ".$in_arg." -o $candidate 2>${log}.err > ${log}.out"; 
+	my($exe) = "$exec_path/$execute ".$in_arg." -o $candidate 2>${log}.err > ${log}.out"; 
 #	print $exe;
 	my($status_tmp) = system("$exe") / 256 ; 
 	if( $status_tmp != 0  ) 
@@ -126,7 +160,9 @@ sub xmldiff
 	{
 	    my($log_xml) = "$canddir/xmldiff.log";
 
-	    my($status_tmp) = system("$xmldiff $control $candidate $metric $log_xml") ; 
+	    my($xml_exe) = "$xmldiff $control $canddir/$candidate $metric $log_xml"; 
+#	    print $xml_exe;
+	    my($status_tmp) = system("$xml_exe") ; 
 	    my($status) = $status_tmp   ;   ## some perl feature
 
 	    if( $status == 0 ) 
@@ -141,7 +177,7 @@ sub xmldiff
     }
     else
     {
-	printf("   FAIL (compile)\n"); 
+	printf("FAIL (compile)\n"); 
 
     }
 
