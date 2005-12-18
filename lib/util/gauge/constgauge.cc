@@ -1,4 +1,4 @@
-// $Id: constgauge.cc,v 2.2 2005-12-17 22:46:40 edwards Exp $
+// $Id: constgauge.cc,v 2.3 2005-12-18 02:45:03 edwards Exp $
 /*! \file
  *  \brief Constant diagonal gauge field
  */
@@ -29,7 +29,6 @@ namespace Chroma
 
     for(int mu = 0; mu < Nd; mu++)   // Loop over the directions
     {
-
       multi1d<Complex> phase(Nc); // the phases
       Complex tmp_u;
 
@@ -44,9 +43,8 @@ namespace Chroma
 		       -sin(theta(0,mu) + theta(1,mu)));
 
       // We now insert these elements into the appropriate places
-
       for(int i = 0; i < Nc; i++)
-	 u[mu] = pokeColor(u[mu], phase[i], i, i);
+	pokeColor(u[mu], phase[i], i, i);
 
     }
 
