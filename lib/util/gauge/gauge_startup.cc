@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 2.1 2005-10-13 03:10:07 edwards Exp $
+// $Id: gauge_startup.cc,v 2.2 2005-12-18 03:51:10 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -15,6 +15,7 @@
 #include "io/readcppacs.h"
 
 #include "util/gauge/hotst.h"
+#include "util/gauge/weak_field.h"
 
 
 namespace Chroma {
@@ -101,6 +102,23 @@ namespace Chroma {
       write(file_xml, "id", int(0));
       pop(file_xml);
       push(record_xml, "unit");
+      pop(record_xml);
+
+      gauge_file_xml.open(file_xml);
+      gauge_xml.open(record_xml);
+    }
+    break; 
+
+    case CFG_TYPE_WEAK_FIELD:
+    {
+      QDPIO::cout << "Starting up a weak field config" << endl;
+      weakField(u);
+
+      XMLBufferWriter file_xml, record_xml;
+      push(file_xml, "gauge");
+      write(file_xml, "id", int(0));
+      pop(file_xml);
+      push(record_xml, "weak_field");
       pop(record_xml);
 
       gauge_file_xml.open(file_xml);
