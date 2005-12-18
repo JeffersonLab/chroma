@@ -47,8 +47,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
@@ -223,8 +223,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
-       <nonRelProp>false</nonRelProp>
+       <version>9</version>
+       <quarkSpinType>FULL</quarkSpinType>
        <obsvP>false</obsvP>
        <FermionAction>
         <FermAct>WILSON</FermAct>
@@ -260,9 +260,9 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
+       <version>9</version>
        <obsvP>false</obsvP>
-       <nonRelProp>false</nonRelProp>
+       <quarkSpinType>FULL</quarkSpinType>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>
@@ -297,9 +297,9 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
+       <version>9</version>
        <obsvP>false</obsvP>
-       <nonRelProp>false</nonRelProp>
+       <quarkSpinType>FULL</quarkSpinType>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>
@@ -382,7 +382,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 22:54:28 EST</run_date>
+    <run_date>17 Dec 05 23:03:27 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -443,7 +443,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:28 EST</run_date>
+          <run_date>17 Dec 05 23:03:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -532,7 +532,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:29 EST</run_date>
+          <run_date>17 Dec 05 23:03:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -711,7 +711,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:32 EST</run_date>
+          <run_date>17 Dec 05 23:03:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -882,7 +882,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:33 EST</run_date>
+          <run_date>17 Dec 05 23:03:32 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1129,7 +1129,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:35 EST</run_date>
+          <run_date>17 Dec 05 23:03:34 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1300,7 +1300,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:37 EST</run_date>
+          <run_date>17 Dec 05 23:03:36 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1558,7 +1558,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:40 EST</run_date>
+          <run_date>17 Dec 05 23:03:39 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1895,7 +1895,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:44 EST</run_date>
+          <run_date>17 Dec 05 23:03:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2153,7 +2153,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:54:47 EST</run_date>
+          <run_date>17 Dec 05 23:03:46 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
