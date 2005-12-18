@@ -38,7 +38,6 @@ Calculate building blocks - insertions in 3-pt functions
           </LinkSmearing>
         </Source>
 
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -71,7 +70,6 @@ Calculate building blocks - insertions in 3-pt functions
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -91,7 +89,6 @@ Calculate building blocks - insertions in 3-pt functions
         <seq_src>PION</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -138,7 +135,6 @@ Calculate building blocks - insertions in 3-pt functions
 	<seq_src>NUCL_U_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -186,7 +182,6 @@ Calculate building blocks - insertions in 3-pt functions
 	<seq_src>NUCL_D_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -251,7 +246,6 @@ Calculate building blocks - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_PION</source_id>
@@ -289,7 +283,6 @@ Calculate building blocks - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
@@ -327,7 +320,6 @@ Calculate building blocks - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
@@ -344,11 +336,11 @@ Calculate building blocks - insertions in 3-pt functions
       <Frequency>1</Frequency>
       <Param>
        <version>3</version>
-       <nrow>4 4 4 8</nrow>
        <use_sink_offset>true</use_sink_offset>
        <mom2_max>3</mom2_max>
        <links_max>1</links_max>
        <canonical>false</canonical>
+       <nrow>4 4 4 8</nrow>
       </Param>
       <BuildingBlocks>
        <OutFileName>./examplebb_v1.out</OutFileName>
@@ -428,18 +420,18 @@ Calculate building blocks - insertions in 3-pt functions
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.3</chroma>
-      <qdp>1.17.1</qdp>
+      <chroma>2.6</chroma>
+      <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>08 Nov 05 00:18:25 EST</run_date>
+    <run_date>17 Dec 05 22:57:31 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -457,72 +449,37 @@ Calculate building blocks - insertions in 3-pt functions
     </Seed>
   </RNG>
   <Config_info>
-    <file_xml>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
 
     </file_xml>
-    <gauge_xml><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+    <gauge_xml><weak_field>
+</weak_field>
 
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.902263</w_plaq>
-    <s_plaq>0.862579</s_plaq>
-    <t_plaq>0.941947</t_plaq>
-    <link>0.734641</link>
+    <w_plaq>0.996761</w_plaq>
+    <s_plaq>0.996843</s_plaq>
+    <t_plaq>0.996679</t_plaq>
+    <link>0.996519</link>
     <pollp>
       <elem>
-        <re>0.790237</re>
-        <im>0.00288483</im>
+        <re>0.951771</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.785869</re>
-        <im>-0.00015866</im>
+        <re>0.956327</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.80393</re>
-        <im>0.00160447</im>
+        <re>0.957143</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.864752</re>
-        <im>0.00215502</im>
+        <re>0.834426</re>
+        <im>0</im>
       </elem>
     </pollp>
   </Observables>
@@ -532,10 +489,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:26 EST</run_date>
+          <run_date>17 Dec 05 22:57:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -546,10 +503,10 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>11</elem>
-            <elem>11</elem>
-            <elem>11</elem>
-            <elem>0</elem>
+            <elem>1467</elem>
+            <elem>1530</elem>
+            <elem>1271</elem>
+            <elem>1408</elem>
           </Seed>
         </RNG>
         <Input>
@@ -582,74 +539,37 @@ Calculate building blocks - insertions in 3-pt functions
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.63552 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -658,10 +578,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:26 EST</run_date>
+          <run_date>17 Dec 05 22:57:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -672,8 +592,8 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -705,45 +625,8 @@ Calculate building blocks - insertions in 3-pt functions
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -751,26 +634,26 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -807,102 +690,65 @@ Calculate building blocks - insertions in 3-pt functions
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </MakeSource>
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.63552 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>42</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>566</ncg_had>
+          <ncg_had>500</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</prop_corr>
+          <prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -911,10 +757,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:27 EST</run_date>
+          <run_date>17 Dec 05 22:57:35 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -961,45 +807,8 @@ Calculate building blocks - insertions in 3-pt functions
             <seqsource_id>seqsource_PION</seqsource_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -1007,26 +816,26 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -1034,8 +843,8 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
           <FermAct>WILSON</FermAct>
@@ -1089,52 +898,15 @@ Calculate building blocks - insertions in 3-pt functions
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </Propagator>
 
@@ -1143,11 +915,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>
+            <forward_prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 7.3995e-06</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.36813e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1156,10 +928,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:27 EST</run_date>
+          <run_date>17 Dec 05 22:57:36 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1207,45 +979,8 @@ Calculate building blocks - insertions in 3-pt functions
             <seqsource_id>seqsource_NUCL_U_MIXED_NONREL</seqsource_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -1253,26 +988,26 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -1280,8 +1015,8 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
           <FermAct>WILSON</FermAct>
@@ -1335,52 +1070,15 @@ Calculate building blocks - insertions in 3-pt functions
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </Propagator>
 
@@ -1389,8 +1087,8 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
           <FermAct>WILSON</FermAct>
@@ -1444,52 +1142,15 @@ Calculate building blocks - insertions in 3-pt functions
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </Propagator>
 
@@ -1498,14 +1159,14 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>
+            <forward_prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>
+            <forward_prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 3.94724e-11</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 2.11011e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1514,10 +1175,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:28 EST</run_date>
+          <run_date>17 Dec 05 22:57:39 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1564,45 +1225,8 @@ Calculate building blocks - insertions in 3-pt functions
             <seqsource_id>seqsource_NUCL_D_MIXED_NONREL</seqsource_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -1610,26 +1234,26 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -1637,8 +1261,8 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
           <FermAct>WILSON</FermAct>
@@ -1692,52 +1316,15 @@ Calculate building blocks - insertions in 3-pt functions
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </Propagator>
 
@@ -1746,11 +1333,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>
+            <forward_prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 7.59852e-12</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.0579e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1759,10 +1346,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:28 EST</run_date>
+          <run_date>17 Dec 05 22:57:40 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1773,8 +1360,8 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -1806,45 +1393,8 @@ Calculate building blocks - insertions in 3-pt functions
             <prop_id>seqprop_PION</prop_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -1852,26 +1402,26 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -1915,7 +1465,7 @@ Calculate building blocks - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSink>
+          <PropSinkSmear>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
@@ -1938,10 +1488,10 @@ Calculate building blocks - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSink>
+          </PropSinkSmear>
           <ForwardProp>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
             <FermionAction>
               <FermAct>WILSON</FermAct>
@@ -1994,95 +1544,58 @@ Calculate building blocks - insertions in 3-pt functions
         </elem>
       </ForwardProps>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </SequentialSource>
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 7.3995e-06</source_corr>
+          <source_corr>0 0 0 0 0 0 0 6.36813e-05</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>44</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>44</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>564</ncg_had>
+          <ncg_had>510</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.68193e-09 4.86842e-09 1.39623e-08 3.98855e-08 1.14702e-07 3.27613e-07 9.30373e-07 2.64703e-06</prop_corr>
+          <prop_corr>4.93482e-08 1.20316e-07 2.94583e-07 7.22944e-07 1.77404e-06 4.35539e-06 1.07097e-05 2.6047e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2091,10 +1604,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:29 EST</run_date>
+          <run_date>17 Dec 05 22:57:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2105,8 +1618,8 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -2138,45 +1651,8 @@ Calculate building blocks - insertions in 3-pt functions
             <prop_id>seqprop_NUCL_U_MIXED_NONREL</prop_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -2184,26 +1660,26 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -2247,7 +1723,7 @@ Calculate building blocks - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSink>
+          <PropSinkSmear>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
@@ -2270,10 +1746,10 @@ Calculate building blocks - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSink>
+          </PropSinkSmear>
           <ForwardProp>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
             <FermionAction>
               <FermAct>WILSON</FermAct>
@@ -2326,7 +1802,7 @@ Calculate building blocks - insertions in 3-pt functions
         </elem>
         <elem>
           <version>1</version>
-          <PropSink>
+          <PropSinkSmear>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
@@ -2349,10 +1825,10 @@ Calculate building blocks - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSink>
+          </PropSinkSmear>
           <ForwardProp>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
             <FermionAction>
               <FermAct>WILSON</FermAct>
@@ -2405,95 +1881,58 @@ Calculate building blocks - insertions in 3-pt functions
         </elem>
       </ForwardProps>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </SequentialSource>
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 3.94724e-11</source_corr>
+          <source_corr>0 0 0 0 0 0 0 2.11011e-09</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>44</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>44</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>44</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>44</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>42</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>564</ncg_had>
+          <ncg_had>518</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>8.64498e-15 2.51253e-14 7.2261e-14 2.07783e-13 5.99567e-13 1.71954e-12 4.9011e-12 1.41139e-11</prop_corr>
+          <prop_corr>1.47535e-12 3.63834e-12 9.02714e-12 2.2465e-11 5.58683e-11 1.38962e-10 3.46253e-10 8.62609e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2502,10 +1941,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:30 EST</run_date>
+          <run_date>17 Dec 05 22:57:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2516,8 +1955,8 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -2549,45 +1988,8 @@ Calculate building blocks - insertions in 3-pt functions
             <prop_id>seqprop_NUCL_D_MIXED_NONREL</prop_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -2595,26 +1997,26 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -2658,7 +2060,7 @@ Calculate building blocks - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSink>
+          <PropSinkSmear>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
@@ -2681,10 +2083,10 @@ Calculate building blocks - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSink>
+          </PropSinkSmear>
           <ForwardProp>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
             <FermionAction>
               <FermAct>WILSON</FermAct>
@@ -2737,95 +2139,58 @@ Calculate building blocks - insertions in 3-pt functions
         </elem>
       </ForwardProps>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </SequentialSource>
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 7.59852e-12</source_corr>
+          <source_corr>0 0 0 0 0 0 0 4.0579e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>44</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>44</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>43</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>564</ncg_had>
+          <ncg_had>514</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.66376e-15 4.83282e-15 1.38956e-14 3.99484e-14 1.15295e-13 3.30723e-13 9.4256e-13 2.7148e-12</prop_corr>
+          <prop_corr>2.83722e-13 6.99681e-13 1.73599e-12 4.3202e-12 1.07439e-11 2.67234e-11 6.65872e-11 1.65886e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

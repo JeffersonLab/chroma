@@ -35,7 +35,6 @@ Calculate building blocks - insertions in 3-pt functions
           </LinkSmearing>
         </Source>
 
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -68,7 +67,6 @@ Calculate building blocks - insertions in 3-pt functions
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -88,7 +86,6 @@ Calculate building blocks - insertions in 3-pt functions
         <seq_src>PION</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -135,7 +132,6 @@ Calculate building blocks - insertions in 3-pt functions
 	<seq_src>NUCL_U_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -183,7 +179,6 @@ Calculate building blocks - insertions in 3-pt functions
 	<seq_src>NUCL_D_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -248,7 +243,6 @@ Calculate building blocks - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_PION</source_id>
@@ -286,7 +280,6 @@ Calculate building blocks - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
@@ -324,7 +317,6 @@ Calculate building blocks - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
@@ -341,11 +333,11 @@ Calculate building blocks - insertions in 3-pt functions
       <Frequency>1</Frequency>
       <Param>
        <version>3</version>
-       <nrow>4 4 4 8</nrow>
        <use_sink_offset>true</use_sink_offset>
        <mom2_max>3</mom2_max>
        <links_max>1</links_max>
        <canonical>false</canonical>
+       <nrow>4 4 4 8</nrow>
       </Param>
       <BuildingBlocks>
        <OutFileName>./examplebb_v1.out</OutFileName>
@@ -425,8 +417,8 @@ Calculate building blocks - insertions in 3-pt functions
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
