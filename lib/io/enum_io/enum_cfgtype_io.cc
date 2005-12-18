@@ -19,6 +19,7 @@ namespace Chroma {
       success &= theCfgTypeMap::Instance().registerPair( string("DISORDERED"), CFG_TYPE_DISORDERED );
       success &= theCfgTypeMap::Instance().registerPair( string("UNIT"), CFG_TYPE_UNIT );
       success &= theCfgTypeMap::Instance().registerPair( string("CPPACS"), CFG_TYPE_CPPACS );
+      success &= theCfgTypeMap::Instance().registerPair( string("WEAK_FIELD"), CFG_TYPE_WEAK_FIELD);
       
       return success;
     }

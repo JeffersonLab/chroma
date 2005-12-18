@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.19 2005-12-15 04:03:27 edwards Exp $
+# $Id: Makefile.am,v 2.20 2005-12-18 03:49:45 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -166,7 +166,7 @@ nobase_include_HEADERS = \
 	util/gauge/hotst.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
-	util/gauge/unit_check.h \
+	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
         util/info/info.h util/info/proginfo.h util/info/printgeom.h \
         util/util.h \
@@ -615,6 +615,7 @@ libchroma_a_SOURCES = \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
+	util/gauge/weak_field.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
         update/heatbath/su3over.cc \
 	update/heatbath/u_staple.cc \
