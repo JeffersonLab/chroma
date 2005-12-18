@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_dwf-v9.ini.xml,v 1.3 2005-12-17 21:42:29 edwards Exp $
+; $Id: prec_dwf-v9.ini.xml,v 1.4 2005-12-18 03:49:18 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -52,8 +52,8 @@
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>DWF</FermAct>
-         <OverMass>1.5</OverMass>
-         <Mass>0.3</Mass>
+         <OverMass>1.2</OverMass>
+         <Mass>0.4</Mass>
          <N5>4</N5>
          <AnisoParam>
            <anisoP>true</anisoP>
@@ -92,7 +92,7 @@
 </RNG>
 
 <Cfg>
- <cfg_type>DISORDERED</cfg_type>
+ <cfg_type>WEAK_FIELD</cfg_type>
  <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>

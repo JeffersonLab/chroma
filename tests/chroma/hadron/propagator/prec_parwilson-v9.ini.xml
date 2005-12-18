@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_parwilson-v9.ini.xml,v 1.1 2005-12-17 21:59:10 edwards Exp $
+; $Id: prec_parwilson-v9.ini.xml,v 1.2 2005-12-18 03:49:18 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -104,7 +104,7 @@
 </RNG>
 
 <Cfg>
- <cfg_type>DISORDERED</cfg_type>
+ <cfg_type>WEAK_FIELD</cfg_type>
  <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>

@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_parwilson-v9.out.xml,v 1.1 2005-12-17 21:59:10 edwards Exp $
+; $Id: prec_parwilson-v9.out.xml,v 1.2 2005-12-18 03:49:18 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -107,7 +107,7 @@
 </RNG>
 
 <Cfg>
- <cfg_type>DISORDERED</cfg_type>
+ <cfg_type>WEAK_FIELD</cfg_type>
  <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
@@ -118,7 +118,7 @@
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 16:58:44 EST</run_date>
+    <run_date>17 Dec 05 22:48:21 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -141,32 +141,32 @@
     </gauge>
 
     </file_xml>
-    <gauge_xml><disordered>
-</disordered>
+    <gauge_xml><weak_field>
+</weak_field>
 
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>-0.00379757</w_plaq>
-    <s_plaq>-0.00327781</s_plaq>
-    <t_plaq>-0.00431733</t_plaq>
-    <link>0.104803</link>
+    <w_plaq>0.996761</w_plaq>
+    <s_plaq>0.996843</s_plaq>
+    <t_plaq>0.996679</t_plaq>
+    <link>0.996519</link>
     <pollp>
       <elem>
-        <re>0.040209</re>
-        <im>-0.0193806</im>
+        <re>0.951771</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.0258227</re>
-        <im>0.031735</im>
+        <re>0.956327</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>-0.000155889</re>
-        <im>0.00880705</im>
+        <re>0.957143</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.0281716</re>
-        <im>-0.0108409</im>
+        <re>0.834426</re>
+        <im>0</im>
       </elem>
     </pollp>
   </Observables>
@@ -179,7 +179,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 16:58:44 EST</run_date>
+          <run_date>17 Dec 05 22:48:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -190,10 +190,10 @@
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>3787</elem>
-            <elem>2588</elem>
-            <elem>2567</elem>
-            <elem>60</elem>
+            <elem>1467</elem>
+            <elem>1530</elem>
+            <elem>1271</elem>
+            <elem>1408</elem>
           </Seed>
         </RNG>
         <Input>
@@ -226,37 +226,37 @@
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
-        <Config_info><disordered>
-</disordered>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
         <Observables>
-          <w_plaq>-0.00379757</w_plaq>
-          <s_plaq>-0.00327781</s_plaq>
-          <t_plaq>-0.00431733</t_plaq>
-          <link>0.104803</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.040209</re>
-              <im>-0.0193806</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.0258227</re>
-              <im>0.031735</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>-0.000155889</re>
-              <im>0.00880705</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.0281716</re>
-              <im>-0.0108409</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>1.15313 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.63552 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -268,7 +268,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 16:58:44 EST</run_date>
+          <run_date>17 Dec 05 22:48:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -313,8 +313,8 @@
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
-        <Config_info><disordered>
-</disordered>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -322,26 +322,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>-0.00379757</w_plaq>
-          <s_plaq>-0.00327781</s_plaq>
-          <t_plaq>-0.00431733</t_plaq>
-          <link>0.104803</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.040209</re>
-              <im>-0.0193806</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.0258227</re>
-              <im>0.031735</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>-0.000155889</re>
-              <im>0.00880705</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.0281716</re>
-              <im>-0.0108409</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -378,65 +378,65 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>3787</elem>
-          <elem>2588</elem>
-          <elem>2567</elem>
-          <elem>60</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <disordered>
-</disordered>
+        <weak_field>
+</weak_field>
       </Config_info>
     </MakeSource>
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>1.15313 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.63552 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>152</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>150</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>153</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>151</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>152</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>151</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>151</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>152</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>153</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>151</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>153</n_count>
+            <n_count>50</n_count>
           </Qprop>
           <Qprop>
-            <n_count>153</n_count>
+            <n_count>50</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>1822</ncg_had>
+          <ncg_had>600</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0793223 0.0137613 0.0035749 0.000878082 0.000410197 0.000882428 0.00350698 0.0132934</prop_corr>
+          <prop_corr>0.242276 0.091481 0.0255102 0.00797822 0.00432333 0.00802661 0.0256818 0.0916443</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
