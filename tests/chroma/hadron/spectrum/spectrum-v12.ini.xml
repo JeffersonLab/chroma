@@ -120,8 +120,8 @@ Spectrum input
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 

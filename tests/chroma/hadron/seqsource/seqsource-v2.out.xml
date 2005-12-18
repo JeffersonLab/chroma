@@ -230,8 +230,8 @@ Sequential source
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
@@ -241,7 +241,7 @@ Sequential source
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 23:14:07 EST</run_date>
+    <run_date>17 Dec 05 23:25:59 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -259,72 +259,37 @@ Sequential source
     </Seed>
   </RNG>
   <Config_info>
-    <file_xml>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
 
     </file_xml>
-    <gauge_xml><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+    <gauge_xml><weak_field>
+</weak_field>
 
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.902263</w_plaq>
-    <s_plaq>0.862579</s_plaq>
-    <t_plaq>0.941947</t_plaq>
-    <link>0.734641</link>
+    <w_plaq>0.996761</w_plaq>
+    <s_plaq>0.996843</s_plaq>
+    <t_plaq>0.996679</t_plaq>
+    <link>0.996519</link>
     <pollp>
       <elem>
-        <re>0.790237</re>
-        <im>0.00288483</im>
+        <re>0.951771</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.785869</re>
-        <im>-0.00015866</im>
+        <re>0.956327</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.80393</re>
-        <im>0.00160447</im>
+        <re>0.957143</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.864752</re>
-        <im>0.00215502</im>
+        <re>0.834426</re>
+        <im>0</im>
       </elem>
     </pollp>
   </Observables>
@@ -337,7 +302,7 @@ Sequential source
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 23:14:07 EST</run_date>
+          <run_date>17 Dec 05 23:25:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -348,10 +313,10 @@ Sequential source
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>11</elem>
-            <elem>11</elem>
-            <elem>11</elem>
-            <elem>0</elem>
+            <elem>1467</elem>
+            <elem>1530</elem>
+            <elem>1271</elem>
+            <elem>1408</elem>
           </Seed>
         </RNG>
         <Input>
@@ -384,74 +349,37 @@ Sequential source
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.63552 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -463,7 +391,7 @@ Sequential source
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 23:14:08 EST</run_date>
+          <run_date>17 Dec 05 23:25:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -507,45 +435,8 @@ Sequential source
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -553,26 +444,26 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -609,102 +500,65 @@ Sequential source
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </MakeSource>
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>5.44616 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.63552 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>41</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>48</n_count>
+            <n_count>42</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>566</ncg_had>
+          <ncg_had>500</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</prop_corr>
+          <prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -716,7 +570,7 @@ Sequential source
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 23:14:11 EST</run_date>
+          <run_date>17 Dec 05 23:26:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -763,45 +617,8 @@ Sequential source
             <seqsource_id>seqsource_PION_0</seqsource_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -809,26 +626,26 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -891,52 +708,15 @@ Sequential source
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </Propagator>
 
@@ -945,11 +725,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>
+            <forward_prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 7.3995e-06</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.36813e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -961,7 +741,7 @@ Sequential source
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 23:14:13 EST</run_date>
+          <run_date>17 Dec 05 23:26:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1009,45 +789,8 @@ Sequential source
             <seqsource_id>seqsource_NUCL_U_MIXED_NONREL</seqsource_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -1055,26 +798,26 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -1137,52 +880,15 @@ Sequential source
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </Propagator>
 
@@ -1246,52 +952,15 @@ Sequential source
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </Propagator>
 
@@ -1300,14 +969,14 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>
+            <forward_prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>
+            <forward_prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 3.94724e-11</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 2.11011e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1319,7 +988,7 @@ Sequential source
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 23:14:15 EST</run_date>
+          <run_date>17 Dec 05 23:26:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1366,45 +1035,8 @@ Sequential source
             <seqsource_id>seqsource_NUCL_D_MIXED_NONREL</seqsource_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -1412,26 +1044,26 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996761</w_plaq>
+          <s_plaq>0.996843</s_plaq>
+          <t_plaq>0.996679</t_plaq>
+          <link>0.996519</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.951771</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.956327</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.957143</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.834426</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -1494,52 +1126,15 @@ Sequential source
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>1530</elem>
+          <elem>1271</elem>
+          <elem>1408</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </Propagator>
 
@@ -1548,11 +1143,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.149143 0.00946902 0.00293369 0.00100547 0.00035161 0.000123757 4.29985e-05 1.49081e-05</forward_prop_corr>
+            <forward_prop_corr>0.194887 0.0163929 0.00616917 0.00248421 0.00100479 0.000406768 0.000164839 6.70994e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 7.59852e-12</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.0579e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>

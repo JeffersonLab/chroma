@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson-v8.ferm.ini.xml,v 1.1 2005-11-20 18:27:50 edwards Exp $
+; $Id: prec_wilson-v9.ferm.ini.xml,v 1.1 2005-12-18 04:27:46 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -67,8 +67,8 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
@@ -124,8 +124,8 @@
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
