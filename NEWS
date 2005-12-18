@@ -1,4 +1,9 @@
 12/18/2005 -- Robert Edwards
+	Version 2.7.0. Overhauled how aniso is done - pushed it down into the 
+        Wilson-esque dslashes. New clover support. Most importantly, start of new
+        rigourous regression test system.
+
+12/18/2005 -- Robert Edwards
 	Version 2.6.1. Updated many regression tests to now use a new WEAK_FIELD
         instead of using the SZIN chroma/tests/test_purgaug.cfg1   config.
 
