@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec-ovlap-zolo4d-v9.out.xml,v 1.1 2005-12-17 20:52:36 edwards Exp $
+; $Id: unprec-ovlap-zolo4d-v9.out.xml,v 1.2 2005-12-18 16:30:40 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -68,7 +68,7 @@
           </InnerSolve>	
           <AuxFermAct>
             <FermAct>UNPRECONDITIONED_WILSON</FermAct>
-            <Mass>-0.3</Mass>
+            <Mass>-0.3</Mass>   <!-- The Mass is typically around -1.5 -->
             <FermionBC>
               <FermBC>SIMPLE_FERMBC</FermBC>
               <boundary>1 1 1 -1</boundary>
@@ -139,7 +139,7 @@
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 15:02:22 EST</run_date>
+    <run_date>18 Dec 05 11:23:38 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -200,7 +200,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 15:02:22 EST</run_date>
+          <run_date>18 Dec 05 11:23:38 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -289,7 +289,7 @@
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 15:02:22 EST</run_date>
+          <run_date>18 Dec 05 11:23:38 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -318,6 +318,7 @@
       <AuxFermAct>
         <FermAct>UNPRECONDITIONED_WILSON</FermAct>
         <Mass>-0.3</Mass>
+<!-- The Mass is typically around -1.5 -->
         <FermionBC>
           <FermBC>SIMPLE_FERMBC</FermBC>
           <boundary>1 1 1 -1</boundary>

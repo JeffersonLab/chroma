@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: eigbnds-v1.out.xml,v 1.2 2005-11-08 05:40:25 edwards Exp $
+; $Id: eigbnds-v1.out.xml,v 1.3 2005-12-18 16:30:39 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -156,18 +156,18 @@
    <nrow>4 4 4 8</nrow>
 </Param>
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.3</chroma>
-      <qdp>1.17.1</qdp>
+      <chroma>2.6</chroma>
+      <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>08 Nov 05 00:27:01 EST</run_date>
+    <run_date>18 Dec 05 11:29:48 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -185,72 +185,37 @@
     </Seed>
   </RNG>
   <Config_info>
-    <file_xml>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
 
     </file_xml>
-    <gauge_xml><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+    <gauge_xml><weak_field>
+</weak_field>
 
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.902263</w_plaq>
-    <s_plaq>0.862579</s_plaq>
-    <t_plaq>0.941947</t_plaq>
-    <link>0.734641</link>
+    <w_plaq>0.994765</w_plaq>
+    <s_plaq>0.994801</s_plaq>
+    <t_plaq>0.994729</t_plaq>
+    <link>0.379318</link>
     <pollp>
       <elem>
-        <re>0.790237</re>
-        <im>0.00288483</im>
+        <re>0.967223</re>
+        <im>-0.00121316</im>
       </elem>
       <elem>
-        <re>0.785869</re>
-        <im>-0.00015866</im>
+        <re>0.967032</re>
+        <im>-0.00129617</im>
       </elem>
       <elem>
-        <re>0.80393</re>
-        <im>0.00160447</im>
+        <re>0.967468</re>
+        <im>-0.00114548</im>
       </elem>
       <elem>
-        <re>0.864752</re>
-        <im>0.00215502</im>
+        <re>0.879539</re>
+        <im>-0.0104403</im>
       </elem>
     </pollp>
   </Observables>
@@ -260,20 +225,20 @@
         <update_no>0</update_no>
         <poly_loop>
           <elem>
-            <re>0.790237</re>
-            <im>0.00288483</im>
+            <re>0.967223</re>
+            <im>-0.00121316</im>
           </elem>
           <elem>
-            <re>0.785869</re>
-            <im>-0.00015866</im>
+            <re>0.967032</re>
+            <im>-0.00129617</im>
           </elem>
           <elem>
-            <re>0.80393</re>
-            <im>0.00160447</im>
+            <re>0.967468</re>
+            <im>-0.00114548</im>
           </elem>
           <elem>
-            <re>0.864752</re>
-            <im>0.00215502</im>
+            <re>0.879539</re>
+            <im>-0.0104403</im>
           </elem>
         </poly_loop>
       </PolyakovLoop>
@@ -302,23 +267,23 @@
         <LowestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>46</n_count>
+              <n_count>43</n_count>
             </eval1>
             <eValues>
-              <lambda>2.21174</lambda>
+              <lambda>1.68011</lambda>
             </eValues>
-            <n_cg_tot>46</n_cg_tot>
+            <n_cg_tot>43</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>20</n_count>
+              <n_count>15</n_count>
             </eval1>
             <eValues>
-              <lambda>-29.5966</lambda>
+              <lambda>-29.076</lambda>
             </eValues>
-            <n_cg_tot>20</n_cg_tot>
+            <n_cg_tot>15</n_cg_tot>
           </EigSpecRitzCG>
         </HighestEv>
       </EigBndsMdagM>
@@ -349,23 +314,23 @@
         <LowestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>138</n_count>
+              <n_count>71</n_count>
             </eval1>
             <eValues>
-              <lambda>0.437527</lambda>
+              <lambda>0.456874</lambda>
             </eValues>
-            <n_cg_tot>138</n_cg_tot>
+            <n_cg_tot>71</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>22</n_count>
+              <n_count>18</n_count>
             </eval1>
             <eValues>
-              <lambda>-29.364</lambda>
+              <lambda>-28.8431</lambda>
             </eValues>
-            <n_cg_tot>22</n_cg_tot>
+            <n_cg_tot>18</n_cg_tot>
           </EigSpecRitzCG>
         </HighestEv>
       </EigBndsMdagM>
@@ -396,23 +361,23 @@
         <LowestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>87</n_count>
+              <n_count>68</n_count>
             </eval1>
             <eValues>
-              <lambda>2.58572</lambda>
+              <lambda>2.25388</lambda>
             </eValues>
-            <n_cg_tot>87</n_cg_tot>
+            <n_cg_tot>68</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>19</n_count>
+              <n_count>15</n_count>
             </eval1>
             <eValues>
-              <lambda>-29.2095</lambda>
+              <lambda>-28.654</lambda>
             </eValues>
-            <n_cg_tot>19</n_cg_tot>
+            <n_cg_tot>15</n_cg_tot>
           </EigSpecRitzCG>
         </HighestEv>
       </EigBndsMdagM>
@@ -443,23 +408,23 @@
         <LowestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>104</n_count>
+              <n_count>67</n_count>
             </eval1>
             <eValues>
-              <lambda>2.5857</lambda>
+              <lambda>2.25378</lambda>
             </eValues>
-            <n_cg_tot>104</n_cg_tot>
+            <n_cg_tot>67</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>20</n_count>
+              <n_count>15</n_count>
             </eval1>
             <eValues>
-              <lambda>-29.2174</lambda>
+              <lambda>-28.6481</lambda>
             </eValues>
-            <n_cg_tot>20</n_cg_tot>
+            <n_cg_tot>15</n_cg_tot>
           </EigSpecRitzCG>
         </HighestEv>
       </EigBndsMdagM>
@@ -494,23 +459,23 @@
         <LowestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>173</n_count>
+              <n_count>137</n_count>
             </eval1>
             <eValues>
-              <lambda>0.0090021</lambda>
+              <lambda>0.00937365</lambda>
             </eValues>
-            <n_cg_tot>173</n_cg_tot>
+            <n_cg_tot>137</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>17</n_count>
+              <n_count>18</n_count>
             </eval1>
             <eValues>
-              <lambda>-6.48743</lambda>
+              <lambda>-6.49435</lambda>
             </eValues>
-            <n_cg_tot>17</n_cg_tot>
+            <n_cg_tot>18</n_cg_tot>
           </EigSpecRitzCG>
         </HighestEv>
       </EigBndsMdagM>
@@ -545,12 +510,12 @@
         <LowestEv>
           <EigSpecRitzCG>
             <eval1>
-              <n_count>150</n_count>
+              <n_count>113</n_count>
             </eval1>
             <eValues>
-              <lambda>0.0477429</lambda>
+              <lambda>0.0457038</lambda>
             </eValues>
-            <n_cg_tot>150</n_cg_tot>
+            <n_cg_tot>113</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
         <HighestEv>
@@ -559,7 +524,7 @@
               <n_count>13</n_count>
             </eval1>
             <eValues>
-              <lambda>-3.19388</lambda>
+              <lambda>-3.21584</lambda>
             </eValues>
             <n_cg_tot>13</n_cg_tot>
           </EigSpecRitzCG>
