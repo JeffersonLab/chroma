@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <purgaug> 
   <Cfg>
-    <cfg_type>SZIN</cfg_type>
-    <cfg_file>CFGIN</cfg_file>
+    <cfg_type>WEAK_FIELD</cfg_type>
+    <cfg_file>dummy</cfg_file>
   </Cfg>
 
   <MCControl>
@@ -16,10 +16,10 @@
     </RNG>
 
     <StartUpdateNum>0</StartUpdateNum>
-    <NWarmUpUpdates>0</NWarmUpUpdates>  
+    <NWarmUpUpdates>1</NWarmUpUpdates>  
     <NProductionUpdates>1000</NProductionUpdates>
-    <NUpdatesThisRun>1000</NUpdatesThisRun>
-    <SaveInterval>1000</SaveInterval>
+    <NUpdatesThisRun>2</NUpdatesThisRun>
+    <SaveInterval>2</SaveInterval>
     <SavePrefix>dummy_run</SavePrefix>
     <SaveVolfmt>SINGLEFILE</SaveVolfmt>
   </MCControl>
