@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_pab_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: lwldslash_array_pab_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -49,13 +49,25 @@ namespace Chroma
   {
   public:
     //! Empty constructor. Must use create later
-    PABWilsonDslashArray() {}
+    PABWilsonDslashArray();
 
     //! Full constructor
-    PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, int N5_) {create(u_,N5_);}
+    PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+			 int N5_);
+
+    //! Full constructor
+    PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+			 int N5_,
+			 const AnisoParam_t& aniso_);
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, int N5_);
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		int N5_);
+
+    //! Creation routine
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		int N5_,
+		const AnisoParam_t& aniso_);
 
     //! Expected length of array index
     int size() const {return N5;}
@@ -92,12 +104,12 @@ namespace Chroma
 		enum PlusMinus isign, int cb) const;
     
   protected:
-    //! Get the u field
-    const multi1d<LatticeColorMatrix>& getU() const {return u;}
+    //! Get the anisotropy parameters
+    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
 
   private:
+    AnisoParam_t  anisoParam;
     PrimitiveSU3Matrix* packed_gauge;
-    multi1d<LatticeColorMatrix> u; // For derivative
     WilsonArg wil;
     unsigned long wil_cbsize;
     int N5;

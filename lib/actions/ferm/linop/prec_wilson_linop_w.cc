@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 2.2 2005-10-30 19:37:23 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 2.3 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -17,11 +17,8 @@ namespace Chroma
   void EvenOddPrecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
 				      const Real& Mass_)
   {
-    Mass = Mass_;
-    D.create(u_);
-
-    fact = Nd + Mass;
-    invfact = 1/fact;
+    AnisoParam_t anisoParam;
+    create(u_, Mass_, anisoParam);
   }
 
 
@@ -33,24 +30,12 @@ namespace Chroma
    */
   void EvenOddPrecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
 				      const Real& Mass_,
-				      const AnisoParam_t& aniso)
+				      const AnisoParam_t& anisoParam)
   {
+    D.create(u_,anisoParam);
+
     Mass = Mass_;
-
-    multi1d<LatticeColorMatrix> u = u_;
-    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
-  
-    if (aniso.anisoP)
-    {
-      // Rescale the u fields by the anisotropy
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != aniso.t_dir)
-	  u[mu] *= ff;
-      }
-    }
-    D.create(u);
-
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
     fact = 1 + (Nd-1)*ff + Mass;
     invfact = 1/fact;
   }

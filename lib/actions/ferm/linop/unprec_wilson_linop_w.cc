@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 2.1 2005-12-03 18:47:10 edwards Exp $
+// $Id: unprec_wilson_linop_w.cc,v 2.2 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -12,17 +12,33 @@ namespace Chroma
 { 
 
   //! Creation routine
-  /*! \ingroup fermact
-   *
-   * \param u_ 	    gauge field     	       (Read)
+  /*!
+   * \param u_ 	  gauge field     	       (Read)
    * \param Mass_   fermion kappa   	       (Read)
    */
-  void UnprecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u, const Real& Mass_)
+  void UnprecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+				 const Real& Mass_)
   {
-    Mass = Mass_;
-    D.create(u);
+    AnisoParam_t anisoParam;
+    create(u_, Mass_, anisoParam);
+  }
 
-    //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
+
+  //! Creation routine with Anisotropy
+  /*!
+   * \param u_ 	  gauge field     	       (Read)
+   * \param Mass_   fermion kappa   	       (Read)
+   * \param aniso   anisotropy struct   	       (Read)
+   */
+  void UnprecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+				 const Real& Mass_,
+				 const AnisoParam_t& anisoParam)
+  {
+    D.create(u_,anisoParam);
+
+    Mass = Mass_;
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+    fact = 1 + (Nd-1)*ff + Mass;
   }
 
 
@@ -45,13 +61,12 @@ namespace Chroma
     //  Chi   =  (Nd+Mass)*Psi  -  (1/2) * D' Psi
     //
     LatticeFermion tmp;   moveToFastMemoryHint(tmp);
-    Real fact1 = Nd + Mass;
-    Real fact2 = -0.5;
+    Real mhalf = -0.5;
 
     // D is a Dslash - must apply to both CB-s
     D(tmp, psi, isign);
 
-    chi = fact1*psi + fact2*tmp;
+    chi = fact*psi + mhalf*tmp;
   
     END_CODE();
   }

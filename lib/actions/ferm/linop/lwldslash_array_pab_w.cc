@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: lwldslash_array_pab_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -14,13 +14,55 @@
 namespace Chroma 
 { 
 
+  //! Full constructor
+  PABWilsonDslashArray::PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+					     int N5_)
+  {
+    create(u_,N5_);
+  }
+
+
+  //! Full constructor
+  PABWilsonDslashArray::PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+					     int N5_,
+					     const AnisoParam_t& aniso_)
+  {
+    create(u_,N5_,aniso_);
+  }
+
+
   //! Creation routine
-  void PABWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, int N5_)
+  void PABWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, 
+				    int N5_)
+  {
+    AnisoParam_t aniso;
+    create(u_, N5_, aniso);
+  }
+
+
+  //! Creation routine
+  void PABWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, 
+				    int N5_, 
+				    const AnisoParam_t& aniso)
   {
     START_CODE();
 
+    anisoParam = aniso;
+
     // For now, keep an extra copy
-    u = u_;
+    multi1d<LatticeColorMatrix> u = u_;
+
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+  
+    if (anisoParam.anisoP)
+    {
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  u[mu] *= ff;
+      }
+    }
 
     // I probably need the local size here...
     const multi1d<int>& lsize= Layout::subgridLattSize();
@@ -80,7 +122,7 @@ namespace Chroma
     int volume=Layout::sitesOnNode();
     for(int ix=0; ix < volume; ix++) { 
       for(int mu=0; mu < 4; mu++) { 
-	packed_gauge[ 4*ix + mu ] = transpose(u_[mu].elem(ix).elem());
+	packed_gauge[ 4*ix + mu ] = transpose(u[mu].elem(ix).elem());
       }
     }
 

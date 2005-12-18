@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -33,20 +33,9 @@ namespace Chroma
     a5  = 1;
     N5  = N5_;
 
-    multi1d<LatticeColorMatrix> u = u_;
-    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
-  
-    if (aniso.anisoP)
-    {
-      // Rescale the u fields by the anisotropy
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != aniso.t_dir)
-	  u[mu] *= ff;
-      }
-    }
-    D.create(u,N5);   // construct using possibly aniso glue
+    D.create(u_,N5,aniso);   // construct using possibly aniso glue
 
+    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
     InvTwoKappa = 1 + a5*(1 + (Nd-1)*ff - WilsonMass); 
     //InvTwoKappa =  WilsonMass - 5.0;
     TwoKappa = 1.0 / InvTwoKappa;

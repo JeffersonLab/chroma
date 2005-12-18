@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_array_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -41,12 +41,34 @@ namespace Chroma
   //! Creation routine
   void QDPWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, int N5_)
   {
+    AnisoParam_t aniso;
+    create(u_,N5_,aniso);
+  }
+
+
+  //! Creation routine
+  void QDPWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, int N5_,
+				    const AnisoParam_t& aniso_)
+  {
     START_CODE();
 
     u = u_;
     N5 = N5_;
+    anisoParam = aniso_;
 
-    //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
+    // Fold in anisotropy
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+  
+    if (anisoParam.anisoP)
+    {
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  u[mu] *= ff;
+      }
+    }
+
     END_CODE();
   }
 

@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 2.4 2005-12-03 04:20:20 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.5 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -6,13 +6,15 @@
 #include "actions/ferm/fermbcs/fermbcs_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
+#include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
+#include "actions/ferm/fermacts/unprec_hamberwu_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_dwftransf_fermact_w.h"
+
+#include "actions/ferm/fermacts/prec_clover_fermact_w.h"
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
-
-#include "actions/ferm/fermacts/unprec_hamberwu_fermact_w.h"
 
 #include "actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h"
 

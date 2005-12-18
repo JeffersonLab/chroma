@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_sse_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_array_sse_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -48,13 +48,25 @@ namespace Chroma
   {
   public:
     //! Empty constructor. Must use create later
-    SSEWilsonDslashArray() {init();}
+    SSEWilsonDslashArray();
 
     //! Full constructor
-    SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, int N5_) {init(); create(u_,N5_);}
+    SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+			 int N5_);
+
+    //! Full constructor
+    SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+			 int N5_,
+			 const AnisoParam_t& aniso_);
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, int N5_);
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		int N5_);
+
+    //! Creation routine
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		int N5_,
+		const AnisoParam_t& aniso_);
 
     //! Expected length of array index
     int size() const {return N5;}
@@ -91,16 +103,15 @@ namespace Chroma
 		enum PlusMinus isign, int cb) const;
     
   protected:
-    //! Get the u field
-    const multi1d<LatticeColorMatrix>& getU() const {return u;}
-
     //! Init internals
     void init();
 
+    //! Get the anisotropy parameters
+    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
+
   private:
+    AnisoParam_t  anisoParam;
     multi1d<PrimitiveSU3Matrix> packed_gauge;
-  
-    multi1d<LatticeColorMatrix> u;   // Needed only for derivative. Should find some alternative
     int N5;
   };
 

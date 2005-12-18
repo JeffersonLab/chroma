@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -33,13 +33,56 @@ namespace Chroma
   }
 
 
+  //! Empty constructor
+  SSEWilsonDslash::SSEWilsonDslash()
+  {
+    init();
+  }
+  
+  //! Full constructor
+  SSEWilsonDslash::SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_) 
+  { 
+    init();
+    create(u_);
+  }
+  
+  //! Full constructor with anisotropy
+  SSEWilsonDslash::SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_, 
+				   const AnisoParam_t& aniso_) 
+  {
+    init();
+    create(u_, aniso_);
+  }
+
   //! Creation routine
   void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
   {
+    AnisoParam_t foo;
+    create(u_, foo);
+  }
+
+  //! Creation routine with anisotropy
+  void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& uu_,
+			       const AnisoParam_t& aniso_) 
+  {
     START_CODE();
 
-    // Save a copy of the original fields
-    u = u_;
+    // Save a copy of the aniso params original fields and with aniso folded in
+    anisoParam = aniso_;
+
+    // Fold in anisotropy
+    multi1d<LatticeColorMatrix> u = uu_;
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+  
+    if (anisoParam.anisoP)
+    {
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  u[mu] *= ff;
+      }
+    }
 
     // Pack the gauge fields
     packed_gauge.resize( Nd * Layout::sitesOnNode() );
@@ -50,7 +93,7 @@ namespace Chroma
     QDPIO::cout << "Calling pack_gauge_field..." << flush;
 #endif
 
-    qdp_pack_gauge(u_, packed_gauge);
+    qdp_pack_gauge(u, packed_gauge);
   
 #if 0
     QDPIO::cout << "Done" << endl << flush;

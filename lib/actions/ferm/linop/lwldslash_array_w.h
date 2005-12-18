@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_array_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -49,10 +49,24 @@ namespace Chroma
     QDPWilsonDslashArray() {}
 
     //! Full constructor
-    QDPWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, int N5_) {create(u_,N5_);}
+    QDPWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+			 int N5_)
+      {create(u_,N5_);}
+
+    //! Full constructor
+    QDPWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+			 int N5_,
+			 const AnisoParam_t& aniso_)
+      {create(u_,N5_,aniso_);}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, int N5_);
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		int N5_);
+
+    //! Creation routine
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		int N5_,
+		const AnisoParam_t& aniso_);
 
     //! Expected length of array index
     int size() const {return N5;}
@@ -87,14 +101,15 @@ namespace Chroma
     void apply (LatticeFermion& chi, 
 		const LatticeFermion& psi, 
 		enum PlusMinus isign, int cb) const;
-    
+     
   protected:
-    //! Get the u field
-    const multi1d<LatticeColorMatrix>& getU() const {return u;}
+    //! Get the anisotropy parameters
+    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
 
   private:
-    multi1d<LatticeColorMatrix> u;
     int N5;
+    AnisoParam_t  anisoParam;
+    multi1d<LatticeColorMatrix> u;  // fold in anisotropy
   };
 
 

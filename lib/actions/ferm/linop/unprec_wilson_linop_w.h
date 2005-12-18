@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 2.1 2005-12-03 18:47:10 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 2.2 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -47,11 +47,23 @@ namespace Chroma
     UnprecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_)
       {create(u_,Mass_);}
 
+    //! Full constructor with Anisotropy
+    UnprecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, 
+		      const Real& Mass_,
+		      const AnisoParam_t& aniso)
+      {create(u_,Mass_,aniso);}
+
     //! Destructor is automatic
     ~UnprecWilsonLinOp() {}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_);
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		const Real& Mass_);
+
+    //! Creation routine with Anisotropy
+    void create(const multi1d<LatticeColorMatrix>& u_, 
+		const Real& Mass_,
+		const AnisoParam_t& aniso);
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
@@ -62,6 +74,8 @@ namespace Chroma
 	       enum PlusMinus isign) const;
 
   private:
+    Real fact;  // tmp holding  Nd+Mass
+
     Real Mass;
     WilsonDslash D;
   };

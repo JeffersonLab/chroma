@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_sse_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_array_sse_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -32,13 +32,61 @@ namespace Chroma
     init_sse_su3dslash(Layout::lattSize().slice());
   }
 
+  //! Empty constructor. Must use create later
+  SSEWilsonDslashArray::SSEWilsonDslashArray() 
+  {
+    init();
+  }
+
+  //! Full constructor
+  SSEWilsonDslashArray::SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+					     int N5_,
+					     const AnisoParam_t& aniso_)
+  {
+    init(); 
+    create(u_,N5_,aniso_);
+  }
+
+
+  //! Full constructor
+  SSEWilsonDslashArray::SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+					     int N5_)
+  {
+    init(); 
+    create(u_,N5_);
+  }
+
 
   //! Creation routine
-  void SSEWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, int N5_)
+  void SSEWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, 
+				    int N5_)
   {
-    // Save a copy of the original fields
-    u = u_;
+    AnisoParam_t aniso;
+    create(u_, N5_, aniso);
+  }
+
+
+  //! Creation routine
+  void SSEWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, 
+				    int N5_, const AnisoParam_t& aniso)
+  {
     N5 = N5_;
+    anisoParam = aniso;
+
+    // For now, keep an extra copy
+    multi1d<LatticeColorMatrix> u = u_;
+
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+  
+    if (anisoParam.anisoP)
+    {
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  u[mu] *= ff;
+      }
+    }
 
     // Pack the gauge fields
     packed_gauge.resize( Nd * Layout::sitesOnNode() );
@@ -49,7 +97,7 @@ namespace Chroma
     QDPIO::cout << "Calling pack_gauge_field..." << flush;
 #endif
 
-    qdp_pack_gauge(u_, packed_gauge);
+    qdp_pack_gauge(u, packed_gauge);
   
 #if 0
     QDPIO::cout << "Done" << endl << flush;

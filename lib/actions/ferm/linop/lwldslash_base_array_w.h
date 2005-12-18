@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_array_w.h,v 2.1 2005-10-31 03:48:17 edwards Exp $
+// $Id: lwldslash_base_array_w.h,v 2.2 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -8,6 +8,7 @@
 #define __lwldslash_base_array_h__
 
 #include "linearop.h"
+#include "io/aniso_io.h"
 
 
 namespace Chroma 
@@ -125,8 +126,8 @@ namespace Chroma
     unsigned long nFlops() const;
 
   protected:
-    //! Get the u field
-    virtual const multi1d<LatticeColorMatrix>& getU() const = 0;
+    //! Get the anisotropy parameters
+    virtual const AnisoParam_t& getAnisoParam() const = 0;
 
   };
 

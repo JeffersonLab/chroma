@@ -1,4 +1,4 @@
-// $Id: lwldslash_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -37,13 +37,45 @@ namespace Chroma
    *
    */
 
+  //! Full constructor
+  QDPWilsonDslash::QDPWilsonDslash(const multi1d<LatticeColorMatrix>& u_) 
+  {
+    create(u_);
+  }
+  
+  //! Full constructor with anisotropy
+  QDPWilsonDslash::QDPWilsonDslash(const multi1d<LatticeColorMatrix>& u_, 
+				   const AnisoParam_t& aniso_) 
+  {
+    create(u_, aniso_);
+  }
 
   //! Creation routine
-  void QDPWilsonDslash::create(const multi1d<LatticeColorMatrix>& _u)
+  void QDPWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
   {
-    u = _u;
+    AnisoParam_t foo;
+    create(u_, foo);
+  }
 
-    //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
+  //! Creation routine with anisotropy
+  void QDPWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_,
+			       const AnisoParam_t& aniso_) 
+  {
+    u = u_;
+    anisoParam = aniso_;
+
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+  
+    if (anisoParam.anisoP)
+    {
+      // Rescale the u fields by the anisotropy
+      for(int mu=0; mu < u.size(); ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  u[mu] *= ff;
+      }
+    }
+
   }
 
 

@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_array_w.cc,v 2.2 2005-10-31 03:48:17 edwards Exp $
+// $Id: lwldslash_base_array_w.cc,v 2.3 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -72,7 +72,23 @@ namespace Chroma
     START_CODE();
 
     ds_u.resize(Nd);
-    const multi1d<LatticeColorMatrix>& u = getU();
+
+    AnisoParam_t anisoParam = getAnisoParam();
+    multi1d<Real> anisoWeights(Nd);
+    anisoWeights = 1;
+
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+  
+    if (anisoParam.anisoP)
+    {
+      // Set the weights
+      for(int mu=0; mu < Nd; ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  anisoWeights[mu] *= ff;
+      }
+    }
+
 
     switch (isign)
     {
@@ -80,8 +96,8 @@ namespace Chroma
       for(int mu = 0; mu < Nd; ++mu)
       {
 	// Undaggered:
-        ds_u[mu][rb[cb]]    = traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));
-	ds_u[mu][rb[1-cb]]  = zero;
+        ds_u[mu][rb[cb]]   = anisoWeights[mu] * traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));
+	ds_u[mu][rb[1-cb]] = zero;
 
 	// The piece that comes from the U^daggered term. 
 	// This piece is just -dagger() of the piece from applying
@@ -105,7 +121,7 @@ namespace Chroma
       for(int mu = 0; mu < Nd; ++mu)
       {
 	// Daggered:
-	ds_u[mu][rb[cb]]    = traceSpin(outerProduct(shift(psi + Gamma(1 << mu)*psi, FORWARD, mu),chi));
+	ds_u[mu][rb[cb]]   = anisoWeights[mu] * traceSpin(outerProduct(shift(psi + Gamma(1 << mu)*psi, FORWARD, mu),chi));
 	
 	ds_u[mu][rb[1-cb]] = zero;
 	

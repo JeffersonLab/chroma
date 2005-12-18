@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_w_pab.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -54,13 +54,20 @@ namespace Chroma
   {
   public:
     //! Empty constructor. Must use create later
-    PABWilsonDslash() {}
+    PABWilsonDslash();
 
     //! Full constructor
-    PABWilsonDslash(const multi1d<LatticeColorMatrix>& _u) {create(_u);}
+    PABWilsonDslash(const multi1d<LatticeColorMatrix>& u_);
+
+    //! Full constructor with anisotropy
+    PABWilsonDslash(const multi1d<LatticeColorMatrix>& u_, 
+		    const AnisoParam_t& aniso_);
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& _u);
+    void create(const multi1d<LatticeColorMatrix>& u_);
+
+    //! Creation routine with anisotropy
+    void create(const multi1d<LatticeColorMatrix>& u_, const AnisoParam_t& aniso_);
 
     //! No real need for cleanup here
     ~PABWilsonDslash();
@@ -77,20 +84,15 @@ namespace Chroma
      */
     void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 
-
   protected:
-    //! Get the u field
-    const multi1d<LatticeColorMatrix>& getU() const {return u;}
+    //! Get the anisotropy parameters
+    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
 
   private:
-    PrimitiveSU3Matrix* packed_gauge;
-
-    multi1d<LatticeColorMatrix> u;   // Needed only for derivative. Should find some alternative
-
+    AnisoParam_t  anisoParam;
+    PrimitiveSU3Matrix* packed_gauge;  // fold in anisotropy
     WilsonArg wil;
     unsigned long wil_cbsize;
-
-    // Real CoeffWilsr_s;
   };
 
 

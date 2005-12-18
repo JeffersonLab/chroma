@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_sse.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: lwldslash_w_sse.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -48,13 +48,20 @@ namespace Chroma
   {
   public:
     //! Empty constructor. Must use create later
-    SSEWilsonDslash() {init();}
+    SSEWilsonDslash();
 
     //! Full constructor
-    SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_) {init();create(u_);}
+    SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_);
+
+    //! Full constructor with anisotropy
+    SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_, 
+		    const AnisoParam_t& aniso_);
 
     //! Creation routine
     void create(const multi1d<LatticeColorMatrix>& u_);
+
+    //! Creation routine with anisotropy
+    void create(const multi1d<LatticeColorMatrix>& u_, const AnisoParam_t& aniso_);
 
     //! No real need for cleanup here
     ~SSEWilsonDslash();
@@ -72,16 +79,15 @@ namespace Chroma
     void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 
   protected:
-    //! Get the u field
-    const multi1d<LatticeColorMatrix>& getU() const {return u;}
+    //! Get the anisotropy parameters
+    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
 
     //! Init internals
     void init();
 
   private:
-    multi1d<PrimitiveSU3Matrix> packed_gauge;
-  
-    multi1d<LatticeColorMatrix> u;   // Needed only for derivative. Should find some alternative
+    AnisoParam_t  anisoParam;
+    multi1d<PrimitiveSU3Matrix> packed_gauge;  // fold in anisotropy
   };
 
 
