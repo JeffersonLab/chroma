@@ -1,4 +1,4 @@
-// $Id: weak_field.cc,v 2.1 2005-12-18 03:51:10 edwards Exp $
+// $Id: weak_field.cc,v 2.2 2005-12-18 16:15:53 edwards Exp $
 /*! \file
  *  \brief Construct a weak field
  */
@@ -30,32 +30,32 @@ namespace Chroma
     LatticeReal theta;
     LatticeColorMatrix s1, s2;
     multi1d<LatticeReal> a(4);
+    Real fact = 1.0 / sqrt(2.0);
 
     for(int mu = 0; mu < Nd; mu++)
     {
-      // Embed a SU(2) within SU(N)
-      random(theta);
-      theta *= amp;
+      u[mu] = 1.0;
 
-      a[0] = cos(theta);
-      a[1] = sin(theta);
-      a[2] = zero;
-      a[3] = zero;
+      for(int su2_index = 0; su2_index < Nc*(Nc-1)/2; su2_index++)
+      {
+	// Embed a SU(2) within SU(N)
+	random(theta);
+	theta *= amp;
+	a[0] = fact*cos(theta);
+	a[1] = fact*sin(theta);
 
-      s1 = 1.0;
-      sunFill(s1, a, 0, all);
+	random(theta);
+	theta *= amp;
+	a[2] = fact*cos(theta);
+	a[3] = fact*sin(theta);
 
-      // Embed another SU(2) within SU(N)
-      a[0] = cos(theta);
-      a[1] = zero;
-      a[2] = sin(theta);
-      a[3] = zero;
+	s1 = 1.0;
+	sunFill(s1, a, su2_index, all);
 
-      s2 = 1.0;
-      sunFill(s2, a, 1, all);
-
-      // Mix up the indices by multiplying - still unitary
-      u[mu] = s1 * s2;
+	// Mix up the indices by multiplying - still unitary
+	s2 = u[mu] * s1;
+	u[mu] = s2;
+      }
     }
 
     END_CODE();
