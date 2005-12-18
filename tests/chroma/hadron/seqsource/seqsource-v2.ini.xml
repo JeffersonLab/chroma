@@ -35,7 +35,6 @@ Sequential source
           </LinkSmearing>
         </Source>
 
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -46,8 +45,8 @@ Sequential source
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
@@ -68,7 +67,6 @@ Sequential source
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -88,7 +86,6 @@ Sequential source
         <seq_src>PION</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -135,7 +132,6 @@ Sequential source
 	<seq_src>NUCL_U_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -183,7 +179,6 @@ Sequential source
 	<seq_src>NUCL_D_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>

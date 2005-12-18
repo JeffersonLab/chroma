@@ -42,7 +42,6 @@ Make a dilute source
           <color_mask>0  2</color_mask>
           <spin_mask>0 1  3</spin_mask>
         </Source>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>z2_source_0</source_id>
@@ -76,7 +75,7 @@ Make a dilute source
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>

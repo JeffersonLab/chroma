@@ -30,8 +30,8 @@ Calculate noisy building blocks - insertions in traces
         <Name>PROPAGATOR</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>8</version>
-          <nonRelProp>false</nonRelProp>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP>
           <FermionAction>
             <FermAct>WILSON</FermAct>
@@ -52,7 +52,6 @@ Calculate noisy building blocks - insertions in traces
             <RsdCG>1.0e-12</RsdCG>
             <MaxCG>1000</MaxCG>
           </InvertParam>
-          <nrow>4 4 4 8</nrow>
         </Param>
         <NamedObject>
           <source_id>nsrc_0</source_id>
@@ -124,8 +123,8 @@ Calculate noisy building blocks - insertions in traces
         <Name>PROPAGATOR</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>8</version>
-          <nonRelProp>false</nonRelProp>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP>
           <FermionAction>
             <FermAct>WILSON</FermAct>
@@ -146,7 +145,6 @@ Calculate noisy building blocks - insertions in traces
             <RsdCG>1.0e-12</RsdCG>
             <MaxCG>1000</MaxCG>
           </InvertParam>
-          <nrow>4 4 4 8</nrow>
         </Param>
         <NamedObject>
           <source_id>nsrc_1</source_id>
@@ -219,10 +217,10 @@ Calculate noisy building blocks - insertions in traces
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.3</chroma>
-      <qdp>1.17.1</qdp>
+      <chroma>2.6</chroma>
+      <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>08 Nov 05 00:19:21 EST</run_date>
+    <run_date>17 Dec 05 23:09:59 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -315,10 +313,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:19:22 EST</run_date>
+          <run_date>17 Dec 05 23:09:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -427,10 +425,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:19:22 EST</run_date>
+          <run_date>17 Dec 05 23:10:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -441,8 +439,8 @@ Calculate noisy building blocks - insertions in traces
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -617,7 +615,25 @@ Calculate noisy building blocks - insertions in traces
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>45</n_count>
+            <n_count>46</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>46</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>47</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>47</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>46</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>46</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>47</n_count>
           </Qprop>
           <Qprop>
             <n_count>46</n_count>
@@ -629,35 +645,17 @@ Calculate noisy building blocks - insertions in traces
             <n_count>46</n_count>
           </Qprop>
           <Qprop>
-            <n_count>45</n_count>
-          </Qprop>
-          <Qprop>
-            <n_count>45</n_count>
-          </Qprop>
-          <Qprop>
             <n_count>46</n_count>
           </Qprop>
           <Qprop>
-            <n_count>45</n_count>
-          </Qprop>
-          <Qprop>
-            <n_count>45</n_count>
-          </Qprop>
-          <Qprop>
-            <n_count>45</n_count>
-          </Qprop>
-          <Qprop>
             <n_count>46</n_count>
-          </Qprop>
-          <Qprop>
-            <n_count>45</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>545</ncg_had>
+          <ncg_had>555</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>47.1497 2.72364 0.583642 0.176684 0.0597175 0.0208438 0.0072326 0.00251409</prop_corr>
+          <prop_corr>50.0825 3.69305 0.950808 0.303942 0.103793 0.0362502 0.0125263 0.00432262</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -684,10 +682,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:19:24 EST</run_date>
+          <run_date>17 Dec 05 23:10:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -698,10 +696,10 @@ Calculate noisy building blocks - insertions in traces
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1467</elem>
-            <elem>1052</elem>
-            <elem>221</elem>
-            <elem>206</elem>
+            <elem>643</elem>
+            <elem>2403</elem>
+            <elem>1115</elem>
+            <elem>1348</elem>
           </Seed>
         </RNG>
         <Input>
@@ -796,10 +794,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:19:24 EST</run_date>
+          <run_date>17 Dec 05 23:10:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -810,8 +808,8 @@ Calculate noisy building blocks - insertions in traces
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -931,10 +929,10 @@ Calculate noisy building blocks - insertions in traces
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1467</elem>
-          <elem>1052</elem>
-          <elem>221</elem>
-          <elem>206</elem>
+          <elem>643</elem>
+          <elem>2403</elem>
+          <elem>1115</elem>
+          <elem>1348</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -986,7 +984,16 @@ Calculate noisy building blocks - insertions in traces
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>45</n_count>
+            <n_count>46</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>46</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>47</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>47</n_count>
           </Qprop>
           <Qprop>
             <n_count>46</n_count>
@@ -998,35 +1005,26 @@ Calculate noisy building blocks - insertions in traces
             <n_count>46</n_count>
           </Qprop>
           <Qprop>
-            <n_count>45</n_count>
-          </Qprop>
-          <Qprop>
-            <n_count>45</n_count>
+            <n_count>46</n_count>
           </Qprop>
           <Qprop>
             <n_count>46</n_count>
           </Qprop>
           <Qprop>
-            <n_count>45</n_count>
-          </Qprop>
-          <Qprop>
-            <n_count>45</n_count>
-          </Qprop>
-          <Qprop>
-            <n_count>43</n_count>
+            <n_count>46</n_count>
           </Qprop>
           <Qprop>
             <n_count>46</n_count>
           </Qprop>
           <Qprop>
-            <n_count>45</n_count>
+            <n_count>46</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>543</ncg_had>
+          <ncg_had>554</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>44.2033 2.05293 0.325317 0.0837055 0.0265173 0.00903694 0.00309287 0.00106288</prop_corr>
+          <prop_corr>55.1458 4.21463 1.09592 0.351612 0.120581 0.0422161 0.0146145 0.00505578</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

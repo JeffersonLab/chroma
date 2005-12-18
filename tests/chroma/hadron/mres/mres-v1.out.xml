@@ -22,7 +22,6 @@ Mres calculation
           <disp_length>0</disp_length>
           <disp_dir>0</disp_dir>
         </Source>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>pt_source_0</source_id>
@@ -33,8 +32,8 @@ Mres calculation
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
           <FermAct>WILSON</FermAct>
@@ -55,7 +54,6 @@ Mres calculation
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>pt_source_0</source_id>
@@ -99,18 +97,18 @@ Mres calculation
   <nrow>4 4 4 8</nrow>
 </Param>
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.3</chroma>
-      <qdp>1.17.1</qdp>
+      <chroma>2.6</chroma>
+      <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>08 Nov 05 00:18:56 EST</run_date>
+    <run_date>17 Dec 05 23:07:31 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -128,72 +126,37 @@ Mres calculation
     </Seed>
   </RNG>
   <Config_info>
-    <file_xml>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
 
     </file_xml>
-    <gauge_xml><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+    <gauge_xml><weak_field>
+</weak_field>
 
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.902263</w_plaq>
-    <s_plaq>0.862579</s_plaq>
-    <t_plaq>0.941947</t_plaq>
-    <link>0.734641</link>
+    <w_plaq>0.996474</w_plaq>
+    <s_plaq>0.99652</s_plaq>
+    <t_plaq>0.996428</t_plaq>
+    <link>0.996369</link>
     <pollp>
       <elem>
-        <re>0.790237</re>
-        <im>0.00288483</im>
+        <re>0.955971</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.785869</re>
-        <im>-0.00015866</im>
+        <re>0.949424</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.80393</re>
-        <im>0.00160447</im>
+        <re>0.953939</re>
+        <im>0</im>
       </elem>
       <elem>
-        <re>0.864752</re>
-        <im>0.00215502</im>
+        <re>0.824689</re>
+        <im>0</im>
       </elem>
     </pollp>
   </Observables>
@@ -203,10 +166,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:56 EST</run_date>
+          <run_date>17 Dec 05 23:07:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -217,10 +180,10 @@ Mres calculation
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>11</elem>
-            <elem>0</elem>
-            <elem>0</elem>
-            <elem>0</elem>
+            <elem>1467</elem>
+            <elem>63</elem>
+            <elem>3837</elem>
+            <elem>1603</elem>
           </Seed>
         </RNG>
         <Input>
@@ -241,69 +204,32 @@ Mres calculation
             <source_id>pt_source_0</source_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996474</w_plaq>
+          <s_plaq>0.99652</s_plaq>
+          <t_plaq>0.996428</t_plaq>
+          <link>0.996369</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.955971</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.949424</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.953939</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.824689</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -317,10 +243,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:56 EST</run_date>
+          <run_date>17 Dec 05 23:07:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -331,8 +257,8 @@ Mres calculation
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -364,45 +290,8 @@ Mres calculation
             <prop_id>pt_prop_0</prop_id>
           </NamedObject>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -410,26 +299,26 @@ Mres calculation
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996474</w_plaq>
+          <s_plaq>0.99652</s_plaq>
+          <t_plaq>0.996428</t_plaq>
+          <link>0.996369</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.955971</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.949424</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.953939</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.824689</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
@@ -454,52 +343,15 @@ Mres calculation
       </PropSource>
       <RNG>
         <Seed>
-          <elem>11</elem>
-          <elem>0</elem>
-          <elem>0</elem>
-          <elem>0</elem>
+          <elem>1467</elem>
+          <elem>63</elem>
+          <elem>3837</elem>
+          <elem>1603</elem>
         </Seed>
       </RNG>
       <Config_info>
-        <szin>
-          <cfg_version>7</cfg_version>
-          <date>Sat Jun 16 00:35:57 2001</date>
-          <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-          <FermTypeP>0</FermTypeP>
-          <Nd>4</Nd>
-          <Nc>3</Nc>
-          <BetaMC>20.1</BetaMC>
-          <BetaMD>0</BetaMD>
-          <KappaMC>0</KappaMC>
-          <KappaMD>0</KappaMD>
-          <MassMC>0</MassMC>
-          <MassMD>0</MassMD>
-          <dt>0</dt>
-          <MesTrj>1</MesTrj>
-          <TotalCG>0</TotalCG>
-          <TotalTrj>2</TotalTrj>
-          <spec_acc>0</spec_acc>
-          <NOver>2</NOver>
-          <TotalTry>12288</TotalTry>
-          <TotalFail>56</TotalFail>
-          <Nf>9.48851e+33</Nf>
-          <Npf>2</Npf>
-          <RefMomTrj>302059064</RefMomTrj>
-          <RefFnoiseTrj>36</RefFnoiseTrj>
-          <LamPl>9.45468e+33</LamPl>
-          <LamMi>0</LamMi>
-          <AlpLog>4.2039e-45</AlpLog>
-          <AlpExp>4.2039e-45</AlpExp>
-          <nrow>4 4 4 8</nrow>
-          <seed>
-            <Seed>
-              <elem>811</elem>
-              <elem>1073</elem>
-              <elem>1535</elem>
-              <elem>1310</elem>
-            </Seed>
-          </seed>
-        </szin>
+        <weak_field>
+</weak_field>
       </Config_info>
     </MakeSource>
 
@@ -509,47 +361,47 @@ Mres calculation
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
           <Qprop>
-            <n_count>46</n_count>
+            <n_count>42</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>553</ncg_had>
+          <ncg_had>504</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.698082 0.0342619 0.00600484 0.00164761 0.000539322 0.000186193 6.43162e-05 2.22548e-05</prop_corr>
+          <prop_corr>0.704543 0.0376777 0.00802537 0.00269944 0.00104328 0.000416975 0.000168182 6.83587e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -558,10 +410,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:18:57 EST</run_date>
+          <run_date>17 Dec 05 23:07:35 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -591,45 +443,8 @@ Mres calculation
           </NamedObject>
           <xml_file></xml_file>
         </Input>
-        <Config_info><szin>
-      <cfg_version>7</cfg_version>
-      <date>Sat Jun 16 00:35:57 2001</date>
-      <banner>(Sat Jun 16 00:21:07  2001) Source=MOTIE Target=linux Release= Quarks=g</banner>
-      <FermTypeP>0</FermTypeP>
-      <Nd>4</Nd>
-      <Nc>3</Nc>
-      <BetaMC>20.1</BetaMC>
-      <BetaMD>0</BetaMD>
-      <KappaMC>0</KappaMC>
-      <KappaMD>0</KappaMD>
-      <MassMC>0</MassMC>
-      <MassMD>0</MassMD>
-      <dt>0</dt>
-      <MesTrj>1</MesTrj>
-      <TotalCG>0</TotalCG>
-      <TotalTrj>2</TotalTrj>
-      <spec_acc>0</spec_acc>
-      <NOver>2</NOver>
-      <TotalTry>12288</TotalTry>
-      <TotalFail>56</TotalFail>
-      <Nf>9.48851e+33</Nf>
-      <Npf>2</Npf>
-      <RefMomTrj>302059064</RefMomTrj>
-      <RefFnoiseTrj>36</RefFnoiseTrj>
-      <LamPl>9.45468e+33</LamPl>
-      <LamMi>0</LamMi>
-      <AlpLog>4.2039e-45</AlpLog>
-      <AlpExp>4.2039e-45</AlpExp>
-      <nrow>4 4 4 8</nrow>
-      <seed>
-        <Seed>
-          <elem>811</elem>
-          <elem>1073</elem>
-          <elem>1535</elem>
-          <elem>1310</elem>
-        </Seed>
-      </seed>
-    </szin>
+        <Config_info><weak_field>
+</weak_field>
 
 
         </Config_info>
@@ -643,40 +458,40 @@ Mres calculation
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.902263</w_plaq>
-          <s_plaq>0.862579</s_plaq>
-          <t_plaq>0.941947</t_plaq>
-          <link>0.734641</link>
+          <w_plaq>0.996474</w_plaq>
+          <s_plaq>0.99652</s_plaq>
+          <t_plaq>0.996428</t_plaq>
+          <link>0.996369</link>
           <pollp>
             <elem>
-              <re>0.790237</re>
-              <im>0.00288483</im>
+              <re>0.955971</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.785869</re>
-              <im>-0.00015866</im>
+              <re>0.949424</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.80393</re>
-              <im>0.00160447</im>
+              <re>0.953939</re>
+              <im>0</im>
             </elem>
             <elem>
-              <re>0.864752</re>
-              <im>0.00215502</im>
+              <re>0.824689</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.698082 0.0342619 0.00600484 0.00164761 0.000539322 0.000186193 6.43162e-05 2.22548e-05</forward_prop_corr>
+          <forward_prop_corr>0.704543 0.0376777 0.00802537 0.00269944 0.00104328 0.000416975 0.000168182 6.83587e-05</forward_prop_corr>
         </Forward_prop_correlator>
         <DeltaProp_correlator>
-          <delta_prop_corr>0.0143052 0.000359622 0.00010093 1.59712e-05 4.20701e-06 1.86857e-06 -7.48315e-07 3.31074e-06</delta_prop_corr>
+          <delta_prop_corr>0.0137425 0.00030545 0.000140024 3.78528e-05 1.9454e-05 1.13294e-05 -8.49008e-07 9.16561e-06</delta_prop_corr>
         </DeltaProp_correlator>
         <DeltaSqProp_correlator>
-          <delta_sq_prop_corr>0.00182578 0.000145715 1.76955e-05 4.21353e-06 1.2832e-06 3.86149e-07 1.18202e-07 5.42895e-07</delta_sq_prop_corr>
+          <delta_sq_prop_corr>0.00167478 0.000230208 2.76519e-05 4.19459e-06 1.44376e-06 6.38511e-07 1.06607e-07 1.26969e-06</delta_sq_prop_corr>
         </DeltaSqProp_correlator>
         <PsuedoPseudo_correlator>
-          <pseudo_prop_corr>0.698082 0.0342619 0.00600484 0.00164761 0.000539322 0.000186193 6.43162e-05 2.22548e-05</pseudo_prop_corr>
+          <pseudo_prop_corr>0.704543 0.0376777 0.00802537 0.00269944 0.00104328 0.000416975 0.000168182 6.83587e-05</pseudo_prop_corr>
         </PsuedoPseudo_correlator>
       </mres>
     </elem>

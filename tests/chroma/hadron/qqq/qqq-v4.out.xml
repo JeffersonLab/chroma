@@ -38,7 +38,6 @@ QQQ on props
           </LinkSmearing>
         </Source>
 
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -49,8 +48,8 @@ QQQ on props
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
@@ -71,7 +70,6 @@ QQQ on props
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -179,10 +177,10 @@ QQQ on props
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.3</chroma>
-      <qdp>1.17.1</qdp>
+      <chroma>2.6</chroma>
+      <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>08 Nov 05 00:23:09 EST</run_date>
+    <run_date>17 Dec 05 23:12:43 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -275,10 +273,10 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:23:09 EST</run_date>
+          <run_date>17 Dec 05 23:12:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -401,10 +399,10 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:23:09 EST</run_date>
+          <run_date>17 Dec 05 23:12:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -415,8 +413,8 @@ QQQ on props
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -763,8 +761,8 @@ QQQ on props
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>8</version>
-          <nonRelProp>false</nonRelProp>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -932,8 +930,8 @@ QQQ on props
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>8</version>
-          <nonRelProp>false</nonRelProp>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -1007,10 +1005,10 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:23:10 EST</run_date>
+          <run_date>17 Dec 05 23:12:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1115,7 +1113,7 @@ QQQ on props
           <ForwardProps>
             <elem>
               <version>1</version>
-              <PropSink>
+              <PropSinkSmear>
                 <version>5</version>
                 <SinkType>POINT_SINK</SinkType><Sink>
       <version>1</version>
@@ -1124,10 +1122,10 @@ QQQ on props
     </Sink>
 
                 <j_decay>3</j_decay>
-              </PropSink>
+              </PropSinkSmear>
               <ForwardProp>
-                <version>8</version>
-                <nonRelProp>false</nonRelProp>
+                <version>9</version>
+                <quarkSpinType>FULL</quarkSpinType>
                 <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -1180,7 +1178,7 @@ QQQ on props
             </elem>
             <elem>
               <version>1</version>
-              <PropSink>
+              <PropSinkSmear>
                 <version>5</version>
                 <SinkType>POINT_SINK</SinkType><Sink>
       <version>1</version>
@@ -1189,10 +1187,10 @@ QQQ on props
     </Sink>
 
                 <j_decay>3</j_decay>
-              </PropSink>
+              </PropSinkSmear>
               <ForwardProp>
-                <version>8</version>
-                <nonRelProp>false</nonRelProp>
+                <version>9</version>
+                <quarkSpinType>FULL</quarkSpinType>
                 <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -1245,7 +1243,7 @@ QQQ on props
             </elem>
             <elem>
               <version>1</version>
-              <PropSink>
+              <PropSinkSmear>
                 <version>5</version>
                 <SinkType>POINT_SINK</SinkType><Sink>
       <version>1</version>
@@ -1254,10 +1252,10 @@ QQQ on props
     </Sink>
 
                 <j_decay>3</j_decay>
-              </PropSink>
+              </PropSinkSmear>
               <ForwardProp>
-                <version>8</version>
-                <nonRelProp>false</nonRelProp>
+                <version>9</version>
+                <quarkSpinType>FULL</quarkSpinType>
                 <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -1344,10 +1342,10 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:23:13 EST</run_date>
+          <run_date>17 Dec 05 23:12:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1452,7 +1450,7 @@ QQQ on props
           <ForwardProps>
             <elem>
               <version>1</version>
-              <PropSink>
+              <PropSinkSmear>
                 <version>5</version>
                 <SinkType>SHELL_SINK</SinkType><Sink>
       <version>1</version>
@@ -1475,10 +1473,10 @@ QQQ on props
     </Sink>
 
                 <j_decay>3</j_decay>
-              </PropSink>
+              </PropSinkSmear>
               <ForwardProp>
-                <version>8</version>
-                <nonRelProp>false</nonRelProp>
+                <version>9</version>
+                <quarkSpinType>FULL</quarkSpinType>
                 <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -1531,7 +1529,7 @@ QQQ on props
             </elem>
             <elem>
               <version>1</version>
-              <PropSink>
+              <PropSinkSmear>
                 <version>5</version>
                 <SinkType>SHELL_SINK</SinkType><Sink>
       <version>1</version>
@@ -1554,10 +1552,10 @@ QQQ on props
     </Sink>
 
                 <j_decay>3</j_decay>
-              </PropSink>
+              </PropSinkSmear>
               <ForwardProp>
-                <version>8</version>
-                <nonRelProp>false</nonRelProp>
+                <version>9</version>
+                <quarkSpinType>FULL</quarkSpinType>
                 <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -1610,7 +1608,7 @@ QQQ on props
             </elem>
             <elem>
               <version>1</version>
-              <PropSink>
+              <PropSinkSmear>
                 <version>5</version>
                 <SinkType>SHELL_SINK</SinkType><Sink>
       <version>1</version>
@@ -1633,10 +1631,10 @@ QQQ on props
     </Sink>
 
                 <j_decay>3</j_decay>
-              </PropSink>
+              </PropSinkSmear>
               <ForwardProp>
-                <version>8</version>
-                <nonRelProp>false</nonRelProp>
+                <version>9</version>
+                <quarkSpinType>FULL</quarkSpinType>
                 <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
