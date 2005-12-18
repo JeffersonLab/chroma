@@ -34,8 +34,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
-
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -68,7 +66,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -88,7 +85,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <seq_src>PION</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -135,7 +131,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
 	<seq_src>NUCL_U_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -183,7 +178,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
 	<seq_src>NUCL_D_MIXED_NONREL</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <PropSink>
         <version>5</version>
@@ -248,7 +242,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_PION</source_id>
@@ -286,7 +279,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
@@ -324,7 +316,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
          <RsdCG>1.0e-12</RsdCG>
          <MaxCG>1000</MaxCG>
        </InvertParam>
-       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
@@ -341,8 +332,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Frequency>1</Frequency>
       <Param>
        <version>6</version>
-       <nrow>4 4 4 8</nrow>
        <mom2_max>3</mom2_max>
+       <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
        <prop_id>sh_prop_0</prop_id>
@@ -377,8 +368,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
 </RNG>
 
 <Cfg>
- <cfg_type>SZIN</cfg_type>
- <cfg_file>../../../test_purgaug.cfg1</cfg_file>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
 
