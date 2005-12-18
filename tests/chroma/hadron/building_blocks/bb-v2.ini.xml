@@ -45,8 +45,8 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
@@ -221,8 +221,8 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
-       <nonRelProp>false</nonRelProp>
+       <version>9</version>
+       <quarkSpinType>FULL</quarkSpinType>
        <obsvP>false</obsvP>
        <FermionAction>
         <FermAct>WILSON</FermAct>
@@ -258,9 +258,9 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
+       <version>9</version>
        <obsvP>false</obsvP>
-       <nonRelProp>false</nonRelProp>
+       <quarkSpinType>FULL</quarkSpinType>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>
@@ -295,9 +295,9 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
+       <version>9</version>
        <obsvP>false</obsvP>
-       <nonRelProp>false</nonRelProp>
+       <quarkSpinType>FULL</quarkSpinType>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>

@@ -48,8 +48,8 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
@@ -224,8 +224,8 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
-       <nonRelProp>false</nonRelProp>
+       <version>9</version>
+       <quarkSpinType>FULL</quarkSpinType>
        <obsvP>false</obsvP>
        <FermionAction>
         <FermAct>WILSON</FermAct>
@@ -261,9 +261,9 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
+       <version>9</version>
        <obsvP>false</obsvP>
-       <nonRelProp>false</nonRelProp>
+       <quarkSpinType>FULL</quarkSpinType>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>
@@ -298,9 +298,9 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>8</version>
+       <version>9</version>
        <obsvP>false</obsvP>
-       <nonRelProp>false</nonRelProp>
+       <quarkSpinType>FULL</quarkSpinType>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>
@@ -431,7 +431,7 @@ Calculate building blocks - insertions in 3-pt functions
       <chroma>2.6</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>17 Dec 05 22:57:31 EST</run_date>
+    <run_date>17 Dec 05 23:01:15 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -492,7 +492,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:57:31 EST</run_date>
+          <run_date>17 Dec 05 23:01:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -581,7 +581,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:57:31 EST</run_date>
+          <run_date>17 Dec 05 23:01:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -760,7 +760,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:57:35 EST</run_date>
+          <run_date>17 Dec 05 23:01:19 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -931,7 +931,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:57:36 EST</run_date>
+          <run_date>17 Dec 05 23:01:21 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1178,7 +1178,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:57:39 EST</run_date>
+          <run_date>17 Dec 05 23:01:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1349,7 +1349,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:57:40 EST</run_date>
+          <run_date>17 Dec 05 23:01:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1607,7 +1607,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:57:43 EST</run_date>
+          <run_date>17 Dec 05 23:01:28 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1944,7 +1944,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.6</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>17 Dec 05 22:57:47 EST</run_date>
+          <run_date>17 Dec 05 23:01:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
