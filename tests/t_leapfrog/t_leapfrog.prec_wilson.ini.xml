@@ -13,7 +13,7 @@
           <FermAct>WILSON</FermAct>
 	  <Kappa>0.11</Kappa>
           <AnisoParam>
-            <anisoP>false</anisoP>
+            <anisoP>true</anisoP>
             <t_dir>3</t_dir>
             <xi_0>2.464</xi_0>
             <nu>0.95</nu>

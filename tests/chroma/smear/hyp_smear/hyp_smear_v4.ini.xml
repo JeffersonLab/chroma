@@ -19,9 +19,26 @@ Hyp smear task
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-        <hyp_id>nowhere</hyp_id>
+        <hyp_id>hyp_cfg</hyp_id>
       </NamedObject>
     </elem>
+
+    <elem>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>hyp_cfg</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin.cfg</file_name>
+        <trunc>true</trunc>
+        <j_decay>3</j_decay>
+        <t_start>1</t_start>
+        <t_end>5</t_end>
+      </File>
+    </elem>
+
 
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>

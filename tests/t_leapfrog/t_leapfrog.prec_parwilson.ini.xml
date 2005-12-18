@@ -3,17 +3,16 @@
    <Hamiltonian>
     <Monomials>
       <elem>
-	<Name>TWO_FLAVOR_DWF_FERM_MONOMIAL</Name>
+	<Name>TWO_FLAVOR_PARWILSON_FERM_MONOMIAL</Name>
 	<InvertParam>
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
         <FermionAction>
-          <FermAct>DWF</FermAct>
-          <OverMass>1.4</OverMass>
-          <Mass>0.06</Mass>
-          <N5>6</N5>
+          <FermAct>PARWILSON</FermAct>
+	  <Kappa>0.205</Kappa>
+	  <H>0.01</H>
           <AnisoParam>
             <anisoP>true</anisoP>
             <t_dir>3</t_dir>
