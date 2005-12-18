@@ -38,7 +38,6 @@ Sink smear a prop
           </LinkSmearing>
         </Source>
 
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -49,8 +48,8 @@ Sink smear a prop
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
          <FermAct>WILSON</FermAct>
@@ -71,7 +70,6 @@ Sink smear a prop
           <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <source_id>sh_source_0</source_id>
@@ -155,10 +153,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.3</chroma>
-      <qdp>1.17.1</qdp>
+      <chroma>2.6</chroma>
+      <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>08 Nov 05 00:25:12 EST</run_date>
+    <run_date>17 Dec 05 23:15:05 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -251,10 +249,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:25:12 EST</run_date>
+          <run_date>17 Dec 05 23:15:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -377,10 +375,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.3</chroma>
-            <qdp>1.17.1</qdp>
+            <chroma>2.6</chroma>
+            <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>08 Nov 05 00:25:13 EST</run_date>
+          <run_date>17 Dec 05 23:15:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -391,8 +389,8 @@ Sink smear a prop
         </ProgramInfo>
         <Input>
           <Param>
-            <version>8</version>
-            <nonRelProp>false</nonRelProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -739,8 +737,8 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>8</version>
-          <nonRelProp>false</nonRelProp>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
@@ -908,8 +906,8 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>8</version>
-          <nonRelProp>false</nonRelProp>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
