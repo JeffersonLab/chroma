@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.20 2005-12-18 03:49:45 edwards Exp $
+# $Id: Makefile.am,v 2.21 2005-12-18 23:48:39 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -257,6 +257,9 @@ nobase_include_HEADERS += \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
+	actions/ferm/linop/clover_term_w.h \
+	actions/ferm/linop/clover_term_base_w.h \
+	actions/ferm/linop/clover_term_qdp_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/lg5Rherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -686,6 +689,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
+	actions/ferm/linop/clover_term_base_w.cc \
+	actions/ferm/linop/clover_term_qdp_w.cc \
 	actions/ferm/linop/dwffld_w.cc actions/ferm/linop/lDeltaLs_w.cc \
 	actions/ferm/linop/lg5eps_double_pass_w.cc \
 	actions/ferm/linop/lg5eps_w.cc \
