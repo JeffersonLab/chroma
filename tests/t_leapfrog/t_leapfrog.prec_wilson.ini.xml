@@ -3,18 +3,25 @@
    <Hamiltonian>
     <Monomials>
       <elem>
-	<Name>TWO_FLAVOR_DWF_FERM_MONOMIAL</Name>
+	<Name>TWO_FLAVOR_WILSON_FERM_MONOMIAL</Name>
 	<InvertParam>
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
         <FermionAction>
-          <FermAct>DWF</FermAct>
-          <OverMass>1.4</OverMass>
-          <Mass>0.06</Mass>
-          <N5>6</N5>
-          <boundary>1 1 1 -1</boundary>
+          <FermAct>WILSON</FermAct>
+	  <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
         </FermionAction>
       </elem>
       <elem>
@@ -31,8 +38,8 @@
    </Hamiltonian>
    <MDIntegrator>
 	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<dt>0.01</dt>
-	<tau0>.5</tau0>
+	<n_steps>100</n_steps>
+	<tau0>0.05</tau0>
    </MDIntegrator>
    <GaugeStartup>
 	<cfg_type>UNIT</cfg_type>
