@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.2 2005-12-18 21:06:52 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.3 2005-12-18 23:54:53 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -11,7 +11,7 @@
 #
 # More work:
 #   At the moment this script assumes that the 
-#   xmldiff application is in the users path.
+#   xmldiff is in a fixed location.
 #   Perhaps, this should be incorporated in the autoconf
 #   tool chain.
 
@@ -42,66 +42,9 @@ $regres_dir = "$top_builddir/regres";
 
 printf "Regression test directory = %s\n", $regres_dir;
 
-# at some stage this should be factored into another perl script
-
 #
-# Each test has a name, input file name, output file name,
-# and the good output that is tested against.
-#
-
-@HoH = (
-	{
-	    exec_path   => "$top_builddir/mainprogs/main" , 
-	    execute     => "chroma" , 
-	    input       => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.ini.xml" , 
-	    output      => "prec_wilson-v9.candidate.xml",
-	    metric      => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.metric.xml" ,
-	    controlfile => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.out.xml" ,
-	},
-	{
-	    exec_path   => "$top_builddir/mainprogs/main" , 
-	    execute     => "chroma" , 
-	    input       => "$test_dir/chroma/hadron/propagator/prec_wilson-twisted-v9.ini.xml" , 
-	    output      => "prec_wilson-twisted-v9.candidate.xml",
-	    metric      => "$test_dir/chroma/hadron/propagator/prec_wilson-twisted-v9.metric.xml" ,
-	    controlfile => "$test_dir/chroma/hadron/propagator/prec_wilson-twisted-v9.out.xml" ,
-	},
-	{
-	    exec_path   => "$top_builddir/mainprogs/main" , 
-	    execute     => "chroma" , 
-	    input       => "$test_dir/chroma/hadron/propagator/unprec-ovlap-zolo4d-v9.ini.xml" , 
-	    output      => "unprec-ovlap-zolo4d-v9.candidate.xml",
-	    metric      => "$test_dir/chroma/hadron/propagator/unprec-ovlap-zolo4d-v9.metric.xml" ,
-	    controlfile => "$test_dir/chroma/hadron/propagator/unprec-ovlap-zolo4d-v9.out.xml" ,
-	},
-	{
-	    exec_path   => "$top_builddir/mainprogs/main" , 
-	    execute     => "chroma" , 
-	    input       => "$test_dir/chroma/hadron/propagator/unprec_hamberwu-v9.ini.xml" , 
-	    output      => "unprec_hamberwu-v9.candidate.xml",
-	    metric      => "$test_dir/chroma/hadron/propagator/unprec_hamberwu-v9.metric.xml" ,
-	    controlfile => "$test_dir/chroma/hadron/propagator/unprec_hamberwu-v9.out.xml" ,
-	},
-	{
-	    exec_path   => "$top_builddir/mainprogs/main" , 
-	    execute     => "chroma" , 
-	    input       => "$test_dir/chroma/hadron/propagator/prec_dwf-v9.ini.xml" , 
-	    output      => "prec_dwf-v9.candidate.xml",
-	    metric      => "$test_dir/chroma/hadron/propagator/prec_dwf-v9.metric.xml" ,
-	    controlfile => "$test_dir/chroma/hadron/propagator/prec_dwf-v9.out.xml" ,
-	},
-	{
-	    exec_path   => "$top_builddir/mainprogs/main" , 
-	    execute     => "chroma" , 
-	    input       => "$test_dir/chroma/hadron/propagator/prec_parwilson-v9.ini.xml" , 
-	    output      => "prec_parwilson-v9.candidate.xml",
-	    metric      => "$test_dir/chroma/hadron/propagator/prec_parwilson-v9.metric.xml" ,
-	    controlfile => "$test_dir/chroma/hadron/propagator/prec_parwilson-v9.out.xml" ,
-	},
-	); 
-
-
 # Clear out the regression test dir
+#
 use File::Path;
 if ( -d $regres_dir )
 {
@@ -109,77 +52,105 @@ if ( -d $regres_dir )
 }
 #printf "regres=$regres_dir\n";
 mkpath([$regres_dir], 0, 0755);
-    
 
-# run the tests
-printf "\n%-15s %-40s         %s\n", "Program", "Candidate","Conclusion";
-for $h (@HoH) 
+# 
+# I'd really like to include the regres.pl scripts recursively down 
+# inside the chroma/tests directory, but I'm having difficulty
+# convincing perl to do it. The problem seems to be that the model
+# I want, namely like the c-preprocessor including files that recursively
+# includes other files (in subdirs) is not how the perl "do" works.
+# So, spell out all the many regression dirs and source them individually.
+#
+@do_list = (
+#	    "$test_dir/chroma/hadron/make_source/regres.pl",
+#	    "$test_dir/chroma/hadron/propagator/regres.pl",
+#	    "$test_dir/chroma/hadron/seqsource/regres.pl",
+	    "$test_dir/t_leapfrog/regres.pl"
+	    );
+
+printf "\nRun through regression test list\n";
+for $file (@do_list)
 {
-    my($exec_path) =  $h->{"exec_path"} ; 
-    my($execute)   =  $h->{"execute"} ; 
-    my($candidate) =  $h->{"output"} ; 
-    my($outdir)    =  $h->{"output"} ; 
-    my($metric)    =  $h->{"metric"} ; 
-    my($control)   =  $h->{"controlfile"} ; 
-    my($input)     =  $h->{"input"} ; 
-
-    my $canddir = "$regres_dir/$outdir";
-
-#    printf "exec_path=$exec_path\n";
-#    printf "canddir=$canddir\n";
-
-    if (-d $canddir)
+    printf "\nSource $file\n";
+    unless ($return = do "$file")
     {
-	rmtree([$canddir]);
+	die "could not parse file $top_regres: $@" if $@;
+	die "could not do $top_regres: $!"  unless defined $return;
+	die "could not run $top_regres"     unless $return;
     }
-    mkpath([$canddir], 0, 0755);
-    chdir($canddir) || die "error cd $canddir : $!\n";
 
-    printf "%-15s %-40s      ", $execute, $candidate;
-    if (-x "$exec_path/$execute")
+    #
+    # Run the tests
+    #
+    printf "\n%-15s %-40s         %s\n", "Program", "Candidate","Conclusion";
+    for $h (@regres_list) 
     {
-	if( $input ne "NOTHING" )
-        {
-	    $in_arg = "-i ".$input ; 
-	}
-	else
-        {
-	    $in_arg = "" ; 
-        }
-	
+	my($exec_path) =  $h->{"exec_path"} ; 
+	my($execute)   =  $h->{"execute"} ; 
+	my($candidate) =  $h->{"output"} ; 
+	my($outdir)    =  $h->{"output"} ; 
+	my($metric)    =  $h->{"metric"} ; 
+	my($control)   =  $h->{"controlfile"} ; 
+	my($input)     =  $h->{"input"} ; 
 
-	my($log) = "$canddir/$execute"  ; 
-	my($exe) = "$exec_path/$execute ".$in_arg." -o $candidate 2>${log}.err > ${log}.out"; 
-#	print $exe;
-	my($status_tmp) = system("$exe") / 256 ; 
-	if( $status_tmp != 0  ) 
-        {
-	    print "   RUN_FAIL\n"  ; 
-	}
-	else
+	my $canddir = "$regres_dir/$outdir";
+
+#       printf "exec_path=$exec_path\n";
+#       printf "canddir=$canddir\n";
+
+	if (-d $canddir)
 	{
-	    my($log_xml) = "$canddir/xmldiff.log";
+	    rmtree([$canddir]);
+	}
+	mkpath([$canddir], 0, 0755);
+	chdir($canddir) || die "error cd $canddir : $!\n";
 
-	    my($xml_exe) = "$xmldiff $control $canddir/$candidate $metric $log_xml"; 
-#	    print $xml_exe;
-	    my($status_tmp) = system("$xml_exe") ; 
-	    my($status) = $status_tmp   ;   ## some perl feature
-
-	    if( $status == 0 ) 
+	printf "%-15s %-40s      ", $execute, $candidate;
+	if (-x "$exec_path/$execute")
+	{
+	    if( $input ne "NOTHING" )
 	    {
-		print "   PASS\n"  ; 
+		$in_arg = "-i ".$input ; 
 	    }
 	    else
 	    {
-		print "   FAIL\n"  ; 
+		$in_arg = "" ; 
+	    }
+	    
+
+	    my($log) = "$canddir/$execute"  ; 
+	    my($exe) = "$exec_path/$execute ".$in_arg." -o $candidate 2>${log}.err > ${log}.out"; 
+#	print $exe;
+	    my($status_tmp) = system("$exe") / 256 ; 
+	    if( $status_tmp != 0  ) 
+	    {
+		print "   RUN_FAIL\n"  ; 
+	    }
+	    else
+	    {
+		my($log_xml) = "$canddir/xmldiff.log";
+
+		my($xml_exe) = "$xmldiff $control $canddir/$candidate $metric $log_xml"; 
+#	    print $xml_exe;
+		my($status_tmp) = system("$xml_exe") ; 
+		my($status) = $status_tmp   ;   ## some perl feature
+
+		if( $status == 0 ) 
+		{
+		    print "   PASS\n"  ; 
+		}
+		else
+		{
+		    print "   FAIL\n"  ; 
+		}
 	    }
 	}
-    }
-    else
-    {
-	printf("FAIL (compile)\n"); 
+	else
+	{
+	    printf("FAIL (compile)\n"); 
+
+	}
+
 
     }
-
-
 }
