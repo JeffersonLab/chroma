@@ -182,4 +182,5 @@ rebuild_other_libs:
 # xmldiff targets
 .PHONY: xcheck
 xcheck:
-	perl ../../scripts/run_xmldiff.pl
+	perl $(TOPDIR)/scripts/run_chroma_xmldiff.pl $(TOPDIR) $(BUILDDIR)
+
