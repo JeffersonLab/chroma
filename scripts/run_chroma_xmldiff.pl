@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.3 2005-12-18 23:54:53 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.4 2005-12-19 04:27:06 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -62,9 +62,9 @@ mkpath([$regres_dir], 0, 0755);
 # So, spell out all the many regression dirs and source them individually.
 #
 @do_list = (
-#	    "$test_dir/chroma/hadron/make_source/regres.pl",
-#	    "$test_dir/chroma/hadron/propagator/regres.pl",
-#	    "$test_dir/chroma/hadron/seqsource/regres.pl",
+	    "$test_dir/chroma/hadron/make_source/regres.pl",
+	    "$test_dir/chroma/hadron/propagator/regres.pl",
+	    "$test_dir/chroma/hadron/seqsource/regres.pl",
 	    "$test_dir/t_leapfrog/regres.pl"
 	    );
 
