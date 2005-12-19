@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 2.2 2005-12-19 02:26:35 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -9,6 +9,8 @@
 #include "chromabase.h"
 #include "actions/ferm/linop/clover_term_qdp_w.h"
 
+// Do not use for the moment
+#if 0
 
 namespace Chroma 
 { 
@@ -512,3 +514,5 @@ namespace Chroma
   }
 
 }
+
+#endif
