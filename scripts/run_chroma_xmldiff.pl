@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.5 2005-12-20 02:22:30 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.6 2005-12-20 03:22:07 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -17,8 +17,8 @@
 
 die "Usage: run_chroma_xmldiff.pl  top_srcdir  top_builddir\n" unless scalar(@ARGV) == 2;
 
-$top_srcdir = $ARGV[0];
-$top_builddir = $ARGV[1];
+$top_srcdir = &abs_path($ARGV[0]);
+$top_builddir = &abs_path($ARGV[1]);
 die "$top_srcdir does not exist" unless -d $top_srcdir;
 die "$top_builddir does not exist" unless -d $top_builddir;
 
@@ -163,3 +163,11 @@ printf("\nTotal of $num_errors failures\n");
 exit($num_errors);
 
 
+sub abs_path
+{
+    my($dir) = @_;
+    die "directory  $dir  does not exit\n" unless -d $dir;
+    my($abs) = `cd $dir ; pwd`; 
+    chomp $abs;
+    return $abs;
+}
