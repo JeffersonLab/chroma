@@ -1,5 +1,5 @@
-#! /usr/local/bin/bash
-# $Id: build.sh,v 1.1 2005-10-15 09:35:24 mcneile Exp $
+#!/bin/bash
+# $Id: build.sh,v 1.2 2005-12-20 04:09:06 edwards Exp $
 #
 #  Original author: Zbigniew Sroczynski
 #  See README_buildtest.sh for more information.
@@ -16,7 +16,7 @@ modules="qmp qdp++ chroma"
 
 # Send mail to these addresses
  
-mailto="mcneile@amtp.liv.ac.uk"
+mailto="edwards@jlab.org bjoo@jlab.org"
 
 # Send mail if something goes wrong
 
@@ -27,9 +27,9 @@ failmail(){
 # Send mail if something goes right
 
 successmail(){
-    mail -s "buildtest: $module $build $1 succeeded" $mailto &> /dev/null <<EOF
-$logfile
-EOF
+#    mail -s "buildtest: $module $build $1 succeeded" $mailto &> /dev/null <<EOF
+#$logfile
+#EOF
 }
 
 # Identify the subdirectories for the different types of build
@@ -119,6 +119,15 @@ do
 	perform_action
 	[ $? -eq 0 ] || continue
 	
+	# XCheck
+
+        if [ $module == "chroma" ]
+        then
+	        action_name="xcheck"
+                action="gmake -k xcheck"
+        	perform_action
+        fi 
+	
 	# Install
 
 	action_name="install"
@@ -131,10 +140,10 @@ do
 	[ ! -d ../link ] && mkdir ../link
         cd ../link
 
-	action_name="link"
-	action="perl $checkdir/link $module"
-	perform_action
-	[ $? -eq 0 ] || continue
+#	action_name="link"
+#	action="perl $checkdir/link $module"
+#	perform_action
+#	[ $? -eq 0 ] || continue
 
 	cd ..
 	rm -r link
