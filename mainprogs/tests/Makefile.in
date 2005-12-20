@@ -1295,11 +1295,6 @@ build_chroma_libs:
 .PHONY: rebuild_other_libs
 rebuild_other_libs:
 	cd $(BUILDDIR)/other_libs ; $(MAKE)
-
-# xmldiff targets
-.PHONY: xcheck
-xcheck:
-	perl $(TOPDIR)/scripts/run_chroma_xmldiff.pl $(TOPDIR) $(BUILDDIR)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
