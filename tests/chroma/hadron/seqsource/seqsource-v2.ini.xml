@@ -116,7 +116,423 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_PION_0</seqsource_id>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_U_UNPOL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_U_UNPOL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_D_UNPOL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_D_UNPOL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_U_POL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_U_POL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_D_POL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_D_POL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; DELTA_U_UNPOL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>DELTA_U_UNPOL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; DELTA_D_UNPOL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>DELTA_D_UNPOL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_U_UNPOL_NONREL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_U_UNPOL_NONREL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_D_UNPOL_NONREL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_D_UNPOL_NONREL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_U_POL_NONREL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_U_POL_NONREL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_D_POL_NONREL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_D_POL_NONREL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
       </NamedObject>
     </elem>
 
@@ -137,25 +553,8 @@ Sequential source
         <version>5</version>
         <Sink>
           <version>1</version>
-          <SinkType>SHELL_SINK</SinkType>
+          <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
         </Sink>
       </PropSink>
       <NamedObject>
@@ -163,7 +562,18 @@ Sequential source
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_NUCL_U_MIXED_NONREL</seqsource_id>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
       </NamedObject>
     </elem>
 
@@ -184,32 +594,26 @@ Sequential source
         <version>5</version>
         <Sink>
           <version>1</version>
-          <SinkType>SHELL_SINK</SinkType>
+          <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
         </Sink>
       </PropSink>
       <NamedObject>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_NUCL_D_MIXED_NONREL</seqsource_id>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
       </NamedObject>
     </elem>
 

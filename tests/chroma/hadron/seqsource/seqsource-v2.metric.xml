@@ -6,6 +6,43 @@
 
 <assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
+<!-- PION -->
 <assertion xpath="/chroma/InlineObservables/elem[3]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_U_UNPOL -->
+<assertion xpath="/chroma/InlineObservables/elem[5]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_D_UNPOL -->
+<assertion xpath="/chroma/InlineObservables/elem[7]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_U_POL -->
+<assertion xpath="/chroma/InlineObservables/elem[9]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_D_POL -->
+<assertion xpath="/chroma/InlineObservables/elem[11]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- DELTA_U_UNPOL -->
+<assertion xpath="/chroma/InlineObservables/elem[13]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- DELTA_D_UNPOL -->
+<assertion xpath="/chroma/InlineObservables/elem[15]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_U_UNPOL_NONREL -->
+<assertion xpath="/chroma/InlineObservables/elem[17]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_D_UNPOL_NONREL -->
+<assertion xpath="/chroma/InlineObservables/elem[19]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_U_POL_NONREL -->
+<assertion xpath="/chroma/InlineObservables/elem[21]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_D_POL_NONREL -->
+<assertion xpath="/chroma/InlineObservables/elem[23]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_U_MIXED_NONREL -->
+<assertion xpath="/chroma/InlineObservables/elem[25]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- NUCL_D_MIXED_NONREL -->
+<assertion xpath="/chroma/InlineObservables/elem[27]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
 </assertions>
