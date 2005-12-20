@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: build.sh,v 1.2 2005-12-20 04:09:06 edwards Exp $
+# $Id: build.sh,v 1.3 2005-12-20 19:32:36 edwards Exp $
 #
 #  Original author: Zbigniew Sroczynski
 #  See README_buildtest.sh for more information.
@@ -27,9 +27,9 @@ failmail(){
 # Send mail if something goes right
 
 successmail(){
-#    mail -s "buildtest: $module $build $1 succeeded" $mailto &> /dev/null <<EOF
-#$logfile
-#EOF
+    mail -s "buildtest: $module $build $1 succeeded" $mailto &> /dev/null <<EOF
+$logfile
+EOF
 }
 
 # Identify the subdirectories for the different types of build
@@ -140,10 +140,10 @@ do
 	[ ! -d ../link ] && mkdir ../link
         cd ../link
 
-#	action_name="link"
-#	action="perl $checkdir/link $module"
-#	perform_action
-#	[ $? -eq 0 ] || continue
+	action_name="link"
+	action="perl $checkdir/link $module"
+	perform_action
+	[ $? -eq 0 ] || continue
 
 	cd ..
 	rm -r link
