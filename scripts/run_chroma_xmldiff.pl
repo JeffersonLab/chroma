@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.4 2005-12-19 04:27:06 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.5 2005-12-20 02:22:30 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -69,6 +69,8 @@ mkpath([$regres_dir], 0, 0755);
 	    );
 
 printf "\nRun through regression test list\n";
+$num_errors = 0;
+
 for $file (@do_list)
 {
     printf "\nSource $file\n";
@@ -125,6 +127,7 @@ for $file (@do_list)
 	    if( $status_tmp != 0  ) 
 	    {
 		print "   RUN_FAIL\n"  ; 
+		++$num_errors;
 	    }
 	    else
 	    {
@@ -142,15 +145,21 @@ for $file (@do_list)
 		else
 		{
 		    print "   FAIL\n"  ; 
+		    ++$num_errors;
 		}
 	    }
 	}
 	else
 	{
 	    printf("FAIL (compile)\n"); 
-
+	    ++$num_errors;
 	}
-
 
     }
 }
+
+printf("\nTotal of $num_errors failures\n"); 
+
+exit($num_errors);
+
+
