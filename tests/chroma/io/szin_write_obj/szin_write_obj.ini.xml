@@ -25,11 +25,27 @@ Write a SZIN config
         <object_type>Multi1dLatticeColorMatrix</object_type>
       </NamedObject>
       <File>
-        <file_name>szin.cfg</file_name>
+        <file_name>szin1.cfg</file_name>
         <trunc>false</trunc>
         <j_decay>3</j_decay>
         <t_start>0</t_start>
         <t_end>7</t_end>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>snarf_cfg</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin2.cfg</file_name>
+        <trunc>true</trunc>
+        <j_decay>3</j_decay>
+        <t_start>7</t_start>
+        <t_end>2</t_end>
       </File>
     </elem>
 
