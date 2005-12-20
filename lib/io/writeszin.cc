@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 2.0 2005-09-25 21:04:32 edwards Exp $
+// $Id: writeszin.cc,v 2.1 2005-12-20 19:23:56 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -218,10 +218,19 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
   if (t_end < 0 || t_end >= header.nrow[j_decay])
     QDP_error_exit("writeSzinTrunc: invalid t_end=%d", t_end);
     
-  if (t_start > t_end)
+  if (t_start == t_end)
     QDP_error_exit("writeSzinTrunc: invalid t_start=%d t_end=%d", t_start, t_end);
 
-  header.nrow[j_decay] = t_end - t_start + 1;
+  if (t_start < t_end)
+  {
+    // Within the lattice
+    header.nrow[j_decay] = t_end - t_start + 1;
+  }
+  else
+  {
+    // Consider the t_end outside the lattice
+    header.nrow[j_decay] = Layout::lattSize()[j_decay] + t_end - t_start + 1;
+  }
 
   // Dump the header
   writeSzinHeader(cfg_out, header);
@@ -230,6 +239,13 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
    *  SZIN stores data "checkerboarded".  We must therefore "fake" a checkerboarding
    *  Force a truncation along the j_decay direction
    */
+
+  QDPIO::cout << __func__ << ": trunc lattice = ";
+  for(int j = 0; j < Nd; j++)
+  {
+    QDPIO::cout << " " << header.nrow[j];
+  }
+  QDPIO::cout << endl;
 
   multi1d<int> lattsize_cb = header.nrow;
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
@@ -258,7 +274,7 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
 	coord[0] = 2*coord[0] + ((sum + cb) & 1);
 
 	// Adjust to find the lattice coordinate within the original problem
-	coord[j_decay] += t_start;
+	coord[j_decay] = (coord[j_decay] + t_start) % Layout::lattSize()[j_decay];
 
 	write(cfg_out, u_old, coord); 	// Write out a SU(3) matrix
       }
