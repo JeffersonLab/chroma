@@ -1,4 +1,4 @@
-// $Id: lwldslash_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_w.cc,v 2.2 2005-12-20 19:30:32 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -37,6 +37,9 @@ namespace Chroma
    *
    */
 
+  //! Empty constructor
+  QDPWilsonDslash::QDPWilsonDslash() {}
+  
   //! Full constructor
   QDPWilsonDslash::QDPWilsonDslash(const multi1d<LatticeColorMatrix>& u_) 
   {
