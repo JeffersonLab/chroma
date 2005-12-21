@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 2.2 2005-12-21 05:17:16 edwards Exp $
+// $Id: barseqsrc_w.cc,v 2.3 2005-12-21 15:37:48 kostas Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -61,12 +61,28 @@ namespace Chroma
       return SpinMatrix(0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8)))));
     }
 
+    SpinMatrix spinCg5NRnegPar()
+    {
+      SpinMatrix g_one = 1.0;
+ 
+      // C g_5 NR = (1/2)*C gamma_5 * ( 1 - g_4 )
+      return SpinMatrix(0.5 * (Gamma(5) * (g_one - (g_one * Gamma(8)))));
+    }
+
 
     //! T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2
     SpinMatrix spinTunpol()
     {
       SpinMatrix g_one = 1.0;
       return SpinMatrix(0.5*(g_one + Gamma(8)*g_one));
+    }
+
+
+    //! T = (1 + gamma_4) / 2 = (1 - Gamma(8)) / 2
+    SpinMatrix spinTunpolNegPar()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5*(g_one - Gamma(8)*g_one));
     }
 
 
@@ -77,12 +93,26 @@ namespace Chroma
       return SpinMatrix(0.5 * timesMinusI(Gamma(3)*g_one + Gamma(11)*g_one));
     }
 
+    //! T = \Sigma_3 (1 - gamma_4) / 2 = -i (-Gamma(3) + Gamma(11)) / 2
+    SpinMatrix spinTpolNegPar()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5 * timesMinusI(Gamma(11)*g_one-Gamma(3)*g_one));
+    }
+
 
     //! T = (1 + \Sigma_3)*(1 + gamma_4) / 2   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
     SpinMatrix spinTmixed()
     {
       SpinMatrix g_one = 1.0;
       return SpinMatrix(0.5*(g_one + Gamma(8)*g_one + timesMinusI(Gamma(3)*g_one + Gamma(11)*g_one)));
+    }
+
+    //! T = (1 + \Sigma_3)*(1 - gamma_4) / 2   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
+    SpinMatrix spinTmixedNegPar()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5*(g_one - Gamma(8)*g_one + timesMinusI(Gamma(11)*g_one - Gamma(3)*g_one)));
     }
 
   }
@@ -457,6 +487,53 @@ namespace Chroma
     return barNuclDTCg5(quark_propagators, spinTmixed(), spinCg5NR());
   }
 
+  //! \bar u O u" insertion in NR proton
+  /*!
+   * "\bar u O u" insertion in NR proton, ie. 
+   * "(u C gamma_5 (1/2)(1 - gamma_4)  d) u" 
+   * 
+   * $C g_5 NR = (1/2)*C gamma_5 * ( 1 - g_4 )$
+   * 
+   * $T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+   *   = (1 + Gamma(8) - i G(3) - i G(11)) / 2$
+   */
+  LatticePropagator barNuclUMixedNRnegPar(const multi1d<LatticePropagator>& quark_propagators) 
+  {
+    START_CODE();
+
+    check2Args(__func__, quark_propagators);
+
+    /* "\bar u O u" insertion in NR proton, ie. 
+     * "(u C gamma_5 (1/2)(1 - gamma_4)  d) u" */
+
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 - g_4 )
+
+    // T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
+    //   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
+
+    // Compute the  \bar{u} O u  insertion
+    return barNuclUTCg5(quark_propagators, spinTmixedNegPar(), spinCg5NRnegPar());
+  }
+
+ LatticePropagator barNuclDMixedNRnegPar(const multi1d<LatticePropagator>& quark_propagators) 
+  {
+    START_CODE();
+
+    check1Args(__func__, quark_propagators);
+
+    /* "\bar d O d" insertion in NR proton, ie. 
+     * "(u C gamma_5 (1/2)(1 - gamma_4)  d) u" */
+
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 - g_4 )
+
+    // T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
+    //   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
+
+    // Compute the  \bar{d} O d  insertion
+    return barNuclDTCg5(quark_propagators, spinTmixedNegPar(), spinCg5NRnegPar());
+  }
+
+
 
   // Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
   LatticePropagator barNuclPatchMixedNR(const multi1d<LatticePropagator>& quark_propagators) 
@@ -531,11 +608,18 @@ namespace Chroma
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_POL_NONREL"),
 								  barNuclDPolNR);
       
+
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_U_MIXED_NONREL"),
 								  barNuclUMixedNR);
 
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_MIXED_NONREL"),   
 								  barNuclDMixedNR);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_U_MIXED_NONREL_NEGPAR"),
+								  barNuclUMixedNRnegPar);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_MIXED_NONREL_NEGPAR"),   
+								  barNuclDMixedNRnegPar);
 
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_PATCH_MIXED_NONREL"),   
 								  barNuclPatchMixedNR);
