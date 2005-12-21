@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 2.1 2005-09-26 04:48:35 edwards Exp $
+// $Id: barseqsrc_w.cc,v 2.2 2005-12-21 05:17:16 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -41,7 +41,125 @@ namespace Chroma
 	throw s.str();
       }
     }
+
+    //! C g_5 = C gamma_5 = Gamma(5)
+    SpinMatrix spinCg5()
+    {
+      SpinMatrix g_one = 1.0;
+ 
+      // C g_5 = C gamma_5
+      return SpinMatrix(Gamma(5) * g_one);
+    }
+
+
+    //! C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
+    SpinMatrix spinCg5NR()
+    {
+      SpinMatrix g_one = 1.0;
+ 
+      // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
+      return SpinMatrix(0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8)))));
+    }
+
+
+    //! T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2
+    SpinMatrix spinTunpol()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5*(g_one + Gamma(8)*g_one));
+    }
+
+
+    //! T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2
+    SpinMatrix spinTpol()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5 * timesMinusI(Gamma(3)*g_one + Gamma(11)*g_one));
+    }
+
+
+    //! T = (1 + \Sigma_3)*(1 + gamma_4) / 2   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
+    SpinMatrix spinTmixed()
+    {
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5*(g_one + Gamma(8)*g_one + timesMinusI(Gamma(3)*g_one + Gamma(11)*g_one)));
+    }
+
   }
+
+
+  //! Nucleon-Nucleon U piece with general projector and Cg5
+  LatticePropagator barNuclUTCg5(const multi1d<LatticePropagator>& quark_propagators,
+				 const SpinMatrix& T, const SpinMatrix& Cg5) 
+  {
+    START_CODE();
+
+    check2Args(__func__, quark_propagators);
+
+    LatticePropagator src_prop_tmp;
+    LatticePropagator q1_tmp;
+    LatticePropagator q2_tmp;
+    LatticePropagator di_quark;
+    LatticeColorMatrix col_mat;
+  
+    /* "\bar u O u" insertion in NR proton, ie. 
+     * "(u Cg5 d) u" */
+    /* Some generic T */
+
+    // Use precomputed Cg5
+    q1_tmp = quark_propagators[0] * Cg5;
+    q2_tmp = Cg5 * quark_propagators[1];
+    di_quark = quarkContract24(q1_tmp, q2_tmp);
+
+    // First term
+    src_prop_tmp = T * di_quark;
+
+    // Now the second term
+    src_prop_tmp += traceSpin(di_quark) * T;
+
+    // The third term...
+    q1_tmp = q2_tmp * Cg5;
+    q2_tmp = quark_propagators[0] * T;
+
+    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
+
+    return src_prop_tmp;
+  }
+
+
+  //! Nucleon-Nucleon D piece with general projector and Cg5
+  LatticePropagator barNuclDTCg5(const multi1d<LatticePropagator>& quark_propagators,
+				 const SpinMatrix& T, const SpinMatrix& Cg5) 
+  {
+    START_CODE();
+
+    check1Args(__func__, quark_propagators);
+
+    LatticePropagator src_prop_tmp;
+    LatticePropagator q1_tmp;
+    LatticePropagator q2_tmp;
+
+    /* "\bar d O d" insertion in NR proton, ie. 
+     * "(u Cg5 d) u" */
+    /* Some generic T */
+
+    // First term
+    q2_tmp = quark_propagators[0] * Cg5;
+    q1_tmp = T * q2_tmp;
+
+    q2_tmp = Cg5 * quark_propagators[0];
+    src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
+
+    // Second term
+    q1_tmp = q2_tmp * Cg5;
+    q2_tmp = quark_propagators[0] * T;
+
+    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
+
+    return src_prop_tmp;
+  }
+
+
 
   //! Construct baryon sequential sources
   /*!
@@ -58,28 +176,16 @@ namespace Chroma
 
     check2Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-  
-    SpinMatrix g_one = 1.0;
+    /* "\bar u O u" insertion in proton, ie. 
+     * "(u C gamma_5 d) u" */
 
-    /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
-    /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
     /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-    di_quark = quarkContract24(quark_propagators[0] * Gamma(5), 
-			       Gamma(5) * quark_propagators[1]);
-    src_prop_tmp = (di_quark + Gamma(8)*di_quark) 
-      + traceSpin(di_quark)*(g_one + Gamma(8)*g_one);
+    /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
-    q1_tmp = Gamma(5) * quark_propagators[1] * Gamma(5);
-    q2_tmp = quark_propagators[0] + quark_propagators[0]*Gamma(8);
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-    src_prop_tmp *= 0.5;
-    return src_prop_tmp;
-
+    // Compute the  \bar{u} O u  insertion
+    return barNuclUTCg5(quark_propagators, spinTunpol(), spinCg5());
   }
+
 
   LatticePropagator barNuclDUnpol(const multi1d<LatticePropagator>& quark_propagators) 
   {
@@ -87,26 +193,14 @@ namespace Chroma
 
     check1Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-  
-    SpinMatrix g_one = 1.0;
+    /* "\bar d O d" insertion in proton, ie. 
+     * "(u C gamma_5 d) u" */
 
-    /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
-    /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
     /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-    q2_tmp = quark_propagators[0] * Gamma(5);
-    q1_tmp = q2_tmp + Gamma(8) * q2_tmp;
-    q2_tmp = Gamma(5) * quark_propagators[0];
-    src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
+    /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
-    q1_tmp = q2_tmp * Gamma(5);
-    q2_tmp = quark_propagators[0] + quark_propagators[0] * Gamma(8);
-    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-
-    src_prop_tmp *= 0.5;
-    return src_prop_tmp;
+    // Compute the  \bar{d} O d  insertion
+    return barNuclDTCg5(quark_propagators, spinTunpol(), spinCg5());
   }
 
 
@@ -116,33 +210,14 @@ namespace Chroma
 
     check2Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
-  
-    SpinMatrix g_one = 1.0;
+    /* "\bar u O u" insertion in proton, ie. 
+     * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
 
-    /* "\bar u O u" insertion in proton, ie. "(u C gamma_5 d) u" */
+    // C g_5 = C gamma_5
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
-    /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-    q1_tmp = quark_propagators[0] * Gamma(5);
-    q2_tmp = Gamma(5) * quark_propagators[1];
-    di_quark = quarkContract24(q1_tmp, q2_tmp);
-    src_prop_tmp = (Gamma(3) * di_quark  +  Gamma(11) * di_quark);
 
-    col_mat = traceSpin(di_quark);
-    src_prop_tmp += col_mat * (Gamma(3) * g_one + Gamma(11) * g_one);
-
-    q1_tmp = q2_tmp * Gamma(5);
-    q2_tmp = quark_propagators[0] * Gamma(3);
-    q2_tmp += quark_propagators[0] * Gamma(11);
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-
-    q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
-    src_prop_tmp = q1_tmp;
-    return src_prop_tmp;
+    // Compute the  \bar{u} O u  insertion
+    return barNuclUTCg5(quark_propagators, spinTunpol(), spinCg5());
   }
 
 
@@ -152,28 +227,14 @@ namespace Chroma
 
     check1Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-  
-    SpinMatrix g_one = 1.0;
+    /* "\bar u O u" insertion in proton, ie. 
+     * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
 
-    /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 d) u" */
+    // C g_5 = C gamma_5
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 
-    /* C gamma_5 = Gamma(5) = - (C gamma_5)^T */
-    q2_tmp = quark_propagators[0] * Gamma(5);
-    q1_tmp = Gamma(3) * q2_tmp + Gamma(11) * q2_tmp;
-    q2_tmp = Gamma(5) * quark_propagators[0];
-    src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
-
-    q1_tmp = q2_tmp * Gamma(5);
-    q2_tmp = quark_propagators[0] * Gamma(3) + quark_propagators[0] * Gamma(11);
-    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-
-    q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
-    src_prop_tmp = q1_tmp;
-    return src_prop_tmp;
+    // Compute the  \bar{u} O u  insertion
+    return barNuclDTCg5(quark_propagators, spinTpol(), spinCg5());
   }
 
 
@@ -287,39 +348,14 @@ namespace Chroma
 
     check2Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
-  
-    SpinMatrix g_one = 1.0;
-
-    /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
-    SpinMatrix Cg5NR = 0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8))));
-
-
     /* "\bar u O u" insertion in NR proton, ie. 
      * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
+
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
-    /* Use precomputed Cg5NR = C gamma_5 (1/2) ( 1 + g_4 ) */
-    q1_tmp = quark_propagators[0] * Cg5NR;
-    q2_tmp = Cg5NR * quark_propagators[1];
-    di_quark = quarkContract24(q1_tmp, q2_tmp);
-    src_prop_tmp = di_quark + Gamma(8) * di_quark;
-
-    col_mat = traceSpin(di_quark);
-    q1_tmp = 1;
-    di_quark = q1_tmp + Gamma(8) * q1_tmp;
-    src_prop_tmp += col_mat * di_quark;
-
-    q1_tmp = q2_tmp * Cg5NR;
-    q2_tmp = quark_propagators[0] + quark_propagators[0] * Gamma(8);
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-    src_prop_tmp *= 0.5;
-
-    return src_prop_tmp;
+    // Compute the  \bar{u} O u  insertion
+    return barNuclUTCg5(quark_propagators, spinTunpol(), spinCg5NR());
   }
 
 
@@ -329,32 +365,14 @@ namespace Chroma
 
     check1Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-  
-    SpinMatrix g_one = 1.0;
-
-    /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
-    SpinMatrix Cg5NR = 0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8))));
-
-
     /* "\bar d O d" insertion in NR proton, ie. 
-     * "(u C gamma_5 (1/2)(1 + gamma_4) d) u" */
+     * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
+
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
     /* T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2 */
 
-    /* C gamma_5 (1/2)( 1 + g_4)  = Cg5NR  */
-    q2_tmp = quark_propagators[0] * Cg5NR;
-    q1_tmp = q2_tmp + Gamma(8) * q2_tmp;
-    q2_tmp = Cg5NR * quark_propagators[0];
-    src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
-
-    q1_tmp = q2_tmp * Cg5NR;
-    q2_tmp = quark_propagators[0] + quark_propagators[0] * Gamma(8);
-    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-    src_prop_tmp *= 0.5;
-
-    return src_prop_tmp;
+    // Compute the  \bar{d} O d  insertion
+    return barNuclDTCg5(quark_propagators, spinTunpol(), spinCg5NR());
   }
 
 
@@ -364,40 +382,14 @@ namespace Chroma
 
     check2Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
-  
-    SpinMatrix g_one = 1.0;
-
-    /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
-    SpinMatrix Cg5NR = 0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8))));
-
     /* "\bar u O u" insertion in NR proton, ie. 
-     * "(u C gamma_5 (1/2)(1+gamma_4) d) u" */
+     * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
+
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 
-    /* C gamma_5 (1/2) (1 + gamma_4) = Cg5NR */
-    q1_tmp = quark_propagators[0] * Cg5NR;
-    q2_tmp = Cg5NR * quark_propagators[1];
-    di_quark = quarkContract24(q1_tmp, q2_tmp);
-    src_prop_tmp = Gamma(3) * di_quark + Gamma(11) * di_quark;
-
-    col_mat = traceSpin(di_quark);
-    q1_tmp = 1;
-    di_quark = Gamma(3) * q1_tmp  +  Gamma(11) * q1_tmp;
-    src_prop_tmp += col_mat * di_quark;
-
-    q1_tmp = q2_tmp * Cg5NR;
-    q2_tmp = quark_propagators[0] * Gamma(3)  +  quark_propagators[0] * Gamma(11);
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-
-    q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
-    src_prop_tmp = q1_tmp;
-
-    return src_prop_tmp;
+    // Compute the  \bar{u} O u  insertion
+    return barNuclUTCg5(quark_propagators, spinTpol(), spinCg5NR());
   }
 
 
@@ -407,132 +399,43 @@ namespace Chroma
 
     check1Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-  
-    SpinMatrix g_one = 1.0;
+    /* "\bar d O d" insertion in NR proton, ie. 
+     * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
 
-    /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
-    SpinMatrix Cg5NR = 0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8))));
-
-
-    /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 (1/2)(1+gamma_4)d) u" */
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
     /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
 
-    /* C gamma_5 (1/2)(1+gamma_4)= Cg5NR */
-    q2_tmp = quark_propagators[0] * Cg5NR;
-    q1_tmp = Gamma(3) * q2_tmp  +  Gamma(11) * q2_tmp;
-    q2_tmp = Cg5NR * quark_propagators[0];
-    src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
-
-    q1_tmp = q2_tmp * Cg5NR;
-    q2_tmp = quark_propagators[0] * Gamma(3)  +  quark_propagators[0] * Gamma(11);
-    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-
-    q1_tmp = 0.5 * timesMinusI(src_prop_tmp);
-    src_prop_tmp = q1_tmp;
-      
-    return src_prop_tmp;
+    // Compute the  \bar{d} O d  insertion
+    return barNuclDTCg5(quark_propagators, spinTpol(), spinCg5NR());
   }
 
 
+  //! \bar u O u" insertion in NR proton
+  /*!
+   * "\bar u O u" insertion in NR proton, ie. 
+   * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" 
+   * 
+   * $C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )$
+   * 
+   * $T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+   *   = (1 + Gamma(8) - i G(3) - i G(11)) / 2$
+   */
   LatticePropagator barNuclUMixedNR(const multi1d<LatticePropagator>& quark_propagators) 
   {
     START_CODE();
 
     check2Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-    LatticeColorMatrix col_mat;
-  
-    SpinMatrix g_one = 1.0;
-
-    /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
-    SpinMatrix Cg5NR = 0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8))));
-
-
     /* "\bar u O u" insertion in NR proton, ie. 
      * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
-    /* T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
-       = (1 + Gamma(8) - i G(3) - i G(11)) / 2 */
 
-    /*
-     *  Note that this is precisely src NUCL_U_UNPOL_NR + src NUCL_U_POL_NR, and corresponds
-     *  to the combination of propagators used by the MIT group
-     */
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
 
+    // T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+    //   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
 
-    /* Use precomputed Cg5NR = C gamma_5 (1/2) ( 1 + g_4 ) */
-    q1_tmp = quark_propagators[0] * Cg5NR;
-    q2_tmp = Cg5NR * quark_propagators[1];
-    di_quark = quarkContract24(q1_tmp, q2_tmp);
-
-    /*
-     *  We begin with the polarized piece
-     */
-
-    q1_tmp = Gamma(3) * di_quark  +  Gamma(11) * di_quark;
-    /*
-     *  Now multiply by -i
-     */
-
-    src_prop_tmp = timesMinusI(q1_tmp);
-
-    /*
-     * Now add the unpolarized piece
-     */
-
-    src_prop_tmp += di_quark  +  Gamma(8) * di_quark;
-
-    /*
-     *  Now the second term
-     */
-
-    col_mat = traceSpin(di_quark);
-    q1_tmp = 1;
-
-    /*
-     *  First the polarized part
-     */
-
-    di_quark = Gamma(3) * q1_tmp  +  Gamma(11) * q1_tmp;
-    q1_tmp = timesMinusI(di_quark); /*  Multiply by -i */
-    src_prop_tmp += col_mat * q1_tmp;
-
-    /*
-     *  Now the unpolarized part
-     */
-
-    q1_tmp = 1;
-    di_quark = q1_tmp  +  Gamma(8) * q1_tmp;
-    src_prop_tmp += col_mat * di_quark;
-
-    /*
-     *  The third term...
-     */
-
-    q1_tmp = q2_tmp * Cg5NR;
-
-    /*  First the polarized piece */
-
-    di_quark = quark_propagators[0] * Gamma(3)  +  quark_propagators[0] * Gamma(11);
-    q2_tmp = timesMinusI(di_quark);	/* Muliply by -i */
-
-    /* Add the unpolarized piece */
-
-    q2_tmp += quark_propagators[0]  +  quark_propagators[0] * Gamma(8);
-
-    src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-
-    /*  Finally, multiply everything by 1/2 */
-
-    src_prop_tmp *= 0.5;
-
-    return src_prop_tmp;
+    // Compute the  \bar{u} O u  insertion
+    return barNuclUTCg5(quark_propagators, spinTmixed(), spinCg5NR());
   }
 
 
@@ -542,63 +445,17 @@ namespace Chroma
 
     check1Args(__func__, quark_propagators);
 
-    LatticePropagator src_prop_tmp;
-    LatticePropagator q1_tmp;
-    LatticePropagator q2_tmp;
-    LatticePropagator di_quark;
-  
-    SpinMatrix g_one = 1.0;
+    /* "\bar d O d" insertion in NR proton, ie. 
+     * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
 
-    /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
-    SpinMatrix Cg5NR = 0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8))));
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
 
+    // T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+    //   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
 
-    /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 (1/2)(1+gamma_4)d) u" */
-    /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
-
-    /* C gamma_5 (1/2)(1+gamma_4)= Cg5NR */
-    q2_tmp = quark_propagators[0] * Cg5NR;
-
-    /*
-     *  First the polarized piece
-     */
-
-    di_quark = Gamma(3) * q2_tmp   +  Gamma(11) * q2_tmp;
-    q1_tmp = timesMinusI(di_quark);
-
-    /*
-     *  Now add the unpolarized piece
-     */
-
-    q1_tmp += q2_tmp  +  Gamma(8) * q2_tmp;
-
-
-    q2_tmp = Cg5NR * quark_propagators[0];
-    src_prop_tmp = -quarkContract14(q1_tmp, q2_tmp);
-
-    /* Now the second term */
-
-    q1_tmp = q2_tmp * Cg5NR;
-
-    /*
-     *  First the polarized piece
-     */
-
-    di_quark = quark_propagators[0] * Gamma(3) + quark_propagators[0] * Gamma(11);
-    q2_tmp = timesMinusI(di_quark);
-
-    /*
-     *  Now add the unpolarized piece
-     */
-
-    q2_tmp += quark_propagators[0] + quark_propagators[0] * Gamma(8);
-
-    src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
-    src_prop_tmp *= 0.5;
-
-    return src_prop_tmp;
+    // Compute the  \bar{d} O d  insertion
+    return barNuclDTCg5(quark_propagators, spinTmixed(), spinCg5NR());
   }
-
 
 
   // Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
@@ -616,24 +473,21 @@ namespace Chroma
     SpinMatrix g_one = 1.0;
 
     /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
-    SpinMatrix Cg5NR = 0.5 * (Gamma(5) * (g_one + (g_one * Gamma(8))));
+    SpinMatrix Cg5NR = spinCg5NR();
 
     /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 (1/2)(1+gamma_4)d) u" */
-    /* T = \Sigma_3 (1 + gamma_4) / 2 = -i (Gamma(3) + Gamma(11)) / 2 */
+    // T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+    //   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
 
     /* C gamma_5 (1/2)(1+gamma_4)= Cg5NR */
 
     q2_tmp = Cg5NR * quark_propagators[0];
     q1_tmp = q2_tmp * Cg5NR;
 
-    di_quark = quark_propagators[0] * Gamma(3) + quark_propagators[0] * Gamma(11);
-    q2_tmp = timesMinusI(di_quark);
-
-    q2_tmp += quark_propagators[0] + quark_propagators[0] * Gamma(8);
+    q2_tmp = quark_propagators[0] * spinTmixed();
 
     di_quark = quarkContract12(q2_tmp, q1_tmp);
     src_prop_tmp = di_quark - transposeSpin(di_quark);   // bad guy - good guy
-    src_prop_tmp *= Real(0.5);
 
     return src_prop_tmp;
   }
