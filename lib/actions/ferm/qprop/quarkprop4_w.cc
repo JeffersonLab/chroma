@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: quarkprop4_w.cc,v 2.2 2005-12-21 15:38:56 kostas Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -160,7 +160,8 @@ namespace Chroma
 	  LatticeFermion psi;
 
 	  PropToFerm(q_sol, psi, color_source, copyfrom);
-	  FermToProp(LatticeFermion(-psi), q_sol, color_source, spin_source);
+	  // There is no need for (-) in the lower component case (KNO)
+	  FermToProp(LatticeFermion(psi), q_sol, color_source, spin_source);
 	}
       }
     }
