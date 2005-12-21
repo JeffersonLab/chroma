@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 2.4 2005-12-21 16:18:25 edwards Exp $
+// $Id: barseqsrc_w.cc,v 2.5 2005-12-21 21:56:10 kostas Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -463,6 +463,42 @@ namespace Chroma
   }
 
 
+  /** The octet baryon sequantial sources **/
+  //! \bar d O d" insertion in NR proton
+  /*!
+   * "\bar d O d" insertion in NR proton, ie. 
+   * "(s C gamma_5 (1/2)(1 + gamma_4)  d) s" 
+   * 
+   * $C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )$
+   * 
+   * $T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+   *   = (1 + Gamma(8) - i G(3) - i G(11)) / 2$
+   
+   * The d-quark insertion for a Xi baryon: primarily for the
+   * Xi- to Xi0 transision 
+
+  */
+  LatticePropagator barXiDMixedNR(const multi1d<LatticePropagator>& quark_propagators) 
+  {
+    START_CODE();
+    
+    check1Args(__func__, quark_propagators);
+
+    /* "\bar u O u" insertion in NR proton, ie. 
+     * "(u C gamma_5 (1/2)(1 + gamma_4)  d) u" */
+
+    // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
+
+    // T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
+    //   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
+
+    // Compute the  \bar{d} O d  insertion
+    // The Xi is just like the proton with up quark replaced with the strange
+    // the single quark propagator passed in is just the strange quark propagator
+    return barNuclDTCg5(quark_propagators, spinTmixed(), spinCg5NR());
+  }
+  
+
 
   LatticePropagator barDeltaUUnpol(const multi1d<LatticePropagator>& quark_propagators) 
   {
@@ -612,6 +648,9 @@ namespace Chroma
 
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_D_MIXED_NONREL_NEGPAR"),   
 								  barNuclDMixedNRnegPar);
+
+      success &= TheSeqSourceFuncMap::Instance().registerFunction(string("XI_D_MIXED_NONREL"),   
+								  barXiDMixedNR);
 
       success &= TheSeqSourceFuncMap::Instance().registerFunction(string("NUCL_PATCH_MIXED_NONREL"),   
 								  barNuclPatchMixedNR);
