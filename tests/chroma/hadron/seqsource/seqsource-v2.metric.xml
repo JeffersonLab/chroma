@@ -45,4 +45,7 @@
 <!-- NUCL_D_MIXED_NONREL -->
 <assertion xpath="/chroma/InlineObservables/elem[27]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
+<!-- NUCL_PATCH_MIXED_NONREL -->
+<assertion xpath="/chroma/InlineObservables/elem[29]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
 </assertions>
