@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_w_pab.cc,v 2.2 2005-12-21 14:50:39 kostas Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -39,7 +39,7 @@ namespace Chroma
   }
 
   //! Creation routine with anisotropy
-  void PABWilsonDslash::create(const multi1d<LatticeColorMatrix>& uu_,
+  void PABWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_,
 			       const AnisoParam_t& aniso_) 
   {
     START_CODE();
