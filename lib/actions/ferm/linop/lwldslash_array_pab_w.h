@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_pab_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_array_pab_w.h,v 2.2 2005-12-22 22:26:17 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -49,7 +49,7 @@ namespace Chroma
   {
   public:
     //! Empty constructor. Must use create later
-    PABWilsonDslashArray();
+    PABWilsonDslashArray() {}
 
     //! Full constructor
     PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
@@ -72,7 +72,7 @@ namespace Chroma
     //! Expected length of array index
     int size() const {return N5;}
 
-    //! No real need for cleanup here
+    //! Destroy / deal with refcounting
     ~PABWilsonDslashArray();
 
     /**
