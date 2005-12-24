@@ -182,7 +182,7 @@ regression test spectrum output is kept within the chroma xml output
       <chroma>2.7</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>24 Dec 05 15:52:24 EST</run_date>
+    <run_date>24 Dec 05 16:39:30 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -243,7 +243,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>24 Dec 05 15:52:24 EST</run_date>
+          <run_date>24 Dec 05 16:39:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -332,7 +332,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>24 Dec 05 15:52:25 EST</run_date>
+          <run_date>24 Dec 05 16:39:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -517,7 +517,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>24 Dec 05 15:52:30 EST</run_date>
+          <run_date>24 Dec 05 16:39:35 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5554,6 +5554,163 @@ regression test spectrum output is kept within the chroma xml output
                   </elem>
                 </momenta>
               </elem>
+              <elem>
+                <baryon_num>21</baryon_num>
+                <momenta>
+                  <elem>
+                    <sink_mom_num>0</sink_mom_num>
+                    <sink_mom>0 0 0</sink_mom>
+                    <barprop>
+                      <elem>
+                        <re>0.0136801</re>
+                        <im>-5.71e-08</im>
+                      </elem>
+                      <elem>
+                        <re>-1.50951e-09</re>
+                        <im>1.34751e-11</im>
+                      </elem>
+                      <elem>
+                        <re>-1.01699e-10</re>
+                        <im>3.1775e-13</im>
+                      </elem>
+                      <elem>
+                        <re>-1.01733e-11</re>
+                        <im>6.36903e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-1.51046e-12</re>
+                        <im>2.65622e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-2.80017e-13</re>
+                        <im>2.4791e-15</im>
+                      </elem>
+                      <elem>
+                        <re>-4.51666e-14</re>
+                        <im>6.94592e-16</im>
+                      </elem>
+                      <elem>
+                        <re>-4.09047e-15</re>
+                        <im>-1.30072e-16</im>
+                      </elem>
+                    </barprop>
+                  </elem>
+                  <elem>
+                    <sink_mom_num>1</sink_mom_num>
+                    <sink_mom>1 0 0</sink_mom>
+                    <barprop>
+                      <elem>
+                        <re>0.00471588</re>
+                        <im>-5.08173e-08</im>
+                      </elem>
+                      <elem>
+                        <re>-1.08781e-09</re>
+                        <im>7.86478e-12</im>
+                      </elem>
+                      <elem>
+                        <re>-5.96236e-11</re>
+                        <im>1.40695e-13</im>
+                      </elem>
+                      <elem>
+                        <re>-5.56121e-12</re>
+                        <im>4.97766e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-6.34046e-13</re>
+                        <im>4.92397e-15</im>
+                      </elem>
+                      <elem>
+                        <re>-7.39538e-14</re>
+                        <im>-1.26008e-16</im>
+                      </elem>
+                      <elem>
+                        <re>-8.20576e-15</re>
+                        <im>-6.49607e-17</im>
+                      </elem>
+                      <elem>
+                        <re>-4.38392e-16</re>
+                        <im>-3.27602e-17</im>
+                      </elem>
+                    </barprop>
+                  </elem>
+                  <elem>
+                    <sink_mom_num>2</sink_mom_num>
+                    <sink_mom>1 1 0</sink_mom>
+                    <barprop>
+                      <elem>
+                        <re>0.00132385</re>
+                        <im>-7.50164e-08</im>
+                      </elem>
+                      <elem>
+                        <re>-4.31897e-10</re>
+                        <im>3.52533e-12</im>
+                      </elem>
+                      <elem>
+                        <re>-2.63952e-11</re>
+                        <im>2.92773e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-1.81611e-12</re>
+                        <im>3.28728e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-1.14823e-13</re>
+                        <im>1.83086e-15</im>
+                      </elem>
+                      <elem>
+                        <re>-7.95766e-15</re>
+                        <im>-9.74522e-18</im>
+                      </elem>
+                      <elem>
+                        <re>-9.28297e-16</re>
+                        <im>1.01051e-16</im>
+                      </elem>
+                      <elem>
+                        <re>2.92844e-18</re>
+                        <im>-2.35454e-18</im>
+                      </elem>
+                    </barprop>
+                  </elem>
+                  <elem>
+                    <sink_mom_num>3</sink_mom_num>
+                    <sink_mom>1 1 1</sink_mom>
+                    <barprop>
+                      <elem>
+                        <re>-0.000142953</re>
+                        <im>-8.28235e-09</im>
+                      </elem>
+                      <elem>
+                        <re>8.15077e-13</re>
+                        <im>1.24894e-13</im>
+                      </elem>
+                      <elem>
+                        <re>-1.57889e-12</re>
+                        <im>-4.5809e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-1.12382e-13</re>
+                        <im>4.59521e-15</im>
+                      </elem>
+                      <elem>
+                        <re>-8.74313e-16</re>
+                        <im>-3.68279e-16</im>
+                      </elem>
+                      <elem>
+                        <re>-6.17614e-17</re>
+                        <im>2.74345e-16</im>
+                      </elem>
+                      <elem>
+                        <re>-2.56621e-16</re>
+                        <im>2.59039e-17</im>
+                      </elem>
+                      <elem>
+                        <re>-2.10955e-18</re>
+                        <im>4.69438e-18</im>
+                      </elem>
+                    </barprop>
+                  </elem>
+                </momenta>
+              </elem>
             </Shell_Point_Wilson_Baryons>
             <Shell_Shell_Wilson_Baryons>
               <elem>
@@ -8848,6 +9005,163 @@ regression test spectrum output is kept within the chroma xml output
                       <elem>
                         <re>2.60685e-11</re>
                         <im>-5.81293e-13</im>
+                      </elem>
+                    </barprop>
+                  </elem>
+                </momenta>
+              </elem>
+              <elem>
+                <baryon_num>21</baryon_num>
+                <momenta>
+                  <elem>
+                    <sink_mom_num>0</sink_mom_num>
+                    <sink_mom>0 0 0</sink_mom>
+                    <barprop>
+                      <elem>
+                        <re>0.233522</re>
+                        <im>1.32588e-06</im>
+                      </elem>
+                      <elem>
+                        <re>-1.99364e-10</re>
+                        <im>1.33003e-12</im>
+                      </elem>
+                      <elem>
+                        <re>-1.90803e-11</re>
+                        <im>6.4134e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-4.401e-12</re>
+                        <im>5.24988e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-1.07538e-12</re>
+                        <im>2.12126e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-2.42387e-13</re>
+                        <im>2.27906e-15</im>
+                      </elem>
+                      <elem>
+                        <re>-4.13572e-14</re>
+                        <im>6.91609e-16</im>
+                      </elem>
+                      <elem>
+                        <re>-3.79502e-15</re>
+                        <im>-1.16662e-16</im>
+                      </elem>
+                    </barprop>
+                  </elem>
+                  <elem>
+                    <sink_mom_num>1</sink_mom_num>
+                    <sink_mom>1 0 0</sink_mom>
+                    <barprop>
+                      <elem>
+                        <re>0.0191776</re>
+                        <im>-1.09569e-06</im>
+                      </elem>
+                      <elem>
+                        <re>-4.56346e-11</re>
+                        <im>2.78318e-13</im>
+                      </elem>
+                      <elem>
+                        <re>-2.98224e-12</re>
+                        <im>1.83596e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-3.67978e-13</re>
+                        <im>2.72736e-15</im>
+                      </elem>
+                      <elem>
+                        <re>-4.67625e-14</re>
+                        <im>3.48906e-16</im>
+                      </elem>
+                      <elem>
+                        <re>-5.66341e-15</re>
+                        <im>-1.31388e-17</im>
+                      </elem>
+                      <elem>
+                        <re>-6.15404e-16</re>
+                        <im>-6.05283e-18</im>
+                      </elem>
+                      <elem>
+                        <re>-3.31365e-17</re>
+                        <im>-2.48008e-18</im>
+                      </elem>
+                    </barprop>
+                  </elem>
+                  <elem>
+                    <sink_mom_num>2</sink_mom_num>
+                    <sink_mom>1 1 0</sink_mom>
+                    <barprop>
+                      <elem>
+                        <re>0.000983306</re>
+                        <im>-3.99674e-08</im>
+                      </elem>
+                      <elem>
+                        <re>-4.70435e-11</re>
+                        <im>2.69478e-13</im>
+                      </elem>
+                      <elem>
+                        <re>-7.88612e-13</re>
+                        <im>3.20199e-15</im>
+                      </elem>
+                      <elem>
+                        <re>-2.02373e-14</re>
+                        <im>2.77373e-16</im>
+                      </elem>
+                      <elem>
+                        <re>-9.12584e-16</re>
+                        <im>-7.52956e-18</im>
+                      </elem>
+                      <elem>
+                        <re>-5.73653e-17</re>
+                        <im>-2.69843e-18</im>
+                      </elem>
+                      <elem>
+                        <re>-3.12565e-18</re>
+                        <im>-8.81568e-19</im>
+                      </elem>
+                      <elem>
+                        <re>-2.3235e-19</re>
+                        <im>6.773e-21</im>
+                      </elem>
+                    </barprop>
+                  </elem>
+                  <elem>
+                    <sink_mom_num>3</sink_mom_num>
+                    <sink_mom>1 1 1</sink_mom>
+                    <barprop>
+                      <elem>
+                        <re>0.000306486</re>
+                        <im>1.14633e-06</im>
+                      </elem>
+                      <elem>
+                        <re>-1.89344e-11</re>
+                        <im>-1.91506e-14</im>
+                      </elem>
+                      <elem>
+                        <re>-1.73143e-13</re>
+                        <im>-8.09667e-17</im>
+                      </elem>
+                      <elem>
+                        <re>-2.6711e-15</re>
+                        <im>-3.88978e-16</im>
+                      </elem>
+                      <elem>
+                        <re>-2.64148e-17</re>
+                        <im>1.91863e-17</im>
+                      </elem>
+                      <elem>
+                        <re>-1.82016e-18</re>
+                        <im>3.32386e-19</im>
+                      </elem>
+                      <elem>
+                        <re>5.83299e-19</re>
+                        <im>-1.8981e-18</im>
+                      </elem>
+                      <elem>
+                        <re>4.41956e-20</re>
+                        <im>-2.64949e-19</im>
                       </elem>
                     </barprop>
                   </elem>
