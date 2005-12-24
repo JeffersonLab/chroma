@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.8 2005-12-24 16:16:11 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.9 2005-12-24 16:31:36 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -53,27 +53,13 @@ if ( -d $regres_dir )
 #printf "regres=$regres_dir\n";
 mkpath([$regres_dir], 0, 0755);
 
-# 
-# I'd really like to include the regres.pl scripts recursively down 
-# inside the chroma/tests directory, but I'm having difficulty
-# convincing perl to do it. The problem seems to be that the model
-# I want, namely like the c-preprocessor including files that recursively
-# includes other files (in subdirs) is not how the perl "do" works.
-# So, spell out all the many regression dirs and source them individually.
-#
-@do_list = (
-	    "$test_dir/chroma/hadron/make_source/regres.pl",
-	    "$test_dir/chroma/hadron/propagator/regres.pl",
-	    "$test_dir/chroma/hadron/seqsource/regres.pl",
-	    "$test_dir/chroma/hadron/spectrum/regres.pl",
-	    "$test_dir/t_leapfrog/regres.pl",
-	    "$test_dir/purgaug/regres.pl"
-	    );
+# The list of regression dirs comes from here
+require "$test_dir/regres.pl";
 
 printf "\nRun through regression test list\n";
 $num_errors = 0;
 
-for $file (@do_list)
+for $file (&regresDirs())
 {
     printf "\nSource $file\n";
     unless ($return = do "$file")
