@@ -75,6 +75,11 @@ Spectrum input
     </elem>
 
     <elem>
+      <annotation>
+         Compute the spectrum. 
+         This version is a clone of the one below, but the xml output is
+         written to a separate file.
+      </annotation>
       <Name>SPECTRUM</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -103,7 +108,50 @@ Spectrum input
           <elem>sh_prop_0</elem>
         </prop_ids>
       </NamedObject>
-      <xml_file>spectrum.dat.xml</xml_file>
+        <xml_file>spectrum.dat.xml</xml_file>
+    </elem>
+
+    <elem>
+      <annotation>
+         This is the duplicate of the spectrum run above, but the spectrum output
+         is written to a separate file.
+         NOTE: the user should normally write the spectrum output to a separate file,
+         but for this test the xml spectrum output is contained within the
+         chroma xml output solely for the regression test.
+      </annotation>
+      <Name>SPECTRUM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>12</version>
+        <Pt_snk>true</Pt_snk>
+        <Sl_snk>true</Sl_snk>
+        <Wl_snk>false</Wl_snk>
+        <MesonP>true</MesonP>
+        <CurrentP>true</CurrentP>
+        <BaryonP>true</BaryonP>
+        <HybMesP>true</HybMesP>
+        <fact_sm>2.5</fact_sm>
+        <numb_sm>2</numb_sm>
+        <time_rev>false</time_rev>
+        <mom2_max>3</mom2_max>
+        <avg_equiv_mom>true</avg_equiv_mom>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <nrow>4 4 4 8</nrow>
+       </Param>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+      </NamedObject>
+      <!--  
+The USER should write to a separate file. However, for the
+regression test spectrum output is kept within the chroma xml output
+         <xml_file>spectrum.dat.xml</xml_file>
+	-->
     </elem>
 
   </InlineMeasurements>

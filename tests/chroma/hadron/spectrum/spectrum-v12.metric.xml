@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[1]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- sh-pt, pion, p=[0,0,0] -->
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrum_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- sh-pt, p=[1,0,0] avg -->
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrum_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Mesons/elem[16]/momenta/elem[2]/mesprop" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- sh-pt, proton, k=0, p=[0,0,0] -->
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrum_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[1]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- sh-pt, proton, k=0, p=[1,0,0] avg -->
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrum_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[1]/momenta/elem[2]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+
+<!-- sh-pt, pion, p=[0,0,0] -->
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrum_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- sh-pt, p=[1,0,0] avg -->
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrum_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Mesons/elem[16]/momenta/elem[2]/mesprop" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- sh-sh, proton, k=0, p=[0,0,0] -->
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrum_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Baryons/elem[1]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- sh-sh, proton, k=0, p=[1,0,0] avg -->
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrum_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Baryons/elem[1]/momenta/elem[2]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+
+
+</assertions>
