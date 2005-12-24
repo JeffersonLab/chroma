@@ -685,7 +685,7 @@ Sequential source
       <chroma>2.7</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>21 Dec 05 00:10:57 EST</run_date>
+    <run_date>24 Dec 05 16:17:46 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -746,7 +746,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:10:57 EST</run_date>
+          <run_date>24 Dec 05 16:17:46 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -835,7 +835,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:10:57 EST</run_date>
+          <run_date>24 Dec 05 16:17:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1014,7 +1014,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:10:58 EST</run_date>
+          <run_date>24 Dec 05 16:17:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1191,7 +1191,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:10:59 EST</run_date>
+          <run_date>24 Dec 05 16:17:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1430,7 +1430,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:10:59 EST</run_date>
+          <run_date>24 Dec 05 16:17:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1593,7 +1593,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:10:59 EST</run_date>
+          <run_date>24 Dec 05 16:17:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1832,7 +1832,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:10:59 EST</run_date>
+          <run_date>24 Dec 05 16:17:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1995,7 +1995,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:10:59 EST</run_date>
+          <run_date>24 Dec 05 16:17:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2216,7 +2216,7 @@ Sequential source
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 4.84826e-08</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 1.21207e-08</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2234,7 +2234,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:11:00 EST</run_date>
+          <run_date>24 Dec 05 16:17:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2379,7 +2379,7 @@ Sequential source
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 1.21207e-08</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 3.03016e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2397,7 +2397,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:11:00 EST</run_date>
+          <run_date>24 Dec 05 16:17:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2636,7 +2636,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:11:00 EST</run_date>
+          <run_date>24 Dec 05 16:17:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2799,7 +2799,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:11:00 EST</run_date>
+          <run_date>24 Dec 05 16:17:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3038,7 +3038,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:11:00 EST</run_date>
+          <run_date>24 Dec 05 16:17:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3201,7 +3201,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:11:01 EST</run_date>
+          <run_date>24 Dec 05 16:17:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3440,7 +3440,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:11:01 EST</run_date>
+          <run_date>24 Dec 05 16:17:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3603,7 +3603,7 @@ Sequential source
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Dec 05 00:11:01 EST</run_date>
+          <run_date>24 Dec 05 16:17:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
