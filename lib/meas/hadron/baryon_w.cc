@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 2.1 2005-12-24 21:20:14 edwards Exp $ 
+// $Id: baryon_w.cc,v 2.2 2005-12-24 21:39:24 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -224,7 +224,7 @@ namespace Chroma
       return;
 
     // Setup the return stuff
-    const int num_baryons = 21;
+    const int num_baryons = 22;
     int num_mom = phases.numMom();
     barprop.resize(num_baryons,num_mom,length);
 
@@ -235,9 +235,6 @@ namespace Chroma
     // T_unpol = (1/2)(1 + gamma_4)
     SpinMatrix T_unpol = BaryonSpinMats::Tunpol();
 
-    // T_unpol_negpar = (1/2)(1 - gamma_4)
-    SpinMatrix T_unpol_negPar = BaryonSpinMats::TunpolNegPar();
-
     // C gamma_5 = Gamma(5)
     SpinMatrix Cg5 = BaryonSpinMats::Cg5();
 
@@ -246,9 +243,6 @@ namespace Chroma
 
     // C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 )
     SpinMatrix Cg5NR = BaryonSpinMats::Cg5NR();
-
-    // C g_5 NR negPar = (1/2)*C gamma_5 * ( 1 - g_4 )
-    SpinMatrix Cg5NRnegPar = BaryonSpinMats::Cg5NRnegPar();
 
     // C = Gamma(10)
     SpinMatrix C = BaryonSpinMats::C();
@@ -479,6 +473,16 @@ namespace Chroma
 	b_prop = 3.0 * delta2pt(quark_propagator, T_unpol, BaryonSpinMats::CgkNR(3));
 	break;
 
+      case 21:
+	// Proton_7; use also for Lambda_7!
+	// |P_7, s_z=1/2> = (d C gamma_5 (1/2)(1 - g_4) u) "u_up", see comments at top
+	// C g_5 NR negpar = (1/2)*C gamma_5 * ( 1 - g_4 )
+	// T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
+	//   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
+	b_prop = nucl2pt(quark_propagator, 
+			 BaryonSpinMats::TmixedNegPar(), BaryonSpinMats::Cg5NRnegPar());
+	break;
+		  
       default:
 	QDP_error_exit("Unknown baryon: baryons=%d",baryons);
       }
