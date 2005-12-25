@@ -43,7 +43,7 @@ Mres calculation
           </AnisoParam>
           <FermionBC>
             <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 0</boundary>
+            <boundary>1 1 1 -1</boundary>
           </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -74,7 +74,7 @@ Mres calculation
           <N5>4</N5>
           <FermionBC>
             <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 0</boundary>
+            <boundary>1 1 1 -1</boundary>
           </FermionBC>
         </FermionAction>
         <InvertParam>

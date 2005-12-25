@@ -46,7 +46,7 @@ Mres calculation
           </AnisoParam>
           <FermionBC>
             <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 0</boundary>
+            <boundary>1 1 1 -1</boundary>
           </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -77,7 +77,7 @@ Mres calculation
           <N5>4</N5>
           <FermionBC>
             <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 0</boundary>
+            <boundary>1 1 1 -1</boundary>
           </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -105,10 +105,10 @@ Mres calculation
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
+      <chroma>2.7</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:21:36 EST</run_date>
+    <run_date>25 Dec 05 13:23:08 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -166,10 +166,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:21:36 EST</run_date>
+          <run_date>25 Dec 05 13:23:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -243,10 +243,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:21:36 EST</run_date>
+          <run_date>25 Dec 05 13:23:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -270,7 +270,7 @@ Mres calculation
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -361,47 +361,47 @@ Mres calculation
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>564</ncg_had>
+          <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.705129 0.0378618 0.00816423 0.00278123 0.00108454 0.00043711 0.000177574 7.24032e-05</prop_corr>
+          <prop_corr>0.69508 0.0371189 0.00801121 0.00306582 0.00206155 0.00306325 0.0080019 0.0371176</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -410,10 +410,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:21:37 EST</run_date>
+          <run_date>25 Dec 05 13:23:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -431,7 +431,7 @@ Mres calculation
       <N5>4</N5>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -482,16 +482,16 @@ Mres calculation
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.705129 0.0378618 0.00816423 0.00278123 0.00108454 0.00043711 0.000177574 7.24032e-05</forward_prop_corr>
+          <forward_prop_corr>0.69508 0.0371189 0.00801121 0.00306582 0.00206155 0.00306325 0.0080019 0.0371176</forward_prop_corr>
         </Forward_prop_correlator>
         <DeltaProp_correlator>
-          <delta_prop_corr>0.0140147 0.000318687 0.000144017 3.98317e-05 2.07619e-05 1.20501e-05 -9.40815e-07 9.84013e-06</delta_prop_corr>
+          <delta_prop_corr>0.00613609 0.000127764 0.000129123 3.88268e-05 1.81009e-05 3.87935e-05 0.000129367 0.000127828</delta_prop_corr>
         </DeltaProp_correlator>
         <DeltaSqProp_correlator>
-          <delta_sq_prop_corr>0.00176178 0.000240759 2.87764e-05 4.35613e-06 1.5087e-06 6.71948e-07 1.09504e-07 1.37703e-06</delta_sq_prop_corr>
+          <delta_sq_prop_corr>0.000105618 4.15955e-05 1.7144e-05 3.18706e-06 7.82995e-07 3.18401e-06 1.71695e-05 4.16052e-05</delta_sq_prop_corr>
         </DeltaSqProp_correlator>
         <PsuedoPseudo_correlator>
-          <pseudo_prop_corr>0.705129 0.0378618 0.00816423 0.00278123 0.00108454 0.00043711 0.000177574 7.24032e-05</pseudo_prop_corr>
+          <pseudo_prop_corr>0.69508 0.0371189 0.00801121 0.00306582 0.00206155 0.00306325 0.0080019 0.0371176</pseudo_prop_corr>
         </PsuedoPseudo_correlator>
       </mres>
     </elem>
