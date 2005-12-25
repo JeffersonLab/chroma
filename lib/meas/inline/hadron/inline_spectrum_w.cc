@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 2.4 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 2.5 2005-12-25 05:08:41 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -112,8 +112,6 @@ namespace Chroma
       QDPIO::cerr << "wvf_param size inconsistent with wvfintpar size" << endl;
       QDP_abort(1);
     }
-
-    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -122,7 +120,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 12;
+    int version = 13;
     write(xml, "version", version);
 
     write(xml, "Pt_snk", param.Pt_snk);
@@ -153,7 +151,7 @@ namespace Chroma
     write(xml, "link_smear_fact", param.link_smear_fact);
     write(xml, "link_smear_num", param.link_smear_num);
 
-    write(xml, "nrow", param.nrow);
+    write(xml, "nrow", Layout::lattSize());
 
     pop(xml);
   }
@@ -282,9 +280,9 @@ namespace Chroma
 
     QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
 
-    QDPIO::cout << "     volume: " << params.param.nrow[0];
+    QDPIO::cout << "     volume: " << Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
-      QDPIO::cout << " x " << params.param.nrow[i];
+      QDPIO::cout << " x " << Layout::lattSize()[i];
     }
     QDPIO::cout << endl;
 
@@ -297,7 +295,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 12);
+    write(xml_out, "out_version", 13);
     pop(xml_out);
 
 
