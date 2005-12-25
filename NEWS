@@ -1,4 +1,7 @@
 12/25/2005 -- Robert Edwards
+	Version 2.7.3. Updated some regression tests. Added a few more.
+
+12/25/2005 -- Robert Edwards
 	Version 2.7.2. Updated baryon spectrum codes and seqsources to abstract away
         spin matrices and functionality into small functions.
 
