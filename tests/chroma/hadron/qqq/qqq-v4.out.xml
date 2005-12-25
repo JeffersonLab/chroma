@@ -62,7 +62,7 @@ QQQ on props
          </AnisoParam>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
+           <boundary>1 1 1 -1</boundary>
          </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -177,10 +177,10 @@ QQQ on props
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
+      <chroma>2.7</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:25:09 EST</run_date>
+    <run_date>25 Dec 05 13:22:00 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -238,10 +238,10 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:25:09 EST</run_date>
+          <run_date>25 Dec 05 13:22:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -327,10 +327,10 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:25:09 EST</run_date>
+          <run_date>25 Dec 05 13:22:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -354,7 +354,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -457,47 +457,47 @@ QQQ on props
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
           <Qprop>
-            <n_count>47</n_count>
+            <n_count>45</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>564</ncg_had>
+          <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.195417 0.0165318 0.0062728 0.00254338 0.00103544 0.000421879 0.000171897 7.01561e-05</prop_corr>
+          <prop_corr>0.191409 0.0158397 0.0061267 0.00281775 0.0019673 0.00281711 0.00612163 0.0158367</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -550,7 +550,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.195417 0.0165318 0.0062728 0.00254338 0.00103544 0.000421879 0.000171897 7.01561e-05</forward_prop_corr>
+          <forward_prop_corr>0.191409 0.0158397 0.0061267 0.00281775 0.0019673 0.00281711 0.00612163 0.0158367</forward_prop_corr>
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
@@ -591,7 +591,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -615,7 +615,7 @@ QQQ on props
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.195417 0.0165318 0.0062728 0.00254338 0.00103544 0.000421879 0.000171897 7.01561e-05</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.191409 0.0158397 0.0061267 0.00281775 0.0019673 0.00281711 0.00612163 0.0158367</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -682,7 +682,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.195417 0.0165318 0.0062728 0.00254338 0.00103544 0.000421879 0.000171897 7.01561e-05</forward_prop_corr>
+          <forward_prop_corr>0.191409 0.0158397 0.0061267 0.00281775 0.0019673 0.00281711 0.00612163 0.0158367</forward_prop_corr>
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
@@ -723,7 +723,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -761,7 +761,7 @@ QQQ on props
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2.83784e+09 2.51522e+07 447386 8756.46 286.553 64.6421 24.9534 9.28995</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.136 8346.18 447543 2.51447e+07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -785,10 +785,10 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:25:10 EST</run_date>
+          <run_date>25 Dec 05 13:22:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -880,7 +880,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -945,7 +945,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -1010,7 +1010,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -1053,15 +1053,15 @@ QQQ on props
         </Propagator_input>
         <SinkSmearedProp_correlator>
           <correlator_num>0</correlator_num>
-          <sink_smeared_prop_corr>0.195417 0.0165318 0.0062728 0.00254338 0.00103544 0.000421879 0.000171897 7.01561e-05</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.191409 0.0158397 0.0061267 0.00281775 0.0019673 0.00281711 0.00612163 0.0158367</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
         <SinkSmearedProp_correlator>
           <correlator_num>1</correlator_num>
-          <sink_smeared_prop_corr>0.195417 0.0165318 0.0062728 0.00254338 0.00103544 0.000421879 0.000171897 7.01561e-05</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.191409 0.0158397 0.0061267 0.00281775 0.0019673 0.00281711 0.00612163 0.0158367</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
         <SinkSmearedProp_correlator>
           <correlator_num>2</correlator_num>
-          <sink_smeared_prop_corr>0.195417 0.0165318 0.0062728 0.00254338 0.00103544 0.000421879 0.000171897 7.01561e-05</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.191409 0.0158397 0.0061267 0.00281775 0.0019673 0.00281711 0.00612163 0.0158367</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqq>
     </elem>
@@ -1085,10 +1085,10 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:25:13 EST</run_date>
+          <run_date>25 Dec 05 13:22:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1194,7 +1194,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -1273,7 +1273,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -1352,7 +1352,7 @@ QQQ on props
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -1395,15 +1395,15 @@ QQQ on props
         </Propagator_input>
         <SinkSmearedProp_correlator>
           <correlator_num>0</correlator_num>
-          <sink_smeared_prop_corr>2.83784e+09 2.51522e+07 447386 8756.46 286.553 64.6421 24.9534 9.28995</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.136 8346.18 447543 2.51447e+07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
         <SinkSmearedProp_correlator>
           <correlator_num>1</correlator_num>
-          <sink_smeared_prop_corr>2.83784e+09 2.51522e+07 447386 8756.46 286.553 64.6421 24.9534 9.28995</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.136 8346.18 447543 2.51447e+07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
         <SinkSmearedProp_correlator>
           <correlator_num>2</correlator_num>
-          <sink_smeared_prop_corr>2.83784e+09 2.51522e+07 447386 8756.46 286.553 64.6421 24.9534 9.28995</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.136 8346.18 447543 2.51447e+07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqq>
     </elem>

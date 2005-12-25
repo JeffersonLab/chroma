@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson-v9.ferm.ini.xml,v 1.1 2005-12-18 04:27:46 edwards Exp $
+; $Id: prec_wilson-v9.ferm.ini.xml,v 1.2 2005-12-25 18:22:35 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -81,7 +81,7 @@
          </AnisoParam>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
+           <boundary>1 1 1 -1</boundary>
          </FermionBC>
         </FermionAction>
         <InvertParam>

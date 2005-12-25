@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson-v9.ferm.out.xml,v 1.2 2005-12-18 16:30:40 edwards Exp $
+; $Id: prec_wilson-v9.ferm.out.xml,v 1.3 2005-12-25 18:22:35 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -84,7 +84,7 @@
          </AnisoParam>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
+           <boundary>1 1 1 -1</boundary>
          </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -135,10 +135,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
+      <chroma>2.7</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:23:14 EST</run_date>
+    <run_date>25 Dec 05 13:19:10 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -196,10 +196,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:23:14 EST</run_date>
+          <run_date>25 Dec 05 13:19:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -295,10 +295,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
+            <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:23:14 EST</run_date>
+          <run_date>25 Dec 05 13:19:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -322,7 +322,7 @@
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 0</boundary>
+        <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
 
@@ -431,7 +431,7 @@
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>11.6123 0.784139 0.209406 0.0762225 0.0299914 0.0120167 0.00484227 0.00195665</prop_corr>
+          <prop_corr>11.4497 0.774433 0.208428 0.0810086 0.044778 0.05138 0.123502 0.586814</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
