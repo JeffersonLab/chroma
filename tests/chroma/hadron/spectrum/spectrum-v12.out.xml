@@ -182,7 +182,7 @@ regression test spectrum output is kept within the chroma xml output
       <chroma>2.7</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>24 Dec 05 16:39:30 EST</run_date>
+    <run_date>24 Dec 05 23:07:20 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -243,7 +243,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>24 Dec 05 16:39:30 EST</run_date>
+          <run_date>24 Dec 05 23:07:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -332,7 +332,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>24 Dec 05 16:39:30 EST</run_date>
+          <run_date>24 Dec 05 23:07:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -517,7 +517,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>24 Dec 05 16:39:35 EST</run_date>
+          <run_date>24 Dec 05 23:07:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -528,7 +528,7 @@ regression test spectrum output is kept within the chroma xml output
         </ProgramInfo>
         <Input>
           <Param>
-            <version>12</version>
+            <version>13</version>
             <Pt_snk>true</Pt_snk>
             <Sl_snk>true</Sl_snk>
             <Wl_snk>false</Wl_snk>
@@ -561,7 +561,7 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Output_version>
-          <out_version>12</out_version>
+          <out_version>13</out_version>
         </Output_version>
         <Observables>
           <w_plaq>0.994804</w_plaq>
