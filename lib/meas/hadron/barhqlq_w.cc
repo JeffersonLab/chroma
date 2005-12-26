@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 2.1 2005-12-25 05:41:03 edwards Exp $
+// $Id: barhqlq_w.cc,v 2.2 2005-12-26 20:19:00 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -425,7 +425,15 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
+	// Arrgh, goofy CgmNR normalization again from szin code. 
 	b_prop = sigmast2pt(quark_propagator_1, quark_propagator_2, T_mixed, BaryonSpinMats::CgmNR());
+
+	// Agghh, we have a goofy factor of 4 normalization factor here. The
+	// ancient szin way didn't care about norms, so it happily made it
+	// 4 times too big. There is a missing 0.5 in the NR normalization
+	// in the old szin code.
+	// So, we compensate to keep the same normalization
+	b_prop *= 4.0;
 	break;
 
 
@@ -462,7 +470,7 @@ namespace Chroma
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = lambda2pt(quark_propagator_1, quark_propagator_2, T_unpol, Cg5);
+	b_prop = lambdaNaive2pt(quark_propagator_1, quark_propagator_2, T_unpol, Cg5);
 	break;
       
       case 13:
