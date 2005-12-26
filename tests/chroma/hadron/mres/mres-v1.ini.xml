@@ -79,7 +79,7 @@ Mres calculation
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-6</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
         <nrow>4 4 4 8</nrow>

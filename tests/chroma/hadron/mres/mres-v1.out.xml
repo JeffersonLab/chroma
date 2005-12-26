@@ -82,7 +82,7 @@ Mres calculation
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-6</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
         <nrow>4 4 4 8</nrow>
@@ -108,7 +108,7 @@ Mres calculation
       <chroma>2.7</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>25 Dec 05 13:23:08 EST</run_date>
+    <run_date>26 Dec 05 15:24:20 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -169,7 +169,7 @@ Mres calculation
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>25 Dec 05 13:23:08 EST</run_date>
+          <run_date>26 Dec 05 15:24:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -246,7 +246,7 @@ Mres calculation
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>25 Dec 05 13:23:08 EST</run_date>
+          <run_date>26 Dec 05 15:24:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -413,7 +413,7 @@ Mres calculation
             <chroma>2.7</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>25 Dec 05 13:23:09 EST</run_date>
+          <run_date>26 Dec 05 15:24:21 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
