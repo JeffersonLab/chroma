@@ -4,7 +4,7 @@
 
 <assertion xpath="/chroma/InlineObservables/elem[3]/mres/Forward_prop_correlator/forward_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[3]/mres/DeltaProp_correlator/delta_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[3]/mres/DeltaProp_correlator/delta_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <assertion xpath="/chroma/InlineObservables/elem[3]/mres/DeltaSqProp_correlator/delta_sq_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
