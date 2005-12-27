@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 1.1 2005-12-27 20:41:41 kostas Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 1.2 2005-12-27 21:36:58 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -17,6 +17,7 @@
 #include "io/qprop_io.h"
 #include "util/gauge/taproj.h"
 #include "meas/inline/make_xml_file.h"
+#include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
 { 
@@ -87,19 +88,19 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineQQQNucNucParams::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineQQQNucNucParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "prop_files", input.prop_files);
+    read(inputtop, "prop_ids", input.prop_ids);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineQQQNucNucParams::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineQQQNucNucParams::NamedObject_t& input)
   {
     push(xml, path);
 
-    write(xml, "prop_files", input.prop_files);
+    write(xml, "prop_ids", input.prop_ids);
 
     pop(xml);
   }
@@ -122,7 +123,7 @@ namespace Chroma
       read(paramtop, "Param", param);
       
       // Read in the output propagator/source configuration info
-      read(paramtop, "Prop", prop);
+      read(paramtop, "NamedObject", named_obj);
       
       // Possible alternate qqq output file
       if (paramtop.count("qqq_file") != 0) 
@@ -153,7 +154,7 @@ namespace Chroma
     push(xml_out, path);
     
     Chroma::write(xml_out, "Param", param);
-    Chroma::write(xml_out, "Prop", prop);
+    Chroma::write(xml_out, "NamedObject", named_obj);
     QDP::write(xml_out, "qqq_file", qqq_file);
     QDP::write(xml_out, "xml_file", xml_file);
 
@@ -206,7 +207,7 @@ namespace Chroma
     }
 
     int NumberOfqqq(0) ;
-    switch( params.prop.prop_files.size()){
+    switch( params.named_obj.prop_ids.size()){
     case 1: //only up down
       if (params.param.Pt_snk)
 	NumberOfqqq++;
@@ -256,20 +257,28 @@ namespace Chroma
     MesPlq(xml_out, "Observables", u);
     
     
-    multi1d<ChromaProp_t> prop_header(params.prop.prop_files.size());
-    multi1d<PropSourceConst_t> source_header(params.prop.prop_files.size());
-    multi1d<LatticePropagator> qprop(params.prop.prop_files.size());
-    multi1d<Real> Mass(params.prop.prop_files.size());
+    multi1d<ChromaProp_t> prop_header(params.named_obj.prop_ids.size());
+    multi1d<PropSourceConst_t> source_header(params.named_obj.prop_ids.size());
+    multi1d<LatticePropagator> qprop(params.named_obj.prop_ids.size());
+    multi1d<Real> Mass(params.named_obj.prop_ids.size());
 
-    multi2d<int> bc(params.prop.prop_files.size(), 4); 
+    multi2d<int> bc(params.named_obj.prop_ids.size(), 4); 
 
     // Now read the propagators we need
-    for (int loop(0); loop < params.prop.prop_files.size(); ++loop)
+    for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
       {
-	XMLReader prop_file_xml,prop_xml ;
-	readQprop(prop_file_xml, prop_xml, qprop[loop],
-		  params.prop.prop_files[loop], QDPIO_SERIAL);
+	//	readQprop(prop_file_xml, prop_xml, qprop[loop],
+	//	  params.prop.prop_files[loop], QDPIO_SERIAL);
 	
+	// Snarf the data into a copy
+	qprop[loop] =
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[loop]);
+	
+	// Snarf the source info. 
+	// This is will throw if the source_id is not there
+	XMLReader prop_file_xml,prop_xml ;
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getFileXML(prop_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getRecordXML(prop_xml);
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	try
@@ -342,7 +351,7 @@ namespace Chroma
     int t_source = source_header[0].t_source;
     int t0 = t_source ;
     int bc_spec = bc[0][j_decay] ;
-    for (int loop(0); loop < params.prop.prop_files.size(); ++loop){
+    for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop){
       if(source_header[loop].j_decay!=j_decay){
 	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
 	throw;
@@ -366,7 +375,7 @@ namespace Chroma
     push(xml_out,"Propagator_info") ;
     write(xml_out, "Masses", Mass);
     write(xml_out, "t_source", t_source);
-    for (int loop=0; loop < params.prop.prop_files.size(); ++loop){
+    for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop){
       push(xml_out, "Propagator");
       write(xml_out, "ForwardProp",  prop_header[loop]);
       write(xml_out, "PropSource", source_header[loop]);
@@ -390,7 +399,7 @@ namespace Chroma
     push(file_xml,"Propagator_info") ;
     write(file_xml, "Masses", Mass);
     write(file_xml, "t_source", t_source);
-    for (int loop=0; loop < params.prop.prop_files.size(); ++loop){
+    for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop){
       push(file_xml, "Propagator");
       write(file_xml, "ForwardProp",  prop_header[loop]);
       write(file_xml, "PropSource", source_header[loop]);
@@ -421,7 +430,7 @@ namespace Chroma
       compute_qqbar(qqbar, qprop[0],qprop[0],phases,t0 );
       write_qqbar(qqbarto, qqbar, phases, "pion","POINT");
 
-      if(params.prop.prop_files.size()==2){
+      if(params.named_obj.prop_ids.size()==2){
 	compute_qqq(qqq, qprop[0],qprop[0],qprop[1],phases,t0, bc_spec);
 	write_qqq(qqqto, qqq, phases, "lambda","POINT");
 	compute_qqq(qqq, qprop[1],qprop[0],qprop[0],phases,t0, bc_spec);
@@ -442,8 +451,8 @@ namespace Chroma
     // Make a copy of the quark propagator and then overwrite it with
     // the convolution. 
     if (params.param.Sl_snk){
-      multi1d<LatticePropagator> qprop_smr(params.prop.prop_files.size());
-      for (int loop=0; loop < params.prop.prop_files.size(); ++loop){
+      multi1d<LatticePropagator> qprop_smr(params.named_obj.prop_ids.size());
+      for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop){
 	qprop_smr[loop] = qprop[loop];
 	sink_smear2(u, qprop_smr[loop], 
 		    params.param.wvf_kind, 
@@ -457,7 +466,7 @@ namespace Chroma
       compute_qqbar(qqbar,qprop_smr[0],qprop_smr[0],phases,t0);
       write_qqbar(qqbarto, qqbar, phases, "pion","SHELL");
 
-      if(params.prop.prop_files.size()==2){
+      if(params.named_obj.prop_ids.size()==2){
 	compute_qqq(qqq,qprop_smr[0],qprop_smr[0],qprop_smr[1],phases,t0,bc_spec);
 	write_qqq(qqqto, qqq, phases, "lambda","SHELL");
 	compute_qqq(qqq,qprop_smr[1],qprop_smr[0],qprop_smr[0],phases,t0,bc_spec);

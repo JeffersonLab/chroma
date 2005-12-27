@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqqNucNuc_w.h,v 1.1 2005-12-27 20:41:41 kostas Exp $
+// $Id: inline_qqqNucNuc_w.h,v 1.2 2005-12-27 21:36:58 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -45,10 +45,10 @@ namespace Chroma
       int max_p2 ;
     } param;
 
-    struct Prop_t
+    struct NamedObject_t
     {
-      multi1d<std::string> prop_files;  // The files are expected to be in SciDAC format!
-    } prop;
+      multi1d<std::string> prop_ids; 
+    } named_obj;
 
     std::string qqq_file ;  // binary file to write the qqq object
     std::string qqbar_file ;  // binary file to write the qqbar object
