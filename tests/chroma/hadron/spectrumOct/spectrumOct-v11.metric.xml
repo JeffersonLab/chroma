@@ -2,81 +2,81 @@
 
 <assertions>
 
-<assertion xpath="/chroma/InlineObservables/elem[1]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[1]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, pion, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, p=[1,0,0] avg -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Mesons/elem[16]/momenta/elem[2]/mesprop" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Mesons/elem[16]/momenta/elem[2]/mesprop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma_1, k=0, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[1]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[1]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma_1, p=[1,0,0] avg -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[1]/momenta/elem[2]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[1]/momenta/elem[2]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 
 <!-- sh-pt, lambda_1, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[2]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[2]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma^*_1, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[3]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[3]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma_2, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[4]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[4]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, lambda_2, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[5]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[5]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma^*_2, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[6]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[6]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma^+_3, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[7]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[7]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, lambda_3, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[8]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[8]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma^*_3, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[9]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[9]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma^+_4, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[10]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[10]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma^+_5, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[11]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[11]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, sigma^+_6, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[12]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[12]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, lambda_4, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[13]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[13]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, xi_1, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[14]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[14]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, lambda_5, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[15]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[15]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, xi_2, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[16]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Point_Wilson_Baryons/elem[16]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 
 
 <!-- sh-sh, pion, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-sh, p=[1,0,0] avg -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Mesons/elem[16]/momenta/elem[2]/mesprop" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Mesons/elem[16]/momenta/elem[2]/mesprop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-sh, sigma_1, k=0, p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Baryons/elem[1]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Baryons/elem[1]/momenta/elem[1]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-sh, sigma_1, p=[1,0,0] avg -->
-<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Baryons/elem[1]/momenta/elem[2]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/spectrumOct_w/Wilson_hadron_measurements/elem[1]/Shell_Shell_Wilson_Baryons/elem[1]/momenta/elem[2]/barprop/elem[1]/re" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 
 </assertions>
