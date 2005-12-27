@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.22 2005-12-24 21:18:59 edwards Exp $
+# $Id: Makefile.am,v 2.23 2005-12-27 20:41:40 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -330,6 +330,7 @@ nobase_include_HEADERS += \
 	meas/hadron/hadseqsrc_w.h \
 	meas/hadron/mesonseqsrc_w.h \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+        meas/hadron/qqq_w.h meas/hadron/qqbar_w.h \
 	meas/hadron/seqsrc_funcmap_w.h \
 	meas/hadron/loops_w.h \
 	meas/hadron/wall_qprop_w.h \
@@ -436,6 +437,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
+	meas/inline/hadron/inline_qqqNucNuc_w.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
         meas/inline/hadron_s/util_compute_quark_prop_s.h \
@@ -747,6 +749,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
         meas/hadron/hadseqsrc_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
+	meas/hadron/qqq_w.cc meas/hadron/qqbar_w.cc \
 	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
 	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
@@ -807,6 +810,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
+	meas/inline/hadron/inline_qqqNucNuc_w.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \
