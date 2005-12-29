@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_fermact_w.h,v 2.1 2005-12-03 21:19:38 edwards Exp $
+// $Id: unprec_clover_fermact_w.h,v 2.2 2005-12-29 05:36:42 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -14,6 +14,7 @@
 namespace Chroma
 {
   //! Name and registration
+  /*! \ingroup fermacts */
   namespace UnprecCloverFermActEnv
   {
     extern const std::string name;
