@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 2.1 2005-12-03 21:19:38 edwards Exp $
+// $Id: prec_clover_fermact_w.cc,v 2.2 2005-12-29 05:36:10 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -34,7 +34,7 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name = "UNPRECONDITIONED_CLOVER";
+    const std::string name = "CLOVER";
 
     //! Register all the factories
     bool registerAll()
