@@ -43,8 +43,8 @@ bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_ar
 ##   Another option is to add it to check_PROGRAMS, which means it will only
 ##   be built by 'make check' and is not installed.
 check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
-    t_ape_smear t_precact t_dwf4d t_propagator_s t_disc_loop_s \
-    t_remez t_ritz t_dwflocality 
+    t_ape_smear t_dwf4d t_propagator_s t_disc_loop_s \
+    t_remez t_ritz t_dwflocality t_precact_4d t_precact_5d
 
 ## Moved t_dslashm and t_lwldslash to EXTRA_PROGRAMS because they currently
 ## do not compile.  This way, they don't break 'make check' but the targets
@@ -97,7 +97,8 @@ t_io_SOURCES = t_io.cc
 t_lwldslash_SOURCES = t_lwldslash.cc
 t_dwflinop_SOURCES = t_dwflinop.cc
 t_dwf4d_SOURCES = t_dwf4d.cc
-t_precact_SOURCES = t_precact.cc
+t_precact_4d_SOURCES = t_precact_4d.cc
+t_precact_5d_SOURCES = t_precact_5d.cc
 t_precdwf_SOURCES = t_precdwf.cc
 t_formfac_SOURCES = t_formfac.cc
 t_mesons_w_SOURCES = t_mesons_w.cc
