@@ -1,4 +1,4 @@
-// $Id: unprec_clover_linop_w.cc,v 2.2 2005-12-18 23:53:26 edwards Exp $
+// $Id: unprec_clover_linop_w.cc,v 2.3 2005-12-29 05:37:36 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -18,10 +18,14 @@ namespace Chroma
   void UnprecCloverLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
 				 const CloverFermActParams& param_)
   {
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+
     param = param_;
 
     A.create(u_, param);
     D.create(u_, param.anisoParam);
+
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
 
 
@@ -39,12 +43,12 @@ namespace Chroma
 				     enum PlusMinus isign) const
   {
     LatticeFermion tmp; moveToFastMemoryHint(tmp);
-    Real mquarter = -0.25;
+    Real mhalf = -0.5;
 
-    //  chi   =  A . psi - 0.25 * D' . psi  */
+    //  chi   =  A . psi - 0.5 * D' . psi  */
     A(chi, psi, isign);
     D(tmp, psi, isign);
-    chi -= mquarter * tmp;
+    chi += mhalf * tmp;
   }
 
 

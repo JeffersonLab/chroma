@@ -1,4 +1,4 @@
-// $Id: prec_clover_linop_w.cc,v 2.2 2005-12-18 23:53:26 edwards Exp $
+// $Id: prec_clover_linop_w.cc,v 2.3 2005-12-29 05:37:36 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -34,6 +34,8 @@ namespace Chroma
   void EvenOddPrecCloverLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
 				      const CloverFermActParams& param_)
   {
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+
     param = param_;
 
     clov.create(u_, param);
@@ -41,6 +43,8 @@ namespace Chroma
     invclov.choles(0);  // invert the cb=0 part
     
     D.create(u_, param.anisoParam);
+
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
 
 
@@ -49,7 +53,11 @@ namespace Chroma
   EvenOddPrecCloverLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					enum PlusMinus isign) const
   {
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+
     clov.apply(chi, psi, isign, 0);
+
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
 
   //! Apply the inverse of the even-even block onto a source vector
@@ -57,7 +65,11 @@ namespace Chroma
   EvenOddPrecCloverLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					   enum PlusMinus isign) const
   {
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+
     invclov.apply(chi, psi, isign, 0);
+
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
   
   //! Apply the the odd-odd block onto a source vector
@@ -129,10 +141,10 @@ namespace Chroma
     LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
     Real mquarter = -0.25;
   
-    /*  chi_o  =  A_oo  psi_o  -  tmp1_o  */
+    //  tmp1_o  =  D_oe   A^(-1)_ee  D_eo  psi_o
+    //  chi_o  =  A_oo  psi_o  -  tmp1_o
     invclov.apply(chi, psi, isign, 1);
 
-    //  tmp1_o  =  D_oe   A^(-1)_ee  D_eo  psi_o
     D.apply(tmp1, psi, isign, 0);
     invclov.apply(tmp2, tmp1, isign, 0);
     invclov.apply(tmp1, tmp2, isign, 1);

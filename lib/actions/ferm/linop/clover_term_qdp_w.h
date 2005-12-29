@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: clover_term_qdp_w.h,v 2.2 2005-12-29 05:37:36 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -16,8 +16,15 @@ namespace Chroma
   struct PrimitiveClovTriang
   {
     RScalar<REAL>   diag[2][2*Nc];
-    RComplex<REAL>  offd[2][2*Nc*Nc];
+    RComplex<REAL>  offd[2][2*Nc*Nc-Nc];
   };
+
+  // Reader/writers
+  /*! \ingroup linop */
+  void read(XMLReader& xml, const string& path, PrimitiveClovTriang& param);
+
+  /*! \ingroup linop */
+  void write(XMLWriter& xml, const string& path, const PrimitiveClovTriang& param);
 
 
   //! Clover term
@@ -73,7 +80,7 @@ namespace Chroma
      *  \param f         field strength tensor F(mu,nu)        (Read)
      *  \param cb        checkerboard                          (Read)
      */
-    void makeClov(const multi1d<LatticeColorMatrix>& f, int cb);
+    void makeClov(const multi1d<LatticeColorMatrix>& f, const Real& diag_mass);
 
     //! Invert the clover term on cb
     void chlclovms(bool DetP, Double& logdet, int cb);

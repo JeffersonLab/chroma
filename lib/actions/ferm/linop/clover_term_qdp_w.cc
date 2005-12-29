@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.2 2005-12-19 02:26:35 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 2.3 2005-12-29 05:37:36 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -8,15 +8,70 @@
 
 #include "chromabase.h"
 #include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "meas/glue/mesfield.h"
 
-// Do not use for the moment
-#if 0
 
 namespace Chroma 
 { 
 
-  typedef PColorMatrix < RComplex <REAL>, Nc > PrimitiveSU3Matrix;
-  typedef RComplex<REAL> PrimitiveLDUFerm[2][2*Nc];
+
+  //! XML output
+  inline
+  XMLWriter& operator<<(XMLWriter& xml, const PrimitiveClovTriang& d)
+  {
+    xml.openTag("PrimClovTriang");
+
+    XMLWriterAPI::AttributeList alist;
+
+    xml.openTag("Diag");
+    for(int i=0; i < 2; ++i)
+    {
+      for(int j=0; j < 2*Nc; ++j)
+      {
+	alist.clear();
+	alist.push_back(XMLWriterAPI::Attribute("block", i));
+	alist.push_back(XMLWriterAPI::Attribute("col", j));
+
+	xml.openTag("elem", alist);
+	xml << d.diag[i][j];
+	xml.closeTag();
+      }
+    }
+    xml.closeTag(); // Diag
+
+    xml.openTag("Offd");
+    for(int i=0; i < 2; ++i)
+    {
+      for(int j=0; j < 2*Nc*Nc-Nc; ++j)
+      {
+	alist.clear();
+	alist.push_back(XMLWriterAPI::Attribute("block", i));
+	alist.push_back(XMLWriterAPI::Attribute("col", j));
+
+	xml.openTag("elem", alist);
+	xml << d.offd[i][j];
+	xml.closeTag();
+      }
+    }
+    xml.closeTag(); // Offd
+
+    xml.closeTag(); // PrimClovTriang
+    return xml;
+  }
+
+
+  // Reader/writers
+  void read(XMLReader& xml, const string& path, PrimitiveClovTriang& param)
+  {
+    QDP_error_exit("clover reader not implemented");
+  }
+
+  void write(XMLWriter& xml, const string& path, const PrimitiveClovTriang& param)
+  {
+    push(xml,path);
+    xml << param;
+    pop(xml);
+  }
 
 
 
@@ -27,12 +82,21 @@ namespace Chroma
     u = u_;
     param = param_;
 
-    tri.resize(QDP::Layout::sitesOnNode());  // hold local lattice
+    //
+    // Yuk. Some bits of knowledge of the dslash term are buried in the 
+    // effective mass term. They show up here. If I wanted some more 
+    // complicated dslash then this will have to be fixed/adjusted.
+    //
+    Real diag_mass;
+    {
+      Real ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+      diag_mass = 1 + (Nd-1)*ff + param.Mass;
+    }
 
     /* Calculate F(mu,nu) */
     multi1d<LatticeColorMatrix> f;
-    mesField(f, u);
-    makeClov(f);
+    mesField(f, u_);
+    makeClov(f, diag_mass);
   }
 
 
@@ -115,9 +179,12 @@ namespace Chroma
 
    * Arguments:
    *  \param f         field strength tensor F(cb,mu,nu)        (Read)
+   *  \param diag_mass effective mass term                      (Read)
    */
-  void QDPCloverTerm::makeClov(const multi1d<LatticeColorMatrix>& f)
+  void QDPCloverTerm::makeClov(const multi1d<LatticeColorMatrix>& f, const Real& diag_mass)
   {
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+
     LatticeColorMatrix f0;
     LatticeColorMatrix f1;
     LatticeColorMatrix f2;
@@ -135,7 +202,7 @@ namespace Chroma
   
             
     /* Multiply in the appropriate clover coefficient */
-    switch (param.aniso.t_dir)
+    switch (param.anisoParam.t_dir)
     {
     case 1:
       f0 = f[0] * param.clovCoeffT;
@@ -165,57 +232,61 @@ namespace Chroma
       break;
 
     default:
-      QDP_error_exit("invalid time direction", t_dir);
+      QDPIO::cerr << __func__ << ": invalid time direction: t_dir= " 
+		  << param.anisoParam.t_dir << endl;
+      QDP_abort(1);
     }
 
+
+    tri.resize(QDP::Layout::sitesOnNode());  // hold local lattice
 
     /*# Construct diagonal */
-    for(int site; site < QDP::Layout::sitesOnNode(); ++site)
+    for(int site = 0; site < QDP::Layout::sitesOnNode(); ++site)
     {
-      for(int ii = 0; ii < 2*Nc; ii++)
-	for(int jj = 0; jj < 2; jj++)
+      for(int jj = 0; jj < 2; jj++)
+      {
+	for(int ii = 0; ii < 2*Nc; ii++)
 	{
-	  tri[site].diag[jj][ii] = 1.0;
+	  tri[site].diag[jj][ii] = diag_mass.elem().elem().elem();
 	}
+      }
     }
+
 
     /* The appropriate clover coeffients are already included in the
        field strengths F(mu,nu)! */
-    for(int site; site < QDP::Layout::sitesOnNode(); ++site)
+    for(int site = 0; site < QDP::Layout::sitesOnNode(); ++site)
     {
-      InnerComplex E_minus;
-      InnerComplex B_minus;
-      InnerComplex ctmp_0;
-      InnerComplex ctmp_1;
-      InnerReal rtmp_0;
-      InnerReal rtmp_1;
-      Complex ione;
-                              
-      FILL(ione,I);
+      RComplex<REAL> E_minus;
+      RComplex<REAL> B_minus;
+      RComplex<REAL> ctmp_0;
+      RComplex<REAL> ctmp_1;
+      RScalar<REAL> rtmp_0;
+      RScalar<REAL> rtmp_1;
   
       for(int i = 0; i < Nc; ++i)
       {
 	/*# diag_L(i,0) = 1 - i*diag(E_z - B_z) */
 	/*#             = 1 - i*diag(F(3,2) - F(1,0)) */
-	ctmp_0 = _SP_f5[i][i];
-	ctmp_0 -= _SP_f0[i][i];
+	ctmp_0 = f5.elem(site).elem().elem(i,i);
+	ctmp_0 -= f0.elem(site).elem().elem(i,i);
 	rtmp_0 = imag(ctmp_0);
-	_DIAG_SP_tri[0][i] += rtmp_0;
+	tri[site].diag[0][i] += rtmp_0;
 
 	/*# diag_L(i+Nc,0) = 1 + i*diag(E_z - B_z) */
 	/*#                = 1 + i*diag(F(3,2) - F(1,0)) */
-	_DIAG_SP_tri[0][i+Nc] -= rtmp_0;
+	tri[site].diag[0][i+Nc] -= rtmp_0;
 
 	/*# diag_L(i,1) = 1 + i*diag(E_z + B_z) */
 	/*#             = 1 + i*diag(F(3,2) + F(1,0)) */
-	ctmp_1 = _SP_f5[i][i];
-	ctmp_1 += _SP_f0[i][i];
+	ctmp_1 = f5.elem(site).elem().elem(i,i);
+	ctmp_1 += f0.elem(site).elem().elem(i,i);
 	rtmp_1 = imag(ctmp_1);
-	_DIAG_SP_tri[1][i] -= rtmp_1;
+	tri[site].diag[1][i] -= rtmp_1;
 
 	/*# diag_L(i+Nc,1) = 1 - i*diag(E_z + B_z) */
 	/*#                = 1 - i*diag(F(3,2) + F(1,0)) */
-	_DIAG_SP_tri[1][i+Nc] += rtmp_1;
+	tri[site].diag[1][i+Nc] += rtmp_1;
       }
 
       /*# Construct lower triangular portion */
@@ -229,23 +300,23 @@ namespace Chroma
 
 	  /*# L(i,j,0) = -i*(E_z - B_z)[i,j] */
 	  /*#          = -i*(F(3,2) - F(1,0)) */
-	  ctmp_0 = _SP_f0[j][i];
-	  ctmp_0 -= _SP_f5[j][i];
-	  _OFFD_SP_tri[0][elem_ij] = ctmp_0 * ione;
+	  ctmp_0 = f0.elem(site).elem().elem(j,i);
+	  ctmp_0 -= f5.elem(site).elem().elem(j,i);
+	  tri[site].offd[0][elem_ij] = timesI(ctmp_0);
 
 	  /*# L(i+Nc,j+Nc,0) = +i*(E_z - B_z)[i,j] */
 	  /*#                = +i*(F(3,2) - F(1,0)) */
-	  _OFFD_SP_tri[0][elem_tmp] = -_OFFD_SP_tri[0][elem_ij];
+	  tri[site].offd[0][elem_tmp] = -tri[site].offd[0][elem_ij];
 
 	  /*# L(i,j,1) = i*(E_z + B_z)[i,j] */
 	  /*#          = i*(F(3,2) + F(1,0)) */
-	  ctmp_1 = _SP_f5[j][i];
-	  ctmp_1 += _SP_f0[j][i];
-	  _OFFD_SP_tri[1][elem_ij] = ctmp_1 * ione;
+	  ctmp_1 = f5.elem(site).elem().elem(j,i);
+	  ctmp_1 += f0.elem(site).elem().elem(j,i);
+	  tri[site].offd[1][elem_ij] = timesI(ctmp_1);
 
 	  /*# L(i+Nc,j+Nc,1) = -i*(E_z + B_z)[i,j] */
 	  /*#                = -i*(F(3,2) + F(1,0)) */
-	  _OFFD_SP_tri[1][elem_tmp] = -_OFFD_SP_tri[1][elem_ij];
+	  tri[site].offd[1][elem_tmp] = -tri[site].offd[1][elem_ij];
 	}
       }
   
@@ -258,24 +329,43 @@ namespace Chroma
 
 	  /*# i*E_- = (i*E_x + E_y) */
 	  /*#       = (i*F(3,0) + F(3,1)) */
-	  E_minus = _SP_f2[j][i] * ione;
-	  E_minus += _SP_f4[j][i];
+	  E_minus = timesI(f2.elem(site).elem().elem(j,i));
+	  E_minus += f4.elem(site).elem().elem(j,i);
 
 	  /*# i*B_- = (i*B_x + B_y) */
 	  /*#       = (i*F(2,1) - F(2,0)) */
-	  B_minus = _SP_f3[j][i] * ione;
-	  B_minus -= _SP_f1[j][i];
+	  B_minus = timesI(f3.elem(site).elem().elem(j,i));
+	  B_minus -= f1.elem(site).elem().elem(j,i);
 
 	  /*# L(i+Nc,j,0) = -i*(E_- - B_-)  */
-	  _OFFD_SP_tri[0][elem_ij] = B_minus - E_minus;
+	  tri[site].offd[0][elem_ij] = B_minus - E_minus;
 
 	  /*# L(i+Nc,j,1) = +i*(E_- + B_-)  */
-	  _OFFD_SP_tri[1][elem_ij] = E_minus + B_minus;
+	  tri[site].offd[1][elem_ij] = E_minus + B_minus;
 	}
       }
     }
               
     END_CODE();
+
+#if 1
+    {
+      XMLFileWriter xml("f.xml");
+      push(xml,"f");
+      write(xml, "clovT", param.clovCoeffT);
+      write(xml, "clovR", param.clovCoeffR);
+      write(xml,"f",f);
+      pop(xml);
+    }
+    {
+      XMLFileWriter xml("makeclov.xml");
+      push(xml,"makeclov");
+      write(xml,"tri",tri);
+      pop(xml);
+    }
+#endif
+
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
   
 
@@ -283,7 +373,7 @@ namespace Chroma
   /*!
    * Computes the inverse of the term on cb using Cholesky
    */
-  void choles(int cb)
+  void QDPCloverTerm::choles(int cb)
   {
     Double logdet;
     chlclovms(false, logdet, cb);
@@ -296,11 +386,11 @@ namespace Chroma
    *
    * \return logarithm of the determinant  
    */
-  Double cholesDet(int cb)
+  Double QDPCloverTerm::cholesDet(int cb)
   {
     Double logdet;
     chlclovms(true, logdet, cb);
-    return det;
+    return logdet;
   }
 
  
@@ -314,30 +404,36 @@ namespace Chroma
    * \param logdet       logarithm of the determinant        (Write)
    * \param cb           checkerboard of work                (Read)
    */
-  void QDPCloverTerm::choles(bool DetP, Double& logdet, int cb)
+  void QDPCloverTerm::chlclovms(bool DetP, Double& logdet, int cb)
   {
-    LatticeReal log_diag;
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
 
     START_CODE();
+
+    LatticeReal log_diag;
 
     if ( 2*Nc < 3 )
       QDP_error_exit("Matrix is too small", Nc, Ns);
   
-    log_diag = 0;
+    log_diag = zero;
   
     int n = 2*Nc;
 
     /*# Cholesky decompose  A = L.L^dag */
     /*# NOTE!!: I can store this matrix in  invclov, but will need a */
     /*#   temporary  diag */
-    for(int site=0; site < QDP::Layout::sitesOnNode(); ++site)
+    for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
     {
-      multi1d<InnerReal> diag_g(n);
-      multi1d<InnerComplex> v1(n);
-      InnerComplex sum;
-      InnerReal one;
-      InnerReal zero;
-      InnerReal lrtmp;
+      int site = rb[cb].siteTable()[ssite];
+
+      PrimitiveClovTriang  invcl;
+
+      multi1d< RScalar<REAL> > diag_g(n);
+      multi1d< RComplex<REAL> > v1(n);
+      RComplex<REAL> sum;
+      RScalar<REAL> one;
+      RScalar<REAL> zero;
+      RScalar<REAL> lrtmp;
 
       one = 1;
       zero = 0;
@@ -345,18 +441,19 @@ namespace Chroma
       for(int s = 0; s < 2; ++s)
       {
 	int elem_jk = 0;
-    
+	int elem_ij;
+
 	for(int j = 0; j <  n; ++j)
 	{
 	  /*# Multiply clover mass term against basis vector.  */
 	  /*# Actually, I need a column of the lower triang matrix clov. */
-	  v1[j] = cmplx(_DIAG_SP_clo[s][j],zero);
+	  v1[j] = cmplx(tri[site].diag[s][j],zero);
     
-	  int elem_ij = elem_jk + 2*j;
+	  elem_ij = elem_jk + 2*j;
       
 	  for(int i = j+1; i < n; ++i)
 	  {
-	    v1[i] = _OFFD_SP_clo[s][elem_ij];
+	    v1[i] = tri[site].offd[s][elem_ij];
 	    elem_ij += i;
 	  }
       
@@ -368,7 +465,7 @@ namespace Chroma
 	
 	    for(int i = j; i < n; ++i)
 	    {
-	      v1[i] -= adj(_OFFD_SP_invcl[s][elem_jk]) * _OFFD_SP_invcl[s][elem_ik];
+	      v1[i] -= adj(invcl.offd[s][elem_jk]) * invcl.offd[s][elem_ik];
 	      elem_ik += i;
 	    }
 	    elem_jk++;
@@ -381,36 +478,36 @@ namespace Chroma
 	  /*# Squeeze in computation of log(Det) */
 	  /*#- */
 	  lrtmp = log(diag_g[j]);
-	  _SP_log_diag += lrtmp;
+	  log_diag.elem(site).elem().elem() += lrtmp;
 	  
 	  diag_g[j] = sqrt(diag_g[j]);
 	  diag_g[j] = one / diag_g[j];
       
 	  /*# backward substitute */
-	  int elem_ij = elem_jk + j;
+	  elem_ij = elem_jk + j;
 	  for(int i = j+1; i < n; ++i)
 	  {
-	    _OFFD_SP_invcl[s][elem_ij] = v1[i] * diag_g[j];
+	    invcl.offd[s][elem_ij] = v1[i] * diag_g[j];
 	    elem_ij += i;
 	  }
 	}
 
-	/*# Use forward and back substitution to construct  _OFFD_SP_invcl = lower(A^-1) */
+	/*# Use forward and back substitution to construct  invcl.offd = lower(A^-1) */
 	for(int k = 0; k < n; ++k)
 	{
 	  for(int i = 0; i < k; ++i)
-	    v1[i] = 0;
+	    zero_rep(v1[i]);
 	  
 	  /*# Forward substitution */
 	  v1[k] = cmplx(diag_g[k],zero);
       
 	  for(int i = k+1; i < n; ++i)
 	  {
-	    sum = 0;
+	    zero_rep(sum);
 	    elem_ij = i*(i-1)/2+k;	
-	    for(j = k; j < i; ++j)
+	    for(int j = k; j < i; ++j)
 	    {
-	      sum -= _OFFD_SP_invcl[s][elem_ij] * v1[j];
+	      sum -= invcl.offd[s][elem_ij] * v1[j];
 	      elem_ij++;
 	    }
 	
@@ -427,26 +524,31 @@ namespace Chroma
 	    int elem_ji = ((i+1)*i)/2+i;
 	    for(int j = i+1; j < n; ++j)
 	    {
-	      sum -= adj(_OFFD_SP_invcl[s][elem_ji]) * v1[j];
+	      sum -= adj(invcl.offd[s][elem_ji]) * v1[j];
 	      elem_ji += j;
 	    }
 	    v1[i] = sum * diag_g[i];
 	  }
 
-	  /*# Overwrite column k of _OFFD_SP_invcl */
-	  _DIAG_SP_invcl[s][k] = real(v1[k]);
+	  /*# Overwrite column k of invcl.offd */
+	  invcl.diag[s][k] = real(v1[k]);
 
-	  elem_ik = ((k+1)*k)/2+k;
+	  int elem_ik = ((k+1)*k)/2+k;
       
-	  for(i = k+1; i < n; ++i)
+	  for(int i = k+1; i < n; ++i)
 	  {
-	    _OFFD_SP_invcl[s][elem_ik] = v1[i];
+	    invcl.offd[s][elem_ik] = v1[i];
 	    elem_ik += i;
 	  }
 	}
       }
+
+      // Overwrite original element
+      tri[site] = invcl;
     }
   
+    // Overwrite
+
     if ( DetP )
     {
       logdet = sum(log_diag);
@@ -457,6 +559,8 @@ namespace Chroma
     }
   
     END_CODE();
+
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
 
 
@@ -480,6 +584,8 @@ namespace Chroma
   void QDPCloverTerm::apply(LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign, int cb) const
   {
+//    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+
     START_CODE();
 
     if ( Ns != 4 )
@@ -487,23 +593,29 @@ namespace Chroma
 
     int n = 2*Nc;
 
-    for(site; site < QDP::Layout::sitesOnNode(); ++site)
+    const multi1d<int>& tab = rb[cb].siteTable();
+    for(int ssite=0; ssite < tab.size(); ++ssite) 
     {
+      int site = tab[ssite];
+
+      RComplex<REAL>* cchi = (RComplex<REAL>*)&(chi.elem(site).elem(0).elem(0));
+      const RComplex<REAL>* ppsi = (const RComplex<REAL>*)&(psi.elem(site).elem(0).elem(0));
+
       for(int i = 0; i < n; ++i)
       {
-	static_cast<PrimitiveLDUFerm&>(chi.elem(site))[0][i] = _DIAG_SP_clov[0][i] * _SP_psi[0][i];
-	chi.elem(site).elem[2][i] = _DIAG_SP_clov[1][i] * _SP_psi[2][i];
+	cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
+	cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
       }
 
-      int kij=0;  
+      int kij = 0;  
       for(int i = 0; i < n; ++i)
       {
-	for(int j=0; j < i; j++)
+	for(int j = 0; j < i; j++)
 	{
-	  _SP_chi[0][i] += _OFFD_SP_clov[0][kij] * _SP_psi[0][j];
-	  _SP_chi[0][j] += adj(_OFFD_SP_clov[0][kij]) * _SP_psi[0][i];
-	  _SP_chi[2][i] += _OFFD_SP_clov[1][kij] * _SP_psi[2][j];
-	  _SP_chi[2][j] += adj(_OFFD_SP_clov[1][kij]) * _SP_psi[2][i];
+	  cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
+	  cchi[0*n+j] += adj(tri[site].offd[0][kij]) * ppsi[0*n+i];
+	  cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
+	  cchi[1*n+j] += adj(tri[site].offd[1][kij]) * ppsi[1*n+i];
 	  kij++;
 	}
       }
@@ -511,8 +623,9 @@ namespace Chroma
 
 
     END_CODE();
+
+//    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
 
 }
 
-#endif
