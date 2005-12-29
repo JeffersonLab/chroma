@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) $(t_circular_buffer_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_g5eps_bj_SOURCES) $(t_gauge_force_SOURCES) $(t_gfix_SOURCES) $(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) $(t_hamsys_ferm_SOURCES) $(t_hmc_SOURCES) $(t_hmc_pg_SOURCES) $(t_hypsmear_SOURCES) $(t_invborici_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) $(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) $(t_prec_twoflav_wilson_monomial_SOURCES) $(t_prec_wilson_force_SOURCES) $(t_precact_SOURCES) $(t_precact_sse_SOURCES) $(t_preccfz_SOURCES) $(t_preccfz_opt_SOURCES) $(t_precdwf_SOURCES) $(t_precnef_SOURCES) $(t_propagator_fuzz_baryon_s_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_twisted_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) $(t_remez_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_seqsource_SOURCES) $(t_spprod_SOURCES) $(t_stout_state_SOURCES) $(t_su3_SOURCES) $(t_sumr_SOURCES) $(t_unprec_twoflav_wilson_monomial_SOURCES) $(t_unprec_wilson_force_SOURCES) $(t_wilslp_SOURCES)
+SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) $(t_circular_buffer_SOURCES) $(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) $(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) $(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) $(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) $(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) $(t_g5eps_bj_SOURCES) $(t_gauge_force_SOURCES) $(t_gfix_SOURCES) $(t_hamiltonian_SOURCES) $(t_hamsys_SOURCES) $(t_hamsys_ferm_SOURCES) $(t_hmc_SOURCES) $(t_hmc_pg_SOURCES) $(t_hypsmear_SOURCES) $(t_invborici_SOURCES) $(t_invert3_precwilson_SOURCES) $(t_invert4_precwilson_SOURCES) $(t_invrelcg_SOURCES) $(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) $(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) $(t_lwldslash_pab_SOURCES) $(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) $(t_prec_twoflav_wilson_monomial_SOURCES) $(t_prec_wilson_force_SOURCES) $(t_precact_4d_SOURCES) $(t_precact_5d_SOURCES) $(t_precact_sse_SOURCES) $(t_preccfz_SOURCES) $(t_preccfz_opt_SOURCES) $(t_precdwf_SOURCES) $(t_precnef_SOURCES) $(t_propagator_fuzz_baryon_s_SOURCES) $(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) $(t_propagator_s_SOURCES) $(t_propagator_twisted_SOURCES) $(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) $(t_remez_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) $(t_ritz_KS_SOURCES) $(t_seqsource_SOURCES) $(t_spprod_SOURCES) $(t_stout_state_SOURCES) $(t_su3_SOURCES) $(t_sumr_SOURCES) $(t_unprec_twoflav_wilson_monomial_SOURCES) $(t_unprec_wilson_force_SOURCES) $(t_wilslp_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -47,9 +47,10 @@ bin_PROGRAMS = t_mesplq$(EXEEXT) t_lwldslash_sse$(EXEEXT) \
 	t_lwldslash_array$(EXEEXT) t_leapfrog$(EXEEXT)
 check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_ape_smear$(EXEEXT) \
-	t_precact$(EXEEXT) t_dwf4d$(EXEEXT) t_propagator_s$(EXEEXT) \
+	t_dwf4d$(EXEEXT) t_propagator_s$(EXEEXT) \
 	t_disc_loop_s$(EXEEXT) t_remez$(EXEEXT) t_ritz$(EXEEXT) \
-	t_dwflocality$(EXEEXT)
+	t_dwflocality$(EXEEXT) t_precact_4d$(EXEEXT) \
+	t_precact_5d$(EXEEXT)
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
@@ -304,10 +305,16 @@ t_prec_wilson_force_OBJECTS = $(am_t_prec_wilson_force_OBJECTS)
 t_prec_wilson_force_LDADD = $(LDADD)
 t_prec_wilson_force_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_t_precact_OBJECTS = t_precact.$(OBJEXT)
-t_precact_OBJECTS = $(am_t_precact_OBJECTS)
-t_precact_LDADD = $(LDADD)
-t_precact_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_t_precact_4d_OBJECTS = t_precact_4d.$(OBJEXT)
+t_precact_4d_OBJECTS = $(am_t_precact_4d_OBJECTS)
+t_precact_4d_LDADD = $(LDADD)
+t_precact_4d_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+am_t_precact_5d_OBJECTS = t_precact_5d.$(OBJEXT)
+t_precact_5d_OBJECTS = $(am_t_precact_5d_OBJECTS)
+t_precact_5d_LDADD = $(LDADD)
+t_precact_5d_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_precact_sse_OBJECTS = t_precact_sse.$(OBJEXT)
 t_precact_sse_OBJECTS = $(am_t_precact_sse_OBJECTS)
 t_precact_sse_LDADD = $(LDADD)
@@ -459,10 +466,11 @@ SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) \
 	$(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) \
 	$(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) \
 	$(t_prec_twoflav_wilson_monomial_SOURCES) \
-	$(t_prec_wilson_force_SOURCES) $(t_precact_SOURCES) \
-	$(t_precact_sse_SOURCES) $(t_preccfz_SOURCES) \
-	$(t_preccfz_opt_SOURCES) $(t_precdwf_SOURCES) \
-	$(t_precnef_SOURCES) $(t_propagator_fuzz_baryon_s_SOURCES) \
+	$(t_prec_wilson_force_SOURCES) $(t_precact_4d_SOURCES) \
+	$(t_precact_5d_SOURCES) $(t_precact_sse_SOURCES) \
+	$(t_preccfz_SOURCES) $(t_preccfz_opt_SOURCES) \
+	$(t_precdwf_SOURCES) $(t_precnef_SOURCES) \
+	$(t_propagator_fuzz_baryon_s_SOURCES) \
 	$(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) \
 	$(t_propagator_s_SOURCES) $(t_propagator_twisted_SOURCES) \
 	$(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) \
@@ -494,10 +502,11 @@ DIST_SOURCES = $(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) \
 	$(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) \
 	$(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) \
 	$(t_prec_twoflav_wilson_monomial_SOURCES) \
-	$(t_prec_wilson_force_SOURCES) $(t_precact_SOURCES) \
-	$(t_precact_sse_SOURCES) $(t_preccfz_SOURCES) \
-	$(t_preccfz_opt_SOURCES) $(t_precdwf_SOURCES) \
-	$(t_precnef_SOURCES) $(t_propagator_fuzz_baryon_s_SOURCES) \
+	$(t_prec_wilson_force_SOURCES) $(t_precact_4d_SOURCES) \
+	$(t_precact_5d_SOURCES) $(t_precact_sse_SOURCES) \
+	$(t_preccfz_SOURCES) $(t_preccfz_opt_SOURCES) \
+	$(t_precdwf_SOURCES) $(t_precnef_SOURCES) \
+	$(t_propagator_fuzz_baryon_s_SOURCES) \
 	$(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) \
 	$(t_propagator_s_SOURCES) $(t_propagator_twisted_SOURCES) \
 	$(t_propagator_w_SOURCES) $(t_read_eigen_SOURCES) \
@@ -670,7 +679,8 @@ t_io_SOURCES = t_io.cc
 t_lwldslash_SOURCES = t_lwldslash.cc
 t_dwflinop_SOURCES = t_dwflinop.cc
 t_dwf4d_SOURCES = t_dwf4d.cc
-t_precact_SOURCES = t_precact.cc
+t_precact_4d_SOURCES = t_precact_4d.cc
+t_precact_5d_SOURCES = t_precact_5d.cc
 t_precdwf_SOURCES = t_precdwf.cc
 t_formfac_SOURCES = t_formfac.cc
 t_mesons_w_SOURCES = t_mesons_w.cc
@@ -938,9 +948,12 @@ t_prec_twoflav_wilson_monomial$(EXEEXT): $(t_prec_twoflav_wilson_monomial_OBJECT
 t_prec_wilson_force$(EXEEXT): $(t_prec_wilson_force_OBJECTS) $(t_prec_wilson_force_DEPENDENCIES) 
 	@rm -f t_prec_wilson_force$(EXEEXT)
 	$(CXXLINK) $(t_prec_wilson_force_LDFLAGS) $(t_prec_wilson_force_OBJECTS) $(t_prec_wilson_force_LDADD) $(LIBS)
-t_precact$(EXEEXT): $(t_precact_OBJECTS) $(t_precact_DEPENDENCIES) 
-	@rm -f t_precact$(EXEEXT)
-	$(CXXLINK) $(t_precact_LDFLAGS) $(t_precact_OBJECTS) $(t_precact_LDADD) $(LIBS)
+t_precact_4d$(EXEEXT): $(t_precact_4d_OBJECTS) $(t_precact_4d_DEPENDENCIES) 
+	@rm -f t_precact_4d$(EXEEXT)
+	$(CXXLINK) $(t_precact_4d_LDFLAGS) $(t_precact_4d_OBJECTS) $(t_precact_4d_LDADD) $(LIBS)
+t_precact_5d$(EXEEXT): $(t_precact_5d_OBJECTS) $(t_precact_5d_DEPENDENCIES) 
+	@rm -f t_precact_5d$(EXEEXT)
+	$(CXXLINK) $(t_precact_5d_LDFLAGS) $(t_precact_5d_OBJECTS) $(t_precact_5d_LDADD) $(LIBS)
 t_precact_sse$(EXEEXT): $(t_precact_sse_OBJECTS) $(t_precact_sse_DEPENDENCIES) 
 	@rm -f t_precact_sse$(EXEEXT)
 	$(CXXLINK) $(t_precact_sse_LDFLAGS) $(t_precact_sse_OBJECTS) $(t_precact_sse_LDADD) $(LIBS)
@@ -1073,7 +1086,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_prec_nef.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_prec_twoflav_wilson_monomial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_prec_wilson_force.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_precact.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_precact_4d.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_precact_5d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_precact_sse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_preccfz.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_preccfz_opt.Po@am__quote@
