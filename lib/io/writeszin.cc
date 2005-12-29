@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 2.1 2005-12-20 19:23:56 edwards Exp $
+// $Id: writeszin.cc,v 2.2 2005-12-29 03:46:16 kostas Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -258,8 +258,9 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
   // The slowest moving index is the direction
   for(int j = 0; j < Nd; j++)
   {
-    LatticeColorMatrix  u_old = transpose(u[j]); // Take the transpose
-  
+    LatticeColorMatrix  u_tt = transpose(u[j]); // Take the transpose
+    LatticeColorMatrixF u_old(u_tt);      // Cast to fixed 32 bit prec
+
     for(int cb=0; cb < 2; ++cb)
       for(int sitecb=0; sitecb < vol_cb; ++sitecb)
       {
