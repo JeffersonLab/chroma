@@ -26,6 +26,12 @@ AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/lib
 LDADD += -lsse_dwf_cg 
 endif
 
+if BUILD_ALTIVEC_DWF_CG
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/include
+AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/lib
+LDADD += -laltivec_dwf_cg 
+endif
+
 #
 # Local Headers
 #
