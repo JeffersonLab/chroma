@@ -49,6 +49,12 @@ AC_ARG_ENABLE(sse_dwf_cg,
     [Build and Use the SSE DWF CG Library])
 )
 
+AC_ARG_ENABLE(altivec_dwf_cg,
+  AC_HELP_STRING( 
+    [--enable-altivec-dwf-cg],
+    [Build and Use the altivec DWF CG Library])
+)
+
 AC_ARG_WITH(bagel_wilson_dslash,
   AC_HELP_STRING(
     [--with-bagel-wilson-dslash=DIR],
@@ -175,6 +181,26 @@ AC_SUBST(SSE_DWF_CG_ENABLED,[$enable_sse_dwf_cg])
 
 AM_CONDITIONAL(BUILD_SSE_DWF_CG,
   [test "x${enable_sse_dwf_cg}x" = "xyesx" ])
+
+
+dnl ALTIVEC DWF CG stuff
+case "$enable_altivec_dwf_cg" in
+  yes) 
+        AC_MSG_NOTICE([Configuring ALTIVEC DWF CG])
+	AC_CONFIG_SUBDIRS(other_libs/altivec_dwf_cg)
+	AC_SUBST(ALTIVEC_DWF_CG_DIR, [altivec_dwf_cg])
+	AC_DEFINE([BUILD_ALTIVEC_DWF_CG],[1],[Build ALTIVEC DWF CG])
+	;;
+  *)
+	AC_SUBST(ALTIVEC_DWF_CG_DIR)
+	AC_MSG_NOTICE([Not building ALTIVEC DWF CG])
+        ;;
+esac 
+AC_SUBST(ALTIVEC_DWF_CG_ENABLED,[$enable_altivec_dwf_cg])
+
+AM_CONDITIONAL(BUILD_ALTIVEC_DWF_CG,
+  [test "x${enable_altivec_dwf_cg}x" = "xyesx" ])
+
 
 
 dnl QCDOC Wilson Dslash stuff

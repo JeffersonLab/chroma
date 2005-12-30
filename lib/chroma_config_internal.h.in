@@ -1,5 +1,8 @@
 /* lib/chroma_config_internal.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Build ALTIVEC DWF CG */
+#undef BUILD_ALTIVEC_DWF_CG
+
 /* Build optimized Continued Frac. (CFZ) LinOp */
 #undef BUILD_CFZ_CFZ_LINOP
 

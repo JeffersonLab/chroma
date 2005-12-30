@@ -1,4 +1,4 @@
-// $Id: dwf_qpropt_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: dwf_qpropt_w.h,v 2.1 2005-12-30 20:28:44 kostas Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -14,7 +14,7 @@
 
 
 // The following is an ifdef lis that switches in optimised
-// Dslash-es. Currently only optimised inverter is the SSE One;
+// Dslash-es. Currently only optimised inverters are the SSE and ALTICEC 
 
 #if defined(BUILD_SSE_DWF_CG)
 // The file defines the SSE Dslash class
@@ -22,6 +22,14 @@
 #include "prec_dwf_qprop_array_sse_w.h"
 namespace Chroma {
 typedef SSEDWFQpropT DWFQpropT;
+}  // end namespace Chroma
+
+#elif defined(BUILD_ALTIVEC_DWF_CG)
+// The file defines the ALTIVEC Dslash class
+// The following typedef switches it in.
+#include "prec_dwf_qprop_array_altivec_w.h"
+namespace Chroma {
+typedef ALTIVECDWFQpropT DWFQpropT;
 }  // end namespace Chroma
 
 #else
