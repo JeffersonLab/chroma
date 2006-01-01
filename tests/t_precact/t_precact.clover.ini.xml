@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<t_precact>
+
+  <Param>
+    <InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-7</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+    <nrow>2 2 2 2</nrow>
+    <boundary>1 1 1 -1</boundary>
+  </Param>
+
+  <UnprecAction>
+    <FermionAction>
+      <FermAct>UNPRECONDITIONED_CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>1.27</clovCoeff>
+         <clovCoeffR>0.91</clovCoeffR>
+         <clovCoeffT>1.27</clovCoeffT>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+    </FermionAction>
+    <StateInfo>
+    </StateInfo>
+  </UnprecAction>
+
+  <PrecAction>
+    <FermionAction>
+      <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>1.27</clovCoeff>
+         <clovCoeffR>0.91</clovCoeffR>
+         <clovCoeffT>1.27</clovCoeffT>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+    </FermionAction>
+    <StateInfo>
+    </StateInfo>
+  </PrecAction>
+
+<Cfg>
+  <cfg_type>WEAK_FIELD</cfg_type>
+  <cfg_file>dummy</cfg_file>
+</Cfg>
+</t_precact>
