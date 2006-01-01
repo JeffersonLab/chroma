@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: clover_term_base_w.h,v 2.2 2006-01-01 05:12:30 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -74,6 +74,9 @@ namespace Chroma
     unsigned long nFlops() const;
 
   protected:
+    //! Calculates Tr_D ( Gamma_mat L )
+    virtual void triacntr(LatticeColorMatrix& B, int mat, int cb) const = 0;
+
     //! Get the u field
     virtual const multi1d<LatticeColorMatrix>& getU() const = 0;
   };

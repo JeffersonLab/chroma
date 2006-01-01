@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 2.5 2005-12-18 23:53:26 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.6 2006-01-01 05:12:30 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -61,6 +61,9 @@ namespace Chroma
       success &= OvlapPartFrac4DFermActEnv::registered;
       success &= EvenOddPrecParWilsonFermActEnv::registered;
       success &= UnprecParWilsonFermActEnv::registered;
+
+      success &= EvenOddPrecCloverFermActEnv::registered;
+      success &= UnprecCloverFermActEnv::registered;
 
       success &= UnprecHamberWuFermActEnv::registered;
 

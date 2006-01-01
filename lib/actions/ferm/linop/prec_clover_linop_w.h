@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_linop_w.h,v 2.2 2005-12-18 23:53:26 edwards Exp $
+// $Id: prec_clover_linop_w.h,v 2.3 2006-01-01 05:12:30 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -65,7 +65,6 @@ namespace Chroma
     // Override inherited one with a few more funkies
     void operator()(LatticeFermion& chi, const LatticeFermion& psi, 
 		    enum PlusMinus isign) const;
-
 
     //! Apply the even-even block onto a source vector
     void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 

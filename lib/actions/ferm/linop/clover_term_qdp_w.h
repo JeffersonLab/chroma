@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 2.2 2005-12-29 05:37:36 edwards Exp $
+// $Id: clover_term_qdp_w.h,v 2.3 2006-01-01 05:12:30 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -87,6 +87,9 @@ namespace Chroma
 
     //! Get the u field
     const multi1d<LatticeColorMatrix>& getU() const {return u;}
+
+    //! Calculates Tr_D ( Gamma_mat L )
+    void triacntr(LatticeColorMatrix& B, int mat, int cb) const;
 
   private:
     multi1d<LatticeColorMatrix>  u;
