@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 2.1 2006-01-02 20:23:28 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 2.2 2006-01-02 20:50:17 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -388,11 +388,11 @@ namespace Chroma
    * Can supply a default dsdq algorithm
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactHasenbuschEvenOddPrecWilsonTypeFermMonomial : public TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial : public TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactHasenbuschEvenOddPrecWilsonTypeFermMonomial() {}
+    ~TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
@@ -440,7 +440,7 @@ namespace Chroma
     //! Compute the total action
     Double S(const AbsFieldState<P,Q>& s)  {
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
-      push(xml_out, "TwoFlavorExactHasenbuschEvenOddPrecWilsonTypeFermMonomial");
+      push(xml_out, "TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial");
 
       Double action = S_even_even(s) + S_odd_odd(s);
 
@@ -455,7 +455,7 @@ namespace Chroma
     virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
 
     //! Get at the preconditioned fermion actions
-    virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermActPrec(void) const = 0;
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermActPrec(void) const = 0;
     //! Accessor for pseudofermion with Pf index i (read only)
     virtual const Phi& getPhi(void) const = 0;
 
