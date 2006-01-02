@@ -1,74 +1,64 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial_w.h,v 2.1 2006-01-02 20:23:28 bjoo Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial_w.h,v 2.1 2006-01-02 20:23:28 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
 
-#ifndef __unprec_two_flavor_monomial_w_h__
-#define __unprec_two_flavor_monomial_w_h__
+#ifndef __unprec_two_flavor_hasenbusch_monomial_w_h__
+#define __unprec_two_flavor_hasenbusch_monomial_w_h__
 
 #include "update/molecdyn/field_state.h"
-#include "update/molecdyn/monomial/two_flavor_monomial_w.h"
+#include "update/molecdyn/monomial/two_flavor_hasenbusch_monomial_w.h"
 
 namespace Chroma 
 {
 
   /*! @ingroup monomial */
-  namespace UnprecTwoFlavorWilsonTypeFermMonomialEnv 
+  namespace UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv 
   {
     extern const bool registered;
   };
 
   // Parameter structure
   /*! @ingroup monomial */
-  struct UnprecTwoFlavorWilsonTypeFermMonomialParams 
+  struct UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams 
   {
     // Base Constructor
-    UnprecTwoFlavorWilsonTypeFermMonomialParams();
+    UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams();
 
     // Read monomial from some root path
-    UnprecTwoFlavorWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
+    UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
     InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;
+    string ferm_act;         // FermAct for the main action
+    string ferm_act_prec;    // FermAct for the preconditioner
     std::string predictor_xml;  // ChronologicalPredictor XML
   };
 
   /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, UnprecTwoFlavorWilsonTypeFermMonomialParams& param);
+  void read(XMLReader& xml, const string& path, UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& param);
 
   /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const UnprecTwoFlavorWilsonTypeFermMonomialParams& params);
+  void write(XMLWriter& xml, const string& path, const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& params);
 
   //! Wrapper class for  2-flavor unprec ferm monomials
   /*! @ingroup monomial 
    *
    * Monomial is expected to be the same for these fermacts
    */
-  class UnprecTwoFlavorWilsonTypeFermMonomial :
-    public  TwoFlavorExactUnprecWilsonTypeFermMonomial< 
+  class UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial :
+    public  TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial< 
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      UnprecTwoFlavorWilsonTypeFermMonomial(const string& fermact_name, 
-					      const UnprecTwoFlavorWilsonTypeFermMonomialParams& param_);
+      UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial(const string& fermact_name, 
+					      const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
 
 
       // Copy Constructor
-      UnprecTwoFlavorWilsonTypeFermMonomial(const UnprecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact((m.fermact)), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
-
-#if 0
-      const LatticeFermion& debugGetPhi(void) const {
-	return getPhi();
-      }
-
-
-      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) {
-	getX(X,s);
-      }
-#endif
+      UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial(const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial& m) : phi(m.phi), fermact((m.fermact)), fermact_prec(m.fermact_prec), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
       const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
 	return getFermAct();
@@ -90,25 +80,23 @@ namespace Chroma
 	return *fermact;
       }
 
-
-      //! Do inversion M^dag M X = phi
-      int getX(LatticeFermion& X, 
-		const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) ;
-
-      //! Get X = (A^dag*A)^{-1} eta
-      int invert(LatticeFermion& X, 
-		 const LinearOperator<LatticeFermion>& A,
-		 const LatticeFermion& eta) const;
-
+      const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermActPrec(void) const { 
+	return *fermact_prec;
+      }
 
       AbsChronologicalPredictor4D<LatticeFermion>& getMDSolutionPredictor(void) {
 	return *chrono_predictor;
       }
 
+      //! Do an inversion of the type 
+      const InvertParam_t getInvParams(void) const {
+	return inv_param;
+      }
+
     private:
       // Hide empty constructor and =
-      UnprecTwoFlavorWilsonTypeFermMonomial();
-      void operator=(const UnprecTwoFlavorWilsonTypeFermMonomial&);
+      UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial();
+      void operator=(const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial&);
 
       // Pseudofermion field phi
       LatticeFermion phi;
@@ -116,13 +104,14 @@ namespace Chroma
       // A handle for the UnprecWilsonFermAct
       Handle<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
 
+      // A handle for the UnprecWilsonFermAct
+      Handle<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact_prec;
+
       // The parameters for the inversion
       InvertParam_t inv_param;
       
       // A handle for the chrono predictor
       Handle< AbsChronologicalPredictor4D<LatticeFermion> > chrono_predictor;
-
-
     };
 
 

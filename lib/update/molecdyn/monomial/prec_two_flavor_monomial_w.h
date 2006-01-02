@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_monomial_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: prec_two_flavor_monomial_w.h,v 2.1 2006-01-02 20:23:28 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -97,6 +97,7 @@ namespace Chroma
 	return *fermact;
       }
 
+
       // Do inversion M^dag M X = phi
       int getX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s);
 
@@ -106,9 +107,12 @@ namespace Chroma
 		 const LinearOperator<LatticeFermion>& A,
 		 const LatticeFermion& eta) const;
 
+
+
       AbsChronologicalPredictor4D<LatticeFermion>& getMDSolutionPredictor(void) { 
 	return *chrono_predictor;
       };
+
 
     private:
  

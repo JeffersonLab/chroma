@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 2.2 2006-01-02 20:23:28 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -94,7 +94,7 @@ namespace Chroma
       write(xml_out, "F_sq", F_sq);
       pop(xml_out);
     }
-  
+ 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) 
     {
@@ -208,8 +208,8 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
     //! Get (M^dagM)^{-1} phi
-    virtual int  getX(Phi& X, const AbsFieldState<P,Q>& s) = 0;
-    
+    virtual int  getX(Phi& X, const AbsFieldState<P,Q>& s)=0 ;
+
     //! Get at the chronological predcitor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
@@ -286,7 +286,7 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     //! Get (M^dagM)^{-1} phi
-    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s) = 0;
+    virtual int  getX(Phi& X, const AbsFieldState<P,Q>& s)=0 ;
 
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };

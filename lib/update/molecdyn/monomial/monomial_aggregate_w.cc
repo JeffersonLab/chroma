@@ -1,4 +1,4 @@
-// $Id: monomial_aggregate_w.cc,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: monomial_aggregate_w.cc,v 2.1 2006-01-02 20:23:28 bjoo Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -7,6 +7,9 @@
 
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/prec_two_flavor_monomial_w.h"
+#include "update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h"
+
+
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h"
 #include "update/molecdyn/monomial/prec_two_flavor_monomial5d_w.h"
 
@@ -14,6 +17,8 @@
 #include "update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h"
 #include "update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h"
 #include "update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.h"
+
+
 
 namespace Chroma
 {
@@ -28,7 +33,7 @@ namespace Chroma
       // 4D Ferm Monomials
       success &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
       success &= EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv::registered;
-    
+   
       // 4D Ferm Monomials
       success &= UnprecOneFlavorWilsonTypeFermRatMonomialEnv::registered;
       success &= EvenOddPrecOneFlavorWilsonTypeFermRatMonomialEnv::registered;
@@ -40,6 +45,8 @@ namespace Chroma
       // 5D Ferm Monomials
       success &= UnprecOneFlavorWilsonTypeFermRatMonomial5DEnv::registered;
       success &= EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DEnv::registered;
+      // Hasenbusch Monomials
+      success &=   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registered;
     
       return success;
     }

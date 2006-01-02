@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: monomial_w.h,v 2.1 2006-01-02 20:23:28 bjoo Exp $
 
 /*! \file
  * \brief Monomials of actions
@@ -34,4 +34,6 @@
 #include "unprec_one_flavor_rat_monomial5d_w.h"
 #include "prec_one_flavor_rat_monomial5d_w.h"
 
+#include "two_flavor_hasenbusch_monomial_w.h"
+#include "unprec_two_flavor_hasenbusch_monomial_w.h"
 #endif
