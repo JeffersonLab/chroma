@@ -1,3 +1,7 @@
+01/03/2006 -- Balint Joo
+	Version 2.8.1. Removed clover support temporarily till build problems
+        sorted. Added Hasenbusch 4d monomial support.
+
 01/01/2006 -- Robert Edwards
 	Version 2.8.0. New clover fermion support. Added altivec dwf support.
 
