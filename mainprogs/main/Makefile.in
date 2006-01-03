@@ -45,9 +45,9 @@ POST_UNINSTALL = :
 @BUILD_ALTIVEC_DWF_CG_TRUE@am__append_7 = -I$(TOPDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/include
 @BUILD_ALTIVEC_DWF_CG_TRUE@am__append_8 = -L$(BUILDDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/lib
 @BUILD_ALTIVEC_DWF_CG_TRUE@am__append_9 = -laltivec_dwf_cg 
-bin_PROGRAMS = collect_propcomp$(EXEEXT) purgaug$(EXEEXT) \
-	cfgtransf$(EXEEXT) qpropgfix$(EXEEXT) qproptrev$(EXEEXT) \
-	hmc$(EXEEXT) chroma$(EXEEXT) qpropqio$(EXEEXT) \
+bin_PROGRAMS = chroma$(EXEEXT) collect_propcomp$(EXEEXT) \
+	purgaug$(EXEEXT) cfgtransf$(EXEEXT) qpropgfix$(EXEEXT) \
+	qproptrev$(EXEEXT) hmc$(EXEEXT) qpropqio$(EXEEXT) \
 	qproptransf$(EXEEXT) wallformfac$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) stoch_meson$(EXEEXT) \
 	propagator_comp$(EXEEXT) multi_propagator$(EXEEXT) \
