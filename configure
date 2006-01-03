@@ -276,7 +276,7 @@ PACKAGE_BUGREPORT='edwards@jlab.org'
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_wilson_dslash"
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_dwf_cg"
 ac_subdirs_all="$ac_subdirs_all other_libs/altivec_dwf_cg"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB AR ac_ct_AR QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE SSE_DWF_CG_DIR SSE_DWF_CG_ENABLED BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE ALTIVEC_DWF_CG_DIR ALTIVEC_DWF_CG_ENABLED BUILD_ALTIVEC_DWF_CG_TRUE BUILD_ALTIVEC_DWF_CG_FALSE BAGEL_WILSON_DSLASH_CONFIG BAGEL_WILSON_DSLASH_CXXFLAGS BAGEL_WILSON_DSLASH_LDFLAGS BAGEL_WILSON_DSLASH_LIBS BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE BUILD_OPT_CFZ_LINOP_TRUE BUILD_OPT_CFZ_LINOP_FALSE GMP_CXXFLAGS GMP_LDFLAGS GMP_LIBS BUILD_GMP_REMEZ_TRUE BUILD_GMP_REMEZ_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB AR ac_ct_AR QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE SSE_DWF_CG_DIR SSE_DWF_CG_ENABLED BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE ALTIVEC_DWF_CG_DIR ALTIVEC_DWF_CG_ENABLED BUILD_ALTIVEC_DWF_CG_TRUE BUILD_ALTIVEC_DWF_CG_FALSE BAGEL_WILSON_DSLASH_CONFIG BAGEL_WILSON_DSLASH_CXXFLAGS BAGEL_WILSON_DSLASH_LDFLAGS BAGEL_WILSON_DSLASH_LIBS BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE BUILD_OPT_CFZ_LINOP_TRUE BUILD_OPT_CFZ_LINOP_FALSE GMP_CXXFLAGS GMP_LDFLAGS GMP_LIBS BUILD_GMP_REMEZ_TRUE BUILD_GMP_REMEZ_FALSE LATEX DVIPS DVIPDF DOXYGEN XMLDIFF LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -4312,6 +4312,53 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
+# Extract the first word of "xmldiff", so it can be a program name with args.
+set dummy xmldiff; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_XMLDIFF+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $XMLDIFF in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_XMLDIFF="$XMLDIFF" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+as_dummy="$PATH:/usr/local/bin"
+for as_dir in $as_dummy
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_XMLDIFF="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  test -z "$ac_cv_path_XMLDIFF" && ac_cv_path_XMLDIFF="xmldiff"
+  ;;
+esac
+fi
+XMLDIFF=$ac_cv_path_XMLDIFF
+
+if test -n "$XMLDIFF"; then
+  echo "$as_me:$LINENO: result: $XMLDIFF" >&5
+echo "${ECHO_T}$XMLDIFF" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+if test "X${XMLDIFF}X" = "XxmldiffX";
+then
+     { echo "$as_me:$LINENO: WARNING: xmldiff not found in your PATH. make xcheck may fail" >&5
+echo "$as_me: WARNING: xmldiff not found in your PATH. make xcheck may fail" >&2;}
+fi
 
 #######################
 # Produce output
@@ -5131,6 +5178,7 @@ s,@LATEX@,$LATEX,;t t
 s,@DVIPS@,$DVIPS,;t t
 s,@DVIPDF@,$DVIPDF,;t t
 s,@DOXYGEN@,$DOXYGEN,;t t
+s,@XMLDIFF@,$XMLDIFF,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF

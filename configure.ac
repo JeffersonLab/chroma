@@ -366,6 +366,12 @@ AC_CHECK_PROG(LATEX, latex, latex, true)
 AC_CHECK_PROG(DVIPS, dvips, dvips, true)
 AC_CHECK_PROG(DVIPDF, dvipdf, dvipdf, true)
 AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
+AC_PATH_PROG(XMLDIFF, [xmldiff],[xmldiff],[$PATH:/usr/local/bin])
+
+if test "X${XMLDIFF}X" = "XxmldiffX";
+then 
+     AC_MSG_WARN([xmldiff not found in your PATH. make xcheck may fail])
+fi
 
 #######################
 # Produce output

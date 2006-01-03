@@ -161,6 +161,7 @@ SSE_DWF_CG_DIR = @SSE_DWF_CG_DIR@
 SSE_DWF_CG_ENABLED = @SSE_DWF_CG_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
+XMLDIFF = @XMLDIFF@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -634,9 +635,10 @@ uninstall-info: uninstall-info-recursive
 
 
 # xmldiff targets
+
 .PHONY: xcheck
 xcheck:
-	perl $(top_srcdir)/scripts/run_chroma_xmldiff.pl $(top_srcdir) $(top_builddir)
+	perl $(top_srcdir)/scripts/run_chroma_xmldiff.pl $(top_srcdir) $(top_builddir) @XMLDIFF@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
