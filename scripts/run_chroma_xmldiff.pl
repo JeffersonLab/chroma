@@ -1,13 +1,13 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.10 2006-01-03 04:02:44 bjoo Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.11 2006-01-03 05:49:54 bjoo Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
 #
 #  Homepage for xmldiff application
 #  https://forge.nesc.ac.uk/projects/xmldiff/
-
+#
 #
 # More work:
 #   At the moment this script assumes that the 
@@ -15,10 +15,11 @@
 #   Perhaps, this should be incorporated in the autoconf
 #   tool chain.
 
-die "Usage: run_chroma_xmldiff.pl  top_srcdir  top_builddir\n" unless scalar(@ARGV) == 2;
+die "Usage: run_chroma_xmldiff.pl  top_srcdir  top_builddir xmldiff_location\n" unless scalar(@ARGV) == 3;
 
 $top_srcdir = &abs_path($ARGV[0]);
 $top_builddir = &abs_path($ARGV[1]);
+$xmldiff=$ARGV[2];
 die "$top_srcdir does not exist" unless -d $top_srcdir;
 die "$top_builddir does not exist" unless -d $top_builddir;
 
@@ -26,9 +27,21 @@ printf "Source directory = %s\n", $top_srcdir;
 printf "Build directory = %s\n", $top_builddir;
 
 
+# location of xmldiff is now passed in
+#$xmldiff = "/usr/local/bin/xmldiff" ;
+#$xmldiff = "$top_srcdir/scripts/xmldiff" ;
+
+if( ! -x $xmldiff)
+{
+    print "Error:".$0." needs the xmldiff utility in your path\n" ; 
+    print "Download it from http://forge.nesc.ac.uk/projects/xmldiff/ \n" ; 
+    exit(1) ;
+}
+
 $test_dir = "$top_srcdir/tests";
 $regres_dir = "$top_builddir/regres";
 
+printf "Using xmldiff from = %s\n", $xmldiff;
 printf "Regression test directory = %s\n", $regres_dir;
 
 #
