@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 2.2 2006-01-01 05:12:30 edwards Exp $
+// $Id: clover_term_base_w.h,v 2.3 2006-01-03 04:02:44 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -7,6 +7,7 @@
 #ifndef __clover_term_base_w_h__
 #define __clover_term_base_w_h__
 
+#include "chromabase.h"
 #include "linearop.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 

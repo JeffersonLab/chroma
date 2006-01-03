@@ -1,13 +1,13 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.9 2005-12-24 16:31:36 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.10 2006-01-03 04:02:44 bjoo Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
 #
 #  Homepage for xmldiff application
 #  https://forge.nesc.ac.uk/projects/xmldiff/
-#
+
 #
 # More work:
 #   At the moment this script assumes that the 
@@ -25,17 +25,6 @@ die "$top_builddir does not exist" unless -d $top_builddir;
 printf "Source directory = %s\n", $top_srcdir;
 printf "Build directory = %s\n", $top_builddir;
 
-
-# location of xmldiff
-$xmldiff = "/usr/local/bin/xmldiff" ;
-#$xmldiff = "$top_srcdir/scripts/xmldiff" ;
-
-if( ! -x $xmldiff)
-{
-    print "Error:".$0." needs the xmldiff utility in your path\n" ; 
-    print "Download it from http://forge.nesc.ac.uk/projects/xmldiff/ \n" ; 
-    exit(1) ;
-}
 
 $test_dir = "$top_srcdir/tests";
 $regres_dir = "$top_builddir/regres";
