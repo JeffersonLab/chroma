@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 2.7 2006-01-03 04:02:44 bjoo Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.8 2006-01-04 03:10:27 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -6,13 +6,13 @@
 #include "actions/ferm/fermbcs/fermbcs_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
-// #include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_hamberwu_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_dwftransf_fermact_w.h"
 
-// #include "actions/ferm/fermacts/prec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/prec_clover_fermact_w.h"
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
 
@@ -62,8 +62,8 @@ namespace Chroma
       success &= EvenOddPrecParWilsonFermActEnv::registered;
       success &= UnprecParWilsonFermActEnv::registered;
 
-      //      success &= EvenOddPrecCloverFermActEnv::registered;
-      //      success &= UnprecCloverFermActEnv::registered;
+      success &= EvenOddPrecCloverFermActEnv::registered;
+      success &= UnprecCloverFermActEnv::registered;
 
       success &= UnprecHamberWuFermActEnv::registered;
 
