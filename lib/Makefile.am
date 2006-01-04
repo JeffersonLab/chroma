@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.25 2006-01-03 04:02:43 bjoo Exp $
+# $Id: Makefile.am,v 2.26 2006-01-04 03:15:13 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -218,6 +218,9 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
+	actions/ferm/fermacts/clover_fermact_params_w.h \
+	actions/ferm/fermacts/prec_clover_fermact_w.h \
+	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_nef_fermact_array_w.h \
@@ -275,6 +278,11 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lwldslash_w.h \
 	actions/ferm/linop/lwldslash_base_array_w.h \
 	actions/ferm/linop/lwldslash_array_w.h \
+	actions/ferm/linop/clover_term_w.h \
+	actions/ferm/linop/clover_term_base_w.h \
+	actions/ferm/linop/clover_term_qdp_w.h \
+	actions/ferm/linop/prec_clover_linop_w.h \
+	actions/ferm/linop/unprec_clover_linop_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
@@ -354,15 +362,6 @@ nobase_include_HEADERS += \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h
-
-#	actions/ferm/fermacts/clover_fermact_params_w.h \
-#	actions/ferm/fermacts/prec_clover_fermact_w.h \
-#	actions/ferm/fermacts/unprec_clover_fermact_w.h \
-#	actions/ferm/linop/clover_term_w.h \
-#	actions/ferm/linop/clover_term_base_w.h \
-#	actions/ferm/linop/clover_term_qdp_w.h \
-#	actions/ferm/linop/prec_clover_linop_w.h \
-#	actions/ferm/linop/unprec_clover_linop_w.h 
 
 # Staggered specific headers
 nobase_include_HEADERS += \
@@ -681,6 +680,9 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/prec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_ovext_fermact_array_w.cc \
+	actions/ferm/fermacts/clover_fermact_params_w.cc \
+	actions/ferm/fermacts/prec_clover_fermact_w.cc \
+ 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.cc \
@@ -733,6 +735,10 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_hamberwu_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
+ 	actions/ferm/linop/clover_term_base_w.cc \
+ 	actions/ferm/linop/clover_term_qdp_w.cc \
+ 	actions/ferm/linop/prec_clover_linop_w.cc \
+ 	actions/ferm/linop/unprec_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
@@ -770,14 +776,6 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_two_flavor_hasenbusch_monomial_w.cc \
 	util/ferm/gammasgn_w.cc
-
-#	actions/ferm/fermacts/clover_fermact_params_w.cc \
-#	actions/ferm/fermacts/prec_clover_fermact_w.cc \
-#	actions/ferm/linop/clover_term_base_w.cc \
-#	actions/ferm/linop/clover_term_qdp_w.cc \
-#	actions/ferm/linop/prec_clover_linop_w.cc \
-#	actions/ferm/linop/unprec_clover_linop_w.cc \
-#	actions/ferm/fermacts/unprec_clover_fermact_w.cc
 
 # Taken out for now
 #        meas/hadron/multipole_w.cc
