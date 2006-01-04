@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 2.3 2006-01-03 04:02:44 bjoo Exp $
+// $Id: clover_term_base_w.h,v 2.4 2006-01-04 03:09:57 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -7,9 +7,7 @@
 #ifndef __clover_term_base_w_h__
 #define __clover_term_base_w_h__
 
-#include "chromabase.h"
 #include "linearop.h"
-#include "actions/ferm/fermacts/clover_fermact_params_w.h"
 
 
 namespace Chroma 
@@ -28,15 +26,11 @@ namespace Chroma
     //! Subset is all here
     const OrderedSubset& subset() const {return all;}
 
-    //! Creation routine
-    virtual void create(const multi1d<LatticeColorMatrix>& u_, 	
-			const CloverFermActParams& param_);
-
     //! Invert
     /*!
      * Computes the inverse of the term on cb using Cholesky
      */
-    virtual void choles(int cb);
+    virtual void choles(int cb) = 0;
 
     //! Invert
     /*!
@@ -44,7 +38,7 @@ namespace Chroma
      *
      * \return logarithm of the determinant  
      */
-    virtual Double cholesDet(int cb);
+    virtual Double cholesDet(int cb) = 0;
 
     //! Take deriv of D
     /*!
