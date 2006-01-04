@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.4 2006-01-01 05:12:30 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 2.5 2006-01-04 03:09:26 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -73,6 +73,9 @@ namespace Chroma
     pop(xml);
   }
 
+
+  // Empty constructor. Must use create later
+  QDPCloverTerm::QDPCloverTerm() {}
 
 
   //! Creation routine
@@ -953,5 +956,6 @@ namespace Chroma
 
     END_CODE();
   }
+
 }
 

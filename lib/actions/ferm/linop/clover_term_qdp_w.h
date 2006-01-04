@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 2.3 2006-01-01 05:12:30 edwards Exp $
+// $Id: clover_term_qdp_w.h,v 2.4 2006-01-04 03:09:26 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -7,6 +7,7 @@
 #ifndef __clover_term_qdp_w_h__
 #define __clover_term_qdp_w_h__
 
+#include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/clover_term_base_w.h"
 
 namespace Chroma 
@@ -35,6 +36,9 @@ namespace Chroma
   class QDPCloverTerm : public CloverTermBase
   {
   public:
+    //! Empty constructor. Must use create later
+    QDPCloverTerm();
+
     //! No real need for cleanup here
     ~QDPCloverTerm() {}
 
