@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barspinmat_w.h,v 2.1 2005-12-24 21:20:14 edwards Exp $
+// $Id: barspinmat_w.h,v 2.2 2006-01-05 16:34:55 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
@@ -72,7 +72,9 @@ namespace Chroma
     //! T = (1 + \Sigma_3)*(1 + gamma_4) / 2   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
     SpinMatrix Tmixed();
 
-    //! T = (1 + \Sigma_3)*(1 - gamma_4) / 2   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
+
+    //! T = (1 - \Sigma_3)*(1 - gamma_4) / 2   = (1 - Gamma(8) - i G(3) + i G(11)) / 2
+    // Need to flip the spin for time reversal
     SpinMatrix TmixedNegPar();
   }
 
