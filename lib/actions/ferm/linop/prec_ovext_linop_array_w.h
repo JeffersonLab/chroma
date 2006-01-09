@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovext_linop_array_w.h,v 2.1 2005-10-30 18:37:41 edwards Exp $
+// $Id: prec_ovext_linop_array_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -9,7 +9,7 @@
 
 #include "chromabase.h"
 #include "handle.h"
-#include "linearop.h"
+#include "prec_constdet_linop.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/dslash_array_w.h"
 
@@ -28,7 +28,7 @@ namespace Chroma
    * This operator implements  hep-lat/0005004
    */
 
-  class EvenOddPrecOvExtLinOpArray : public EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvExtLinOpArray : public EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Partial constructor
@@ -155,10 +155,6 @@ namespace Chroma
       applyDerivOffDiag(ds_u, chi, psi, isign, 1);
     }
 
-    // Override virtual function for efficiency.
-    void deriv(multi1d<LatticeColorMatrix>& ds_u, 
-	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-	       enum PlusMinus isign) const;
 
    //! Return flops performed by the evenEvenLinOp
     unsigned long evenEvenNFlops(void) const { 

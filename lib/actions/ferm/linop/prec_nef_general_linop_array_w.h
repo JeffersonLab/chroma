@@ -1,6 +1,6 @@
 
 // -*- C++ -*-
-// $Id: prec_nef_general_linop_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_nef_general_linop_array_w.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  *            generalised to take array of b_5 and c_5
@@ -9,7 +9,6 @@
 #ifndef __prec_nef_general_linop_array_w_h__
 #define __prec_nef_general_linop_array_w_h__
 
-#include "linearop.h"
 #include "actions/ferm/linop/dslash_array_w.h"
 #include "actions/ferm/linop/prec_dwflike_linop_base_array_w.h"
 
@@ -169,10 +168,6 @@ namespace Chroma
       applyDerivOffDiag(ds_u, chi, psi, isign, 1);
     }
 
-    // Override virtual function for efficiency.
-    void deriv(multi1d<LatticeColorMatrix>& ds_u, 
-	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-	       enum PlusMinus isign) const;
 
   protected:
 

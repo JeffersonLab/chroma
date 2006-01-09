@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_linop_w.h,v 2.1 2005-10-30 18:37:41 edwards Exp $
+// $Id: prec_wilson_linop_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
@@ -7,7 +7,7 @@
 #ifndef __prec_wilson_linop_w_h__
 #define __prec_wilson_linop_w_h__
 
-#include "linearop.h"
+#include "prec_constdet_linop.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "io/aniso_io.h"
 
@@ -24,7 +24,7 @@ namespace Chroma
    *
    *      M  =  (d+M) - (1/2) D'
    */
-  class EvenOddPrecWilsonLinOp : public EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecWilsonLinOp : public EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Partial constructor
@@ -120,10 +120,6 @@ namespace Chroma
       }
     }
 
-    //! Override virtual function for efficiency.
-    void deriv(multi1d<LatticeColorMatrix>& ds_u, const LatticeFermion& chi, 
-	       const LatticeFermion& psi, 
-	       enum PlusMinus isign) const;
 
     //! Return flops performed by the operator()
     unsigned long nFlops() const;

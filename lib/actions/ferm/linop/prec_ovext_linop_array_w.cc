@@ -1,4 +1,4 @@
-/* $Id: prec_ovext_linop_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+/* $Id: prec_ovext_linop_array_w.cc,v 2.1 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
 *  \brief EvenOddPreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -442,18 +442,6 @@ namespace Chroma
 
     END_CODE();
   }
-  //! Derivative
-  void 
-  EvenOddPrecOvExtLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u, 
-			       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-			       enum PlusMinus isign) const
-  {
-    START_CODE();
 
-    QDPIO::cout << "Not yet implemented " << endl;
-    QDP_abort(1);
-
-    END_CODE();
-  }
 }; // End Namespace Chroma
 

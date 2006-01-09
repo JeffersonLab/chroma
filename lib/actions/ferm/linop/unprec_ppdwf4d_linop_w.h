@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ppdwf4d_linop_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_ppdwf4d_linop_w.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D using prec 5D bits
  */
@@ -8,6 +8,7 @@
 #define __unprec_ppdwf4d_linop_w_h__
 
 #include "linearop.h"
+#include "eo_prec_linop.h"
 #include "handle.h"
 #include "invtype.h"
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.26 2006-01-04 03:15:13 edwards Exp $
+# $Id: Makefile.am,v 2.27 2006-01-09 22:37:41 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -16,7 +16,8 @@ nobase_include_HEADERS = \
 	chroma_config.h chroma.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
 	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
-	linearop.h objfactory.h objfunctor.h primitives.h \
+	linearop.h eo_prec_linop.h prec_constdet_linop.h prec_logdet_linop.h \
+	 objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
         named_obj.h \
 	actions/actions.h actions/boson/boson.h \
@@ -682,7 +683,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/prec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/prec_clover_fermact_w.cc \
- 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.cc \
@@ -735,10 +736,10 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_hamberwu_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
- 	actions/ferm/linop/clover_term_base_w.cc \
- 	actions/ferm/linop/clover_term_qdp_w.cc \
- 	actions/ferm/linop/prec_clover_linop_w.cc \
- 	actions/ferm/linop/unprec_clover_linop_w.cc \
+	actions/ferm/linop/clover_term_base_w.cc \
+	actions/ferm/linop/clover_term_qdp_w.cc \
+	actions/ferm/linop/prec_clover_linop_w.cc \
+	actions/ferm/linop/unprec_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \

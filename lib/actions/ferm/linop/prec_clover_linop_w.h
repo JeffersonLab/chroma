@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_linop_w.h,v 2.3 2006-01-01 05:12:30 edwards Exp $
+// $Id: prec_clover_linop_w.h,v 2.4 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -7,7 +7,7 @@
 #ifndef __prec_clover_linop_w_h__
 #define __prec_clover_linop_w_h__
 
-#include "linearop.h"
+#include "prec_logdet_linop.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/clover_term_w.h"
@@ -25,7 +25,7 @@ namespace Chroma
    *
    *      M  =  A + (d+M) - (1/2) D'
    */
-  class EvenOddPrecCloverLinOp : public EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecCloverLinOp : public EvenOddPrecLogDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Partial constructor

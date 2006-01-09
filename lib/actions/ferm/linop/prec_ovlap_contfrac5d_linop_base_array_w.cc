@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_base_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_base_array_w.cc,v 2.1 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Base class for even-odd prec. 5D continued fraction linop
  */
@@ -409,46 +409,6 @@ namespace Chroma
     default:
       QDP_error_exit("unknown case");
     }
-
-    END_CODE();
-  }
-
-
-
-
-  // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE
-  void 
-  EvenOddPrecOvlapContFrac5DLinOpBaseArray::deriv(multi1d<LatticeColorMatrix>& ds_u,
-						  const multi1d<LatticeFermion>& chi, 
-						  const multi1d<LatticeFermion>& psi, 
-						  enum PlusMinus isign) const
-  {
-    START_CODE();
-
-    enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
-
-    ds_u.resize(Nd);
-
-    multi1d<LatticeFermion>  tmp1, tmp2, tmp3;
-    moveToFastMemoryHint(tmp1);
-    moveToFastMemoryHint(tmp2);
-    moveToFastMemoryHint(tmp3);
-
-    multi1d<LatticeColorMatrix> ds_tmp;
-
-    //  ds_u   =  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
-    evenOddLinOp(tmp1, psi, isign);
-    evenEvenInvLinOp(tmp2, tmp1, isign);
-    derivOddEvenLinOp(ds_u, chi, tmp2, isign);
-
-    //  ds_u  +=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
-    evenOddLinOp(tmp1, chi, msign);
-    evenEvenInvLinOp(tmp3, tmp1, msign);
-    derivEvenOddLinOp(ds_tmp, tmp3, psi, isign);
-    ds_u += ds_tmp;
-    
-    for(int mu=0; mu < Nd; mu++)
-      ds_u[mu] *= Real(-1);
 
     END_CODE();
   }

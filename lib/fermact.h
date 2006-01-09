@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: fermact.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -12,6 +12,7 @@
 #include "invtype.h"
 #include "state.h"
 #include "linearop.h"
+#include "eo_prec_linop.h"
 #include "syssolver.h"
 #include "fermbc.h"
 #include "io/enum_io/enum_quarkspintype_io.h"

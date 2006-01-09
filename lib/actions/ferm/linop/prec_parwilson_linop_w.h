@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_linop_w.h,v 2.2 2005-10-31 04:35:13 edwards Exp $
+// $Id: prec_parwilson_linop_w.h,v 2.3 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -7,7 +7,7 @@
 #ifndef __prec_parwilson_linop_w_h__
 #define __prec_parwilson_linop_w_h__
 
-#include "linearop.h"
+#include "prec_constdet_linop.h"
 #include "actions/ferm/linop/dslash_w.h"
 
 
@@ -24,7 +24,7 @@ namespace Chroma
    *      M  =  (d+M) + i*H*gamma_5  - (1/2) D'
    */
 
-  class EvenOddPrecParWilsonLinOp : public EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecParWilsonLinOp : public EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Partial constructor

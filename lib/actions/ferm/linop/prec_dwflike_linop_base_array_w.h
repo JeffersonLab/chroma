@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwflike_linop_base_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_dwflike_linop_base_array_w.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like linops
  */
@@ -7,7 +7,7 @@
 #ifndef __prec_dwflike_linop_base_array_w_h__
 #define __prec_dwflike_linop_base_array_w_h__
 
-#include "linearop.h"
+#include "prec_constdet_linop.h"
 
 
 namespace Chroma
@@ -19,7 +19,7 @@ namespace Chroma
    * This routine is specific to Wilson fermions!
    */
   template<typename T, typename P>
-  class EvenOddPrecDWLikeLinOpBaseArray : public EvenOddPrecLinearOperator< multi1d<T>, P >
+  class EvenOddPrecDWLikeLinOpBaseArray : public EvenOddPrecConstDetLinearOperator< multi1d<T>, P >
   {
   public:
     //! Length of DW flavor index/space

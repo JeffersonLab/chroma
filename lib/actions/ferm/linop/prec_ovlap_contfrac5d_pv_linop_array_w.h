@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.h,v 2.1 2005-10-30 18:37:41 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -7,7 +7,7 @@
 #ifndef __prec_ovlap_contfrac5d_pv_linop_array_w_h__
 #define __prec_ovlap_contfrac5d_pv_linop_array_w_h__
 
-#include "linearop.h"
+#include "prec_constdet_linop.h"
 #include "fermact.h"
 #include "state.h"
 #include "dslash_array_w.h"
@@ -21,7 +21,7 @@ namespace Chroma
    * Even-odd precond. Pauli-Villars Cont. Frac. linop
    */
 
-  class EvenOddPrecOvlapContFrac5DPVLinOpArray : public EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvlapContFrac5DPVLinOpArray : public EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
   {
   public:
 
@@ -132,13 +132,6 @@ namespace Chroma
     {
       applyDerivOffDiag(ds_u, chi, psi, isign, 1);
     }
-
-#if 0
-    // Override virtual function for efficiency.
-    void deriv(multi1d<LatticeColorMatrix>& ds_u, 
-	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
-	       enum PlusMinus isign) const;
-#endif
 
 
    //! Return flops performed by the evenEvenLinOp

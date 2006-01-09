@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 2.3 2005-12-18 23:53:26 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 2.4 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -163,44 +163,6 @@ namespace Chroma
     for(int mu=0; mu < Nd; mu++) { 
       ds_u[mu]  *= Real(-0.5);
     }
-    END_CODE();
-  }
-
-
-  // THIS IS AN OPTIMIZED VERSION OF THE DERIVATIVE
-  /*! ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi */
-  void 
-  EvenOddPrecWilsonLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,
-				const LatticeFermion& chi, 
-				const LatticeFermion& psi, 
-				enum PlusMinus isign) const
-  {
-    START_CODE();
-
-    enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
-
-    ds_u.resize(Nd);
-
-    // ds_u = -(1/4)*(1/(Nd+m))*[\dot(D)_oe*D_eo + D_oe*\dot(D_eo)]*psi
-
-    // First term
-    //   ds_u = chi_o^dag * \dot(D)_oe * (D_eo*psi_o)
-    LatticeFermion tmp;             moveToFastMemoryHint(tmp);
-    D.apply(tmp, psi, isign, 0);
-    D.deriv(ds_u, chi, tmp, isign, 1);
-
-    // Second term
-    //   ds_tmp = (D_eo^dag*chi_o)^dag * \dot(D)_eo * psi_o
-    multi1d<LatticeColorMatrix> ds_tmp(Nd);
-    D.apply(tmp, chi, msign, 0);
-    D.deriv(ds_tmp, tmp, psi, isign, 0);
-
-    for(int mu = 0; mu < Nd; ++mu)
-    {
-      ds_u[mu] += ds_tmp[mu];
-      ds_u[mu] *= Real(-0.25)*invfact;
-    }
-
     END_CODE();
   }
 

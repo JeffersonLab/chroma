@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_linop_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -7,7 +7,6 @@
 #ifndef __prec_ovdwf_linop_array_w_h__
 #define __prec_ovdwf_linop_array_w_h__
 
-#include "linearop.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/prec_dwflike_linop_base_array_w.h"
 
