@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.1 2005-10-04 19:23:19 bjoo Exp $
+// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.2 2006-01-12 16:51:18 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -13,7 +13,9 @@
 
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
+#if 0
 #include "actions/ferm/fermacts/prec_stout_fermact_w.h"
+#endif
 
 namespace Chroma 
 { 
@@ -59,12 +61,14 @@ namespace Chroma
       return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path, 1, 1);
     }
 
+#if 0
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialStout1(XMLReader& xml, const string& path) 
     {
       return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path, 1, 1);
     }
+#endif
     
     //----------------------------------------------------------------------
     // Three flavor
@@ -82,13 +86,15 @@ namespace Chroma
       return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path, 3, 1);
     }
 
+#if 0
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialStout3(XMLReader& xml, const string& path) 
     {
       return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path, 3, 1);
     }
-    
+#endif
+ 
     //----------------------------------------------------------------------
     // Generic fractional flavor
     //! Callback function for the factory
@@ -104,13 +110,15 @@ namespace Chroma
     {
       return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path);
     }
-    
+   
+#if 0 
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
     {
       return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path);
     }
+#endif
 
     //------------------------------------------------------
     //! Register one flavor
@@ -125,8 +133,10 @@ namespace Chroma
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson1);
 
+#if 0
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
 							   createMonomialStout1);
+#endif
       return foo;
     }
 
@@ -143,8 +153,10 @@ namespace Chroma
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson3);
 
+#if 0
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
 							   createMonomialStout3);
+#endif
       return foo;
     }
 
@@ -163,9 +175,11 @@ namespace Chroma
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson);
 
+#if 0
       foo &= EvenOddPrecStoutWilsonTypeFermActEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
 							   createMonomialStout);
+#endif
       return foo;
     }
 

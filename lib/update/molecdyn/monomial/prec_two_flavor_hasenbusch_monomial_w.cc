@@ -1,4 +1,4 @@
-// $Id: prec_two_flavor_hasenbusch_monomial_w.cc,v 2.1 2006-01-02 20:50:17 bjoo Exp $
+// $Id: prec_two_flavor_hasenbusch_monomial_w.cc,v 2.2 2006-01-12 16:51:18 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -13,7 +13,9 @@
 
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
+#if 0
 #include "actions/ferm/fermacts/prec_stout_fermact_w.h"
+#endif
 
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
@@ -48,6 +50,7 @@ namespace Chroma
 	EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
 
+#if 0
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
@@ -58,7 +61,8 @@ namespace Chroma
 	EvenOddPrecStoutWilsonTypeFermActEnv::name,
 	EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
-    
+#endif
+ 
     //! Register all the objects
     bool registerAll()
     {
@@ -75,9 +79,11 @@ namespace Chroma
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
 							   createMonomialParWilson);
 
+#if 0
       foo &= EvenOddPrecStoutWilsonTypeFermActEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix,
 							   createMonomialStout);
+#endif
       return foo;
     }
 

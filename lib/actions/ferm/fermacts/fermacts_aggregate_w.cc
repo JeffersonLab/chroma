@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 2.8 2006-01-04 03:10:27 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.9 2006-01-12 16:51:18 bjoo Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -37,10 +37,12 @@
 
 #include "actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h"
 
+#if 0
 #include "actions/ferm/fermacts/unprec_stout_fermact_w.h"
 #include "actions/ferm/fermacts/prec_stout_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_stout_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_stout_fermact_array_w.h"
+#endif 
 
 namespace Chroma
 {
@@ -68,8 +70,10 @@ namespace Chroma
       success &= UnprecHamberWuFermActEnv::registered;
 
       // Stouting
+#if 0
       success &= UnprecStoutWilsonTypeFermActEnv::registered;
       success &= EvenOddPrecStoutWilsonTypeFermActEnv::registered;
+#endif
       return success;
     }
 
@@ -109,8 +113,10 @@ namespace Chroma
       success &= OvExtTuningStrategyAggregateEnv::registered;
 
       // Stouting
+#if 0
       success &= UnprecStoutWilsonTypeFermAct5DEnv::registered;
       success &= EvenOddPrecStoutWilsonTypeFermAct5DEnv::registered;
+#endif
       return success;
     }
 

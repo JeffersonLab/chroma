@@ -1,4 +1,4 @@
-// $Id: prec_two_flavor_monomial5d_w.cc,v 2.1 2005-10-04 19:23:19 bjoo Exp $
+// $Id: prec_two_flavor_monomial5d_w.cc,v 2.2 2006-01-12 16:51:18 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -15,7 +15,10 @@
 #include "actions/ferm/fermacts/prec_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h"
+
+#if 0
 #include "actions/ferm/fermacts/prec_stout_fermact_array_w.h"
+#endif
 
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
@@ -73,6 +76,7 @@ namespace Chroma
 	EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams(xml, path));
     }
 
+#if 0
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
@@ -81,7 +85,8 @@ namespace Chroma
 	EvenOddPrecStoutWilsonTypeFermAct5DEnv::name,
 	EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams(xml, path));
     }
-    
+#endif 
+
     //! Register all the objects
     bool registerAll()
     {
@@ -110,10 +115,12 @@ namespace Chroma
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecOvlapContFrac5DFermActArrayEnv::name+suffix, 
 							   createMonomialContFrac);
 
+#if 0
       foo &= EvenOddPrecStoutWilsonTypeFermAct5DEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermAct5DEnv::name+suffix, 
 							   createMonomialStout);
 
+#endif
       return foo;
     }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 2.2 2005-10-04 19:23:19 bjoo Exp $
+// $Id: fermacts_w.h,v 2.3 2006-01-12 16:51:18 bjoo Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -52,12 +52,14 @@
 #include "ovext_const_div_by_resp_strategy.h"
 #include "ovext_neuberger_strategy.h"
 
+#if 0
 #include "stout_state.h"
 #include "stout_fermact_params.h"
 #include "unprec_stout_fermact_w.h"
 #include "prec_stout_fermact_w.h"
 #include "unprec_stout_fermact_array_w.h"
 #include "prec_stout_fermact_array_w.h"
+#endif
 
 #endif
 

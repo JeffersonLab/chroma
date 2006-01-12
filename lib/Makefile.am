@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.28 2006-01-12 05:41:47 edwards Exp $
+# $Id: Makefile.am,v 2.29 2006-01-12 16:51:16 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -30,12 +30,6 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
-	actions/ferm/fermacts/stout_state.h \
-	actions/ferm/fermacts/stout_fermact_params.h \
-	actions/ferm/fermacts/unprec_stout_fermact_w.h \
-	actions/ferm/fermacts/prec_stout_fermact_w.h \
-	actions/ferm/fermacts/unprec_stout_fermact_array_w.h \
-	actions/ferm/fermacts/prec_stout_fermact_array_w.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
@@ -210,6 +204,12 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
 	update/molecdyn/predictor/lu_solve.h \
 	update/molecdyn/predictor/mre_extrap_predictor.h
+#	actions/ferm/fermacts/stout_state.h
+#	actions/ferm/fermacts/stout_fermact_params.h
+#	actions/ferm/fermacts/unprec_stout_fermact_w.h
+#	actions/ferm/fermacts/prec_stout_fermact_w.h
+#	actions/ferm/fermacts/unprec_stout_fermact_array_w.h
+#	actions/ferm/fermacts/prec_stout_fermact_array_w.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -509,12 +509,6 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/overlap_state.cc \
-	actions/ferm/fermacts/stout_state.cc \
-	actions/ferm/fermacts/stout_fermact_params.cc \
-	actions/ferm/fermacts/unprec_stout_fermact_w.cc \
-	actions/ferm/fermacts/prec_stout_fermact_w.cc \
-	actions/ferm/fermacts/unprec_stout_fermact_array_w.cc \
-	actions/ferm/fermacts/prec_stout_fermact_array_w.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \
@@ -654,6 +648,12 @@ libchroma_a_SOURCES = \
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
 
+#	actions/ferm/fermacts/stout_state.cc 
+# 	actions/ferm/fermacts/stout_fermact_params.cc 
+#	actions/ferm/fermacts/unprec_stout_fermact_w.cc 
+#	actions/ferm/fermacts/prec_stout_fermact_w.cc 
+#	actions/ferm/fermacts/unprec_stout_fermact_array_w.cc 
+#	actions/ferm/fermacts/prec_stout_fermact_array_w.cc 
 
 if BUILD_GMP_REMEZ
 nobase_include_HEADERS += actions/ferm/fermacts/remez_gmp.h
