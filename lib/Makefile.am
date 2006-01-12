@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.27 2006-01-09 22:37:41 bjoo Exp $
+# $Id: Makefile.am,v 2.28 2006-01-12 05:41:47 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -17,7 +17,7 @@ nobase_include_HEADERS = \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
 	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h eo_prec_linop.h prec_constdet_linop.h prec_logdet_linop.h \
-	 objfactory.h objfunctor.h primitives.h \
+	lmdagm.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
         named_obj.h \
 	actions/actions.h actions/boson/boson.h \
@@ -57,7 +57,6 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/llincomb.h \
-	actions/ferm/linop/lmdagm.h \
 	actions/ferm/linop/lopscl.h \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
