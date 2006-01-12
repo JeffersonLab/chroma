@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlapms_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: lovlapms_w.h,v 2.1 2006-01-12 05:45:17 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -84,8 +84,8 @@ namespace Chroma
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, Real epsilon) const;
 
   private:
-    Handle<const LinearOperator<LatticeFermion> > M;
-    Handle<const LinearOperator<LatticeFermion> > MdagM;
+    Handle<const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > M;
+    Handle<const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > MdagM;
 
     // Copy all of these rather than reference them.
     const Real m_q;

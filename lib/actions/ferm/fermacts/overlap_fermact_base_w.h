@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -54,9 +54,9 @@ namespace Chroma
     //! Robert's way: 
     //! Produce a linear operator M^dag.M for this action to be applied
     //  to a vector of known chirality. Chirality is passed in
-    virtual const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const = 0;
+    virtual const DiffLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >* lMdagM(Handle<const ConnectState> state) const = 0;
 
-    virtual const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const = 0;
+    virtual const DiffLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >* lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const = 0;
 
     virtual const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
       return new lgherm<LatticeFermion>(linOp(state));

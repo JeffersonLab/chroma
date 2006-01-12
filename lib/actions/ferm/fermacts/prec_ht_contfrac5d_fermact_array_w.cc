@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -11,7 +11,6 @@
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 #include "actions/ferm/linop/prec_ht_contfrac5d_linop_array_w.h"
 // #include "actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
 
@@ -344,16 +343,6 @@ namespace Chroma
     return 0;
   }
   
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * \param state	    gauge field     	       (Read)
-   */
-  const LinearOperator<multi1d<LatticeFermion> >* 
-  EvenOddPrecHtContFrac5DFermActArray::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
-  }
-
 
   //! Produce a Pauli-Villars linear operator for this action
   /*!

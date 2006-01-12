@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_fermact_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
 #include "actions/ferm/linop/unprec_parwilson_linop_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
@@ -101,18 +100,6 @@ namespace Chroma
   UnprecParWilsonFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new UnprecParWilsonLinOp(state->getLinks(),param.Mass,param.H); 
-  }
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state    gauge field     	       (Read)
-   */
-  const LinearOperator<LatticeFermion>*
-  UnprecParWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<LatticeFermion>(linOp(state));
   }
 
 }

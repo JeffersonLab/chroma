@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_base_array_w.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: prec_dwf_fermact_base_array_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd preconditioned domain-wall-like fermion actions
  */
@@ -12,7 +12,6 @@
 #include "actions/ferm/linop/unprec_dwflike_linop_base_array_w.h"
 #include "actions/ferm/linop/unprec_ppdwf4d_linop_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 
 namespace Chroma
@@ -43,12 +42,6 @@ namespace Chroma
     virtual const EvenOddPrecDWLikeLinOpBaseArray<T,P>* linOp(Handle<const ConnectState> state) const
     {
       return precLinOp(state,getQuarkMass());
-    }
-
-    //! Produce a linear operator M^dag.M for this action
-    virtual const LinearOperator< multi1d<T> >* lMdagM(Handle<const ConnectState> state) const
-    {
-      return new lmdagm< multi1d<T> >(linOp(state));
     }
 
     //! Override to produce a DWF-link even-odd prec. Pauli-Villars linear operator for this action

@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_fermact_w.cc,v 2.1 2005-11-16 16:53:33 edwards Exp $
+// $Id: prec_parwilson_fermact_w.cc,v 2.2 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
 #include "actions/ferm/linop/prec_parwilson_linop_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
@@ -100,18 +99,6 @@ namespace Chroma
   EvenOddPrecParWilsonFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new EvenOddPrecParWilsonLinOp(state->getLinks(),param.Mass,param.H);
-  }
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the odd subset
-   *
-   * \param state 	    gauge field     	       (Read)
-   */
-  const LinearOperator<LatticeFermion>* 
-  EvenOddPrecParWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<LatticeFermion>(linOp(state));
   }
 
 }

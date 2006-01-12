@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 2.1 2005-10-04 19:23:19 bjoo Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 2.2 2006-01-12 05:45:17 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -10,7 +10,6 @@
 #include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/invert/minvcg_array.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/prec_dwf_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h"

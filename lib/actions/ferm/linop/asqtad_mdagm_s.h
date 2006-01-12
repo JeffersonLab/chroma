@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: asqtad_mdagm_s.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -43,7 +43,7 @@ namespace Chroma
  * 	     E             EO OE
  */
 
-class AsqtadMdagM : public LinearOperator<LatticeStaggeredFermion>
+class AsqtadMdagM : public DiffLinearOperator<LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >
 {
 public:
   //! Partial constructor

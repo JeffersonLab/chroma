@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_fermact_w.cc,v 2.1 2005-12-03 21:19:38 edwards Exp $
+// $Id: unprec_wilson_fermact_w.cc,v 2.2 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
@@ -59,25 +58,7 @@ namespace Chroma
   const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
   UnprecWilsonFermAct::linOp(Handle<const ConnectState> state) const
   {
-    if (param.anisoParam.anisoP)
-    {
-      QDPIO::cerr << "UnprecWilsonFermAct::linOp - no aniso support" << endl;
-      QDP_abort(1);
-    }
-
-    return new UnprecWilsonLinOp(state->getLinks(), param.Mass); 
-  }
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state    gauge field     	       (Read)
-   */
-  const LinearOperator<LatticeFermion>*
-  UnprecWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<LatticeFermion>(linOp(state));
+    return new UnprecWilsonLinOp(state->getLinks(),param.Mass,param.anisoParam); 
   }
 
 }

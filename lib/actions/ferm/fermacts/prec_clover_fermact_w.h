@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 2.2 2005-12-29 05:36:10 edwards Exp $
+// $Id: prec_clover_fermact_w.h,v 2.3 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -50,9 +50,6 @@ namespace Chroma
 
     //! Produce a linear operator for this action
     const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
-
-    //! Produce a linear operator M^dag.M for this action
-    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
     //! Produce the gamma_5 hermitian operator H_w
     const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 

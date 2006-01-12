@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_hamberwu_fermact_w.h,v 2.1 2005-12-03 04:20:20 edwards Exp $
+// $Id: unprec_hamberwu_fermact_w.h,v 2.2 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu fermion action
  */
@@ -65,9 +65,6 @@ namespace Chroma
 
     //! Produce a linear operator for this action
     const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
-
-    //! Produce a linear operator M^dag.M for this action
-    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
     //! Produce the gamma_5 hermitian operator H_w
     const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 

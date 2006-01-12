@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -24,7 +24,6 @@
 #include "actions/ferm/linop/lovlap_double_pass_w.h"
 #include "actions/ferm/linop/lovddag_w.h"
 #include "actions/ferm/linop/lovddag_double_pass_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lg5eps_w.h"
 #include "actions/ferm/linop/lg5eps_double_pass_w.h"
 #include "meas/eig/ischiral_w.h"
@@ -1121,13 +1120,30 @@ namespace Chroma
     return 0;
   }
 
+  //! Produce a conventional MdagM operator for this action
+  /*!
+   * This is the operator which you can always use
+   * The operator acts on the entire lattice
+   *
+   * \param state_     gauge field state       (Read)
+   */
+  const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
+  OvlapPartFrac4DFermAct::lMdagM(Handle<const ConnectState> state_) const
+  {
+    // linOp news the linear operator and gives back pointer, 
+    // We call lmdagm with this pointer.
+    // lmdagm is the only owner
+    // No need to grab linOp with handle at this stage.
+    return new DiffMdagMLinOp< LatticeFermion, multi1d<LatticeColorMatrix> >( linOp(state_) );
+  }
+ 
   //! Produce a linear operator for this action
   /*!
    * The operator acts on the entire lattice
    *
    * \param state_	 gauge field state  	 (Read)
    */
-  const LinearOperator<LatticeFermion>* 
+  const DiffLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >* 
   OvlapPartFrac4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& ichiral) const
   {
 
@@ -1193,24 +1209,6 @@ namespace Chroma
 
     return 0;
   }
-
-  //! Produce a conventional MdagM operator for this action
-  /*!
-   * This is the operator which you can always use
-   * The operator acts on the entire lattice
-   *
-   * \param state_	 gauge field state  	 (Read)
-   */
-  const LinearOperator<LatticeFermion>* 
-  OvlapPartFrac4DFermAct::lMdagM(Handle<const ConnectState> state_) const
-  {
-    // linOp news the linear operator and gives back pointer, 
-    // We call lmdagm with this pointer.
-    // lmdagm is the only owner
-    // No need to grab linOp with handle at this stage.
-    return new lmdagm<LatticeFermion>( linOp(state_) );
-  }
-
 
 
   //! Produce a linear operator for this action

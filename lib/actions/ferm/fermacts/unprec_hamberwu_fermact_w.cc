@@ -1,4 +1,4 @@
-// $Id: unprec_hamberwu_fermact_w.cc,v 2.1 2005-12-03 04:20:20 edwards Exp $
+// $Id: unprec_hamberwu_fermact_w.cc,v 2.2 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu fermion action
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/unprec_hamberwu_fermact_w.h"
 #include "actions/ferm/linop/unprec_hamberwu_linop_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
@@ -112,18 +111,6 @@ namespace Chroma
     }
 
     return new UnprecHamberWuLinOp(state->getLinks(), param.Mass, param.u0); 
-  }
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state    gauge field     	       (Read)
-   */
-  const LinearOperator<LatticeFermion>*
-  UnprecHamberWuFermAct::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<LatticeFermion>(linOp(state));
   }
 
 }

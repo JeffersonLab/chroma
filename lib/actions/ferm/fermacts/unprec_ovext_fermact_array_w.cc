@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -7,7 +7,6 @@
 #include "actions/ferm/fermacts/unprec_ovext_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_ovext_linop_array_w.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/invert/invcg2_array.h"
 
@@ -350,19 +349,6 @@ namespace Chroma
 				     param.b5,
 				     param.c5);
     
-  }
-
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the entire lattice
-   *
-   * \param state	    gauge field     	       (Read)
-   */
-  const LinearOperator< multi1d<LatticeFermion> >* 
-  UnprecOvExtFermActArray::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
   }
 
 

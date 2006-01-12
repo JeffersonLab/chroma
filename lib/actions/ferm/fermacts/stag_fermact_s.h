@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stag_fermact_s.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: stag_fermact_s.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -42,7 +42,7 @@ namespace Chroma
     const EvenOddLinearOperator< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
-    const LinearOperator<LatticeStaggeredFermion>* lMdagM(Handle<const ConnectState> state) const;
+    const DiffLinearOperator<LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* lMdagM(Handle<const ConnectState> state) const;
 
     //! Destructor is automatic
     ~StagFermAct() {}

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
+// $Id: fermact.h,v 2.3 2006-01-12 05:45:16 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -12,6 +12,7 @@
 #include "invtype.h"
 #include "state.h"
 #include "linearop.h"
+#include "lmdagm.h"
 #include "eo_prec_linop.h"
 #include "syssolver.h"
 #include "fermbc.h"
@@ -197,6 +198,9 @@ namespace Chroma
 
     //! Produce a linear operator for this action
     virtual const DiffLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Produce a linear operator M^dag.M for this action
+    virtual const DiffLinearOperator<T,P>* lMdagM(Handle<const ConnectState> state) const = 0;
   };
 
 
@@ -295,6 +299,9 @@ namespace Chroma
     //! Produce a linear operator for this action
     virtual const DiffLinearOperator<multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
 
+    //! Produce a linear operator M^dag.M for this action
+    virtual const DiffLinearOperator<multi1d<T>, P>* lMdagM(Handle<const ConnectState> state) const = 0;
+
     //! Produce a Pauli-Villars linear operator for this action
     virtual const DiffLinearOperator<multi1d<T>, P>* linOpPV(Handle<const ConnectState> state) const = 0;
   };
@@ -312,6 +319,13 @@ namespace Chroma
   public:
     //! Virtual destructor to help with cleanup;
     virtual ~WilsonTypeFermAct() {}
+
+    //! Produce a linear operator M^dag.M for this action
+    /*! Default implementation */
+    virtual const DiffLinearOperator<T,P>* lMdagM(Handle<const ConnectState> state) const
+      {
+	return new DiffMdagMLinOp<T,P>(this->linOp(state));
+      }
 
     //! Produce a hermitian version of the linear operator
     virtual const LinearOperator<T>* hermitianLinOp(Handle<const ConnectState> state) const = 0;
@@ -350,6 +364,13 @@ namespace Chroma
   public:
     //! Virtual destructor to help with cleanup;
     virtual ~WilsonTypeFermAct5D() {}
+
+    //! Produce a linear operator M^dag.M for this action
+    /*! Default implementation */
+    virtual const DiffLinearOperator<multi1d<T>, P>* lMdagM(Handle<const ConnectState> state) const
+      {
+	return new DiffMdagMLinOp<multi1d<T>, P>(this->linOp(state));
+      }
 
     //! Produce a hermitian version of the linear operator
     virtual const LinearOperator< multi1d<T> >* hermitianLinOp(Handle<const ConnectState> state) const = 0;

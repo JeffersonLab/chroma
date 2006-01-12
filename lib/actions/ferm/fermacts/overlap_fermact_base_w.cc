@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -19,7 +19,6 @@
 #include "actions/ferm/invert/minv_rel_cg.h"
 #include "actions/ferm/invert/inv_rel_gmresr_sumr.h"
 #include "actions/ferm/invert/inv_rel_gmresr_cg.h"
-#include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lopscl.h"
 #include "meas/eig/ischiral_w.h"
 

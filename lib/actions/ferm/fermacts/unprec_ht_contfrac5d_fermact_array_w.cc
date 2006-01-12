@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -12,7 +12,6 @@
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 
-#include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
 
@@ -334,19 +333,6 @@ namespace Chroma
 					    isLastZeroP);
   }
   
-
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the entire lattice *
-   * \param state	    gauge field     	       (Read)
-   */
-  const LinearOperator< multi1d<LatticeFermion> >* 
-  UnprecHTContFrac5DFermActArray::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<multi1d<LatticeFermion> >(linOp(state));
-  }
-
 
   //! Propagator of unpreconditioned H_T kernel continued fraction (5D) operator
   /*! \ingroup qprop

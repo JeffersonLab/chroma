@@ -1,4 +1,4 @@
-// $Id: asqtad_fermact_s.cc,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: asqtad_fermact_s.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -58,7 +58,7 @@ AsqtadFermAct::linOp(Handle<const ConnectState> state_) const
  * \param u_fat, u_triple 	 fat7 and triple links	       (Read)
  */
 
-const LinearOperator<LatticeStaggeredFermion>* 
+const DiffLinearOperator<LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* 
 AsqtadFermAct::lMdagM(Handle<const ConnectState> state_) const
 {
   const AsqtadConnectStateBase<LatticeStaggeredFermion>& state = 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_eigbnds.cc,v 2.1 2006-01-12 05:45:17 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -11,7 +11,6 @@
 #include "meas/eig/eig_spec.h"
 #include "meas/eig/eig_spec_array.h"
 
-#include "actions/ferm/linop/lmdagm.h"
 #include "actions/ferm/linop/lopscl.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 

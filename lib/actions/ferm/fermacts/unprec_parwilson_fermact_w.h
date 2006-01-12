@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_parwilson_fermact_w.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -66,9 +66,6 @@ namespace Chroma
 
     //! Produce a linear operator for this action
     const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
-
-    //! Produce a linear operator M^dag.M for this action
-    const LinearOperator<LatticeFermion>* lMdagM(Handle<const ConnectState> state) const;
 
     //! Produce the gamma_5 hermitin op gamma_5 M
     const LinearOperator<LatticeFermion>* hermitianLinOp(Handle<const ConnectState> state) const {

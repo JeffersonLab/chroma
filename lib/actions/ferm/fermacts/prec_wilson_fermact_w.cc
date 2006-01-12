@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 2.1 2005-12-03 21:19:38 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 2.2 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -6,7 +6,6 @@
 #include "chromabase.h"
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/linop/prec_wilson_linop_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"
@@ -57,18 +56,6 @@ namespace Chroma
   EvenOddPrecWilsonFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new EvenOddPrecWilsonLinOp(state->getLinks(),param.Mass,param.anisoParam);
-  }
-
-  //! Produce a M^dag.M linear operator for this action
-  /*!
-   * The operator acts on the odd subset
-   *
-   * \param state 	    gauge field     	       (Read)
-   */
-  const LinearOperator<LatticeFermion>* 
-  EvenOddPrecWilsonFermAct::lMdagM(Handle<const ConnectState> state) const
-  {
-    return new lmdagm<LatticeFermion>(linOp(state));
   }
 
 }

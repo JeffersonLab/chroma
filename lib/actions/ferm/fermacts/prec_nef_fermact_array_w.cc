@@ -1,4 +1,4 @@
-// $Id: prec_nef_fermact_array_w.cc,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: prec_nef_fermact_array_w.cc,v 2.2 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -7,7 +7,6 @@
 #include "actions/ferm/fermacts/prec_nef_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
 #include "actions/ferm/linop/prec_nef_linop_array_w.h"
-#include "actions/ferm/linop/lmdagm.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermbcs/fermbcs_w.h"

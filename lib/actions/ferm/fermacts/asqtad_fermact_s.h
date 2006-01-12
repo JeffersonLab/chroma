@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: asqtad_fermact_s.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -45,7 +45,7 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
   
-    const LinearOperator<LatticeStaggeredFermion>* lMdagM(Handle< const ConnectState >  state_) 
+    const DiffLinearOperator<LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* lMdagM(Handle< const ConnectState >  state_) 
       const;
 
     //! Return quark prop solver, solution of unpreconditioned system

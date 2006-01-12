@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -217,12 +217,12 @@ namespace Chroma
      * virtual func!
      * The function will have to downcast to get the correct state
      */
-    const LinearOperator<LatticeFermion>* 
+    const DiffLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >* 
     lMdagM(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action to be applied
     //  to a vector of known chirality. Chirality is passed in
-    const LinearOperator<LatticeFermion>* 
+    const DiffLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >* 
     lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const;
 
     //! Produce a linear operator M^dag.M for this action

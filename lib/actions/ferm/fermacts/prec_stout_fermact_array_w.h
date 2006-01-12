@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_stout_fermact_array_w.h,v 2.2 2005-10-13 18:38:23 bjoo Exp $
+// $Id: prec_stout_fermact_array_w.h,v 2.3 2006-01-12 05:45:16 edwards Exp $
 
 /*! @file
  *  @brief Proxy fermion action class instance for unpreconditioned stout fermacts 
@@ -114,7 +114,7 @@ namespace Chroma
       }
 
       //! Produce a linear operator M^dag.M for this action
-      const LinearOperator<multi1d<LatticeFermion> >* lMdagM(Handle<const ConnectState> state) const {
+      const DiffLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* lMdagM(Handle<const ConnectState> state) const {
 	return S_w->lMdagM(state);
       }
 
