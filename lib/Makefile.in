@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.35 2006-01-09 22:37:42 bjoo Exp $
+# $Id: Makefile.in,v 2.36 2006-01-12 05:42:23 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -678,9 +678,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	chromabase.h chromainc.h common_declarations.h fermact.h \
 	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h \
 	invtype.h lib.h linearop.h eo_prec_linop.h \
-	prec_constdet_linop.h prec_logdet_linop.h objfactory.h \
-	objfunctor.h primitives.h singleton.h state.h typeinfo.h \
-	typelist.h typemanip.h typetraits.h named_obj.h \
+	prec_constdet_linop.h prec_logdet_linop.h lmdagm.h \
+	objfactory.h objfunctor.h primitives.h singleton.h state.h \
+	typeinfo.h typelist.h typemanip.h typetraits.h named_obj.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
 	actions/ferm/fermacts/asqtad_state.h \
@@ -718,10 +718,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
-	actions/ferm/linop/llincomb.h actions/ferm/linop/lmdagm.h \
-	actions/ferm/linop/lopscl.h actions/ferm/linop/partrat.h \
-	actions/ferm/qprop/qprop.h actions/gauge/gauge.h \
-	actions/gauge/gaugeacts/gaugeacts.h \
+	actions/ferm/linop/llincomb.h actions/ferm/linop/lopscl.h \
+	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
+	actions/gauge/gauge.h actions/gauge/gaugeacts/gaugeacts.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
@@ -1216,9 +1215,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	chromainc.h common_declarations.h fermact.h fermbc.h funcmap.h \
 	syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h eo_prec_linop.h prec_constdet_linop.h \
-	prec_logdet_linop.h objfactory.h objfunctor.h primitives.h \
-	singleton.h state.h typeinfo.h typelist.h typemanip.h \
-	typetraits.h named_obj.h actions/actions.h \
+	prec_logdet_linop.h lmdagm.h objfactory.h objfunctor.h \
+	primitives.h singleton.h state.h typeinfo.h typelist.h \
+	typemanip.h typetraits.h named_obj.h actions/actions.h \
 	actions/boson/boson.h actions/boson/operator/klein_gord.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
@@ -1255,10 +1254,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
-	actions/ferm/linop/llincomb.h actions/ferm/linop/lmdagm.h \
-	actions/ferm/linop/lopscl.h actions/ferm/linop/partrat.h \
-	actions/ferm/qprop/qprop.h actions/gauge/gauge.h \
-	actions/gauge/gaugeacts/gaugeacts.h \
+	actions/ferm/linop/llincomb.h actions/ferm/linop/lopscl.h \
+	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
+	actions/gauge/gauge.h actions/gauge/gaugeacts/gaugeacts.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
