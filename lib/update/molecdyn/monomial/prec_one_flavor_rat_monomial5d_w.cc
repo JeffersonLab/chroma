@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 2.4 2006-01-14 05:22:32 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 2.5 2006-01-14 06:42:07 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -391,87 +391,6 @@ namespace Chroma
     QDPIO::cout << "EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D: " << fermact_string << endl;
   }
 
-
-  //! Multi-mass solver  (M^dag*M + q_i)^{-1} chi  using partfrac
-  int
-  EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D::getX(
-    multi1d< multi1d<LatticeFermion> >& X, 
-    const multi1d<Real>& shifts, 
-    const multi1d<LatticeFermion>& chi, 
-    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
-  {
-    // Upcast the fermact
-    const FermAct5D<LatticeFermion>& FA = getFermAct();
-
-    // Make the state
-    Handle< const ConnectState > state(FA.createState(s.getQ()));
-
-    // Get linop
-    Handle< const LinearOperator< multi1d<LatticeFermion> > > MdagM(FA.lMdagM(state));
-
-    int n_count = invert(X, shifts, *MdagM, chi);
-    return n_count;
-  }
-
-  
-  //! Multi-mass solver  (V^dag*V + q_i)^{-1} chi  using partfrac
-  int
-  EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D::getXPV(
-    multi1d< multi1d<LatticeFermion> >& X, 
-    const multi1d<Real>& shifts, 
-    const multi1d<LatticeFermion>& chi, 
-    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
-  {
-    // Upcast the fermact
-    const FermAct5D<LatticeFermion>& FA = getFermAct();
-
-    // Make the state
-    Handle< const ConnectState > state(FA.createState(s.getQ()));
-
-    // Get linop
-    Handle< const LinearOperator< multi1d<LatticeFermion> > > 
-      MdagM(new lmdagm< multi1d<LatticeFermion> >(FA.linOpPV(state)));
-    
-    // Do the inversion...
-    int n_count = invert(X, shifts, *MdagM, chi);
-    return n_count;
-  }
-
-
-  //! Get X = (A^dag*A + q_i)^{-1} eta
-  int
-  EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D::invert(
-    multi1d< multi1d<LatticeFermion> >& X, 
-    const multi1d<Real>& shifts, 
-    const LinearOperator< multi1d<LatticeFermion> >& A,
-    const multi1d<LatticeFermion>& eta) const
-  {
-    int n_count = 0;
-    multi1d<Real> RsdCG(shifts.size());
-    RsdCG = inv_param.RsdCG;
-
-    // X allocated and passed in
-//    X=zero;
-   
-    // Do the inversion...
-    switch( inv_param.invType) {
-    case CG_INVERTER:
-    {
-      // Solve A^dag*M X = eta
-      MInvCG(A, eta, X, shifts, RsdCG, inv_param.MaxCG, n_count);
-      QDPIO::cout << "1Flav5D::invert, n_count = " << n_count << endl;
-    }
-    break;
-    default:
-    {
-      QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-      QDP_abort(1);
-    }
-    break;
-    };
-
-    return n_count;
-  }
 
 }; //end namespace Chroma
 

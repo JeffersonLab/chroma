@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial5d_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
+// $Id: unprec_two_flavor_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
@@ -38,13 +38,6 @@ namespace Chroma
       UnprecTwoFlavorWilsonTypeFermMonomial5D(const string& fermact_name, 
 					      const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
-      // Construct from a fermact handle and inv params
-      // FermAct already holds BC-s
-//      UnprecTwoFlavorWilsonTypeFermMonomial5D(const std::string& FermAct, 
-//					      Handle< const UnprecWilsonTypeFermAct5D >& fermact_, 
-//					      const InvertParam_t& inv_param_) : 
-//	fermact(fermact_), inv_param(inv_param_) {init(FermAct);}
-
       // Copy Constructor
       UnprecTwoFlavorWilsonTypeFermMonomial5D(const UnprecTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
@@ -77,21 +70,10 @@ namespace Chroma
 	return *fermact;
       }
 
-      //! Do inversion M^dag M X = phi
-      int getX(multi1d<LatticeFermion>& X, 
-		const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s);
-
-      
-      //! Get X = (PV^dag*PV)^{-1} eta
-      int getXPV(multi1d<LatticeFermion>& X, const multi1d<LatticeFermion>& eta, 
-		  const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
-
-
-      //! Get X = (A^dag*A)^{-1} eta
-      int invert(multi1d<LatticeFermion>& X, 
-		 const LinearOperator< multi1d<LatticeFermion> >& A,
-		 const multi1d<LatticeFermion>& eta) const;
-
+      //! Get parameters for the inverter
+      const InvertParam_t getInvParams(void) const { 
+	return inv_param;
+      }
      
       AbsChronologicalPredictor5D< LatticeFermion >& getMDSolutionPredictor(void) {
 	return *chrono_predictor;

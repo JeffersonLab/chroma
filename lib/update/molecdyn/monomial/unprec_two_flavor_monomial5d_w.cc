@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial5d_w.cc,v 2.3 2006-01-14 05:22:32 edwards Exp $
+// $Id: unprec_two_flavor_monomial5d_w.cc,v 2.4 2006-01-14 06:42:07 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -8,7 +8,6 @@
 #include "update/molecdyn/monomial/monomial_factory.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/invert/invcg2_array.h"
 
 #include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h"
@@ -212,119 +211,6 @@ namespace Chroma
    
   }
 
-
-  // Do inversion M^dag M X = V^dag phi ?
-
-  // X allocated and pased in...
-  int
-  UnprecTwoFlavorWilsonTypeFermMonomial5D::getX(
-    multi1d<LatticeFermion>& X, 
-    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)
-  {
-    // Upcast the fermact
-    const FermAct5D<LatticeFermion>& FA = getFermAct();
-
-    // Make the state
-    Handle< const ConnectState > state(FA.createState(s.getQ()));
-
-    
-    // Get linop
-    Handle< const LinearOperator< multi1d<LatticeFermion> > > M(FA.linOp(state));
-
-    Handle< const LinearOperator< multi1d<LatticeFermion> > > PV(FA.linOpPV(state));
-
-    //    // Get PV linop
-    // Handle< const LinearOperator< multi1d<LatticeFermion> > > PV(FA.linOpPV
-    // Do the inversion...
-    multi1d<LatticeFermion> VdagPhi(FA.size());
-    (*PV)(VdagPhi, getPhi(), MINUS);
-
-    int n_count;
-
-    // Get the chrono prediction
-    switch( inv_param.invType) {
-    case CG_INVERTER:
-      {
-	// CG Chrono predictor needs MdagM
-	Handle< const LinearOperator< multi1d<LatticeFermion> > > MdagM(FA.lMdagM(state));
-	(getMDSolutionPredictor())(X, *MdagM, VdagPhi);
-	
-	// Do the inversion
-	n_count = invert(X, *M, VdagPhi);
-	
-	// Register the new vector
-	(getMDSolutionPredictor()).newVector(X);
-      }
-      break;
-    default:
-      {
-	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-	QDP_abort(1);
-      }
-      break;
-    };
-    
-    return n_count;
-  }
-
-  
-  // Get X = (PV^dag*PV)^{-1} eta
-  int
-  UnprecTwoFlavorWilsonTypeFermMonomial5D::getXPV(
-    multi1d<LatticeFermion>& X, 
-    const multi1d<LatticeFermion>& eta, 
-    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
-  {
-    // Upcast the fermact
-    const FermAct5D<LatticeFermion>& FA = getFermAct();
-
-    // Make the state
-    Handle< const ConnectState > state(FA.createState(s.getQ()));
-
-    // X allocated and passed in
-    X=zero;
-   
-    // Get linop
-    Handle< const LinearOperator< multi1d<LatticeFermion> > > M(FA.linOpPV(state));
-    
-
-    // Do the inversion...
-    int n_count = invert(X, *M, eta);
-    return n_count;
-  }
-
-
-  // Get X = (A^dag*A)^{-1} eta
-  int
-  UnprecTwoFlavorWilsonTypeFermMonomial5D::invert(
-    multi1d<LatticeFermion>& X, 
-    const LinearOperator< multi1d<LatticeFermion> >& M,
-    const multi1d<LatticeFermion>& eta) const
-  {
-    int n_count =0;
-
-    // Do the inversion...
-    switch( inv_param.invType) {
-    case CG_INVERTER:
-    {
-      // Solve MdagM X = eta
-      InvCG2(M, eta, X, inv_param.RsdCG, inv_param.MaxCG, n_count);
-      QDPIO::cout << "2Flav5D::invert, n_count = " << n_count << endl;
-    }
-    break;
-    default:
-    {
-      QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-      QDP_abort(1);
-    }
-    break;
-    };
-
-    return n_count;
-  }
-
-  
-
-}; //end namespace Chroma
+} //end namespace Chroma
 
 

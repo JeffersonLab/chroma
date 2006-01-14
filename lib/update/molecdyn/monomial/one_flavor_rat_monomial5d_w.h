@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -10,6 +10,8 @@
 
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "actions/ferm/fermacts/remez_coeff.h"
+#include "actions/ferm/invert/invert.h"
+#include "invtype.h"
 
 namespace Chroma
 {
@@ -470,6 +472,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const WilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
+
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
 
@@ -506,18 +511,84 @@ namespace Chroma
     //! Return the partial fraction expansion for the heat-bath in PV
     virtual const RemezCoeff_t& getSIPVPFE() const = 0;
 
+    //! Get X = (A^dag*A + q_i)^{-1} eta
+    virtual int invert(multi1d< multi1d<Phi> >& X, 
+		       const multi1d<Real>& shifts, 
+		       const LinearOperator< multi1d<Phi> >& A,
+		       const multi1d<Phi>& eta) const
+    {
+      const InvertParam_t& inv_param = getInvParams();
+
+      int n_count = 0;
+      multi1d<Real> RsdCG(shifts.size());
+      RsdCG = inv_param.RsdCG;
+      
+      // X allocated and passed in
+//    X=zero;
+
+      // Do the inversion...
+      switch( inv_param.invType) {
+      case CG_INVERTER:
+      {
+	// Solve A^dag*M X = eta
+	MInvCG(A, eta, X, shifts, RsdCG, inv_param.MaxCG, n_count);
+	QDPIO::cout << "1Flav5D::invert, n_count = " << n_count << endl;
+      }
+      break;
+      default:
+      {
+	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
+	QDP_abort(1);
+      }
+      break;
+      };
+
+      return n_count;
+    }
+
+
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
     virtual int getX(multi1d< multi1d<Phi> >& X, 
 		     const multi1d<Real>& shifts, 
 		     const multi1d<Phi>& chi, 
-		     const AbsFieldState<P,Q>& s) const = 0;
+		     const AbsFieldState<P,Q>& s) const
+    {
+      // Upcast the fermact
+      const FermAct5D<Phi>& FA = getFermAct();
 
+      // Make the state
+      Handle< const ConnectState > state(FA.createState(s.getQ()));
+
+      // Get linop
+      Handle< const LinearOperator< multi1d<Phi> > > MdagM(FA.lMdagM(state));
+
+      int n_count = invert(X, shifts, *MdagM, chi);
+      return n_count;
+    }
+
+  
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi for PV using partfrac
     virtual int getXPV(multi1d< multi1d<Phi> >& X, 
 		       const multi1d<Real>& shifts, 
 		       const multi1d<Phi>& chi, 
-		       const AbsFieldState<P,Q>& s) const = 0;
-   };
+		       const AbsFieldState<P,Q>& s) const
+    {
+      // Upcast the fermact
+      const FermAct5D<Phi>& FA = getFermAct();
+
+      // Make the state
+      Handle< const ConnectState > state(FA.createState(s.getQ()));
+
+      // Get linop
+      Handle< const LinearOperator< multi1d<Phi> > > 
+	MdagM(new lmdagm< multi1d<Phi> >(FA.linOpPV(state)));
+    
+      // Do the inversion...
+      int n_count = invert(X, shifts, *MdagM, chi);
+      return n_count;
+    }
+
+  };
 
 
   //-------------------------------------------------------------------------------------------
@@ -551,6 +622,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const UnprecWilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
+
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
 
@@ -586,18 +660,6 @@ namespace Chroma
 
     //! Return the partial fraction expansion for the heat-bath in PV
     virtual const RemezCoeff_t& getSIPVPFE() const = 0;
-
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
-    virtual int getX(multi1d< multi1d<Phi> >& X, 
-		     const multi1d<Real>& shifts, 
-		     const multi1d<Phi>& chi, 
-		     const AbsFieldState<P,Q>& s) const = 0;
-
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi for PV using partfrac
-    virtual int getXPV(multi1d< multi1d<Phi> >& X, 
-		       const multi1d<Real>& shifts, 
-		       const multi1d<Phi>& chi, 
-		       const AbsFieldState<P,Q>& s) const = 0;
   };
 
 
@@ -646,6 +708,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& getFermAct() const = 0;
 
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
+
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
 
@@ -681,18 +746,6 @@ namespace Chroma
 
     //! Return the partial fraction expansion for the heat-bath in PV
     virtual const RemezCoeff_t& getSIPVPFE() const = 0;
-
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
-    virtual int getX(multi1d< multi1d<Phi> >& X, 
-		     const multi1d<Real>& shifts, 
-		     const multi1d<Phi>& chi, 
-		     const AbsFieldState<P,Q>& s) const = 0;
-
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi for PV using partfrac
-    virtual int getXPV(multi1d< multi1d<Phi> >& X, 
-		       const multi1d<Real>& shifts, 
-		       const multi1d<Phi>& chi, 
-		       const AbsFieldState<P,Q>& s) const = 0;
   };
 
 }

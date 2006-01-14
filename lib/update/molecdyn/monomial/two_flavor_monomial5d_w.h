@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: two_flavor_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -10,6 +10,8 @@
 
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
+#include "actions/ferm/invert/invert.h"
+#include "invtype.h"
 
 namespace Chroma
 {
@@ -200,13 +202,107 @@ namespace Chroma
     //! Get at fermion action
     virtual const WilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
-    //! Get (M^dagM)^{-1} phi
-    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)  = 0;
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
 
-    //! Get X = (PV^dag*PV)^{-1} eta
-    virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
-
+    //! Get the initial guess predictor
     virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+
+    //! Get (M^dagM)^{-1} phi
+    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)
+    {
+      const InvertParam_t& inv_param = getInvParams();
+
+      // Upcast the fermact
+      const FermAct5D<Phi>& FA = getFermAct();
+
+      // Make the state
+      Handle< const ConnectState > state(FA.createState(s.getQ()));
+
+      // Get linop
+      Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(state));
+      // Get PV
+      Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(state));
+
+      multi1d<Phi> VdagPhi(FA.size());
+    
+      (*PV)(VdagPhi, getPhi(), MINUS);
+
+      int n_count;
+
+      // Get the chrono prediction
+      switch( inv_param.invType) {
+      case CG_INVERTER:
+      {
+	// CG Chrono predictor needs MdagM
+	Handle< const LinearOperator< multi1d<Phi> > > MdagM(FA.lMdagM(state));
+	(getMDSolutionPredictor())(X, *MdagM, VdagPhi);
+
+	// Do the inversion
+	n_count = invert(X, *M, VdagPhi);
+
+	// Register the new vector
+	(getMDSolutionPredictor()).newVector(X);
+      }
+      break;
+      default:
+      {
+	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
+	QDP_abort(1);
+      }
+      break;
+      };
+ 
+      return n_count;
+    }
+
+  
+    //! Get X = (PV^dag*PV)^{-1} eta
+    virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const
+    {
+      // Upcast the fermact
+      const FermAct5D<Phi>& FA = getFermAct();
+
+      // Make the state
+      Handle< const ConnectState > state(FA.createState(s.getQ()));
+   
+      // Get linop
+      Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOpPV(state));
+
+      // Do the inversion...
+      int n_count = invert(X, *M, eta);
+      return n_count;
+    }
+
+
+    // Get X = (A^dag*A)^{-1} eta
+    virtual int invert(multi1d<Phi>& X, const LinearOperator< multi1d<Phi> >& M,
+		       const multi1d<Phi>& eta) const
+    {
+      const InvertParam_t& inv_param = getInvParams();
+
+      int n_count =0;
+
+      // Do the inversion...
+      switch( inv_param.invType) {
+      case CG_INVERTER:
+      {
+	// Solve MdagM X = eta
+	InvCG2(M, eta, X, inv_param.RsdCG, inv_param.MaxCG, n_count);
+	QDPIO::cout << "2Flav5D::invert,  n_count = " << n_count << endl;
+      }
+      break;
+      default:
+      {
+	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
+	QDP_abort(1);
+      }
+      break;
+      };
+
+      return n_count;
+    }
+
    };
 
 
@@ -282,12 +378,10 @@ namespace Chroma
     //! Get at fermion action
     virtual const UnprecWilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
 
-    //! Get (M^dagM)^{-1} phi
-    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)  = 0;
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
 
-    //! Get X = (PV^dag*PV)^{-1} eta
-    virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const = 0;
-
+    //! Get the initial guess predictor
     virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
@@ -368,19 +462,17 @@ namespace Chroma
     //! Get at fermion action
     virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& getFermAct() const = 0;
 
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
+
+    //! Get the initial guess predictor
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+
     //! Accessor for pseudofermion with Pf index i (read only)
     virtual const multi1d<Phi>& getPhi(void) const = 0;
 
     //! mutator for pseudofermion with Pf index i 
     virtual multi1d<Phi>& getPhi(void) = 0;    
-
-    //! Get (M^dagM)^{-1} phi
-    virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)  = 0;
-
-    //! Get X = (PV^dag*PV)^{-1} eta
-    virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const  = 0;
-
-    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
 

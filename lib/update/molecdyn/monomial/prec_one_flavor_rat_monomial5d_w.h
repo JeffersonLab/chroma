@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial5d_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -53,6 +53,11 @@ namespace Chroma
 	return *fermact;
       }
 
+      //! Get parameters for the inverter
+      const InvertParam_t getInvParams(void) const { 
+	return inv_param;
+      }
+
       //! Accessor for pseudofermion (read only)
       const multi1d< multi1d<LatticeFermion> >& getPhi(void) const {return phi;}
 
@@ -85,24 +90,6 @@ namespace Chroma
       //! Return the partial fraction expansion for the heat-bath in PV
       const RemezCoeff_t& getSIPVPFE() const {return sipvpfe;}
 
-      //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
-      int getX(multi1d< multi1d<LatticeFermion> >& X, 
-	       const multi1d<Real>& shifts, 
-	       const multi1d<LatticeFermion>& chi, 
-	       const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
-
-      //! Multi-mass solver  (V^dagV + q_i)^{-1} chi for PV using partfrac
-      int getXPV(multi1d< multi1d<LatticeFermion> >& X, 
-		 const multi1d<Real>& shifts, 
-		 const multi1d<LatticeFermion>& chi, 
-		 const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
-      
-      //! Get X = (A^dag*A + q_i)^{-1} eta
-      int invert(multi1d< multi1d<LatticeFermion> >& X, 
-		 const multi1d<Real>& shifts, 
-		 const LinearOperator< multi1d<LatticeFermion> >& A,
-		 const multi1d<LatticeFermion>& eta) const;
-     
     private:
  
       // Hide empty constructor and =

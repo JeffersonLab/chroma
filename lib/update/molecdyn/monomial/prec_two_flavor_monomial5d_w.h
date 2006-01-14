@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_monomial5d_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
+// $Id: prec_two_flavor_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
@@ -82,19 +82,10 @@ namespace Chroma
 	return *fermact;
       }
 
-      // Do inversion M^dag M X = phi
-      int getX(multi1d<LatticeFermion>& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s);
-
-
-      //! Get X = (PV^dag*PV)^{-1} eta
-      int getXPV(multi1d<LatticeFermion>& X, const multi1d<LatticeFermion>& eta, 
-		  const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
-
-
-      //! Get X = (A^dag*A)^{-1} eta
-      int invert(multi1d<LatticeFermion>& X, 
-		 const LinearOperator< multi1d<LatticeFermion> >& A,
-		 const multi1d<LatticeFermion>& eta) const;
+      //! Get parameters for the inverter
+      const InvertParam_t getInvParams(void) const { 
+	return inv_param;
+      }
 
       AbsChronologicalPredictor5D<LatticeFermion>& getMDSolutionPredictor(void) { 
 	return *chrono_predictor;
