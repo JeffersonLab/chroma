@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial5d_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial5d_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -9,6 +9,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h"
+#include "update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.h"
 
 namespace Chroma 
 {
@@ -18,43 +19,6 @@ namespace Chroma
   {
     extern const bool registered;
   };
-
-  // Parameter structure
-  /*! @ingroup monomial */
-  struct EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams 
-  {
-    // Base Constructor
-    EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams();
-
-    // Read monomial from some root path
-    EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& in, const std::string& path);
-    EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams(XMLReader& in, const std::string& path,
-							  int expNumPower_, int expDenPower_);
-
-    InvertParam_t   inv_param;     // Inverter Parameters
-    std::string     ferm_act;
-    int             expNumPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
-    int             expDenPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
-    int             nthRoot;       // Use "n" copies of nth-root 1-flavor
-    int             nthRootPV;     // Use "n" copies of nth-root 1 flavor PV
-
-    struct Remez_t   // eigenvalue bounds of M^dag*M
-    {
-      Real lowerMin;
-      Real upperMax;
-      Real lowerMinPV;
-      Real upperMaxPV;
-
-      int  degree;
-      int  degreePV;
-      
-      int digitPrecision;
-    } remez;
-  };
-
-  void read(XMLReader& xml, const string& path, EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams& param);
-
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams& params);
 
 
   //! Wrapper class for 5D 2-flavor even-odd prec ferm monomials
@@ -71,7 +35,7 @@ namespace Chroma
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(const string& fermact_name, 
-						   const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DParams& param_);
+						      const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
 
       // Copy Constructor
       EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}

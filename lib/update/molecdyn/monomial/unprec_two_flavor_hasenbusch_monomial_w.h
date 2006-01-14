@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_hasenbusch_monomial_w.h,v 2.1 2006-01-02 20:23:28 bjoo Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial_w.h,v 2.2 2006-01-14 05:22:32 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -9,6 +9,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/two_flavor_hasenbusch_monomial_w.h"
+#include "update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h"
 
 namespace Chroma 
 {
@@ -19,26 +20,6 @@ namespace Chroma
     extern const bool registered;
   };
 
-  // Parameter structure
-  /*! @ingroup monomial */
-  struct UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams 
-  {
-    // Base Constructor
-    UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams();
-
-    // Read monomial from some root path
-    UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
-    InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;         // FermAct for the main action
-    string ferm_act_prec;    // FermAct for the preconditioner
-    std::string predictor_xml;  // ChronologicalPredictor XML
-  };
-
-  /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& param);
-
-  /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& params);
 
   //! Wrapper class for  2-flavor unprec ferm monomials
   /*! @ingroup monomial 
@@ -54,7 +35,7 @@ namespace Chroma
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
       UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial(const string& fermact_name, 
-					      const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
+						      const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
 
 
       // Copy Constructor

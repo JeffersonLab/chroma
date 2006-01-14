@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.2 2006-01-12 16:51:18 bjoo Exp $
+// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.3 2006-01-14 05:22:32 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -7,7 +7,6 @@
 #include "update/molecdyn/monomial/monomial_factory.h"
 #include "update/molecdyn/monomial/genapprox.h"
 
-#include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/invert/minvcg.h"
 
@@ -30,7 +29,7 @@ namespace Chroma
       QDPIO::cout << "Create Monomial: " << name << endl;
 
       return new EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
-	name, EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(xml, path));
+	name, OneFlavorWilsonTypeFermRatMonomialParams(xml, path));
     }
     
     //! Does the work
@@ -40,8 +39,8 @@ namespace Chroma
 							    int expNumPower, int expDenPower) 
     {
       return new EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
-	name, EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(xml, path, 
-								  expNumPower, expDenPower));
+	name, OneFlavorWilsonTypeFermRatMonomialParams(xml, path, 
+						       expNumPower, expDenPower));
     }
     
 
@@ -200,96 +199,11 @@ namespace Chroma
   }; //end namespace EvenOddPrec OneFlavorWilsonFermRatMonomialEnv
 
 
-  //! Remez input
-  void read(XMLReader& xml, const string& path, 
-	    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams::Remez_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "lowerMin", input.lowerMin);
-    read(inputtop, "upperMax", input.upperMax);
-    read(inputtop, "forceDegree", input.forceDegree);
-    read(inputtop, "actionDegree", input.actionDegree);
-
-    if (inputtop.count("digitPrecision") != 0)
-      read(inputtop, "digitPrecision", input.digitPrecision);
-    else
-      input.digitPrecision = 50;
-  }
-
-
-  // Read the parameters
-  EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams::EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& xml_in, const string& path)
-  {
-    // Get the top of the parameter XML tree
-    XMLReader paramtop(xml_in, path);
-    
-    try {
-      // Read the inverter Parameters
-      read(paramtop, "InvertParam", inv_param);
-      read(paramtop, "Remez", remez);
-      read(paramtop, "expNumPower", expNumPower);
-      read(paramtop, "expDenPower", expDenPower);
-      read(paramtop, "nthRoot", nthRoot);
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
-    }
-    catch(const string& s) {
-      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
-      QDP_abort(1);
-    }
-
-    QDPIO::cout << "EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams: read \n" << ferm_act << endl;
-  }
-
-  // Read the parameters
-  EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams::EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(
-    XMLReader& xml_in, const string& path, int expNumPower_, int expDenPower_)
-  {
-    // Get the top of the parameter XML tree
-    XMLReader paramtop(xml_in, path);
-    
-    expNumPower = expNumPower_;
-    expDenPower = expDenPower_;
-
-    try {
-      // Read the inverter Parameters
-      read(paramtop, "InvertParam", inv_param);
-      read(paramtop, "Remez", remez);
-      read(paramtop, "nthRoot", nthRoot);
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
-    }
-    catch(const string& s) {
-      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
-      QDP_abort(1);
-    }
-
-    QDPIO::cout << "EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams: read \n" << ferm_act << endl;
-  }
-
-  //! Read Parameters
-  void read(XMLReader& xml, const std::string& path,
-	    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& params) {
-    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams tmp(xml, path);
-    params = tmp;
-  }
-
-  //! Write Parameters
-  void write(XMLWriter& xml, const std::string& path,
-	     const EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& params) {
-    // Not implemented
-  }
-
 
   // Constructor
   EvenOddPrecOneFlavorWilsonTypeFermRatMonomial::EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
     const string& name_,
-    const EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& param) 
+    const OneFlavorWilsonTypeFermRatMonomialParams& param) 
   {
     inv_param = param.inv_param;
     nthRoot   = param.nthRoot;

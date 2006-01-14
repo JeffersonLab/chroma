@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_monomial5d_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: prec_two_flavor_monomial5d_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
@@ -10,6 +10,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/two_flavor_monomial5d_w.h"
+#include "update/molecdyn/monomial/two_flavor_monomial_params_w.h"
 
 namespace Chroma 
 {
@@ -19,23 +20,6 @@ namespace Chroma
   {
     extern const bool registered;
   };
-
-  // Parameter structure
-  /*! @ingroup monomial */
-  struct EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams {
-    // Base Constructor
-    EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams();
-
-    // Read monomial from some root path
-    EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams(XMLReader& in, const std::string&  path);
-    InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;
-    string predictor_xml;
-  };
-
-  void read(XMLReader& xml, const string& path, EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams& param);
-
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams& params);
 
 
   //! Wrapper class for 5D 2-flavor even-odd prec ferm monomials
@@ -52,7 +36,7 @@ namespace Chroma
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(const string& fermact_name, 
-						   const EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DParams& param_);
+						   const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
       // Construct from a fermact handle and inv params
       // FermAct already holds BC-s

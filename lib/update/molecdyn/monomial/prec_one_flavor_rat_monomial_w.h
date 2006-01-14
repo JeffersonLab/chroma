@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial_w.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -9,6 +9,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/one_flavor_rat_monomial_w.h"
+#include "update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h"
 
 namespace Chroma 
 {
@@ -18,37 +19,6 @@ namespace Chroma
   {
     extern const bool registered;
   };
-
-  // Parameter structure
-  /*! @ingroup monomial */
-  struct EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams {
-    // Base Constructor
-    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams();
-
-    // Read monomial from some root path
-    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path);
-    EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path,
-							int expNumPower_, int expDenPower_);
-
-    InvertParam_t   inv_param;     // Inverter Parameters
-    std::string     ferm_act;
-    int             expNumPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
-    int             expDenPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
-    int             nthRoot;       // Use "n" copies of nth-root 1-flavor
-
-    struct Remez_t   // eigenvalue bounds of M^dag*M
-    {
-      Real lowerMin;
-      Real upperMax;
-      int  forceDegree;
-      int  actionDegree;
-      int  digitPrecision;
-    } remez;
-  };
-
-  void read(XMLReader& xml, const string& path, EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& param);
-
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& params);
 
 
   //! Wrapper class for  2-flavor even-odd prec ferm monomials
@@ -65,7 +35,7 @@ namespace Chroma
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(const string& fermact_name, 
-						    const EvenOddPrecOneFlavorWilsonTypeFermRatMonomialParams& param_);
+						    const OneFlavorWilsonTypeFermRatMonomialParams& param_);
 
       // Construct from a fermact handle and inv params
       // FermAct already holds BC-s

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial_w.h,v 2.0 2005-09-25 21:04:42 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -9,6 +9,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/one_flavor_rat_monomial_w.h"
+#include "update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h"
 
 namespace Chroma 
 {
@@ -19,39 +20,6 @@ namespace Chroma
     extern const bool registered;
   };
 
-  // Parameter structure
-  /*! @ingroup monomial */
-  struct UnprecOneFlavorWilsonTypeFermRatMonomialParams 
-  {
-    // Base Constructor
-    UnprecOneFlavorWilsonTypeFermRatMonomialParams();
-
-    // Read monomial from some root path
-    UnprecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path);
-    UnprecOneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path,
-						   int expNumPower_, int expDenPower_);
-
-    InvertParam_t   inv_param;     // Inverter Parameters
-    std::string     ferm_act;
-    int             expNumPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
-    int             expDenPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
-    int             nthRoot;       // Use "n" copies of nth-root 1-flavor
-
-    struct Remez_t   // eigenvalue bounds of M^dag*M
-    {
-      Real lowerMin;
-      Real upperMax;
-      int  forceDegree;
-      int  actionDegree;
-      int  digitPrecision;
-    } remez;
-  };
-
-  /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, UnprecOneFlavorWilsonTypeFermRatMonomialParams& param);
-
-  /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const UnprecOneFlavorWilsonTypeFermRatMonomialParams& params);
 
   //! Wrapper class for  2-flavor unprec ferm monomials
   /*! @ingroup monomial
@@ -67,7 +35,7 @@ namespace Chroma
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
       UnprecOneFlavorWilsonTypeFermRatMonomial(const string& fermact_name, 
-					      const UnprecOneFlavorWilsonTypeFermRatMonomialParams& param_);
+					       const OneFlavorWilsonTypeFermRatMonomialParams& param_);
 
 
       // Copy Constructor

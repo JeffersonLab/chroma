@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial_w.cc,v 2.5 2006-01-12 16:51:18 bjoo Exp $
+// $Id: unprec_two_flavor_monomial_w.cc,v 2.6 2006-01-14 05:22:33 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -30,7 +30,7 @@ namespace Chroma
     {
       return new UnprecTwoFlavorWilsonTypeFermMonomial(
 	UnprecWilsonFermActEnv::name,
-	UnprecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
+	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
     
     //! Callback function for the factory
@@ -39,7 +39,7 @@ namespace Chroma
     {
       return new UnprecTwoFlavorWilsonTypeFermMonomial(
 	UnprecParWilsonFermActEnv::name,
-	UnprecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
+	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
 
 #if 0
@@ -49,7 +49,7 @@ namespace Chroma
     {
       return new UnprecTwoFlavorWilsonTypeFermMonomial(
 	UnprecStoutWilsonTypeFermActEnv::name,
-	UnprecTwoFlavorWilsonTypeFermMonomialParams(xml, path));
+	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
 #endif
  
@@ -82,55 +82,11 @@ namespace Chroma
   } //end namespace Unprec TwoFlavorWilsonFermMonomialEnv
 
 
-  // Read the parameters
-  UnprecTwoFlavorWilsonTypeFermMonomialParams::UnprecTwoFlavorWilsonTypeFermMonomialParams(XMLReader& xml_in, const string& path)
-  {
-    // Get the top of the parameter XML tree
-    XMLReader paramtop(xml_in, path);
-    
-    try {
-      // Read the inverter Parameters
-      read(paramtop, "./InvertParam", inv_param);
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
-     
-      if( paramtop.count("./ChronologicalPredictor") == 0 ) {
-	predictor_xml="";
-      }
-      else {
-	XMLReader chrono_xml_reader(paramtop, "./ChronologicalPredictor");
-	std::ostringstream chrono_os;
-	chrono_xml_reader.print(chrono_os);
-	predictor_xml = chrono_os.str();
-      }
-    }
-    catch(const string& s) {
-      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
-      QDP_abort(1);
-    }
-
-    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomialParams: read " << ferm_act << endl;
-  }
-
-  //! Read Parameters
-  void read(XMLReader& xml, const std::string& path,
-	    UnprecTwoFlavorWilsonTypeFermMonomialParams& params) {
-    UnprecTwoFlavorWilsonTypeFermMonomialParams tmp(xml, path);
-    params = tmp;
-  }
-
-  //! Write Parameters
-  void write(XMLWriter& xml, const std::string& path,
-	     const UnprecTwoFlavorWilsonTypeFermMonomialParams& params) {
-    // Not implemented
-  }
 
   // Constructor
   UnprecTwoFlavorWilsonTypeFermMonomial::UnprecTwoFlavorWilsonTypeFermMonomial(
     const string& name_,
-    const UnprecTwoFlavorWilsonTypeFermMonomialParams& param_) 
+    const TwoFlavorWilsonTypeFermMonomialParams& param_) 
   {
     inv_param = param_.inv_param;
 

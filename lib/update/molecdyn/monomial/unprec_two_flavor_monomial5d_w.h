@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial5d_w.h,v 2.0 2005-09-25 21:04:42 edwards Exp $
+// $Id: unprec_two_flavor_monomial5d_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
@@ -10,6 +10,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/two_flavor_monomial5d_w.h"
+#include "update/molecdyn/monomial/two_flavor_monomial_params_w.h"
 
 namespace Chroma 
 {
@@ -20,25 +21,6 @@ namespace Chroma
     extern const bool registered;
   };
 
-  // Parameter structure
-  /*! @ingroup monomial */
-  struct UnprecTwoFlavorWilsonTypeFermMonomial5DParams 
-  {
-    // Base Constructor
-    UnprecTwoFlavorWilsonTypeFermMonomial5DParams();
-
-    // Read monomial from some root path
-    UnprecTwoFlavorWilsonTypeFermMonomial5DParams(XMLReader& in, const std::string&  path);
-    InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;
-    string predictor_xml;
-  };
-
-  /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, UnprecTwoFlavorWilsonTypeFermMonomial5DParams& param);
-
-  /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const UnprecTwoFlavorWilsonTypeFermMonomial5DParams& params);
 
   //! Wrapper class for 5D 2-flavor unprec ferm monomials
   /*! @ingroup monomial
@@ -54,7 +36,7 @@ namespace Chroma
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
       UnprecTwoFlavorWilsonTypeFermMonomial5D(const string& fermact_name, 
-					      const UnprecTwoFlavorWilsonTypeFermMonomial5DParams& param_);
+					      const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
       // Construct from a fermact handle and inv params
       // FermAct already holds BC-s

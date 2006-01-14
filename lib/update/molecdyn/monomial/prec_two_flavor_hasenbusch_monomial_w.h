@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_hasenbusch_monomial_w.h,v 2.1 2006-01-02 20:50:17 bjoo Exp $
+// $Id: prec_two_flavor_hasenbusch_monomial_w.h,v 2.2 2006-01-14 05:22:32 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -9,6 +9,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/two_flavor_hasenbusch_monomial_w.h"
+#include "update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h"
 
 namespace Chroma 
 {
@@ -18,25 +19,6 @@ namespace Chroma
   {
     extern const bool registered;
   };
-
-  // Parameter structure
-  /*! @ingroup monomial */
-  struct EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialParams {
-    // Base Constructor
-    EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialParams();
-
-    // Read monomial from some root path
-    EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
-    InvertParam_t inv_param; // Inverter Parameters
-    string ferm_act;
-    string ferm_act_prec;
-    string predictor_xml;   // The Chrono Predictor XML
-
-  };
-
-  void read(XMLReader& xml, const string& path, EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& param);
-
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& params);
 
 
   //! Wrapper class for  2-flavor even-odd prec ferm monomials
@@ -53,7 +35,7 @@ namespace Chroma
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial(const string& fermact_name, 
-						   const EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
+							   const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
 
       // Construct from a fermact handle and inv params
       // FermAct already holds BC-s

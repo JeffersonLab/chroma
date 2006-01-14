@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_hasenbusch_monomial_w.cc,v 2.2 2006-01-12 16:51:18 bjoo Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial_w.cc,v 2.3 2006-01-14 05:22:32 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -7,7 +7,6 @@
 #include "update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 
-#include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/invert/invcg2.h"
 
@@ -33,7 +32,7 @@ namespace Chroma
     {
       return new UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial(
 	UnprecWilsonFermActEnv::name,
-	UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
+	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
     
     //! Callback function for the factory
@@ -42,7 +41,7 @@ namespace Chroma
     {
       return new UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial(
 	UnprecParWilsonFermActEnv::name,
-	UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
+	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
 
 #if 0
@@ -52,7 +51,7 @@ namespace Chroma
     {
       return new UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial(
 	UnprecStoutWilsonTypeFermActEnv::name,
-	UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
+	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
 #endif   
  
@@ -85,62 +84,10 @@ namespace Chroma
   } //end namespace Unprec TwoFlavorHasenbuschWilsonFermMonomialEnv
 
 
-  // Read the parameters
-  UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams::UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams(XMLReader& xml_in, const string& path)
-  {
-    // Get the top of the parameter XML tree
-    XMLReader paramtop(xml_in, path);
-    
-    try {
-      // Read the inverter Parameters
-      read(paramtop, "./InvertParam", inv_param);
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
-      QDPIO::cout << "FermAct " << ferm_act << endl;
-
-      XMLReader xml_tmp_prec(paramtop, "./FermionActionPrec");
-      std::ostringstream os_prec;
-      xml_tmp_prec.print(os_prec);
-      ferm_act_prec = os_prec.str();
-      QDPIO::cout << "FermActPrec " << ferm_act_prec << endl;
-     
-      if( paramtop.count("./ChronologicalPredictor") == 0 ) {
-	predictor_xml="";
-      }
-      else {
-	XMLReader chrono_xml_reader(paramtop, "./ChronologicalPredictor");
-	std::ostringstream chrono_os;
-	chrono_xml_reader.print(chrono_os);
-	predictor_xml = chrono_os.str();
-      }
-    }
-    catch(const string& s) {
-      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
-      QDP_abort(1);
-    }
-
-    QDPIO::cout << "UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams: read " << ferm_act << endl;
-  }
-
-  //! Read Parameters
-  void read(XMLReader& xml, const std::string& path,
-	    UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& params) {
-    UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams tmp(xml, path);
-    params = tmp;
-  }
-
-  //! Write Parameters
-  void write(XMLWriter& xml, const std::string& path,
-	     const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& params) {
-    // Not implemented
-  }
-
   // Constructor
   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial::UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial(
     const string& name_,
-    const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_) 
+    const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_) 
   {
     inv_param = param_.inv_param;
 
