@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.h,v 2.2 2006-01-14 06:07:50 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -51,11 +51,10 @@ namespace Chroma
 	return *fermact;
       }
 
-      //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
-      int getX(multi1d<LatticeFermion>& X, 
-	       const multi1d<Real>& shifts, 
-	       const LatticeFermion& chi, 
-	       const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const;
+      //! Get parameters for the inverter
+      const InvertParam_t getInvParams(void) const { 
+	return inv_param;
+      }
 
       //! Return number of roots in used
       int getNthRoot() const {return nthRoot;}

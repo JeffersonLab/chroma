@@ -1,4 +1,4 @@
-// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.3 2006-01-14 05:22:32 edwards Exp $
+// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.4 2006-01-14 06:07:50 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -8,7 +8,6 @@
 #include "update/molecdyn/monomial/genapprox.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/invert/minvcg.h"
 
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
@@ -262,49 +261,6 @@ namespace Chroma
     QDPIO::cout << "DONECONSTRUCTIN " << endl;
   }
 
-
-  // Do inversion M^dag M X = phi ?
-  int
-  EvenOddPrecOneFlavorWilsonTypeFermRatMonomial::getX(
-    multi1d<LatticeFermion>& X, 
-    const multi1d<Real>& shifts, 
-    const LatticeFermion& chi, 
-    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const
-  {
-    // Upcast the fermact
-    const FermAct4D<LatticeFermion>& FA = getFermAct();
-
-    // Make the state
-    Handle< const ConnectState > state(FA.createState(s.getQ()));
-
-    // Get linop
-    Handle< const LinearOperator<LatticeFermion> > MdagM(FA.lMdagM(state));
-
-    int n_count =0;
-    multi1d<Real> RsdCG(shifts.size());
-    RsdCG = inv_param.RsdCG;
-
-    // Do the inversion...
-    switch( inv_param.invType) {
-    case CG_INVERTER:
-    {
-      // Solve MdagM X = eta
-      MInvCG(*MdagM, chi, X, shifts, RsdCG, inv_param.MaxCG, n_count);
-      QDPIO::cout << "1Flav::invert, n_count = " << n_count << endl;
-    }
-    break;
-    default:
-    {
-      QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-      QDP_abort(1);
-    }
-    break;
-    };
-
-    return n_count;
-  }
-
-  
-}; //end namespace Chroma
+} //end namespace Chroma
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 2.2 2006-01-14 06:07:50 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -10,6 +10,8 @@
 
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "actions/ferm/fermacts/remez_coeff.h"
+#include "actions/ferm/invert/invert.h"
+#include "invtype.h"
 
 namespace Chroma
 {
@@ -275,6 +277,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const WilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
+
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;
 
@@ -297,7 +302,43 @@ namespace Chroma
     virtual int getX(multi1d<Phi>& X, 
 		     const multi1d<Real>& shifts, 
 		     const Phi& chi, 
-		     const AbsFieldState<P,Q>& s) const = 0;
+		     const AbsFieldState<P,Q>& s) const
+    {
+      const InvertParam_t& inv_param = getInvParams();
+
+      // Upcast the fermact
+      const FermAct4D<Phi>& FA = getFermAct();
+
+      // Make the state
+      Handle< const ConnectState > state(FA.createState(s.getQ()));
+
+      // Get linop
+      Handle< const LinearOperator<Phi> > MdagM(FA.lMdagM(state));
+
+      int n_count =0;
+      multi1d<Real> RsdCG(shifts.size());
+      RsdCG = inv_param.RsdCG;
+
+      // Do the inversion...
+      switch( inv_param.invType) {
+      case CG_INVERTER:
+      {
+	// Solve MdagM X = eta
+	MInvCG(*MdagM, chi, X, shifts, RsdCG, inv_param.MaxCG, n_count);
+	QDPIO::cout << "1Flav::invert, n_count = " << n_count << endl;
+      }
+      break;
+      default:
+      {
+	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
+	QDP_abort(1);
+      }
+      break;
+      };
+      
+      return n_count;
+    }
+
   };
 
 
@@ -333,6 +374,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
+
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;
 
@@ -350,12 +394,6 @@ namespace Chroma
 
     //! mutator for pseudofermion
     virtual multi1d<Phi>& getPhi(void) = 0;    
-
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
-    virtual int getX(multi1d<Phi>& X, 
-		     const multi1d<Real>& shifts, 
-		     const Phi& chi, 
-		     const AbsFieldState<P,Q>& s) const = 0;
   };
 
 
@@ -404,6 +442,9 @@ namespace Chroma
     //! Get at fermion action
     virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
 
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
+
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;
 
@@ -421,12 +462,6 @@ namespace Chroma
 
     //! mutator for pseudofermion
     virtual multi1d<Phi>& getPhi(void) = 0;    
-
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
-    virtual int getX(multi1d<Phi>& X, 
-		     const multi1d<Real>& shifts, 
-		     const Phi& chi, 
-		     const AbsFieldState<P,Q>& s) const = 0;
   };
 
 }
