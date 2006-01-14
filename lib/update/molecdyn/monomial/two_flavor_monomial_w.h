@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 2.2 2006-01-02 20:23:28 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 2.3 2006-01-14 05:56:59 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -10,6 +10,8 @@
 
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
+#include "actions/ferm/invert/invert.h"
+#include "invtype.h"
 
 namespace Chroma
 {
@@ -147,11 +149,82 @@ namespace Chroma
     //! Get at fermion action
     virtual const WilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
-    //! Get (M^dagM)^{-1} phi
-    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s) = 0;
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
+
+    // Get X = (A^dag*A)^{-1} eta
+    virtual int invert(Phi& X, const LinearOperator<Phi>& M, const Phi& eta) const
+    {
+      const InvertParam_t& inv_param = getInvParams();
+
+      int n_count = 0;
+
+      // Do the inversion...
+      switch( inv_param.invType) {
+      case CG_INVERTER:
+      {
+	// Solve MdagM X = eta
+	InvCG2(M, eta, X, inv_param.RsdCG, inv_param.MaxCG, n_count);
+	QDPIO::cout << "2Flav::invert,  n_count = " << n_count << endl;
+      }
+      break;
+      default:
+      {
+	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
+	QDP_abort(1);
+      }
+      break;
+      };
+      
+      return n_count;
+    }
+
+
+    //! Get (M^dagM)^{-1} phi
+    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s)
+    {
+      const InvertParam_t& inv_param = getInvParams();
+
+      // Upcast the fermact
+      const FermAct4D<Phi>& FA = getFermAct();
+
+      // Make the state
+      Handle< const ConnectState > state(FA.createState(s.getQ()));
+
+      // Guess is passed in
+   
+      // Get linop
+      Handle< const LinearOperator<Phi> > M(FA.linOp(state));
+      int n_count;
+
+      // Do the inversion...
+      switch( inv_param.invType) {
+      case CG_INVERTER:
+      {
+	// Solve MdagM X = eta
+	// Do the inversion...
+	  
+	// Need MdagM for CG based predictor
+	Handle< const LinearOperator<Phi> > MdagM(FA.lMdagM(state));
+	(getMDSolutionPredictor())(X, *MdagM, getPhi());
+	n_count = invert(X, *M, getPhi());
+	(getMDSolutionPredictor()).newVector(X);
+      }
+      break;
+      default:
+      {
+	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
+	QDP_abort(1);
+      }
+      break;
+      };
+
+      return n_count;
+    }
+
   };
 
 
@@ -207,8 +280,8 @@ namespace Chroma
     //! Get at fermion action
     virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
 
-    //! Get (M^dagM)^{-1} phi
-    virtual int  getX(Phi& X, const AbsFieldState<P,Q>& s)=0 ;
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
 
     //! Get at the chronological predcitor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
@@ -279,14 +352,14 @@ namespace Chroma
     //! Get at fermion action
     virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
 
+    //! Get inverter params
+    virtual const InvertParam_t getInvParams(void) const = 0;
+
     //! Accessor for pseudofermion with Pf index i (read only)
     virtual const Phi& getPhi(void) const = 0;
 
     //! mutator for pseudofermion with Pf index i 
     virtual Phi& getPhi(void) = 0;    
-
-    //! Get (M^dagM)^{-1} phi
-    virtual int  getX(Phi& X, const AbsFieldState<P,Q>& s)=0 ;
 
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };

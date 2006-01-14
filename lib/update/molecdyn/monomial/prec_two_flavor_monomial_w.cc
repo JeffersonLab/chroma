@@ -1,4 +1,4 @@
-// $Id: prec_two_flavor_monomial_w.cc,v 2.3 2006-01-14 05:22:32 edwards Exp $
+// $Id: prec_two_flavor_monomial_w.cc,v 2.4 2006-01-14 05:56:59 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -7,9 +7,7 @@
 #include "update/molecdyn/monomial/prec_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 
-#include "io/param_io.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/invert/invcg2.h"
 
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
@@ -167,83 +165,6 @@ namespace Chroma
 
     
   }
-
-
-  // Do inversion M^dag M X = phi
-  int
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial::getX(
-    LatticeFermion& X, 
-    const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)
-  {
-    // Upcast the fermact
-    const FermAct4D<LatticeFermion>& FA = getFermAct();
-
-    // Make the state
-    Handle< const ConnectState > state(FA.createState(s.getQ()));
-
-    // Guess is passed in
-   
-    // Get linop
-    Handle< const LinearOperator<LatticeFermion> > M(FA.linOp(state));
-    int n_count;
-
-    // Do the inversion...
-    switch( inv_param.invType) {
-    case CG_INVERTER:
-    {
-      // Solve MdagM X = eta
-      // Do the inversion...
-
-      // Need MdagM for CG based predictor
-      Handle< const LinearOperator<LatticeFermion> > MdagM(FA.lMdagM(state));
-      (getMDSolutionPredictor())(X, *MdagM, getPhi());
-      n_count = invert(X, *M, getPhi());
-      (getMDSolutionPredictor()).newVector(X);
-
-    }
-    break;
-    default:
-    {
-      QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-      QDP_abort(1);
-    }
-    break;
-    };
-
-    return n_count;
-  }
-
-
-
-  // Get X = (A^dag*A)^{-1} eta
-  int
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial::invert(
-    LatticeFermion& X, 
-    const LinearOperator<LatticeFermion>& M,
-    const LatticeFermion& eta) const
-  {
-    int n_count =0;
-
-    // Do the inversion...
-    switch( inv_param.invType) {
-    case CG_INVERTER:
-    {
-      // Solve MdagM X = eta
-      InvCG2(M, eta, X, inv_param.RsdCG, inv_param.MaxCG, n_count);
-      QDPIO::cout << "2Flav::invert,  n_count = " << n_count << endl;
-    }
-    break;
-    default:
-    {
-      QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-      QDP_abort(1);
-    }
-    break;
-    };
-
-    return n_count;
-  }
-
   
 }; //end namespace Chroma
 
