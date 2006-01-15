@@ -1,0 +1,820 @@
+<?xml version="1.0"?>
+
+
+<t_leapfrog>
+  <OneFlavorRatExactWilsonTypeFermMonomial>
+    <n_count>8 8</n_count>
+  </OneFlavorRatExactWilsonTypeFermMonomial>
+  <mesE>
+    <mesKE>
+      <KE>4086.03</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>2</num_terms>
+      <PEByMonomials>
+        <elem>
+          <OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial>
+            <S_subset>
+              <n_count>8 8</n_count>
+              <S>2990.82</S>
+            </S_subset>
+            <S_even_even>0</S_even_even>
+            <S_odd_odd>2990.82</S_odd_odd>
+            <S>2990.82</S>
+          </OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <S>-8755.2</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <PQPLeapfrogIntegrator>
+    <n_steps>25</n_steps>
+    <dt>0.004</dt>
+    <dtby2>0.002</dtby2>
+    <tau0>0.1</tau0>
+    <MDSteps>
+      <elem>
+        <t>0</t>
+        <leapP>
+          <dt>0.002</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>8 8</n_count>
+                  <F_sq>16.2885 15.2487</F_sq>
+                  <F_sq_tot>16.2885 15.2487</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99809.3</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.002</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>10 10</n_count>
+                  <F_sq>16.2883 15.2487</F_sq>
+                  <F_sq_tot>16.2883 15.2487</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99804</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.004</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.006</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>10 10</n_count>
+                  <F_sq>16.2879 15.2485</F_sq>
+                  <F_sq_tot>16.2879 15.2485</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99788.1</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.008</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.01</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>10 10</n_count>
+                  <F_sq>16.2874 15.2481</F_sq>
+                  <F_sq_tot>16.2874 15.2481</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99761.7</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.012</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.014</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>10 10</n_count>
+                  <F_sq>16.2866 15.2476</F_sq>
+                  <F_sq_tot>16.2866 15.2476</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99724.7</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.016</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.018</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>10 10</n_count>
+                  <F_sq>16.2858 15.2469</F_sq>
+                  <F_sq_tot>16.2858 15.2469</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99677.2</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.02</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.022</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>10 10</n_count>
+                  <F_sq>16.2847 15.246</F_sq>
+                  <F_sq_tot>16.2847 15.246</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99619.3</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.024</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.026</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>11 10</n_count>
+                  <F_sq>16.2836 15.245</F_sq>
+                  <F_sq_tot>16.2836 15.245</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99550.9</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.028</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.03</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>11 11</n_count>
+                  <F_sq>16.2822 15.2438</F_sq>
+                  <F_sq_tot>16.2822 15.2438</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99472.2</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.032</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.034</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>11 11</n_count>
+                  <F_sq>16.2807 15.2425</F_sq>
+                  <F_sq_tot>16.2807 15.2425</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99383.1</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.036</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.038</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 11</n_count>
+                  <F_sq>16.279 15.241</F_sq>
+                  <F_sq_tot>16.279 15.241</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99283.9</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.04</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.042</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 12</n_count>
+                  <F_sq>16.2772 15.2394</F_sq>
+                  <F_sq_tot>16.2772 15.2394</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99174.6</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.044</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.046</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 12</n_count>
+                  <F_sq>16.2752 15.2375</F_sq>
+                  <F_sq_tot>16.2752 15.2375</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>99055.2</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.048</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.05</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 12</n_count>
+                  <F_sq>16.273 15.2356</F_sq>
+                  <F_sq_tot>16.273 15.2356</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>98925.9</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.052</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.054</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 12</n_count>
+                  <F_sq>16.2707 15.2334</F_sq>
+                  <F_sq_tot>16.2707 15.2334</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>98786.8</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.056</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.058</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 12</n_count>
+                  <F_sq>16.2683 15.2312</F_sq>
+                  <F_sq_tot>16.2683 15.2312</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>98638</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.06</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.062</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 12</n_count>
+                  <F_sq>16.2656 15.2287</F_sq>
+                  <F_sq_tot>16.2656 15.2287</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>98479.6</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.064</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.066</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 12</n_count>
+                  <F_sq>16.2629 15.2262</F_sq>
+                  <F_sq_tot>16.2629 15.2262</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>98311.8</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.068</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.07</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>12 12</n_count>
+                  <F_sq>16.26 15.2234</F_sq>
+                  <F_sq_tot>16.26 15.2234</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>98134.7</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.072</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.074</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>13 13</n_count>
+                  <F_sq>16.2569 15.2205</F_sq>
+                  <F_sq_tot>16.2569 15.2205</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>97948.4</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.076</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.078</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>13 13</n_count>
+                  <F_sq>16.2538 15.2175</F_sq>
+                  <F_sq_tot>16.2538 15.2175</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>97753.2</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.08</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.082</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>13 13</n_count>
+                  <F_sq>16.2504 15.2144</F_sq>
+                  <F_sq_tot>16.2504 15.2144</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>97549.2</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.084</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.086</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>13 13</n_count>
+                  <F_sq>16.247 15.211</F_sq>
+                  <F_sq_tot>16.247 15.211</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>97336.5</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.088</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.09</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>13 13</n_count>
+                  <F_sq>16.2434 15.2076</F_sq>
+                  <F_sq_tot>16.2434 15.2076</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>97115.3</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.092</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.094</t>
+        <leapP>
+          <dt>0.004</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>13 13</n_count>
+                  <F_sq>16.2397 15.204</F_sq>
+                  <F_sq_tot>16.2397 15.204</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>96885.9</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <elem>
+        <t>0.096</t>
+        <leapQ>
+          <dt>0.004</dt>
+        </leapQ>
+      </elem>
+      <elem>
+        <t>0.098</t>
+        <leapP>
+          <dt>0.002</dt>
+          <ExactAbsHamiltonianForce>
+            <num_terms>2</num_terms>
+            <ForcesByMonomial>
+              <elem>
+                <OneFlavorRatExactWilsonTypeFermMonomial>
+                  <n_count>13 13</n_count>
+                  <F_sq>16.2358 15.2003</F_sq>
+                  <F_sq_tot>16.2358 15.2003</F_sq_tot>
+                </OneFlavorRatExactWilsonTypeFermMonomial>
+              </elem>
+              <elem>
+                <GaugeMonomial>
+                  <F_sq>96648.3</F_sq>
+                </GaugeMonomial>
+              </elem>
+            </ForcesByMonomial>
+          </ExactAbsHamiltonianForce>
+        </leapP>
+      </elem>
+      <EndOfTraj>
+        <t>0.1</t>
+        <t_mom>0.1</t_mom>
+      </EndOfTraj>
+    </MDSteps>
+  </PQPLeapfrogIntegrator>
+  <mesE>
+    <mesKE>
+      <KE>3862.83</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>2</num_terms>
+      <PEByMonomials>
+        <elem>
+          <OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial>
+            <S_subset>
+              <n_count>13 13</n_count>
+              <S>2991.11</S>
+            </S_subset>
+            <S_even_even>0</S_even_even>
+            <S_odd_odd>2991.11</S_odd_odd>
+            <S>2991.11</S>
+          </OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <S>-8532.3</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+</t_leapfrog>

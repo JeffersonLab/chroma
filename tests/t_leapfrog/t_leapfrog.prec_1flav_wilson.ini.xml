@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+   <Hamiltonian>
+    <Monomials>
+      <elem>
+	<Name>ONE_FLAVOR_WILSON_FERM_RAT_MONOMIAL</Name>
+        <nthRoot>2</nthRoot>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-7</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+	  <Kappa>0.10</Kappa>
+          <boundary>1 1 1 -1</boundary>
+        </FermionAction>
+	<Remez>
+          <lowerMin>8</lowerMin>
+          <upperMax>40</upperMax>
+          <forceDegree>10</forceDegree>
+          <actionDegree>10</actionDegree>
+        </Remez>
+      </elem>
+
+      <elem>
+	<Name>WILSON_GAUGEACT_MONOMIAL</Name>
+	<GaugeAction>
+	   <Name>WILSON_GAUGEACT</Name>
+	   <beta>5.7</beta>
+	   <GaugeBC>
+		<Name>PERIODIC_GAUGEBC</Name>
+           </GaugeBC>
+        </GaugeAction>
+      </elem>
+    </Monomials>
+   </Hamiltonian>
+   <MDIntegrator>
+	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
+	<n_steps>25</n_steps>
+	<tau0>0.1</tau0>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>UNIT</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>4 4 4 4</nrow>
+</LeapfrogTest>

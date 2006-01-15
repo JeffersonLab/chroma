@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.2 2006-01-03 05:03:46 bjoo Exp $
+#  $Id: regres.pl,v 1.3 2006-01-15 21:09:46 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -57,5 +57,13 @@
 	 output      => "t_leapfrog.prec_hasenbusch_wilson.candidate.xml",
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_hasenbusch_wilson.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_hasenbusch_wilson.out.xml" ,
+     }
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_wilson.ini.xml" , 
+	 output      => "t_leapfrog.prec_1flav_wilson.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_wilson.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_wilson.out.xml" ,
      }
      );
