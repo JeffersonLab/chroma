@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 2.3 2006-01-14 05:56:59 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 2.4 2006-01-16 00:33:52 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -362,6 +362,34 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
+  };
+
+
+  //-------------------------------------------------------------------------------------------
+  //! Exact 2 degen flavor even-odd preconditioned fermact monomial
+  /*! @ingroup monomial
+   *
+   * Exact 2 degen flavor even-odd preconditioned fermact monomial.
+   * Constand even even determinant so can supplyt
+   */
+  template<typename P, typename Q, typename Phi>
+  class TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
+  {
+  public:
+     //! virtual destructor:
+    ~TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial() {}
+
+    //! Even even contribution (eg For this kind of Monomial it is 0)
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
+      return Double(0);
+    }
+
+    // Inherit everything from Base Class
+  protected:
+    //! Get at fermion action
+    //! For now the prototype is the same as before -- wait until we 
+    //! refactor these before making them EvenOddPrecConstDetWilsonType...
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
   };
 
 }

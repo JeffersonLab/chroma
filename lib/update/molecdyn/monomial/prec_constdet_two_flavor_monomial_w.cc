@@ -1,10 +1,10 @@
-// $Id: prec_two_flavor_monomial_w.cc,v 2.4 2006-01-14 05:56:59 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial_w.cc,v 2.1 2006-01-16 00:33:52 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
 
 #include "chromabase.h"
-#include "update/molecdyn/monomial/prec_two_flavor_monomial_w.h"
+#include "update/molecdyn/monomial/prec_constdet_two_flavor_monomial_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -25,7 +25,7 @@
 namespace Chroma 
 { 
  
-  namespace EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv 
+  namespace EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv 
   {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
@@ -33,7 +33,7 @@ namespace Chroma
     {
       QDPIO::cout << "Create Monomial: " << EvenOddPrecWilsonFermActEnv::name << endl;
 
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
+      return new EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(
 	EvenOddPrecWilsonFermActEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
@@ -44,7 +44,7 @@ namespace Chroma
     {
       QDPIO::cout << "Create Monomial: " << EvenOddPrecParWilsonFermActEnv::name << endl;
 
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
+      return new EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(
 	EvenOddPrecParWilsonFermActEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
@@ -93,7 +93,7 @@ namespace Chroma
 
 
   // Constructor
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial::EvenOddPrecTwoFlavorWilsonTypeFermMonomial(
+  EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial::EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(
     const string& name_,
     const TwoFlavorWilsonTypeFermMonomialParams& param_) 
   {
@@ -117,7 +117,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    QDPIO::cout << "EvanOddPrecTwoFlavorWilsonTypeFermMonomial: construct " << fermact_string << endl;
+    QDPIO::cout << "EvanOddPrecConstDetTwoFlavorWilsonTypeFermMonomial: construct " << fermact_string << endl;
 
 
     const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");

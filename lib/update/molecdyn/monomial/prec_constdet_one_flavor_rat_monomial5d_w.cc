@@ -1,9 +1,9 @@
-// $Id: prec_one_flavor_rat_monomial5d_w.cc,v 2.5 2006-01-14 06:42:07 edwards Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial5d_w.cc,v 2.1 2006-01-16 00:33:52 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
 
-#include "update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.h"
+#include "update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial5d_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 #include "update/molecdyn/monomial/genapprox.h"
 
@@ -23,7 +23,7 @@
 namespace Chroma 
 { 
  
-  namespace EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DEnv 
+  namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5DEnv 
   {
     //! Does the work
     Monomial< multi1d<LatticeColorMatrix>,
@@ -31,7 +31,7 @@ namespace Chroma
 							    XMLReader& xml, const string& path)
     {
       QDPIO::cout << "Create Fractional Monomial: " << name << endl;
-      return new EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(
+      return new EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(
 	name, OneFlavorWilsonTypeFermRatMonomial5DParams(xml, path));
     }
     
@@ -42,7 +42,7 @@ namespace Chroma
 							    int expNumPower, int expDenPower) 
     {
       QDPIO::cout << "Create Monomial: " << name << endl;
-      return new EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(
+      return new EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(
 	name, OneFlavorWilsonTypeFermRatMonomial5DParams(xml, path, 
 							 expNumPower, expDenPower));
     }
@@ -325,11 +325,11 @@ namespace Chroma
 
     //! Register the fermact
     const bool registered = registerAll();
-  } //end namespace EvenOddPrec OneFlavorWilsonFermRatMonomialEnv
+  } //end namespace EvenOddPrecConstDet OneFlavorWilsonFermRatMonomialEnv
 
 
   // Constructor
-  EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D::EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(
+  EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D::EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(
     const string& name_,
     const OneFlavorWilsonTypeFermRatMonomial5DParams& param) 
   {
@@ -362,7 +362,7 @@ namespace Chroma
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
-      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct5D in EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D()" << endl;
+      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct5D in EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D()" << endl;
       QDP_abort(1);
     }
 
@@ -388,7 +388,7 @@ namespace Chroma
 		   param.remez.digitPrecision);
     //*********************************************************************
 
-    QDPIO::cout << "EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D: " << fermact_string << endl;
+    QDPIO::cout << "EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D: " << fermact_string << endl;
   }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_one_flavor_rat_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial5d_w.h,v 2.1 2006-01-16 00:33:52 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -15,7 +15,7 @@ namespace Chroma
 {
 
   /*! @ingroup monomial */
-  namespace EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5DEnv 
+  namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5DEnv 
   {
     extern const bool registered;
   };
@@ -26,19 +26,19 @@ namespace Chroma
    *
    * Monomial is expected to be the same for these fermacts
    */
-  class EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D :
-    public  OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial5D< 
+  class EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D :
+    public  OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial5D< 
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(const string& fermact_name, 
+      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const string& fermact_name, 
 						      const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
 
       // Copy Constructor
-      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}
+      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}
 
       //! Even even contribution (eg ln det Clover)
       Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -93,8 +93,8 @@ namespace Chroma
     private:
  
       // Hide empty constructor and =
-      EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D();
-      void operator=(const EvenOddPrecOneFlavorWilsonTypeFermRatMonomial5D&);
+      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D();
+      void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D&);
 
       // Pseudofermion field phi
       multi1d< multi1d<LatticeFermion> > phi;

@@ -1,9 +1,9 @@
-// $Id: prec_two_flavor_monomial5d_w.cc,v 2.4 2006-01-14 06:42:07 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial5d_w.cc,v 2.1 2006-01-16 00:33:52 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
  */
 
-#include "update/molecdyn/monomial/prec_two_flavor_monomial5d_w.h"
+#include "update/molecdyn/monomial/prec_constdet_two_flavor_monomial5d_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -27,13 +27,13 @@
 namespace Chroma 
 { 
  
-  namespace EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv 
+  namespace EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5DEnv 
   {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialDWF(XMLReader& xml, const string& path) 
     {
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
+      return new EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(
 	EvenOddPrecDWFermActArrayEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
@@ -42,7 +42,7 @@ namespace Chroma
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialOvDWF(XMLReader& xml, const string& path) 
     {
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
+      return new EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(
 	EvenOddPrecOvDWFermActArrayEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
@@ -51,7 +51,7 @@ namespace Chroma
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialNEF(XMLReader& xml, const string& path) 
     {
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
+      return new EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(
 	EvenOddPrecNEFFermActArrayEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
@@ -60,7 +60,7 @@ namespace Chroma
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialZoloNEF(XMLReader& xml, const string& path) 
     {
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
+      return new EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(
 	EvenOddPrecZoloNEFFermActArrayEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
@@ -69,7 +69,7 @@ namespace Chroma
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialContFrac(XMLReader& xml, const string& path) 
     {
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
+      return new EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(
 	EvenOddPrecOvlapContFrac5DFermActArrayEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
@@ -79,7 +79,7 @@ namespace Chroma
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
     {
-      return new EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
+      return new EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(
 	EvenOddPrecStoutWilsonTypeFermAct5DEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
@@ -129,7 +129,7 @@ namespace Chroma
 
 
   // Constructor
-  EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D::EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(
+  EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D::EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(
     const string& name_,
     const TwoFlavorWilsonTypeFermMonomialParams& param_) 
   {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 2.3 2006-01-16 00:33:52 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -746,6 +746,33 @@ namespace Chroma
 
     //! Return the partial fraction expansion for the heat-bath in PV
     virtual const RemezCoeff_t& getSIPVPFE() const = 0;
+  };
+
+  //-------------------------------------------------------------------------------------------
+  //! Exact 1 flavor even-odd preconditioned fermact monomial living in extra dimensions
+  /*! @ingroup monomial
+   *
+   * Exact 1 flavor even-odd preconditioned fermact monomial.
+   * Can supply a default dsdq algorithm
+   */
+  template<typename P, typename Q, typename Phi>
+  class OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial5D : 
+    public OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial5D<P,Q,Phi>
+  {
+  public:
+     //! virtual destructor:
+    ~OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial5D() {}
+
+    //! Even even contribution (eg ln det Clover)
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
+      return Double(0);
+    }
+
+
+  protected:
+    //! Get at fermion action
+    virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& getFermAct() const = 0;
+
   };
 
 }

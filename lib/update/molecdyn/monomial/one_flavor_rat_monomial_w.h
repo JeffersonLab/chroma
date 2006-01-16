@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 2.2 2006-01-14 06:07:50 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 2.3 2006-01-16 00:33:52 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -462,6 +462,33 @@ namespace Chroma
 
     //! mutator for pseudofermion
     virtual multi1d<Phi>& getPhi(void) = 0;    
+  };
+
+  //-------------------------------------------------------------------------------------------
+  //! Exact 1 flavor even-odd preconditioned fermact monomial constant determinant
+  //  Can fill out the S_odd_odd piece
+
+  /*! @ingroup monomial
+   *
+   * Exact 1 flavor even-odd preconditioned fermact monomial.
+   * Can supply a default dsdq algorithm
+   */
+  template<typename P, typename Q, typename Phi>
+  class OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial : 
+    public OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
+  {
+  public:
+     //! virtual destructor:
+    ~OneFlavorRatExactEvenOddPrecConstDetWilsonTypeFermMonomial() {}
+
+    //! Even even contribution (eg ln det Clover)
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
+      return Double(0);
+    }
+
+  protected:
+    //!  Replace thiw with PrecConstDet
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
   };
 
 }

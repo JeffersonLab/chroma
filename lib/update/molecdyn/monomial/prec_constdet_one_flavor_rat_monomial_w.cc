@@ -1,9 +1,9 @@
-// $Id: prec_one_flavor_rat_monomial_w.cc,v 2.4 2006-01-14 06:07:50 edwards Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 2.1 2006-01-16 00:33:52 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
 
-#include "update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h"
+#include "update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 #include "update/molecdyn/monomial/genapprox.h"
 
@@ -18,7 +18,7 @@
 namespace Chroma 
 { 
  
-  namespace EvenOddPrecOneFlavorWilsonTypeFermRatMonomialEnv 
+  namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv 
   {
     //! Does the work
     Monomial< multi1d<LatticeColorMatrix>,
@@ -27,7 +27,7 @@ namespace Chroma
     {
       QDPIO::cout << "Create Monomial: " << name << endl;
 
-      return new EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
+      return new EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(
 	name, OneFlavorWilsonTypeFermRatMonomialParams(xml, path));
     }
     
@@ -37,7 +37,7 @@ namespace Chroma
 							    XMLReader& xml, const string& path,
 							    int expNumPower, int expDenPower) 
     {
-      return new EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
+      return new EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(
 	name, OneFlavorWilsonTypeFermRatMonomialParams(xml, path, 
 						       expNumPower, expDenPower));
     }
@@ -200,7 +200,7 @@ namespace Chroma
 
 
   // Constructor
-  EvenOddPrecOneFlavorWilsonTypeFermRatMonomial::EvenOddPrecOneFlavorWilsonTypeFermRatMonomial(
+  EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial::EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(
     const string& name_,
     const OneFlavorWilsonTypeFermRatMonomialParams& param) 
   {

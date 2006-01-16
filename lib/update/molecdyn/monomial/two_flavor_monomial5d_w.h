@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 2.3 2006-01-16 00:33:52 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -473,6 +473,30 @@ namespace Chroma
 
     //! mutator for pseudofermion with Pf index i 
     virtual multi1d<Phi>& getPhi(void) = 0;    
+  };
+
+  //-------------------------------------------------------------------------------------------
+  //! Exact 2 degen flavor even-odd preconditioned fermact monomial living in extra dimensions
+  /*! @ingroup monomial
+   *
+   * Exact 2 degen flavor even-odd preconditioned fermact monomial.
+   * Can supply a default dsdq algorithm
+   */
+  template<typename P, typename Q, typename Phi>
+  class TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial5D : public TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial5D<P,Q,Phi>
+  {
+  public:
+     //! virtual destructor:
+    ~TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial5D() {}
+
+    //! Even even contribution (eg ln det Clover)
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
+      return Double(0);
+    }
+
+  protected:
+    //! Get at fermion action
+    virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& getFermAct() const = 0;
   };
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_monomial_w.h,v 2.3 2006-01-14 05:56:59 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial_w.h,v 2.1 2006-01-16 00:33:52 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -15,7 +15,7 @@ namespace Chroma
 {
 
   /*! @ingroup monomial */
-  namespace EvenOddPrecTwoFlavorWilsonTypeFermMonomialEnv 
+  namespace EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv 
   {
     extern const bool registered;
   };
@@ -26,15 +26,15 @@ namespace Chroma
    *
    * Monomial is expected to be the same for these fermacts
    */
-  class EvenOddPrecTwoFlavorWilsonTypeFermMonomial :
-    public  TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial< 
+  class EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial :
+    public  TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial< 
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(const string& fermact_name, 
+      EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(const string& fermact_name, 
 						 const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
       // Construct from a fermact handle and inv params
@@ -42,7 +42,7 @@ namespace Chroma
 //      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(Handle< const EvenOddPrecWilsonFermAct >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
 
       // Copy Constructor
-      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
+      EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(const EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
 #if 0
       const LatticeFermion& debugGetPhi(void) const {
@@ -93,8 +93,8 @@ namespace Chroma
     private:
  
       // Hide empty constructor and =
-      EvenOddPrecTwoFlavorWilsonTypeFermMonomial();
-      void operator=(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial&);
+      EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial();
+      void operator=(const EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial&);
 
       // Pseudofermion field phi
       LatticeFermion phi;

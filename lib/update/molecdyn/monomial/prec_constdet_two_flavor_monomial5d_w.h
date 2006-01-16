@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial5d_w.h,v 2.1 2006-01-16 00:33:52 bjoo Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
@@ -16,7 +16,7 @@ namespace Chroma
 {
 
   /*! @ingroup monomial */
-  namespace EvenOddPrecTwoFlavorWilsonTypeFermMonomial5DEnv 
+  namespace EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5DEnv 
   {
     extern const bool registered;
   };
@@ -27,47 +27,24 @@ namespace Chroma
    *
    * Monomial is expected to be the same for these fermacts
    */
-  class EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D :
-    public  TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial5D< 
+  class EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D :
+    public  TwoFlavorExactEvenOddPrecConstDetWilsonTypeFermMonomial5D< 
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(const string& fermact_name, 
+      EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(const string& fermact_name, 
 						   const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
-      // Construct from a fermact handle and inv params
-      // FermAct already holds BC-s
-//      EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(Handle< const EvenOddPrecWilsonFermAct >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
-
       // Copy Constructor
-      EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
-
-#if 0
-      const multi1d<LatticeFermion>& debugGetPhi(void) const {
-	return getPhi();
-      }
-
-
-      void debugGetX(multi1d<LatticeFermion>& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)  {
-	getX(X,s);
-      }
-#endif
+      EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(const EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
       const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
 	return getFermAct();
       }
       
- 
-      //! Even even contribution (eg ln det Clover)
-      Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
-			                     multi1d<LatticeColorMatrix> >& s) {
-	return Double(0);
-      }
-
-
     protected:
 
       multi1d<LatticeFermion>& getPhi(void) {
@@ -95,8 +72,8 @@ namespace Chroma
     private:
  
       // Hide empty constructor and =
-      EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D();
-      void operator=(const EvenOddPrecTwoFlavorWilsonTypeFermMonomial5D&);
+      EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D();
+      void operator=(const EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D&);
 
       // Pseudofermion field phi
       multi1d<LatticeFermion> phi;
