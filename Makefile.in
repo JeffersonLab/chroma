@@ -635,7 +635,6 @@ uninstall-info: uninstall-info-recursive
 
 
 # xmldiff targets
-
 .PHONY: xcheck
 xcheck:
 	perl $(top_srcdir)/scripts/run_chroma_xmldiff.pl $(top_srcdir) $(top_builddir) @XMLDIFF@

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.30 2006-01-14 05:22:57 edwards Exp $
+# $Id: Makefile.am,v 2.31 2006-01-16 00:56:26 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -347,18 +347,18 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
-	update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
-	update/molecdyn/monomial/prec_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h \
-	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
@@ -771,15 +771,15 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
-	update/molecdyn/monomial/prec_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc \
-	update/molecdyn/monomial/prec_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/prec_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
-	update/molecdyn/monomial/prec_two_flavor_monomial5d_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_two_flavor_hasenbusch_monomial_w.cc \

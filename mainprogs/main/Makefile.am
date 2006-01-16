@@ -56,6 +56,7 @@ bin_PROGRAMS = chroma collect_propcomp \
 # Wilson specific programs
 bin_PROGRAMS += qpropqio qproptransf wallformfac
 
+
 # Staggered specific programs
 #check_PROGRAMS += 
 
