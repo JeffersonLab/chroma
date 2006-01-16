@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_two_flavor_hasenbusch_monomial_w.h,v 2.2 2006-01-14 05:22:32 edwards Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.h,v 2.1 2006-01-16 02:10:04 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -15,7 +15,7 @@ namespace Chroma
 {
 
   /*! @ingroup monomial */
-  namespace EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv 
+  namespace EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv 
   {
     extern const bool registered;
   };
@@ -26,36 +26,24 @@ namespace Chroma
    *
    * Monomial is expected to be the same for these fermacts
    */
-  class EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial :
-    public  TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial< 
+  class EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial :
+    public  TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial< 
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial(const string& fermact_name, 
+      EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(const string& fermact_name, 
 							   const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
 
-      // Construct from a fermact handle and inv params
-      // FermAct already holds BC-s
-//      EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial(Handle< const EvenOddPrecWilsonFermAct >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
-
       // Copy Constructor
-      EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial(const EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), fermact_prec(m.fermact_prec), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
+      EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(const EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), fermact_prec(m.fermact_prec), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
       const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
 	return getFermAct();
       }
       
- 
-      //! Even even contribution (eg ln det Clover)
-      Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
-			                     multi1d<LatticeColorMatrix> >& s) {
-	return Double(0);
-      }
-
-
     protected:
 
       LatticeFermion& getPhi(void) {
@@ -87,8 +75,8 @@ namespace Chroma
     private:
  
       // Hide empty constructor and =
-      EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial();
-      void operator=(const EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial&);
+      EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial();
+      void operator=(const EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial&);
 
       // Pseudofermion field phi
       LatticeFermion phi;

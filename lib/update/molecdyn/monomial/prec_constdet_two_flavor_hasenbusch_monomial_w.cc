@@ -1,10 +1,10 @@
-// $Id: prec_two_flavor_hasenbusch_monomial_w.cc,v 2.3 2006-01-14 05:22:32 edwards Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 2.1 2006-01-16 02:10:04 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
 
 #include "chromabase.h"
-#include "update/molecdyn/monomial/prec_two_flavor_hasenbusch_monomial_w.h"
+#include "update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -25,7 +25,7 @@
 namespace Chroma 
 { 
  
-  namespace EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv 
+  namespace EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv 
   {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
@@ -33,7 +33,7 @@ namespace Chroma
     {
       QDPIO::cout << "Create Monomial: " << EvenOddPrecWilsonFermActEnv::name << endl;
 
-      return new EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial(
+      return new EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
 	EvenOddPrecWilsonFermActEnv::name,
 	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
@@ -44,7 +44,7 @@ namespace Chroma
     {
       QDPIO::cout << "Create Monomial: " << EvenOddPrecParWilsonFermActEnv::name << endl;
 
-      return new EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial(
+      return new EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
 	EvenOddPrecParWilsonFermActEnv::name,
 	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
@@ -56,7 +56,7 @@ namespace Chroma
     {
       QDPIO::cout << "Create Monomial: " << EvenOddPrecStoutWilsonTypeFermActEnv::name << endl;
 
-      return new EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial(
+      return new EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
 	EvenOddPrecStoutWilsonTypeFermActEnv::name,
 	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
@@ -92,7 +92,7 @@ namespace Chroma
 
 
   // Constructor
-  EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial::EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial(
+  EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial::EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
     const string& name_,
     const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_) 
   {
@@ -127,7 +127,7 @@ namespace Chroma
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {
-	QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct in EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial()" << endl;
+	QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct in EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial()" << endl;
 	QDP_abort(1);
       }
       
@@ -163,7 +163,7 @@ namespace Chroma
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {
-	QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct in EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial()" << endl;
+	QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct in EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial()" << endl;
 	QDP_abort(1);
       }
       

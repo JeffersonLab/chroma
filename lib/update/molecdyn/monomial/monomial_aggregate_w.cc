@@ -1,4 +1,4 @@
-// $Id: monomial_aggregate_w.cc,v 2.3 2006-01-16 00:33:52 bjoo Exp $
+// $Id: monomial_aggregate_w.cc,v 2.4 2006-01-16 02:10:04 bjoo Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -9,7 +9,7 @@
 #include "update/molecdyn/monomial/prec_constdet_two_flavor_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h"
-#include "update/molecdyn/monomial/prec_two_flavor_hasenbusch_monomial_w.h"
+#include "update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h"
 #include "update/molecdyn/monomial/prec_constdet_two_flavor_monomial5d_w.h"
@@ -50,7 +50,7 @@ namespace Chroma
 
       // Hasenbusch Monomials
       success &=   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registered;
-      success &=   EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registered;
+      success &=   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registered;
     
       return success;
     }

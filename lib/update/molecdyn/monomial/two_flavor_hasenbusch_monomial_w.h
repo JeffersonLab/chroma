@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 2.2 2006-01-02 20:50:17 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 2.3 2006-01-16 02:10:04 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -468,6 +468,35 @@ namespace Chroma
     //! Get parameters for the inverter
     virtual const InvertParam_t getInvParams(void) const = 0;
 
+  };
+
+  //-------------------------------------------------------------------------------------------
+  //! Exact 2 degen flavor even-odd preconditioned Hasenbusch type fermact monomial
+  /*! @ingroup monomial
+   *
+   * Exact 2 degen flavor even-odd preconditioned Hasenbusch type fermact monomial.
+   * Can supply a default dsdq algorithm
+   */
+  template<typename P, typename Q, typename Phi>
+  class TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial<P,Q,Phi>
+  {
+  public:
+     //! virtual destructor:
+    ~TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial() {}
+
+    //! Even even contribution (eg ln det Clover)
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
+      return Double(0);
+    };
+
+  protected:
+    //! Get at fermion action
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+
+    //! Get at the preconditioned fermion actions
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermActPrec(void) const = 0;
+    //! Accessor for pseudofermion with Pf index i (read only)
+    virtual const Phi& getPhi(void) const = 0;
   };
 
 }
