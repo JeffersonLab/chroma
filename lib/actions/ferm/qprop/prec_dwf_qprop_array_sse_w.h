@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 2.1 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -47,7 +47,7 @@ namespace Chroma
     /*!
      * \param m_q_       quark mass ( Read )
      */
-    SSEDWFQpropT(Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A,  // throw away
+    SSEDWFQpropT(Handle< const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A,  // throw away
 		 Handle<const ConnectState> state_, 
 		 const Real& OverMass_,
 		 const Real& Mass_,

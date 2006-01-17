@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovext_fermact_array_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_ovext_fermact_array_w.h,v 2.2 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -12,6 +12,7 @@
 #include "fermbc.h"
 #include "handle.h"
 #include "linearop.h"
+#include "prec_constdet_linop.h"
 #include "state.h"
 #include "actions/ferm/fermacts/overlap_state.h"
 #include "io/enum_io/enum_io.h"
@@ -58,7 +59,7 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the pole approx. to eps(H(m))
    */
-  class EvenOddPrecOvExtFermActArray : public EvenOddPrecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvExtFermActArray : public EvenOddPrecConstDetWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     /*
@@ -116,10 +117,10 @@ namespace Chroma
     Real getQuarkMass() const {return param.Mass;}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce a Pauli-Villars linear operator for this action
-    const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOpPV(Handle<const ConnectState> state) const
+    const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOpPV(Handle<const ConnectState> state) const
     {
       QDPIO::cerr << "Ovext::linOpPV not implemented" << endl;
       QDP_abort(1);

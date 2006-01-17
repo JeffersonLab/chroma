@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 2.3 2006-01-16 00:33:52 bjoo Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 2.4 2006-01-17 16:01:46 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -488,7 +488,7 @@ namespace Chroma
 
   protected:
     //!  Replace thiw with PrecConstDet
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+    virtual const EvenOddPrecConstDetWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
   };
 
 }

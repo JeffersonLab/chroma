@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 2.4 2006-01-16 00:33:52 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 2.5 2006-01-17 16:01:47 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -389,7 +389,7 @@ namespace Chroma
     //! Get at fermion action
     //! For now the prototype is the same as before -- wait until we 
     //! refactor these before making them EvenOddPrecConstDetWilsonType...
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+    virtual const EvenOddPrecConstDetWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
   };
 
 }

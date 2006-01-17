@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 2.3 2006-01-12 05:45:16 edwards Exp $
+// $Id: fermact.h,v 2.4 2006-01-17 16:01:46 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -12,6 +12,8 @@
 #include "invtype.h"
 #include "state.h"
 #include "linearop.h"
+#include "prec_constdet_linop.h"
+#include "prec_logdet_linop.h"
 #include "lmdagm.h"
 #include "eo_prec_linop.h"
 #include "syssolver.h"
@@ -447,6 +449,42 @@ namespace Chroma
 					 const InvertParam_t& invParam) const;
   };
 
+  //! Even-odd preconditioned Wilson-like fermion actions specialised to Wilson Like (gauge independent diagonal term) actions.
+  /*! @ingroup actions
+   *
+   * Even-odd preconditioned like Wilson-like fermion actions
+   */
+  template<typename T, typename P>
+  class EvenOddPrecConstDetWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermAct<T,P>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddPrecConstDetWilsonTypeFermAct() {}
+
+    //! Override to produce an even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddPrecConstDetLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
+
+  };
+
+  //! Even-odd preconditioned Wilson-like fermion action, specialised to clover like (gauge dependent diagonal term with exactly known derivative) structure
+  /*! @ingroup actions
+   *
+   * Even-odd preconditioned like Wilson-like fermion actions
+   */
+  template<typename T, typename P>
+  class EvenOddPrecLogDetWilsonTypeFermAct : public EvenOddPrecWilsonTypeFermAct<T,P>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddPrecLogDetWilsonTypeFermAct() {}
+
+    //! Override to produce an even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddPrecLogDetLinearOperator<T,P>* linOp(Handle<const ConnectState> state) const = 0;
+
+  };
+
 
 
   //-------------------------------------------------------------------------------------------
@@ -499,6 +537,28 @@ namespace Chroma
 						     const InvertParam_t& invParam) const;
   };
 
+  //! Even-odd preconditioned Wilson-like fermion actions including derivatives
+  /*! @ingroup actions
+   *
+   * Even-odd preconditioned like Wilson-like fermion actions
+   * Here, use arrays of matter fields.
+   */
+  template<typename T, typename P>
+  class EvenOddPrecConstDetWilsonTypeFermAct5D : public EvenOddPrecWilsonTypeFermAct5D<T,P>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~EvenOddPrecConstDetWilsonTypeFermAct5D() {}
+
+    //! Override to produce an even-odd prec. linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddPrecConstDetLinearOperator<multi1d<T>, P>* linOp(Handle<const ConnectState> state) const = 0;
+
+    //! Override to produce an even-odd prec. Pauli-Villars linear operator for this action
+    /*! Covariant return rule - override base class function */
+    virtual const EvenOddPrecConstDetLinearOperator<multi1d<T>, P>* linOpPV(Handle<const ConnectState> state) const = 0;
+
+  };
 
 
   //-------------------------------------------------------------------------------------------

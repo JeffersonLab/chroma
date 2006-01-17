@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_fermact_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_parwilson_fermact_w.h,v 2.2 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -46,7 +46,7 @@ namespace Chroma
    *
    *      M  =  (d+M) + i*H*gamma_5  - (1/2) D'
    */
-  class EvenOddPrecParWilsonFermAct : public EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecParWilsonFermAct : public EvenOddPrecConstDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -66,7 +66,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    const EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce the gamma_5 hermitin op gamma_5 M
     const LinearOperator<LatticeFermion>* hermitianLinOp(Handle<const ConnectState> state) const {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 2.3 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_clover_fermact_w.h,v 2.4 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -29,7 +29,7 @@ namespace Chroma
    * Only defined on odd subset.
    */
 
-  class EvenOddPrecCloverFermAct : public EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecCloverFermAct : public EvenOddPrecLogDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
   {
   public:
     //! General FermBC
@@ -49,7 +49,7 @@ namespace Chroma
     const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    const EvenOddPrecLogDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
 
     //! Produce the gamma_5 hermitian operator H_w
     const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 

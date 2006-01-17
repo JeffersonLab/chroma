@@ -1,4 +1,4 @@
-// $Id: prec_ovext_fermact_array_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_ovext_fermact_array_w.cc,v 2.2 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -309,7 +309,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecOvExtFermActArray::linOp(Handle<const ConnectState> state) const
   {
 
@@ -353,7 +353,7 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param Mass_      quark mass ( Read )
      */
-    PrecOvExt5DQprop(Handle< const EvenOddPrecLinearOperator<multi1d<T>, P> > A_,
+    PrecOvExt5DQprop(Handle< const EvenOddPrecConstDetLinearOperator<multi1d<T>, P> > A_,
 		     Handle< const LinearOperator<T> > D_denum_,
 		     const Real& Mass_,
 		     const InvertParam_t& invParam_) : 
@@ -501,7 +501,7 @@ namespace Chroma
     // Hide default constructor
     PrecOvExt5DQprop() {}
 
-    Handle< const EvenOddPrecLinearOperator<multi1d<T>,P> > A;
+    Handle< const EvenOddPrecConstDetLinearOperator<multi1d<T>,P> > A;
     Handle< const LinearOperator<T> > D_denum;
     const Real Mass;
     const InvertParam_t invParam;
@@ -521,7 +521,7 @@ namespace Chroma
 
     Handle< const LinearOperator<LatticeFermion> > D_denum(new UnprecDWFTransfDenLinOp(u, a5, D_w));
 
-    Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A(linOp(state));
+    Handle< const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A(linOp(state));
 
     return new  PrecOvExt5DQprop<LatticeFermion, 
       multi1d<LatticeColorMatrix> >(A,D_denum, param.Mass, invParam);

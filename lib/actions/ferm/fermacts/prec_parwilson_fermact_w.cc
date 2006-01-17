@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_fermact_w.cc,v 2.2 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_parwilson_fermact_w.cc,v 2.3 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -95,7 +95,7 @@ namespace Chroma
    *
    * \param state 	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecParWilsonFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new EvenOddPrecParWilsonLinOp(state->getLinks(),param.Mass,param.H);

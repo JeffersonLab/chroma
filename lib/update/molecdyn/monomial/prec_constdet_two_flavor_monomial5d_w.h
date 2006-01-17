@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_two_flavor_monomial5d_w.h,v 2.1 2006-01-16 00:33:52 bjoo Exp $
+// $Id: prec_constdet_two_flavor_monomial5d_w.h,v 2.2 2006-01-17 16:01:46 bjoo Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
@@ -41,7 +41,7 @@ namespace Chroma
       // Copy Constructor
       EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(const EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
-      const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
+      const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
 	return getFermAct();
       }
       
@@ -55,7 +55,7 @@ namespace Chroma
 	return phi;
       }
 
-      const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
+      const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -79,7 +79,7 @@ namespace Chroma
       multi1d<LatticeFermion> phi;
 
       // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;

@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 2.0 2005-09-25 21:04:24 edwards Exp $
+// $Id: chromabase.h,v 2.1 2006-01-17 16:01:46 bjoo Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -61,6 +61,6 @@ const Real twopi = 6.283185307179586476925286;
 #define END_CODE()   QDP_POP_PROFILE()
 
 #endif
-}
+};
 
 #endif

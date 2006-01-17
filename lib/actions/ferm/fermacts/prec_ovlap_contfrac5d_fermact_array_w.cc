@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 2.2 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -286,7 +286,7 @@ namespace Chroma
   /*!
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecOvlapContFrac5DFermActArray::linOp(Handle<const ConnectState> state_) const
   {
     START_CODE();
@@ -331,7 +331,7 @@ namespace Chroma
   /*!
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecOvlapContFrac5DFermActArray::linOpPV(Handle<const ConnectState> state_) const
   {
     try { 
@@ -384,7 +384,7 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param Mass_      quark mass ( Read )
      */
-    ContFrac5DQprop(Handle< const EvenOddPrecLinearOperator<multi1d<T>, P> > A_,
+    ContFrac5DQprop(Handle< const EvenOddPrecConstDetLinearOperator<multi1d<T>, P> > A_,
 		    const Real& Mass_,
 		    const InvertParam_t& invParam_) : 
       A(A_), Mass(Mass_), invParam(invParam_) {}
@@ -522,7 +522,7 @@ namespace Chroma
     // Hide default constructor
     ContFrac5DQprop() {}
 
-    Handle< const EvenOddPrecLinearOperator<multi1d<T>,P> > A;
+    Handle< const EvenOddPrecConstDetLinearOperator<multi1d<T>,P> > A;
     const Real Mass;
     const InvertParam_t invParam;
   };
@@ -534,7 +534,7 @@ namespace Chroma
 						const InvertParam_t& invParam) const
   {
     return new ContFrac5DQprop<LatticeFermion,multi1d<LatticeColorMatrix> >(
-      Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(linOp(state)),
+      Handle< const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(linOp(state)),
       getQuarkMass(),
       invParam);
   }

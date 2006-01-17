@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_one_flavor_rat_monomial5d_w.h,v 2.1 2006-01-16 00:33:52 bjoo Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial5d_w.h,v 2.2 2006-01-17 16:01:46 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -49,7 +49,7 @@ namespace Chroma
 
     protected:
 
-      const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
+      const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -103,7 +103,7 @@ namespace Chroma
       multi1d< multi1d<LatticeFermion> > phiPV;
 
       // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;

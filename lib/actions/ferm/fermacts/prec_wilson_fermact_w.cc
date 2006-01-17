@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 2.2 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 2.3 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -52,7 +52,7 @@ namespace Chroma
    *
    * \param state 	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecWilsonFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new EvenOddPrecWilsonLinOp(state->getLinks(),param.Mass,param.anisoParam);

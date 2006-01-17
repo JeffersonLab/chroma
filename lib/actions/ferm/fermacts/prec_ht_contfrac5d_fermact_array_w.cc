@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 2.2 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -304,7 +304,7 @@ namespace Chroma
   /*!
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecHtContFrac5DFermActArray::linOp(Handle<const ConnectState> state_) const
   {
     START_CODE();
@@ -348,7 +348,7 @@ namespace Chroma
   /*!
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecHtContFrac5DFermActArray::linOpPV(Handle<const ConnectState> state_) const
   {
 #if 0
@@ -406,7 +406,7 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param Mass_      quark mass ( Read )
      */
-    HtContFrac5DQprop(Handle< const EvenOddPrecLinearOperator<multi1d<T>, P> > A_,
+    HtContFrac5DQprop(Handle< const EvenOddPrecConstDetLinearOperator<multi1d<T>, P> > A_,
 		      Handle< const LinearOperator<T> > D_denum_,
 		      const Real& Mass_,
 		      const InvertParam_t& invParam_) : 
@@ -545,7 +545,7 @@ namespace Chroma
     // Hide default constructor
     HtContFrac5DQprop() {}
 
-    Handle< const EvenOddPrecLinearOperator<multi1d<T>,P> > A;
+    Handle< const EvenOddPrecConstDetLinearOperator<multi1d<T>,P> > A;
     Handle< const LinearOperator<T> > D_denum;
     const Real Mass;
     const InvertParam_t invParam;
@@ -563,7 +563,7 @@ namespace Chroma
     Handle<LinearOperator<LatticeFermion> > D_w(new UnprecWilsonLinOp(u, WilsonMass));
     Handle< const LinearOperator<LatticeFermion> > D_denum(new UnprecDWFTransfDenLinOp(u, a5, D_w));
 
-    return new HtContFrac5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >(Handle< const EvenOddPrecLinearOperator< multi1d<LatticeFermion> , multi1d<LatticeColorMatrix> > >(linOp(state)),
+    return new HtContFrac5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >(Handle< const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion> , multi1d<LatticeColorMatrix> > >(linOp(state)),
 									       D_denum, 
 									       getQuarkMass(),
 									       invParam);

@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 2.3 2006-01-12 05:45:16 edwards Exp $
+// $Id: prec_clover_fermact_w.cc,v 2.4 2006-01-17 16:01:46 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -53,7 +53,7 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
+  const EvenOddPrecLogDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecCloverFermAct::linOp(Handle<const ConnectState> state) const
   {
     return new EvenOddPrecCloverLinOp(state->getLinks(),param);
