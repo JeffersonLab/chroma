@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 2.2 2005-12-24 21:39:24 edwards Exp $ 
+// $Id: baryon_w.cc,v 2.3 2006-01-17 22:03:48 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -474,7 +474,7 @@ namespace Chroma
 	break;
 
       case 21:
-	// Proton_7; use also for Lambda_7!
+	// Proton_negpar_3; use also for Lambda_negpar_3!
 	// |P_7, s_z=1/2> = (d C gamma_5 (1/2)(1 - g_4) u) "u_up", see comments at top
 	// C g_5 NR negpar = (1/2)*C gamma_5 * ( 1 - g_4 )
 	// T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
