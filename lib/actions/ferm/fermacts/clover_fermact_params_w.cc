@@ -1,4 +1,4 @@
-// $Id: clover_fermact_params_w.cc,v 2.1 2005-12-03 21:19:37 edwards Exp $
+// $Id: clover_fermact_params_w.cc,v 2.2 2006-01-18 01:53:51 bjoo Exp $
 /*! \file
  *  \brief Clover fermion action parameters
  */
@@ -14,9 +14,9 @@ namespace Chroma
   //! Default constructor
   CloverFermActParams::CloverFermActParams()
   {
-    Mass = 0.0;
-    u0   = 1.0;
-    clovCoeffR = clovCoeffT = 0.0;
+    Mass = Real(0);
+    u0   = Real(1);
+    clovCoeffR = clovCoeffT = Real(0);
   }
 
   //! Read parameters
@@ -39,6 +39,7 @@ namespace Chroma
       Real Kappa;
       read(paramtop, "Kappa", Kappa);
       Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+      QDPIO::cout << "Kappa is " << Kappa << "Mass is " << Mass << endl << flush;
     }
     else
     {
@@ -49,9 +50,10 @@ namespace Chroma
     // Read optional u0
     if (paramtop.count("u0") != 0) 
       read(paramtop, "u0", u0);
-    else
-      u0 = 1.0;
-
+    else {
+      u0 = Real(1);
+      QDPIO::cout << "u0 is " << u0 << endl << flush;
+    }
     // Read optional anisoParam
     if (paramtop.count("AnisoParam") != 0) 
       read(paramtop, "AnisoParam", anisoParam);
@@ -68,6 +70,9 @@ namespace Chroma
       read(paramtop, "clovCoeff", clovCoeff);
       clovCoeffR = clovCoeff;
       clovCoeffT = clovCoeff;
+      QDPIO::cout << "clovCoeff=" << clovCoeff << endl;
+      QDPIO::cout << "clovCoeffR=" << clovCoeffR << endl;
+      QDPIO::cout << "clovCOeffT=" << clovCoeffT << endl;
     }
   }
 

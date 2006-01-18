@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 2.4 2006-01-04 03:09:57 edwards Exp $
+// $Id: clover_term_base_w.h,v 2.5 2006-01-18 01:53:51 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -34,7 +34,7 @@ namespace Chroma
 
     //! Invert
     /*!
-     * Computes the inverse of the term on cb using Cholesky
+     * Computes the determinant of the term
      *
      * \return logarithm of the determinant  
      */

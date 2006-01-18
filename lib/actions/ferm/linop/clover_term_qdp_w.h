@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 2.4 2006-01-04 03:09:26 edwards Exp $
+// $Id: clover_term_qdp_w.h,v 2.5 2006-01-18 01:53:51 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -87,7 +87,7 @@ namespace Chroma
     void makeClov(const multi1d<LatticeColorMatrix>& f, const Real& diag_mass);
 
     //! Invert the clover term on cb
-    void chlclovms(bool DetP, Double& logdet, int cb);
+    void chlclovms(LatticeReal& log_diag, int cb);
 
     //! Get the u field
     const multi1d<LatticeColorMatrix>& getU() const {return u;}
@@ -98,7 +98,10 @@ namespace Chroma
   private:
     multi1d<LatticeColorMatrix>  u;
     CloverFermActParams          param;
-
+    LatticeReal                  tr_log_diag_; // Fill this out during create
+                                                  // but save the global sum until needed.
+    multi1d<bool> choles_done;   // Keep note of whether the decomposition has been done
+                                 // on a particular checkerboard. 
     multi1d<PrimitiveClovTriang>  tri;
   };
 

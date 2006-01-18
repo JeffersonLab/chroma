@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.5 2006-01-04 03:09:26 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 2.6 2006-01-18 01:53:51 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -100,6 +100,11 @@ namespace Chroma
     multi1d<LatticeColorMatrix> f;
     mesField(f, u_);
     makeClov(f, diag_mass);
+
+    choles_done.resize(rb.numSubsets());
+    for(int i=0; i < rb.numSubsets(); i++) { 
+      choles_done[i] = false; 
+    }
   }
 
 
@@ -203,35 +208,39 @@ namespace Chroma
     if ( Ns != 4 )
       QDP_error_exit("expecting Ns == 4", Ns);
   
-            
+    QDPIO::cout << "MakClov cR=" << param.clovCoeffR << " cT=" << param.clovCoeffT << endl;
+
+    Real internalCoeffR=Real(0.5)*param.clovCoeffR;
+    Real internalCoeffT=Real(0.5)*param.clovCoeffT;
+
     /* Multiply in the appropriate clover coefficient */
     switch (param.anisoParam.t_dir)
     {
     case 1:
-      f0 = f[0] * param.clovCoeffT;
-      f1 = f[1] * param.clovCoeffR;
-      f2 = f[2] * param.clovCoeffR;
-      f3 = f[3] * param.clovCoeffT;
-      f4 = f[4] * param.clovCoeffT;
-      f5 = f[5] * param.clovCoeffR;
+      f0 = f[0] * internalCoeffT;
+      f1 = f[1] * internalCoeffR;
+      f2 = f[2] * internalCoeffR;
+      f3 = f[3] * internalCoeffT;
+      f4 = f[4] * internalCoeffT;
+      f5 = f[5] * internalCoeffR;
       break;
 
     case 2:
-      f0 = f[0] * param.clovCoeffR;
-      f1 = f[1] * param.clovCoeffT;
-      f2 = f[2] * param.clovCoeffR;
-      f3 = f[3] * param.clovCoeffT;
-      f4 = f[4] * param.clovCoeffR;
-      f5 = f[5] * param.clovCoeffT;
+      f0 = f[0] * internalCoeffR;
+      f1 = f[1] * internalCoeffT;
+      f2 = f[2] * internalCoeffR;
+      f3 = f[3] * internalCoeffT;
+      f4 = f[4] * internalCoeffR;
+      f5 = f[5] * internalCoeffT;
       break;
 
     case 3:
-      f0 = f[0] * param.clovCoeffR;
-      f1 = f[1] * param.clovCoeffR;
-      f2 = f[2] * param.clovCoeffT;
-      f3 = f[3] * param.clovCoeffR;
-      f4 = f[4] * param.clovCoeffT;
-      f5 = f[5] * param.clovCoeffT;
+      f0 = f[0] * internalCoeffR;
+      f1 = f[1] * internalCoeffR;
+      f2 = f[2] * internalCoeffT;
+      f3 = f[3] * internalCoeffR;
+      f4 = f[4] * internalCoeffT;
+      f5 = f[5] * internalCoeffT;
       break;
 
     default:
@@ -242,10 +251,11 @@ namespace Chroma
 
 
     tri.resize(QDP::Layout::sitesOnNode());  // hold local lattice
-
+    
     /*# Construct diagonal */
     for(int site = 0; site < QDP::Layout::sitesOnNode(); ++site)
     {
+
       for(int jj = 0; jj < 2; jj++)
       {
 	for(int ii = 0; ii < 2*Nc; ii++)
@@ -254,6 +264,7 @@ namespace Chroma
 	}
       }
     }
+
 
 
     /* The appropriate clover coeffients are already included in the
@@ -322,13 +333,30 @@ namespace Chroma
 	  tri[site].offd[1][elem_tmp] = -tri[site].offd[1][elem_ij];
 	}
       }
-  
+      
+      //************  WARNING WARNING WARNING ****************
+      // Somehow or other I need to take complex conjugate 
+      // of these values computed in the previous loop 
+      // to make these agree with SZIN
+      for(int j=0; j < 2*Nc*Nc-Nc; j++) { 
+	ctmp_0 = adj(tri[site].offd[0][j]);
+	tri[site].offd[0][j] = ctmp_0;
+
+	ctmp_0 = adj(tri[site].offd[1][j]);
+	tri[site].offd[1][j] = ctmp_0;	
+      }
+
+
       /*# Off-diagonal */
+      //************  WARNING WARNING WARNING ****************
+      // I needed to flip the order of the i and j's in the 
+      // calculation of elem_ij here to agree with SZIN
       for(int i = 0; i < Nc; ++i)
       {
 	for(int j = 0; j < Nc; ++j)
 	{
-	  int elem_ij  = (i+Nc)*(i+Nc-1)/2 + j;
+	  // Flipped index
+	  int elem_ij  = (j+Nc)*(j+Nc-1)/2 + i;
 
 	  /*# i*E_- = (i*E_x + E_y) */
 	  /*#       = (i*F(3,0) + F(3,1)) */
@@ -347,6 +375,8 @@ namespace Chroma
 	  tri[site].offd[1][elem_ij] = E_minus + B_minus;
 	}
       }
+	
+      
     }
               
     END_CODE();
@@ -355,8 +385,8 @@ namespace Chroma
     {
       XMLFileWriter xml("f.xml");
       push(xml,"f");
-      write(xml, "clovT", param.clovCoeffT);
-      write(xml, "clovR", param.clovCoeffR);
+      write(xml, "clovT", internalCoeffT);
+      write(xml, "clovR", internalCoeffR);
       write(xml,"f",f);
       pop(xml);
     }
@@ -378,8 +408,8 @@ namespace Chroma
    */
   void QDPCloverTerm::choles(int cb)
   {
-    Double logdet;
-    chlclovms(false, logdet, cb);
+    // When you are doing the cholesky - also fill out the trace_log_diag piece)
+    chlclovms(tr_log_diag_, cb);
   }
 
 
@@ -391,9 +421,11 @@ namespace Chroma
    */
   Double QDPCloverTerm::cholesDet(int cb)
   {
-    Double logdet;
-    chlclovms(true, logdet, cb);
-    return logdet;
+    if (choles_done[cb] != true ) { 
+      choles(cb);
+    }
+
+    return sum(tr_log_diag_, rb[cb]);
   }
 
  
@@ -407,18 +439,16 @@ namespace Chroma
    * \param logdet       logarithm of the determinant        (Write)
    * \param cb           checkerboard of work                (Read)
    */
-  void QDPCloverTerm::chlclovms(bool DetP, Double& logdet, int cb)
+  void QDPCloverTerm::chlclovms(LatticeReal& tr_log_diag, int cb)
   {
 //    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
 
     START_CODE();
 
-    LatticeReal log_diag;
-
     if ( 2*Nc < 3 )
       QDP_error_exit("Matrix is too small", Nc, Ns);
   
-    log_diag = zero;
+    tr_log_diag = zero;
   
     int n = 2*Nc;
 
@@ -478,10 +508,10 @@ namespace Chroma
 	  diag_g[j] = real(v1[j]);
 	  
 	  /*#+ */
-	  /*# Squeeze in computation of log(Det) */
+	  /*# Squeeze in computation of the trace log of the diagonal term */
 	  /*#- */
 	  lrtmp = log(diag_g[j]);
-	  log_diag.elem(site).elem().elem() += lrtmp;
+	  tr_log_diag.elem(site).elem().elem() += lrtmp;
 	  
 	  diag_g[j] = sqrt(diag_g[j]);
 	  diag_g[j] = one / diag_g[j];
@@ -549,18 +579,8 @@ namespace Chroma
       // Overwrite original element
       tri[site] = invcl;
     }
-  
-    // Overwrite
 
-    if ( DetP )
-    {
-      logdet = sum(log_diag);
-    }
-    else
-    {
-      logdet = 0;
-    }
-  
+    choles_done[cb] = true;
     END_CODE();
 
 //    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
@@ -602,6 +622,7 @@ namespace Chroma
       RComplex<REAL>* cchi = (RComplex<REAL>*)&(chi.elem(site).elem(0).elem(0));
       const RComplex<REAL>* ppsi = (const RComplex<REAL>*)&(psi.elem(site).elem(0).elem(0));
 
+
       for(int i = 0; i < n; ++i)
       {
 	cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
@@ -614,12 +635,13 @@ namespace Chroma
 	for(int j = 0; j < i; j++)
 	{
 	  cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
-	  cchi[0*n+j] += adj(tri[site].offd[0][kij]) * ppsi[0*n+i];
+	  cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
 	  cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
-	  cchi[1*n+j] += adj(tri[site].offd[1][kij]) * ppsi[1*n+i];
+	  cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
 	  kij++;
 	}
       }
+
     }
 
 
