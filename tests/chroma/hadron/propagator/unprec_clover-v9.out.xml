@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_clover-v9.out.xml,v 1.1 2006-01-01 05:09:19 edwards Exp $
+; $Id: unprec_clover-v9.out.xml,v 1.2 2006-01-18 01:58:30 bjoo Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -117,10 +117,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.7</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.8</chroma>
+      <qdp>1.18.3</qdp>
     </code_version>
-    <run_date>01 Jan 06 00:07:37 EST</run_date>
+    <run_date>17 Jan 06 20:56:16 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -178,10 +178,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.8</chroma>
+            <qdp>1.18.3</qdp>
           </code_version>
-          <run_date>01 Jan 06 00:07:37 EST</run_date>
+          <run_date>17 Jan 06 20:56:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -267,10 +267,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.8</chroma>
+            <qdp>1.18.3</qdp>
           </code_version>
-          <run_date>01 Jan 06 00:07:37 EST</run_date>
+          <run_date>17 Jan 06 20:56:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -400,47 +400,47 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>104</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
           <Qprop>
-            <n_count>105</n_count>
+            <n_count>99</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>1259</ncg_had>
+          <ncg_had>1188</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.590086 0.0443068 0.0157072 0.00932087 0.0077573 0.00933452 0.0157417 0.0443567</prop_corr>
+          <prop_corr>0.588866 0.0440341 0.0155144 0.00915507 0.00759735 0.0091574 0.0155256 0.044046</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
