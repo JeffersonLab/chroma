@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.7 2006-01-18 02:07:30 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 2.8 2006-01-18 02:12:20 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -355,6 +355,8 @@ namespace Chroma
 	for(int j = 0; j < Nc; ++j)
 	{
 	  // Flipped index
+	  // by swapping i <-> j. In the past i would run slow
+	  // and now j runs slow
 	  int elem_ij  = (j+Nc)*(j+Nc-1)/2 + i;
 
 	  /*# i*E_- = (i*E_x + E_y) */
