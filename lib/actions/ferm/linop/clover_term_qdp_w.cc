@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.6 2006-01-18 01:53:51 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 2.7 2006-01-18 02:07:30 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -208,7 +208,6 @@ namespace Chroma
     if ( Ns != 4 )
       QDP_error_exit("expecting Ns == 4", Ns);
   
-    QDPIO::cout << "MakClov cR=" << param.clovCoeffR << " cT=" << param.clovCoeffT << endl;
 
     Real internalCoeffR=Real(0.5)*param.clovCoeffR;
     Real internalCoeffT=Real(0.5)*param.clovCoeffT;
