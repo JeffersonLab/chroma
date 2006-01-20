@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.8 2006-01-18 02:12:20 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 2.9 2006-01-20 18:46:00 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -313,8 +313,8 @@ namespace Chroma
 
 	  /*# L(i,j,0) = -i*(E_z - B_z)[i,j] */
 	  /*#          = -i*(F(3,2) - F(1,0)) */
-	  ctmp_0 = f0.elem(site).elem().elem(j,i);
-	  ctmp_0 -= f5.elem(site).elem().elem(j,i);
+	  ctmp_0 = f0.elem(site).elem().elem(i,j);
+	  ctmp_0 -= f5.elem(site).elem().elem(i,j);
 	  tri[site].offd[0][elem_ij] = timesI(ctmp_0);
 
 	  /*# L(i+Nc,j+Nc,0) = +i*(E_z - B_z)[i,j] */
@@ -323,8 +323,8 @@ namespace Chroma
 
 	  /*# L(i,j,1) = i*(E_z + B_z)[i,j] */
 	  /*#          = i*(F(3,2) + F(1,0)) */
-	  ctmp_1 = f5.elem(site).elem().elem(j,i);
-	  ctmp_1 += f0.elem(site).elem().elem(j,i);
+	  ctmp_1 = f5.elem(site).elem().elem(i,j);
+	  ctmp_1 += f0.elem(site).elem().elem(i,j);
 	  tri[site].offd[1][elem_ij] = timesI(ctmp_1);
 
 	  /*# L(i+Nc,j+Nc,1) = -i*(E_z + B_z)[i,j] */
@@ -333,23 +333,7 @@ namespace Chroma
 	}
       }
       
-      //************  WARNING WARNING WARNING ****************
-      // Somehow or other I need to take complex conjugate 
-      // of these values computed in the previous loop 
-      // to make these agree with SZIN
-      for(int j=0; j < 2*Nc*Nc-Nc; j++) { 
-	ctmp_0 = adj(tri[site].offd[0][j]);
-	tri[site].offd[0][j] = ctmp_0;
-
-	ctmp_0 = adj(tri[site].offd[1][j]);
-	tri[site].offd[1][j] = ctmp_0;	
-      }
-
-
       /*# Off-diagonal */
-      //************  WARNING WARNING WARNING ****************
-      // I needed to flip the order of the i and j's in the 
-      // calculation of elem_ij here to agree with SZIN
       for(int i = 0; i < Nc; ++i)
       {
 	for(int j = 0; j < Nc; ++j)
@@ -357,17 +341,17 @@ namespace Chroma
 	  // Flipped index
 	  // by swapping i <-> j. In the past i would run slow
 	  // and now j runs slow
-	  int elem_ij  = (j+Nc)*(j+Nc-1)/2 + i;
+	  int elem_ij  = (i+Nc)*(i+Nc-1)/2 + j;
 
 	  /*# i*E_- = (i*E_x + E_y) */
 	  /*#       = (i*F(3,0) + F(3,1)) */
-	  E_minus = timesI(f2.elem(site).elem().elem(j,i));
-	  E_minus += f4.elem(site).elem().elem(j,i);
+	  E_minus = timesI(f2.elem(site).elem().elem(i,j));
+	  E_minus += f4.elem(site).elem().elem(i,j);
 
 	  /*# i*B_- = (i*B_x + B_y) */
 	  /*#       = (i*F(2,1) - F(2,0)) */
-	  B_minus = timesI(f3.elem(site).elem().elem(j,i));
-	  B_minus -= f1.elem(site).elem().elem(j,i);
+	  B_minus = timesI(f3.elem(site).elem().elem(i,j));
+	  B_minus -= f1.elem(site).elem().elem(i,j);
 
 	  /*# L(i+Nc,j,0) = -i*(E_- - B_-)  */
 	  tri[site].offd[0][elem_ij] = B_minus - E_minus;
