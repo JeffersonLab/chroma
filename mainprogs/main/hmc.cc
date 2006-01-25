@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 2.2 2005-11-03 03:52:51 edwards Exp $
+// $Id: hmc.cc,v 2.3 2006-01-25 05:08:21 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -309,8 +309,12 @@ namespace Chroma {
 	write(xml_out, "update_no", cur_update);
 	write(xml_out, "WarmUpP", warm_up_p);
 
+        QDPIO::cout << "Before HMC trajectory call" << endl;
+
 	// Do the trajectory without accepting 
 	theHMCTrj( gauge_state, warm_up_p );
+
+        QDPIO::cout << "After HMC trajectory call" << endl;
 
 	// Create a gauge header for inline measurements.
 	// Since there are defaults always measured, we must always
@@ -442,8 +446,10 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
 
+  QDPIO::cout << "Call QDP create layout" << endl;
   Layout::setLattSize(trj_params.nrow);
   Layout::create();
+  QDPIO::cout << "Finished with QDP create layout" << endl;
 
   proginfo(xml_out);    // Print out basic program info
 
@@ -453,7 +459,9 @@ int main(int argc, char *argv[])
     XMLReader file_xml;
     XMLReader config_xml;
     
+    QDPIO::cout << "Initialize gauge field" << endl;
     gaugeStartup(file_xml, config_xml, u, mc_control.cfg);
+    QDPIO::cout << "Finished initializing gauge field" << endl;
 
     // Write out the config header
     push(xml_out, "Config_info");
