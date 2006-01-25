@@ -1,4 +1,4 @@
-// $Id: inline_aggregate.cc,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: inline_aggregate.cc,v 2.1 2006-01-25 16:50:41 edwards Exp $
 /*! \file
  *  \brief Inline measurement aggregator
  */
