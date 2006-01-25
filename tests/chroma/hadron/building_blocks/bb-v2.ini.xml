@@ -121,6 +121,664 @@ Calculate building blocks - insertions in 3-pt functions
     </elem>
 
     <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_PION</source_id>
+        <prop_id>seqprop_PION</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_U_UNPOL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_U_UNPOL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_NUCL_U_UNPOL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_U_UNPOL</source_id>
+        <prop_id>seqprop_NUCL_U_UNPOL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_D_UNPOL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_D_UNPOL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_NUCL_D_UNPOL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_D_UNPOL</source_id>
+        <prop_id>seqprop_NUCL_D_UNPOL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_U_POL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_U_POL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_NUCL_U_POL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_U_POL</source_id>
+        <prop_id>seqprop_NUCL_U_POL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_D_POL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_D_POL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_NUCL_D_POL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_D_POL</source_id>
+        <prop_id>seqprop_NUCL_D_POL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; DELTA_U_UNPOL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>DELTA_U_UNPOL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_DELTA_U_UNPOL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_DELTA_U_UNPOL</source_id>
+        <prop_id>seqprop_DELTA_U_UNPOL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; DELTA_D_UNPOL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>DELTA_D_UNPOL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_DELTA_D_UNPOL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_DELTA_D_UNPOL</source_id>
+        <prop_id>seqprop_DELTA_D_UNPOL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_U_UNPOL_NONREL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_U_UNPOL_NONREL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_NUCL_U_UNPOL_NONREL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_U_UNPOL_NONREL</source_id>
+        <prop_id>seqprop_NUCL_U_UNPOL_NONREL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_D_UNPOL_NONREL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_D_UNPOL_NONREL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_NUCL_D_UNPOL_NONREL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_D_UNPOL_NONREL</source_id>
+        <prop_id>seqprop_NUCL_D_UNPOL_NONREL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_U_POL_NONREL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_U_POL_NONREL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_NUCL_U_POL_NONREL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_U_POL_NONREL</source_id>
+        <prop_id>seqprop_NUCL_U_POL_NONREL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        ; NUCL_D_POL_NONREL
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<seq_src>NUCL_D_POL_NONREL</seq_src>
+        <t_sink>7</t_sink>
+        <sink_mom>0 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_NUCL_D_POL_NONREL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_D_POL_NONREL</source_id>
+        <prop_id>seqprop_NUCL_D_POL_NONREL</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
       <annotation>
         ; NUCL_U_MIXED_NONREL
       </annotation>
@@ -137,25 +795,8 @@ Calculate building blocks - insertions in 3-pt functions
         <version>5</version>
         <Sink>
           <version>1</version>
-          <SinkType>SHELL_SINK</SinkType>
+          <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
         </Sink>
       </PropSink>
       <NamedObject>
@@ -164,6 +805,39 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>sh_prop_0</elem>
         </prop_ids>
         <seqsource_id>seqsource_NUCL_U_MIXED_NONREL</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
+        <prop_id>seqprop_NUCL_U_MIXED_NONREL</prop_id>
       </NamedObject>
     </elem>
 
@@ -184,25 +858,8 @@ Calculate building blocks - insertions in 3-pt functions
         <version>5</version>
         <Sink>
           <version>1</version>
-          <SinkType>SHELL_SINK</SinkType>
+          <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
         </Sink>
       </PropSink>
       <NamedObject>
@@ -214,113 +871,35 @@ Calculate building blocks - insertions in 3-pt functions
     </elem>
 
     <elem>
-      <annotation>
-       PION seqprop
-      </annotation>
-
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>9</version>
-       <quarkSpinType>FULL</quarkSpinType>
-       <obsvP>false</obsvP>
-       <FermionAction>
-        <FermAct>WILSON</FermAct>
-        <Kappa>0.11</Kappa>
-        <AnisoParam>
-          <anisoP>false</anisoP>
-          <t_dir>3</t_dir>
-          <xi_0>1</xi_0>
-          <nu>1</nu>
-        </AnisoParam>
-        <FermionBC>
-          <FermBC>SIMPLE_FERMBC</FermBC>
-          <boundary>1 1 1 0</boundary>
-        </FermionBC>
-       </FermionAction>
-       <InvertParam>
-         <invType>CG_INVERTER</invType>
-         <RsdCG>1.0e-12</RsdCG>
-         <MaxCG>1000</MaxCG>
-       </InvertParam>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
       </Param>
       <NamedObject>
-       <source_id>seqsource_PION</source_id>
-       <prop_id>seqprop_PION</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        NUCL_U_MIXED_NONREL seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-       <version>9</version>
-       <obsvP>false</obsvP>
-       <quarkSpinType>FULL</quarkSpinType>
-       <FermionAction>
-        <FermAct>WILSON</FermAct>
-        <Kappa>0.11</Kappa>
-        <AnisoParam>
-          <anisoP>false</anisoP>
-          <t_dir>3</t_dir>
-          <xi_0>1</xi_0>
-          <nu>1</nu>
-        </AnisoParam>
-        <FermionBC>
-          <FermBC>SIMPLE_FERMBC</FermBC>
-          <boundary>1 1 1 0</boundary>
-        </FermionBC>
-       </FermionAction>
-       <InvertParam>
-         <invType>CG_INVERTER</invType>
-         <RsdCG>1.0e-12</RsdCG>
-         <MaxCG>1000</MaxCG>
-       </InvertParam>
-      </Param>
-      <NamedObject>
-       <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
-       <prop_id>seqprop_NUCL_U_MIXED_NONREL</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        NUCL_D_MIXED_NONREL seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-       <version>9</version>
-       <obsvP>false</obsvP>
-       <quarkSpinType>FULL</quarkSpinType>
-       <FermionAction>
-        <FermAct>WILSON</FermAct>
-        <Kappa>0.11</Kappa>
-        <AnisoParam>
-          <anisoP>false</anisoP>
-          <t_dir>3</t_dir>
-          <xi_0>1</xi_0>
-          <nu>1</nu>
-        </AnisoParam>
-        <FermionBC>
-          <FermBC>SIMPLE_FERMBC</FermBC>
-          <boundary>1 1 1 0</boundary>
-        </FermionBC>
-       </FermionAction>
-       <InvertParam>
-         <invType>CG_INVERTER</invType>
-         <RsdCG>1.0e-12</RsdCG>
-         <MaxCG>1000</MaxCG>
-       </InvertParam>
-      </Param>
-      <NamedObject>
-       <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
-       <prop_id>seqprop_NUCL_D_MIXED_NONREL</prop_id>
+        <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
+        <prop_id>seqprop_NUCL_D_MIXED_NONREL</prop_id>
       </NamedObject>
     </elem>
 
@@ -343,40 +922,83 @@ Calculate building blocks - insertions in 3-pt functions
        <OutFileName>./examplebb_v1.out</OutFileName>
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
-
-<annotation>
          <elem>
-           <BkwdPropId>seqprop_0_NUCL_U_UNPOL</BkwdPropId>
+           <BkwdPropId>seqprop_PION</BkwdPropId>
+           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+           <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
+           <BBFileNamePattern>pion_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+         </elem>
+         <elem>
+           <BkwdPropId>seqprop_NUCL_U_UNPOL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
            <BBFileNamePattern>nucl_u_unpol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
-           <BkwdPropId>seqprop_0_NUCL_D_UNPOL</BkwdPropId>
+           <BkwdPropId>seqprop_NUCL_D_UNPOL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_unpol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
-      
          <elem>
-           <BkwdPropId>seqprop_0_NUCL_U_POL</BkwdPropId>
+           <BkwdPropId>seqprop_NUCL_U_POL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
            <BBFileNamePattern>nucl_u_pol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
          <elem>
-           <BkwdPropId>seqprop_0_NUCL_D_POL</BkwdPropId>
+           <BkwdPropId>seqprop_NUCL_D_POL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_pol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
-      
-</annotation>
-
+         <elem>
+           <BkwdPropId>seqprop_DELTA_U_UNPOL</BkwdPropId>
+           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+           <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
+           <BBFileNamePattern>delta_u_unpol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+         </elem>
+         <elem>
+           <BkwdPropId>seqprop_DELTA_D_UNPOL</BkwdPropId>
+           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+           <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
+           <BBFileNamePattern>delta_d_unpol_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+         </elem>
+         <elem>
+           <BkwdPropId>seqprop_NUCL_U_UNPOL_NONREL</BkwdPropId>
+           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+           <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
+           <BBFileNamePattern>nucl_u_unpol_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+         </elem>
+         <elem>
+           <BkwdPropId>seqprop_NUCL_D_UNPOL_NONREL</BkwdPropId>
+           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+           <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
+           <BBFileNamePattern>nucl_D_unpol_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+         </elem>
+         <elem>
+           <BkwdPropId>seqprop_NUCL_U_POL_NONREL</BkwdPropId>
+           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+           <GammaInsertion>0</GammaInsertion>
+           <Flavor>U</Flavor>
+           <BBFileNamePattern>nucl_u_pol_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+         </elem>
+         <elem>
+           <BkwdPropId>seqprop_NUCL_D_POL_NONREL</BkwdPropId>
+           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
+           <GammaInsertion>0</GammaInsertion>
+           <Flavor>D</Flavor>
+           <BBFileNamePattern>nucl_d_pol_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+         </elem>
          <elem>
            <BkwdPropId>seqprop_NUCL_U_MIXED_NONREL</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
@@ -390,13 +1012,6 @@ Calculate building blocks - insertions in 3-pt functions
            <GammaInsertion>0</GammaInsertion>
            <Flavor>D</Flavor>
            <BBFileNamePattern>nucl_d_mixed_nonrel_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-         <elem>
-           <BkwdPropId>seqprop_PION</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>pion_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
