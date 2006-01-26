@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.9 2006-01-20 18:46:00 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 2.10 2006-01-26 20:04:45 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -84,6 +84,12 @@ namespace Chroma
   {
     u = u_;
     param = param_;
+
+    {
+      Real ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
+      param.clovCoeffR *= Real(0.5) * ff;
+      param.clovCoeffT *= Real(0.5);
+    }
 
     //
     // Yuk. Some bits of knowledge of the dslash term are buried in the 
@@ -209,37 +215,34 @@ namespace Chroma
       QDP_error_exit("expecting Ns == 4", Ns);
   
 
-    Real internalCoeffR=Real(0.5)*param.clovCoeffR;
-    Real internalCoeffT=Real(0.5)*param.clovCoeffT;
-
     /* Multiply in the appropriate clover coefficient */
     switch (param.anisoParam.t_dir)
     {
     case 1:
-      f0 = f[0] * internalCoeffT;
-      f1 = f[1] * internalCoeffR;
-      f2 = f[2] * internalCoeffR;
-      f3 = f[3] * internalCoeffT;
-      f4 = f[4] * internalCoeffT;
-      f5 = f[5] * internalCoeffR;
+      f0 = f[0] * param.clovCoeffT;
+      f1 = f[1] * param.clovCoeffR;
+      f2 = f[2] * param.clovCoeffR;
+      f3 = f[3] * param.clovCoeffT;
+      f4 = f[4] * param.clovCoeffT;
+      f5 = f[5] * param.clovCoeffR;
       break;
 
     case 2:
-      f0 = f[0] * internalCoeffR;
-      f1 = f[1] * internalCoeffT;
-      f2 = f[2] * internalCoeffR;
-      f3 = f[3] * internalCoeffT;
-      f4 = f[4] * internalCoeffR;
-      f5 = f[5] * internalCoeffT;
+      f0 = f[0] * param.clovCoeffR;
+      f1 = f[1] * param.clovCoeffT;
+      f2 = f[2] * param.clovCoeffR;
+      f3 = f[3] * param.clovCoeffT;
+      f4 = f[4] * param.clovCoeffR;
+      f5 = f[5] * param.clovCoeffT;
       break;
 
     case 3:
-      f0 = f[0] * internalCoeffR;
-      f1 = f[1] * internalCoeffR;
-      f2 = f[2] * internalCoeffT;
-      f3 = f[3] * internalCoeffR;
-      f4 = f[4] * internalCoeffT;
-      f5 = f[5] * internalCoeffT;
+      f0 = f[0] * param.clovCoeffR;
+      f1 = f[1] * param.clovCoeffR;
+      f2 = f[2] * param.clovCoeffT;
+      f3 = f[3] * param.clovCoeffR;
+      f4 = f[4] * param.clovCoeffT;
+      f5 = f[5] * param.clovCoeffT;
       break;
 
     default:
@@ -370,8 +373,8 @@ namespace Chroma
     {
       XMLFileWriter xml("f.xml");
       push(xml,"f");
-      write(xml, "clovT", internalCoeffT);
-      write(xml, "clovR", internalCoeffR);
+      write(xml, "clovT", param.clovCoeffT);
+      write(xml, "clovR", param.clovCoeffR);
       write(xml,"f",f);
       pop(xml);
     }
