@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.32 2006-01-16 02:10:02 bjoo Exp $
+# $Id: Makefile.am,v 2.33 2006-01-29 05:23:03 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -365,7 +365,9 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
-        util/ferm/paulitodr.h
+        util/ferm/paulitodr.h \
+        util/ferm/antisymtensor.h \
+        util/ferm/symtensor.h
 
 # Staggered specific headers
 nobase_include_HEADERS += \
@@ -783,7 +785,10 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc \
-	util/ferm/gammasgn_w.cc
+	util/ferm/gammasgn_w.cc \
+        util/ferm/antisymtensor.cc \
+        util/ferm/symtensor.cc
+
 
 # Taken out for now
 #        meas/hadron/multipole_w.cc
