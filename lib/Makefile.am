@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.33 2006-01-29 05:23:03 edwards Exp $
+# $Id: Makefile.am,v 2.34 2006-01-31 14:33:03 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -139,6 +139,7 @@ nobase_include_HEADERS = \
         meas/sources/srcfil.h \
 	meas/sources/wavetype.h \
         meas/sources/z2_src.h \
+        meas/sources/dilute_gauss_src_s.h \
         meas/sources/zN_src.h \
 	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
@@ -618,6 +619,7 @@ libchroma_a_SOURCES = \
         meas/sources/srcfil.cc \
         meas/sources/z2_src.cc \
         meas/sources/zN_src.cc \
+        meas/sources/dilute_gauss_src_s.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
