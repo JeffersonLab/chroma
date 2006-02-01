@@ -11,6 +11,20 @@ namespace Chroma {
       bool success; 
       success = theStochSrc::Instance().registerPair(string("Z2NOISE"), Z2NOISE );
       success &=theStochSrc::Instance().registerPair(string("GAUSSIAN"),GAUSSIAN );
+
+
+      success &=theStochSrc::Instance().registerPair(string("T_DILUTE_GAUSS"),T_DILUTE_GAUSS );
+      success &=theStochSrc::Instance().registerPair(string("C_DILUTE_GAUSS"),C_DILUTE_GAUSS );
+      success &=theStochSrc::Instance().registerPair(string("P_DILUTE_GAUSS"),P_DILUTE_GAUSS );
+      success &=theStochSrc::Instance().registerPair(string("CT_DILUTE_GAUSS"),CT_DILUTE_GAUSS );
+      success &=theStochSrc::Instance().registerPair(string("CP_DILUTE_GAUSS"),CP_DILUTE_GAUSS );
+      success &=theStochSrc::Instance().registerPair(string("PT_DILUTE_GAUSS"),PT_DILUTE_GAUSS );
+      success &=theStochSrc::Instance().registerPair(string("MOD_T_DILUTE_GAUSS"),  MOD_T_DILUTE_GAUSS);
+      success &=theStochSrc::Instance().registerPair(string("CORNER_DILUTE_GAUSS"),CORNER_DILUTE_GAUSS );
+      success &=theStochSrc::Instance().registerPair(string("COR_DBL_T_DILUTE_GAUSS"), COR_DBL_T_DILUTE_GAUSS);
+      success &=theStochSrc::Instance().registerPair(string("COR_MOD_DBL_T_DILUTE_GAUSS"), COR_MOD_DBL_T_DILUTE_GAUSS);
+      success &=theStochSrc::Instance().registerPair(string("C_MOD_T_DILUTE_GAUSS"),C_MOD_T_DILUTE_GAUSS );
+
       
       return success;
     }
