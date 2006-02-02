@@ -182,7 +182,14 @@ T shiftDeltaPropCov_t(multi1d<int>& delta,
 
   */
 
-
+  /*debug*/ 
+  /*
+      if(sym_flag){
+	printf("SYM SHIFT!\n");
+      }else{
+	printf("NOT SYM SHIFT!\n");
+      }
+  */
   if( Nd != 4 ) {
     QDPIO::cerr << "This only works for Nd=4 , not Nd=" << Nd;
     QDP_abort(1);
@@ -222,23 +229,27 @@ T shiftDeltaPropCov_t(multi1d<int>& delta,
   }
   inv_num_perms= 1.0/((double)num_perms);
 
-
   ret_val=zero;                          /* initialize returned value */
 
   for(i=0; i<num_perms; i++){
     tmp1=src;
     tmp2=src;
     for(j=0; j<num_shifts; j++){
+
       displacement(u,tmp1,length, delta_order[shift_index[i][j]]);
+
       if(sym_flag){
+
 	displacement(u,tmp2,-length, delta_order[shift_index[i][j]]);
+
+	tmp1+=tmp2;
+	tmp1*=0.5;
+	tmp2=tmp1;       
       }
     }
-    if(sym_flag){
-      ret_val+=0.5*(tmp1+tmp2);
-    }else{
-      ret_val+=tmp1;
-    }
+
+    ret_val+=tmp1;
+
   }
   /* normalize by the number of permutations */
   ret_val*=inv_num_perms;
@@ -313,7 +324,7 @@ LatticeStaggeredPropagator shiftDeltaProp(multi1d<int>& delta,
       // This at the moment cannot occur without a temporary
       tmp1 = shift(ret_val, FORWARD, mu);
       if(sym_flag){
-	tmp1 = shift(ret_val, FORWARD, mu);
+	tmp2 = shift(ret_val, BACKWARD, mu);
       }
       if(sym_flag){
 	ret_val = 0.5*(tmp1+tmp2);
