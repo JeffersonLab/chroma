@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.xml,v 2.0 2005-09-25 21:05:06 edwards Exp $
+; $Id: spectrum_s.xml,v 2.1 2006-02-02 16:46:52 egregory Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -21,6 +21,9 @@
  <Baryon_local>true</Baryon_local>
  <Baryon_vary>true</Baryon_vary>
  <singletPs_Conn_local>true</singletPs_Conn_local>
+ <eight_pions>true</eight_pions>
+ <eight_scalars>true</eight_scalars>
+ <eight_rhos>true</eight_rhos>
 <LocalPion_vary>true</LocalPion_vary>
 
 <gauge_invar_oper>true</gauge_invar_oper>
@@ -30,6 +33,9 @@
 <Number_sample>10</Number_sample>
 <CFGNO>234</CFGNO>
 <volume_src>GAUSSIAN</volume_src>
+
+<sym_shift_oper>true</sym_shift_oper>
+<src_seperation>4</src_seperation>
 
 <do_gauge_transform>false</do_gauge_transform>
 
