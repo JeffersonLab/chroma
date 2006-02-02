@@ -1,6 +1,8 @@
-// $Id: global_metropolis_accrej.cc,v 2.1 2006-02-02 18:44:20 edwards Exp $
+// $Id: global_metropolis_accrej.cc,v 2.2 2006-02-02 18:45:45 edwards Exp $
 /*! \file
  * \brief Simple metropolis accept/reject
+ *
+ * Simple metropolis accept/reject
  */
 
 #include "chromabase.h"
@@ -8,7 +10,10 @@
 
 namespace Chroma { 
 
-  bool globalMetropolisAcceptReject(const Double& DeltaH) { 
+  // Metropolis accept/reject
+  /*! @ingroup hmc */
+  bool globalMetropolisAcceptReject(const Double& DeltaH) 
+  { 
     // If deltaH is negative then always accept
     bool ret_val;
     
