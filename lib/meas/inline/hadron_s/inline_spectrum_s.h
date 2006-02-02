@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_spectrum_s.h,v 2.1 2006-02-02 16:23:14 egregory Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -35,21 +35,28 @@ namespace Chroma
 
     struct Param_t
     {
-      bool Meson_local;             // Meson spectroscopy
-      bool Baryon_local;            // Baryons spectroscopy
-      bool Baryon_vary;            // Baryons spectroscopy variational
-      bool LocalPion_vary;            // local pion spectroscopy variational
-      bool disconnected_local ;     // disconnected loops local
-      bool disconnected_fuzz  ;     // disconnected loops fuzz
+      bool Meson_local;                 // Meson spectroscopy
+      bool Baryon_local;                // Baryons spectroscopy
+      bool Baryon_vary;                 // Baryons spectroscopy variational
+      bool LocalPion_vary;              // local pion spectroscopy variational
+      bool disconnected_local ;         // disconnected loops local
+      bool disconnected_fuzz  ;         // disconnected loops fuzz
       bool ps4link_singlet_conn ;  
+      bool eight_pions;                 // all pseudoscalar meson tastes
+      bool eight_scalars;               // all scalar meson tastes
+      bool eight_rhos;                  // all vector meson tastes
 
+ 
       // parameters for disconnected loops
       int Nsamp;
       int CFGNO ;
       VolSrc_type volume_source ;
       bool gauge_invar_oper ; 
+      bool sym_shift_oper ; 
 
       int fuzz_width ; 
+
+      int src_seperation ;
 
       multi1d<int> boundary;
       multi1d<int> nrow;
