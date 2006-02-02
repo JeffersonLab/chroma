@@ -1,3 +1,6 @@
+// -*- C++ -*-
+// $Id: lcm_integrator_leaps.h,v 2.1 2006-02-02 18:39:54 edwards Exp $
+
 #ifndef LCM_INTEGRATOR_LEAPS
 #define LCM_INTEGRATOR_LEAPS
 
@@ -5,9 +8,13 @@
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
 
-namespace Chroma { 
+namespace Chroma 
+{
 
-  namespace LCMMDIntegratorSteps {
+  //! LatticeColorMatrix integrator leaps
+  /*! @ingroup integrator */
+  namespace LCMMDIntegratorSteps 
+  {
 
     //! LeapP for just a selected list of monomials
     void leapP(const Real& dt, 

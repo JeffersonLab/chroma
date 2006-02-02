@@ -1,4 +1,5 @@
-
+// -*- C++ -*-
+// $Id: lcm_minimum_norm2_integrator.h,v 2.1 2006-02-02 18:39:54 edwards Exp $
 /*! @file
  * @brief 2nd order minimum norm intergrator a la 
  * Omelyan adapted to QCD by deForcrand and Takaishi

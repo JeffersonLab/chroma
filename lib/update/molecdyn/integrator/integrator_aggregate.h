@@ -1,3 +1,6 @@
+// -*- C++ -*-
+// $Id: integrator_aggregate.h,v 2.1 2006-02-02 18:39:54 edwards Exp $
+
 #ifndef INTEGRATOR_AGGREGATE_H
 #define INTEGRATOR_AGGREGATE_H
 
