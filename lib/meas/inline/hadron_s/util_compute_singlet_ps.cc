@@ -16,42 +16,94 @@
 
 #include "util_compute_quark_prop_s.h"
 
-namespace Chroma 
-{ 
+namespace Chroma { 
+
+  enum func_flag{
+    QPROP_FUZZ,
+    QPROP_NO_FUZZ,
+    SINGLETS
+  };
+  typedef func_flag func_flag_type;
 
 
-int compute_singlet_ps(LatticeStaggeredFermion & psi,
-		       LatticeStaggeredPropagator quark_propagator,
-		       stag_src_type type_of_src, 
-		       const multi1d<LatticeColorMatrix> & u , 
-		       Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
-		       XMLWriter & xml_out,
-		       Real RsdCG, Real Mass, 
-		       int j_decay, int t_source, int t_length)
-{
-  LatticeStaggeredFermion q_source ;
-  LatticeStaggeredFermion q_source_fuzz ; 
-  int ncg_had = 0 ;
+  int check_qprop_source_compatability(stag_src_type type_of_src,
+				       bool gauge_shift,
+				       bool sym_shift, func_flag_type fflag);
 
-  LatticeStaggeredPropagator quark_propagator_4link ;
+  /***************************************************************************/
 
-  q_source = zero ;
+  int compute_singlet_ps(LatticeStaggeredFermion & psi,
+			 LatticeStaggeredPropagator quark_propagator,
+			 stag_src_type type_of_src,
+			 bool gauge_shift,
+			 bool sym_shift,
+			 const multi1d<LatticeColorMatrix> & u ,
+			 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+			 XMLWriter & xml_out,
+			 Real RsdCG, Real Mass, 
+			 int j_decay, int t_source, int t_length){
 
-  /*** generate the 4-link quark propagator ****/
-  push(xml_out,"Computation_4link_pseudoscalar");
+    LatticeStaggeredFermion q_source ;
+    LatticeStaggeredFermion q_source_fuzz ;
+    int ncg_had = 0 ;
 
-    for(int color_source = 0; color_source < Nc; ++color_source)
-    {
+    LatticeStaggeredPropagator quark_propagator_4link ;
 
-      if( type_of_src == LOCAL_SRC )
-	{
-	  q_source = zero ;
-	  multi1d<int> coord(Nd);
-	  coord[0]=1; coord[1] = 1; coord[2] = 1; coord[3] = 1;
-	  srcfil(q_source, coord,color_source ) ;
+    q_source = zero ;
+
+    // safety checks
+    check_qprop_source_compatability(type_of_src, gauge_shift, sym_shift,
+				     SINGLETS);
+
+    if( gauge_shift ){
+
+      if((type_of_src == LOCAL_SRC) || (type_of_src == FUZZED_SRC)){
+	QDPIO::cerr << "Conflicting source and shift types in " <<
+	  "util_compute_quark_prop_s.cc" <<endl;
+	exit(0);
+      }
+
+
+    }else{
+
+      if (sym_shift){
+	QDPIO::cerr << "Conflicting source and shift types in " <<
+	  "util_compute_singlet_s.cc" <<endl;
+	QDPIO::cerr << "symmetric shifts not implemented for LLL " <<
+	  "non-gauge-invariant sources" << endl;
+
+	if(type_of_src == LOCAL_SRC){
+	  QDPIO::cerr << "You asked for LOCAL_SRC, sym_shift" << endl;
 	}
-      else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
-	{
+	if(type_of_src == FUZZED_SRC){
+	  QDPIO::cerr << "You asked for FUZZED_SRC, sym_shift" << endl;
+	}
+
+	exit(0);
+      }
+    
+    
+      if(type_of_src == GAUGE_INVAR_LOCAL_SOURCE){
+	QDPIO::cout << "Conflicting source and shift types in " <<
+	  "util_compute_quark_prop_s.cc" <<endl;
+	exit(0);
+      }
+    }
+
+
+    /*** generate the 4-link quark propagator ****/
+    push(xml_out,"Computation_4link_pseudoscalar");
+
+    for(int color_source = 0; color_source < Nc; ++color_source) {
+
+      if( type_of_src == LOCAL_SRC ){
+
+	q_source = zero ;
+	multi1d<int> coord(Nd);
+	coord[0]=1; coord[1] = 1; coord[2] = 1; coord[3] = 1;
+	srcfil(q_source, coord,color_source ) ;
+      } else {
+	if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  ) {
 	  q_source = zero ;
 	  multi1d<int> coord(Nd);
 	  
@@ -63,9 +115,10 @@ int compute_singlet_ps(LatticeStaggeredFermion & psi,
 	  coord[0]=1; coord[1] = 1; coord[2] = 1; coord[3] = 1;
 	  q_source_fuzz = q_source  ;
 	  q_source = shiftDeltaPropCov(coord,q_source_fuzz,u,
-				       false); 
+				       sym_shift);
 
 	}
+      }
 
       // we fuzz the local quark propagator so it does not
       // make sense to fuzz the shited source quark propagator
@@ -90,7 +143,6 @@ int compute_singlet_ps(LatticeStaggeredFermion & psi,
       write(xml_out, "time_in_sec",time_in_sec );
       pop(xml_out);
   
-
       FermToProp(psi, quark_propagator_4link, color_source);
 
     }
@@ -102,9 +154,7 @@ int compute_singlet_ps(LatticeStaggeredFermion & psi,
 
     pop(xml_out);
 
-  return ncg_had ;
-}
-
-
+    return ncg_had ;
+  }
 
 } // end of namespace
