@@ -1,4 +1,4 @@
-// $Id: util_compute_meson_s.cc,v 2.1 2005-11-01 04:13:03 edwards Exp $
+// $Id: util_compute_meson_s.cc,v 2.2 2006-02-02 16:25:00 egregory Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -30,9 +30,13 @@ namespace Chroma
 		       XMLWriter & xml_out,
 		       int j_decay,int t_length, int t_source)
 {
-  staggered_local_pion pion(t_length,u) ;
 
-  push(xml_out,"Meson_correlators");
+
+  printf("begin pion\n");fflush(stdout);
+  staggered_local_pion pion(t_length,u) ;
+  printf("done pion\n");fflush(stdout);
+
+push(xml_out,"Meson_correlators");
 
   // ---------- LL ----------
   pion.compute(quark_propagator_Lsink_Lsrc,
@@ -40,6 +44,7 @@ namespace Chroma
   push(xml_out, "Lsink_Lsrc");
   pion.dump(t_source,xml_out);
   pop(xml_out);
+printf("a little dumping\n");fflush(stdout);
   
   // ---------- FL ----------
   pion.compute(quark_propagator_Lsink_Lsrc,
@@ -47,6 +52,8 @@ namespace Chroma
   push(xml_out, "Fsink_Lsrc");
   pion.dump(t_source,xml_out);
   pop(xml_out);
+
+printf("some dumping\n");fflush(stdout);
   
   // ---------- LF ----------
   pion.compute(quark_propagator_Lsink_Lsrc,
@@ -66,6 +73,7 @@ namespace Chroma
   // ---------------------------------------
   pop(xml_out);
 
+printf("done dumping\n");fflush(stdout);
 
   QDPIO::cout << "Computed variational fuzzed mesons"  << endl;
 
