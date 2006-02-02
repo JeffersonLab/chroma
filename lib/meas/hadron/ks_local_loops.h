@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ks_local_loops.h,v 2.0 2005-09-25 21:04:35 edwards Exp $
+// $Id: ks_local_loops.h,v 2.1 2006-02-02 16:43:44 egregory Exp $
 /*! \file
  *  \brief Wrapper routines for computing loops with staggeref fermions
  */        
@@ -23,6 +23,7 @@ void ks_local_loops(
 		 const multi1d<LatticeColorMatrix> & u,
 		 XMLWriter & xml_out, 
 		 bool gauge_shift,
+		 bool sym_shift,
 		 int t_length,
 		 Real Mass,
 		 int Nsamp,
@@ -33,21 +34,22 @@ void ks_local_loops(
 
 
 
-  void ks_local_loops(
-		      Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
-		      LatticeStaggeredFermion & q_source,
-		      LatticeStaggeredFermion & psi ,
-		      multi1d<LatticeColorMatrix> & u,
-		      XMLFileWriter & xml_out,
-		      XMLReader & xml_in ,
-		      int t_length,
-		      Real Mass,
-		      int Nsamp,
-		      Real RsdCG,
-		      int CFGNO,
-                 int volume_source
-		      ) ;
-
+void ks_local_loops(
+		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 LatticeStaggeredFermion & q_source, 
+		 LatticeStaggeredFermion & psi ,
+		 const multi1d<LatticeColorMatrix> & u,
+		 XMLWriter & xml_out, 
+		 bool gauge_shift,
+		 bool sym_shift,
+		 int t_length,
+		 Real Mass,
+		 int Nsamp,
+		 Real RsdCG,
+		 int CFGNO,
+		 int volume_source,
+		 int src_seperation,
+		 int j_decay);
 
 
 
@@ -60,6 +62,7 @@ void ks_fuzz_loops(
 		 const multi1d<LatticeColorMatrix> & u_smr,
 		 XMLWriter & xml_out, 
 		 bool gauge_shift,
+		 bool sym_shift,
 		 int t_length,
 		 Real Mass,
 		 int Nsamp,
