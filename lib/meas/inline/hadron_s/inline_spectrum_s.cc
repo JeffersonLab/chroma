@@ -1,4 +1,3 @@
-// $Id: inline_spectrum_s.cc,v 2.1 2006-02-02 16:22:17 egregory Exp $
 /*! \file
  * \brief Inline construction of staggered spectrum
  *
@@ -674,7 +673,7 @@ namespace Chroma {
 			   u,qprop,xml_out,
 			   params.prop_param.invParam.RsdCG,
 			   params.prop_param.Mass,
-			   j_decay, t_source, params.param.nrow[3]) ;
+			   j_decay, t_source, params.param.nrow[j_decay]) ;
 
     }
 
@@ -695,7 +694,7 @@ namespace Chroma {
 			quark_propagator_Lsink_Lsrc,
 			quark_propagator_Lsink_Lsrc,
 			xml_out, j_decay,
-			params.param.nrow[3]) ;
+			params.param.nrow[j_decay]) ;
 
       pop(xml_out);
 
@@ -733,6 +732,8 @@ namespace Chroma {
       // put the spectrum calls here 
       if(params.param.eight_pions){
 	// do pion stuff
+	compute_8_pions( stag_prop, u , gauge_shift, sym_shift,
+			 xml_out, j_decay, params.param.nrow[j_decay], t_source);
       }
       if(params.param.eight_scalars){
 	// do scalar stuff
@@ -791,7 +792,7 @@ namespace Chroma {
 		      u,u_smr,xml_out,
 		      params.param.gauge_invar_oper,
 		      params.param.sym_shift_oper,
-		      params.param.nrow[3],params.prop_param.Mass,
+		      params.param.nrow[j_decay],params.prop_param.Mass,
 		      params.param.Nsamp,
 		      params.prop_param.invParam.RsdCG,
 		      params.param.CFGNO,
@@ -830,7 +831,7 @@ namespace Chroma {
 	if( params.param.Baryon_vary  ) {
 	  compute_vary_baryon_s(xml_out,t_source,
 				params.param.fuzz_width,
-				j_decay,params.param.nrow[3],
+				j_decay,params.param.nrow[j_decay],
 				quark_propagator_Lsink_Lsrc,
 				quark_propagator_Fsink_Lsrc,
 				quark_propagator_Lsink_Fsrc,
@@ -843,7 +844,9 @@ namespace Chroma {
 			  quark_propagator_Fsink_Lsrc,
 			  quark_propagator_Lsink_Fsrc,
 			  quark_propagator_Fsink_Fsrc,
-			  u,xml_out,j_decay,params.param.nrow[3],t_source) ;
+			  u, gauge_shift, sym_shift,
+			  xml_out,j_decay,
+			  params.param.nrow[j_decay],t_source);
 	}
 
 
