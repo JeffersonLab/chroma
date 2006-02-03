@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.34 2006-01-31 14:33:03 mcneile Exp $
+# $Id: Makefile.am,v 2.35 2006-02-03 14:36:31 egregory Exp $
 #
 # Path for all files used in building the library
 
@@ -839,6 +839,7 @@ libchroma_a_SOURCES += \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \
         meas/inline/hadron_s/util_compute_meson_s.cc \
+        meas/inline/hadron_s/util_compute_8_pions_s.cc \
         meas/inline/hadron_s/util_baryon_s.cc \
 	meas/inline/io/inline_io_aggregate.cc \
 	meas/inline/io/inline_qio_read_obj.cc \
