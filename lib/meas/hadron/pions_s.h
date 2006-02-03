@@ -29,7 +29,7 @@ using staggered fermions.
 
 
     staggered_pions(int t_len, 
-		    multi1d<LatticeColorMatrix> & uin,
+		    const multi1d<LatticeColorMatrix> & uin,
 		    Stag_shift_option type_of_shift_in = SYM_GAUGE_INVAR)  
       : staggered_hadron_corr(t_len,no_pions,uin,type_of_shift_in)
       {
