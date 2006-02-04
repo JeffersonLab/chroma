@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_stochsrc_io.cc,v 2.2 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief Stochastic source enum
+ */
 #include "enum_stochsrc_io.h"
 
 #include <string>

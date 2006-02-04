@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: enum_coeffs_io.cc,v 2.2 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief Coeffs enum
+ */
+
 #include "enum_coeffs_io.h"
 
 #include <string>

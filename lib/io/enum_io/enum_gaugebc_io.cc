@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_gaugebc_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief Gauge bc enum
+ */
 #include "enum_gaugebc_io.h"
 
 #include <string>

@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: enum_cfgtype_io.cc,v 2.2 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief CfgType enum
+ */
+
 #include "enum_cfgtype_io.h"
 #include <string>
 

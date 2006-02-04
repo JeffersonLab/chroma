@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_invtype_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief Inverter type enum
+ */
 #include "enum_invtype_io.h"
 
 #include <string>

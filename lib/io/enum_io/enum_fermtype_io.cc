@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: enum_fermtype_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief FermType enum
+ */
+
 #include "enum_fermtype_io.h"
 
 #include <string>

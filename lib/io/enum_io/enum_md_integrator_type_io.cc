@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_md_integrator_type_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief MD integrator enum
+ */
 #include "enum_md_integrator_type_io.h"
 
 #include <string>

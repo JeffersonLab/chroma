@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: enum_heatbathtype_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief Heatbath enum
+ */
+
 #include "enum_heatbathtype_io.h"
 
 #include <string>

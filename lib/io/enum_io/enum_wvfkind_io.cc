@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_wvfkind_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+/*! \file
+ * \brief Wavekind enum
+ */
 #include "enum_wvfkind_io.h"
 
 #include <string>
