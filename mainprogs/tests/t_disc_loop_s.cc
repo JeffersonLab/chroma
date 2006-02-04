@@ -449,11 +449,13 @@ int main(int argc, char **argv)
   // ----- compute disconnected diagrams -----
   //
 
+  // there are now new arguments to this function
+#if 0
   ks_local_loops(qprop,q_source,psi,u,xml_out, xml_in, 
 	      t_length,input.param.Mass,Nsamp,
 	      input.param.invParam.RsdCG,input.param.CFGNO,
 	      input.param.volume_source) ;
-
+#endif
 
   // comple the final tag
   pop(xml_out);
