@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: enum_heatbathtype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Heatbath enum
+ */
+
 #ifndef enum_heatbatbtype_io_h
 #define enum_heatbatbtype_io_h
 
@@ -10,6 +16,14 @@
 
 namespace Chroma {
 
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
+  //! Heatbath  type
   namespace HeatbathTypeEnv { 
     extern const string typeIDString;
     extern bool registered; 
@@ -27,5 +41,6 @@ namespace Chroma {
   //! Write an HeatbathType enum
   void write(XMLWriter& w, const string& path, const HeatbathType& t);
 
+  /*! @} */   // end of group io
 };
 #endif

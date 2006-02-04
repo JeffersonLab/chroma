@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_simplebctype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Simple BC type enum
+ */
 #ifndef enum_simplebctype_io_h
 #define enum_simplebctype_io_h
 
@@ -41,6 +46,8 @@ namespace Chroma {
 
   //! Write an SimpleBCType enum
   void write(XMLWriter& w, const string& path, const SimpleBCType& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif

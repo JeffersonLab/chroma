@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_inner_solver_type_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Inner solver enum
+ */
 #ifndef enum_innersolver_type_io_h
 #define enum_innersolver_type_io_h
 
@@ -40,5 +45,6 @@ namespace Chroma {
   //! Write an OverlapInnerSolverType enum
   void write(XMLWriter& w, const string& path, const OverlapInnerSolverType& t);
 
+  /*! @} */   // end of group io
 };
 #endif

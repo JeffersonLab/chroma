@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_gaugebc_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Gauge bc enum
+ */
 #ifndef enum_gaugebc_io_h
 #define enum_gaugebc_io_h
 
@@ -10,6 +15,13 @@
 
 namespace Chroma {
 
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
   /*************** GAUGEBC ********************************/
   //! Supported Gauge BC types
   enum GaugeBCType { 
@@ -64,6 +76,7 @@ namespace Chroma {
   //! Write an SchrFunType enum
   void write(XMLWriter& w, const string& path, const SchrFunType& t);
 
+  /*! @} */   // end of group io
 };
 
 #endif

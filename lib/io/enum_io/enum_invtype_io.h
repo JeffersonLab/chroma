@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_invtype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Inverter type enum
+ */
 #ifndef enum_invtype_io_h
 #define enum_invtype_io_h
 
@@ -17,9 +22,7 @@ namespace Chroma {
    *
    * @{
    */
-
-
-
+  //! Inverter type
   namespace InvTypeEnv { 
     extern const string typeIDString;
     extern bool registered; 
@@ -37,5 +40,6 @@ namespace Chroma {
   //! Write an InvType enum
   void write(XMLWriter& w, const string& path, const InvType& t);
 
+  /*! @} */   // end of group io
 };
 #endif

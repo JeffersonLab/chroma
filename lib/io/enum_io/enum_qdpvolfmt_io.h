@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_qdpvolfmt_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief QDP volfmt enum
+ */
 #ifndef enum_qdpvolfmt_io_h
 #define enum_qdpvolfmt_io_h
 
@@ -11,6 +16,14 @@
 namespace Chroma {
 
 
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
+  //! QDP volfmt type
   namespace QDPVolfmtEnv { 
     extern const string typeIDString;
     extern bool registered; 
@@ -27,6 +40,8 @@ namespace Chroma {
   
   //! Write a QDP volume format type
   void write(XMLWriter& w, const string& path, const QDP_volfmt_t& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif

@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: enum_fermtype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief FermType enum
+ */
+
 #ifndef enum_fermtype_io_h
 #define enum_fermtype_io_h
 
@@ -8,7 +14,8 @@
 
 
 
-namespace Chroma {
+namespace Chroma 
+{
 
   /*!
    * Types and structures
@@ -40,6 +47,8 @@ namespace Chroma {
 
   //! Write an Fermion Type enum
   void write(XMLWriter& w, const string& path, const FermType& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif

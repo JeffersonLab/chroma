@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_coeffs_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Coeffs enum
+ */
 #ifndef enum_coeffs_io_h
 #define enum_coeffs_io_h
 
@@ -6,11 +11,17 @@
 #include "singleton.h"
 #include "io/enum_io/enum_type_map.h"
 
+namespace Chroma 
+{
 
-
-namespace Chroma {
-  // CfgType --------------------------------------
- 
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
+  //! Coeffs  type
   enum CoeffType {
       COEFF_TYPE_ZOLOTAREV = 0,
       COEFF_TYPE_TANH,
@@ -33,6 +44,8 @@ namespace Chroma {
 
   //! Write an approximation coefficient type enum
   void write(XMLWriter& w, const string& path, const CoeffType& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif

@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_md_integrator_type_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief MD integrator enum
+ */
 #ifndef enum_md_integrator_type_io_h
 #define enum_md_integrator_type_io_h
 
@@ -40,6 +45,8 @@ namespace Chroma {
 
   //! Write an MD Integrator Type enum
   void write(XMLWriter& w, const string& path, const MDIntegratorType& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif

@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_eigenvectype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Eigenvector type enum
+ */
 #ifndef enum_eigenvectype_io_h
 #define enum_eigenvectype_io_h
 
@@ -41,5 +46,6 @@ namespace Chroma {
   //! Write an eigenvector enum
   void write(XMLWriter& w, const string& path, const EigenVecType& t);
 
+  /*! @} */   // end of group io
 };
 #endif

@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_wavetype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Wavetype enum
+ */
 #ifndef enum_wavetype_io_h
 #define enum_wavetype_io_h
 
@@ -11,6 +16,14 @@
 namespace Chroma {
 
   /*************** SOURCES ********************************/
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
+  //! Wave state type
 
   namespace WaveStateTypeEnv { 
     extern const string typeIDString;
@@ -26,6 +39,8 @@ namespace Chroma {
 
   //! Write an WaveStateType enum
   void write(XMLWriter& w, const string& path, const WaveStateType& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif

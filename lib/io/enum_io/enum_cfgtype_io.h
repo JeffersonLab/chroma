@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: enum_cfgtype_io.h,v 2.2 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief CfgType enum
+ */
+
 #ifndef enum_cfgtype_io_h
 #define enum_cfgtype_io_h
 
@@ -9,6 +15,13 @@
 
 namespace Chroma {
  
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
   //! Configuration type
   enum CfgType {
       CFG_TYPE_MILC = 0,
@@ -38,6 +51,8 @@ namespace Chroma {
 
   //! write a configuration type enum
   void write(XMLWriter& xml_out, const string& path, const CfgType& t); 
+
+  /*! @} */   // end of group io
 
 };
 

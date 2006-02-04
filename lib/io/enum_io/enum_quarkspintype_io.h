@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_quarkspintype_io.h,v 2.1 2005-12-15 04:03:28 edwards Exp $
+// $Id: enum_quarkspintype_io.h,v 2.2 2006-02-04 16:42:25 edwards Exp $
 
 /*! \file
  * \brief Enum for what spin components of a quark prop to compute
@@ -18,6 +18,13 @@
 namespace Chroma 
 {
   // QuarkSpinType --------------------------------------
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
  
   //! Quark spin type
   /*! \ingroup io */
@@ -50,6 +57,8 @@ namespace Chroma
   //! Write a quark spin type enum
   /*! \ingroup io */
   void write(XMLWriter& w, const string& path, const QuarkSpinType& t);
+
+  /*! @} */   // end of group io
 
 }
 #endif

@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_gaugeacttype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Gauge action enum
+ */
 #ifndef enum_gaugeacttype_io_h
 #define enum_gaugeacttype_io_h
 
@@ -55,5 +60,6 @@ namespace Chroma {
   //! Write an GaugeActType enum
   void write(XMLWriter& w, const string& path, const GaugeActType& t);
 
+  /*! @} */   // end of group io
 };
 #endif

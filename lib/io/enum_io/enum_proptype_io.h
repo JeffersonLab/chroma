@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_proptype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief PropType enum
+ */
 #ifndef enum_proptype_io_h
 #define enum_proptype_io_h
 
@@ -9,7 +14,7 @@
 
 
 namespace Chroma {
-  // CfgType --------------------------------------
+
   /*!
    * Types and structures
    *
@@ -42,5 +47,6 @@ namespace Chroma {
   //! Write a propagator type enum
   void write(XMLWriter& w, const string& path, const PropType& t);
 
+  /*! @} */   // end of group io
 };
 #endif

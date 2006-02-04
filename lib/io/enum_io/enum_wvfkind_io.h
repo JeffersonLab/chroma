@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_wvfkind_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Wavekind enum
+ */
 #ifndef enum_wvfkind_io_h
 #define enum_wvfkinf_io_h
 
@@ -10,6 +15,13 @@
 
 namespace Chroma {
 
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
   namespace WvfKindEnv { 
     extern const string typeIDString;
     extern bool registered; 
@@ -26,6 +38,8 @@ namespace Chroma {
 
   //! Write an WvfKind Type enum
   void write(XMLWriter& w, const string& path, const WvfKind& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif

@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_srcsnktype_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief SrcSink enum
+ */
 #ifndef enum_srcsnktype_io_h
 #define enum_srcsnktype_io_h
 
@@ -11,7 +16,14 @@
 namespace Chroma {
 
   /*************** SOURCES ********************************/
-
+  /*!
+   * Types and structures
+   *
+   * \ingroup io
+   *
+   * @{
+   */
+  //! Source  type
   namespace SourceTypeEnv { 
     extern const string typeIDString;
     extern bool registered; 
@@ -45,6 +57,8 @@ namespace Chroma {
 
   //! Write an SinkType enum
   void write(XMLWriter& w, const string& path, const SinkType& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif

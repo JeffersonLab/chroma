@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: enum_stochsrc_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+/*! \file
+ * \brief Stochastic source enum
+ */
 #ifndef enum_stochsrc_io_h
 #define enum_stochsrc_io_h
 
@@ -18,8 +23,6 @@ namespace Chroma {
    * @{
    */
 
-
-
   namespace StochSrcEnv { 
     extern const string typeIDString;
     extern bool registered; 
@@ -32,10 +35,13 @@ namespace Chroma {
   // Reader and writer
 
   //! Read an InvType enum
+
   void read(XMLReader& r, const string& path, VolSrc& t);
 
   //! Write an InvType enum
   void write(XMLWriter& w, const string& path, const VolSrc& t);
+
+  /*! @} */   // end of group io
 
 };
 #endif
