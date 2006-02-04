@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: build.sh,v 1.3 2005-12-20 19:32:36 edwards Exp $
+# $Id: build.sh,v 1.4 2006-02-04 16:11:37 edwards Exp $
 #
 #  Original author: Zbigniew Sroczynski
 #  See README_buildtest.sh for more information.
@@ -11,24 +11,38 @@ checkdir=$PWD
 
 logdir=$checkdir/logs
 
-modules="qmp qdp++ chroma"
+modules="bagel_qdp qmp qdp++ chroma adat"
 
+failcnt=0
 
 # Send mail to these addresses
- 
-mailto="edwards@jlab.org bjoo@jlab.org"
+# In case of failure mail everyone on this list  
+failmailto="edwards@jlab.org bjoo@jlab.org mcneile@sune.amtp.liv.ac.uk"
+
+# In case of success send to archive list only
+successmailto=""
 
 # Send mail if something goes wrong
 
 failmail(){
-    cat $logfile | mail -s "buildtest: $module $build $1 failed" $mailto &> /dev/null
+    cat $logfile | mail -s "buildtest: $module $build $1 failed" $failmailto &> /dev/null
 }
 
 # Send mail if something goes right
+# NOTE: had to comment this out since the list is null. Should have a
+# check instead.
 
 successmail(){
-    mail -s "buildtest: $module $build $1 succeeded" $mailto &> /dev/null <<EOF
-$logfile
+#    mail -s "buildtest: $module $build $1 succeeded" $successmailto &> /dev/null <<EOF
+#$logfile
+#EOF
+echo "do not send out successes" > /dev/null
+}
+
+# Send mail to indicate the tests are all done -- send to everyone
+finishmail(){
+    mail -s "buildtest: All Tests Complete: $failcnt errors" $failmailto &> /dev/null <<EOF
+All tests done. 
 EOF
 }
 
@@ -50,6 +64,7 @@ perform_action(){
 
     if [ $status -ne 0 ]
     then
+        let failcnt++
     	failmail $action_name 
     else
     	successmail $action_name 
@@ -123,9 +138,15 @@ do
 
         if [ $module == "chroma" ]
         then
+	    # Skip regressions on IB - dont know how to do the running
+	    # Need to generalise system to be able to launch mpi jobs
+	    # As regressions
+	    if [ $build != "parscalar-ib" ]
+            then
 	        action_name="xcheck"
                 action="gmake -k xcheck"
         	perform_action
+            fi
         fi 
 	
 	# Install
@@ -168,3 +189,4 @@ done
 # Remove old logfiles
 
 find $logdir -type f -mtime +14 -exec rm '{}' ';'
+finishmail
