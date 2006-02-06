@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 2.2 2006-02-02 16:42:15 egregory Exp $ ($Date: 2006-02-02 16:42:15 $) */
+/* $Id: ks_local_loops.cc,v 2.3 2006-02-06 20:27:46 egregory Exp $ ($Date: 2006-02-06 20:27:46 $) */
 
 
 #include "fermact.h"
@@ -14,6 +14,213 @@ namespace Chroma {
 
 
 
+  void write_out_source_type(XMLWriter & xml_out, VolSrc_type volume_source){
+
+
+    if( volume_source == Z2NOISE  ){
+      write(xml_out, "Random_volume_source" , "Z2NOISE");
+
+    }else if( volume_source == GAUSSIAN ){
+      write(xml_out, "Random_volume_source" , "GAUSSIAN");
+
+    }else if( volume_source == T_DILUTE_GAUSS ){
+      write(xml_out, "Random_volume_source" , "T_DILUTE_GAUSS");
+
+    }else if( volume_source == C_DILUTE_GAUSS ){ 
+      write(xml_out, "Random_volume_source" , "C_DILUTE_GAUSS");
+
+    }else if( volume_source == P_DILUTE_GAUSS ){ 
+      write(xml_out, "Random_volume_source" , "P_DILUTE_GAUSS");
+
+    }else if( volume_source == CT_DILUTE_GAUSS ){
+      write(xml_out, "Random_volume_source" , "CT_DILUTE_GAUSS");
+
+    }else if( volume_source == CP_DILUTE_GAUSS ){
+      write(xml_out, "Random_volume_source" , "CP_DILUTE_GAUSS");
+
+    }else if( volume_source == PT_DILUTE_GAUSS ){
+      write(xml_out, "Random_volume_source" , "PT_DILUTE_GAUSS");
+
+    }else if( volume_source == MOD_T_DILUTE_GAUSS ){
+     write(xml_out, "Random_volume_source" , "MOD_T_DILUTE_GAUSS");
+
+    }else if( volume_source == CORNER_DILUTE_GAUSS ){
+     write(xml_out, "Random_volume_source" , "CORNER_DILUTE_GAUSS");
+
+    }else if( volume_source == COR_DBL_T_DILUTE_GAUSS ){
+     write(xml_out, "Random_volume_source" , "COR_DBL_T_DILUTE_GAUSS");
+
+    }else if( volume_source ==   COR_MOD_DBL_T_DILUTE_GAUSS ){
+     write(xml_out, "Random_volume_source" , "COR_MOD_DBL_T_DILUTE_GAUSS");
+
+    }else if( volume_source == C_MOD_T_DILUTE_GAUSS ){
+     write(xml_out, "Random_volume_source" , "C_MOD_T_DILUTE_GAUSS");
+    }
+
+
+  }
+
+
+  /**************************************************************************/
+
+  Real fill_volume_source(LatticeStaggeredFermion & q_source, 
+			  VolSrc_type volume_source, int t_length, 
+			  int *p_src_tslice, int *p_src_color_ind, 
+			  int *p_src_parity_ind, int *p_src_corner_ind, 
+			  int src_seperation, int j_decay){
+ 
+  // Fill the volume with random noise 
+ 
+    Real coverage_fraction;
+
+   if( volume_source == GAUSSIAN  ){
+      gaussian(q_source);
+    }else if( volume_source == Z2NOISE ){
+       z2_src(q_source); 
+
+    }else if( volume_source == T_DILUTE_GAUSS ){
+      gaussian_on_timeslice(q_source,(*p_src_tslice),j_decay);
+      (*p_src_tslice)++;
+      if((*p_src_tslice)>=t_length){
+	(*p_src_tslice)=0;
+      }
+      coverage_fraction=1.0/t_length;
+
+    }else if( volume_source == C_DILUTE_GAUSS ){ 
+      gaussian_color_src(q_source,(*p_src_color_ind));
+      (*p_src_color_ind)++;
+      if((*p_src_color_ind) >= Nc){
+	(*p_src_color_ind)=0;
+      }
+      coverage_fraction=1.0/Nc;
+
+    }else if( volume_source == P_DILUTE_GAUSS ){ 
+      gaussian_on_parity(q_source,(*p_src_parity_ind));
+      (*p_src_parity_ind)++;
+      if((*p_src_parity_ind) > 1){
+	(*p_src_parity_ind) = 0;
+      }
+      coverage_fraction=1.0/2;
+
+    }else if( volume_source == CT_DILUTE_GAUSS ){
+      gaussian_color_src_on_slice(q_source,(*p_src_color_ind),
+				  (*p_src_tslice), j_decay);
+      (*p_src_tslice)++;
+      if((*p_src_tslice)>=t_length){
+	(*p_src_tslice)=0;
+	(*p_src_color_ind)++;
+	if((*p_src_color_ind) >=Nc){
+	  (*p_src_color_ind)=0;
+	}
+      }
+      coverage_fraction=1.0/(Nc*t_length);
+
+    }else if( volume_source == CP_DILUTE_GAUSS ){
+      gaussian_color_src_on_parity(q_source, (*p_src_color_ind), 
+				   (*p_src_parity_ind));
+      (*p_src_parity_ind)++;
+      if((*p_src_parity_ind) > 1){
+	(*p_src_parity_ind)=0;
+	(*p_src_color_ind)++;
+	if((*p_src_color_ind)>=Nc){
+	  (*p_src_color_ind)=0;
+	}
+      }
+      coverage_fraction=1.0/(2*Nc);
+
+    }else if( volume_source == PT_DILUTE_GAUSS ){
+      gaussian_parity_src_on_slice(q_source, (*p_src_parity_ind), 
+				   (*p_src_tslice), j_decay);
+      (*p_src_parity_ind)++;
+      if((*p_src_parity_ind) > 1){
+	(*p_src_parity_ind)=0;
+	(*p_src_tslice)++;
+	if((*p_src_tslice) >= t_length){
+	  (*p_src_tslice) = 0;
+	}
+      }
+      coverage_fraction=1.0/(2*t_length);
+
+    }else if( volume_source == MOD_T_DILUTE_GAUSS ){
+      gaussian_on_mod_timeslice(q_source, (*p_src_tslice), j_decay,
+				src_seperation);
+      (*p_src_tslice)++;
+      if((*p_src_tslice)>=t_length){
+	(*p_src_tslice)=0;
+      }
+      if(t_length%src_seperation==0){
+	coverage_fraction=(1.0/(src_seperation));
+      }else{
+	coverage_fraction=9999999;
+      }
+
+    }else if( volume_source == CORNER_DILUTE_GAUSS ){
+      gaussian_on_corner(q_source, (*p_src_corner_ind));
+      (*p_src_corner_ind)++;
+      if((*p_src_corner_ind)>=16){
+	(*p_src_corner_ind)=0;
+      }
+      coverage_fraction=1.0/16;
+
+    }else if( volume_source == COR_DBL_T_DILUTE_GAUSS ){
+       gaussian_corner_on_dbl_slice(q_source, (*p_src_corner_ind), 
+				   (*p_src_tslice), j_decay);
+      (*p_src_corner_ind)++;
+      if((*p_src_corner_ind) >= 16){
+	(*p_src_corner_ind) = 0;
+	(*p_src_tslice)++;
+	if((*p_src_tslice)>=t_length){
+	  (*p_src_tslice) = 0;
+	}
+      }
+      coverage_fraction=1.0/(16*t_length);
+ 
+    }else if( volume_source ==   COR_MOD_DBL_T_DILUTE_GAUSS ){
+       gaussian_corner_on_mod_dbl_slice(q_source,(*p_src_corner_ind), 
+					(*p_src_tslice), j_decay, 
+					src_seperation);
+      (*p_src_corner_ind)++;
+      if((*p_src_corner_ind) >= 16){
+	(*p_src_corner_ind)=0;
+	(*p_src_tslice)++;
+	if((*p_src_tslice)>=t_length){
+	  (*p_src_tslice)=0;
+	}
+      }
+      if(t_length%src_seperation==0){
+	coverage_fraction=1.0/(2*Nc);
+      }else{
+	coverage_fraction=9999999;
+      }
+
+    }else if( volume_source == C_MOD_T_DILUTE_GAUSS ){
+      gaussian_color_src_on_mod_slice(q_source,(*p_src_color_ind),
+				  (*p_src_tslice), j_decay, src_seperation);
+      (*p_src_tslice)++;
+      if((*p_src_tslice)>=t_length){
+	(*p_src_tslice)=0;
+	(*p_src_color_ind)++;
+	if((*p_src_color_ind)>=Nc){
+	  (*p_src_color_ind) = 0;
+	}
+      }
+
+      coverage_fraction=1.0/(Nc*t_length);
+
+    }else{
+      QDP_error_exit("Wrong type of volume source");
+    }
+
+   return coverage_fraction;
+
+
+  }
+
+
+  /**************************************************************************/
+
+
+
 void ks_local_loops(
 		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
@@ -22,40 +229,27 @@ void ks_local_loops(
 		 XMLWriter & xml_out, 
 		 bool gauge_shift,
 		 bool sym_shift,
+		 bool loop_checkpoint,
 		 int t_length,
 		 Real Mass,
 		 int Nsamp,
 		 Real RsdCG,
 		 int CFGNO,
-		 int volume_source,
+		 VolSrc_type volume_source,
 		 int src_seperation,
 		 int j_decay){
 
 
     push(xml_out,"local_loops_s");
 
-    // write common parameters
+   // write common parameters
     write(xml_out, "Mass" , Mass);
-    if( volume_source == Z2NOISE  ){
-      write(xml_out, "Random_volume_source" , "Z2NOISE");
-    }else if( volume_source == GAUSSIAN ){
-      write(xml_out, "Random_volume_source" , "GAUSSIAN");
 
-    }
-
-
-
-
-
-
-
-
-
+    write_out_source_type(xml_out, volume_source);
 
     write(xml_out, "Number_of_samples" , Nsamp);
 
 
-    ///////
     Stag_shift_option type_of_shift ; 
     if( gauge_shift ){
       if(sym_shift){
@@ -70,17 +264,23 @@ void ks_local_loops(
 	type_of_shift = NON_GAUGE_INVAR ;
       }
     }
-    //////
+
 
     // set up the loop code
-    local_scalar_loop scalar_one_loop(t_length,Nsamp,
-				      u,type_of_shift) ; 
-    non_local_scalar_loop scalar_two_loop(t_length,Nsamp,
-					  u,type_of_shift) ; 
-    threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,
-					  u,type_of_shift) ; 
-    fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,
-					 u,type_of_shift) ; 
+    local_scalar_loop                 scalar_one_loop(t_length,Nsamp,
+						      u,type_of_shift) ;
+    non_local_scalar_loop             scalar_two_loop(t_length,Nsamp,
+						      u,type_of_shift) ;
+    threelink_pseudoscalar_loop       eta3_loop(t_length,Nsamp,
+						u,type_of_shift) ;
+    fourlink_pseudoscalar_loop        eta4_loop(t_length,Nsamp,
+						u,type_of_shift) ;
+
+    fourlink_pseudoscalar_kilcup_loop eta4_kilcup_loop(t_length,Nsamp,
+						u,type_of_shift) ;
+
+    zerolink_pseudoscalar_loop        eta0_loop(t_length, Nsamp, 
+						u,type_of_shift) ;
 
 
     // Seed the RNG with the cfg number for now
@@ -93,164 +293,20 @@ void ks_local_loops(
   int src_parity_ind = 0;
   int src_corner_ind =0;
 
-  double coverage_fraction;
+  Real coverage_fraction;
 
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
     RNG::savern(seed);
 
+    QDPIO::cout << "Noise sample: " << i << endl;
+
     // Fill the volume with random noise 
-    if( volume_source == GAUSSIAN  ){
-      gaussian(q_source);
-    }else if( volume_source == Z2NOISE ){
-       z2_src(q_source); 
-    }else if( volume_source == T_DILUTE_GAUSS ){
-      printf("tslice=%d\n",src_tslice);
-      gaussian_on_timeslice(q_source,src_tslice,j_decay);
-      src_tslice++;
-      if(src_tslice>=t_length){
-	src_tslice=0;
-      }
-      coverage_fraction=1.0/t_length;
-    }else if( volume_source == C_DILUTE_GAUSS ){ 
-      printf("src_color=%d\n",src_color_ind);
-      gaussian_color_src(q_source,src_color_ind);
-      src_color_ind++;
-      if(src_color_ind>=Nc){
-	src_color_ind=0;
-      }
-      coverage_fraction=1.0/Nc;
-    }else if( volume_source == P_DILUTE_GAUSS ){ 
-      printf("src_parity=%d\n",src_parity_ind);
-      gaussian_on_parity(q_source,src_parity_ind);
-      src_parity_ind++;
-      if(src_parity_ind > 1){
-	src_parity_ind=0;
-      }
-      coverage_fraction=1.0/2;
-    }else if( volume_source == CT_DILUTE_GAUSS ){
-      printf("tslice=%d  src_color=%d\n",src_tslice,src_color_ind);
-      gaussian_color_src_on_slice(q_source,src_color_ind,
-				  src_tslice, j_decay);
-      src_tslice++;
-      if(src_tslice>=t_length){
-	src_tslice=0;
-	src_color_ind++;
-	if(src_color_ind>=Nc){
-	  src_color_ind=0;
-	}
-      }
-      coverage_fraction=1.0/(Nc*t_length);
-    }else if( volume_source == CP_DILUTE_GAUSS ){
-      printf("src_color=%d  parity=%d  \n",src_color_ind, src_parity_ind);
-      gaussian_color_src_on_parity(q_source, src_color_ind, src_parity_ind);
-      src_parity_ind++;
-      if(src_parity_ind > 1){
-	src_parity_ind=0;
-	src_color_ind++;
-	if(src_color_ind>=Nc){
-	  src_color_ind=0;
-	}
-      }
-      coverage_fraction=1.0/(2*Nc);
-    }else if( volume_source == PT_DILUTE_GAUSS ){
-      printf("src_tslice=%d  parity=%d  \n",src_tslice, src_parity_ind);
-      gaussian_parity_src_on_slice(q_source, src_parity_ind, src_tslice,
-				   j_decay);
-      src_parity_ind++;
-      if(src_parity_ind > 1){
-	src_parity_ind=0;
-	src_tslice++;
-	if(src_tslice>=t_length){
-	  src_tslice=0;
-	}
-      }
-      coverage_fraction=1.0/(2*t_length);
-    }else if( volume_source == MOD_T_DILUTE_GAUSS ){
-      printf("src_tslice=%d seperation=%d\n",src_tslice, src_seperation);
-      gaussian_on_mod_timeslice(q_source, src_tslice, j_decay,
-				src_seperation);
-      src_tslice++;
-      if(src_tslice>=t_length){
-	src_tslice=0;
-      }
-      if(t_length%src_seperation==0){
-	coverage_fraction=(1.0/(src_seperation));
-      }else{
-	coverage_fraction=9999999;
-      }
-    }else if( volume_source == CORNER_DILUTE_GAUSS ){
-      printf("src_corner=%d \n",src_corner_ind);
-      gaussian_on_corner(q_source, src_corner_ind);
-      src_corner_ind++;
-      if(src_corner_ind>=16){
-	src_corner_ind=0;
-      }
-      coverage_fraction=1.0/16;
-    }else if( volume_source == COR_DBL_T_DILUTE_GAUSS ){
-      //DEBUG
-       printf("i=%d src_corner_ind=%d src_tslice=%d\n",
-      	     i,src_corner_ind,src_tslice);
-      //fflush(stdout);
-      //DEBUG
-
-      gaussian_corner_on_dbl_slice(q_source, src_corner_ind, src_tslice,
-				   j_decay);
-      src_corner_ind++;
-      if(src_corner_ind>=16){
-	src_corner_ind=0;
-	src_tslice++;
-	if(src_tslice>=t_length){
-	  src_tslice=0;
-	}
-      }
-      coverage_fraction=1.0/(16*t_length);
-    }else if( volume_source ==   COR_MOD_DBL_T_DILUTE_GAUSS ){
-      //DEBUG
-      printf("i=%d src_corner_ind=%d src_tslice=%d (cmdtdg)\n",
-	     i,src_corner_ind,src_tslice);
-      fflush(stdout);
-      //DEBUG
-
-      gaussian_corner_on_mod_dbl_slice(q_source,src_corner_ind, src_tslice,
-				       j_decay, src_seperation);
-      src_corner_ind++;
-      if(src_corner_ind>=16){
-	src_corner_ind=0;
-	src_tslice++;
-	if(src_tslice>=t_length){
-	  src_tslice=0;
-	}
-      }
-      if(t_length%src_seperation==0){
-	coverage_fraction=1.0/(2*Nc);
-      }else{
-	coverage_fraction=9999999;
-      }
-    }else if( volume_source == C_MOD_T_DILUTE_GAUSS ){
-
-      printf("tslice=%d  color=%d\n",src_tslice,src_color_ind);
-
-      gaussian_color_src_on_mod_slice(q_source,src_color_ind,
-				  src_tslice, j_decay, src_seperation);
-      src_tslice++;
-      if(src_tslice>=t_length){
-	src_tslice=0;
-	src_color_ind++;
-	if(src_color_ind>=Nc){
-	  src_color_ind=0;
-	}
-      }
-
-      coverage_fraction=1.0/(Nc*t_length);
-    }else{
-      QDP_error_exit("Wrong type of volume source");
-    }
-
-
-
-
-
+    coverage_fraction = fill_volume_source(q_source, volume_source, 
+					   t_length, &src_tslice, 
+					   &src_color_ind, &src_parity_ind, 
+					   &src_corner_ind, src_seperation, 
+					   j_decay);
 
     // Compute the solution vector for the particular source
     int n_count = (*qprop)(psi, q_source);
@@ -267,29 +323,44 @@ void ks_local_loops(
     scalar_two_loop.compute(q_source,psi,i) ;
     eta3_loop.compute(q_source,psi,i) ;
     eta4_loop.compute(q_source,psi,i) ;
+    eta4_kilcup_loop.compute(q_source,psi,i) ;
+    eta0_loop.compute(q_source,psi,i) ;
 
-  } // Nsamples
+     if(loop_checkpoint){
+      //write each measurement to the XML file
+
+      scalar_one_loop.dump(xml_out,i) ;
+      scalar_two_loop.dump(xml_out,i) ;
+      eta3_loop.dump(xml_out,i) ;
+      eta4_loop.dump(xml_out,i) ;
+      eta4_kilcup_loop.dump(xml_out,i) ;
+      eta0_loop.dump(xml_out,i) ;
+    }
+
+ } // Nsamples
 
 
-  // write output from the 
+  // write output from the loop calc
   scalar_one_loop.dump(xml_out) ;
   scalar_two_loop.dump(xml_out) ;
   eta3_loop.dump(xml_out) ;
   eta4_loop.dump(xml_out) ;
+  eta4_kilcup_loop.dump(xml_out) ;
+  eta0_loop.dump(xml_out) ;
 
   // end of this section
   pop(xml_out);
 
 }
 
-
+  /**********************************************************************/
 
 
   //
   //  version used in test code.
   //
 
-void ks_local_loops(
+  void ks_local_loops(
 		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi ,
@@ -301,86 +372,103 @@ void ks_local_loops(
 		 int Nsamp,
 		 Real RsdCG,
 		 int CFGNO,
-		 int volume_source
-		 )
-{
+		 VolSrc_type volume_source,
+		 int src_seperation,
+		 int j_decay){
 
-    push(xml_out,"ks_local_loops");
+  int src_tslice=0;
+  int src_color_ind = 0;
+  int src_parity_ind = 0;
+  int src_corner_ind =0;
+  Real coverage_fraction;
 
-    // write common parameters
-    write(xml_out, "Mass" , Mass);
-    if( volume_source == Z2NOISE  )
-      write(xml_out, "Random_volume_source" , "Z2NOISE");
-    else if( volume_source == GAUSSIAN )
-      write(xml_out, "Random_volume_source" , "GAUSSIAN");
+  push(xml_out,"ks_local_loops");
 
-    write(xml_out, "Number_of_samples" , Nsamp);
+  // write common parameters
+  write(xml_out, "Mass" , Mass);
 
-  //
+  write_out_source_type(xml_out, volume_source);
+
+  write(xml_out, "Number_of_samples" , Nsamp);
+
+
   //  parse input files
-  //
+
 
   // the wrapped disconnected loops
-    bool gauge_shift ;
-    bool sym_shift ;
-    try{
-      read(xml_in, "/propagator/param/use_gauge_invar_oper", gauge_shift ) ;
-    }catch (const string& e){
-      QDPIO::cerr << "Error reading data: " << e << endl;
-      throw;
-    }
-    try{
-      read(xml_in, "/propagator/param/use_sym_shift_oper", sym_shift ) ;
-    }catch (const string& e){
-      QDPIO::cerr << "Error reading data: " << e << endl;
-      throw;
-    }
+  bool gauge_shift ;
+  bool sym_shift ;
+  bool loop_checkpoint;
+
+  try{
+    read(xml_in, "/propagator/param/use_gauge_invar_oper", gauge_shift ) ;
+  }catch (const string& e){
+    QDPIO::cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+  try{
+    read(xml_in, "/propagator/param/use_sym_shift_oper", sym_shift ) ;
+  }catch (const string& e){
+    QDPIO::cerr << "Error reading data: " << e << endl;
+    throw;
+  }
+  try{
+    read(xml_in, "/propagator/param/loop_checkpoint", loop_checkpoint ) ;
+  }catch (const string& e){
+    QDPIO::cerr << "Error reading data: " << e << endl;
+    throw;
+  }
 
 
-     ///////
-    Stag_shift_option type_of_shift ; 
-    if( gauge_shift ){
-      if(sym_shift){
-	type_of_shift = SYM_GAUGE_INVAR ;
-      }else{
-	type_of_shift = GAUGE_INVAR ;
-      }
+  Stag_shift_option type_of_shift ;
+  if( gauge_shift ){
+    if(sym_shift){
+      type_of_shift = SYM_GAUGE_INVAR ;
     }else{
-      if(sym_shift){
-	type_of_shift = SYM_NON_GAUGE_INVAR ;
-      }else{
-	type_of_shift = NON_GAUGE_INVAR ;
-      }
+      type_of_shift = GAUGE_INVAR ;
     }
-    //////
+  }else{
+    if(sym_shift){
+      type_of_shift = SYM_NON_GAUGE_INVAR ;
+    }else{
+      type_of_shift = NON_GAUGE_INVAR ;
+    }
+  }
 
+  // set up the loop code
+  local_scalar_loop                 scalar_one_loop(t_length,Nsamp,
+						    u,type_of_shift) ;
+  non_local_scalar_loop             scalar_two_loop(t_length,Nsamp,
+						    u,type_of_shift) ;
+  threelink_pseudoscalar_loop       eta3_loop(t_length,Nsamp,
+					      u,type_of_shift) ;
+  fourlink_pseudoscalar_loop        eta4_loop(t_length,Nsamp,
+					      u,type_of_shift) ;
+  fourlink_pseudoscalar_kilcup_loop eta4_kilcup_loop(t_length, Nsamp,
+						     u,type_of_shift) ;
 
-    // set up the loop code
-    local_scalar_loop scalar_one_loop(t_length,Nsamp,
-				      u,type_of_shift) ; 
-    non_local_scalar_loop scalar_two_loop(t_length,Nsamp,
-					  u,type_of_shift) ; 
-    threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,
-					  u,type_of_shift) ; 
-    fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,
-					 u,type_of_shift) ; 
-
+  // for test purposes
+  zerolink_pseudoscalar_loop        eta0_loop(t_length, Nsamp,
+					      u,type_of_shift) ;
 
     // Seed the RNG with the cfg number for now
-    QDP::Seed seed;
-    seed = CFGNO;
-    RNG::setrn(seed);
-
+  QDP::Seed seed;
+  seed = CFGNO;
+  RNG::setrn(seed);
 
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
     RNG::savern(seed);
 
+    QDPIO::cout << "Noise sample: " << i << endl;
+
     // Fill the volume with random noise 
-    if( volume_source == GAUSSIAN  )
-      gaussian(q_source);
-    else if( volume_source == Z2NOISE )
-      { z2_src(q_source); }
+ 
+    coverage_fraction = fill_volume_source(q_source, volume_source, 
+					   t_length, &src_tslice, 
+					   &src_color_ind, &src_parity_ind, 
+					   &src_corner_ind, src_seperation, 
+					   j_decay);
 
     // Compute the solution vector for the particular source
     int n_count = (*qprop)(psi, q_source);
@@ -397,30 +485,39 @@ void ks_local_loops(
     scalar_two_loop.compute(q_source,psi,i) ;
     eta3_loop.compute(q_source,psi,i) ;
     eta4_loop.compute(q_source,psi,i) ;
+    eta4_kilcup_loop.compute(q_source,psi,i) ;
+    eta0_loop.compute(q_source,psi,i) ;
+
+    if(loop_checkpoint){
+      //write each measurement to the XML file
+
+      scalar_one_loop.dump(xml_out,i) ;
+      scalar_two_loop.dump(xml_out,i) ;
+      eta3_loop.dump(xml_out,i) ;
+      eta4_loop.dump(xml_out,i) ;
+      eta4_kilcup_loop.dump(xml_out,i) ;
+      eta0_loop.dump(xml_out,i) ;
+    }
 
   } // Nsamples
 
 
-  // write output from the 
+  // write output from the loop calc
   scalar_one_loop.dump(xml_out) ;
   scalar_two_loop.dump(xml_out) ;
   eta3_loop.dump(xml_out) ;
   eta4_loop.dump(xml_out) ;
+  eta4_kilcup_loop.dump(xml_out) ;
+  eta0_loop.dump(xml_out) ;
 
   // end of this section
   pop(xml_out);
 
 }
 
+  /**********************************************************************/
 
-
-//
 //  fuzz the loops
-//
-//
-
-
-
 
 void ks_fuzz_loops(
 		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
@@ -432,31 +529,36 @@ void ks_fuzz_loops(
 		 XMLWriter & xml_out, 
 		 bool gauge_shift,
 		 bool sym_shift,
+		 bool loop_checkpoint,
 		 int t_length,
 		 Real Mass,
 		 int Nsamp,
 		 Real RsdCG,
 		 int CFGNO,
-		 int volume_source,
+		 VolSrc_type volume_source,
 		 int fuzz_width, 
-		 int j_decay
-		 )
-{
+		 int src_seperation,
+		 int j_decay){
 
+  int src_tslice=0;
+  int src_color_ind = 0;
+  int src_parity_ind = 0;
+  int src_corner_ind =0;
+  Real coverage_fraction;
 
     push(xml_out,"fuzz_loops_s");
 
     // write common parameters
     write(xml_out, "Mass" , Mass);
-    if( volume_source == Z2NOISE  )
-      write(xml_out, "Random_volume_source" , "Z2NOISE");
-    else if( volume_source == GAUSSIAN )
-      write(xml_out, "Random_volume_source" , "GAUSSIAN");
+
+
+    write_out_source_type(xml_out, volume_source);
+
 
     write(xml_out, "Number_of_samples" , Nsamp);
     write(xml_out, "fuzz_width" , fuzz_width);
 
-      ///////
+
     Stag_shift_option type_of_shift ; 
     if( gauge_shift ){
       if(sym_shift){
@@ -471,19 +573,25 @@ void ks_fuzz_loops(
 	type_of_shift = NON_GAUGE_INVAR ;
       }
     }
-    //////
+
 
 
    // set up the loop code
-    local_scalar_loop scalar_one_loop(t_length,Nsamp,
-				      u,type_of_shift) ; 
-    non_local_scalar_loop scalar_two_loop(t_length,Nsamp,
-					  u,type_of_shift) ; 
-    threelink_pseudoscalar_loop eta3_loop(t_length,Nsamp,
-					  u,type_of_shift) ; 
-    fourlink_pseudoscalar_loop eta4_loop(t_length,Nsamp,
-					 u,type_of_shift) ; 
+    local_scalar_loop               scalar_one_loop(t_length,Nsamp,
+						    u,type_of_shift) ;
+    non_local_scalar_loop           scalar_two_loop(t_length,Nsamp,
+						    u,type_of_shift) ;
+    threelink_pseudoscalar_loop     eta3_loop(t_length,Nsamp,
+					      u,type_of_shift) ;
+    fourlink_pseudoscalar_loop      eta4_loop(t_length,Nsamp,
+					      u,type_of_shift) ;
 
+  fourlink_pseudoscalar_kilcup_loop eta4_kilcup_loop(t_length, Nsamp,
+						     u,type_of_shift) ;
+
+  // for test purposes
+  zerolink_pseudoscalar_loop        eta0_loop(t_length, Nsamp,
+					      u,type_of_shift) ;
 
     // Seed the RNG with the cfg number for now
     QDP::Seed seed;
@@ -495,11 +603,14 @@ void ks_fuzz_loops(
     psi = zero;   // note this is ``zero'' and not 0
     RNG::savern(seed);
 
+    QDPIO::cout << "Noise sample: " << i << endl;
+
     // Fill the volume with random noise 
-    if( volume_source == GAUSSIAN  )
-      gaussian(q_source);
-    else if( volume_source == Z2NOISE )
-      { z2_src(q_source); }
+    coverage_fraction = fill_volume_source(q_source, volume_source, 
+					   t_length, &src_tslice, 
+					   &src_color_ind, &src_parity_ind, 
+					   &src_corner_ind, src_seperation, 
+					   j_decay);
 
     // Compute the solution vector for the particular source
     int n_count = (*qprop)(psi, q_source);
@@ -520,15 +631,31 @@ void ks_fuzz_loops(
     scalar_two_loop.compute(q_source,psi_fuzz,i) ;
     eta3_loop.compute(q_source,psi_fuzz,i) ;
     eta4_loop.compute(q_source,psi_fuzz,i) ;
+    eta4_kilcup_loop.compute(q_source,psi,i) ;
+    eta0_loop.compute(q_source,psi,i) ;
+
+
+    if(loop_checkpoint){
+      //write each measurement to the XML file
+
+      scalar_one_loop.dump(xml_out,i) ;
+      scalar_two_loop.dump(xml_out,i) ;
+      eta3_loop.dump(xml_out,i) ;
+      eta4_loop.dump(xml_out,i) ;
+      eta4_kilcup_loop.dump(xml_out,i) ;
+      eta0_loop.dump(xml_out,i) ;
+    }
 
   } // Nsamples
 
 
-  // write output from the 
+  // write output from the loop calc
   scalar_one_loop.dump(xml_out) ;
   scalar_two_loop.dump(xml_out) ;
   eta3_loop.dump(xml_out) ;
   eta4_loop.dump(xml_out) ;
+  eta4_kilcup_loop.dump(xml_out) ;
+  eta0_loop.dump(xml_out) ;
 
   // end of this section
   pop(xml_out);
