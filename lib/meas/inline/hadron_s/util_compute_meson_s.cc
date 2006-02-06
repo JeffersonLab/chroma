@@ -1,4 +1,4 @@
-// $Id: util_compute_meson_s.cc,v 2.3 2006-02-03 14:26:16 egregory Exp $
+// $Id: util_compute_meson_s.cc,v 2.4 2006-02-06 18:15:45 egregory Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -58,10 +58,13 @@ push(xml_out,"Meson_correlators");
   // ---------- LL ----------
   pion.compute(quark_propagator_Lsink_Lsrc,
 		  quark_propagator_Lsink_Lsrc,j_decay);
+
+
   push(xml_out, "Lsink_Lsrc");
+
   pion.dump(t_source,xml_out);
+
   pop(xml_out);
-printf("a little dumping\n");fflush(stdout);
   
   // ---------- FL ----------
   pion.compute(quark_propagator_Lsink_Lsrc,
@@ -70,7 +73,6 @@ printf("a little dumping\n");fflush(stdout);
   pion.dump(t_source,xml_out);
   pop(xml_out);
 
-printf("some dumping\n");fflush(stdout);
   
   // ---------- LF ----------
   pion.compute(quark_propagator_Lsink_Lsrc,
@@ -89,8 +91,6 @@ printf("some dumping\n");fflush(stdout);
 
   // ---------------------------------------
   pop(xml_out);
-
-printf("done dumping\n");fflush(stdout);
 
   QDPIO::cout << "Computed variational fuzzed mesons"  << endl;
 
