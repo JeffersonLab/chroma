@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 2.1 2006-02-02 16:23:14 egregory Exp $
+// $Id: inline_spectrum_s.h,v 2.2 2006-02-06 18:11:38 egregory Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -53,6 +53,7 @@ namespace Chroma
       VolSrc_type volume_source ;
       bool gauge_invar_oper ; 
       bool sym_shift_oper ; 
+      bool loop_checkpoint ; 
 
       int fuzz_width ; 
 
