@@ -91,8 +91,11 @@ namespace Chroma {
     }
 
 
+
+
     /*** generate the 4-link quark propagator ****/
     push(xml_out,"Computation_4link_pseudoscalar");
+
 
     for(int color_source = 0; color_source < Nc; ++color_source) {
 
@@ -104,6 +107,7 @@ namespace Chroma {
 	srcfil(q_source, coord,color_source ) ;
       } else {
 	if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  ) {
+
 	  q_source = zero ;
 	  multi1d<int> coord(Nd);
 	  
