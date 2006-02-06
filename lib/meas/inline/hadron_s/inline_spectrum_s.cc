@@ -172,6 +172,7 @@ namespace Chroma {
     read(paramtop, "nrow", param.nrow);
     read(paramtop, "sym_shift_oper", param.sym_shift_oper);
     read(paramtop, "gauge_invar_oper", param.gauge_invar_oper);
+    read(paramtop, "loop_checkpoint", param.loop_checkpoint);
 
     read(paramtop, "src_seperation", param.src_seperation);
 
@@ -588,12 +589,25 @@ namespace Chroma {
     int ncg_had = 0;    // tally of all the inversion iterations
 
 
-    bool gauge_shift;
-    bool sym_shift;
+    bool         gauge_shift=true;
+    bool         sym_shift=true;
+    bool         loop_checkpoint=false;
+    int          Nsamp;
+    int          CFGNO;
+    VolSrc_type  volume_source;
+    int          src_seperation;
+    int          t_length;
 
-    gauge_shift = params.param.gauge_invar_oper;
-    sym_shift = params.param.sym_shift_oper;
+    const int    j_decay = Nd-1;
 
+    gauge_shift =          params.param.gauge_invar_oper;
+    sym_shift =            params.param.sym_shift_oper;
+    loop_checkpoint =      params.param.loop_checkpoint;
+    Nsamp =                params.param.Nsamp;
+    CFGNO =                params.param.CFGNO;
+    volume_source =        params.param.volume_source;
+    src_seperation =       params.param.src_seperation;
+    t_length =             params.param.nrow[j_decay];
 
     /*
      * Sanity checks
@@ -618,11 +632,9 @@ namespace Chroma {
     write(xml_out, "out_version", 1);
     pop(xml_out);
 
-
     // First calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
 
-    const int j_decay = Nd-1;
 
     // GAUGE FIX (but what about const)
     // perhaps that should be done outside ?????
@@ -632,7 +644,7 @@ namespace Chroma {
     Real RsdCG      = params.prop_param.invParam.RsdCG; // CG residual
     Real Mass       = params.prop_param.Mass;           // fermion mass
     int  fuzz_width = params.param.fuzz_width;          // fuzzing width
-    int  t_source   =  params.param.t_srce[Nd-1] ;      // source t coordinate
+    int  t_source   =  params.param.t_srce[Nd-1];      // source t coordinate
 
     // Create a fermion BC
     Handle< FermBC<LatticeStaggeredFermion> >  
@@ -646,11 +658,6 @@ namespace Chroma {
     Handle<const ConnectState > state(S_f.createState(u));
     Handle<const SystemSolver<LatticeStaggeredFermion> > 
       qprop(S_f.qprop(state, params.prop_param.invParam));
-
-
-
-
- 
 
 
 
@@ -677,7 +684,6 @@ namespace Chroma {
 
     }
 
-
     if( params.param.Baryon_local ) {
 
       push(xml_out, "baryon_correlators");
@@ -700,21 +706,16 @@ namespace Chroma {
 
     }
 
-      LatticeStaggeredFermion psi_fuzz ;
+    LatticeStaggeredFermion psi_fuzz ;
 
 
     if( params.param.disconnected_local  ) {
       push(xml_out, "disconnected_loops");
-      ks_local_loops(qprop,q_source,psi,u,xml_out,
-		     params.param.gauge_invar_oper,
-		     params.param.sym_shift_oper,
-		     params.param.nrow[3],params.prop_param.Mass,
-		     params.param.Nsamp,
-		     params.prop_param.invParam.RsdCG,
-		     params.param.CFGNO,
-		     params.param.volume_source,
-		     params.param.src_seperation,
-		     j_decay ) ;
+
+      ks_local_loops(qprop, q_source, psi , u, xml_out, 
+		     gauge_shift, sym_shift, loop_checkpoint,
+		     t_length, Mass, Nsamp, RsdCG, CFGNO, volume_source, 
+		     src_seperation, j_decay);
 
       pop(xml_out);
     }
@@ -788,17 +789,10 @@ namespace Chroma {
 
       if( params.param.disconnected_fuzz  ) {
 	push(xml_out, "disconnected_loops");
-	ks_fuzz_loops(qprop,q_source,psi,psi_fuzz,
-		      u,u_smr,xml_out,
-		      params.param.gauge_invar_oper,
-		      params.param.sym_shift_oper,
-		      params.param.nrow[j_decay],params.prop_param.Mass,
-		      params.param.Nsamp,
-		      params.prop_param.invParam.RsdCG,
-		      params.param.CFGNO,
-		      params.param.volume_source,
-		      params.param.fuzz_width,j_decay) ;
-
+	ks_fuzz_loops(qprop,q_source, psi ,psi_fuzz , u, u_smr,xml_out, 
+		      gauge_shift, sym_shift, loop_checkpoint, t_length, Mass, 
+		      Nsamp, RsdCG, CFGNO, volume_source, fuzz_width, 
+		      src_seperation, j_decay);
 
 	pop(xml_out);
       }
