@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 2.1 2005-12-07 03:59:59 edwards Exp $
+// $Id: loops_s.h,v 2.2 2006-02-07 11:55:41 egregory Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H
@@ -59,9 +59,31 @@ namespace Chroma {
       pop(xml_out);
       pop(xml_out);
 
+    }
 
 
+   void dump(XMLWriter &xml_out, int &i){
 
+      string   tag;
+      char *cnum;
+      string snum;
+
+      cnum=(char*)malloc(10*sizeof(char));
+
+      sprintf(cnum,"%d",i);
+
+      snum=cnum;
+      free(cnum);
+
+      string strzeros(6-snum.size(),'0');
+
+      tag = "Meas"+strzeros+snum;
+
+      push(xml_out, outer_tag);
+      push(xml_out, tag);
+      write(xml_out, inner_tag, corr_fn[i]);
+      pop(xml_out);
+      pop(xml_out);
     }
 
     staggered_loops(int t_len, int t_sample, 
