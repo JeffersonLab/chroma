@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 2.7 2006-02-09 02:25:24 edwards Exp $
+// $Id: barseqsrc_w.cc,v 2.8 2006-02-09 04:43:17 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -122,7 +122,7 @@ namespace Chroma
     {
       START_CODE();
 
-      check2Args(__func__, quark_propagators);
+      check2Args("BarNuclUTCg5", quark_propagators);
 
       LatticePropagator src_prop_tmp;
       LatticePropagator q1_tmp;
@@ -163,7 +163,7 @@ namespace Chroma
     {
       START_CODE();
 
-      check1Args(__func__, quark_propagators);
+      check1Args("BarNuclDTCg5", quark_propagators);
 
       LatticePropagator src_prop_tmp;
       LatticePropagator q1_tmp;
@@ -200,7 +200,7 @@ namespace Chroma
     {
       START_CODE();
 
-      check1Args(__func__, quark_propagators);
+      check1Args("BarNuclPatchMixedNR", quark_propagators);
 
       LatticePropagator src_prop_tmp;
       LatticePropagator q1_tmp;
@@ -238,7 +238,7 @@ namespace Chroma
     {
       START_CODE();
 
-      check2Args(__func__, quark_propagators);
+      check2Args("BarDeltaUTsp", quark_propagators);
 
       LatticePropagator src_prop_tmp;
       LatticePropagator q1_tmp;
@@ -290,7 +290,7 @@ namespace Chroma
     {
       START_CODE();
 
-      check1Args(__func__, quark_propagators);
+      check1Args("BarDeltaDTsp", quark_propagators);
 
       LatticePropagator src_prop_tmp;
       LatticePropagator q1_tmp;
