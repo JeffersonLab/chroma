@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.35 2006-02-03 14:36:31 egregory Exp $
+# $Id: Makefile.am,v 2.36 2006-02-09 02:21:52 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -108,9 +108,10 @@ nobase_include_HEADERS = \
 	meas/gfix/axgauge.h meas/gfix/coulgauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
-        meas/glue/mesplq.h \
-	meas/glue/polylp.h meas/hadron/hadron.h \
+        meas/glue/mesplq.h meas/glue/polylp.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
+        meas/hadron/hadron.h \
+	meas/hadron/hadron_seqsource.h \
 	meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
 	meas/sinks/sinks.h \
@@ -240,6 +241,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.h \
+	actions/ferm/fermacts/unprec_w12_fermact_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
@@ -299,6 +301,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_hamberwu_linop_w.h \
+	actions/ferm/linop/unprec_w12_linop_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
 	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.h \
@@ -328,11 +331,11 @@ nobase_include_HEADERS += \
 	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
-	meas/hadron/hadseqsrc_w.h \
 	meas/hadron/mesonseqsrc_w.h \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+        meas/hadron/seqsource_aggregate_w.h \
+	meas/hadron/seqsource_factory_w.h \
         meas/hadron/qqq_w.h meas/hadron/qqbar_w.h \
-	meas/hadron/seqsrc_funcmap_w.h \
 	meas/hadron/loops_w.h \
 	meas/hadron/wall_qprop_w.h \
 	meas/hadron/wallff_w.h \
@@ -591,6 +594,7 @@ libchroma_a_SOURCES = \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
         meas/glue/mesplq.cc meas/glue/polylp.cc \
 	meas/glue/wilslp.cc \
+	meas/hadron/hadron_seqsource.cc \
 	meas/hadron/stoch_var.cc \
         meas/sinks/pt_sink_smearing.cc \
         meas/sinks/sh_sink_smearing.cc \
@@ -701,6 +705,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc \
+	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermbcs/fermbcs_w.cc \
@@ -742,6 +747,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_hamberwu_linop_w.cc \
+	actions/ferm/linop/unprec_w12_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
 	actions/ferm/linop/clover_term_base_w.cc \
 	actions/ferm/linop/clover_term_qdp_w.cc \
@@ -762,10 +768,10 @@ libchroma_a_SOURCES += \
 	meas/hadron/curcor2_w.cc meas/hadron/DjDk_w.cc \
 	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
-        meas/hadron/hadseqsrc_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/qqq_w.cc meas/hadron/qqbar_w.cc \
-	meas/hadron/seqpiontest_w.cc meas/hadron/seqsrc_funcmap_w.cc \
+        meas/hadron/seqsource_aggregate_w.cc \
+	meas/hadron/seqpiontest_w.cc \
 	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
