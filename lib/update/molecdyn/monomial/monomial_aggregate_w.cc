@@ -1,4 +1,4 @@
-// $Id: monomial_aggregate_w.cc,v 2.4 2006-01-16 02:10:04 bjoo Exp $
+// $Id: monomial_aggregate_w.cc,v 2.5 2006-02-09 22:26:41 edwards Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -19,6 +19,12 @@
 
 #include "update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h"
 #include "update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial5d_w.h"
+
+//#include "update/molecdyn/monomial/unprec_two_flavor_polynomial_monomial_w.h"
+#include "update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h"
+
+//#include "update/molecdyn/monomial/unprec_two_flavor_polyprec_monomial_w.h"
+#include "update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h"
 
 
 
@@ -51,6 +57,12 @@ namespace Chroma
       // Hasenbusch Monomials
       success &=   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registered;
       success &=   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registered;
+    
+      // Polynomial preconditioning Monomials
+////      success &=   UnprecTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registered;
+//      success &=   EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registered;
+////      success &=   UnprecTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registered;
+//      success &=   EvenOddPrecConstDetTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registered;
     
       return success;
     }
