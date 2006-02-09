@@ -1,4 +1,4 @@
-// $Id: derivmesonseqsrc_w.cc,v 2.2 2006-02-09 03:50:06 edwards Exp $
+// $Id: derivmesonseqsrc_w.cc,v 2.3 2006-02-09 04:43:45 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -40,6 +40,36 @@ namespace Chroma
   }
 
 
+
+
+  // Anonymous namespace
+  /*! \ingroup hadron */
+  namespace
+  {
+    //! Check only 1 prop passed
+    /*! \ingroup hadron */
+    void check1Args(const char* name, const multi1d<LatticePropagator>& quark_propagators)
+    {
+      if (quark_propagators.size() != 1)
+      {
+	QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+	QDP_abort(1);
+      }
+    }
+
+    //! Check only 2 props passed
+    /*! \ingroup hadron */
+    void check2Args(const char* name, const multi1d<LatticePropagator>& quark_propagators)
+    {
+      if (quark_propagators.size() != 2)
+      {
+	QDPIO::cerr << __func__ << ": expect only 2 prop" << endl;
+	QDP_abort(1);
+      }
+    }
+  }
+
+
   //! Meson sequential sources
   /*! \ingroup hadron */
   namespace DerivMesonSeqSourceEnv
@@ -47,6 +77,34 @@ namespace Chroma
     //! Anonymous namespace
     namespace
     {
+
+      //! Private displacement
+      LatticePropagator displacement(const multi1d<LatticeColorMatrix>& u, 
+				     const LatticePropagator& psi, 
+				     int length, int dir)
+      {
+	LatticePropagator chi = psi;
+
+	if (length > 0)
+	{
+	  for(int n = 0; n < length; ++n)
+	  {
+	    LatticePropagator tmp = shift(chi, FORWARD, dir);
+	    chi = u[dir] * tmp;
+	  }
+	}
+	else // If length = or < 0.  If length == 0, does nothing.
+	{
+	  for(int n = 0; n > length; --n)
+	  {
+	    LatticePropagator tmp = shift(adj(u[dir])*chi, BACKWARD, dir);
+	    chi = tmp;
+	  }
+	}
+	return chi;
+      }
+
+
       //! Apply first deriv to the left onto source
       /*!
        * \ingroup hadron
@@ -57,9 +115,10 @@ namespace Chroma
        */
       LatticePropagator leftNabla(const LatticePropagator& F, 
 				  const multi1d<LatticeColorMatrix>& u,
-				  int mu)
+				  int mu, int deriv_length)
       {
-	return LatticePropagator(shift(F*u[mu], BACKWARD, mu) - shift(F, FORWARD, mu)*adj(u[mu]));
+//	return LatticePropagator(shift(F*u[mu], BACKWARD, mu) - shift(F, FORWARD, mu)*adj(u[mu]));
+	return displacement(u, F, -deriv_length, mu) - displacement(u, F, deriv_length, mu);
       }
 
       //! Apply "D_i" operator to the left onto source
@@ -74,7 +133,7 @@ namespace Chroma
        */
       LatticePropagator leftD(const LatticePropagator& F,
 			      const multi1d<LatticeColorMatrix>& u,
-			      int mu)
+			      int mu, int deriv_length)
       {
 	LatticePropagator tmp = zero;
 
@@ -83,7 +142,7 @@ namespace Chroma
 	  for(int k=0; k < 3; ++k)
 	  {
 	    if (symTensor3d(mu,j,k) != 0)
-	      tmp += leftNabla(leftNabla(F,u,j), u,k);
+	      tmp += leftNabla(leftNabla(F,u,j,deriv_length), u,k,deriv_length);
 	  }
 
 	return tmp;
@@ -99,7 +158,7 @@ namespace Chroma
        */
       LatticePropagator leftB(const LatticePropagator& F,
 			      const multi1d<LatticeColorMatrix>& u,
-			      int mu)
+			      int mu, int deriv_length)
       {
 	LatticePropagator tmp = zero;
 
@@ -108,7 +167,7 @@ namespace Chroma
 	  for(int k=0; k < 3; ++k)
 	  {
 	    if (antiSymTensor3d(mu,j,k) != 0)
-	      tmp += Real(antiSymTensor3d(mu,j,k)) * leftNabla(leftNabla(F,u,j), u,k);
+	      tmp += Real(antiSymTensor3d(mu,j,k)) * leftNabla(leftNabla(F,u,j,deriv_length), u,k,deriv_length);
 	  }
 
 	return tmp;
@@ -119,23 +178,202 @@ namespace Chroma
       //-------------------- callback functions ---------------------------------------
 
       //! Construct pion_1-(A2=A1xD_T2) sequential source
-      /*!
-       * \ingroup hadron
-       *
-       * \param quark_propagators    array of quark propagators ( Read )
-       *
-       * Comes from a1xD_T2 in Manke's hep-lat/0210030 .
-       * The sink interpolator is   \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
-       * where   \f$D_i = s_{ijk}\nabla_j\nabla_k\f$
-       * and     \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
-       *
-       * \return \f$F^\dagger \gamma_5 \Gamma_f\f$
-       */
       HadronSeqSource<LatticePropagator>* mesPionA1xDT2SeqSrc(XMLReader& xml_in,
 							      const std::string& path)
       {
 	return new MesPionA1xDT2SeqSrc(ParamsDir(xml_in, path));
       }
+
+#if 0
+      //! Construct pion_1-(PIONxNabla_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionPionxNablaT1SeqSrc(XMLReader& xml_in,
+								    const std::string& path)
+      {
+	return new MesPionPionxNablaT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A0_2xNabla_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA02xNablaT1SeqSrc(XMLReader& xml_in,
+								   const std::string& path)
+      {
+	return new MesPionA02xNablaT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxNabla_A1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionRhoxNablaA1SeqSrc(XMLReader& xml_in,
+								   const std::string& path)
+      {
+	return new MesPionRhoxNablaA1SeqSrc(Params(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxNabla_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionRhoxNablaT1SeqSrc(XMLReader& xml_in,
+								   const std::string& path)
+      {
+	return new MesPionRhoxNablaT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxNabla_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionRhoxNablaT2SeqSrc(XMLReader& xml_in,
+								   const std::string& path)
+      {
+	return new MesPionRhoxNablaT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xNabla_A1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xNablaA1SeqSrc(XMLReader& xml_in,
+								  const std::string& path)
+      {
+	return new MesPionA1xNablaA1SeqSrc(Params(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xNabla_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xNablaT2SeqSrc(XMLReader& xml_in,
+								  const std::string& path)
+      {
+	return new MesPionA1xNablaT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xNabla_E) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xNablaESeqSrc(XMLReader& xml_in,
+								 const std::string& path)
+      {
+	return new MesPionA1xNablaESeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(B1xNabla_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionB1xNablaT1SeqSrc(XMLReader& xml_in,
+								  const std::string& path)
+      {
+	return new MesPionB1xNablaT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A0_2xD_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA02xDT2SeqSrc(XMLReader& xml_in,
+							       const std::string& path)
+      {
+	return new MesPionA02xDT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xD_A2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xDA2SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionA1xDA2SeqSrc(Params(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xD_E) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xDESeqSrc(XMLReader& xml_in,
+							     const std::string& path)
+      {
+	return new MesPionA1xDESeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xD_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xDT1SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionA1xDT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xD_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xDT2SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionA1xDT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(B1xD_A2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionB1xDA2SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionB1xDA2SeqSrc(Params(xml_in, path));
+      }
+
+      //! Construct pion_1-(B1xD_E) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionB1xDESeqSrc(XMLReader& xml_in,
+							     const std::string& path)
+      {
+	return new MesPionB1xDESeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(B1xD_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionB1xDT1SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionB1xDT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(B1xD_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionB1xDT2SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionB1xDT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxD_A2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionRhoxDA2SeqSrc(XMLReader& xml_in,
+							       const std::string& path)
+      {
+	return new MesPionRhoxDA2SeqSrc(Params(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxD_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionRhoxDT1SeqSrc(XMLReader& xml_in,
+							       const std::string& path)
+      {
+	return new MesPionRhoxDT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxD_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionRhoxDT2SeqSrc(XMLReader& xml_in,
+							       const std::string& path)
+      {
+	return new MesPionRhoxDT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxD_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionPionxDT2SeqSrc(XMLReader& xml_in,
+								const std::string& path)
+      {
+	return new MesPionPionxDT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxB_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionRhoxBT1SeqSrc(XMLReader& xml_in,
+								const std::string& path)
+      {
+	return new MesPionRhoxBT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(RhoxB_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionRhoxBT2SeqSrc(XMLReader& xml_in,
+								const std::string& path)
+      {
+	return new MesPionRhoxBT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xB_A1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xBA1SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionA1xBA1SeqSrc(Params(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xB_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xBT1SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionA1xBT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A1xB_T2) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA1xBT2SeqSrc(XMLReader& xml_in,
+							      const std::string& path)
+      {
+	return new MesPionA1xBT2SeqSrc(ParamsDir(xml_in, path));
+      }
+#endif
 
     } // end anonymous namespace
 
@@ -258,11 +496,7 @@ namespace Chroma
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
 
-      if (quark_propagators.size() != 1)
-      {
-	QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
-	QDP_abort(1);
-      }
+      check1Args("MesPionA1xDT2SeqSrc", quark_propagators);
 
       LatticePropagator tmp = adj(quark_propagators[0]);
 
@@ -271,7 +505,7 @@ namespace Chroma
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    tmp += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k));
+	    tmp += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
 	}
       
       END_CODE();
