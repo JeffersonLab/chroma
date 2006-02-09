@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 2.4 2006-02-09 02:25:24 edwards Exp $
+// $Id: qprop_io.cc,v 2.5 2006-02-09 04:50:10 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -1153,8 +1153,8 @@ namespace Chroma
     int version = 6;
     write(xml, "version", version);
     xml << header.source;
-//    write(xml, "j_decay", header.j_decay);   // I think these two are duplicates of what
-//    write(xml, "t_source", header.t_source); // is in header.source
+    write(xml, "j_decay", header.j_decay);   // I think these two are duplicates of what
+    write(xml, "t_source", header.t_source); // is in header.source
 
 //    write(xml, "nrow",  header.nrow);
 
