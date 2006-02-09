@@ -1,4 +1,4 @@
-// $Id: antisymtensor.cc,v 1.1 2006-01-29 05:21:55 edwards Exp $
+// $Id: antisymtensor.cc,v 1.2 2006-02-09 02:24:07 edwards Exp $
 /*! \file
  *  \brief Compute anti-symmetric tensors
  */
@@ -33,13 +33,13 @@ namespace Chroma
       // d = \epsilon^{i,j,k}
       // Permutations: +(0,1,2)+(1,2,0)+(2,0,1)-(1,0,2)-(0,2,1)-(2,1,0)
 
-      antisym_tensor3d(0,1,2) = 1.0;
-      antisym_tensor3d(1,2,0) = 1.0;
-      antisym_tensor3d(2,0,1) = 1.0;
+      antisym_tensor3d(0,1,2) = 1;
+      antisym_tensor3d(1,2,0) = 1;
+      antisym_tensor3d(2,0,1) = 1;
 
-      antisym_tensor3d(1,0,2) = -1.0;
-      antisym_tensor3d(0,2,1) = -1.0;
-      antisym_tensor3d(2,1,0) = -1.0;
+      antisym_tensor3d(1,0,2) = -1;
+      antisym_tensor3d(0,2,1) = -1;
+      antisym_tensor3d(2,1,0) = -1;
   
       initP = true;
 
