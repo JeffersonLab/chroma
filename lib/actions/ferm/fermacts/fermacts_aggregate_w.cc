@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 2.11 2006-02-09 22:27:01 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.12 2006-02-09 22:29:15 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -19,7 +19,7 @@
 
 #include "actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h"
 
-#include "actions/ferm/fermacts/poly_cheb_fermact_w.h"
+//#include "actions/ferm/fermacts/poly_cheb_fermact_w.h"
 
 #include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h"
