@@ -23,7 +23,7 @@ namespace Chroma {
 
 
     staggered_scalars(int t_len, 
-		      multi1d<LatticeColorMatrix> & uin,
+		      const multi1d<LatticeColorMatrix> & uin,
 		      Stag_shift_option type_of_shift_in = SYM_GAUGE_INVAR)  
       : staggered_hadron_corr(t_len,no_scalar,uin,type_of_shift_in)
       {
