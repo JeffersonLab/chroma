@@ -19,6 +19,17 @@ namespace Chroma {
 			XMLWriter & xml_out, 
 			int j_decay, int t_length, int t_source);
 
+  void compute_8_scalars(multi1d<LatticeStaggeredPropagator> & stag_prop,
+			 const multi1d<LatticeColorMatrix> & u ,
+			 bool gauge_shift, bool sym_shift,
+			 XMLWriter & xml_out,
+			 int j_decay, int t_length, int t_source);
+
+  void compute_8_vectors(multi1d<LatticeStaggeredPropagator> & stag_prop,
+			 const multi1d<LatticeColorMatrix> & u ,
+			 bool gauge_shift, bool sym_shift,
+			 XMLWriter & xml_out,
+			 int j_decay, int t_length, int t_source);
 }
 
 
