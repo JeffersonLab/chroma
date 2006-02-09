@@ -1,4 +1,4 @@
-// $Id: unprec_hamberwu_linop_w.cc,v 1.1 2005-12-03 04:20:20 edwards Exp $
+// $Id: unprec_hamberwu_linop_w.cc,v 1.2 2006-02-09 02:22:40 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu linear operator
  */
@@ -12,7 +12,7 @@ namespace Chroma
 { 
 
   //! Creation routine
-  /*! \ingroup fermact
+  /*!
    *
    * \param u_ 	    gauge field     	       (Read)
    * \param Mass_   fermion kappa   	       (Read)
