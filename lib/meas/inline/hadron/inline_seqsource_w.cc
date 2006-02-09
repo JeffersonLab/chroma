@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 2.5 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 2.6 2006-02-09 02:25:25 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -9,8 +9,8 @@
 #include "meas/inline/hadron/inline_seqsource_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
-#include "meas/hadron/seqsrc_funcmap_w.h"
-#include "meas/hadron/hadseqsrc_w.h"
+#include "meas/hadron/seqsource_factory_w.h"
+#include "meas/hadron/seqsource_aggregate_w.h"
 #include "meas/sinks/sink_smearing_factory.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
@@ -30,7 +30,7 @@ namespace Chroma
     {
       bool foo = true;
       foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      foo &= SeqSourceCallMapEnv::registered;
+      foo &= HadronSeqSourceEnv::registered;
       return foo;
     }
 
@@ -256,15 +256,22 @@ namespace Chroma
       //
       // Construct the sequential source
       //
-      QDPIO::cout << "Sequential source = " << params.param.seq_src << endl;
+      QDPIO::cout << "Sequential source = " << params.param.seqsrc_type << endl;
+
+      std::istringstream  xml_seq(params.param.seqsrc);
+      XMLReader  seqsrctop(xml_seq);
+      const string seqsrc_path = "/SeqSource";
+      QDPIO::cout << "SeqSource = " << params.param.seqsrc_type << endl;
+	
+      Handle< HadronSeqSource<LatticePropagator> >
+	hadSeqSource(TheWilsonHadronSeqSourceFactory::Instance().createObject(params.param.seqsrc_type,
+									      seqsrctop,
+									      seqsrc_path));
 
       swatch.reset();
       swatch.start();
-      quark_prop_src = hadSeqSource(forward_props, 
-				    params.param.t_sink, 
-				    params.param.sink_mom, 
-				    j_decay, 
-				    params.param.seq_src);
+      quark_prop_src = (*hadSeqSource)(u, forward_props);
+
       swatch.stop();
     
       QDPIO::cout << "Hadron sequential source computed: time= " 

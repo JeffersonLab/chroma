@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 2.3 2005-12-15 04:03:28 edwards Exp $
+// $Id: qprop_io.h,v 2.4 2006-02-09 02:25:24 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -99,9 +99,15 @@ struct ChromaProp_t
 //! Structure for writing to seqsource files
 struct SeqSource_t
 {
-  std::string      seq_src;
-  multi1d<int>     sink_mom;
-  int              t_sink;
+  SeqSource_t();                    /*!< default constructor */
+
+  std::string      seqsrc;          /*!< string holding sequential source xml */
+  std::string      seqsrc_type;     /*!< sequential source type */
+
+  multi1d<int>     sink_mom;        /*!< sink momentum */
+  int              t_sink;          /*!< time slice of sink */
+  int              j_decay;         /*!< decay direction */
+
 //  multi1d<int>     nrow;
 };
 

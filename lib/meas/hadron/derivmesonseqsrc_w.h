@@ -1,11 +1,24 @@
 // -*- C++ -*-
-// $Id: mesonseqsrc_w.h,v 2.2 2006-02-09 02:25:25 edwards Exp $
+// $Id: derivmesonseqsrc_w.h,v 2.1 2006-02-09 02:25:24 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
 
 #ifndef __mesonseqsrc_w_h__
 #define __mesonseqsrc_w_h__
+
+namespace Chroma 
+{
+
+  //! Meson sequential sources
+  /*! \ingroup hadron */
+  namespace MesonSeqSourceCallMapEnv
+  { 
+    extern bool registered;   // forward decl
+  }
+
+}  // end namespace Chroma
+
 
 #include "meas/hadron/hadron_seqsource.h"
 
@@ -26,10 +39,6 @@ namespace Chroma
       Params();
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
-
-      multi1d<int>     sink_mom;        /*!< sink momentum */
-      int              t_sink;          /*!< time slice of sink */
-      int              j_decay;         /*!< Decay direction */
     };
 
 
@@ -42,21 +51,22 @@ namespace Chroma
     {
     public:
       //! Full constructor
-      SimpleMesonSeqSource(const Params& p, int gamma) : params(p), gamma_sink(gamma) {}
+      SimpleMesonSeqSource(int gamma_sink_) : gamma_sink(gamma_sink_) {}
 
       //! Default destructor
       ~SimpleMesonSeqSource() {}
       
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
-				   const multi1d<LatticePropagator>& forward_props) const;
+				   const multi1d<LatticePropagator>& forward_props,
+				   const multi1d<int>& sink_mom, 
+				   int t_sink, int j_decay) const;
 
     private:
       //! Hide partial constructor
       SimpleMesonSeqSource() {}
 
     private:
-      Params  params;   /*!< Seqsource params */
       int gamma_sink;   /*!< The gamma matrix at the sink */
     };
 

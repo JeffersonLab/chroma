@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 2.6 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 2.7 2006-02-09 02:25:25 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -436,7 +436,7 @@ namespace Chroma
 	  push(XmlSeqSrc, "BackwardProp");
 	  write(XmlSeqSrc, "BkwdPropId", params.bb.BkwdProps[loop].BkwdPropId);
 	  write(XmlSeqSrc, "BkwdPropG5Format", params.bb.BkwdProps[loop].BkwdPropG5Format);
-	  write(XmlSeqSrc, "SequentialSourceType", seqsource_header.seq_src);
+	  write(XmlSeqSrc, "SequentialSourceType", seqsource_header.seqsrc_type);
 	  write(XmlSeqSrc, "BkwdPropXML", BkwdPropXML);
 	  write(XmlSeqSrc, "BkwdPropRecordXML", BkwdPropRecordXML);
 	  write(XmlSeqSrc, "BkwdPropCheck", BkwdPropCheck);
@@ -476,11 +476,11 @@ namespace Chroma
       // Some output                                                                     //
       //#################################################################################//
     
-      QDPIO::cout << "Seqsource name  = " << seqsource_header.seq_src << endl;
+      QDPIO::cout << "Seqsource name  = " << seqsource_header.seqsrc_type << endl;
       QDPIO::cout << "Gamma insertion = " << params.bb.BkwdProps[loop].GammaInsertion << endl;
       QDPIO::cout << "Flavor          = " << params.bb.BkwdProps[loop].Flavor << endl;
 
-      write(XmlSeqSrc, "seq_src", seqsource_header.seq_src);
+      write(XmlSeqSrc, "seq_src", seqsource_header.seqsrc_type);
       write(XmlSeqSrc, "gamma_insertion", GammaInsertions[0]);
       write(XmlSeqSrc, "flavor", params.bb.BkwdProps[loop].Flavor);
       write(XmlSeqSrc, "t_source", source_header.t_source);
@@ -608,7 +608,7 @@ namespace Chroma
 		      params.param.links_max, AllLinkPatterns, 
 		      Phases, PhasesCanonical,
 		      Files, T1, T2,
-		      seqsource_header.seq_src, seqsource_header.sink_mom, DecayDir);
+		      seqsource_header.seqsrc_type, seqsource_header.sink_mom, DecayDir);
       swatch.stop();
 
       Out << "finished calculating building blocks for loop = " << loop << "\n";  Out.flush();

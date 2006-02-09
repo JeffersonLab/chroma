@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 2.3 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 2.4 2006-02-09 02:25:25 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -146,7 +146,7 @@ namespace Chroma
 
   struct FormFac_sequential_source_t
   {
-    string            seq_src;
+    string            seqsrc_type;
     multi1d<int>      t_source;
     int               t_sink;
     multi1d<int>      sink_mom;
@@ -185,7 +185,7 @@ namespace Chroma
   // 
   void write(BinaryWriter& bin, const FormFac_sequential_source_t& src)
   {
-    write(bin, src.seq_src);
+    write(bin, src.seqsrc_type);
     write(bin, src.t_source);
     write(bin, src.t_sink);
     write(bin, src.sink_mom);
@@ -385,18 +385,18 @@ namespace Chroma
       }
 
       // Derived from input seqprop
-      string seq_src = seqsource_header.seq_src;
-      QDPIO::cout << "Seqsource name = " << seqsource_header.seq_src << endl;
+      std::string   seqsrc_type = seqsource_header.seqsrc_type;
+      QDPIO::cout << "Seqsource name = " << seqsrc_type  << endl;
       int           t_sink   = seqsource_header.t_sink;
       multi1d<int>  sink_mom = seqsource_header.sink_mom;
 
       write(xml_seq_src, "hadron_type", "HADRON");
-      write(xml_seq_src, "seq_src", seq_src);
+      write(xml_seq_src, "seqsrc_type", seqsrc_type);
       write(xml_seq_src, "t_source", t_source);
       write(xml_seq_src, "t_sink", t_sink);
       write(xml_seq_src, "sink_mom", sink_mom);
 	
-      bar3pt.bar.seqsrc[seq_src_ctr].seq_src       = seq_src;
+      bar3pt.bar.seqsrc[seq_src_ctr].seqsrc_type   = seqsrc_type;
       bar3pt.bar.seqsrc[seq_src_ctr].t_source      = t_source;
       bar3pt.bar.seqsrc[seq_src_ctr].t_sink        = t_sink;
       bar3pt.bar.seqsrc[seq_src_ctr].sink_mom      = sink_mom;

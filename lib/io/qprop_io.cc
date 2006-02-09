@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 2.3 2005-12-15 04:03:27 edwards Exp $
+// $Id: qprop_io.cc,v 2.4 2006-02-09 02:25:24 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -98,6 +98,16 @@ namespace Chroma
     j_decay = -1;
   }
 
+
+  // Initialize header with default values
+  SeqSource_t::SeqSource_t()
+  {
+    j_decay   = -1;
+    t_sink    = -1;
+    sink_mom.resize(Nd-1);
+    sink_mom = 0;
+//    nrow      = Layout::lattSize();
+  }
 
 
   // Initialize header with default values
@@ -661,20 +671,59 @@ namespace Chroma
 
     switch (version) 
     {
-      /**************************************************************************/
     case 1:
-      break;
+    {
+      XMLReader xml_readback;
+      {
+	XMLBufferWriter xml_tmp;
+	push(xml_tmp, "Param");
+	write(xml_tmp, "version", 2);
+	push(xml_tmp, "SeqSource");
+	write(xml_tmp, "version", 1);
+	std::string seq_src;
+	read(paramtop, "seq_src", seq_src);
+	write(xml_tmp, "SeqSourceType", seq_src);
+
+	read(paramtop, "sink_mom", param.sink_mom);
+	write(xml_tmp, "sink_mom",  param.sink_mom);
+
+	read(paramtop, "t_sink", param.t_sink);
+	write(xml_tmp, "t_sink",  param.t_sink);
+
+	write(xml_tmp, "j_decay",  Nd-1);
+
+	pop(xml_tmp);  // Source
+	pop(xml_tmp);  // Param
+
+	QDPIO::cout << "seqsrc_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+
+	xml_readback.open(xml_tmp);
+      }
+
+      // Recurse back in to re-read
+      read(xml_readback, "/Param", param);
+    }
+    break;
+
+    case 2:
+    {
+      XMLReader xml_tmp(paramtop, "SeqSource");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      read(xml_tmp, "SeqSourceType", param.seqsrc_type);
+      read(xml_tmp, "t_sink", param.t_sink);
+      read(xml_tmp, "sink_mom", param.sink_mom);
+      read(xml_tmp, "j_decay", param.j_decay);
+      param.seqsrc = os.str();
+    }
+    break;
 
     default:
-      /**************************************************************************/
       QDPIO::cerr << "SeqSource parameter version " << version 
 		  << " unsupported." << endl;
       QDP_abort(1);
     }
 
-    read(paramtop, "seq_src", param.seq_src);
-    read(paramtop, "t_sink", param.t_sink);
-    read(paramtop, "sink_mom", param.sink_mom);
 //    read(paramtop, "nrow", param.nrow);
   }
 
@@ -1104,8 +1153,8 @@ namespace Chroma
     int version = 6;
     write(xml, "version", version);
     xml << header.source;
-    write(xml, "j_decay", header.j_decay);
-    write(xml, "t_source", header.t_source);
+//    write(xml, "j_decay", header.j_decay);   // I think these two are duplicates of what
+//    write(xml, "t_source", header.t_source); // is in header.source
 
 //    write(xml, "nrow",  header.nrow);
 
@@ -1201,11 +1250,9 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 1;
+    int version = 2;
     write(xml, "version", version);
-    write(xml, "seq_src", param.seq_src);
-    write(xml, "t_sink", param.t_sink);
-    write(xml, "sink_mom", param.sink_mom);
+    xml << param.seqsrc;
 //    write(xml, "nrow", param.nrow);
 
     pop(xml);
