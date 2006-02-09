@@ -797,9 +797,9 @@ Sequential source
   <ProgramInfo>
     <code_version>
       <chroma>2.8</chroma>
-      <qdp>1.18.1</qdp>
+      <qdp>1.19.0</qdp>
     </code_version>
-    <run_date>08 Feb 06 21:09:17 EST</run_date>
+    <run_date>08 Feb 06 23:52:43 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -858,9 +858,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:17 EST</run_date>
+          <run_date>08 Feb 06 23:52:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -899,7 +899,10 @@ Sequential source
         <no_smear_dir>3</no_smear_dir>
       </LinkSmearing>
     </Source>
-</Param>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
           <NamedObject>
             <source_id>sh_source_0</source_id>
           </NamedObject>
@@ -944,9 +947,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:17 EST</run_date>
+          <run_date>08 Feb 06 23:52:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1050,6 +1053,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -1121,9 +1126,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:18 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1259,6 +1264,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -1299,9 +1306,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:18 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1423,6 +1430,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -1463,9 +1472,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:18 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1587,6 +1596,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -1627,9 +1638,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:18 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1751,6 +1762,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -1791,9 +1804,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1915,6 +1928,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -1955,9 +1970,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2079,6 +2094,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -2119,9 +2136,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2243,6 +2260,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -2283,9 +2302,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2407,6 +2426,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -2447,9 +2468,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2571,6 +2592,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -2611,9 +2634,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2735,6 +2758,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -2775,9 +2800,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2899,6 +2924,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -2939,9 +2966,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3063,6 +3090,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -3103,9 +3132,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3227,6 +3256,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -3267,9 +3298,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3391,6 +3422,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -3431,9 +3464,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3555,6 +3588,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -3595,9 +3630,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3719,6 +3754,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
@@ -3759,9 +3796,9 @@ Sequential source
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>08 Feb 06 21:09:19 EST</run_date>
+          <run_date>08 Feb 06 23:52:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3883,6 +3920,8 @@ Sequential source
             <no_smear_dir>3</no_smear_dir>
           </LinkSmearing>
         </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
       </PropSource>
       <RNG>
         <Seed>
