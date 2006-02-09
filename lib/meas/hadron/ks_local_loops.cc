@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 2.3 2006-02-06 20:27:46 egregory Exp $ ($Date: 2006-02-06 20:27:46 $) */
+/* $Id: ks_local_loops.cc,v 2.4 2006-02-09 18:14:45 egregory Exp $ ($Date: 2006-02-09 18:14:45 $) */
 
 
 #include "fermact.h"
@@ -298,6 +298,7 @@ void ks_local_loops(
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
     RNG::savern(seed);
+    QDPIO::cout << "SEED = " << seed << endl;
 
     QDPIO::cout << "Noise sample: " << i << endl;
 
@@ -307,6 +308,7 @@ void ks_local_loops(
 					   &src_color_ind, &src_parity_ind, 
 					   &src_corner_ind, src_seperation, 
 					   j_decay);
+
 
     // Compute the solution vector for the particular source
     int n_count = (*qprop)(psi, q_source);
@@ -323,7 +325,7 @@ void ks_local_loops(
     scalar_two_loop.compute(q_source,psi,i) ;
     eta3_loop.compute(q_source,psi,i) ;
     eta4_loop.compute(q_source,psi,i) ;
-    eta4_kilcup_loop.compute(q_source,psi,i) ;
+    eta4_kilcup_loop.compute(psi,i, Mass);
     eta0_loop.compute(q_source,psi,i) ;
 
      if(loop_checkpoint){
@@ -459,6 +461,7 @@ void ks_local_loops(
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
     RNG::savern(seed);
+    QDPIO::cout << "SEED = " << seed << endl;
 
     QDPIO::cout << "Noise sample: " << i << endl;
 
@@ -485,7 +488,7 @@ void ks_local_loops(
     scalar_two_loop.compute(q_source,psi,i) ;
     eta3_loop.compute(q_source,psi,i) ;
     eta4_loop.compute(q_source,psi,i) ;
-    eta4_kilcup_loop.compute(q_source,psi,i) ;
+    eta4_kilcup_loop.compute(psi,i, Mass);
     eta0_loop.compute(q_source,psi,i) ;
 
     if(loop_checkpoint){
@@ -602,6 +605,7 @@ void ks_fuzz_loops(
   for(int i = 0; i < Nsamp; ++i){
     psi = zero;   // note this is ``zero'' and not 0
     RNG::savern(seed);
+    QDPIO::cout << "SEED = " << seed << endl;
 
     QDPIO::cout << "Noise sample: " << i << endl;
 
@@ -631,7 +635,7 @@ void ks_fuzz_loops(
     scalar_two_loop.compute(q_source,psi_fuzz,i) ;
     eta3_loop.compute(q_source,psi_fuzz,i) ;
     eta4_loop.compute(q_source,psi_fuzz,i) ;
-    eta4_kilcup_loop.compute(q_source,psi,i) ;
+    eta4_kilcup_loop.compute(psi,i, Mass);
     eta0_loop.compute(q_source,psi,i) ;
 
 
