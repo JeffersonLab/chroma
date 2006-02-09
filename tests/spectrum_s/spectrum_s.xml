@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.xml,v 2.2 2006-02-06 18:08:07 egregory Exp $
+; $Id: spectrum_s.xml,v 2.3 2006-02-09 18:25:36 egregory Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -26,19 +26,23 @@
  <eight_rhos>true</eight_rhos>
 <LocalPion_vary>true</LocalPion_vary>
 
-<gauge_invar_oper>true</gauge_invar_oper>
 <fuzz_width>2</fuzz_width>
  <disconnected_local>true</disconnected_local>
  <disconnected_fuzz>false</disconnected_fuzz>
 <Number_sample>4</Number_sample>
 <CFGNO>234</CFGNO>
-<volume_src>GAUSSIAN</volume_src>
+<volume_src>T_DILUTE_GAUSS</volume_src>
 
+<gauge_invar_oper>true</gauge_invar_oper>
 <sym_shift_oper>true</sym_shift_oper>
-<loop_checkpoint>true</loop_checkpoint>
+<loop_checkpoint>false</loop_checkpoint>
 <src_seperation>4</src_seperation>
 
 <do_gauge_transform>false</do_gauge_transform>
+
+<GFAccu>2.0e-6</GFAccu>
+<OrPara>1.8</OrPara>
+<GFMax>500</GFMax>
 
 <j_decay>3</j_decay>
  <nrow>4 4 4 4</nrow>
@@ -53,7 +57,7 @@
 
 <Inversion>
 <Mass>0.1</Mass>
-<u0>1.0</u0>
+<u0>0.463032</u0>
 <RsdCG>0.00001</RsdCG>
 <MaxCG>3000</MaxCG>
 </Inversion>
