@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 2.2 2006-02-06 18:11:38 egregory Exp $
+// $Id: inline_spectrum_s.h,v 2.3 2006-02-09 17:58:56 egregory Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -46,6 +46,11 @@ namespace Chroma
       bool eight_scalars;               // all scalar meson tastes
       bool eight_rhos;                  // all vector meson tastes
 
+
+      //Parameters for Gauge-fixing
+      Real GFAccu;                      // Gauge fixing tolerance 
+      Real OrPara;                      // Gauge fixing over-relaxation param
+      int  GFMax;                       // Maximum gauge fixing iterations
  
       // parameters for disconnected loops
       int Nsamp;
