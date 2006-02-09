@@ -1044,9 +1044,9 @@ Calculate building blocks - insertions in 3-pt functions
   <ProgramInfo>
     <code_version>
       <chroma>2.8</chroma>
-      <qdp>1.18.1</qdp>
+      <qdp>1.19.0</qdp>
     </code_version>
-    <run_date>25 Jan 06 00:46:35 EST</run_date>
+    <run_date>08 Feb 06 23:52:47 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1105,9 +1105,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:35 EST</run_date>
+          <run_date>08 Feb 06 23:52:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1194,9 +1194,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:35 EST</run_date>
+          <run_date>08 Feb 06 23:52:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1373,9 +1373,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:38 EST</run_date>
+          <run_date>08 Feb 06 23:52:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1386,11 +1386,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>PION</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>PION</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
@@ -1544,9 +1547,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:38 EST</run_date>
+          <run_date>08 Feb 06 23:52:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1654,10 +1657,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>PION</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -1802,9 +1809,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:40 EST</run_date>
+          <run_date>08 Feb 06 23:52:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1815,11 +1822,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_U_UNPOL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_U_UNPOL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -2035,9 +2045,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:41 EST</run_date>
+          <run_date>08 Feb 06 23:52:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2131,10 +2141,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_UNPOL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_UNPOL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2330,9 +2344,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:43 EST</run_date>
+          <run_date>08 Feb 06 23:52:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2343,11 +2357,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_D_UNPOL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_D_UNPOL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -2487,9 +2504,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:43 EST</run_date>
+          <run_date>08 Feb 06 23:52:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2583,10 +2600,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_UNPOL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_UNPOL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2717,9 +2738,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:46 EST</run_date>
+          <run_date>08 Feb 06 23:52:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2730,11 +2751,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_U_POL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_U_POL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -2940,7 +2964,7 @@ Calculate building blocks - insertions in 3-pt functions
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 1.79415e-09</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 7.98521e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2950,9 +2974,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:46 EST</run_date>
+          <run_date>08 Feb 06 23:52:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3046,10 +3070,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_POL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_POL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -3191,7 +3219,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 1.79415e-09</source_corr>
+          <source_corr>0 0 0 0 0 0 0 7.98521e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -3235,7 +3263,7 @@ Calculate building blocks - insertions in 3-pt functions
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.35818e-12 3.33402e-12 8.20029e-12 2.01811e-11 4.96735e-11 1.22366e-10 3.01408e-10 7.38793e-10</prop_corr>
+          <prop_corr>6.04139e-13 1.48293e-12 3.64716e-12 8.97518e-12 2.20899e-11 5.44128e-11 1.3402e-10 3.29075e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3245,9 +3273,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:48 EST</run_date>
+          <run_date>08 Feb 06 23:52:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3258,11 +3286,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_D_POL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_D_POL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -3402,9 +3433,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:49 EST</run_date>
+          <run_date>08 Feb 06 23:52:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3498,10 +3529,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_POL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_POL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -3632,9 +3667,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:51 EST</run_date>
+          <run_date>08 Feb 06 23:52:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3645,11 +3680,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>DELTA_U_UNPOL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>DELTA_U_UNPOL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -3865,9 +3903,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:52 EST</run_date>
+          <run_date>08 Feb 06 23:52:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3961,10 +3999,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>DELTA_U_UNPOL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>DELTA_U_UNPOL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -4150,7 +4192,7 @@ Calculate building blocks - insertions in 3-pt functions
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>9.15926e-12 2.24852e-11 5.53082e-11 1.36124e-10 3.35076e-10 8.25482e-10 2.03345e-09 4.99474e-09</prop_corr>
+          <prop_corr>9.15926e-12 2.24852e-11 5.53082e-11 1.36124e-10 3.35076e-10 8.25482e-10 2.03345e-09 4.99475e-09</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -4160,9 +4202,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:54 EST</run_date>
+          <run_date>08 Feb 06 23:52:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4173,11 +4215,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>DELTA_D_UNPOL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>DELTA_D_UNPOL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -4317,9 +4362,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:54 EST</run_date>
+          <run_date>08 Feb 06 23:52:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4413,10 +4458,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>DELTA_D_UNPOL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>DELTA_D_UNPOL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -4547,9 +4596,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:57 EST</run_date>
+          <run_date>08 Feb 06 23:52:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4560,11 +4609,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_U_UNPOL_NONREL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_U_UNPOL_NONREL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -4780,9 +4832,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:46:57 EST</run_date>
+          <run_date>08 Feb 06 23:52:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4876,10 +4928,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_UNPOL_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_UNPOL_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -5075,9 +5131,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:00 EST</run_date>
+          <run_date>08 Feb 06 23:52:51 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5088,11 +5144,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_D_UNPOL_NONREL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_D_UNPOL_NONREL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -5232,9 +5291,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:00 EST</run_date>
+          <run_date>08 Feb 06 23:52:51 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5328,10 +5387,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_UNPOL_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_UNPOL_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -5462,9 +5525,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:02 EST</run_date>
+          <run_date>08 Feb 06 23:52:51 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5475,11 +5538,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_U_POL_NONREL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_U_POL_NONREL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -5695,9 +5761,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:03 EST</run_date>
+          <run_date>08 Feb 06 23:52:51 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5791,10 +5857,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_POL_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_POL_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -5990,9 +6060,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:05 EST</run_date>
+          <run_date>08 Feb 06 23:52:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6003,11 +6073,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_D_POL_NONREL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_D_POL_NONREL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -6147,9 +6220,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:05 EST</run_date>
+          <run_date>08 Feb 06 23:52:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6243,10 +6316,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_POL_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_POL_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -6367,7 +6444,7 @@ Calculate building blocks - insertions in 3-pt functions
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.74623e-14 9.19669e-14 2.26216e-13 5.56763e-13 1.37051e-12 3.37636e-12 8.31719e-12 2.04644e-11</prop_corr>
+          <prop_corr>3.74623e-14 9.1967e-14 2.26216e-13 5.56763e-13 1.37051e-12 3.37636e-12 8.31719e-12 2.04644e-11</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -6377,9 +6454,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:07 EST</run_date>
+          <run_date>08 Feb 06 23:52:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6390,11 +6467,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_U_MIXED_NONREL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_U_MIXED_NONREL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -6610,9 +6690,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:07 EST</run_date>
+          <run_date>08 Feb 06 23:52:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6706,10 +6786,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_MIXED_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_MIXED_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -6905,9 +6989,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:09 EST</run_date>
+          <run_date>08 Feb 06 23:52:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6918,11 +7002,14 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_D_MIXED_NONREL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_D_MIXED_NONREL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
@@ -7062,9 +7149,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>2.8</chroma>
-            <qdp>1.18.1</qdp>
+            <qdp>1.19.0</qdp>
           </code_version>
-          <run_date>25 Jan 06 00:47:09 EST</run_date>
+          <run_date>08 Feb 06 23:52:53 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7158,10 +7245,14 @@ Calculate building blocks - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_MIXED_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_MIXED_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -7282,7 +7373,7 @@ Calculate building blocks - insertions in 3-pt functions
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.74618e-13 9.19658e-13 2.26213e-12 5.56754e-12 1.37049e-11 3.3763e-11 8.31702e-11 2.04638e-10</prop_corr>
+          <prop_corr>3.74619e-13 9.19658e-13 2.26213e-12 5.56754e-12 1.37049e-11 3.3763e-11 8.31702e-11 2.04638e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
