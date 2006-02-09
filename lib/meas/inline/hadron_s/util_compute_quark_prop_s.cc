@@ -239,8 +239,6 @@ namespace Chroma {
     QDPIO::cout << "Inversion for Color =  " << color_source << endl;
     q_source = zero ;
 
-    printf("non-fuzzy\n");fflush(stdout);
- 
     // safety checks
     check_qprop_source_compatability(type_of_src, gauge_shift, sym_shift,
 				     QPROP_NO_FUZZ);
