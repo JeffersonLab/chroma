@@ -57,7 +57,4 @@
 <!-- PION_1 -->
 <assertion xpath="/chroma/InlineObservables/elem[35]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
-<!-- PION-PION_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[37]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
-
 </assertions>

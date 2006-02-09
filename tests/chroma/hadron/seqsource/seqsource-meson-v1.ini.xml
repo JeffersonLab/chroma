@@ -771,46 +771,6 @@ Sequential source
       </NamedObject>
     </elem>
 
-    <elem>
-      <annotation>
-        ; PION-PION_1
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>1</version>
-	<seq_src>PION-PION_1</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>1</version>
-          <SinkType>POINT_SINK</SinkType>
-          <j_decay>3</j_decay>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_tmp</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_tmp</object_id>
-      </NamedObject>
-    </elem>
-
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
