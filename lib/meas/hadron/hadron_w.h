@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_w.h,v 2.3 2005-12-27 20:41:41 kostas Exp $
+// $Id: hadron_w.h,v 2.4 2006-02-09 02:30:06 edwards Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -29,10 +29,9 @@
 #include "DjDk_w.h"
 #include "BuildingBlocks_w.h"
 #include "seqpiontest_w.h"
-// #include "mesonseqsrc_w.h"
-// #include "barseqsrc_w.h"
-#include "hadseqsrc_w.h"
-#include "seqsrc_funcmap_w.h"
+#include "mesonseqsrc_w.h"
+#include "barseqsrc_w.h"
+#include "hadron_seqsource.h"
 
 #include "wallff_w.h"
 #include "wallpionff_w.h"
