@@ -11,7 +11,6 @@
 #include "meas/smear/sink_smear2.h"
 #include "meas/hadron/stag_propShift_s.h"
 
-
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "io/param_io.h"
@@ -52,8 +51,7 @@ namespace Chroma {
 // ------------------------
 
 
-namespace Chroma 
-{ 
+namespace Chroma { 
 
   int compute_quark_propagator_s(LatticeStaggeredFermion & psi,
 				 stag_src_type type_of_src,
@@ -175,6 +173,14 @@ namespace Chroma {
     read(paramtop, "loop_checkpoint", param.loop_checkpoint);
 
     read(paramtop, "src_seperation", param.src_seperation);
+
+    if( !param.gauge_invar_oper ){
+      //read gauge-fixing parameters
+      read(paramtop, "GFAccu", param.GFAccu);
+      read(paramtop, "OrPara", param.OrPara );
+      read(paramtop, "GFMax", param.GFMax );
+    }
+
 
     if( param.disconnected_local ){
       read(paramtop, "Number_sample", param.Nsamp);
@@ -449,7 +455,7 @@ namespace Chroma {
 	fuzz_smear(u_smr, psi, psi_fuzz, fuzz_width, j_decay) ;
 	FermToProp(psi_fuzz, quark_propagator_Fsink_Lsrc, color_source);
       }
-    }
+    } // color_source
 
 
     if( do_fuzzing ){
@@ -482,6 +488,44 @@ namespace Chroma {
       }  //color_source
 
     }  // end of compute fuzzed correlator
+
+    return ncg_had;
+  }
+/***************************************************************************/
+  int
+  MakeCornerProp(LatticeStaggeredFermion & psi,
+		 bool gauge_shift, bool sym_shift,
+		 const multi1d<LatticeColorMatrix> & u ,
+		 Handle<const SystemSolver<LatticeStaggeredFermion> > &  qprop,
+		 XMLWriter & xml_out,
+		 Real RsdCG, Real Mass,
+		 int j_decay,
+		 LatticeStaggeredPropagator &quark_propagator_Lsink_Lsrc,
+		 stag_src_type type_of_src ){
+
+    //    stag_src_type type_of_src = LOCAL_SRC ;
+    //    stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE;
+
+    QDPIO::cout << "LOCAL INVERSIONS"  << endl;
+    int ncg_had = 0 ;
+
+    for(int color_source = 0; color_source < Nc; ++color_source){
+      psi = zero;    // note this is ``zero'' and not 0
+
+      const int src_ind = 0 ;
+      ncg_had += compute_quark_propagator_s(psi,type_of_src, 
+					    gauge_shift, sym_shift,
+					    u, qprop, xml_out,
+					    RsdCG, Mass,
+					    j_decay, src_ind, color_source) ;
+
+     /*
+       * Move the solution to the appropriate components
+       * of quark propagator.
+       */
+      FermToProp(psi, quark_propagator_Lsink_Lsrc, color_source);
+
+    } // color_source
 
     return ncg_had;
   }
@@ -563,51 +607,79 @@ namespace Chroma {
     write(xml_out, "update_no", update_no);
 
     /*  set some flags **/
-    bool do_fuzzing = false ;
-    bool do_variational_spectra = false ;
-    bool need_basic_8 = false;  // slap this here for now
+
+    bool do_Baryon_local         = params.param.Baryon_local;
+    bool do_ps4_singlet          = params.param.ps4link_singlet_conn;
+
+    bool do_Baryon_vary          = params.param.Baryon_vary ;
+    bool do_LocalPion_vary       = params.param.LocalPion_vary;
+    bool do_8_pions              = params.param.eight_pions;
+    bool do_8_scalars            = params.param.eight_scalars;
+    bool do_8_rhos               = params.param.eight_rhos;
+    bool do_fuzzed_disc_loops    = params.param.disconnected_fuzz  ;
+    bool do_local_disc_loops     = params.param.disconnected_local  ;
+
+    bool do_fuzzing              = false;
+    bool do_variational_spectra  = false;
+
+    bool need_basic_8            = false;  
+    bool need_local_corner_prop  = false;
+    bool need_fuzzed_corner_prop = false;
+
+    bool done_ps4_singlet        = false;
+    bool done_local_baryons      = false;
+
+    bool have_basic_8            = false;
+    bool have_local_corner_prop  = false;
+    bool have_fuzzed_corner_prop = false;
 
     //shouldnt be hard-coded
     stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
 
 
-    if( params.param.Baryon_vary || params.param.LocalPion_vary){
+    if( do_Baryon_vary || do_LocalPion_vary){
       do_fuzzing = true ;
     }
 
-    if ( params.param.Baryon_vary || params.param.LocalPion_vary){
+    if ( do_Baryon_vary || do_LocalPion_vary){
       do_variational_spectra = true;
     }
 
-    if( params.param.eight_pions || params.param.eight_scalars || 
-	params.param.eight_rhos){
+    if( do_8_pions || do_8_scalars || do_8_rhos){
       need_basic_8 = true;
     }
 
+    if ((do_Baryon_local) || (do_ps4_singlet)){
+      need_local_corner_prop = true;
+    }
 
 
-    int ncg_had = 0;    // tally of all the inversion iterations
+    int          ncg_had = 0;                 // tally of all CG iterations
 
 
-    bool         gauge_shift=true;
-    bool         sym_shift=true;
-    bool         loop_checkpoint=false;
+    bool         gauge_shift     = true;
+    bool         sym_shift       = true;
+    bool         loop_checkpoint = false;
+    const int    j_decay         = Nd-1;
     int          Nsamp;
     int          CFGNO;
     VolSrc_type  volume_source;
     int          src_seperation;
     int          t_length;
 
-    const int    j_decay = Nd-1;
 
-    gauge_shift =          params.param.gauge_invar_oper;
-    sym_shift =            params.param.sym_shift_oper;
-    loop_checkpoint =      params.param.loop_checkpoint;
-    Nsamp =                params.param.Nsamp;
-    CFGNO =                params.param.CFGNO;
-    volume_source =        params.param.volume_source;
-    src_seperation =       params.param.src_seperation;
-    t_length =             params.param.nrow[j_decay];
+    gauge_shift        = params.param.gauge_invar_oper;   // use covar shift?
+    sym_shift          = params.param.sym_shift_oper;     // use symm shift?
+    loop_checkpoint    = params.param.loop_checkpoint;    // write all meas?
+    Nsamp              = params.param.Nsamp;              // # of stoch srcs
+    CFGNO              = params.param.CFGNO;              // seed
+    volume_source      = params.param.volume_source;      // type of vol src
+    src_seperation     = params.param.src_seperation;     // sep of dilute srcs
+    t_length           = params.param.nrow[j_decay];      // length of t dir
+    Real RsdCG         = params.prop_param.invParam.RsdCG;// CG residual
+    Real Mass          = params.prop_param.Mass;          // fermion mass
+    int  fuzz_width    = params.param.fuzz_width;         // fuzzing width
+    int  t_source      = params.param.t_srce[j_decay];    // source t coord
 
     /*
      * Sanity checks
@@ -621,6 +693,7 @@ namespace Chroma {
     QDPIO::cout << endl;
 
     proginfo(xml_out);    // Print out basic program info
+
 
     // Write out the input
     params.write(xml_out, "Input");
@@ -636,23 +709,14 @@ namespace Chroma {
     MesPlq(xml_out, "Observables", u);
 
 
-    // GAUGE FIX (but what about const)
-    // perhaps that should be done outside ?????
-
-
-
-    Real RsdCG      = params.prop_param.invParam.RsdCG; // CG residual
-    Real Mass       = params.prop_param.Mass;           // fermion mass
-    int  fuzz_width = params.param.fuzz_width;          // fuzzing width
-    int  t_source   =  params.param.t_srce[Nd-1];      // source t coordinate
 
     // Create a fermion BC
     Handle< FermBC<LatticeStaggeredFermion> >  
       fbc(new SimpleFermBC<LatticeStaggeredFermion>(params.param.boundary));
 
-    //
+
     // Initialize fermion action
-    //
+
     AsqtadFermAct S_f(fbc, params.prop_param.Mass,
 		      params.prop_param.u0);
     Handle<const ConnectState > state(S_f.createState(u));
@@ -668,48 +732,9 @@ namespace Chroma {
     LatticeStaggeredFermion q_source ; 
 
 
-    LatticeStaggeredPropagator quark_propagator_Lsink_Lsrc;
+    // Do disconnected loops --- independent of other measurements
 
-
-    if( params.param.ps4link_singlet_conn ) {
-      type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
-
-      ncg_had += 
-	compute_singlet_ps(psi,quark_propagator_Lsink_Lsrc,
-			   type_of_src, gauge_shift, sym_shift, 
-			   u,qprop,xml_out,
-			   params.prop_param.invParam.RsdCG,
-			   params.prop_param.Mass,
-			   j_decay, t_source, params.param.nrow[j_decay]) ;
-
-    }
-
-    if( params.param.Baryon_local ) {
-
-      push(xml_out, "baryon_correlators");
-
-      // describe the source
-      string NN ;
-      write(xml_out, "source_time", t_source);
-      push(xml_out, "smearing_info");
-      NN = "L" ;
-      write_smearing_info(NN, LOCAL_SRC,xml_out, params.param.fuzz_width) ;
-      pop(xml_out);
-      string b_tag("srcLLL_sinkLLL_nucleon") ;
-      ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc,
-			quark_propagator_Lsink_Lsrc,
-			quark_propagator_Lsink_Lsrc,
-			xml_out, j_decay,
-			params.param.nrow[j_decay]) ;
-
-      pop(xml_out);
-
-    }
-
-    LatticeStaggeredFermion psi_fuzz ;
-
-
-    if( params.param.disconnected_local  ) {
+    if( do_local_disc_loops  ) {
       push(xml_out, "disconnected_loops");
 
       ks_local_loops(qprop, q_source, psi , u, xml_out, 
@@ -721,7 +746,8 @@ namespace Chroma {
     }
 
 
-    if (need_basic_8 && !do_fuzzing){
+
+    if (need_basic_8 ){
       //Dont need to allocate u_smr here
 
       multi1d<LatticeStaggeredPropagator> stag_prop(8);
@@ -731,20 +757,60 @@ namespace Chroma {
 				     Mass, j_decay);
 
       // put the spectrum calls here 
-      if(params.param.eight_pions){
+      if(do_8_pions){
 	// do pion stuff
+
 	compute_8_pions( stag_prop, u , gauge_shift, sym_shift,
-			 xml_out, j_decay, params.param.nrow[j_decay], t_source);
+			 xml_out, j_decay, t_length, t_source);
       }
-      if(params.param.eight_scalars){
+      if(do_8_scalars){
 	// do scalar stuff
+	compute_8_scalars( stag_prop, u,  gauge_shift, sym_shift,
+			   xml_out, j_decay, t_length, t_source);
       }
-      if(params.param.eight_rhos){
+      if(do_8_rhos){
 	// do vector stuff
+	compute_8_vectors( stag_prop, u,  gauge_shift, sym_shift,
+			   xml_out, j_decay, t_length, t_source);
       }
 
 
-    }
+      // if we need to do 4-link singlets and local baryons, do them here
+      // so we can re-use the stag_pro[0] as the local corner prop
+
+      if(( do_ps4_singlet ) && (!done_ps4_singlet)) {
+	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+
+	ncg_had += 
+	  compute_singlet_ps(psi,stag_prop[0], type_of_src, gauge_shift, 
+			     sym_shift, u, qprop, xml_out, RsdCG,Mass,
+			     j_decay, t_source, t_length);
+
+	done_ps4_singlet = true;
+      }
+
+
+      if(( do_Baryon_local) &&(!done_local_baryons)) {
+
+	push(xml_out, "baryon_correlators");
+
+	// describe the source
+	string NN ;
+	write(xml_out, "source_time", t_source);
+	push(xml_out, "smearing_info");
+	NN = "L" ;
+	write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
+	pop(xml_out);
+	string b_tag("srcLLL_sinkLLL_nucleon") ;
+	ks_compute_baryon(b_tag,stag_prop[0],stag_prop[0],stag_prop[0],
+			  xml_out, j_decay, t_length) ;
+
+	pop(xml_out);
+	done_local_baryons = true;
+      }
+
+ 
+    } // basic 8 and no fuzzing
 
 
 
@@ -752,62 +818,20 @@ namespace Chroma {
 
     if( do_fuzzing  ){
 
+      LatticeStaggeredFermion psi_fuzz ;
       multi1d<LatticeColorMatrix> u_smr(Nd);
 
       u_smr = u ;
-
       DoFuzzing(u, u_smr, j_decay);
     
 
-
-
-
-      // Make basic 8 quark props if needed
-      if ( need_basic_8 ){
-
-	// This is inefficient for memory   ???
-	multi1d<LatticeStaggeredPropagator> stag_prop(8);
-
-	ncg_had += build_basic_8_props(stag_prop, type_of_src, gauge_shift,
-				       sym_shift, fuzz_width, u, u_smr, qprop, 
-				       xml_out, RsdCG, Mass, j_decay);
-
-       // put the spectrum calls here 
-	if(params.param.eight_pions){
-	  // do pion stuff
-	}
-	if(params.param.eight_scalars){
-	  // do scalar stuff
-	}
-	if(params.param.eight_rhos){
-	// do vector stuff
-	}
-      }
-
-
-
-
-      if( params.param.disconnected_fuzz  ) {
-	push(xml_out, "disconnected_loops");
-	ks_fuzz_loops(qprop,q_source, psi ,psi_fuzz , u, u_smr,xml_out, 
-		      gauge_shift, sym_shift, loop_checkpoint, t_length, Mass, 
-		      Nsamp, RsdCG, CFGNO, volume_source, fuzz_width, 
-		      src_seperation, j_decay);
-
-	pop(xml_out);
-      }
-
-
-
       if ( do_variational_spectra ){
 
-
 	// only allocate these if needed
-
+	LatticeStaggeredPropagator quark_propagator_Lsink_Lsrc;
 	LatticeStaggeredPropagator quark_propagator_Fsink_Lsrc ;
 	LatticeStaggeredPropagator quark_propagator_Lsink_Fsrc ;
 	LatticeStaggeredPropagator quark_propagator_Fsink_Fsrc ;
-
 
 
 	ncg_had+=  MakeFuzzedCornerProp(psi, fuzz_width, gauge_shift, 
@@ -820,12 +844,50 @@ namespace Chroma {
 					quark_propagator_Fsink_Fsrc );
 
 
+	//re-use quark_propagator_Lsink_Lsrc here for 
+	// 4-link singlets and local baryons.
+
+	if(( do_ps4_singlet ) && (!done_ps4_singlet)) {
+
+	  type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+
+	  ncg_had += 
+	    compute_singlet_ps(psi,quark_propagator_Lsink_Lsrc, type_of_src, 
+			       gauge_shift, sym_shift, u, qprop, xml_out, 
+			       RsdCG, Mass, j_decay, t_source, t_length);
+
+	  done_ps4_singlet = true;
+	}
 
 
-	if( params.param.Baryon_vary  ) {
+	if(( do_Baryon_local ) && (!done_local_baryons)) {
+
+	  push(xml_out, "baryon_correlators");
+
+	  // describe the source
+	  string NN ;
+	  write(xml_out, "source_time", t_source);
+	  push(xml_out, "smearing_info");
+	  NN = "L" ;
+	  write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
+	  pop(xml_out);
+	  string b_tag("srcLLL_sinkLLL_nucleon") ;
+	  ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc,
+			    quark_propagator_Lsink_Lsrc,
+			    quark_propagator_Lsink_Lsrc,
+			    xml_out, j_decay,
+			    t_length) ;
+
+	  pop(xml_out);
+	  done_local_baryons = true;
+	}
+
+
+
+	if( do_Baryon_vary ) {
 	  compute_vary_baryon_s(xml_out,t_source,
-				params.param.fuzz_width,
-				j_decay,params.param.nrow[j_decay],
+				fuzz_width,
+				j_decay,t_length,
 				quark_propagator_Lsink_Lsrc,
 				quark_propagator_Fsink_Lsrc,
 				quark_propagator_Lsink_Fsrc,
@@ -833,25 +895,128 @@ namespace Chroma {
 	}
 
 
-	if( params.param.LocalPion_vary ) {
+	if( do_LocalPion_vary ) {
 	  compute_vary_ps(quark_propagator_Lsink_Lsrc,
 			  quark_propagator_Fsink_Lsrc,
 			  quark_propagator_Lsink_Fsrc,
 			  quark_propagator_Fsink_Fsrc,
 			  u, gauge_shift, sym_shift,
 			  xml_out,j_decay,
-			  params.param.nrow[j_decay],t_source);
+			  t_length,t_source);
 	}
 
 
-      } // do_variational_spectra
+
+	// if we need to do 4-link singlets and local baryons, do them here so
+	// we can re-use quark_propagator_Lsink_Lsrc as the local corner prop
+
+	if(( do_ps4_singlet ) && (!done_ps4_singlet)) {
+	  type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+
+	  ncg_had += 
+	    compute_singlet_ps(psi,quark_propagator_Lsink_Lsrc, type_of_src,
+			       gauge_shift, sym_shift, u, qprop, xml_out, 
+			       RsdCG, Mass, j_decay, t_source, t_length);
+
+	  done_ps4_singlet = true;
+	}
+
+
+	if(( do_Baryon_local) &&(!done_local_baryons)) {
+
+	  push(xml_out, "baryon_correlators");
+
+	  // describe the source
+	  string NN ;
+	  write(xml_out, "source_time", t_source);
+	  push(xml_out, "smearing_info");
+	  NN = "L" ;
+	  write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
+	  pop(xml_out);
+	  string b_tag("srcLLL_sinkLLL_nucleon") ;
+	  ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc,
+			    quark_propagator_Lsink_Lsrc,
+			    quark_propagator_Lsink_Lsrc,
+			    xml_out, j_decay, t_length) ;
+
+	  pop(xml_out);
+	  done_local_baryons = true;
+	}
+
+	
+      }// do_variational_spectra
+
+
+
+
+      if( do_fuzzed_disc_loops  ) {
+	push(xml_out, "disconnected_loops");
+	ks_fuzz_loops(qprop,q_source, psi ,psi_fuzz , u, u_smr,xml_out, 
+		      gauge_shift, sym_shift, loop_checkpoint, t_length, Mass, 
+		      Nsamp, RsdCG, CFGNO, volume_source, fuzz_width, 
+		      src_seperation, j_decay);
+
+	pop(xml_out);
+      }
+
 
     }  // do fuzzing
-    pop(xml_out);  // spectrum_s
+
+
+
+
+    //might still need to local pions or baryons
+
+    if((( do_ps4_singlet ) && (!done_ps4_singlet)) ||
+       (( do_Baryon_local) &&(!done_local_baryons))){
+
+      //still need to compute local corner propagator
+      LatticeStaggeredPropagator local_corner_prop;
+
+      ncg_had += 
+	MakeCornerProp(psi, gauge_shift, sym_shift, u , qprop, xml_out, RsdCG, 
+		       Mass, j_decay, local_corner_prop, type_of_src);
+
+
+
+      if(( do_ps4_singlet ) && (!done_ps4_singlet)) {
+	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+
+	ncg_had += 
+	  compute_singlet_ps(psi,local_corner_prop, type_of_src, gauge_shift, 
+			     sym_shift, u, qprop, xml_out, RsdCG, Mass, 
+			     j_decay, t_source, t_length);
+
+	done_ps4_singlet = true;
+      }
+
+
+      if(( do_Baryon_local) &&(!done_local_baryons)) {
+
+	push(xml_out, "baryon_correlators");
+
+	// describe the source
+	string NN ;
+	write(xml_out, "source_time", t_source);
+	push(xml_out, "smearing_info");
+	NN = "L" ;
+	write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
+	pop(xml_out);
+	string b_tag("srcLLL_sinkLLL_nucleon") ;
+	ks_compute_baryon(b_tag,local_corner_prop, local_corner_prop,
+			  local_corner_prop, xml_out, j_decay, t_length) ;
+
+	pop(xml_out);
+	done_local_baryons = true;
+      }
+    }
+
+  
+  
+    pop(xml_out); // spectrum_s
     QDPIO::cout << "Staggered spectroscopy ran successfully" << endl;
 
     END_CODE();
-  }
+  }  // end of InlineSpectrum_s
 
 }
-
