@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.38 2006-02-09 19:26:49 egregory Exp $
+# $Id: Makefile.am,v 2.39 2006-02-10 02:44:10 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -19,7 +19,7 @@ nobase_include_HEADERS = \
 	linearop.h eo_prec_linop.h prec_constdet_linop.h prec_logdet_linop.h \
 	lmdagm.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
-        named_obj.h \
+        named_obj.h polyfermact.h polylinop.h tpreclinop.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
 	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
@@ -255,6 +255,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/ovext_constant_strategy.h \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.h \
 	actions/ferm/fermacts/ovext_neuberger_strategy.h \
+	actions/ferm/fermacts/poly_cheb_fermact_w.h \
 	actions/ferm/fermbcs/fermbcs_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
@@ -312,6 +313,8 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/linop/ovlap_contfrac5d_w.h \
+	actions/ferm/linop/polynomial_op.h \
+	actions/ferm/linop/polprec_op.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
@@ -368,6 +371,10 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h \
@@ -709,6 +716,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
+	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_w.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
@@ -796,6 +804,8 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
 	util/ferm/gammasgn_w.cc \
         util/ferm/antisymtensor.cc \
         util/ferm/symtensor.cc
