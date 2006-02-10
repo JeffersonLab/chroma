@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.44 2006-02-09 03:50:41 edwards Exp $
+# $Id: Makefile.in,v 2.45 2006-02-10 02:44:25 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -269,6 +269,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
+	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_w.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
@@ -353,6 +354,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
 	util/ferm/gammasgn_w.cc util/ferm/antisymtensor.cc \
 	util/ferm/symtensor.cc io/inline_io.cc \
 	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
@@ -388,6 +391,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron_s/util_compute_singlet_ps.cc \
 	meas/inline/hadron_s/util_compute_meson_s.cc \
 	meas/inline/hadron_s/util_compute_8_pions_s.cc \
+	meas/inline/hadron_s/util_compute_8_scalars_s.cc \
+	meas/inline/hadron_s/util_compute_8_vectors_s.cc \
 	meas/inline/hadron_s/util_baryon_s.cc \
 	meas/inline/io/inline_io_aggregate.cc \
 	meas/inline/io/inline_qio_read_obj.cc \
@@ -558,7 +563,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	unprec_hamberwu_fermact_w.$(OBJEXT) \
 	unprec_w12_fermact_w.$(OBJEXT) \
 	unprec_wilson_fermact_w.$(OBJEXT) \
-	unprec_zolo_nef_fermact_array_w.$(OBJEXT) fermbcs_w.$(OBJEXT) \
+	unprec_zolo_nef_fermact_array_w.$(OBJEXT) \
+	poly_cheb_fermact_w.$(OBJEXT) fermbcs_w.$(OBJEXT) \
 	simple_fermbc_w.$(OBJEXT) twisted_fermbc_w.$(OBJEXT) \
 	inv_borici_w.$(OBJEXT) dwffld_w.$(OBJEXT) lDeltaLs_w.$(OBJEXT) \
 	lg5eps_double_pass_w.$(OBJEXT) lg5eps_w.$(OBJEXT) \
@@ -625,6 +631,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	two_flavor_hasenbusch_monomial_params_w.$(OBJEXT) \
 	unprec_two_flavor_hasenbusch_monomial_w.$(OBJEXT) \
 	prec_constdet_two_flavor_hasenbusch_monomial_w.$(OBJEXT) \
+	prec_constdet_two_flavor_polynomial_monomial_w.$(OBJEXT) \
+	prec_constdet_two_flavor_polyprec_monomial_w.$(OBJEXT) \
 	gammasgn_w.$(OBJEXT) antisymtensor.$(OBJEXT) \
 	symtensor.$(OBJEXT) inline_io.$(OBJEXT) \
 	inline_aggregate.$(OBJEXT) make_xml_file.$(OBJEXT) \
@@ -649,7 +657,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	util_compute_quark_prop_s.$(OBJEXT) \
 	util_compute_singlet_ps.$(OBJEXT) \
 	util_compute_meson_s.$(OBJEXT) \
-	util_compute_8_pions_s.$(OBJEXT) util_baryon_s.$(OBJEXT) \
+	util_compute_8_pions_s.$(OBJEXT) \
+	util_compute_8_scalars_s.$(OBJEXT) \
+	util_compute_8_vectors_s.$(OBJEXT) util_baryon_s.$(OBJEXT) \
 	inline_io_aggregate.$(OBJEXT) inline_qio_read_obj.$(OBJEXT) \
 	inline_qio_write_obj.$(OBJEXT) \
 	inline_qio_write_erase_obj.$(OBJEXT) \
@@ -694,9 +704,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	prec_constdet_linop.h prec_logdet_linop.h lmdagm.h \
 	objfactory.h objfunctor.h primitives.h singleton.h state.h \
 	typeinfo.h typelist.h typemanip.h typetraits.h named_obj.h \
-	actions/actions.h actions/boson/boson.h \
-	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
-	actions/ferm/fermacts/asqtad_state.h \
+	polyfermact.h polylinop.h tpreclinop.h actions/actions.h \
+	actions/boson/boson.h actions/boson/operator/klein_gord.h \
+	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/bigfloat.h actions/ferm/fermacts/remez.h \
 	actions/ferm/fermacts/remez_coeff.h \
@@ -887,6 +897,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/ovext_constant_strategy.h \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.h \
 	actions/ferm/fermacts/ovext_neuberger_strategy.h \
+	actions/ferm/fermacts/poly_cheb_fermact_w.h \
 	actions/ferm/fermbcs/fermbcs_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
@@ -942,7 +953,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/linop/ovlap_contfrac5d_w.h \
-	actions/ferm/qprop/qprop_w.h actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/linop/polynomial_op.h \
+	actions/ferm/linop/polprec_op.h actions/ferm/qprop/qprop_w.h \
+	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h \
@@ -988,6 +1001,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
 	util/ferm/gammasgn_w.h util/ferm/tdiractodr.h \
 	util/ferm/paulitodr.h util/ferm/antisymtensor.h \
@@ -1233,9 +1250,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	linearop.h eo_prec_linop.h prec_constdet_linop.h \
 	prec_logdet_linop.h lmdagm.h objfactory.h objfunctor.h \
 	primitives.h singleton.h state.h typeinfo.h typelist.h \
-	typemanip.h typetraits.h named_obj.h actions/actions.h \
-	actions/boson/boson.h actions/boson/operator/klein_gord.h \
-	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
+	typemanip.h typetraits.h named_obj.h polyfermact.h polylinop.h \
+	tpreclinop.h actions/actions.h actions/boson/boson.h \
+	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
+	actions/ferm/fermacts/asqtad_state.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/bigfloat.h actions/ferm/fermacts/remez.h \
 	actions/ferm/fermacts/remez_coeff.h \
@@ -1426,6 +1444,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/ovext_constant_strategy.h \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.h \
 	actions/ferm/fermacts/ovext_neuberger_strategy.h \
+	actions/ferm/fermacts/poly_cheb_fermact_w.h \
 	actions/ferm/fermbcs/fermbcs_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
@@ -1481,7 +1500,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.h \
 	actions/ferm/linop/ovlap_contfrac5d_w.h \
-	actions/ferm/qprop/qprop_w.h actions/ferm/qprop/quarkprop4_w.h \
+	actions/ferm/linop/polynomial_op.h \
+	actions/ferm/linop/polprec_op.h actions/ferm/qprop/qprop_w.h \
+	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h \
@@ -1527,6 +1548,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
 	util/ferm/gammasgn_w.h util/ferm/tdiractodr.h \
 	util/ferm/paulitodr.h util/ferm/antisymtensor.h \
@@ -1824,6 +1849,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
+	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_w.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
@@ -1908,6 +1934,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
 	util/ferm/gammasgn_w.cc util/ferm/antisymtensor.cc \
 	util/ferm/symtensor.cc io/inline_io.cc \
 	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
@@ -1943,6 +1971,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron_s/util_compute_singlet_ps.cc \
 	meas/inline/hadron_s/util_compute_meson_s.cc \
 	meas/inline/hadron_s/util_compute_8_pions_s.cc \
+	meas/inline/hadron_s/util_compute_8_scalars_s.cc \
+	meas/inline/hadron_s/util_compute_8_vectors_s.cc \
 	meas/inline/hadron_s/util_baryon_s.cc \
 	meas/inline/io/inline_io_aggregate.cc \
 	meas/inline/io/inline_qio_read_obj.cc \
@@ -2306,6 +2336,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plaq_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poly_cheb_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_clover_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_clover_linop_w.Po@am__quote@
@@ -2314,6 +2345,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_constdet_two_flavor_hasenbusch_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_constdet_two_flavor_monomial5d_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_constdet_two_flavor_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_dwf_qprop_array_altivec_w.Po@am__quote@
@@ -2451,6 +2484,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_baryon_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_compute_8_pions_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_compute_8_scalars_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_compute_8_vectors_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_compute_meson_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_compute_quark_prop_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_compute_singlet_ps.Po@am__quote@
@@ -5418,6 +5453,20 @@ unprec_zolo_nef_fermact_array_w.obj: actions/ferm/fermacts/unprec_zolo_nef_ferma
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_zolo_nef_fermact_array_w.obj `if test -f 'actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc'; fi`
 
+poly_cheb_fermact_w.o: actions/ferm/fermacts/poly_cheb_fermact_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT poly_cheb_fermact_w.o -MD -MP -MF "$(DEPDIR)/poly_cheb_fermact_w.Tpo" -c -o poly_cheb_fermact_w.o `test -f 'actions/ferm/fermacts/poly_cheb_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/poly_cheb_fermact_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/poly_cheb_fermact_w.Tpo" "$(DEPDIR)/poly_cheb_fermact_w.Po"; else rm -f "$(DEPDIR)/poly_cheb_fermact_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/poly_cheb_fermact_w.cc' object='poly_cheb_fermact_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o poly_cheb_fermact_w.o `test -f 'actions/ferm/fermacts/poly_cheb_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/poly_cheb_fermact_w.cc
+
+poly_cheb_fermact_w.obj: actions/ferm/fermacts/poly_cheb_fermact_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT poly_cheb_fermact_w.obj -MD -MP -MF "$(DEPDIR)/poly_cheb_fermact_w.Tpo" -c -o poly_cheb_fermact_w.obj `if test -f 'actions/ferm/fermacts/poly_cheb_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/poly_cheb_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/poly_cheb_fermact_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/poly_cheb_fermact_w.Tpo" "$(DEPDIR)/poly_cheb_fermact_w.Po"; else rm -f "$(DEPDIR)/poly_cheb_fermact_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/poly_cheb_fermact_w.cc' object='poly_cheb_fermact_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o poly_cheb_fermact_w.obj `if test -f 'actions/ferm/fermacts/poly_cheb_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/poly_cheb_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/poly_cheb_fermact_w.cc'; fi`
+
 fermbcs_w.o: actions/ferm/fermbcs/fermbcs_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fermbcs_w.o -MD -MP -MF "$(DEPDIR)/fermbcs_w.Tpo" -c -o fermbcs_w.o `test -f 'actions/ferm/fermbcs/fermbcs_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/fermbcs_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fermbcs_w.Tpo" "$(DEPDIR)/fermbcs_w.Po"; else rm -f "$(DEPDIR)/fermbcs_w.Tpo"; exit 1; fi
@@ -6846,6 +6895,34 @@ prec_constdet_two_flavor_hasenbusch_monomial_w.obj: update/molecdyn/monomial/pre
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_constdet_two_flavor_hasenbusch_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc'; fi`
 
+prec_constdet_two_flavor_polynomial_monomial_w.o: update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_constdet_two_flavor_polynomial_monomial_w.o -MD -MP -MF "$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Tpo" -c -o prec_constdet_two_flavor_polynomial_monomial_w.o `test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Tpo" "$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc' object='prec_constdet_two_flavor_polynomial_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_constdet_two_flavor_polynomial_monomial_w.o `test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc
+
+prec_constdet_two_flavor_polynomial_monomial_w.obj: update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_constdet_two_flavor_polynomial_monomial_w.obj -MD -MP -MF "$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Tpo" -c -o prec_constdet_two_flavor_polynomial_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Tpo" "$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_constdet_two_flavor_polynomial_monomial_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc' object='prec_constdet_two_flavor_polynomial_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_constdet_two_flavor_polynomial_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc'; fi`
+
+prec_constdet_two_flavor_polyprec_monomial_w.o: update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_constdet_two_flavor_polyprec_monomial_w.o -MD -MP -MF "$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Tpo" -c -o prec_constdet_two_flavor_polyprec_monomial_w.o `test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Tpo" "$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc' object='prec_constdet_two_flavor_polyprec_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_constdet_two_flavor_polyprec_monomial_w.o `test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc
+
+prec_constdet_two_flavor_polyprec_monomial_w.obj: update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_constdet_two_flavor_polyprec_monomial_w.obj -MD -MP -MF "$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Tpo" -c -o prec_constdet_two_flavor_polyprec_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Tpo" "$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_constdet_two_flavor_polyprec_monomial_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc' object='prec_constdet_two_flavor_polyprec_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_constdet_two_flavor_polyprec_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; fi`
+
 gammasgn_w.o: util/ferm/gammasgn_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gammasgn_w.o -MD -MP -MF "$(DEPDIR)/gammasgn_w.Tpo" -c -o gammasgn_w.o `test -f 'util/ferm/gammasgn_w.cc' || echo '$(srcdir)/'`util/ferm/gammasgn_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gammasgn_w.Tpo" "$(DEPDIR)/gammasgn_w.Po"; else rm -f "$(DEPDIR)/gammasgn_w.Tpo"; exit 1; fi
@@ -7377,6 +7454,34 @@ util_compute_8_pions_s.obj: meas/inline/hadron_s/util_compute_8_pions_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/util_compute_8_pions_s.cc' object='util_compute_8_pions_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o util_compute_8_pions_s.obj `if test -f 'meas/inline/hadron_s/util_compute_8_pions_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/util_compute_8_pions_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/util_compute_8_pions_s.cc'; fi`
+
+util_compute_8_scalars_s.o: meas/inline/hadron_s/util_compute_8_scalars_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util_compute_8_scalars_s.o -MD -MP -MF "$(DEPDIR)/util_compute_8_scalars_s.Tpo" -c -o util_compute_8_scalars_s.o `test -f 'meas/inline/hadron_s/util_compute_8_scalars_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/util_compute_8_scalars_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/util_compute_8_scalars_s.Tpo" "$(DEPDIR)/util_compute_8_scalars_s.Po"; else rm -f "$(DEPDIR)/util_compute_8_scalars_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/util_compute_8_scalars_s.cc' object='util_compute_8_scalars_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o util_compute_8_scalars_s.o `test -f 'meas/inline/hadron_s/util_compute_8_scalars_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/util_compute_8_scalars_s.cc
+
+util_compute_8_scalars_s.obj: meas/inline/hadron_s/util_compute_8_scalars_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util_compute_8_scalars_s.obj -MD -MP -MF "$(DEPDIR)/util_compute_8_scalars_s.Tpo" -c -o util_compute_8_scalars_s.obj `if test -f 'meas/inline/hadron_s/util_compute_8_scalars_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/util_compute_8_scalars_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/util_compute_8_scalars_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/util_compute_8_scalars_s.Tpo" "$(DEPDIR)/util_compute_8_scalars_s.Po"; else rm -f "$(DEPDIR)/util_compute_8_scalars_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/util_compute_8_scalars_s.cc' object='util_compute_8_scalars_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o util_compute_8_scalars_s.obj `if test -f 'meas/inline/hadron_s/util_compute_8_scalars_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/util_compute_8_scalars_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/util_compute_8_scalars_s.cc'; fi`
+
+util_compute_8_vectors_s.o: meas/inline/hadron_s/util_compute_8_vectors_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util_compute_8_vectors_s.o -MD -MP -MF "$(DEPDIR)/util_compute_8_vectors_s.Tpo" -c -o util_compute_8_vectors_s.o `test -f 'meas/inline/hadron_s/util_compute_8_vectors_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/util_compute_8_vectors_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/util_compute_8_vectors_s.Tpo" "$(DEPDIR)/util_compute_8_vectors_s.Po"; else rm -f "$(DEPDIR)/util_compute_8_vectors_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/util_compute_8_vectors_s.cc' object='util_compute_8_vectors_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o util_compute_8_vectors_s.o `test -f 'meas/inline/hadron_s/util_compute_8_vectors_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/util_compute_8_vectors_s.cc
+
+util_compute_8_vectors_s.obj: meas/inline/hadron_s/util_compute_8_vectors_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util_compute_8_vectors_s.obj -MD -MP -MF "$(DEPDIR)/util_compute_8_vectors_s.Tpo" -c -o util_compute_8_vectors_s.obj `if test -f 'meas/inline/hadron_s/util_compute_8_vectors_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/util_compute_8_vectors_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/util_compute_8_vectors_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/util_compute_8_vectors_s.Tpo" "$(DEPDIR)/util_compute_8_vectors_s.Po"; else rm -f "$(DEPDIR)/util_compute_8_vectors_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/util_compute_8_vectors_s.cc' object='util_compute_8_vectors_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o util_compute_8_vectors_s.obj `if test -f 'meas/inline/hadron_s/util_compute_8_vectors_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/util_compute_8_vectors_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/util_compute_8_vectors_s.cc'; fi`
 
 util_baryon_s.o: meas/inline/hadron_s/util_baryon_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util_baryon_s.o -MD -MP -MF "$(DEPDIR)/util_baryon_s.Tpo" -c -o util_baryon_s.o `test -f 'meas/inline/hadron_s/util_baryon_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/util_baryon_s.cc; \
