@@ -1,4 +1,4 @@
-// $Id: derivmesonseqsrc_w.cc,v 2.3 2006-02-09 04:43:45 edwards Exp $
+// $Id: derivmesonseqsrc_w.cc,v 2.4 2006-02-10 02:51:57 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -185,7 +185,7 @@ namespace Chroma
       }
 
 #if 0
-      //! Construct pion_1-(PIONxNabla_T1) sequential source
+      //! Construct pion_1-(PionxNabla_T1) sequential source
       HadronSeqSource<LatticePropagator>* mesPionPionxNablaT1SeqSrc(XMLReader& xml_in,
 								    const std::string& path)
       {
