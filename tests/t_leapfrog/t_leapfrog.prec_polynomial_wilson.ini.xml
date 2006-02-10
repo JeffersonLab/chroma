@@ -32,7 +32,7 @@
           <PolyParams>
             <degree>4</degree>
             <UpperBound>1</UpperBound>
-            <LowerBound>1</LowerBound>
+            <LowerBound>2</LowerBound>
             <order>1</order>
           </PolyParams>
         </FermionAction>
@@ -67,7 +67,7 @@
           <PolyParams>
             <degree>4</degree>
             <UpperBound>1</UpperBound>
-            <LowerBound>1</LowerBound>
+            <LowerBound>2</LowerBound>
             <order>1</order>
           </PolyParams>
         </FermionAction>
