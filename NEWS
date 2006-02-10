@@ -1,5 +1,7 @@
 01/03/2006 -- Robert Edwards
-	Version 2.8.3. Fixed up spectrum projectors.
+	Version 2.9.0. Overhauls of fermion action classes and monomials. More to
+        go. Overhauled sequential source and morphed into an object factory. More
+        seqsources coming. Added start of polynomial preconditioning monomials.
 
 01/03/2006 -- Robert Edwards
 	Version 2.8.2. Fixed clover builds and turned back on.
