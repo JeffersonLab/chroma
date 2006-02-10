@@ -1,4 +1,4 @@
-// $Id: poly_cheb_fermact_w.cc,v 2.1 2006-02-09 22:27:01 edwards Exp $
+// $Id: poly_cheb_fermact_w.cc,v 2.2 2006-02-10 02:45:29 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -54,7 +54,7 @@ namespace Chroma
 
     // Read the chebyshev params
     {
-      XMLReader chebtop(xml, "PolyParams");
+      XMLReader chebtop(paramtop, "PolyParams");
       read(chebtop, "degree", polyParams.degree);
       read(chebtop, "UpperBound", polyParams.UpperBound);
       read(chebtop, "LowerBound", polyParams.LowerBound);
@@ -64,9 +64,9 @@ namespace Chroma
     // Read the underlying fermion action
     try 
     { 
-      if(in.count("AuxFermAct") == 1 )
+      if(paramtop.count("AuxFermAct") == 1 )
       { 
-	XMLReader xml_tmp(in, "AuxFermAct");
+	XMLReader xml_tmp(paramtop, "AuxFermAct");
 	std::ostringstream os;
 	xml_tmp.print(os);
 	AuxFermAct = os.str();
@@ -77,7 +77,7 @@ namespace Chroma
       }
     }
     catch(const string& e) {
-      QDPIO::cerr << "Caught Exception reading Chebyshev Fermact params: " << e << endl;
+      QDPIO::cerr << PolyChebFermActEnv::name << ": Caught Exception reading params: " << e << endl;
       QDP_abort(1);
     }
 
@@ -91,19 +91,14 @@ namespace Chroma
   }
 
 
-  //! Initializer
-  void
-  PolyChebFermAct::init()
+  //! General FermBC
+  PolyChebFermAct::PolyChebFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+				   const PolyChebFermActParams& param_) : fbc(fbc_), param(param_)
   {
     QDPIO::cout << "Constructing PolyChebFermAct from params" << endl;
     std::istringstream  xml_s(param.AuxFermAct);
     XMLReader  fermacttop(xml_s);
     const string fermact_path = "/AuxFermAct";
-
-    struct UnprecCastFailure {
-      UnprecCastFailure(std::string e) : auxfermact(e) {};
-      const string auxfermact;
-    };
 
     try
     {
@@ -112,38 +107,16 @@ namespace Chroma
       QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
 
       // Generic Wilson-Type stuff
-      FermionAction<LatticeFermion>* S_f =
-	TheFermionActionFactory::Instance().createObject(auxfermact,
-							 fermacttop,
-							 fermact_path);
+      Handle< const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
+	S_f(TheWilsonTypeFermActFactory::Instance().createObject(auxfermact,
+								 fermacttop,
+								 fermact_path));
 
-      UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* S_aux; 
-      S_aux = dynamic_cast<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);
-
-      // Dumbass User specifies something that is not UnpreWilsonTypeFermAct
-      // dynamic_cast MUST be checked for 0
-      if( S_aux == 0 ) throw UnprecCastFailure(auxfermact);
-     
-
-      // Drop AuxFermAct into a Handle immediately.
-      // This should free things up at the end
-      Handle<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >  S_w(S_aux);
-      fermact = S_w;
+      fermact = S_f;
     }
-    catch( const UnprecCastFailure& e) 
-    {
-      // Breakage Scenario
-      QDPIO::cerr << "Unable to upcast auxiliary fermion action to "
-		  << "UnprecWilsonTypeFermAct " << endl;
-//      QDPIO::cerr << OvlapPartFrac4DFermActEnv::name << " does not support even-odd preconditioned "
-//		  << "auxiliary FermActs" << endl;
-      QDPIO::cerr << "You passed : " << endl;
-      QDPIO::cerr << e.auxfermact << endl;
-      QDP_abort(1);
-    }
-    catch (const std::exception& e) {
+    catch (const std::string& e) {
       // General breakage Scenario
-      QDPIO::cerr << "Error reading data: " << e.what() << endl;
+      QDPIO::cerr << "Error reading data: " << e << endl;
       throw;
     }
 
@@ -171,17 +144,17 @@ namespace Chroma
   }
 
   //! Produce a linear operator for this action
-  const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
+  const PolyLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
   PolyChebFermAct::polyLinOp(Handle<const ConnectState> state) const
   {
     Handle< const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > 
       MdagM(fermact->lMdagM(state));
 
     return new lpoly< LatticeFermion, multi1d<LatticeColorMatrix> >(MdagM,
-								    param.degree, 
-								    param.LowerBound, 
-								    param.UpperBound, 
-								    param.order);
+								    param.polyParams.degree, 
+								    param.polyParams.LowerBound, 
+								    param.polyParams.UpperBound, 
+								    param.polyParams.order);
   }
 
   //! Produce a linear operator for this action
@@ -194,7 +167,7 @@ namespace Chroma
     Handle< const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > 
       Pol(polyLinOp(state));
 
-    return new lpoly< LatticeFermion, multi1d<LatticeColorMatrix> >(M, Pol);
+    return new PolyPrec< LatticeFermion, multi1d<LatticeColorMatrix> >(M, Pol);
   }
 
 }

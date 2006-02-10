@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 1.1 2006-02-06 19:05:48 kostas Exp $
+// $Id: polynomial_op.h,v 1.2 2006-02-10 02:45:29 edwards Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
  *    to 1/Q^2 in the range [\mu, Lambda_max] with Q = \gamma5 M
@@ -15,13 +15,14 @@
 
 #include "handle.h"
 #include "linearop.h"
+#include "polylinop.h"
 
 using namespace QDP::Hints;
 
 namespace Chroma 
 {
 template<typename T, typename P>
-class lpoly: public DiffLinearOperator<T,P>
+class lpoly: public PolyLinearOperator<T,P>
 {
 private:
  const Handle<const DiffLinearOperator<T,P> > M;   // this is the operator
@@ -110,7 +111,7 @@ public:
      (*M)(y,t,MINUS);
    }
 
-   void ApplyChebInv(T& x, const T& b) const 
+   void applyChebInv(T& x, const T& b) const 
    {
      //Chi has the initial guess as it comes in
      //b is the right hand side
@@ -146,7 +147,7 @@ public:
        sigma_m_minus_one = sigma_m ;
        sigma_m = sigma_m_plus_one ;
      }
-     QDPIO::cout<<"ApplyChebInv: iter: "<<m<<" 1/sigma: "<<1.0/sigma_m<<endl ;
+     QDPIO::cout<<"applyChebInv: iter: "<<m<<" 1/sigma: "<<1.0/sigma_m<<endl ;
 
    }
 
@@ -155,12 +156,12 @@ public:
    void operator()(T& chi, const T& b, PlusMinus isign) const 
    {
      chi = zero ; // zero the initial guess. This way P(Qsq)*b is produced     
-     ApplyChebInv(chi,b) ;
+     applyChebInv(chi,b) ;
    }
    
    //! Apply the A or A_dagger piece: P(Qsq) = A_dagger(Qsq) * A(Qsq) 
    // use the root representation here
-   void ApplyA(T& chi,const T& b, PlusMinus isign) const{
+   void applyA(T& chi,const T& b, PlusMinus isign) const{
 
      int start, end ;
      chi = b ;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: poly_cheb_fermact_w.h,v 2.1 2006-02-09 22:27:01 edwards Exp $
+// $Id: poly_cheb_fermact_w.h,v 2.2 2006-02-10 02:45:29 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -51,8 +51,7 @@ namespace Chroma
   public:
     //! General FermBC
     PolyChebFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
-		    const PolyChebFermActParams& param_) : 
-      fbc(fbc_), param(param_) {init();}
+		    const PolyChebFermActParams& param_);
 
     //! Copy constructor
     PolyChebFermAct(const PolyChebFermAct& a) : 
@@ -78,13 +77,12 @@ namespace Chroma
     const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* polyPrecLinOp(Handle<const ConnectState> state) const;
 
     //! Produce a linear operator M^dag.M for this action
-    const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* polyLinOp(Handle<const ConnectState> state) const;
+    const PolyLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* polyLinOp(Handle<const ConnectState> state) const;
 
     //! Destructor is automatic
     ~PolyChebFermAct() {}
 
   private:
-    void init();
     PolyChebFermAct() {} //hide default constructor
    
   private:
