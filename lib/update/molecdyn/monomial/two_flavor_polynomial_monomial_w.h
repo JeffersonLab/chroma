@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_polynomial_monomial_w.h,v 2.1 2006-02-09 22:26:41 edwards Exp $
+// $Id: two_flavor_polynomial_monomial_w.h,v 2.2 2006-02-10 02:45:55 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials
@@ -8,6 +8,7 @@
 #ifndef __two_flavor_polynomial_monomial_w_h__
 #define __two_flavor_polynomial_monomial_w_h__
 
+#include "polyfermact.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "actions/ferm/invert/invert.h"
@@ -31,7 +32,7 @@ namespace Chroma
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactPolynomialWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactPolynomialWilsonTypeFermMonomial() {}
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) = 0;
@@ -89,15 +90,15 @@ namespace Chroma
       push(xml_out, "TwoFlavorExactPolynomialWilsonTypeFermMonomial");
       
       // Get at the ferion action for piece i
-      const PolyWilsonTypeFermAct<Phi,P>& S_f = getFermAct();
+      const PolyWilsonTypeFermAct<Phi,P>& FA = getFermAct();
       
       // Create a Connect State, apply fermionic boundaries
-      Handle< const ConnectState > f_state(S_f.createState(field_state.getQ()));
+      Handle< const ConnectState > f_state(FA.createState(field_state.getQ()));
       
       // Create a linear operator
-      Handle< const LinearOperator<Phi> > MdagM(S_f.lMdagM(f_state));
-      Handle< const LinearOperator<Phi> > Poly(S_f.polyLinOp(f_state));
-      Handle< const LinearOperator<Phi> > PolyPrec(S_f.polyPrecLinOp(state));
+      Handle< const LinearOperator<Phi> > MdagM(FA.lMdagM(f_state));
+      Handle< const LinearOperator<Phi> > PolyPrec(FA.polyPrecLinOp(f_state));
+      Handle< const PolyLinearOperator<Phi,P> > Poly(FA.polyLinOp(f_state));
       
       Phi eta=zero;
       
@@ -109,7 +110,7 @@ namespace Chroma
       
       // Now HIT IT with the ROCK!!!! (Or in this case H)
       Phi tmp1, tmp2;
-      Poly->ApplyA(tmp1, eta, MINUS);
+      Poly->applyA(tmp1, eta, MINUS);
       (*MdagM)(tmp2, tmp1, PLUS);
 
       // Solve [Q*P(Q^2)*Q]^{-1} tmp2 = phi
@@ -185,11 +186,11 @@ namespace Chroma
    * so called TwoFlavorExactPolynomial monomial.
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactPolynomialUnprecWilsonTypeFermMonomial : public TwoFlavorExactPolynomialWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactUnprecPolynomialWilsonTypeFermMonomial : public TwoFlavorExactPolynomialWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactPolynomialUnprecWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactUnprecPolynomialWilsonTypeFermMonomial() {}
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s)
@@ -247,11 +248,11 @@ namespace Chroma
    * Can supply a default dsdq algorithm
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactPolynomialEvenOddPrecWilsonTypeFermMonomial : public TwoFlavorExactPolynomialWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecPolynomialWilsonTypeFermMonomial : public TwoFlavorExactPolynomialWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactPolynomialEvenOddPrecWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactEvenOddPrecPolynomialWilsonTypeFermMonomial() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
@@ -321,11 +322,11 @@ namespace Chroma
    * Constand even even determinant so can supplyt
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactPolynomialEvenOddPrecConstDetWilsonTypeFermMonomial : public TwoFlavorExactPolynomialEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecConstDetPolynomialWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecPolynomialWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactPolynomialEvenOddPrecConstDetWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactEvenOddPrecConstDetPolynomialWilsonTypeFermMonomial() {}
 
     //! Even even contribution (eg For this kind of Monomial it is 0)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) {

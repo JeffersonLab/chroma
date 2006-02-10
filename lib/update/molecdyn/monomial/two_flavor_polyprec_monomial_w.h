@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_polyprec_monomial_w.h,v 2.1 2006-02-09 22:26:41 edwards Exp $
+// $Id: two_flavor_polyprec_monomial_w.h,v 2.2 2006-02-10 02:45:55 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials
@@ -8,6 +8,7 @@
 #ifndef __two_flavor_polyprec_monomial_w_h__
 #define __two_flavor_polyprec_monomial_w_h__
 
+#include "polyfermact.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "actions/ferm/invert/invert.h"
@@ -31,7 +32,7 @@ namespace Chroma
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactPolyPrecWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactPolyPrecWilsonTypeFermMonomial() {}
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) = 0;
@@ -46,7 +47,7 @@ namespace Chroma
 
       /**** Identical code for unprec and even-odd prec case *****/
       
-      // S_f  chi^dag*(M^dag*M)^(-1)*chi     
+      // S_f =  chi^dag*(M^dag*M)^(-1)*chi     
       // Here, M is some operator.
       //
       // Need
@@ -93,14 +94,14 @@ namespace Chroma
       // Heatbath all the fields
       
       // Get at the ferion action for piece i
-      const PolyWilsonTypeFermAct<Phi,P>& S_f = getFermAct();
+      const PolyWilsonTypeFermAct<Phi,P>& FA = getFermAct();
       
       // Create a Connect State, apply fermionic boundaries
-      Handle< const ConnectState > f_state(S_f.createState(field_state.getQ()));
+      Handle< const ConnectState > f_state(FA.createState(field_state.getQ()));
       
       // Create a linear operator
-      Handle< const LinearOperator<Phi> > H(S_f.hermitianLinOp(f_state));
-      Handle< const LinearOperator<Phi> > Poly(S_f.polyLinOp(f_state));
+      Handle< const LinearOperator<Phi> > H(FA.hermitianLinOp(f_state));
+      Handle< const PolyLinearOperator<Phi,P> > Poly(FA.polyLinOp(f_state));
       
       Phi eta=zero;
       
@@ -113,7 +114,7 @@ namespace Chroma
       // Now HIT IT with the ROCK!!!! (Or in this case H)
       Phi tmp;
       (*H)(tmp, eta, PLUS);
-      Poly->ApplyA(getPhi(), tmp, PLUS);
+      Poly->applyA(getPhi(), tmp, PLUS);
       getMDSolutionPredictor().reset();
     }				    
   
@@ -181,8 +182,8 @@ namespace Chroma
     {
       const InvertParam_t& inv_param = getInvParams();
 
-      // Upcast the fermact
-      const FermAct4D<Phi>& FA = getFermAct();
+      // Grab the fermact
+      const PolyWilsonTypeFermAct<Phi,P>& FA = getFermAct();
 
       // Make the state
       Handle< const ConnectState > state(FA.createState(s.getQ()));
@@ -228,11 +229,11 @@ namespace Chroma
    * so called TwoFlavorExactPolyPrec monomial.
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactPolyPrecUnprecWilsonTypeFermMonomial : public TwoFlavorExactPolyPrecWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactUnprecPolyPrecWilsonTypeFermMonomial : public TwoFlavorExactPolyPrecWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactPolyPrecUnprecWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactUnprecPolyPrecWilsonTypeFermMonomial() {}
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s)
@@ -286,11 +287,11 @@ namespace Chroma
    * Can supply a default dsdq algorithm
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactPolyPrecEvenOddPrecWilsonTypeFermMonomial : public TwoFlavorExactPolyPrecWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecPolyPrecWilsonTypeFermMonomial : public TwoFlavorExactPolyPrecWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactPolyPrecEvenOddPrecWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactEvenOddPrecPolyPrecWilsonTypeFermMonomial() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
@@ -306,7 +307,7 @@ namespace Chroma
       Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const EvenOddPrecLinearOperator<Phi,P> > lin(FA.linOp(bc_g_state));
+      Handle< const LinearOperator<Phi> > lin(FA.linOp(bc_g_state));
       // Get the X fields
       Phi X;
 
@@ -363,11 +364,11 @@ namespace Chroma
    * Constand even even determinant so can supplyt
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactPolyPrecEvenOddPrecConstDetWilsonTypeFermMonomial : public TwoFlavorExactPolyPrecEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecConstDetPolyPrecWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecPolyPrecWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactPolyPrecEvenOddPrecConstDetWilsonTypeFermMonomial() {}
+    virtual ~TwoFlavorExactEvenOddPrecConstDetPolyPrecWilsonTypeFermMonomial() {}
 
     //! Even even contribution (eg For this kind of Monomial it is 0)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
