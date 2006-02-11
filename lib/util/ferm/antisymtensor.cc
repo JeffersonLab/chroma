@@ -1,4 +1,4 @@
-// $Id: antisymtensor.cc,v 1.2 2006-02-09 02:24:07 edwards Exp $
+// $Id: antisymtensor.cc,v 1.3 2006-02-11 17:23:06 edwards Exp $
 /*! \file
  *  \brief Compute anti-symmetric tensors
  */
@@ -20,8 +20,6 @@ namespace Chroma
     //! Init gamma matrix multiplication table factors
     /*!
      * \ingroup ferm
-     *
-     * Initialize signs needed for  Gamma(n)*Gamma(m)=sgn(n,m)*Gamma(n ^ m)
      */
     void antiSymTensor3dInit()
     {
