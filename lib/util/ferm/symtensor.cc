@@ -1,4 +1,4 @@
-// $Id: symtensor.cc,v 1.2 2006-02-11 17:22:55 edwards Exp $
+// $Id: symtensor.cc,v 1.3 2006-02-11 21:18:14 edwards Exp $
 /*! \file
  *  \brief Compute symmetric tensors
  */
@@ -56,6 +56,13 @@ namespace Chroma
   {
     if (! initP)
       symTensor3dInit();
+
+    if (i < 0 || i > 2 || j < 0 || j > 2 || k < 0 || k > 2)
+    {
+      QDPIO::cerr << __func__ << ": indices out of bounds: i,j,k=" 
+		  << i << " " << j << " " << k << endl;
+      QDP_abort(1);
+    }
 
     return sym_tensor3d(i,j,k);
   }
