@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: derivmesonseqsrc_w.h,v 2.4 2006-02-11 02:34:09 edwards Exp $
+// $Id: derivmesonseqsrc_w.h,v 2.5 2006-02-11 21:18:39 edwards Exp $
 /*! \file
  *  \brief Construct derivative meson sequential sources.
  *
@@ -93,13 +93,43 @@ namespace Chroma
     };
 
 
+    //! Construct pion_1-(A0xNabla_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a0 x nabla_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \nabla_i\f$
+     */
+    class MesPionA0xNablaT1SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionA0xNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionA0xNablaT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionA0xNablaT1SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
     //! Construct pion_1-(A0_2xNabla_T1) sequential source
     /*!
      * \ingroup hadron
      *
-     * Operator is  a0 x nabla_T2
+     * Operator is  a0_2 x nabla_T1
      * The sink interpolator is   
-     * \f$\Gamma_f \equiv \nabla_i\f$
+     * \f$\Gamma_f \equiv \gamma_4 \nabla_i\f$
      */
     class MesPionA02xNablaT1SeqSrc : public HadronSeqSource<LatticePropagator>
     {
@@ -728,7 +758,7 @@ namespace Chroma
      *
      * Operator is  pion x B_T1
      * The sink interpolator is   
-     * \f$\Gamma_f \equiv \gamma_5 D_i\f$  
+     * \f$\Gamma_f \equiv \gamma_5 B_i\f$  
      */
     class MesPionPionxBT1SeqSrc : public HadronSeqSource<LatticePropagator>
     {

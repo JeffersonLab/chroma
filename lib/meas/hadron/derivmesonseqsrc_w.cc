@@ -1,4 +1,4 @@
-// $Id: derivmesonseqsrc_w.cc,v 2.6 2006-02-11 04:37:40 edwards Exp $
+// $Id: derivmesonseqsrc_w.cc,v 2.7 2006-02-11 21:18:39 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -8,6 +8,7 @@
 
 #include "util/ferm/symtensor.h"
 #include "util/ferm/antisymtensor.h"
+#include "util/ferm/etensor.h"
 
 namespace Chroma 
 {
@@ -182,6 +183,13 @@ namespace Chroma
 								    const std::string& path)
       {
 	return new MesPionPionxNablaT1SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(A0xNabla_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionA0xNablaT1SeqSrc(XMLReader& xml_in,
+								  const std::string& path)
+      {
+	return new MesPionA0xNablaT1SeqSrc(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A0_2xNabla_T1) sequential source
@@ -483,8 +491,366 @@ namespace Chroma
     }
 
 
-    // Construct pion_1-(A2=A1xD_T2) sequential source
+    // Construct pion_1-(PionxNabla_T1) sequential source
     // See corresponding .h file for doxygen comments
+    LatticePropagator
+    MesPionPionxNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					  const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+      const int G5 = Ns*Ns-1;
+
+      check1Args("MesPionPionxNablaT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      fin = Gamma(G5) * leftNabla(tmp,u,params.deriv_dir,params.deriv_length);
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A0xNabla_T1) sequential source
+    // See corresponding .h file for doxygen comments
+    LatticePropagator
+    MesPionA0xNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+
+      check1Args("MesPionA0xNablaT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      fin = leftNabla(tmp,u,params.deriv_dir,params.deriv_length);
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A0_2xNabla_T1) sequential source
+    // See corresponding .h file for doxygen comments
+    LatticePropagator
+    MesPionA02xNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					 const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+
+      check1Args("MesPionA02xNablaT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+      
+      fin = Gamma(1 << 3) * leftNabla(tmp,u,params.deriv_dir,params.deriv_length);
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(RhoxNabla_A1) sequential source
+    LatticePropagator
+    MesPionRhoxNablaA1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					 const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+
+      check1Args("MesPionRhoxNablaA1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      for(int k=0; k < 3; ++k)
+	fin += Gamma(1 << k) * leftNabla(tmp,u,k,params.deriv_length);
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(RhoxNabla_T1) sequential source
+    LatticePropagator
+    MesPionRhoxNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					 const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+
+      check1Args("MesPionRhoxNablaT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftNabla(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(RhoxNabla_T2) sequential source
+    LatticePropagator
+    MesPionRhoxNablaT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					 const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+
+      check1Args("MesPionRhoxNablaT2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftNabla(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A1xNabla_A1) sequential source
+    LatticePropagator
+    MesPionA1xNablaA1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xNablaA1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5\gamma_i \nabla_i\f$  
+      for(int k=0; k < 3; ++k)
+	fin += Gamma(1 << k) * leftNabla(tmp,u,k,params.deriv_length);
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A1xNabla_T2) sequential source
+    LatticePropagator
+    MesPionA1xNablaT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xNablaT2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftNabla(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A1xNabla_E) sequential source
+    LatticePropagator
+    MesPionA1xNablaESeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				       const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xNablaESeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (ETensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftNabla(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(B1xNabla_T1) sequential source
+    LatticePropagator
+    MesPionB1xNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionB1xNablaT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5\epsilon_{ijk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A0_2xD_T2) sequential source
+    LatticePropagator
+    MesPionA02xDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+
+      check1Args("MesPionA02xDT2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_4 D_i\f$  
+      fin = Gamma(1 << 3) * leftD(tmp,u,params.deriv_dir,params.deriv_length);
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A1xD_A2) sequential source
+    LatticePropagator
+    MesPionA1xDA2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xDA2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      for(int k=0; k < 3; ++k)
+	fin += Gamma(1 << k) * leftD(tmp,u,k,params.deriv_length);
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A1xD_E) sequential source
+    LatticePropagator
+    MesPionA1xDESeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xDESeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (ETensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(A1xD_T1) sequential source
+    LatticePropagator
+    MesPionA1xDT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xDT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+    
+    // Construct pion_1-(A1xD_T2) sequential source
     LatticePropagator
     MesPionA1xDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
 				    const multi1d<LatticePropagator>& quark_propagators) const
@@ -498,17 +864,395 @@ namespace Chroma
 
       LatticePropagator tmp = adj(quark_propagators[0]);
 
-      // Slow implementation - to speed up could compute once the B_k deriv
+      // \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    tmp += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(B1xD_A2) sequential source
+    LatticePropagator
+    MesPionB1xDA2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionB1xDA2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i D_i\f$  
+      for(int k=0; k < 3; ++k)
+	fin += Gamma(1 << k) * leftD(tmp,u,k,params.deriv_length);
+
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(B1xD_E) sequential source
+    LatticePropagator
+    MesPionB1xDESeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionB1xDESeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+ 
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (ETensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	}
+
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(B1xD_T1) sequential source
+    LatticePropagator
+    MesPionB1xDT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionB1xDT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	}
+
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(B1xD_T2) sequential source
+    LatticePropagator
+    MesPionB1xDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionB1xDT2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 \epsilon_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	}
+
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(RhoxD_A2) sequential source
+    LatticePropagator
+    MesPionRhoxDA2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionRhoxDA2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_i D_i\f$  
+      for(int k=0; k < 3; ++k)
+	fin += Gamma(1 << k) * leftD(tmp,u,k,params.deriv_length);
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    //! Construct pion_1-(RhoxD_T1) sequential source
+    LatticePropagator
+    MesPionRhoxDT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionRhoxDT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
 	}
       
       END_CODE();
 
       return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    //! Construct pion_1-(RhoxD_T2) sequential source
+    LatticePropagator
+    MesPionRhoxDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionRhoxDT2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftD(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    // Construct pion_1-(PionxD_T2) sequential source
+    LatticePropagator
+    MesPionPionxDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				      const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionPionxDT2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
+      fin = Gamma(1 << 3) * (Gamma(G5) * leftD(tmp,u,params.deriv_dir,params.deriv_length));
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+ 
+    //! Construct pion_1-(PionxB_T1) sequential source
+    LatticePropagator
+    MesPionPionxBT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				      const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionPionxBT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5 B_i\f$  
+      fin = Gamma(G5) * leftB(tmp,u,params.deriv_dir,params.deriv_length);
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    //! Construct pion_1-(RhoxB_T1) sequential source
+    LatticePropagator
+    MesPionRhoxBT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionRhoxBT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j B_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftB(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    //! Construct pion_1-(RhoxB_T2) sequential source
+    LatticePropagator
+    MesPionRhoxBT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionRhoxBT2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv s_{ijk}\gamma_j B_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftB(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    //! Construct pion_1-(A1xB_A1) sequential source
+    LatticePropagator
+    MesPionA1xBA1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xBA1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5 \gamma_i B_i\f$  
+      for(int k=0; k < 3; ++k)
+	fin += Gamma(1 << k) * leftB(tmp,u,k,params.deriv_length);
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    //! Construct pion_1-(RhoxB_T1) sequential source
+    LatticePropagator
+    MesPionA1xBT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xBT1SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j B_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftB(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
+    }
+
+
+    //! Construct pion_1-(A1xB_T2) sequential source
+    LatticePropagator
+    MesPionA1xBT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      START_CODE();
+
+      LatticePropagator fin = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesPionA1xBT2SeqSrc", quark_propagators);
+
+      LatticePropagator tmp = adj(quark_propagators[0]);
+
+      // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j B_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(params.deriv_dir,j,k) != 0)
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * leftB(tmp,u,k,params.deriv_length));
+	}
+      
+      END_CODE();
+
+      return project(LatticePropagator(Gamma(G5) * fin), 
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
@@ -520,6 +1264,9 @@ namespace Chroma
       //! Register all the factories
       success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PIONxNABLA_T2"),
 										    mesPionA1xDT2SeqSrc);
+
+      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0xNABLA_T1"),
+										    mesPionA0xNablaT1SeqSrc);
 
       success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_2xNABLA_T1"),
 										    mesPionA02xNablaT1SeqSrc);
