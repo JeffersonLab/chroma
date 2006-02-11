@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.46 2006-02-10 02:50:19 edwards Exp $
+# $Id: Makefile.in,v 2.47 2006-02-11 21:19:14 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -357,7 +357,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
 	util/ferm/gammasgn_w.cc util/ferm/antisymtensor.cc \
-	util/ferm/symtensor.cc io/inline_io.cc \
+	util/ferm/etensor.cc util/ferm/symtensor.cc io/inline_io.cc \
 	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
@@ -633,7 +633,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	prec_constdet_two_flavor_hasenbusch_monomial_w.$(OBJEXT) \
 	prec_constdet_two_flavor_polynomial_monomial_w.$(OBJEXT) \
 	prec_constdet_two_flavor_polyprec_monomial_w.$(OBJEXT) \
-	gammasgn_w.$(OBJEXT) antisymtensor.$(OBJEXT) \
+	gammasgn_w.$(OBJEXT) antisymtensor.$(OBJEXT) etensor.$(OBJEXT) \
 	symtensor.$(OBJEXT) inline_io.$(OBJEXT) \
 	inline_aggregate.$(OBJEXT) make_xml_file.$(OBJEXT) \
 	inline_eig_aggregate.$(OBJEXT) inline_eigbnds.$(OBJEXT) \
@@ -1008,7 +1008,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
 	util/ferm/gammasgn_w.h util/ferm/tdiractodr.h \
 	util/ferm/paulitodr.h util/ferm/antisymtensor.h \
-	util/ferm/symtensor.h actions/ferm/fermacts/asqtad_fermact_s.h \
+	util/ferm/etensor.h util/ferm/symtensor.h \
+	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_s.h \
@@ -1555,7 +1556,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
 	util/ferm/gammasgn_w.h util/ferm/tdiractodr.h \
 	util/ferm/paulitodr.h util/ferm/antisymtensor.h \
-	util/ferm/symtensor.h actions/ferm/fermacts/asqtad_fermact_s.h \
+	util/ferm/etensor.h util/ferm/symtensor.h \
+	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_s.h \
@@ -1937,7 +1939,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
 	util/ferm/gammasgn_w.cc util/ferm/antisymtensor.cc \
-	util/ferm/symtensor.cc io/inline_io.cc \
+	util/ferm/etensor.cc util/ferm/symtensor.cc io/inline_io.cc \
 	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
@@ -2165,6 +2167,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_stochsrc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_wavetype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_wvfkind_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/etensor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expmat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expsu3.Po@am__quote@
@@ -6950,6 +6953,20 @@ antisymtensor.obj: util/ferm/antisymtensor.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/antisymtensor.cc' object='antisymtensor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o antisymtensor.obj `if test -f 'util/ferm/antisymtensor.cc'; then $(CYGPATH_W) 'util/ferm/antisymtensor.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/antisymtensor.cc'; fi`
+
+etensor.o: util/ferm/etensor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT etensor.o -MD -MP -MF "$(DEPDIR)/etensor.Tpo" -c -o etensor.o `test -f 'util/ferm/etensor.cc' || echo '$(srcdir)/'`util/ferm/etensor.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/etensor.Tpo" "$(DEPDIR)/etensor.Po"; else rm -f "$(DEPDIR)/etensor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/etensor.cc' object='etensor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o etensor.o `test -f 'util/ferm/etensor.cc' || echo '$(srcdir)/'`util/ferm/etensor.cc
+
+etensor.obj: util/ferm/etensor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT etensor.obj -MD -MP -MF "$(DEPDIR)/etensor.Tpo" -c -o etensor.obj `if test -f 'util/ferm/etensor.cc'; then $(CYGPATH_W) 'util/ferm/etensor.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/etensor.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/etensor.Tpo" "$(DEPDIR)/etensor.Po"; else rm -f "$(DEPDIR)/etensor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/etensor.cc' object='etensor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o etensor.obj `if test -f 'util/ferm/etensor.cc'; then $(CYGPATH_W) 'util/ferm/etensor.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/etensor.cc'; fi`
 
 symtensor.o: util/ferm/symtensor.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT symtensor.o -MD -MP -MF "$(DEPDIR)/symtensor.Tpo" -c -o symtensor.o `test -f 'util/ferm/symtensor.cc' || echo '$(srcdir)/'`util/ferm/symtensor.cc; \
