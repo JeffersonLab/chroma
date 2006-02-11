@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: derivmesonseqsrc_w.h,v 2.3 2006-02-10 02:51:57 edwards Exp $
+// $Id: derivmesonseqsrc_w.h,v 2.4 2006-02-11 02:34:09 edwards Exp $
 /*! \file
  *  \brief Construct derivative meson sequential sources.
  *
@@ -62,37 +62,6 @@ namespace Chroma
       int              j_decay;         /*!< Decay direction */
     };
 
-
-    //! Construct pion_1-(A2=A1xD_T2) sequential source
-    /*!
-     * \ingroup hadron
-     *
-     * Operator is  a1xD_T2
-     * The sink interpolator is   
-     * \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
-     */
-    class MesPionA1xDT2SeqSrc : public HadronSeqSource<LatticePropagator>
-    {
-    public:
-      //! Full constructor
-      MesPionA1xDT2SeqSrc(const ParamsDir& p) : params(p) {}
-
-      //! Default destructor
-      ~MesPionA1xDT2SeqSrc() {}
-      
-      //! Construct sequential source
-      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
-				   const multi1d<LatticePropagator>& forward_props) const;
-
-    private:
-      //! Hide partial constructor
-      MesPionA1xDT2SeqSrc() {}
-
-    private:
-      ParamsDir  params;   /*!< Seqsource params */
-    };
-
-#if 0
 
     //! Construct pion_1-(PionxNabla_T1) sequential source
     /*!
@@ -166,7 +135,7 @@ namespace Chroma
     {
     public:
       //! Full constructor
-      MesPionRhoxNablaA1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesPionRhoxNablaA1SeqSrc(const Params& p) : params(p) {}
 
       //! Default destructor
       ~MesPionRhoxNablaA1SeqSrc() {}
@@ -180,7 +149,7 @@ namespace Chroma
       MesPionRhoxNablaA1SeqSrc() {}
 
     private:
-      ParamsDir  params;   /*!< Seqsource params */
+      Params  params;   /*!< Seqsource params */
     };
 
 
@@ -231,14 +200,7 @@ namespace Chroma
       //! Default destructor
       ~MesPionRhoxNablaT2SeqSrc() {}
       
-      //! Construct pion_1-(A2=A1xD_T2) sequential source
-      /*!
-       * \ingroup hadron
-       *
-       * \param forward_props    array of quark propagators ( Read )
-       *
-       * \return \f$F^\dagger \gamma_5 \Gamma_f\f$
-       */
+      //! Construct sequential source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<LatticePropagator>& forward_props) const;
 
@@ -263,7 +225,7 @@ namespace Chroma
     {
     public:
       //! Full constructor
-      MesPionA1xNablaA1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesPionA1xNablaA1SeqSrc(const Params& p) : params(p) {}
 
       //! Default destructor
       ~MesPionA1xNablaA1SeqSrc() {}
@@ -277,7 +239,7 @@ namespace Chroma
       MesPionA1xNablaA1SeqSrc() {}
 
     private:
-      ParamsDir  params;   /*!< Seqsource params */
+      Params  params;   /*!< Seqsource params */
     };
 
 
@@ -439,7 +401,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
      */
-    class MesPionA1xDT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    class MesPionA1xDESeqSrc : public HadronSeqSource<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -491,11 +453,11 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A2=A1xD_T2) sequential source
+    //! Construct pion_1-(A1xD_T2) sequential source
     /*!
      * \ingroup hadron
      *
-     * Operator is  a1xD_T2
+     * Operator is  a1 x D_T2
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
      */
@@ -508,14 +470,7 @@ namespace Chroma
       //! Default destructor
       ~MesPionA1xDT2SeqSrc() {}
       
-      //! Construct pion_1-(A2=A1xD_T2) sequential source
-      /*!
-       * \ingroup hadron
-       *
-       * \param forward_props    array of quark propagators ( Read )
-       *
-       * \return \f$F^\dagger \gamma_5 \Gamma_f\f$
-       */
+      //! Construct sequential source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<LatticePropagator>& forward_props) const;
 
@@ -527,115 +482,424 @@ namespace Chroma
       ParamsDir  params;   /*!< Seqsource params */
     };
 
-    //! Construct pion_1-(A2=A1xD_T2) sequential source
+
+    //! Construct pion_1-(B1xD_A2) sequential source
     /*!
      * \ingroup hadron
      *
-     * Operator is  a1xD_T2
+     * Operator is  b1 x D_A2
      * The sink interpolator is   
-     * \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i D_i\f$  
      */
-    class MesPionA1xDT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    class MesPionB1xDA2SeqSrc : public HadronSeqSource<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesPionB1xDA2SeqSrc(const Params& p) : params(p) {}
 
       //! Default destructor
-      ~MesPionA1xDT2SeqSrc() {}
+      ~MesPionB1xDA2SeqSrc() {}
       
-      //! Construct pion_1-(A2=A1xD_T2) sequential source
-      /*!
-       * \ingroup hadron
-       *
-       * \param forward_props    array of quark propagators ( Read )
-       *
-       * \return \f$F^\dagger \gamma_5 \Gamma_f\f$
-       */
+      //! Construct sequential source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<LatticePropagator>& forward_props) const;
 
     private:
       //! Hide partial constructor
-      MesPionA1xDT2SeqSrc() {}
+      MesPionB1xDA2SeqSrc() {}
 
     private:
-      ParamsDir  params;   /*!< Seqsource params */
+      Params  params;   /*!< Seqsource params */
     };
 
-    //! Construct pion_1-(A2=A1xD_T2) sequential source
+    //! Construct pion_1-(B1xD_E) sequential source
     /*!
      * \ingroup hadron
      *
-     * Operator is  a1xD_T2
+     * Operator is  b1 x D_E
      * The sink interpolator is   
-     * \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
      */
-    class MesPionA1xDT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    class MesPionB1xDESeqSrc : public HadronSeqSource<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesPionB1xDESeqSrc(const ParamsDir& p) : params(p) {}
 
       //! Default destructor
-      ~MesPionA1xDT2SeqSrc() {}
+      ~MesPionB1xDESeqSrc() {}
       
-      //! Construct pion_1-(A2=A1xD_T2) sequential source
-      /*!
-       * \ingroup hadron
-       *
-       * \param forward_props    array of quark propagators ( Read )
-       *
-       * \return \f$F^\dagger \gamma_5 \Gamma_f\f$
-       */
+      //! Construct sequential source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<LatticePropagator>& forward_props) const;
 
     private:
       //! Hide partial constructor
-      MesPionA1xDT2SeqSrc() {}
+      MesPionB1xDESeqSrc() {}
 
     private:
       ParamsDir  params;   /*!< Seqsource params */
     };
 
-    //! Construct pion_1-(A2=A1xD_T2) sequential source
+
+    //! Construct pion_1-(B1xD_T1) sequential source
     /*!
      * \ingroup hadron
      *
-     * Operator is  a1xD_T2
+     * Operator is  b1 x D_T1
      * The sink interpolator is   
-     * \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionA1xDT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    class MesPionB1xDT1SeqSrc : public HadronSeqSource<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesPionB1xDT1SeqSrc(const ParamsDir& p) : params(p) {}
 
       //! Default destructor
-      ~MesPionA1xDT2SeqSrc() {}
+      ~MesPionB1xDT1SeqSrc() {}
       
-      //! Construct pion_1-(A2=A1xD_T2) sequential source
-      /*!
-       * \ingroup hadron
-       *
-       * \param forward_props    array of quark propagators ( Read )
-       *
-       * \return \f$F^\dagger \gamma_5 \Gamma_f\f$
-       */
+      //! Construct sequential source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<LatticePropagator>& forward_props) const;
 
     private:
       //! Hide partial constructor
-      MesPionA1xDT2SeqSrc() {}
+      MesPionB1xDT1SeqSrc() {}
 
     private:
       ParamsDir  params;   /*!< Seqsource params */
     };
 
-#endif
+
+    //! Construct pion_1-(B1xD_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  b1 x D_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 \epsilon_{ijk}\gamma_j D_k\f$  
+     */
+    class MesPionB1xDT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionB1xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionB1xDT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionB1xDT2SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(RhoxD_A2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  rho x D_A2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_i D_i\f$  
+     */
+    class MesPionRhoxDA2SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionRhoxDA2SeqSrc(const Params& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionRhoxDA2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionRhoxDA2SeqSrc() {}
+
+    private:
+      Params  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(RhoxD_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  rho x D_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
+     */
+    class MesPionRhoxDT1SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionRhoxDT1SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionRhoxDT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionRhoxDT1SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(RhoxD_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  rho x D_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j D_k\f$  
+     */
+    class MesPionRhoxDT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionRhoxDT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionRhoxDT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionRhoxDT2SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(PionxD_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  pion x D_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
+     */
+    class MesPionPionxDT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionPionxDT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionPionxDT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionPionxDT2SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(PionxB_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  pion x B_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_5 D_i\f$  
+     */
+    class MesPionPionxBT1SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionPionxBT1SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionPionxBT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionPionxBT1SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(RhoxB_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is rho x B_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j B_k\f$  
+     */
+    class MesPionRhoxBT1SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionRhoxBT1SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionRhoxBT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionRhoxBT1SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(RhoxB_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  rho x B_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
+     */
+    class MesPionRhoxBT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionRhoxBT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionRhoxBT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionRhoxBT2SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(A1xB_A1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a1 x B_A1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_5 \gamma_i B_i\f$  
+     */
+    class MesPionA1xBA1SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionA1xBA1SeqSrc(const Params& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionA1xBA1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionA1xBA1SeqSrc() {}
+
+    private:
+      Params  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(RhoxB_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a11 x B_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j B_k\f$  
+     */
+    class MesPionA1xBT1SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionA1xBT1SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionA1xBT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionA1xBT1SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct pion_1-(A1xB_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a1 x B_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j B_k\f$  
+     */
+    class MesPionA1xBT2SeqSrc : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      MesPionA1xBT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesPionA1xBT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      //! Hide partial constructor
+      MesPionA1xBT2SeqSrc() {}
+
+    private:
+      ParamsDir  params;   /*!< Seqsource params */
+    };
 
   }  // end namespace
 

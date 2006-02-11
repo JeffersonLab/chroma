@@ -1,4 +1,4 @@
-// $Id: derivmesonseqsrc_w.cc,v 2.4 2006-02-10 02:51:57 edwards Exp $
+// $Id: derivmesonseqsrc_w.cc,v 2.5 2006-02-11 02:34:09 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -177,14 +177,6 @@ namespace Chroma
 
       //-------------------- callback functions ---------------------------------------
 
-      //! Construct pion_1-(A2=A1xD_T2) sequential source
-      HadronSeqSource<LatticePropagator>* mesPionA1xDT2SeqSrc(XMLReader& xml_in,
-							      const std::string& path)
-      {
-	return new MesPionA1xDT2SeqSrc(ParamsDir(xml_in, path));
-      }
-
-#if 0
       //! Construct pion_1-(PionxNabla_T1) sequential source
       HadronSeqSource<LatticePropagator>* mesPionPionxNablaT1SeqSrc(XMLReader& xml_in,
 								    const std::string& path)
@@ -332,11 +324,18 @@ namespace Chroma
 	return new MesPionRhoxDT2SeqSrc(ParamsDir(xml_in, path));
       }
 
-      //! Construct pion_1-(RhoxD_T2) sequential source
+      //! Construct pion_1-(PionxD_T2) sequential source
       HadronSeqSource<LatticePropagator>* mesPionPionxDT2SeqSrc(XMLReader& xml_in,
 								const std::string& path)
       {
 	return new MesPionPionxDT2SeqSrc(ParamsDir(xml_in, path));
+      }
+
+      //! Construct pion_1-(PionxB_T1) sequential source
+      HadronSeqSource<LatticePropagator>* mesPionPionxBT1SeqSrc(XMLReader& xml_in,
+								const std::string& path)
+      {
+	return new MesPionPionxBT1SeqSrc(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxB_T1) sequential source
@@ -373,7 +372,6 @@ namespace Chroma
       {
 	return new MesPionA1xBT2SeqSrc(ParamsDir(xml_in, path));
       }
-#endif
 
     } // end anonymous namespace
 
