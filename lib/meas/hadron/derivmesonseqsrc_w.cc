@@ -1,4 +1,4 @@
-// $Id: derivmesonseqsrc_w.cc,v 2.7 2006-02-11 21:18:39 edwards Exp $
+// $Id: derivmesonseqsrc_w.cc,v 2.8 2006-02-11 21:23:17 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -506,6 +506,7 @@ namespace Chroma
 
       LatticePropagator tmp = adj(quark_propagators[0]);
 
+      // \f$\Gamma_f \equiv \nabla_i\f$
       fin = Gamma(G5) * leftNabla(tmp,u,params.deriv_dir,params.deriv_length);
       
       END_CODE();
@@ -550,6 +551,7 @@ namespace Chroma
 
       LatticePropagator tmp = adj(quark_propagators[0]);
       
+      // \f$\Gamma_f \equiv \gamma_4 \nabla_i\f$
       fin = Gamma(1 << 3) * leftNabla(tmp,u,params.deriv_dir,params.deriv_length);
       
       END_CODE();
@@ -571,6 +573,7 @@ namespace Chroma
 
       LatticePropagator tmp = adj(quark_propagators[0]);
 
+      // \f$\Gamma_f \equiv \gamma_i\nabla_i\f$
       for(int k=0; k < 3; ++k)
 	fin += Gamma(1 << k) * leftNabla(tmp,u,k,params.deriv_length);
       
@@ -782,6 +785,7 @@ namespace Chroma
 
       LatticePropagator tmp = adj(quark_propagators[0]);
 
+      // \f$\Gamma_f \equiv \gamma_5\gamma_i D_i\f$  
       for(int k=0; k < 3; ++k)
 	fin += Gamma(1 << k) * leftD(tmp,u,k,params.deriv_length);
       
