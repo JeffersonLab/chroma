@@ -1,4 +1,4 @@
-// $Id: symtensor.cc,v 1.1 2006-01-29 05:21:55 edwards Exp $
+// $Id: symtensor.cc,v 1.2 2006-02-11 17:22:55 edwards Exp $
 /*! \file
  *  \brief Compute symmetric tensors
  */
@@ -20,8 +20,6 @@ namespace Chroma
     //! Init gamma matrix multiplication table factors
     /*!
      * \ingroup ferm
-     *
-     * Initialize signs needed for  Gamma(n)*Gamma(m)=sgn(n,m)*Gamma(n ^ m)
      */
     void symTensor3dInit()
     {
@@ -33,13 +31,13 @@ namespace Chroma
       // d = |\epsilon^{i,j,k}|
       // Permutations: +(0,1,2)+(1,2,0)+(2,0,1)+(1,0,2)+(0,2,1)+(2,1,0)
 
-      sym_tensor3d(0,1,2) = 1.0;
-      sym_tensor3d(1,2,0) = 1.0;
-      sym_tensor3d(2,0,1) = 1.0;
+      sym_tensor3d(0,1,2) = 1;
+      sym_tensor3d(1,2,0) = 1;
+      sym_tensor3d(2,0,1) = 1;
 
-      sym_tensor3d(1,0,2) = 1.0;
-      sym_tensor3d(0,2,1) = 1.0;
-      sym_tensor3d(2,1,0) = 1.0;
+      sym_tensor3d(1,0,2) = 1;
+      sym_tensor3d(0,2,1) = 1;
+      sym_tensor3d(2,1,0) = 1;
   
       initP = true;
 
