@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.39 2006-02-10 02:44:10 edwards Exp $
+# $Id: Makefile.am,v 2.40 2006-02-11 17:22:02 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -379,6 +379,7 @@ nobase_include_HEADERS += \
 	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h \
         util/ferm/antisymtensor.h \
+        util/ferm/etensor.h \
         util/ferm/symtensor.h
 
 # Staggered specific headers
@@ -808,6 +809,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
 	util/ferm/gammasgn_w.cc \
         util/ferm/antisymtensor.cc \
+        util/ferm/etensor.cc \
         util/ferm/symtensor.cc
 
 
