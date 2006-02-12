@@ -1,4 +1,4 @@
-// $Id: derivmesonseqsrc_w.cc,v 2.8 2006-02-11 21:23:17 edwards Exp $
+// $Id: derivmesonseqsrc_w.cc,v 2.9 2006-02-12 04:39:19 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -529,6 +529,7 @@ namespace Chroma
 
       LatticePropagator tmp = adj(quark_propagators[0]);
 
+      // \f$\Gamma_f \equiv \nabla_i\f$
       fin = leftNabla(tmp,u,params.deriv_dir,params.deriv_length);
       
       END_CODE();
@@ -1296,8 +1297,11 @@ namespace Chroma
       success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xNABLA_T1"),
 										    mesPionB1xNablaT1SeqSrc);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A02xD_T2"),
+      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_2xD_T2"),
 										    mesPionA02xDT2SeqSrc);
+
+      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_A2"),
+										    mesPionA1xDA2SeqSrc);
 
       success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_E"),
 										    mesPionA1xDESeqSrc);
