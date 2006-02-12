@@ -1,0 +1,1443 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Sequential source
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+
+      </Param>
+      <NamedObject>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+       PionxNabla_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-PIONxNABLA_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+       A0xNabla_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A0xNABLA_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        a0_2 x Nabla_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A0_2xNABLA_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x Nabla_A1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-RHOxNABLA_A1</SeqSourceType>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x Nabla_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-RHOxNABLA_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x Nabla_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-RHOxNABLA_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x Nabla_A1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xNABLA_A1</SeqSourceType>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x Nabla_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xNABLA_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x Nabla_E
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xNABLA_E</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x Nabla_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-B1xNABLA_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A0_2 x D_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A0_2xD_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x D_A2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xD_A2</SeqSourceType>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x D_E
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xD_E</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x D_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xD_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x D_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xD_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_A2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-B1xD_A2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_E
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-B1xD_E</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-B1xD_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-B1xD_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x D_A2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-RHOxD_A2</SeqSourceType>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-B1xD_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-B1xD_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Pion x D_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-PIONxD_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Pion x B_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-PIONxB_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x B_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-RHOxB_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        RHO x B_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-RHOxB_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x B_A1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xB_A1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x B_T1
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xB_T1</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x B_T2
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-A1xB_T2</SeqSourceType>
+          <deriv_dir>0</deriv_dir>
+          <deriv_length>2</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>7</t_sink>
+          <sink_mom>0 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
