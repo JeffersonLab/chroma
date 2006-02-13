@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 2.5 2006-01-18 01:53:51 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 2.6 2006-02-13 01:20:35 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -95,6 +95,7 @@ namespace Chroma
     //! Calculates Tr_D ( Gamma_mat L )
     void triacntr(LatticeColorMatrix& B, int mat, int cb) const;
 
+    const Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const;
   private:
     multi1d<LatticeColorMatrix>  u;
     CloverFermActParams          param;

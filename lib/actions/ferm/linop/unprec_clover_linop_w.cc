@@ -1,4 +1,4 @@
-// $Id: unprec_clover_linop_w.cc,v 2.3 2005-12-29 05:37:36 edwards Exp $
+// $Id: unprec_clover_linop_w.cc,v 2.4 2006-02-13 01:20:35 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -18,14 +18,14 @@ namespace Chroma
   void UnprecCloverLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
 				 const CloverFermActParams& param_)
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
 
     param = param_;
 
     A.create(u_, param);
     D.create(u_, param.anisoParam);
 
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
 
 
@@ -46,7 +46,7 @@ namespace Chroma
     Real mhalf = -0.5;
 
     //  chi   =  A . psi - 0.5 * D' . psi  */
-    A(chi, psi, isign);
+    A(chi, psi, isign); 
     D(tmp, psi, isign);
     chi += mhalf * tmp;
   }
@@ -57,8 +57,18 @@ namespace Chroma
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
   {
-    QDPIO::cerr << "Unprec clover deriv not implemented" << endl;
-    QDP_abort(1);
+    // A. deriv will resize
+    
+    A.deriv(ds_u, chi, psi, isign);
+
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+
+    ds_tmp = zero;
+    D.deriv(ds_tmp, chi, psi, isign);
+    for(int mu=0; mu < Nd; mu++) { 
+      ds_u[mu] -= Real(0.5)*ds_tmp[mu];
+    }
+    
   }
 
 

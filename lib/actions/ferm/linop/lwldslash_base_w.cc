@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_w.cc,v 2.3 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_base_w.cc,v 2.4 2006-02-13 01:20:35 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -52,7 +52,7 @@ namespace Chroma
     anisoWeights = 1;
 
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-  
+
     if (anisoParam.anisoP)
     {
       // Set the weights

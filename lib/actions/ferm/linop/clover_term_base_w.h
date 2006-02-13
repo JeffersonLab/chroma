@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 2.5 2006-01-18 01:53:51 bjoo Exp $
+// $Id: clover_term_base_w.h,v 2.6 2006-02-13 01:20:34 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -65,6 +65,7 @@ namespace Chroma
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
 	       enum PlusMinus isign, int cb) const;
 
+
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 
@@ -74,6 +75,10 @@ namespace Chroma
 
     //! Get the u field
     virtual const multi1d<LatticeColorMatrix>& getU() const = 0;
+
+    //! get the clover coefficient 
+    virtual const Real getCloverCoeff(int mu, int nu) const = 0;
+
   };
 
 

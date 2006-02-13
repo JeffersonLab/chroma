@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.10 2006-01-26 20:04:45 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 2.11 2006-02-13 01:20:34 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -214,8 +214,15 @@ namespace Chroma
     if ( Ns != 4 )
       QDP_error_exit("expecting Ns == 4", Ns);
   
+    f0 = f[0] * getCloverCoeff(0,1);
+    f1 = f[1] * getCloverCoeff(0,2);
+    f2 = f[2] * getCloverCoeff(0,3);
+    f3 = f[3] * getCloverCoeff(1,2);
+    f4 = f[4] * getCloverCoeff(1,3);
+    f5 = f[5] * getCloverCoeff(2,3);    
 
     /* Multiply in the appropriate clover coefficient */
+    /*
     switch (param.anisoParam.t_dir)
     {
     case 1:
@@ -250,7 +257,7 @@ namespace Chroma
 		  << param.anisoParam.t_dir << endl;
       QDP_abort(1);
     }
-
+    */
 
     tri.resize(QDP::Layout::sitesOnNode());  // hold local lattice
     
@@ -966,6 +973,28 @@ namespace Chroma
 
     END_CODE();
   }
+
+      //! Returns the appropriate clover coefficient for indices mu and nu
+    const Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const { 
+
+
+	if( param.anisoParam.anisoP ) { 
+ 	  if (mu==param.anisoParam.t_dir || nu == param.anisoParam.t_dir) { 
+	    return param.clovCoeffT;
+	  }
+	  else { 
+	    // Otherwise return the spatial coeff
+	    return param.clovCoeffR;
+	  }
+	  
+	}
+	else { 
+	  // If there is no anisotropy just return the spatial one, it will
+	  // be the same as the temporal one
+	  return param.clovCoeffR; 
+	} 
+      }
+
 
 }
 
