@@ -1,4 +1,4 @@
-// $Id: photon_seqsrc_w.cc,v 1.2 2006-02-13 21:33:24 edwards Exp $
+// $Id: photon_seqsrc_w.cc,v 1.3 2006-02-13 22:27:45 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -214,7 +214,7 @@ namespace Chroma
       bool success = true;
 
       //! Register all the factories
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-PHOTON"), 
+      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PHOTON"), 
 										    mesA0PhotonSeqSrc);
 
       return success;
