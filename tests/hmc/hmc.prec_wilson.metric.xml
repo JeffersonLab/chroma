@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/hmc/doHMC/MCUpdates/elem[1]/Update/HMCTrajectory/deltaH" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>
