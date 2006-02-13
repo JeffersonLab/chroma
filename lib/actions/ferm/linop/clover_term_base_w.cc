@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 2.3 2006-02-13 01:20:34 bjoo Exp $
+// $Id: clover_term_base_w.cc,v 2.4 2006-02-13 02:10:30 bjoo Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -38,6 +38,130 @@ namespace Chroma
       ds_u[mu][rb[1]] = ds_tmp[mu];
     }
   }
+
+
+
+  void CloverTermBase::deriv_loops(const int mu, const int nu, const int cb,
+		   LatticeColorMatrix& ds_u,
+		   const LatticeColorMatrix& Lambda) const
+  {
+
+    const multi1d<LatticeColorMatrix>& u = getU();
+
+
+    // This is first pass, most dumbest most inefficient way
+    //  C_plus_1
+    //
+    //    <------- 
+    //    |        ^
+    //    |        |
+    //    V        |
+    //    x        O
+	  
+	  
+    ds_u = shift(Lambda, FORWARD,mu)
+      *shift(u[nu], FORWARD, mu)
+      *adj(shift(u[mu],FORWARD,nu))
+      *adj(u[nu]);
+    
+    
+    //  C_plus_2
+    //    <------- O
+    //    |        ^
+    //    |        |
+    //    V        |
+    //    x        
+	  
+    ds_u += shift(u[nu],FORWARD, mu)
+      *shift( shift(Lambda, FORWARD, mu), FORWARD, nu)
+      *adj(shift(u[mu], FORWARD, nu))
+      *adj(u[nu]);
+	  
+	  
+    //  C_plus_3
+    //    O <------- 
+    //    |        ^
+    //    |        |
+    //    V        |
+    //    x        
+	  
+    ds_u += shift(u[nu], FORWARD, mu)
+      *adj(shift(u[mu], FORWARD, nu))
+      *shift(Lambda, FORWARD, nu)
+      *adj(u[nu]);
+	  
+	  
+    // C_plus_4
+    //
+    //     <------- 
+    //    |        ^
+    //    |        |
+    //    V        |
+    //  x 0        
+	  
+    ds_u += shift(u[nu], FORWARD, mu)
+      * adj(shift(u[mu], FORWARD, nu))
+      * adj(u[nu])
+      * Lambda;
+    
+	  
+    // C_minus_1 
+    //
+    //  x         O
+    //    ^       |
+    //    |       |
+    //    |       |
+    //    <-------V
+	  
+    
+    ds_u -= shift(Lambda, FORWARD, mu)
+      * adj(shift( shift(u[nu], FORWARD, mu), BACKWARD, nu))
+      * adj(shift( u[mu], BACKWARD, nu))
+      * shift(u[nu], BACKWARD, nu);
+    
+    
+    // C_minus_2 
+    //
+    //  x         
+    //    ^       |
+    //    |       |
+    //    |       |
+    //    <-------V O
+    
+    ds_u -= adj( shift(shift(u[nu], FORWARD, mu),BACKWARD,nu) )
+      * shift(shift(Lambda, FORWARD, mu), BACKWARD, nu)
+      * adj(shift(u[mu], BACKWARD, nu))
+      * shift(u[nu], BACKWARD, nu);
+    
+    // C_minus_3
+    //
+    //  x         
+    //    ^       |
+    //    |       |
+    //    |       |
+    //  0 <-------V 
+    
+    ds_u -= adj( shift(shift(u[nu], FORWARD, mu),BACKWARD,nu) )
+      * adj(shift(u[mu], BACKWARD, nu))
+      * shift(Lambda, BACKWARD, nu)
+      * shift(u[nu], BACKWARD, nu);
+    
+	  
+    // C_minus_4
+    //
+    //  x         
+    //  O ^       |
+    //    |       |
+    //    |       |
+    //    <-------V 
+    
+    ds_u  -= adj( shift(shift(u[nu], FORWARD, mu),BACKWARD,nu) )
+      * adj(shift(u[mu], BACKWARD, nu))
+      * shift(u[nu], BACKWARD, nu)
+      * Lambda;
+	
+  }
+
 
   //! Take deriv of D
   /*!
@@ -110,8 +234,10 @@ namespace Chroma
 	  LatticeColorMatrix sigma_XY_dag = 
 	    factor*getCloverCoeff(mu,nu)*traceSpin( outerProduct(ferm_tmp,chi));
 
-
-
+	  LatticeColorMatrix ds_tmp;
+	  deriv_loops(mu, nu, cb, ds_tmp, sigma_XY_dag);
+	  ds_u[mu][rb[cb]] += ds_tmp;
+#if 0 
 	  // This is first pass, most dumbest most inefficient way
 	  //  C_plus_1
 	  //
@@ -222,20 +348,22 @@ namespace Chroma
 	    * adj(shift(u[mu], BACKWARD, nu))
 	    * shift(u[nu], BACKWARD, nu)
 	    * sigma_XY_dag;
-	
+#endif	
+
+
 
 	} // End if mu != nu
   
       } // End loop over nu
       
-      
+#if 0      
       for(int i=0; i < 4; i++) { 
 	
 	ds_u[mu][rb[cb]] += C_plus[i];
 	ds_u[mu][rb[cb]] -= C_minus[i];
 	
       }
-      
+#endif 
     }
 
   }
