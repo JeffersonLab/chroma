@@ -1,4 +1,4 @@
-// $Id: photon_seqsrc_w.cc,v 1.1 2006-02-13 20:47:51 edwards Exp $
+// $Id: photon_seqsrc_w.cc,v 1.2 2006-02-13 21:33:24 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -150,53 +150,57 @@ namespace Chroma
 	seq_src_tmp = Gamma(15) * adj(tmp) * Gamma(15);
       }
         
-      //  We now inject momentum at sink if required
-      multi1d<Real> pp_f(Nd-1);
-      LatticeReal p_dot_x = zero;
-      bool nonzeroP = false;
-      for(int mu=0, j=0; mu < Nd; mu++)
+      // Compute 4-vector correction of sink phase and energy exp
+      LatticeComplex exp_p_dot_x;
+      LatticeBoolean mask;
       {
-	if (mu != params.j_decay)
+	LatticeReal p_dot_x = zero;
+	multi1d<Real> pp_f(Nd-1);
+	for(int mu=0, j=0; mu < Nd; mu++)
 	{
-	  pp_f[j] = params.sink_mom[j] * twopi / Real(Layout::lattSize()[mu]);
-
-	  if (params.sink_mom[j] != 0)
+	  if (mu != params.j_decay)
 	  {
-	    nonzeroP = true;
-	    p_dot_x += Layout::latticeCoordinate(mu) * pp_f[j];
+	    pp_f[j] = params.sink_mom[j] * twopi / Real(Layout::lattSize()[mu]);
+	    
+	    if (params.sink_mom[j] != 0)
+	      p_dot_x += Layout::latticeCoordinate(mu) * pp_f[j];
+
+	    j++;
 	  }
-
-	  j++;
 	}
-      }
+	
+	// Spatial contribution is solely a phase
+	exp_p_dot_x = cmplx(cos(p_dot_x),sin(p_dot_x));
 
-      if (nonzeroP)
-	seq_src_tmp *= cmplx(cos(p_dot_x),sin(p_dot_x));
+	// Photon energy determined from virtuality, \f$Q_f^2 = c^2|\vec{p_f}|^2 - \omega_f^2\f$
+	Real omega;
+	{
+	  Real norm2_ppf = zero;
+	  for(int i=0; i < pp_f.size(); ++i)
+	    norm2_ppf += pp_f[i] * pp_f[i];
 
-      // Photon energy determined from virtuality, \f$Q_f^2 = c^2|\vec{p_f}|^2 - \omega_f^2\f$
-      Real omega;
-      {
-	Real norm2_ppf = zero;
-	for(int i=0; i < pp_f.size(); ++i)
-	  norm2_ppf += pp_f[i] * pp_f[i];
+	  Real c_sq      =  params.c_sq;
+	  Real xi        =  params.xi;
+	  Real xi_sq     =  xi * xi;
 
-	Real c_sq      =  params.c_sq;
-	Real xi        =  params.xi;
-	Real xi_sq     =  xi * xi;
+	  omega = sqrt( Real(c_sq/xi_sq)*norm2_ppf - params.Q_sq );
+	}
 
-	omega = sqrt( Real(c_sq/xi_sq)*norm2_ppf - params.Q_sq );
+	// Multiply in exp from time dependence of 4-vector
+	// Note positive sign of omega
+	exp_p_dot_x *= exp(omega * Layout::latticeCoordinate(params.j_decay));
+
+	// Zap any regions in time outside integration region
+	mask = where((Layout::latticeCoordinate(params.j_decay) >= params.t_sink_start) &&
+		     (Layout::latticeCoordinate(params.j_decay) <= params.t_sink_end),
+		     true, false);
       }
       
-      // Now integrate over sink
-      LatticePropagator fin = zero;
-
-      for(int t_f=params.t_sink_start; t_f <= params.t_sink_end; ++t_f)
-      {
-	// Note positive sign of omega
-	fin += where(Layout::latticeCoordinate(params.j_decay) == t_f,
-		     exp(omega*t_f) * seq_src_tmp,
-		     LatticePropagator(zero));
-      }
+      
+      // Multiply in by exp(4-vector)
+      LatticePropagator fin = where(mask, 
+				    exp_p_dot_x * seq_src_tmp, 
+				    LatticePropagator(zero));
 
       END_CODE();
 
