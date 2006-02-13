@@ -2,6 +2,6 @@
 
 <assertions>
 
-<assertion xpath="/hmc/doHMC/MCUpdates/elem[1]/Update/HMCTrajectory/deltaH" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/hmc/doHMC/MCUpdates/elem[1]/Update/HMCTrajectory/deltaH" type="double" comparison="relative" tolerance="1.0e-4"/>
 
 </assertions>
