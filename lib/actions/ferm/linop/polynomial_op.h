@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 1.3 2006-02-14 23:05:21 kostas Exp $
+// $Id: polynomial_op.h,v 1.4 2006-02-14 23:15:08 kostas Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
  *    to 1/Q^2 in the range [\mu, Lambda_max] with Q = \gamma5 M
@@ -229,19 +229,19 @@ public:
 
    for(int n(1); n < degree+1; ++n)
    {
-      *Qsq(chi_products[n], chi_products[n-1], PLUS);
+      Qsq(chi_products[n], chi_products[n-1]);
       chi_products[n] -= root[n] * chi_products[n-1];
       chi_products[n] *= inv_c[n] ;
 
-      *Qsq(psi_products[n], psi_products[n-1], PLUS);
+      Qsq(psi_products[n], psi_products[n-1]);
       psi_products[n] -= root[n] * psi_products[n-1];
       psi_products[n] *= inv_c[n] ;
 
    }
    for(int n(0); n < degree+1; ++n)
      {
-       *M(M_chi_products[n],chi_products[n],PLUS);
-       *M(M_psi_products[n],psi_products[n],PLUS);
+       (*M)(M_chi_products[n],chi_products[n],PLUS);
+       (*M)(M_psi_products[n],psi_products[n],PLUS);
      }
 
    // Now do force computation
