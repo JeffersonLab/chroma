@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polprec_op.h,v 1.1 2006-02-06 19:05:48 kostas Exp $
+// $Id: polprec_op.h,v 1.2 2006-02-14 23:05:21 kostas Exp $
 /*! \file
  *  \brief Maybe usefull for polynomial preconditioning. It contructs an
  *     operator that is     QP(Q^2)Q, where Q = \gamma_5 M, with M any 4D dirac
@@ -69,7 +69,7 @@ namespace Chroma
     
 
     //! Apply the derivative of the linop
-    void deriv(P& ds_u, const T& chi, const T& psi, PlusMinus isign)
+    void deriv(P& ds_u, const T& chi, const T& psi, PlusMinus isign) const 
     {
        const int G5=Ns*Ns-1;
       // So do something like

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 1.2 2006-02-10 02:45:29 edwards Exp $
+// $Id: polynomial_op.h,v 1.3 2006-02-14 23:05:21 kostas Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
  *    to 1/Q^2 in the range [\mu, Lambda_max] with Q = \gamma5 M
@@ -195,7 +195,7 @@ public:
    }
 
  //! Apply the derivative of the linop
- void deriv(P& ds_u, const T& chi, const T& psi, PlusMinus isign)
+ void deriv(P& ds_u, const T& chi, const T& psi, PlusMinus isign) const
  {
    // There's a problem here. The interface wants to do something like
    //    chi^dag * \dot(Qsq) \psi
