@@ -3,29 +3,23 @@
    <Hamiltonian>
     <Monomials>
       <elem>
-	<Name>ONE_FLAVOR_DWF_FERM_RAT_MONOMIAL</Name>
+	<Name>TWO_FLAVOR_OVERLAP_CONTINUED_FRACTION_5D_FERM_MONOMIAL</Name>
 	<InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-7</RsdCG>
+          <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
         <FermionAction>
-          <FermAct>DWF</FermAct>
+          <FermAct>OVERLAP_CONTINUED_FRACTION_5D</FermAct>
+          <ApproximationType>ZOLOTAREV</ApproximationType>
           <OverMass>1.4</OverMass>
           <Mass>0.06</Mass>
-          <N5>6</N5>
+          <RatPolyDeg>6</RatPolyDeg>
+          <ApproxMin>0.02</ApproxMin>
+          <ApproxMax>5.8</ApproxMax>
           <boundary>1 1 1 -1</boundary>
         </FermionAction>
-	<Remez>
-          <lowerMin>0.001</lowerMin>
-          <upperMax>5.8</upperMax>
-          <lowerMinPV>0.001</lowerMinPV>
-          <upperMaxPV>5.8</upperMaxPV>
-          <forceDegree>10</forceDegree>
-          <actionDegree>10</actionDegree>
-        </Remez>
       </elem>
-
       <elem>
 	<Name>WILSON_GAUGEACT_MONOMIAL</Name>
 	<GaugeAction>
@@ -39,13 +33,13 @@
     </Monomials>
    </Hamiltonian>
    <MDIntegrator>
-	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<dt>0.001</dt>
-	<tau0>.01</tau0>
+        <Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
+        <n_steps>25</n_steps>
+        <tau0>0.01</tau0>
    </MDIntegrator>
    <GaugeStartup>
-	<cfg_type>DISORDERED</cfg_type>
-	<cfg_file>DUMMY</cfg_file>
+        <cfg_type>WEAK_FIELD</cfg_type>
+        <cfg_file>DUMMY</cfg_file>
    </GaugeStartup>
    <nrow>2 2 2 2</nrow>
 </LeapfrogTest>

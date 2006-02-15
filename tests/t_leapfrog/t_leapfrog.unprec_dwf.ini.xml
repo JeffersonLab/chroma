@@ -3,21 +3,27 @@
    <Hamiltonian>
     <Monomials>
       <elem>
-	<Name>TWO_FLAVOR_OVERLAP_CONTINUED_FRACTION_5D_FERM_MONOMIAL</Name>
+	<Name>TWO_FLAVOR_UNPRECONDITIONED_DWF_FERM_MONOMIAL</Name>
 	<InvertParam>
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
         <FermionAction>
-          <FermAct>OVERLAP_CONTINUED_FRACTION_5D</FermAct>
-          <ApproximationType>ZOLOTAREV</ApproximationType>
+          <FermAct>UNPRECONDITIONED_DWF</FermAct>
           <OverMass>1.4</OverMass>
           <Mass>0.06</Mass>
-          <RatPolyDeg>6</RatPolyDeg>
-          <ApproxMin>0.02</ApproxMin>
-          <ApproxMax>5.8</ApproxMax>
-          <boundary>1 1 1 -1</boundary>
+          <N5>6</N5>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
         </FermionAction>
       </elem>
       <elem>
@@ -34,8 +40,8 @@
    </Hamiltonian>
    <MDIntegrator>
 	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<dt>0.001</dt>
-	<tau0>.1</tau0>
+	<n_steps>100</n_steps>
+	<tau0>0.05</tau0>
    </MDIntegrator>
    <GaugeStartup>
 	<cfg_type>UNIT</cfg_type>
