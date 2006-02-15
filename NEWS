@@ -1,4 +1,7 @@
-01/03/2006 -- Robert Edwards
+02/15/2006 -- Robert Edwards
+	Version 2.9.1. New clover bits. New sequential sources.
+
+02/10/2006 -- Robert Edwards
 	Version 2.9.0. Overhauls of fermion action classes and monomials. More to
         go. Overhauled sequential source and morphed into an object factory. More
         seqsources coming. Added start of polynomial preconditioning monomials.
