@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.41 2006-02-13 20:46:44 edwards Exp $
+# $Id: Makefile.am,v 2.42 2006-02-15 05:27:13 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -55,6 +55,7 @@ nobase_include_HEADERS = \
 	actions/ferm/linop/partrat.h actions/ferm/qprop/qprop.h \
 	actions/gauge/gauge.h \
 	actions/gauge/gaugeacts/gaugeacts.h \
+	actions/gauge/gaugeacts/gaugeacts_aggregate.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
@@ -564,6 +565,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/gaugebc_periodic.cc \
 	actions/gauge/gaugebcs/gaugebc_simple.cc \
+	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
 	actions/gauge/gaugeacts/pg_gaugeact.cc \
