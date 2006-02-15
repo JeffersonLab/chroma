@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact_factory_w.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: fermact_factory_w.h,v 2.1 2006-02-15 04:53:11 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -9,7 +9,7 @@
 
 #include "singleton.h"
 #include "objfactory.h"
-#include "chromabase.h"
+#include "fermact.h"
 
 namespace Chroma
 {
