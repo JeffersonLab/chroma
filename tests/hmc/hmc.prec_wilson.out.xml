@@ -39,7 +39,7 @@
    <MC_Hamiltonian>
     <Monomials>
       <elem>
-	<Name>TWO_FLAVOR_WILSON_FERM_MONOMIAL</Name>
+	<Name>TWO_FLAVOR_EOPREC_CONSTDET_FERM_MONOMIAL</Name>
 	<InvertParam>
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-7</RsdCG>
@@ -59,7 +59,7 @@
       </elem>
 
       <elem>
-	<Name>WILSON_GAUGEACT_MONOMIAL</Name>
+	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
 	   <Name>WILSON_GAUGEACT</Name>
 	   <beta>5.7</beta>
@@ -108,7 +108,7 @@
       <chroma>2.9.0</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>12 Feb 06 23:46:58 EST</run_date>
+    <run_date>15 Feb 06 22:00:28 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
