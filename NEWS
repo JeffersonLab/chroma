@@ -1,3 +1,7 @@
+02/16/2006 -- Robert Edwards
+	Version 2.9.2. Preconditioned clover monomials and logdet monomials now 
+        working. More regression tests for t_leapfrog.
+
 02/15/2006 -- Robert Edwards
 	Version 2.9.1. New clover bits. New sequential sources.
 
