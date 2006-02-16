@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_logdet_two_flavor_monomial_w.h,v 2.1 2006-02-16 02:26:48 bjoo Exp $
+// $Id: prec_logdet_two_flavor_monomial_w.h,v 2.2 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -17,6 +17,7 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv 
   {
+    extern const std::string name;
     extern const bool registered;
   };
 
@@ -34,8 +35,7 @@ namespace Chroma
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial(const string& fermact_name, 
-						 const TwoFlavorWilsonTypeFermMonomialParams& param_);
+      EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial(const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
       // Construct from a fermact handle and inv params
       // FermAct already holds BC-s

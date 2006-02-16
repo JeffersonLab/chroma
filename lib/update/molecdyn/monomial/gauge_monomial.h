@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: gauge_monomial.h,v 2.1 2006-02-16 02:59:03 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -46,8 +46,7 @@ namespace Chroma
     {
     public: 
       //! Construct out of a parameter struct. Check against the desired GaugeAct name
-      GaugeMonomial(const string& gaugeact_name, 
-		    const GaugeMonomialParams& param_);
+      GaugeMonomial(const GaugeMonomialParams& param_);
 
       //! Copy Constructor
       GaugeMonomial(const GaugeMonomial& m) : gaugeact((m.gaugeact)) {}

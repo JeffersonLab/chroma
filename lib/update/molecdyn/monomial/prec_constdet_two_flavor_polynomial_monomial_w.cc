@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_polynomial_monomial_w.cc,v 2.2 2006-02-10 02:45:54 edwards Exp $
+// $Id: prec_constdet_two_flavor_polynomial_monomial_w.cc,v 2.3 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -41,7 +41,7 @@ namespace Chroma
     }
 
     //! Identifier
-    const std::string name = "TWO_FLAVOR_POLYNOMIAL_FERM_MONOMIAL";
+    const std::string name = "TWO_FLAVOR_EOPREC_CONSTDET_POLYNOMIAL_FERM_MONOMIAL";
 
     //! Register the fermact
     const bool registered = registerAll();

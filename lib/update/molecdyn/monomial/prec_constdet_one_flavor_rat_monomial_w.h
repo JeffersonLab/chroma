@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_one_flavor_rat_monomial_w.h,v 2.2 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial_w.h,v 2.3 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -17,6 +17,7 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv 
   {
+    extern const std::string name;
     extern const bool registered;
   };
 
@@ -34,8 +35,7 @@ namespace Chroma
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const string& fermact_name, 
-							    const OneFlavorWilsonTypeFermRatMonomialParams& param_);
+      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
       // Copy Constructor
       EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial& m) 
 	: phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}

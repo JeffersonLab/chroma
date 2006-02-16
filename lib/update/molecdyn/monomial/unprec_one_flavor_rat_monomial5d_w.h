@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 2.2 2006-01-14 06:42:07 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 2.3 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -17,6 +17,7 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace UnprecOneFlavorWilsonTypeFermRatMonomial5DEnv 
   {
+    extern const std::string name;
     extern const bool registered;
   };
 
@@ -34,8 +35,7 @@ namespace Chroma
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      UnprecOneFlavorWilsonTypeFermRatMonomial5D(const string& fermact_name, 
-						 const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
+      UnprecOneFlavorWilsonTypeFermRatMonomial5D(const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
 
       // Copy Constructor
       UnprecOneFlavorWilsonTypeFermRatMonomial5D(const UnprecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}

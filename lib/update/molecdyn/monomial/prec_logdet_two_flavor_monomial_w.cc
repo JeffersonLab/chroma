@@ -1,4 +1,4 @@
-// $Id: prec_logdet_two_flavor_monomial_w.cc,v 2.1 2006-02-16 02:26:48 bjoo Exp $
+// $Id: prec_logdet_two_flavor_monomial_w.cc,v 2.2 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -8,7 +8,7 @@
 #include "update/molecdyn/monomial/monomial_factory.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/prec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
@@ -23,26 +23,23 @@ namespace Chroma
   {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialClover(XMLReader& xml, const string& path) 
+	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
     {
-      QDPIO::cout << "Create Monomial: " << EvenOddPrecCloverFermActEnv::name << endl;
+      QDPIO::cout << "Create Monomial: " << name << endl;
 
       return new EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial(
-	EvenOddPrecCloverFermActEnv::name,
 	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
     }
        
+    const std::string name("TWO_FLAVOR_EOPREC_LOGDET_FERM_MONOMIAL");
+
     //! Register all the objects
     bool registerAll()
     {
       bool foo = true;
-      const std::string prefix = "TWO_FLAVOR_";
-      const std::string suffix = "_FERM_MONOMIAL";
 
-      // Use a pattern to register all the qualifying fermacts
-      foo &= EvenOddPrecCloverFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecCloverFermActEnv::name+suffix, 
-							   createMonomialClover);
+      foo &= WilsonTypeFermActs4DEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
 
       return foo;
     }
@@ -55,7 +52,6 @@ namespace Chroma
 
   // Constructor
   EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial::EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial(
-    const string& name_,
     const TwoFlavorWilsonTypeFermMonomialParams& param_) 
   {
     inv_param = param_.inv_param;
@@ -67,11 +63,6 @@ namespace Chroma
     std::string fermact_string;
     try { 
       read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-      if ( fermact_string != name_ ) { 
-	QDPIO::cerr << "Fermion action is not " << name_
-		    << " but is: " << fermact_string << endl;
-	QDP_abort(1);
-      }
     }
     catch( const std::string& e) { 
       QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
@@ -81,8 +72,7 @@ namespace Chroma
     QDPIO::cout << "EvanOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << fermact_string << endl;
 
 
-    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
-  
+    const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
     const EvenOddPrecLogDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecLogDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
 

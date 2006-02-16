@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_two_flavor_monomial_w.h,v 2.2 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_constdet_two_flavor_monomial_w.h,v 2.3 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -17,6 +17,7 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv 
   {
+    extern const std::string name;
     extern const bool registered;
   };
 
@@ -34,25 +35,11 @@ namespace Chroma
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(const string& fermact_name, 
-						 const TwoFlavorWilsonTypeFermMonomialParams& param_);
-
-      // Construct from a fermact handle and inv params
-      // FermAct already holds BC-s
-//      EvenOddPrecTwoFlavorWilsonTypeFermMonomial(Handle< const EvenOddPrecWilsonFermAct >& fermact_, const InvertParam_t& inv_param_ ) : fermact(fermact_), inv_param(inv_param_) {}
+      EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
       // Copy Constructor
       EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(const EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
-#if 0
-      const LatticeFermion& debugGetPhi(void) const {
-	return getPhi();
-      }
-
-      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s)  {
-	getX(X,s);
-      }
-#endif
 
       const EvenOddPrecConstDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
 	return getFermAct();

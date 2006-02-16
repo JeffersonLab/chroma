@@ -1,4 +1,4 @@
-// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 2.2 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 2.3 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -7,201 +7,46 @@
 #include "update/molecdyn/monomial/monomial_factory.h"
 #include "update/molecdyn/monomial/genapprox.h"
 
+#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-
-#include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
-#include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
-#if 0
-#include "actions/ferm/fermacts/prec_stout_fermact_w.h"
-#endif
+#include "fermact.h"
 
 namespace Chroma 
 { 
  
   namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv 
   {
-    //! Does the work
+    //! Callback
     Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomial(const string& name, 
-							    XMLReader& xml, const string& path)
+	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path)
     {
       QDPIO::cout << "Create Monomial: " << name << endl;
 
       return new EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(
-	name, OneFlavorWilsonTypeFermRatMonomialParams(xml, path));
-    }
-    
-    //! Does the work
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomial(const string& name, 
-							    XMLReader& xml, const string& path,
-							    int expNumPower, int expDenPower) 
-    {
-      return new EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(
-	name, OneFlavorWilsonTypeFermRatMonomialParams(xml, path, 
-						       expNumPower, expDenPower));
-    }
-    
-
-    //----------------------------------------------------------------------
-    // One flavor
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialWilson1(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecWilsonFermActEnv::name, xml, path, 1, 1);
-    }
-    
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialParWilson1(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path, 1, 1);
+	OneFlavorWilsonTypeFermRatMonomialParams(xml, path));
     }
 
-#if 0
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialStout1(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path, 1, 1);
-    }
-#endif
-    
-    //----------------------------------------------------------------------
-    // Three flavor
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialWilson3(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecWilsonFermActEnv::name, xml, path, 3, 1);
-    }
-    
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialParWilson3(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path, 3, 1);
-    }
+    const std::string name("ONE_FLAVOR_EOPREC_CONSTDET_FERM_RAT_MONOMIAL");
 
-#if 0
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialStout3(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path, 3, 1);
-    }
-#endif
- 
-    //----------------------------------------------------------------------
-    // Generic fractional flavor
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialWilson(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecWilsonFermActEnv::name, xml, path);
-    }
-    
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialParWilson(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecParWilsonFermActEnv::name, xml, path);
-    }
-   
-#if 0 
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
-    {
-      return createMonomial(EvenOddPrecStoutWilsonTypeFermActEnv::name, xml, path);
-    }
-#endif
-
-    //------------------------------------------------------
-    //! Register one flavor
-    bool registerOne(const string& prefix, const string& suffix)
-    {
-      bool foo = true;
-
-      // Use a pattern to register all the qualifying fermacts
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecWilsonFermActEnv::name+suffix, 
-							   createMonomialWilson1);
-
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
-							   createMonomialParWilson1);
-
-#if 0
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
-							   createMonomialStout1);
-#endif
-      return foo;
-    }
-
-    //------------------------------------------------------
-    //! Register three flavor objects
-    bool registerThree(const string& prefix, const string& suffix)
-    {
-      bool foo = true;
-
-      // Use a pattern to register all the qualifying fermacts
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecWilsonFermActEnv::name+suffix, 
-							   createMonomialWilson3);
-
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
-							   createMonomialParWilson3);
-
-#if 0
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
-							   createMonomialStout3);
-#endif
-      return foo;
-    }
-
-    //------------------------------------------------------
-    //! Register generic fractional flavor
-    bool registerGeneric(const string& prefix, const string& suffix)
-    {
-      bool foo = true;
-
-      // Use a pattern to register all the qualifying fermacts
-      foo &= EvenOddPrecWilsonFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecWilsonFermActEnv::name+suffix, 
-							   createMonomialWilson);
-
-      foo &= EvenOddPrecParWilsonFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
-							   createMonomialParWilson);
-
-#if 0
-      foo &= EvenOddPrecStoutWilsonTypeFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix, 
-							   createMonomialStout);
-#endif
-      return foo;
-    }
-
-    //------------------------------------------------------
-    //! Register all the objects
     bool registerAll()
     {
       bool foo = true;
-      const std::string suffix = "_FERM_RAT_MONOMIAL";
 
-      foo &= registerOne(string("ONE_FLAVOR_"), suffix);
-      foo &= registerThree(string("THREE_FLAVOR_"), suffix);
-      foo &= registerGeneric(string("FRACTIONAL_FLAVOR_"), suffix);
+      foo &= WilsonTypeFermActs4DEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
+
+      return foo;
     }
 
     //! Register the fermact
     const bool registered = registerAll();
-  }; //end namespace EvenOddPrec OneFlavorWilsonFermRatMonomialEnv
+
+  } //end namespace EvenOddPrec OneFlavorWilsonFermRatMonomialEnv
 
 
 
   // Constructor
   EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial::EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(
-    const string& name_,
     const OneFlavorWilsonTypeFermRatMonomialParams& param) 
   {
     inv_param = param.inv_param;
@@ -219,13 +64,7 @@ namespace Chroma
     // Get the name of the ferm act
     std::string fermact_string;
     try { 
-  
       read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-      if ( fermact_string != name_ ) { 
-	QDPIO::cerr << "Fermion action is not " << name_
-		    << " but is: " << fermact_string << endl;
-	QDP_abort(1);
-      }
       QDPIO::cout << "Fermact string is " << fermact_string << endl;
     }
     catch( const std::string& e) { 
@@ -234,8 +73,7 @@ namespace Chroma
     }
 
 
-    const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
-  
+    const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
     const EvenOddPrecConstDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecConstDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
 

@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 2.1 2006-01-16 02:10:04 bjoo Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 2.2 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -7,14 +7,8 @@
 #include "update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
 
+#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/invert/invcg2.h"
-
-#include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
-#include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
-#if 0
-#include "actions/ferm/fermacts/prec_stout_fermact_w.h"
-#endif
 
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
@@ -29,60 +23,24 @@ namespace Chroma
   {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialWilson(XMLReader& xml, const string& path) 
+	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
     {
-      QDPIO::cout << "Create Monomial: " << EvenOddPrecWilsonFermActEnv::name << endl;
+      QDPIO::cout << "Create Monomial: " << name << endl;
 
       return new EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
-	EvenOddPrecWilsonFermActEnv::name,
 	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
     }
     
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialParWilson(XMLReader& xml, const string& path) 
-    {
-      QDPIO::cout << "Create Monomial: " << EvenOddPrecParWilsonFermActEnv::name << endl;
-
-      return new EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
-	EvenOddPrecParWilsonFermActEnv::name,
-	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
-    }
-
-#if 0
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomialStout(XMLReader& xml, const string& path) 
-    {
-      QDPIO::cout << "Create Monomial: " << EvenOddPrecStoutWilsonTypeFermActEnv::name << endl;
-
-      return new EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
-	EvenOddPrecStoutWilsonTypeFermActEnv::name,
-	TwoFlavorHasenbuschWilsonTypeFermMonomialParams(xml, path));
-    }
-#endif
+    const std::string name("TWO_FLAVOR_EOPREC_CONSTDET_HASENBUSCH_FERM_MONOMIAL");
  
     //! Register all the objects
     bool registerAll()
     {
       bool foo = true;
-      const std::string prefix = "TWO_FLAVOR_";
-      const std::string suffix = "_HASENBUSCH_FERM_MONOMIAL";
 
-      // Use a pattern to register all the qualifying fermacts
-      foo &= EvenOddPrecWilsonFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecWilsonFermActEnv::name+suffix, 
-							   createMonomialWilson);
+      foo &= WilsonTypeFermActs4DEnv::registered;
+      foo &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
 
-      foo &= EvenOddPrecParWilsonFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecParWilsonFermActEnv::name+suffix, 
-							   createMonomialParWilson);
-
-#if 0
-      foo &= EvenOddPrecStoutWilsonTypeFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(prefix+EvenOddPrecStoutWilsonTypeFermActEnv::name+suffix,
-							   createMonomialStout);
-#endif
       return foo;
     }
 
@@ -93,7 +51,6 @@ namespace Chroma
 
   // Constructor
   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial::EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
-    const string& name_,
     const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_) 
   {
     inv_param = param_.inv_param;
@@ -106,11 +63,6 @@ namespace Chroma
       std::string fermact_string;
       try { 
 	read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-	if ( fermact_string != name_ ) { 
-	  QDPIO::cerr << "Fermion action is not " << name_
-		      << " but is: " << fermact_string << endl;
-	  QDP_abort(1);
-	}
       }
       catch( const std::string& e) { 
 	QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
@@ -120,9 +72,8 @@ namespace Chroma
       QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string << endl;
       
       
-      const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
-      
-      
+      const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+
       const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
       
       // Check success of the downcast 
@@ -142,11 +93,6 @@ namespace Chroma
       std::string fermact_string;
       try { 
 	read(fermact_reader, "/FermionActionPrec/FermAct", fermact_string);
-	if ( fermact_string != name_ ) { 
-	  QDPIO::cerr << "Fermion action is not " << name_
-		      << " but is: " << fermact_string << endl;
-	  QDP_abort(1);
-	}
       }
       catch( const std::string& e) { 
 	QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
@@ -155,10 +101,8 @@ namespace Chroma
       
       QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string << endl;
       
-      
-      const FermionAction<LatticeFermion>* tmp_act = TheFermionActionFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionActionPrec");
-      
-      
+      const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionActionPrec");
+
       const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
       
       // Check success of the downcast 

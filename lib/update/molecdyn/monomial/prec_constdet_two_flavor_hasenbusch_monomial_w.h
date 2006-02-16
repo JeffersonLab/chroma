@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.h,v 2.1 2006-01-16 02:10:04 bjoo Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.h,v 2.2 2006-02-16 02:59:03 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -17,6 +17,7 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv 
   {
+    extern const std::string name;
     extern const bool registered;
   };
 
@@ -34,8 +35,7 @@ namespace Chroma
     {
     public: 
       // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(const string& fermact_name, 
-							   const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
+      EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
 
       // Copy Constructor
       EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(const EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), fermact_prec(m.fermact_prec), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
