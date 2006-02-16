@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 2.5 2006-01-17 16:01:47 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 2.6 2006-02-16 02:26:48 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -365,7 +365,7 @@ namespace Chroma
   };
 
 
-  //-------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------
   //! Exact 2 degen flavor even-odd preconditioned fermact monomial
   /*! @ingroup monomial
    *
@@ -384,12 +384,140 @@ namespace Chroma
       return Double(0);
     }
 
+    
     // Inherit everything from Base Class
   protected:
     //! Get at fermion action
     //! For now the prototype is the same as before -- wait until we 
     //! refactor these before making them EvenOddPrecConstDetWilsonType...
     virtual const EvenOddPrecConstDetWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+  };
+
+
+  //------------------------------------------------------------------------
+  //! Exact 2 degen flavor even-odd preconditioned fermact monomial
+  /*! @ingroup monomial
+   *
+   * Exact 2 degen flavor even-odd preconditioned fermact monomial.
+   * Constand even even determinant so can supplyt
+   */
+  template<typename P, typename Q, typename Phi>
+  class TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial<P,Q,Phi>
+  {
+  public:
+     //! virtual destructor:
+    ~TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial() {}
+
+    //! Even even contribution 
+    virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
+      const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
+
+      // Need way to get gauge state from AbsFieldState<P,Q>
+      Handle< const EvenOddPrecLogDetLinearOperator<Phi,P> > lin(FA.linOp(bc_g_state));
+      
+      Double S_ee =(Double(-2)*lin->LogDetEvenEven());
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "S_even_even");
+      write(xml_out, "S_ee", S_ee);
+      pop(xml_out);
+      
+      return S_ee;
+
+    }
+
+    //! Compute the total action
+    Double S(const AbsFieldState<P,Q>& s)  {
+      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
+      push(xml_out, "TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial");
+
+      Double action = S_even_even(s) + S_odd_odd(s);
+
+      write(xml_out, "S", action);
+      pop(xml_out);
+      return action;
+
+    }
+
+    //! Compute dsdq for the system... 
+    /*! Monomial of the form  chi^dag*(M^dag*M)*chi + 2 TrLn A_ee */
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
+    {
+      // Self Description/Encapsulation Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial");
+
+      /**** Identical code for unprec and even-odd prec case *****/
+      
+      // S_f  chi^dag_{oo}*(M^dag*M)_{oo}^(-1)*chi_{oo} + 2Tr Ln M_{ee}
+      // Here, M is some operator.
+      //
+      // Need
+      // dS_f/dU = - psi^dag * [d(M^dag)*M + M^dag*dM] * psi
+      //           + 2Tr [ M_{ee}^{-1} dM_{ee} ] ,  psi = (M^dag*M)^(-1)*chi
+      //
+
+      // Create FermAct
+      const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      
+      // Create a state for linop
+      Handle< const ConnectState> state(FA.createState(s.getQ()));
+	
+      //Create LinOp
+      Handle< const EvenOddPrecLogDetLinearOperator<Phi,P> > lin(FA.linOp(state));
+
+      P F_tmp;
+
+      // Do the force computation. deriv() in these linops refers only
+      // to the bit coming from the odd-odd bilinear -- this works in 
+      // the normal way.
+      Phi X, Y;
+
+      // Get X out here
+      // (getMDSolutionPredictor())(X);
+      int n_count = getX(X,s);
+      // (getMDSolutionPredictor()).newVector(X);
+      
+      (*lin)(Y, X, PLUS);
+
+      lin->deriv(F, X, Y, MINUS);
+      
+      // fold M^dag into X^dag ->  Y  !!
+
+      lin->deriv(F_tmp, Y, X, PLUS);
+      F += F_tmp;
+ 
+      for(int mu=0; mu < F.size(); ++mu)
+	F[mu] *= Real(-1);
+
+   
+      // F now holds derivative with respect to possibly fat links
+      // now derive it with respect to the thin links if needs be
+      state->deriv(F);
+      Double F_sq = norm2(F);
+      
+      lin->derivEvenEvenLogDet(F_tmp, PLUS);
+      for(int mu =0; mu < Nd; mu++) { 
+	F_tmp[mu] *= Real(-2); 
+      }
+      state->deriv(F_tmp);
+      Double F_logdet_sq = norm2(F_tmp);
+      write(xml_out, "n_count", n_count);
+      write(xml_out, "F_oo_sq", F_sq);
+      write(xml_out, "F_logdet_sq", F_logdet_sq);
+
+      F += F_tmp;
+      F_sq = norm2(F);
+      write(xml_out, "F_sq", F_sq);
+      pop(xml_out);
+    }
+
+    // Inherit everything from Base Class
+  protected:
+    //! Get at fermion action
+    //! For now the prototype is the same as before -- wait until we 
+    //! refactor these before making them EvenOddPrecConstDetWilsonType...
+    virtual const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
   };
 
 }
