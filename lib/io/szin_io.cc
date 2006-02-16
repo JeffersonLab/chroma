@@ -1,10 +1,11 @@
-// $Id: szin_io.cc,v 2.0 2005-09-25 21:04:32 edwards Exp $
+// $Id: szin_io.cc,v 2.1 2006-02-16 21:02:58 edwards Exp $
 
 /*! \file
  *  \brief Reader/writers for szin headers
  */
 
 #include "chromabase.h"
+#include "chroma_config.h"
 #include "io/szin_io.h"
 
 namespace Chroma 

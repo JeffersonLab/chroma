@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: clover_term_w.h,v 2.2 2006-02-16 21:02:58 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized Clover terms
  */
@@ -7,6 +7,7 @@
 #ifndef __clover_term_w_h__
 #define __clover_term_w_h__
 
+#include "chroma_config.h"
 
 // The QDP naive clover term
 #include "clover_term_qdp_w.h"

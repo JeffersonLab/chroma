@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_array_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: dslash_array_w.h,v 2.1 2006-02-16 21:02:58 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -7,6 +7,7 @@
 #ifndef __dslash_array_w_h
 #define __dslash_array_w_h
 
+#include "chroma_config.h"
 
 // The QDP naive dslash class: QDPWilsonDslashArray
 #include "lwldslash_array_w.h"

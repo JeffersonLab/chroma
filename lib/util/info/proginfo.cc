@@ -1,8 +1,9 @@
-//  $Id: proginfo.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+//  $Id: proginfo.cc,v 2.1 2006-02-16 21:02:58 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
 
+#include "chroma_config.h"
 #include "chromabase.h"
 #include "util/info/printgeom.h"
 #include "util/info/proginfo.h"

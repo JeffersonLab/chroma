@@ -1,4 +1,4 @@
-// $Id: chromabase.h,v 2.1 2006-01-17 16:01:46 bjoo Exp $
+// $Id: chromabase.h,v 2.2 2006-02-16 21:02:58 edwards Exp $
 //
 // Absolute basic stuff to use chroma
 //
@@ -13,7 +13,7 @@
 #define CHROMABASE_INCLUDE
 
 #include "qdp.h"
-#include "chroma_config.h"
+// #include "chroma_config.h"   // turn off by default using config file
 
 using namespace QDP;
 

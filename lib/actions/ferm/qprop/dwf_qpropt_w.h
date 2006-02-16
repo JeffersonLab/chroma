@@ -1,4 +1,4 @@
-// $Id: dwf_qpropt_w.h,v 2.1 2005-12-30 20:28:44 kostas Exp $
+// $Id: dwf_qpropt_w.h,v 2.2 2006-02-16 21:02:58 edwards Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -8,6 +8,7 @@
 #ifndef DWF_QPROPT_W_H
 #define DWF_QPROPT_W_H
 
+#include "chroma_config.h"
 
 // The QDP naive class: PrecFermAct5DQprop
 #include "prec_fermact_qprop_array.h"

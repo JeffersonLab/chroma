@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_contfrac5d_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: ovlap_contfrac5d_w.h,v 2.1 2006-02-16 21:02:58 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized partfrac5d
  */
@@ -7,6 +7,7 @@
 #ifndef __ovlap_contfrac5d_w_h__
 #define __ovlap_contfrac5d_w_h__
 
+#include "chroma_config.h"
 
 // The QDP naive dslash class: QDPWilsonDslash
 #include "prec_ovlap_contfrac5d_linop_array_w.h"
