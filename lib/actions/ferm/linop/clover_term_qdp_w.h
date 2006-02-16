@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 2.6 2006-02-13 01:20:35 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 2.7 2006-02-16 02:24:46 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -57,7 +57,7 @@ namespace Chroma
      * \param cb   checkerboard of work (Read)
      * \return logarithm of the determinant  
      */
-    Double cholesDet(int cb);
+    Double cholesDet(int cb) const ;
 
     /**
      * Apply a dslash
@@ -78,6 +78,7 @@ namespace Chroma
      */
     void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 
+    void triacntr(LatticeColorMatrix& B, int mat, int cb) const;
   protected:
     //! Create the clover term on cb
     /*!
@@ -93,7 +94,7 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& getU() const {return u;}
 
     //! Calculates Tr_D ( Gamma_mat L )
-    void triacntr(LatticeColorMatrix& B, int mat, int cb) const;
+
 
     const Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const;
   private:

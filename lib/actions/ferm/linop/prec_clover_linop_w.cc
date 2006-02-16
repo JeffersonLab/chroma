@@ -1,4 +1,4 @@
-// $Id: prec_clover_linop_w.cc,v 2.4 2006-01-01 05:12:30 edwards Exp $
+// $Id: prec_clover_linop_w.cc,v 2.5 2006-02-16 02:24:46 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -10,20 +10,6 @@ using namespace QDP::Hints;
 
 namespace Chroma 
 { 
-  // Anonymous namespace
-  namespace
-  {
-    //! Hack for now
-    void 
-    notImplemented(multi1d<LatticeColorMatrix>& ds_u, 
-		   const LatticeFermion& chi, const LatticeFermion& psi, 
-		   enum PlusMinus isign)
-    {
-      QDPIO::cerr << "Prec clover deriv not implemented" << endl;
-      QDP_abort(1);
-    }
-
-  }
 
 
   //! Creation routine with Anisotropy
@@ -34,17 +20,49 @@ namespace Chroma
   void EvenOddPrecCloverLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
 				      const CloverFermActParams& param_)
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
 
     param = param_;
 
     clov.create(u_, param);
+ 
     invclov = clov;  // make a copy
     invclov.choles(0);  // invert the cb=0 part
-    
-    D.create(u_, param.anisoParam);
 
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+#if 0
+    for(int mu=0; mu < Nd; mu++) { 
+
+      for(int nu = mu+1; nu < Nd; nu++) { 
+
+	int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
+	LatticeColorMatrix sigma_XY_dag=zero;
+	
+	// Need Sigma On Both Checkerboards
+	invclov.triacntr(sigma_XY_dag, mu_nu_index, 0);
+	
+	std::ostringstream filename;
+	filename << "triacntr" << mu_nu_index;
+	XMLFileWriter outxml(filename.str());
+	push(outxml, "root");
+	write(outxml, "mu_nu_index", mu_nu_index);
+	write(outxml, "sigma_TrAinv", sigma_XY_dag);
+	pop(outxml);
+	
+	outxml.close();
+      }
+    }
+#endif
+
+    D.create(u_, param.anisoParam);
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+  }
+
+  //! Apply the the odd-odd block onto a source vector
+  void 
+  EvenOddPrecCloverLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
+				      enum PlusMinus isign) const
+  {
+    clov.apply(chi, psi, isign, 1);
   }
 
 
@@ -53,6 +71,7 @@ namespace Chroma
   EvenOddPrecCloverLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					enum PlusMinus isign) const
   {
+    // Nuke for testing
     clov.apply(chi, psi, isign, 0);
   }
 
@@ -64,13 +83,6 @@ namespace Chroma
     invclov.apply(chi, psi, isign, 0);
   }
   
-  //! Apply the the odd-odd block onto a source vector
-  void 
-  EvenOddPrecCloverLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
-				      enum PlusMinus isign) const
-  {
-    clov.apply(chi, psi, isign, 1);
-  }
 
   //! Apply even-odd linop component
   /*!
@@ -129,6 +141,7 @@ namespace Chroma
 					  const LatticeFermion& psi, 
 					  enum PlusMinus isign) const
   {
+
     LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
     LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
     Real mquarter = -0.25;
@@ -141,6 +154,7 @@ namespace Chroma
     //  chi_o  =  A_oo  psi_o  -  tmp1_o
     clov.apply(chi, psi, isign, 1);
 
+
     chi[rb[1]] += mquarter*tmp1;
   }
 
@@ -151,7 +165,17 @@ namespace Chroma
 					     const LatticeFermion& chi, const LatticeFermion& psi, 
 					     enum PlusMinus isign) const
   {
-    notImplemented(ds_u,chi,psi,isign);
+    clov.deriv(ds_u, chi, psi, isign, 0);
+  }
+
+  //! Apply the even-even block onto a source vector
+  void 
+  EvenOddPrecCloverLinOp::derivEvenEvenLogDet(multi1d<LatticeColorMatrix>& ds_u,
+					      enum PlusMinus isign) const
+  {
+    
+    // Testing Odd Odd Term - get nothing from even even term
+    invclov.derivTrLn(ds_u, isign, 0);
   }
 
   //! Apply the the even-odd block onto a source vector
@@ -160,7 +184,13 @@ namespace Chroma
 					    const LatticeFermion& chi, const LatticeFermion& psi, 
 					    enum PlusMinus isign) const
   {
-    notImplemented(ds_u,chi,psi,isign);
+    START_CODE();
+    ds_u.resize(Nd);
+    D.deriv(ds_u, chi, psi, isign, 0);
+    for(int mu=0; mu < Nd; mu++) { 
+      ds_u[mu]  *= Real(-0.5);
+    }
+    END_CODE();
   }
  
   //! Apply the the odd-even block onto a source vector
@@ -169,25 +199,25 @@ namespace Chroma
 					    const LatticeFermion& chi, const LatticeFermion& psi, 
 					    enum PlusMinus isign) const
   {
-    notImplemented(ds_u,chi,psi,isign);
+
+    START_CODE();
+    ds_u.resize(Nd);
+
+    D.deriv(ds_u, chi, psi, isign, 1);
+    for(int mu=0; mu < Nd; mu++) { 
+     ds_u[mu]  *= Real(-0.5);
+    }
+    END_CODE();
   }
 
+  // Inherit this
   //! Apply the the odd-odd block onto a source vector
   void 
   EvenOddPrecCloverLinOp::derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 					   const LatticeFermion& chi, const LatticeFermion& psi, 
 					   enum PlusMinus isign) const
-  {
-    notImplemented(ds_u,chi,psi,isign);
-  }
-
-  //! Override virtual function for efficiency. 
-  void 
-  EvenOddPrecCloverLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,
-				const LatticeFermion& chi, const LatticeFermion& psi, 
-				enum PlusMinus isign) const
-  {
-    notImplemented(ds_u,chi,psi,isign);
+  {   
+    clov.deriv(ds_u, chi, psi, isign, 1);
   }
 
 
@@ -198,5 +228,9 @@ namespace Chroma
     return 0;    // NEED CORRECT VALUE
   }
 
-
+  //! Get the log det of the even even part
+  // BUt for now, return zero for testing.
+  Double EvenOddPrecCloverLinOp::LogDetEvenEven(void) const  {
+    return invclov.cholesDet(0);
+  }
 } // End Namespace Chroma

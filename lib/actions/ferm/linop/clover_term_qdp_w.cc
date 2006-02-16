@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.11 2006-02-13 01:20:34 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 2.12 2006-02-16 02:24:46 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -106,11 +106,12 @@ namespace Chroma
     multi1d<LatticeColorMatrix> f;
     mesField(f, u_);
     makeClov(f, diag_mass);
-
+    
     choles_done.resize(rb.numSubsets());
-    for(int i=0; i < rb.numSubsets(); i++) { 
-      choles_done[i] = false; 
+    for(int i=0; i < rb.numSubsets(); i++) {
+      choles_done[i] = false;
     }
+    
   }
 
 
@@ -414,11 +415,14 @@ namespace Chroma
    *
    * \return logarithm of the determinant  
    */
-  Double QDPCloverTerm::cholesDet(int cb)
+  Double QDPCloverTerm::cholesDet(int cb) const
   {
-    if (choles_done[cb] != true ) { 
-      choles(cb);
+    if( choles_done[cb] == false ) { 
+      QDPIO::cout << "Error: YOu have not done the Cholesky.on this operator on this subset" << endl;
+      QDPIO::cout << "You sure you shouldn't be asking invclov?" << endl;
+      QDP_abort(1);
     }
+
 
     return sum(tr_log_diag_, rb[cb]);
   }
@@ -681,7 +685,9 @@ namespace Chroma
   void QDPCloverTerm::triacntr(LatticeColorMatrix& B, int mat, int cb) const
   {
     START_CODE();
-  
+
+    B = zero;
+
     if ( mat < 0  ||  mat > 15 )
     {
       QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << endl;
@@ -730,7 +736,8 @@ namespace Chroma
 
 	    B.elem(site).elem().elem(j0,i0) = lctmp0;
 	    B.elem(site).elem().elem(i0,j0) = adj(lctmp0);
-	      
+
+
 	    elem_ij0++;
 	    elem_ijb0++;
 	  }
@@ -776,8 +783,8 @@ namespace Chroma
 	    lctmp3 -= tri[site].offd[1][elem_ij3];
 	    lctmp3 += tri[site].offd[1][elem_ijb3];
 
-	    B.elem(site).elem().elem(j3,i3) = timesI(lctmp3);
-	    B.elem(site).elem().elem(i3,j3) = timesI(adj(lctmp3));
+	    B.elem(site).elem().elem(j3,i3) = timesI(adj(lctmp3));
+	    B.elem(site).elem().elem(i3,j3) = timesI(lctmp3);
 	    
 	    elem_ij3++;
 	    elem_ijb3++;
@@ -805,13 +812,15 @@ namespace Chroma
 	  for(int j5 = 0; j5 < Nc; ++j5)
 	  {
 	    int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
+
 	  
 	    lctmp5 = adj(tri[site].offd[0][elem_ji5]);
 	    lctmp5 -= tri[site].offd[0][elem_ij5];
 	    lctmp5 += adj(tri[site].offd[1][elem_ji5]);
 	    lctmp5 -= tri[site].offd[1][elem_ij5];
 
-	    B.elem(site).elem().elem(j5,i5) = lctmp5;
+
+	    B.elem(site).elem().elem(i5,j5) = lctmp5;
 
 	    elem_ij5++;
 	  }
@@ -844,7 +853,7 @@ namespace Chroma
 	    lctmp6 += adj(tri[site].offd[1][elem_ji6]);
 	    lctmp6 += tri[site].offd[1][elem_ij6];
 
-	    B.elem(site).elem().elem(j6,i6) = timesMinusI(lctmp6);
+	    B.elem(site).elem().elem(i6,j6) = timesMinusI(lctmp6);
 
 	    elem_ij6++;
 	  }
@@ -877,7 +886,7 @@ namespace Chroma
 	    lctmp9 -= adj(tri[site].offd[1][elem_ji9]);
 	    lctmp9 -= tri[site].offd[1][elem_ij9];
 
-	    B.elem(site).elem().elem(j9,i9) = timesI(lctmp9);
+	    B.elem(site).elem().elem(i9,j9) = timesI(lctmp9);
 
 	    elem_ij9++;
 	  }
@@ -910,7 +919,7 @@ namespace Chroma
 	    lctmp10 -= adj(tri[site].offd[1][elem_ji10]);
 	    lctmp10 += tri[site].offd[1][elem_ij10];
 
-	    B.elem(site).elem().elem(j10,i10) = lctmp10;
+	    B.elem(site).elem().elem(i10,j10) = lctmp10;
 
 	    elem_ij10++;
 	  }
@@ -956,8 +965,8 @@ namespace Chroma
 	    lctmp12 -= tri[site].offd[1][elem_ij12];
 	    lctmp12 += tri[site].offd[1][elem_ijb12];
 	
-	    B.elem(site).elem().elem(j12,i12) = timesI(lctmp12);
-	    B.elem(site).elem().elem(i12,j12) = timesI(adj(lctmp12));
+	    B.elem(site).elem().elem(i12,j12) = timesI(lctmp12);
+	    B.elem(site).elem().elem(j12,i12) = timesI(adj(lctmp12));
 	
 	    elem_ij12++;
 	    elem_ijb12++;
@@ -967,7 +976,10 @@ namespace Chroma
       break;
     
     default:
-      B = zero;
+      {
+	B = zero;
+	QDPIO::cout << "BAD DEFAULT CASE HIT" << endl;
+      }
     }
   
 

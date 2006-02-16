@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 2.7 2006-02-13 02:10:30 bjoo Exp $
+// $Id: clover_term_base_w.h,v 2.8 2006-02-16 02:24:46 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -38,7 +38,7 @@ namespace Chroma
      *
      * \return logarithm of the determinant  
      */
-    virtual Double cholesDet(int cb) = 0;
+    virtual Double cholesDet(int cb) const = 0;
 
     //! Take deriv of D
     /*!
@@ -65,6 +65,10 @@ namespace Chroma
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
 	       enum PlusMinus isign, int cb) const;
 
+    //! Take derivative of TrLn D
+    void derivTrLn(multi1d<LatticeColorMatrix>& ds_u, 
+		   enum PlusMinus isign, int cb) const;
+
 
     void deriv_loops(const int u, const int mu, const int cb,
 		     LatticeColorMatrix& ds_u,
@@ -73,9 +77,10 @@ namespace Chroma
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 
-  protected:
     //! Calculates Tr_D ( Gamma_mat L )
     virtual void triacntr(LatticeColorMatrix& B, int mat, int cb) const = 0;
+
+  protected:
 
     //! Get the u field
     virtual const multi1d<LatticeColorMatrix>& getU() const = 0;

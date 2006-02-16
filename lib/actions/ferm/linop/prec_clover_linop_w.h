@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_linop_w.h,v 2.4 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_clover_linop_w.h,v 2.5 2006-02-16 02:24:46 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -71,6 +71,9 @@ namespace Chroma
 			    const LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign) const;
 
+    void derivEvenEvenLogDet(multi1d<LatticeColorMatrix>& ds_u, 
+			     enum PlusMinus isign) const;
+
     //! Apply the the even-odd block onto a source vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
@@ -86,13 +89,11 @@ namespace Chroma
 			  const LatticeFermion& chi, const LatticeFermion& psi, 
 			  enum PlusMinus isign) const;
 
-    //! Override virtual function for efficiency.
-    void deriv(multi1d<LatticeColorMatrix>& ds_u, const LatticeFermion& chi, 
-	       const LatticeFermion& psi, 
-	       enum PlusMinus isign) const;
-
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
+
+    //! Get the log det of the even even part
+    Double LogDetEvenEven(void) const ; 
 
   private:
     CloverFermActParams param;
