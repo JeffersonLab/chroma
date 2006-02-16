@@ -1,4 +1,8 @@
 02/16/2006 -- Robert Edwards
+	Version 2.10.0. Changed naming scheme for Monomials. The fermact is no longer
+        in the run-time monomial name.
+
+02/16/2006 -- Robert Edwards
 	Version 2.9.2. Preconditioned clover monomials and logdet monomials now 
         working. More regression tests for t_leapfrog.
 
