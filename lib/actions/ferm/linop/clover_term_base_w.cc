@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 2.5 2006-02-16 02:24:46 bjoo Exp $
+// $Id: clover_term_base_w.cc,v 2.6 2006-02-16 19:03:56 bjoo Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -68,110 +68,157 @@ namespace Chroma
     
     // Sites with CB first:
     //
-    // This is first pass, most dumbest most inefficient way
+
+    LatticeColorMatrix staple_for;
+    LatticeColorMatrix staple_back;
+
+    LatticeColorMatrix u_nu_for_mu = shift(u[nu],FORWARD, mu); // Can reuse these later
+    LatticeColorMatrix u_mu_for_nu = shift(u[mu],FORWARD, nu)
+;
+    LatticeColorMatrix u_tmp1, u_tmp2, u_tmp3;
+
+    //   u_tmp1 =   <-------
+    //              |
+    //              |                       ON ALL CHECKERBOARDS
+    //              |                       (Because it's used in staples)  
+    //              V
+    u_tmp1 = adj(u_mu_for_nu)*adj(u[nu]);
+
+    //  Staple_for =  <--------
+    //                |       ^
+    //                |       |             ON ALL CHECKERBOARDS
+    //                |       |             
+    //                V       |
+    staple_for = u_nu_for_mu*u_tmp1;
+
+
+    //
+    //            ^
+    //  u_tmp2 =  |                         ON ALL CHECKBERBOARDS
+    //            |                         (Because it's used in the staples)
+    //            |  
+    //            <-------
+    u_tmp2 = adj(u[mu])*u[nu];
+
+    //  Staple_back =  ^       |
+    //                 |       |            ON ALL CHECKERBOARDS
+    //                 |       |
+    //                 <------ V
+    //                      
+    staple_back = adj(u_nu_for_mu)*u_tmp2;
+
+
+    // Now compute the terms of the force:
+    // 
+    // Altogether 8 terms. 4 Upwards with + sign, and 4 Downwards with - sign
+    //                     4 terms use staples and 4 don't
+
+    // NON STAPLE TERMS FIRST:
+
+    // 1)
+    //
+    //    <-------  X (CB)                      <--------
+    //    |         ^                           |
+    //    |         |        re  use  u_tmp1 =  | 
+    //    V         |                           V
+    //   CB       1-CB       
+    u_tmp3[rb[1-cb]] = u[nu]*shift(Lambda, FORWARD, nu);
+    ds_u[rb[cb]] = shift(u_tmp3,FORWARD, mu)*u_tmp1;
+    
+    // 2)
+    //
+    //  CB
+    //    X <------ 
+    //    |        ^       re use u[nu](x+mu) = u_nu_for_mu
+    //    |        |       re use u[mu](x+nu) = u_mu_for_nu
+    //    V        |
+    //    1-CB    CB        
+    u_tmp3[rb[1-cb]] = shift(Lambda, FORWARD, nu)*adj(u[nu]);
+    ds_u[rb[1-cb]] = u_nu_for_mu
+      *adj(u_mu_for_nu)
+      *u_tmp3;
+
+    // Terms 3) and 4)
+    //
+    // These last two can be done on the other checkerboard and then shifted together.
+    //
+    //  CB      1-CB          
+    //    ^       |   
+    //    |       |     
+    //    |       V
+    //    <-------X CB
+
+    // Compute on CB:     | 
+    //                    |
+    //         u_tmp1 =   |
+    //                    V
+    //                    X (CB)
+    u_tmp1[rb[cb]] = adj(u[nu])*Lambda;
+
+    // 3)
+    //
+    //  Compunte with u_tmp2:     ^           |
+    //                            |           | 
+    //                  u_tmp2 =  |           | = u_tmp1
+    //                            |           V
+    //                     (1-CB) <--------   X CB
+    u_tmp3[rb[1-cb]] = shift(u_tmp1, FORWARD, mu)*u_tmp2;
+    
+    // 4)
+    //
+    //  1-CB      CB
+    //   ^        |
+    //   |        |        reuse = u[nu](x+mu) = u_nu_for_mu
+    //   |        |
+    //   X <----- V 1-CB
+    //   CB
+    u_tmp3[rb[cb]] = adj(u_nu_for_mu)*adj(u[mu])*Lambda*u[nu];
+    
+    //  u_tmp3 now holds the last 2 terms, one on each of its checkerboards, but Now I need
+    //  to shift them both together onto ds_u  (Hence full both CB additions on ds_u below
+    ds_u -= shift(u_tmp3, BACKWARD, nu);
+
+
+    // STAPLE TERMS:
+    
+    // 5)
     //
     //    <------- 
     //    |        ^
-    //    |        |
+    //    |        |     use computed staple
     //    V        |
     //    x        
     //   CB       1-CB  
-	  
-    ds_u[rb[cb]] = shift(u[nu], FORWARD, mu)
-      *adj(shift(u[mu],FORWARD,nu))
-      *adj(u[nu])
-      *Lambda;
-
-    //    <------- X (CB)
-    //    |        ^
-    //    |        |
-    //    V        |
-    //   CB       1-CB       
-	  
-    ds_u[rb[cb]] += shift(u[nu],FORWARD, mu)
-      *shift( shift(Lambda, FORWARD, mu), FORWARD, nu)
-      *adj(shift(u[mu], FORWARD, nu))
-      *adj(u[nu]);
+    ds_u[rb[cb]] += staple_for*Lambda;
     
-
+    // 6)
     //
-    //  CB      1-CB         
-    //    ^       |
-    //    |       |
-    //    |       V
-    //    <-------X CB
-    
-    ds_u[rb[cb]] -= adj( shift(shift(u[nu], FORWARD, mu),BACKWARD,nu) )
-      * shift(shift(Lambda, FORWARD, mu), BACKWARD, nu)
-      * adj(shift(u[mu], BACKWARD, nu))
-      * shift(u[nu], BACKWARD, nu);
+    //    <------- 
+    //    |        ^
+    //    |        |    re use computed staple 
+    //    V        |
+    //   1-CB      X CB	  
+    ds_u[rb[1-cb]] += shift(Lambda, FORWARD, mu)*staple_for;
 
-
+    // 7)
     //
     //   CB      1-CB
     //  X         
     //    ^       |
-    //    |       |
+    //    |       |   re use computed staple 
     //    |       |
     //    <-------V 
-    
-    ds_u[rb[cb]]  -= adj( shift(shift(u[nu], FORWARD, mu),BACKWARD,nu) )
-      * adj(shift(u[mu], BACKWARD, nu))
-      * shift(u[nu], BACKWARD, nu)
-      * Lambda;
+    ds_u[rb[cb]]  -= shift(staple_back, BACKWARD, nu) * Lambda;
 
-
-    // Now Sites with 1 - CB 
-    //  CB
-    //    X <------ 
-    //    |        ^
-    //    |        |
-    //    V        |
-    //    1-CB    CB        
-	  
-    ds_u[rb[1-cb]] = shift(u[nu], FORWARD, mu)
-      *adj(shift(u[mu], FORWARD, nu))
-      *shift(Lambda, FORWARD, nu)
-      *adj(u[nu]);
-
-
-    //    <------- 
-    //    |        ^
-    //    |        |
-    //    V        |
-    //   1-CB      X CB
-	  
-	  
-    ds_u[rb[1-cb]] += shift(Lambda, FORWARD,mu)
-      *shift(u[nu], FORWARD, mu)
-      *adj(shift(u[mu],FORWARD,nu))
-      *adj(u[nu]);
-
+    // 8)
+    //
     //  1-CB      X CB
     //    ^       |
-    //    |       |
+    //    |       |  reuse computed staple 
     //    |       |
     //    <-------V
-	  
-    
-    ds_u[rb[1-cb]] -= shift(Lambda, FORWARD, mu)
-      * adj(shift( shift(u[nu], FORWARD, mu), BACKWARD, nu))
-      * adj(shift( u[mu], BACKWARD, nu))
-      * shift(u[nu], BACKWARD, nu);
+    ds_u[rb[1-cb]] -= shift(Lambda, FORWARD, mu)*shift(staple_back, BACKWARD, nu);
 
-
-    //  1-CB      CB
-    //   ^        |
-    //   |        | 
-    //   |        |
-    //   X <----- V 1-CB
-    //   CB
-
-    ds_u[rb[1-cb]] -= adj( shift(shift(u[nu], FORWARD, mu),BACKWARD,nu) )
-      * adj(shift(u[mu], BACKWARD, nu))
-      * shift(Lambda, BACKWARD, nu)
-      * shift(u[nu], BACKWARD, nu);
-    	
   }
 
 
