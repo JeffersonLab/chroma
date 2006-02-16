@@ -3,7 +3,9 @@
    <Hamiltonian>
     <Monomials>
       <elem>
-	<Name>ONE_FLAVOR_WILSON_FERM_RAT_MONOMIAL</Name>
+	<Name>ONE_FLAVOR_EOPREC_CONSTDET_FERM_RAT_MONOMIAL</Name>
+        <expNumPower>1</expNumPower>
+        <expDenPower>1</expDenPower>
         <nthRoot>2</nthRoot>
 	<InvertParam>
           <invType>CG_INVERTER</invType>
@@ -24,7 +26,7 @@
       </elem>
 
       <elem>
-	<Name>WILSON_GAUGEACT_MONOMIAL</Name>
+	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
 	   <Name>WILSON_GAUGEACT</Name>
 	   <beta>5.7</beta>

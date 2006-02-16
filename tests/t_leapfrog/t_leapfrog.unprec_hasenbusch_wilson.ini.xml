@@ -3,7 +3,7 @@
    <Hamiltonian>
     <Monomials>
       <elem>
-	<Name>TWO_FLAVOR_UNPRECONDITIONED_WILSON_HASENBUSCH_FERM_MONOMIAL</Name>
+	<Name>TWO_FLAVOR_UNPREC_HASENBUSCH_FERM_MONOMIAL</Name>
 	<InvertParam>
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
@@ -39,7 +39,7 @@
         </FermionActionPrec>
       </elem>
       <elem>
-	<Name>WILSON_GAUGEACT_MONOMIAL</Name>
+	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
 	   <Name>WILSON_GAUGEACT</Name>
 	   <beta>5.2</beta>
