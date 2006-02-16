@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 1.4 2006-02-14 23:15:08 kostas Exp $
+// $Id: polynomial_op.h,v 1.5 2006-02-16 22:33:06 kostas Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
  *    to 1/Q^2 in the range [\mu, Lambda_max] with Q = \gamma5 M
@@ -53,12 +53,13 @@ public:
      
      //Qsq = new lmdagm<T>(*M) ;
 
-     QDPIO::cout<<"lpoly constructor\n" ;
+     //QDPIO::cout<<"lpoly constructor\n" ;
 
      if(degree_%2 !=0 ){
        QDPIO::cout<<"lpoly: Polynomium degree must be even.\n" ;
        degree_++ ;
-       QDPIO::cout<<"lpoly: Using degree:" << degree_<<endl ;       
+       degree++  ;
+       QDPIO::cout<<"lpoly: Using degree:" << degree<<endl ;       
      }
      //UpperBound = upper_bound_ ;
      root.resize(degree_);
@@ -147,7 +148,7 @@ public:
        sigma_m_minus_one = sigma_m ;
        sigma_m = sigma_m_plus_one ;
      }
-     QDPIO::cout<<"applyChebInv: iter: "<<m<<" 1/sigma: "<<1.0/sigma_m<<endl ;
+     QDPIO::cout<<"applyChebInv: 1/sigma("<<m<<"): "<<1.0/sigma_m<<endl ;
 
    }
 
@@ -222,22 +223,22 @@ public:
    // Build up list of products of roots of poly against psi and chi each
    // play some trick trying to pad boundaries
 
-   Real c0 = sqrt(c_Zero) ;
 
-   chi_products[0] = c0*chi;
-   psi_products[0] = c0*psi;
-
-   for(int n(1); n < degree+1; ++n)
-   {
-      Qsq(chi_products[n], chi_products[n-1]);
-      chi_products[n] -= root[n] * chi_products[n-1];
-      chi_products[n] *= inv_c[n] ;
-
-      Qsq(psi_products[n], psi_products[n-1]);
-      psi_products[n] -= root[n] * psi_products[n-1];
-      psi_products[n] *= inv_c[n] ;
-
+   // Qsq is M^dag M 
+   chi_products[degree] = sqrt(c_Zero)*chi;
+   for(int n(degree-1); n >= 0; --n){
+     Qsq(chi_products[n], chi_products[n+1]);
+     chi_products[n] -= conj(root [n]) * chi_products[n+1];
+     chi_products[n] *= conj(inv_c[n]) ;
    }
+ 
+   psi_products[0] = sqrt(c_Zero)*psi;  
+   for(int n(0); n < degree; ++n){
+     Qsq(psi_products[n+1], psi_products[n]);
+     psi_products[n+1] -= root[n] * psi_products[n];
+     psi_products[n+1] *= inv_c[n] ;
+   }
+
    for(int n(0); n < degree+1; ++n)
      {
        (*M)(M_chi_products[n],chi_products[n],PLUS);
@@ -248,12 +249,27 @@ public:
    // be more careful than me about bouds
    for(int n(0); n < degree; ++n)
      {
-       M->deriv(ds_tmp, M_chi_products[degree-n], psi_products[n], PLUS);
+       M->deriv(ds_tmp, M_chi_products[n+1], psi_products[n], PLUS);
+       for(int d(0);d<Nd;d++)
+	 ds_tmp[d] *= inv_c[n] ; 
        ds_u += ds_tmp;   // build up force
-       M->deriv(ds_tmp, chi_products[degree-n], M_psi_products[n], MINUS);
+       
+       M->deriv(ds_tmp, chi_products[n+1], M_psi_products[n], MINUS);
+       for(int d(0);d<Nd;d++)
+	 ds_tmp[d] *= inv_c[n] ; 
        ds_u += ds_tmp;   // build up force
      }
 
+   //Check The force:
+   /**
+   QDPIO::cout<<"CheckProducts: ";
+   QDPIO::cout<< innerProduct(psi_products[0],psi_products[degree])<<endl ;
+   for(int n(0); n < degree+1; ++n){     
+     QDPIO::cout<<"CheckProducts: "<<n<< ": " ;
+     QDPIO::cout<< innerProduct(chi_products[n],psi_products[n])<<endl ;
+     
+   }
+   **/
  }
 
  
