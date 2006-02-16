@@ -1,6 +1,6 @@
 
 // -*- C++ -*-
-// $Id: prec_logdet_linop.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_logdet_linop.h,v 2.2 2006-02-16 02:29:44 bjoo Exp $
 
 /*! @file
  * @brief Preconditioned  Linear Operators  where the Even Even part depends on the Gauge Field and we can evaluate Log Det E, where E is the Even Even part. Essentially this is for things like clover.
@@ -186,6 +186,15 @@ namespace Chroma {
       QDP_abort(1);
     }
 
+    //! Get the force from the EvenEven Trace Log
+    virtual void derivEvenEvenLogDet(P& ds_u, enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Get the log det of the even even part
+    virtual Double LogDetEvenEven(void) const = 0;
   };
 
 
@@ -361,8 +370,17 @@ namespace Chroma {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
       QDP_abort(1);
     }
-  };
 
+    //! Get the force from the EvenEven Trace Log
+    virtual void derivEvenEvenLogDet(P& ds_u, enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Get the log det of the even even part
+    virtual Double LogDetEvenEven(void) const = 0;
+  };
 
 
 
