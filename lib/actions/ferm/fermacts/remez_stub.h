@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez_stub.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: remez_stub.h,v 2.1 2006-02-17 00:13:31 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -19,7 +19,7 @@ namespace Chroma
   public:
     RemezStub(const Real& lower, const Real& upper, long prec) 
     {
-      QDPIO::cerr << "RemezStub: Remez algorithm not supported without at least QMP" << endl;
+      QDPIO::cerr << "RemezStub: Remez algorithm not supported without at least GMP (Gnu Muli-Precision library)" << endl;
       QDP_abort(1);
     }
     ~RemezStub() {}
