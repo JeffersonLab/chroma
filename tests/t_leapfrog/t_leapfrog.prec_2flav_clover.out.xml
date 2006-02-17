@@ -11,13 +11,13 @@
       <PEByMonomials>
         <elem>
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
-            <S_even_even>
-              <S_ee>-173.82</S_ee>
-            </S_even_even>
             <S_odd_odd>
               <n_count>24</n_count>
               <S_oo>114.1</S_oo>
             </S_odd_odd>
+            <S_even_even>
+              <S_ee>-173.82</S_ee>
+            </S_even_even>
             <S>-59.7194</S>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
@@ -674,14 +674,14 @@
       <PEByMonomials>
         <elem>
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
-            <S_even_even>
-              <S_ee>-173.558</S_ee>
-            </S_even_even>
             <S_odd_odd>
               <n_count>25</n_count>
               <S_oo>109.613</S_oo>
             </S_odd_odd>
-            <S>-63.9445</S>
+            <S_even_even>
+              <S_ee>-173.558</S_ee>
+            </S_even_even>
+            <S>-63.9444</S>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
         <elem>
