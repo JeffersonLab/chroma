@@ -51,7 +51,7 @@ HDRS =
 bin_PROGRAMS = chroma collect_propcomp \
         purgaug \
         cfgtransf qpropgfix \
-        qproptrev hmc
+        qproptrev hmc spectrum_s
 
 # Wilson specific programs
 bin_PROGRAMS += qpropqio qproptransf wallformfac
