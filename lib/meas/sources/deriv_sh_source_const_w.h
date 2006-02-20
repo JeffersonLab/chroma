@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_sh_source_const_w.h,v 1.4 2006-02-20 21:20:11 edwards Exp $
+// $Id: deriv_sh_source_const_w.h,v 1.5 2006-02-20 21:32:29 edwards Exp $
 /*! \file
  *  \brief Construct derivative source construction
  *
@@ -25,14 +25,14 @@ namespace Chroma
 {
 
   //! Name and registration
-  /*! @ingroup hadron */
+  /*! @ingroup sources */
   namespace DerivShellSourceConstEnv
   {
     extern const bool registered;
 
   
     //! Deriv meson source parameters
-    /*! @ingroup hadron */
+    /*! @ingroup sources */
     struct Params
     {
       Params();
@@ -53,7 +53,7 @@ namespace Chroma
     };
 
     //! Deriv meson source parameters
-    /*! @ingroup hadron */
+    /*! @ingroup sources */
     struct ParamsDir
     {
       ParamsDir();
@@ -108,7 +108,7 @@ namespace Chroma
 
     //! Construct (PionxNabla_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  Pion x Nabla_T1
      * The sink interpolator structure is
@@ -134,7 +134,7 @@ namespace Chroma
 
     //! Construct (A0xNabla_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a0 x nabla_T1
      * The sink interpolator is   
@@ -160,7 +160,7 @@ namespace Chroma
 
     //! Construct (A0_2xNabla_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a0_2 x nabla_T1
      * The sink interpolator is   
@@ -186,7 +186,7 @@ namespace Chroma
 
     //! Construct (RhoxNabla_A1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  rho x nabla_A1
      * The sink interpolator is   
@@ -212,7 +212,7 @@ namespace Chroma
 
     //! Construct (RhoxNabla_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  rho x nabla_T1
      * The sink interpolator is   
@@ -238,7 +238,7 @@ namespace Chroma
 
     //! Construct (RhoxNabla_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  rho x nabla_T2
      * The sink interpolator is   
@@ -264,7 +264,7 @@ namespace Chroma
 
     //! Construct (A1xNabla_A1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x D_A1
      * The sink interpolator is   
@@ -290,7 +290,7 @@ namespace Chroma
 
     //! Construct (A1xNabla_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x nabla_T2
      * The sink interpolator is   
@@ -316,7 +316,7 @@ namespace Chroma
 
     //! Construct (A1xNabla_E) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x nabla_E
      * The sink interpolator is   
@@ -342,7 +342,7 @@ namespace Chroma
 
     //! Construct (B1xNabla_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  b1 x nabla_T1
      * The sink interpolator is   
@@ -368,7 +368,7 @@ namespace Chroma
 
     //! Construct (A0_2xD_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a0_2 x D_T2
      * The sink interpolator is   
@@ -394,7 +394,7 @@ namespace Chroma
 
     //! Construct (A1xD_A2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x D_A2
      * The sink interpolator is   
@@ -420,7 +420,7 @@ namespace Chroma
 
     //! Construct (A1xD_E) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x D_E
      * The sink interpolator is   
@@ -446,7 +446,7 @@ namespace Chroma
 
     //! Construct (A1xD_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x D_T1
      * The sink interpolator is   
@@ -472,7 +472,7 @@ namespace Chroma
 
     //! Construct (A1xD_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x D_T2
      * The sink interpolator is   
@@ -498,7 +498,7 @@ namespace Chroma
 
     //! Construct (B1xD_A2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  b1 x D_A2
      * The sink interpolator is   
@@ -523,7 +523,7 @@ namespace Chroma
 
     //! Construct (B1xD_E) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  b1 x D_E
      * The sink interpolator is   
@@ -549,7 +549,7 @@ namespace Chroma
 
     //! Construct (B1xD_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  b1 x D_T1
      * The sink interpolator is   
@@ -575,7 +575,7 @@ namespace Chroma
 
     //! Construct (B1xD_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  b1 x D_T2
      * The sink interpolator is   
@@ -601,7 +601,7 @@ namespace Chroma
 
     //! Construct (RhoxD_A2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  rho x D_A2
      * The sink interpolator is   
@@ -627,7 +627,7 @@ namespace Chroma
 
     //! Construct (RhoxD_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  rho x D_T1
      * The sink interpolator is   
@@ -653,7 +653,7 @@ namespace Chroma
 
     //! Construct (RhoxD_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  rho x D_T2
      * The sink interpolator is   
@@ -679,7 +679,7 @@ namespace Chroma
 
     //! Construct (PionxD_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  pion x D_T2
      * The sink interpolator is   
@@ -705,7 +705,7 @@ namespace Chroma
 
     //! Construct (PionxB_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  pion x B_T1
      * The sink interpolator is   
@@ -731,7 +731,7 @@ namespace Chroma
 
     //! Construct (RhoxB_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is rho x B_T1
      * The sink interpolator is   
@@ -757,7 +757,7 @@ namespace Chroma
 
     //! Construct (RhoxB_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  rho x B_T2
      * The sink interpolator is   
@@ -783,7 +783,7 @@ namespace Chroma
 
     //! Construct (A1xB_A1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x B_A1
      * The sink interpolator is   
@@ -809,7 +809,7 @@ namespace Chroma
 
     //! Construct (RhoxB_T1) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a11 x B_T1
      * The sink interpolator is   
@@ -835,7 +835,7 @@ namespace Chroma
 
     //! Construct (A1xB_T2) source
     /*!
-     * \ingroup hadron
+     * \ingroup sources
      *
      * Operator is  a1 x B_T2
      * The sink interpolator is   
@@ -862,20 +862,20 @@ namespace Chroma
 
 
   //! Reader
-  /*! @ingroup hadron */
+  /*! @ingroup sources */
   void read(XMLReader& xml, const string& path, DerivShellSourceConstEnv::Params& param);
 
   //! Writer
-  /*! @ingroup hadron */
+  /*! @ingroup sources */
   void write(XMLWriter& xml, const string& path, const DerivShellSourceConstEnv::Params& param);
 
 
   //! Reader
-  /*! @ingroup hadron */
+  /*! @ingroup sources */
   void read(XMLReader& xml, const string& path, DerivShellSourceConstEnv::ParamsDir& param);
 
   //! Writer
-  /*! @ingroup hadron */
+  /*! @ingroup sources */
   void write(XMLWriter& xml, const string& path, const DerivShellSourceConstEnv::ParamsDir& param);
 
 

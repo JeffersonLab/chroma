@@ -1,4 +1,4 @@
-// $Id: deriv_sh_source_const_w.cc,v 1.4 2006-02-20 21:20:11 edwards Exp $
+// $Id: deriv_sh_source_const_w.cc,v 1.5 2006-02-20 21:32:29 edwards Exp $
 /*! \file
  *  \brief Construct derivative source construction
  */
@@ -58,7 +58,7 @@ namespace Chroma
 
 
   //! Meson sources
-  /*! \ingroup hadron */
+  /*! \ingroup sources */
   namespace DerivShellSourceConstEnv
   { 
     //! Anonymous namespace
@@ -100,7 +100,7 @@ namespace Chroma
 
       //! Apply first deriv to the right onto source
       /*!
-       * \ingroup hadron
+       * \ingroup sources
        *
        * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
        *
@@ -115,7 +115,7 @@ namespace Chroma
 
       //! Apply "D_i" operator to the right onto source
       /*!
-       * \ingroup hadron
+       * \ingroup sources
        *
        * \f$D_i = s_{ijk}\nabla_j\nabla_k\f$
        *
@@ -142,7 +142,7 @@ namespace Chroma
 
       //! Apply "B_i" operator to the right onto source
       /*!
-       * \ingroup hadron
+       * \ingroup sources
        *
        * \f$B_i = \epsilon_{ijk}\nabla_j\nabla_k\f$
        *
