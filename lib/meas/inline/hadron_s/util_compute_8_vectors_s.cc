@@ -1,4 +1,4 @@
-// $Id: util_compute_8_vectors_s.cc,v 1.1 2006-02-09 18:17:51 egregory Exp $
+// $Id: util_compute_8_vectors_s.cc,v 1.2 2006-02-20 14:47:37 egregory Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -48,7 +48,7 @@ namespace Chroma {
     vector_meson vector(t_length,  u, type_of_shift) ;
 
 
-    push(xml_out,"Scalar");
+    push(xml_out,"Vectors");
 
   // ---------- LL ----------
   vector.compute(stag_prop,j_decay);
@@ -57,6 +57,9 @@ namespace Chroma {
   vector.dump(t_source,xml_out);
   pop(xml_out);
 
+  // ------------------------
+
+  pop(xml_out); //Vectors
 
   QDPIO::cout << "Computed 8 basic vector mesons"  << endl;
 
