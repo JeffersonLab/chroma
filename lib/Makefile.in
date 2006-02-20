@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.53 2006-02-16 21:04:02 edwards Exp $
+# $Id: Makefile.in,v 2.54 2006-02-20 17:50:57 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -340,7 +340,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallnuclff_w.cc meas/hadron/wallpionff_w.cc \
 	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
 	meas/hadron/wall_qprop_w.cc meas/sources/d_src_w.cc \
-	meas/sources/p_src_w.cc meas/sources/walfil_w.cc \
+	meas/sources/p_src_w.cc \
+	meas/sources/deriv_sh_source_const_w.cc \
+	meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
@@ -620,7 +622,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	wallnuclff_w.$(OBJEXT) wallpionff_w.$(OBJEXT) \
 	wallrhoff_w.$(OBJEXT) wallrhopiff_w.$(OBJEXT) \
 	wall_qprop_w.$(OBJEXT) d_src_w.$(OBJEXT) p_src_w.$(OBJEXT) \
-	walfil_w.$(OBJEXT) monomial_aggregate_w.$(OBJEXT) \
+	deriv_sh_source_const_w.$(OBJEXT) walfil_w.$(OBJEXT) \
+	monomial_aggregate_w.$(OBJEXT) \
 	one_flavor_rat_monomial_params_w.$(OBJEXT) \
 	unprec_one_flavor_rat_monomial_w.$(OBJEXT) \
 	prec_constdet_one_flavor_rat_monomial_w.$(OBJEXT) \
@@ -985,7 +988,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/sources/sources_w.h meas/sources/d_src_w.h \
+	meas/sources/sources_w.h \
+	meas/sources/deriv_sh_source_const_w.h meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/walfil_w.h \
 	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
@@ -1536,7 +1540,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
-	meas/sources/sources_w.h meas/sources/d_src_w.h \
+	meas/sources/sources_w.h \
+	meas/sources/deriv_sh_source_const_w.h meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h meas/sources/walfil_w.h \
 	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
@@ -1933,7 +1938,9 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallnuclff_w.cc meas/hadron/wallpionff_w.cc \
 	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
 	meas/hadron/wall_qprop_w.cc meas/sources/d_src_w.cc \
-	meas/sources/p_src_w.cc meas/sources/walfil_w.cc \
+	meas/sources/p_src_w.cc \
+	meas/sources/deriv_sh_source_const_w.cc \
+	meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
@@ -2150,6 +2157,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cppacs_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_sh_source_const_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/derivmesonseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilute_gauss_src_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilutezN_source_const.Po@am__quote@
@@ -6718,6 +6726,20 @@ p_src_w.obj: meas/sources/p_src_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/p_src_w.cc' object='p_src_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o p_src_w.obj `if test -f 'meas/sources/p_src_w.cc'; then $(CYGPATH_W) 'meas/sources/p_src_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/p_src_w.cc'; fi`
+
+deriv_sh_source_const_w.o: meas/sources/deriv_sh_source_const_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deriv_sh_source_const_w.o -MD -MP -MF "$(DEPDIR)/deriv_sh_source_const_w.Tpo" -c -o deriv_sh_source_const_w.o `test -f 'meas/sources/deriv_sh_source_const_w.cc' || echo '$(srcdir)/'`meas/sources/deriv_sh_source_const_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/deriv_sh_source_const_w.Tpo" "$(DEPDIR)/deriv_sh_source_const_w.Po"; else rm -f "$(DEPDIR)/deriv_sh_source_const_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/deriv_sh_source_const_w.cc' object='deriv_sh_source_const_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deriv_sh_source_const_w.o `test -f 'meas/sources/deriv_sh_source_const_w.cc' || echo '$(srcdir)/'`meas/sources/deriv_sh_source_const_w.cc
+
+deriv_sh_source_const_w.obj: meas/sources/deriv_sh_source_const_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deriv_sh_source_const_w.obj -MD -MP -MF "$(DEPDIR)/deriv_sh_source_const_w.Tpo" -c -o deriv_sh_source_const_w.obj `if test -f 'meas/sources/deriv_sh_source_const_w.cc'; then $(CYGPATH_W) 'meas/sources/deriv_sh_source_const_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/deriv_sh_source_const_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/deriv_sh_source_const_w.Tpo" "$(DEPDIR)/deriv_sh_source_const_w.Po"; else rm -f "$(DEPDIR)/deriv_sh_source_const_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/deriv_sh_source_const_w.cc' object='deriv_sh_source_const_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deriv_sh_source_const_w.obj `if test -f 'meas/sources/deriv_sh_source_const_w.cc'; then $(CYGPATH_W) 'meas/sources/deriv_sh_source_const_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/deriv_sh_source_const_w.cc'; fi`
 
 walfil_w.o: meas/sources/walfil_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_w.o -MD -MP -MF "$(DEPDIR)/walfil_w.Tpo" -c -o walfil_w.o `test -f 'meas/sources/walfil_w.cc' || echo '$(srcdir)/'`meas/sources/walfil_w.cc; \
