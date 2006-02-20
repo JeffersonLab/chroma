@@ -1,4 +1,4 @@
-// $Id: util_compute_8_scalars_s.cc,v 1.1 2006-02-09 18:18:29 egregory Exp $
+// $Id: util_compute_8_scalars_s.cc,v 1.2 2006-02-20 14:47:11 egregory Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -48,7 +48,7 @@ namespace Chroma {
     staggered_scalars scalar(t_length,  u, type_of_shift) ;
 
 
-    push(xml_out,"Scalar");
+    push(xml_out,"Scalars");
 
   // ---------- LL ----------
   scalar.compute(stag_prop,j_decay);
@@ -57,6 +57,9 @@ namespace Chroma {
   scalar.dump(t_source,xml_out);
   pop(xml_out);
 
+  // ------------------------
+
+  pop(xml_out); //Scalars
 
   QDPIO::cout << "Computed 8 basic scalars"  << endl;
 
