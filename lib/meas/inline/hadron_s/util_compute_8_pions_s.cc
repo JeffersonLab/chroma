@@ -1,4 +1,4 @@
-// $Id: util_compute_8_pions_s.cc,v 1.1 2006-02-03 14:33:15 egregory Exp $
+// $Id: util_compute_8_pions_s.cc,v 1.2 2006-02-20 14:46:48 egregory Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -48,17 +48,22 @@ namespace Chroma {
     staggered_pions pseudoscalar(t_length,  u, type_of_shift) ;
 
 
-    push(xml_out,"Pseudoscalar");
+    push(xml_out,"Pseudoscalars");
 
   // ---------- LL ----------
   pseudoscalar.compute(stag_prop,j_decay);
 
   push(xml_out, "Lsink_Lsrc");
   pseudoscalar.dump(t_source,xml_out);
-  pop(xml_out);
+  pop(xml_out);  // Lsink_Lsrc
+
+  // -------------------------
+
+  pop(xml_out); //Pseudoscalars
 
 
   QDPIO::cout << "Computed 8 basic pseudoscalars"  << endl;
+
 
 }
 
