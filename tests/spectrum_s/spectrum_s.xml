@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.xml,v 2.3 2006-02-09 18:25:36 egregory Exp $
+; $Id: spectrum_s.xml,v 2.4 2006-02-20 14:50:46 egregory Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -35,7 +35,7 @@
 
 <gauge_invar_oper>true</gauge_invar_oper>
 <sym_shift_oper>true</sym_shift_oper>
-<loop_checkpoint>false</loop_checkpoint>
+<loop_checkpoint>true</loop_checkpoint>
 <src_seperation>4</src_seperation>
 
 <do_gauge_transform>false</do_gauge_transform>
@@ -52,7 +52,7 @@
 
 <Cfg>
  <cfg_type>NERSC</cfg_type>
- <cfg_file>t_nersc.cfg</cfg_file>
+ <cfg_file>../../tests/t_asqtad_prop/t_nersc.cfg</cfg_file>
 </Cfg>
 
 <Inversion>
