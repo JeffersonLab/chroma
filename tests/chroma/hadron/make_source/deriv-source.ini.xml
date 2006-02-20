@@ -19,7 +19,7 @@ Make a derivative propagator source
         <version>6</version>
         <Source>
           <version>1</version>
-          <SourceType>SOURCE-PIONxNABLA_T2</SourceType>
+          <SourceType>SOURCE-PIONxNABLA_T1</SourceType>
           <deriv_dir>0</deriv_dir>
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
@@ -31,9 +31,6 @@ Make a derivative propagator source
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -75,6 +72,20 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
         </Source>
       </Param>
       <NamedObject>
@@ -109,6 +120,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -142,6 +160,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -176,6 +201,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -210,6 +242,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -243,6 +282,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -277,6 +323,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -311,6 +364,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -345,6 +405,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -379,6 +446,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -412,6 +486,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -446,6 +527,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -480,6 +568,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -514,6 +609,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -548,6 +650,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -582,6 +691,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -616,6 +732,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -650,6 +773,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -683,6 +813,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -717,6 +854,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -751,6 +895,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -785,6 +936,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -819,6 +977,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -853,6 +1018,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -887,6 +1059,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -921,6 +1100,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -955,6 +1141,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
@@ -989,6 +1182,13 @@ Make a derivative propagator source
           <deriv_length>2</deriv_length>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
         </Source>
       </Param>
       <NamedObject>
