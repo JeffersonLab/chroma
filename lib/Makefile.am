@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.43 2006-02-16 02:27:34 bjoo Exp $
+# $Id: Makefile.am,v 2.44 2006-02-20 17:50:42 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -349,6 +349,7 @@ nobase_include_HEADERS += \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
         meas/sources/sources_w.h \
+	meas/sources/deriv_sh_source_const_w.h \
 	meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h \
         meas/sources/walfil_w.h \
@@ -794,6 +795,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
+	meas/sources/deriv_sh_source_const_w.cc \
         meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
