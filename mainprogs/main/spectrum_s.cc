@@ -1,4 +1,4 @@
-// $Id: spectrum_s.cc,v 2.1 2006-02-09 17:54:38 egregory Exp $
+// $Id: spectrum_s.cc,v 2.2 2006-02-20 14:45:38 egregory Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */
@@ -120,6 +120,7 @@ int main(int argc, char **argv)
   meas(u, config_xml, cur_update, xml_out);
 
   xml_out.flush();
+  xml_out.close();
 
   END_CODE();
 
