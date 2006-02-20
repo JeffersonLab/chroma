@@ -1,9 +1,7 @@
 // -*- C++ -*-
-// $Id: inline_fuzwilp.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_fuzwilp.h,v 2.1 2006-02-20 20:42:38 edwards Exp $
 /*! \file
- * \brief Inline spectrum calculations
- *
- * Spectrum calculations
+ * \brief Inline fuzzed Wilson loops
  */
 
 #ifndef __inline_fuzwilp_h__
@@ -14,6 +12,7 @@
 
 namespace Chroma 
 { 
+  /*! \ingroup inlineglue */
   namespace InlineFuzzedWilsonLoopEnv 
   {
     extern const std::string name;
@@ -21,6 +20,7 @@ namespace Chroma
   }
 
   //! Parameter structure
+  /*! \ingroup inlineglue */
   struct InlineFuzzedWilsonLoopParams 
   {
     InlineFuzzedWilsonLoopParams();
@@ -34,6 +34,8 @@ namespace Chroma
     Real BlkAccu;
   };
 
+  //! Inline measurement of fuzzed Wilson loops
+  /*! \ingroup inlineglue */
   class InlineFuzzedWilsonLoop : public AbsInlineMeasurement 
   {
   public:

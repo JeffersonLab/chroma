@@ -1,8 +1,6 @@
-// $Id: inline_fuzwilp.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_fuzwilp.cc,v 2.1 2006-02-20 20:42:38 edwards Exp $
 /*! \file
- * \brief Inline construction of spectrum
- *
- * Spectrum calculations
+ * \brief Inline fuzzed Wilson loops
  */
 
 #include "chromabase.h"
@@ -54,17 +52,14 @@ namespace Chroma
 
   void 
   InlineFuzzedWilsonLoop::operator()(const multi1d<LatticeColorMatrix>& u,
-			    XMLBufferWriter& gauge_xml,
-			    unsigned long update_no,
-			    XMLWriter& xml_out) 
+				     XMLBufferWriter& gauge_xml,
+				     unsigned long update_no,
+				     XMLWriter& xml_out) 
   {
     push(xml_out, "APE_Smeared_Wilsonloop");
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << "APE_Smeared_Wilsonloop" << endl;
-
-    //    XMLReader file_xml;
-    //    XMLReader record_xml;
 
     fuzwilp(u, 
 	    params.j_decay, 
