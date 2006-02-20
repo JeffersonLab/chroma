@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_sh_source_const_w.h,v 1.3 2006-02-20 20:42:24 edwards Exp $
+// $Id: deriv_sh_source_const_w.h,v 1.4 2006-02-20 21:20:11 edwards Exp $
 /*! \file
  *  \brief Construct derivative source construction
  *
@@ -31,7 +31,7 @@ namespace Chroma
     extern const bool registered;
 
   
-    //! Deriv meson sequential source parameters
+    //! Deriv meson source parameters
     /*! @ingroup hadron */
     struct Params
     {
@@ -52,7 +52,7 @@ namespace Chroma
       std::string      link_smearing_type;   /*!< link smearing type name */
     };
 
-    //! Deriv meson sequential source parameters
+    //! Deriv meson source parameters
     /*! @ingroup hadron */
     struct ParamsDir
     {
@@ -106,7 +106,7 @@ namespace Chroma
 
 
 
-    //! Construct pion_1-(PionxNabla_T1) sequential source
+    //! Construct (PionxNabla_T1) source
     /*!
      * \ingroup hadron
      *
@@ -132,7 +132,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A0xNabla_T1) sequential source
+    //! Construct (A0xNabla_T1) source
     /*!
      * \ingroup hadron
      *
@@ -158,7 +158,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A0_2xNabla_T1) sequential source
+    //! Construct (A0_2xNabla_T1) source
     /*!
      * \ingroup hadron
      *
@@ -184,7 +184,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxNabla_A1) sequential source
+    //! Construct (RhoxNabla_A1) source
     /*!
      * \ingroup hadron
      *
@@ -210,7 +210,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxNabla_T1) sequential source
+    //! Construct (RhoxNabla_T1) source
     /*!
      * \ingroup hadron
      *
@@ -236,7 +236,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxNabla_T2) sequential source
+    //! Construct (RhoxNabla_T2) source
     /*!
      * \ingroup hadron
      *
@@ -262,7 +262,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xNabla_A1) sequential source
+    //! Construct (A1xNabla_A1) source
     /*!
      * \ingroup hadron
      *
@@ -288,7 +288,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xNabla_T2) sequential source
+    //! Construct (A1xNabla_T2) source
     /*!
      * \ingroup hadron
      *
@@ -314,7 +314,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xNabla_E) sequential source
+    //! Construct (A1xNabla_E) source
     /*!
      * \ingroup hadron
      *
@@ -340,7 +340,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(B1xNabla_T1) sequential source
+    //! Construct (B1xNabla_T1) source
     /*!
      * \ingroup hadron
      *
@@ -366,7 +366,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A0_2xD_T2) sequential source
+    //! Construct (A0_2xD_T2) source
     /*!
      * \ingroup hadron
      *
@@ -392,7 +392,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xD_A2) sequential source
+    //! Construct (A1xD_A2) source
     /*!
      * \ingroup hadron
      *
@@ -418,7 +418,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xD_E) sequential source
+    //! Construct (A1xD_E) source
     /*!
      * \ingroup hadron
      *
@@ -444,7 +444,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xD_T1) sequential source
+    //! Construct (A1xD_T1) source
     /*!
      * \ingroup hadron
      *
@@ -470,7 +470,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xD_T2) sequential source
+    //! Construct (A1xD_T2) source
     /*!
      * \ingroup hadron
      *
@@ -496,7 +496,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(B1xD_A2) sequential source
+    //! Construct (B1xD_A2) source
     /*!
      * \ingroup hadron
      *
@@ -521,7 +521,7 @@ namespace Chroma
       ParamsDir  params;   /*!< source params */
     };
 
-    //! Construct pion_1-(B1xD_E) sequential source
+    //! Construct (B1xD_E) source
     /*!
      * \ingroup hadron
      *
@@ -547,7 +547,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(B1xD_T1) sequential source
+    //! Construct (B1xD_T1) source
     /*!
      * \ingroup hadron
      *
@@ -573,7 +573,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(B1xD_T2) sequential source
+    //! Construct (B1xD_T2) source
     /*!
      * \ingroup hadron
      *
@@ -599,7 +599,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxD_A2) sequential source
+    //! Construct (RhoxD_A2) source
     /*!
      * \ingroup hadron
      *
@@ -625,7 +625,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxD_T1) sequential source
+    //! Construct (RhoxD_T1) source
     /*!
      * \ingroup hadron
      *
@@ -651,7 +651,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxD_T2) sequential source
+    //! Construct (RhoxD_T2) source
     /*!
      * \ingroup hadron
      *
@@ -677,7 +677,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(PionxD_T2) sequential source
+    //! Construct (PionxD_T2) source
     /*!
      * \ingroup hadron
      *
@@ -703,7 +703,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(PionxB_T1) sequential source
+    //! Construct (PionxB_T1) source
     /*!
      * \ingroup hadron
      *
@@ -729,7 +729,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxB_T1) sequential source
+    //! Construct (RhoxB_T1) source
     /*!
      * \ingroup hadron
      *
@@ -755,7 +755,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxB_T2) sequential source
+    //! Construct (RhoxB_T2) source
     /*!
      * \ingroup hadron
      *
@@ -781,7 +781,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xB_A1) sequential source
+    //! Construct (A1xB_A1) source
     /*!
      * \ingroup hadron
      *
@@ -807,7 +807,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxB_T1) sequential source
+    //! Construct (RhoxB_T1) source
     /*!
      * \ingroup hadron
      *
@@ -833,7 +833,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xB_T2) sequential source
+    //! Construct (A1xB_T2) source
     /*!
      * \ingroup hadron
      *
