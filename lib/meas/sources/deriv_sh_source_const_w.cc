@@ -1,4 +1,4 @@
-// $Id: deriv_sh_source_const_w.cc,v 1.5 2006-02-20 21:32:29 edwards Exp $
+// $Id: deriv_sh_source_const_w.cc,v 1.6 2006-02-20 22:51:17 edwards Exp $
 /*! \file
  *  \brief Construct derivative source construction
  */
@@ -529,6 +529,7 @@ namespace Chroma
 
 
     // Construct the source, do the spin actions, and smear it
+    template<>
     LatticePropagator
     DerivSourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
