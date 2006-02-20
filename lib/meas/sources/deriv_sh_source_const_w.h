@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_sh_source_const_w.h,v 1.1 2006-02-19 05:22:08 edwards Exp $
+// $Id: deriv_sh_source_const_w.h,v 1.2 2006-02-20 17:50:13 edwards Exp $
 /*! \file
  *  \brief Construct derivative source construction
  *
@@ -19,7 +19,7 @@
 #ifndef __deriv_sh_source_const_w_h__
 #define __deriv_sh_source_const_w_h__
 
-#include "meas/hadron/hadron_seqsource.h"
+#include "meas/sources/source_construction.h"
 
 namespace Chroma 
 {
@@ -98,10 +98,10 @@ namespace Chroma
 
     protected:
       //! Get the parameters
-      const ParamsDir& getParamsDir() const = 0;
+      virtual const ParamsDir& getParamsDir() const = 0;
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const = 0;
+      virtual T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const = 0;
     };
 
 
@@ -114,8 +114,7 @@ namespace Chroma
      * The sink interpolator structure is
      * \f$\Gamma_f \equiv \gamma_5\nabla_i\f$
      */
-    template<typename T>
-    class MesPionPionxNablaT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionPionxNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -126,7 +125,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
       
     private:
       ParamsDir  params;   /*!< source params */
@@ -141,8 +140,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \nabla_i\f$
      */
-    template<typename T>
-    class MesPionA0xNablaT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA0xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -153,7 +151,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -168,8 +166,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4 \nabla_i\f$
      */
-    template<typename T>
-    class MesPionA02xNablaT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA02xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -180,7 +177,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
       
     private:
       ParamsDir  params;   /*!< source params */
@@ -195,8 +192,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_i\nabla_i\f$
      */
-    template<typename T>
-    class MesPionRhoxNablaA1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionRhoxNablaA1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -207,7 +203,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
       
     private:
       ParamsDir  params;   /*!< source params */
@@ -222,8 +218,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j \nabla_k\f$  
      */
-    template<typename T>
-    class MesPionRhoxNablaT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionRhoxNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -234,7 +229,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -249,8 +244,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionRhoxNablaT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionRhoxNablaT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -261,7 +255,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -276,8 +270,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\gamma_i \nabla_i\f$  
      */
-    template<typename T>
-    class MesPionA1xNablaA1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xNablaA1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -288,7 +281,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -303,8 +296,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j \nabla_k\f$  
      */
-    template<typename T>
-    class MesPionA1xNablaT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xNablaT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -315,7 +307,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -330,8 +322,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j \nabla_k\f$  
      */
-    template<typename T>
-    class MesPionA1xNablaESrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xNablaESrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -342,7 +333,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -357,8 +348,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5\epsilon_{ijk}\gamma_j \nabla_k\f$  
      */
-    template<typename T>
-    class MesPionB1xNablaT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionB1xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -369,7 +359,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -384,8 +374,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4 D_i\f$  
      */
-    template<typename T>
-    class MesPionA02xDT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA02xDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -396,7 +385,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -411,8 +400,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\gamma_i D_i\f$  
      */
-    template<typename T>
-    class MesPionA1xDA2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xDA2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -423,7 +411,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -438,15 +426,18 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionA1xDESrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xDESrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
       MesPionA1xDESrcConst(const ParamsDir& p) : params(p) {}
 
-      //! Construct sequential source
-      T operator()(const multi1d<LatticeColorMatrix>& u) const;
+    protected:
+      //! Get the parameters
+      const ParamsDir& getParamsDir() const {return params;}
+
+      //! Do the spin actions on the initial point source
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -461,8 +452,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionA1xDT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xDT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -473,7 +463,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -488,8 +478,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionA1xDT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -500,7 +489,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -515,8 +504,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i D_i\f$  
      */
-    template<typename T>
-    class MesPionB1xDA2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionB1xDA2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -527,7 +515,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -541,8 +529,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionB1xDESrcConst : public QuarkSourceConstruction<T>
+    class MesPionB1xDESrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -553,7 +540,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -568,8 +555,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionB1xDT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionB1xDT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -580,7 +566,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -595,8 +581,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 \epsilon_{ijk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionB1xDT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionB1xDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -607,7 +592,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -622,8 +607,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_i D_i\f$  
      */
-    template<typename T>
-    class MesPionRhoxDA2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionRhoxDA2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -634,7 +618,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -649,8 +633,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionRhoxDT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionRhoxDT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -661,7 +644,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -676,8 +659,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionRhoxDT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionRhoxDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -688,7 +670,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -703,8 +685,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
      */
-    template<typename T>
-    class MesPionPionxDT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionPionxDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -715,7 +696,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -730,8 +711,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 B_i\f$  
      */
-    template<typename T>
-    class MesPionPionxBT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionPionxBT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -742,7 +722,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -757,8 +737,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j B_k\f$  
      */
-    template<typename T>
-    class MesPionRhoxBT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionRhoxBT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -769,7 +748,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -784,8 +763,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    template<typename T>
-    class MesPionRhoxBT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionRhoxBT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -796,7 +774,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -811,8 +789,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 \gamma_i B_i\f$  
      */
-    template<typename T>
-    class MesPionA1xBA1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xBA1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -823,7 +800,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -838,8 +815,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j B_k\f$  
      */
-    template<typename T>
-    class MesPionA1xBT1SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xBT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -850,7 +826,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
@@ -865,8 +841,7 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j B_k\f$  
      */
-    template<typename T>
-    class MesPionA1xBT2SrcConst : public QuarkSourceConstruction<T>
+    class MesPionA1xBT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
@@ -877,7 +852,7 @@ namespace Chroma
       const ParamsDir& getParamsDir() const {return params;}
 
       //! Do the spin actions on the initial point source
-      T deriv(const multi1d<LatticeColorMatrix>& u, const T& pt) const;
+      LatticePropagator deriv(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& pt) const;
 
     private:
       ParamsDir  params;   /*!< source params */
