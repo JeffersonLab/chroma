@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_sh_source_const_w.h,v 1.2 2006-02-20 17:50:13 edwards Exp $
+// $Id: deriv_sh_source_const_w.h,v 1.3 2006-02-20 20:42:24 edwards Exp $
 /*! \file
  *  \brief Construct derivative source construction
  *
@@ -114,11 +114,11 @@ namespace Chroma
      * The sink interpolator structure is
      * \f$\Gamma_f \equiv \gamma_5\nabla_i\f$
      */
-    class MesPionPionxNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesPionxNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionPionxNablaT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesPionxNablaT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -140,11 +140,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \nabla_i\f$
      */
-    class MesPionA0xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA0xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA0xNablaT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesA0xNablaT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -166,11 +166,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4 \nabla_i\f$
      */
-    class MesPionA02xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA02xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA02xNablaT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesA02xNablaT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -192,11 +192,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_i\nabla_i\f$
      */
-    class MesPionRhoxNablaA1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesRhoxNablaA1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionRhoxNablaA1SrcConst(const Params& p) : params(p) {}
+      MesRhoxNablaA1SrcConst(const Params& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -218,11 +218,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j \nabla_k\f$  
      */
-    class MesPionRhoxNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesRhoxNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionRhoxNablaT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesRhoxNablaT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -244,11 +244,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionRhoxNablaT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesRhoxNablaT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionRhoxNablaT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesRhoxNablaT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -270,11 +270,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\gamma_i \nabla_i\f$  
      */
-    class MesPionA1xNablaA1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xNablaA1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xNablaA1SrcConst(const Params& p) : params(p) {}
+      MesA1xNablaA1SrcConst(const Params& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -296,11 +296,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j \nabla_k\f$  
      */
-    class MesPionA1xNablaT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xNablaT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xNablaT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesA1xNablaT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -322,11 +322,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j \nabla_k\f$  
      */
-    class MesPionA1xNablaESrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xNablaESrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xNablaESrcConst(const ParamsDir& p) : params(p) {}
+      MesA1xNablaESrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -348,11 +348,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5\epsilon_{ijk}\gamma_j \nabla_k\f$  
      */
-    class MesPionB1xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesB1xNablaT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionB1xNablaT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesB1xNablaT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -374,11 +374,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4 D_i\f$  
      */
-    class MesPionA02xDT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA02xDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA02xDT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesA02xDT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -400,11 +400,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\gamma_i D_i\f$  
      */
-    class MesPionA1xDA2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xDA2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xDA2SrcConst(const Params& p) : params(p) {}
+      MesA1xDA2SrcConst(const Params& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -426,11 +426,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
      */
-    class MesPionA1xDESrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xDESrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xDESrcConst(const ParamsDir& p) : params(p) {}
+      MesA1xDESrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -452,11 +452,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionA1xDT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xDT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xDT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesA1xDT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -478,11 +478,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionA1xDT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xDT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesA1xDT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -504,11 +504,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i D_i\f$  
      */
-    class MesPionB1xDA2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesB1xDA2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionB1xDA2SrcConst(const Params& p) : params(p) {}
+      MesB1xDA2SrcConst(const Params& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -529,11 +529,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
      */
-    class MesPionB1xDESrcConst : public DerivSourceConst<LatticePropagator>
+    class MesB1xDESrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionB1xDESrcConst(const ParamsDir& p) : params(p) {}
+      MesB1xDESrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -555,11 +555,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionB1xDT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesB1xDT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionB1xDT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesB1xDT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -581,11 +581,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 \epsilon_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionB1xDT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesB1xDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionB1xDT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesB1xDT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -607,11 +607,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_i D_i\f$  
      */
-    class MesPionRhoxDA2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesRhoxDA2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionRhoxDA2SrcConst(const Params& p) : params(p) {}
+      MesRhoxDA2SrcConst(const Params& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -633,11 +633,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionRhoxDT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesRhoxDT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionRhoxDT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesRhoxDT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -659,11 +659,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionRhoxDT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesRhoxDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionRhoxDT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesRhoxDT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -685,11 +685,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
      */
-    class MesPionPionxDT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesPionxDT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionPionxDT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesPionxDT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -711,11 +711,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 B_i\f$  
      */
-    class MesPionPionxBT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesPionxBT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionPionxBT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesPionxBT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -737,11 +737,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j B_k\f$  
      */
-    class MesPionRhoxBT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesRhoxBT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionRhoxBT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesRhoxBT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -763,11 +763,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    class MesPionRhoxBT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesRhoxBT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionRhoxBT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesRhoxBT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -789,11 +789,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 \gamma_i B_i\f$  
      */
-    class MesPionA1xBA1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xBA1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xBA1SrcConst(const Params& p) : params(p) {}
+      MesA1xBA1SrcConst(const Params& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -815,11 +815,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j B_k\f$  
      */
-    class MesPionA1xBT1SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xBT1SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xBT1SrcConst(const ParamsDir& p) : params(p) {}
+      MesA1xBT1SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters
@@ -841,11 +841,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j B_k\f$  
      */
-    class MesPionA1xBT2SrcConst : public DerivSourceConst<LatticePropagator>
+    class MesA1xBT2SrcConst : public DerivSourceConst<LatticePropagator>
     {
     public:
       //! Full constructor
-      MesPionA1xBT2SrcConst(const ParamsDir& p) : params(p) {}
+      MesA1xBT2SrcConst(const ParamsDir& p) : params(p) {}
 
     protected:
       //! Get the parameters

@@ -1,4 +1,4 @@
-// $Id: deriv_sh_source_const_w.cc,v 1.2 2006-02-20 17:50:13 edwards Exp $
+// $Id: deriv_sh_source_const_w.cc,v 1.3 2006-02-20 20:42:24 edwards Exp $
 /*! \file
  *  \brief Construct derivative source construction
  */
@@ -70,6 +70,12 @@ namespace Chroma
 				     const LatticePropagator& psi, 
 				     int length, int dir)
       {
+	if (dir < 0 || dir >= Nd)
+	{
+	  QDPIO::cerr << __func__ << ": invalid direction: dir=" << dir << endl;
+	  QDP_abort(1);
+	}
+
 	LatticePropagator chi = psi;
 
 	if (length > 0)
@@ -164,206 +170,206 @@ namespace Chroma
       //-------------------- callback functions ---------------------------------------
 
       //! Construct pion_1-(PionxNabla_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionPionxNablaT1SrcConst(XMLReader& xml_in,
-									      const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesPionxNablaT1SrcConst(XMLReader& xml_in,
+									  const std::string& path)
       {
-	return new MesPionPionxNablaT1SrcConst(ParamsDir(xml_in, path));
+	return new MesPionxNablaT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A0xNabla_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA0xNablaT1SrcConst(XMLReader& xml_in,
-									    const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA0xNablaT1SrcConst(XMLReader& xml_in,
+									const std::string& path)
       {
-	return new MesPionA0xNablaT1SrcConst(ParamsDir(xml_in, path));
+	return new MesA0xNablaT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A0_2xNabla_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA02xNablaT1SrcConst(XMLReader& xml_in,
-									     const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA02xNablaT1SrcConst(XMLReader& xml_in,
+									 const std::string& path)
       {
-	return new MesPionA02xNablaT1SrcConst(ParamsDir(xml_in, path));
+	return new MesA02xNablaT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxNabla_A1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionRhoxNablaA1SrcConst(XMLReader& xml_in,
-									     const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesRhoxNablaA1SrcConst(XMLReader& xml_in,
+									 const std::string& path)
       {
-	return new MesPionRhoxNablaA1SrcConst(Params(xml_in, path));
+	return new MesRhoxNablaA1SrcConst(Params(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxNabla_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionRhoxNablaT1SrcConst(XMLReader& xml_in,
-									     const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesRhoxNablaT1SrcConst(XMLReader& xml_in,
+									 const std::string& path)
       {
-	return new MesPionRhoxNablaT1SrcConst(ParamsDir(xml_in, path));
+	return new MesRhoxNablaT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxNabla_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionRhoxNablaT2SrcConst(XMLReader& xml_in,
-									     const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesRhoxNablaT2SrcConst(XMLReader& xml_in,
+									 const std::string& path)
       {
-	return new MesPionRhoxNablaT2SrcConst(ParamsDir(xml_in, path));
+	return new MesRhoxNablaT2SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A1xNabla_A1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xNablaA1SrcConst(XMLReader& xml_in,
-									    const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xNablaA1SrcConst(XMLReader& xml_in,
+									const std::string& path)
       {
-	return new MesPionA1xNablaA1SrcConst(Params(xml_in, path));
+	return new MesA1xNablaA1SrcConst(Params(xml_in, path));
       }
 
       //! Construct pion_1-(A1xNabla_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xNablaT2SrcConst(XMLReader& xml_in,
-									    const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xNablaT2SrcConst(XMLReader& xml_in,
+									const std::string& path)
       {
-	return new MesPionA1xNablaT2SrcConst(ParamsDir(xml_in, path));
+	return new MesA1xNablaT2SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A1xNabla_E) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xNablaESrcConst(XMLReader& xml_in,
-									   const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xNablaESrcConst(XMLReader& xml_in,
+								       const std::string& path)
       {
-	return new MesPionA1xNablaESrcConst(ParamsDir(xml_in, path));
+	return new MesA1xNablaESrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(B1xNabla_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionB1xNablaT1SrcConst(XMLReader& xml_in,
-									    const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesB1xNablaT1SrcConst(XMLReader& xml_in,
+									const std::string& path)
       {
-	return new MesPionB1xNablaT1SrcConst(ParamsDir(xml_in, path));
+	return new MesB1xNablaT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A0_2xD_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA02xDT2SrcConst(XMLReader& xml_in,
-									 const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA02xDT2SrcConst(XMLReader& xml_in,
+								     const std::string& path)
       {
-	return new MesPionA02xDT2SrcConst(ParamsDir(xml_in, path));
+	return new MesA02xDT2SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A1xD_A2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xDA2SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xDA2SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionA1xDA2SrcConst(Params(xml_in, path));
+	return new MesA1xDA2SrcConst(Params(xml_in, path));
       }
 
       //! Construct pion_1-(A1xD_E) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xDESrcConst(XMLReader& xml_in,
-								       const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xDESrcConst(XMLReader& xml_in,
+								   const std::string& path)
       {
-	return new MesPionA1xDESrcConst(ParamsDir(xml_in, path));
+	return new MesA1xDESrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A1xD_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xDT1SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xDT1SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionA1xDT1SrcConst(ParamsDir(xml_in, path));
+	return new MesA1xDT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A1xD_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xDT2SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xDT2SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionA1xDT2SrcConst(ParamsDir(xml_in, path));
+	return new MesA1xDT2SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(B1xD_A2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionB1xDA2SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesB1xDA2SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionB1xDA2SrcConst(Params(xml_in, path));
+	return new MesB1xDA2SrcConst(Params(xml_in, path));
       }
 
       //! Construct pion_1-(B1xD_E) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionB1xDESrcConst(XMLReader& xml_in,
-								       const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesB1xDESrcConst(XMLReader& xml_in,
+								   const std::string& path)
       {
-	return new MesPionB1xDESrcConst(ParamsDir(xml_in, path));
+	return new MesB1xDESrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(B1xD_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionB1xDT1SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesB1xDT1SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionB1xDT1SrcConst(ParamsDir(xml_in, path));
+	return new MesB1xDT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(B1xD_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionB1xDT2SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesB1xDT2SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionB1xDT2SrcConst(ParamsDir(xml_in, path));
+	return new MesB1xDT2SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxD_A2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionRhoxDA2SrcConst(XMLReader& xml_in,
-									 const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesRhoxDA2SrcConst(XMLReader& xml_in,
+								     const std::string& path)
       {
-	return new MesPionRhoxDA2SrcConst(Params(xml_in, path));
+	return new MesRhoxDA2SrcConst(Params(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxD_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionRhoxDT1SrcConst(XMLReader& xml_in,
-									 const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesRhoxDT1SrcConst(XMLReader& xml_in,
+								     const std::string& path)
       {
-	return new MesPionRhoxDT1SrcConst(ParamsDir(xml_in, path));
+	return new MesRhoxDT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxD_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionRhoxDT2SrcConst(XMLReader& xml_in,
-									 const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesRhoxDT2SrcConst(XMLReader& xml_in,
+								     const std::string& path)
       {
-	return new MesPionRhoxDT2SrcConst(ParamsDir(xml_in, path));
+	return new MesRhoxDT2SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(PionxD_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionPionxDT2SrcConst(XMLReader& xml_in,
-									  const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesPionxDT2SrcConst(XMLReader& xml_in,
+								      const std::string& path)
       {
-	return new MesPionPionxDT2SrcConst(ParamsDir(xml_in, path));
+	return new MesPionxDT2SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(PionxB_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionPionxBT1SrcConst(XMLReader& xml_in,
-									  const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesPionxBT1SrcConst(XMLReader& xml_in,
+								      const std::string& path)
       {
-	return new MesPionPionxBT1SrcConst(ParamsDir(xml_in, path));
+	return new MesPionxBT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxB_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionRhoxBT1SrcConst(XMLReader& xml_in,
-									 const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesRhoxBT1SrcConst(XMLReader& xml_in,
+								     const std::string& path)
       {
-	return new MesPionRhoxBT1SrcConst(ParamsDir(xml_in, path));
+	return new MesRhoxBT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(RhoxB_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionRhoxBT2SrcConst(XMLReader& xml_in,
-									 const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesRhoxBT2SrcConst(XMLReader& xml_in,
+								     const std::string& path)
       {
-	return new MesPionRhoxBT2SrcConst(ParamsDir(xml_in, path));
+	return new MesRhoxBT2SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A1xB_A1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xBA1SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xBA1SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionA1xBA1SrcConst(Params(xml_in, path));
+	return new MesA1xBA1SrcConst(Params(xml_in, path));
       }
 
       //! Construct pion_1-(A1xB_T1) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xBT1SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xBT1SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionA1xBT1SrcConst(ParamsDir(xml_in, path));
+	return new MesA1xBT1SrcConst(ParamsDir(xml_in, path));
       }
 
       //! Construct pion_1-(A1xB_T2) source
-      QuarkSourceConstruction<LatticePropagator>* mesPionA1xBT2SrcConst(XMLReader& xml_in,
-									const std::string& path)
+      QuarkSourceConstruction<LatticePropagator>* mesA1xBT2SrcConst(XMLReader& xml_in,
+								    const std::string& path)
       {
-	return new MesPionA1xBT2SrcConst(ParamsDir(xml_in, path));
+	return new MesA1xBT2SrcConst(ParamsDir(xml_in, path));
       }
 
     } // end anonymous namespace
@@ -475,6 +481,7 @@ namespace Chroma
 
       read(paramtop, "SourceType",  source_type);
 
+      read(paramtop, "deriv_dir", deriv_dir);
       read(paramtop, "deriv_length", deriv_length);
 
       {
@@ -606,8 +613,8 @@ namespace Chroma
     // Construct pion_1-(PionxNabla_T1) source
     // See corresponding .h file for doxygen comments
     LatticePropagator
-    MesPionPionxNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				       const LatticePropagator& tmp) const
+    MesPionxNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				   const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -626,8 +633,8 @@ namespace Chroma
     // Construct pion_1-(A0xNabla_T1) source
     // See corresponding .h file for doxygen comments
     LatticePropagator
-    MesPionA0xNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				     const LatticePropagator& tmp) const
+    MesA0xNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				 const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -645,8 +652,8 @@ namespace Chroma
     // Construct pion_1-(A0_2xNabla_T1) source
     // See corresponding .h file for doxygen comments
     LatticePropagator
-    MesPionA02xNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				      const LatticePropagator& tmp) const
+    MesA02xNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				  const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -656,13 +663,15 @@ namespace Chroma
       fin = Gamma(1 << 3) * rightNabla(tmp,u,params.deriv_dir,params.deriv_length);
       
       END_CODE();
+
+      return fin;
     }
 
 
     // Construct pion_1-(RhoxNabla_A1) source
     LatticePropagator
-    MesPionRhoxNablaA1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				      const LatticePropagator& tmp) const
+    MesRhoxNablaA1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				  const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -680,8 +689,8 @@ namespace Chroma
 
     // Construct pion_1-(RhoxNabla_T1) source
     LatticePropagator
-    MesPionRhoxNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				      const LatticePropagator& tmp) const
+    MesRhoxNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				  const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -703,8 +712,8 @@ namespace Chroma
 
     // Construct pion_1-(RhoxNabla_T2) source
     LatticePropagator
-    MesPionRhoxNablaT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				      const LatticePropagator& tmp) const
+    MesRhoxNablaT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				  const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -726,8 +735,8 @@ namespace Chroma
 
     // Construct pion_1-(A1xNabla_A1) source
     LatticePropagator
-    MesPionA1xNablaA1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				     const LatticePropagator& tmp) const
+    MesA1xNablaA1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				 const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -746,8 +755,8 @@ namespace Chroma
 
     // Construct pion_1-(A1xNabla_T2) source
     LatticePropagator
-    MesPionA1xNablaT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				     const LatticePropagator& tmp) const
+    MesA1xNablaT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				 const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -770,8 +779,8 @@ namespace Chroma
 
     // Construct pion_1-(A1xNabla_E) source
     LatticePropagator
-    MesPionA1xNablaESrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				    const LatticePropagator& tmp) const
+    MesA1xNablaESrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -794,8 +803,8 @@ namespace Chroma
 
     // Construct pion_1-(B1xNabla_T1) source
     LatticePropagator
-    MesPionB1xNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				     const LatticePropagator& tmp) const
+    MesB1xNablaT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+				 const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -818,8 +827,8 @@ namespace Chroma
 
     // Construct pion_1-(A0_2xD_T2) source
     LatticePropagator
-    MesPionA02xDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				  const LatticePropagator& tmp) const
+    MesA02xDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			      const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -836,8 +845,8 @@ namespace Chroma
 
     // Construct pion_1-(A1xD_A2) source
     LatticePropagator
-    MesPionA1xDA2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				 const LatticePropagator& tmp) const
+    MesA1xDA2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -856,8 +865,8 @@ namespace Chroma
 
     // Construct pion_1-(A1xD_E) source
     LatticePropagator
-    MesPionA1xDESrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				const LatticePropagator& tmp) const
+    MesA1xDESrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			    const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -880,8 +889,8 @@ namespace Chroma
 
     // Construct pion_1-(A1xD_T1) source
     LatticePropagator
-    MesPionA1xDT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				 const LatticePropagator& tmp) const
+    MesA1xDT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -904,8 +913,8 @@ namespace Chroma
     
     // Construct pion_1-(A1xD_T2) source
     LatticePropagator
-    MesPionA1xDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				 const LatticePropagator& tmp) const
+    MesA1xDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -928,8 +937,8 @@ namespace Chroma
 
     // Construct pion_1-(B1xD_A2) source
     LatticePropagator
-    MesPionB1xDA2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				       const LatticePropagator& tmp) const
+    MesB1xDA2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -948,8 +957,8 @@ namespace Chroma
 
     // Construct pion_1-(B1xD_E) source
     LatticePropagator
-    MesPionB1xDESrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				const LatticePropagator& tmp) const
+    MesB1xDESrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			    const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -972,8 +981,8 @@ namespace Chroma
 
     // Construct pion_1-(B1xD_T1) source
     LatticePropagator
-    MesPionB1xDT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				 const LatticePropagator& tmp) const
+    MesB1xDT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -996,8 +1005,8 @@ namespace Chroma
 
     // Construct pion_1-(B1xD_T2) source
     LatticePropagator
-    MesPionB1xDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				 const LatticePropagator& tmp) const
+    MesB1xDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1020,8 +1029,8 @@ namespace Chroma
 
     // Construct pion_1-(RhoxD_A2) source
     LatticePropagator
-    MesPionRhoxDA2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				  const LatticePropagator& tmp) const
+    MesRhoxDA2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			      const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1040,8 +1049,8 @@ namespace Chroma
 
     //! Construct pion_1-(RhoxD_T1) source
     LatticePropagator
-    MesPionRhoxDT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				  const LatticePropagator& tmp) const
+    MesRhoxDT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			      const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1064,8 +1073,8 @@ namespace Chroma
 
     //! Construct pion_1-(RhoxD_T2) source
     LatticePropagator
-    MesPionRhoxDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				  const LatticePropagator& tmp) const
+    MesRhoxDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			      const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1088,8 +1097,8 @@ namespace Chroma
 
     // Construct pion_1-(PionxD_T2) source
     LatticePropagator
-    MesPionPionxDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				   const LatticePropagator& tmp) const
+    MesPionxDT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			       const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1107,8 +1116,8 @@ namespace Chroma
  
     //! Construct pion_1-(PionxB_T1) source
     LatticePropagator
-    MesPionPionxBT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				   const LatticePropagator& tmp) const
+    MesPionxBT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			       const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1126,8 +1135,8 @@ namespace Chroma
 
     //! Construct pion_1-(RhoxB_T1) source
     LatticePropagator
-    MesPionRhoxBT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				  const LatticePropagator& tmp) const
+    MesRhoxBT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			      const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1150,8 +1159,8 @@ namespace Chroma
 
     //! Construct pion_1-(RhoxB_T2) source
     LatticePropagator
-    MesPionRhoxBT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				  const LatticePropagator& tmp) const
+    MesRhoxBT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			      const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1174,8 +1183,8 @@ namespace Chroma
 
     //! Construct pion_1-(A1xB_A1) source
     LatticePropagator
-    MesPionA1xBA1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				 const LatticePropagator& tmp) const
+    MesA1xBA1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1194,8 +1203,8 @@ namespace Chroma
 
     //! Construct pion_1-(RhoxB_T1) source
     LatticePropagator
-    MesPionA1xBT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				 const LatticePropagator& tmp) const
+    MesA1xBT1SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
 
@@ -1218,8 +1227,8 @@ namespace Chroma
 
     //! Construct pion_1-(A1xB_T2) source
     LatticePropagator
-    MesPionA1xBT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
-				 const LatticePropagator& tmp) const
+    MesA1xBT2SrcConst::deriv(const multi1d<LatticeColorMatrix>& u,
+			     const LatticePropagator& tmp) const
     {
       START_CODE();
       
@@ -1249,92 +1258,92 @@ namespace Chroma
       foo &= QuarkSmearingEnv::registered;
 
       //! Register all the factories
-      foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-PIONxNABLA_T2"),
-										 mesPionA1xDT2SrcConst);
+      foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-PIONxNABLA_T1"),
+										 mesPionxNablaT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A0xNABLA_T1"),
-										 mesPionA0xNablaT1SrcConst);
+										 mesA0xNablaT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A0_2xNABLA_T1"),
-										 mesPionA02xNablaT1SrcConst);
+										 mesA02xNablaT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-RHOxNABLA_A1"),
-										 mesPionRhoxNablaA1SrcConst);
+										 mesRhoxNablaA1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-RHOxNABLA_T1"),
-										 mesPionRhoxNablaT1SrcConst);
+										 mesRhoxNablaT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-RHOxNABLA_T2"),
-										 mesPionRhoxNablaT2SrcConst);
+										 mesRhoxNablaT2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xNABLA_A1"),
-										 mesPionA1xNablaA1SrcConst);
+										 mesA1xNablaA1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xNABLA_T2"),
-										 mesPionA1xNablaT2SrcConst);
+										 mesA1xNablaT2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xNABLA_E"),
-										 mesPionA1xNablaESrcConst);
+										 mesA1xNablaESrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-B1xNABLA_T1"),
-										 mesPionB1xNablaT1SrcConst);
+										 mesB1xNablaT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A0_2xD_T2"),
-										 mesPionA02xDT2SrcConst);
+										 mesA02xDT2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xD_A2"),
-										 mesPionA1xDA2SrcConst);
+										 mesA1xDA2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xD_E"),
-										 mesPionA1xDESrcConst);
+										 mesA1xDESrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xD_T1"),
-										 mesPionA1xDT1SrcConst);
+										 mesA1xDT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xD_T2"),
-										 mesPionA1xDT2SrcConst);
+										 mesA1xDT2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-B1xD_A2"),
-										 mesPionB1xDA2SrcConst);
+										 mesB1xDA2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-B1xD_E"),
-										 mesPionB1xDESrcConst);
+										 mesB1xDESrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-B1xD_T1"),
-										 mesPionB1xDT1SrcConst);
+										 mesB1xDT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-B1xD_T2"),
-										 mesPionB1xDT2SrcConst);
+										 mesB1xDT2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-RHOxD_A2"),
-										 mesPionRhoxDA2SrcConst);
+										 mesRhoxDA2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-RHOxD_T1"),
-										 mesPionRhoxDT1SrcConst);
+										 mesRhoxDT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-RHOxD_T2"),
-										 mesPionRhoxDT2SrcConst);
+										 mesRhoxDT2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-PIONxD_T2"),
-										 mesPionPionxDT2SrcConst);
+										 mesPionxDT2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-PIONxB_T1"),
-										 mesPionPionxBT1SrcConst);
+										 mesPionxBT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-RHOxB_T1"),
-										 mesPionRhoxBT1SrcConst);
+										 mesRhoxBT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-RHOxB_T2"),
-										 mesPionRhoxBT2SrcConst);
+										 mesRhoxBT2SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xB_A1"),
-										 mesPionA1xBA1SrcConst);
+										 mesA1xBA1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xB_T1"),
-										 mesPionA1xBT1SrcConst);
+										 mesA1xBT1SrcConst);
 
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(string("SOURCE-A1xB_T2"),
-										 mesPionA1xBT2SrcConst);
+										 mesA1xBT2SrcConst);
 
       return foo;
     }
