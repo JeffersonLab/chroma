@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: wilslp.ini.xml,v 1.1 2006-02-20 17:37:58 edwards Exp $
+;
+; Test input file for chroma program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>POLYAKOV_LOOP</Name>
+      <Frequency>1</Frequency>
+    </elem>
+
+    <elem>
+      <!-- Wilson loops -->
+      <Name>WILSLP</Name>
+      <Frequency>1</Frequency>
+      <kind>6</kind>
+      <j_decay>3</j_decay>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
