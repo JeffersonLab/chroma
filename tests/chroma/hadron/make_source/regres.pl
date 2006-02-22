@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.2 2006-02-20 20:41:17 edwards Exp $
+#  $Id: regres.pl,v 1.3 2006-02-22 03:24:34 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -29,9 +29,17 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/make_source/deriv-source.ini.xml" , 
-	 output      => "deriv-source.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/make_source/deriv-source.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/make_source/deriv-source.out.xml" ,
+	 input       => "$test_dir/chroma/hadron/make_source/source-displace.ini.xml" , 
+	 output      => "source-displace.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/make_source/source-displace.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/make_source/source-displace.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/make_source/source-deriv.ini.xml" , 
+	 output      => "source-deriv.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/make_source/source-deriv.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/make_source/source-deriv.out.xml" ,
      }
      );
