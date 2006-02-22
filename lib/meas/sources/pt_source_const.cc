@@ -1,17 +1,21 @@
-// $Id: pt_source_const.cc,v 2.6 2005-12-07 04:24:59 edwards Exp $
+// $Id: pt_source_const.cc,v 2.7 2006-02-22 04:34:05 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
 
 #include "chromabase.h"
+#include "handle.h"
 
 #include "meas/sources/source_const_factory.h"
 #include "meas/sources/pt_source_const.h"
 #include "meas/sources/srcfil.h"
-#include "meas/smear/displacement.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
+#include "meas/smear/quark_displacement_aggregate.h"
+#include "meas/smear/quark_displacement_factory.h"
 #include "util/ferm/transf.h"
+
+#include "meas/smear/simple_quark_displacement.h"
 
 namespace Chroma
 {
@@ -48,6 +52,7 @@ namespace Chroma
     {
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
+      foo &= QuarkDisplacementEnv::registered;
       foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createProp);
       return foo;
     }
@@ -59,7 +64,6 @@ namespace Chroma
     Params::Params()
     {
       j_decay = -1;
-      disp_length = disp_dir = 0;
       t_srce.resize(Nd);
       t_srce = 0;
     }
@@ -76,7 +80,42 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	break;
+      {
+	quark_displacement_type = SimpleQuarkDisplacementEnv::name;
+	int disp_length = 0;
+	int disp_dir = 0;
+
+	XMLBufferWriter xml_tmp;
+	push(xml_tmp, "Displacement");
+	write(xml_tmp, "DisplacementType", quark_displacement_type);
+
+	if (paramtop.count("disp_length") != 0)
+	  read(paramtop, "disp_length", disp_length);
+
+	if (paramtop.count("disp_dir") != 0)
+	  read(paramtop, "disp_dir", disp_dir);
+
+	write(xml_tmp, "disp_length", disp_length);
+	write(xml_tmp, "disp_dir",  disp_dir);
+
+	pop(xml_tmp);  // Displacement
+
+	quark_displacement = xml_tmp.printCurrentContext();
+      }
+      break;
+
+      case 2:
+      {
+	if (paramtop.count("Displacement") != 0)
+	{
+	  XMLReader xml_tmp(paramtop, "Displacement");
+	  std::ostringstream os;
+	  xml_tmp.print(os);
+	  read(xml_tmp, "DisplacementType", quark_displacement_type);
+	  quark_displacement = os.str();
+	}
+      }
+      break;
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
@@ -86,16 +125,6 @@ namespace Chroma
 
       read(paramtop, "j_decay", j_decay);
       read(paramtop, "t_srce", t_srce);
-
-      if (paramtop.count("disp_length") != 0)
-	read(paramtop, "disp_length", disp_length);
-      else
-	disp_length = 0;
-
-      if (paramtop.count("disp_dir") != 0)
-	read(paramtop, "disp_dir", disp_dir);
-      else
-	disp_dir = 0;
 
       if (paramtop.count("LinkSmearing") != 0)
       {
@@ -118,9 +147,8 @@ namespace Chroma
 
       write(xml, "j_decay", j_decay);
       write(xml, "t_srce", t_srce);
-      write(xml, "disp_length", disp_length);
-      write(xml, "disp_dir", disp_dir);
       xml << link_smearing;
+      xml << quark_displacement;
       pop(xml);
     }
 
@@ -133,43 +161,63 @@ namespace Chroma
     {
       QDPIO::cout << "Point source" << endl;
 
-      // Possibly smear the links for the displacement
-      multi1d<LatticeColorMatrix> u_smr = u;
-      linkSmear(u_smr, std::string("/LinkSmearing"), params.link_smearing, params.link_smearing_type);
-
       // Create the quark source
       LatticePropagator quark_source;
 
-      for(int color_source = 0; color_source < Nc; ++color_source)
+      try
       {
-	QDPIO::cout << "color = " << color_source << endl; 
+	// Possibly smear the links for the displacement
+	multi1d<LatticeColorMatrix> u_smr = u;
+	linkSmear(u_smr, std::string("/LinkSmearing"), params.link_smearing, params.link_smearing_type);
 
-	LatticeColorVector src_color_vec = zero;
+	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.quark_displacement);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+	
+	Handle< QuarkDisplacement<LatticePropagator> >
+	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement_type,
+										displacetop,
+										displace_path));
 
-	// Make a point source at coordinates t_source
-	srcfil(src_color_vec, params.t_srce, color_source);
+	for(int color_source = 0; color_source < Nc; ++color_source)
+	{
+	  QDPIO::cout << "color = " << color_source << endl; 
+
+	  LatticeColorVector src_color_vec = zero;
+
+	  // Make a point source at coordinates t_source
+	  srcfil(src_color_vec, params.t_srce, color_source);
+	  
+	  for(int spin_source = 0; spin_source < Ns; ++spin_source)
+	  {
+	    QDPIO::cout << "spin = " << spin_source << endl; 
+
+	    // Insert a ColorVector into spin index spin_source
+	    // This only overwrites sections, so need to initialize first
+	    LatticeFermion chi = zero;
+	    
+	    CvToFerm(src_color_vec, chi, spin_source);
+	  
+	    /*
+	     *  Move the source to the appropriate components
+	     *  of quark source.
+	     */
+	    FermToProp(chi, quark_source, color_source, spin_source);
+	  }
+	}
 
 	// displace the point source first, then smear
 	// displacement has to be taken along negative direction.
-	displacement(u_smr, src_color_vec,
-		     (-1)*params.disp_length, params.disp_dir);
+	(*quarkDisplacement)(quark_source, u_smr, MINUS);
 
-	for(int spin_source = 0; spin_source < Ns; ++spin_source)
-	{
-	  QDPIO::cout << "spin = " << spin_source << endl; 
-
-	  // Insert a ColorVector into spin index spin_source
-	  // This only overwrites sections, so need to initialize first
-	  LatticeFermion chi = zero;
-
-	  CvToFerm(src_color_vec, chi, spin_source);
-      
-	  /*
-	   *  Move the source to the appropriate components
-	   *  of quark source.
-	   */
-	  FermToProp(chi, quark_source, color_source, spin_source);
-	}
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << endl;
+	QDP_abort(1);
       }
 
       return quark_source;

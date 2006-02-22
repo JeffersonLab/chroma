@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_sink_smearing.h,v 1.7 2005-11-16 02:34:58 edwards Exp $
+// $Id: pt_sink_smearing.h,v 1.8 2006-02-22 04:34:05 edwards Exp $
 /*! \file
  *  \brief Point sink smearing
  */
@@ -31,8 +31,8 @@ namespace Chroma
       std::string      link_smearing;        /*!< link smearing xml */
       std::string      link_smearing_type;   /*!< link smearing type name */
 
-      int              disp_length;          /*!< displacement length */
-      int              disp_dir;             /*!< x(0), y(1), z(2) */   
+      std::string      quark_displacement;      /*!< displacement xml */
+      std::string      quark_displacement_type; /*!< displacement type name */
     };
 
 

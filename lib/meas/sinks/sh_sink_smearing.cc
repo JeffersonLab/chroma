@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 1.7 2005-11-21 21:07:38 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 1.8 2006-02-22 04:34:05 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -16,7 +16,11 @@
 #include "meas/smear/quark_smearing_aggregate.h"
 
 #include "meas/smear/quark_smearing.h"
-#include "meas/smear/displacement.h"
+
+#include "meas/smear/quark_displacement_aggregate.h"
+#include "meas/smear/quark_displacement_factory.h"
+
+#include "meas/smear/simple_quark_displacement.h"
 
 namespace Chroma
 {
@@ -63,6 +67,7 @@ namespace Chroma
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
       foo &= QuarkSmearingEnv::registered;
+      foo &= QuarkDisplacementEnv::registered;
       foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
       foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
       return foo;
@@ -75,7 +80,6 @@ namespace Chroma
     //! Initialize
     Params::Params()
     {
-      disp_length = disp_dir = 0;
     }
 
 
@@ -90,7 +94,42 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	break;
+      {
+	quark_displacement_type = SimpleQuarkDisplacementEnv::name;
+	int disp_length = 0;
+	int disp_dir = 0;
+
+	XMLBufferWriter xml_tmp;
+	push(xml_tmp, "Displacement");
+	write(xml_tmp, "DisplacementType", quark_displacement_type);
+
+	if (paramtop.count("disp_length") != 0)
+	  read(paramtop, "disp_length", disp_length);
+
+	if (paramtop.count("disp_dir") != 0)
+	  read(paramtop, "disp_dir", disp_dir);
+
+	write(xml_tmp, "disp_length", disp_length);
+	write(xml_tmp, "disp_dir",  disp_dir);
+
+	pop(xml_tmp);  // Displacement
+
+	quark_displacement = xml_tmp.printCurrentContext();
+      }
+      break;
+
+      case 2:
+      {
+	if (paramtop.count("Displacement") != 0)
+	{
+	  XMLReader xml_tmp(paramtop, "Displacement");
+	  std::ostringstream os;
+	  xml_tmp.print(os);
+	  read(xml_tmp, "DisplacementType", quark_displacement_type);
+	  quark_displacement = os.str();
+	}
+      }
+      break;
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
@@ -107,16 +146,6 @@ namespace Chroma
 	read(xml_tmp, "wvf_kind", quark_smearing_type);
 	quark_smearing = os.str();
       }
-
-      if (paramtop.count("disp_length") != 0)
-	read(paramtop, "disp_length", disp_length);
-      else
-	disp_length = 0;
-
-      if (paramtop.count("disp_dir") != 0)
-	read(paramtop, "disp_dir", disp_dir);
-      else
-	disp_dir = 0;
 
       if (paramtop.count("LinkSmearing") != 0)
       {
@@ -140,8 +169,7 @@ namespace Chroma
 
       write(xml, "SinkType", sink_type);
       xml << quark_smearing;
-      write(xml, "disp_length", disp_length);
-      write(xml, "disp_dir", disp_dir);
+      xml << quark_displacement;
       xml << link_smearing;
       pop(xml);
 
@@ -172,12 +200,26 @@ namespace Chroma
 									smear_path));
 
 	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.quark_displacement);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+	
+	Handle< QuarkDisplacement<LatticePropagator> >
+	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement_type,
+										displacetop,
+										displace_path));
+
+	//
 	// Sink smear quark
 	//
 	(*quarkSmearing)(quark_sink, u_smr);
 
-	displacement(u_smr, quark_sink,
-		     params.disp_length, params.disp_dir);
+	//
+	// Displace the sink
+	//
+	(*quarkDisplacement)(quark_sink, u_smr, PLUS);
 
       }
       catch(const std::string& e) 
@@ -211,12 +253,27 @@ namespace Chroma
 									smear_path));
 
 	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.quark_displacement);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+	
+	Handle< QuarkDisplacement<LatticeFermion> >
+	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement_type,
+										displacetop,
+										displace_path));
+
+	//
 	// Sink smear quark
 	//
 	(*quarkSmearing)(quark_sink, u_smr);
 
-	displacement(u_smr, quark_sink,
-		     params.disp_length, params.disp_dir);
+
+	//
+	// Displace the sink
+	//
+	(*quarkDisplacement)(quark_sink, u_smr, PLUS);
 
       }
       catch(const std::string& e) 

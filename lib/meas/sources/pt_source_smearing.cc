@@ -1,15 +1,17 @@
-// $Id: pt_source_smearing.cc,v 2.8 2005-11-21 21:07:38 edwards Exp $
+// $Id: pt_source_smearing.cc,v 2.9 2006-02-22 04:34:05 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
 
 #include "chromabase.h"
+#include "handle.h"
 
 #include "meas/sources/source_smearing_factory.h"
 #include "meas/sources/pt_source_smearing.h"
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/smear/link_smearing_aggregate.h"
-#include "meas/smear/displacement.h"
+#include "meas/smear/quark_displacement_aggregate.h"
+#include "meas/smear/quark_displacement_factory.h"
 
 namespace Chroma
 {
@@ -28,9 +30,9 @@ namespace Chroma
     int version = 1;
     write(xml, "version", version);
 
-    write(xml, "disp_length", param.disp_length);
-    write(xml, "disp_dir", param.disp_dir);
+    write(xml, "SourceType", PointQuarkSourceSmearingEnv::name);
     xml << param.link_smearing;
+    xml << param.quark_displacement;
     pop(xml);
   }
 
@@ -55,6 +57,7 @@ namespace Chroma
     {
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
+      foo &= QuarkDisplacementEnv::registered;
       foo &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
       return true;
     }
@@ -66,7 +69,6 @@ namespace Chroma
     //! Read parameters
     Params::Params()
     {
-      disp_length = disp_dir = 0;
     }
 
     //! Read parameters
@@ -88,15 +90,14 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      if (paramtop.count("disp_length") != 0)
-	read(paramtop, "disp_length", disp_length);
-      else
-	disp_length = 0;
-
-      if (paramtop.count("disp_dir") != 0)
-	read(paramtop, "disp_dir", disp_dir);
-      else
-	disp_dir = 0;
+      if (paramtop.count("Displacement") != 0)
+      {
+	XMLReader xml_tmp(paramtop, "Displacement");
+	std::ostringstream os;
+	xml_tmp.print(os);
+	read(xml_tmp, "DisplacementType", quark_displacement_type);
+	quark_displacement = os.str();
+      }
 
       if (paramtop.count("LinkSmearing") != 0)
       {
@@ -116,9 +117,8 @@ namespace Chroma
       int version = 1;
       write(xml, "version", version);
 
-      write(xml, "disp_length", disp_length);
-      write(xml, "disp_dir", disp_dir);
       xml << link_smearing;
+      xml << quark_displacement;
       pop(xml);
     }
 
@@ -133,8 +133,32 @@ namespace Chroma
 
       // displace the point source first, then smear
       // displacement has to be taken along negative direction.
-      displacement(u_smr, quark_source,
-		   (-1)*params.disp_length, params.disp_dir);
+ 
+      try
+      {
+	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.quark_displacement);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+	
+	Handle< QuarkDisplacement<LatticeFermion> >
+	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement_type,
+										displacetop,
+										displace_path));
+
+	//
+	// Displace quark source
+	//
+	(*quarkDisplacement)(quark_source, u_smr, MINUS);
+
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDP_abort(1);
+      }
     }
 
   }  // end namespace

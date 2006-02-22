@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 2.7 2005-11-21 21:07:38 edwards Exp $
+// $Id: sh_source_smearing.cc,v 2.8 2006-02-22 04:34:05 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -16,7 +16,8 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
 
-#include "meas/smear/displacement.h"
+#include "meas/smear/quark_displacement_aggregate.h"
+#include "meas/smear/quark_displacement_factory.h"
 
 namespace Chroma
 {
@@ -55,6 +56,7 @@ namespace Chroma
       bool foo = true;
       foo &= LinkSmearingEnv::registered;
       foo &= QuarkSmearingEnv::registered;
+      foo &= QuarkDisplacementEnv::registered;
       foo &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
       return foo;
     }
@@ -66,7 +68,6 @@ namespace Chroma
     //! Read parameters
     Params::Params()
     {
-      disp_length = disp_dir = 0;
     }
 
     //! Read parameters
@@ -98,15 +99,14 @@ namespace Chroma
 	quark_smearing = os.str();
       }
 
-      if (paramtop.count("disp_length") != 0)
-	read(paramtop, "disp_length", disp_length);
-      else
-	disp_length = 0;
-
-      if (paramtop.count("disp_dir") != 0)
-	read(paramtop, "disp_dir", disp_dir);
-      else
-	disp_dir = 0;
+      if (paramtop.count("Displacement") != 0)
+      {
+	XMLReader xml_tmp(paramtop, "Displacement");
+	std::ostringstream os;
+	xml_tmp.print(os);
+	read(xml_tmp, "DisplacementType", quark_displacement_type);
+	quark_displacement = os.str();
+      }
 
       if (paramtop.count("LinkSmearing") != 0)
       {
@@ -129,10 +129,8 @@ namespace Chroma
 
       write(xml, "SourceType", source_type);
       xml << quark_smearing;
-      write(xml, "disp_length", disp_length);
-      write(xml, "disp_dir", disp_dir);
+      xml << quark_displacement;
       xml << link_smearing;
-      pop(xml);
 
       pop(xml);
     }
@@ -160,10 +158,21 @@ namespace Chroma
 									smear_path));
 
 	//
-	// Smear quark source
+	// Create the quark displacement object
 	//
-	displacement(u_smr, quark_source,
-		     (-1)*params.disp_length, params.disp_dir);
+	std::istringstream  xml_d(params.quark_displacement);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+	
+	Handle< QuarkDisplacement<LatticeFermion> >
+	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement_type,
+										displacetop,
+										displace_path));
+
+	//
+	// Displace and then smear quark source
+	//
+	(*quarkDisplacement)(quark_source, u_smr, MINUS);
 
 	(*quarkSmearing)(quark_source, u_smr);
 
