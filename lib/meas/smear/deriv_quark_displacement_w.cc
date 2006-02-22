@@ -1,4 +1,4 @@
-// $Id: deriv_quark_displacement_w.cc,v 1.1 2006-02-21 06:45:40 edwards Exp $
+// $Id: deriv_quark_displacement_w.cc,v 1.2 2006-02-22 03:27:36 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -54,6 +54,30 @@ namespace Chroma
     namespace
     {
 
+      //! Determine sign of plusminus
+      /*!
+       * \ingroup sources
+       */
+      int plusMinus(enum PlusMinus isign)
+      {
+	int is = 0;
+	switch (isign)
+	{
+	case PLUS:
+	  is = +1;
+	  break;
+
+	case MINUS:
+	  is = -1;
+	  break;
+
+	default:
+	  QDP_error_exit("illegal isign in plusminus");
+	}
+	return is;
+      }
+
+
       //! Private displacement
       LatticePropagator displacement(const multi1d<LatticeColorMatrix>& u, 
 				     const LatticePropagator& psi, 
@@ -99,7 +123,7 @@ namespace Chroma
 				   const multi1d<LatticeColorMatrix>& u,
 				   int mu, int length)
       {
-	return displacement(u, F, -length, mu) - displacement(u, F, length, mu);
+	return displacement(u, F, length, mu) - displacement(u, F, -length, mu);
       }
 
       //! Apply "D_i" operator to the right onto source
@@ -470,9 +494,10 @@ namespace Chroma
 
       LatticePropagator fin;
       const int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \nabla_i\f$
-      fin = Gamma(G5) * rightNabla(tmp,u,params.deriv_dir,params.deriv_length);
+      fin = Gamma(G5) * rightNabla(tmp,u,params.deriv_dir,length);
       tmp = fin;
 
       END_CODE();
@@ -490,9 +515,10 @@ namespace Chroma
       START_CODE();
 
       LatticePropagator fin;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \nabla_i\f$
-      fin = rightNabla(tmp,u,params.deriv_dir,params.deriv_length);
+      fin = rightNabla(tmp,u,params.deriv_dir,length);
       tmp = fin;
       
       END_CODE();
@@ -510,9 +536,10 @@ namespace Chroma
       START_CODE();
 
       LatticePropagator fin;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_4 \nabla_i\f$
-      fin = Gamma(1 << 3) * rightNabla(tmp,u,params.deriv_dir,params.deriv_length);
+      fin = Gamma(1 << 3) * rightNabla(tmp,u,params.deriv_dir,length);
       tmp = fin;
       
       END_CODE();
@@ -529,10 +556,11 @@ namespace Chroma
       START_CODE();
 
       LatticePropagator fin = zero;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_i\nabla_i\f$
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * rightNabla(tmp,u,k,params.deriv_length);
+	fin += Gamma(1 << k) * rightNabla(tmp,u,k,length);
       
       tmp = fin;
 
@@ -550,13 +578,14 @@ namespace Chroma
       START_CODE();
 
       LatticePropagator fin = zero;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j \nabla_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,params.deriv_length));
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -575,13 +604,14 @@ namespace Chroma
       START_CODE();
 
       LatticePropagator fin = zero;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (symTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,params.deriv_length));
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -601,10 +631,11 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5\gamma_i \nabla_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * rightNabla(tmp,u,k,params.deriv_length);
+	fin += Gamma(1 << k) * rightNabla(tmp,u,k,length);
       
       tmp = fin;
 
@@ -623,13 +654,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j \nabla_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (symTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,params.deriv_length));
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -649,13 +681,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j \nabla_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (ETensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,params.deriv_length));
+	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -675,13 +708,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_4\gamma_5\epsilon_{ijk}\gamma_j \nabla_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -700,9 +734,10 @@ namespace Chroma
       START_CODE();
 
       LatticePropagator fin;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_4 D_i\f$  
-      fin = Gamma(1 << 3) * rightD(tmp,u,params.deriv_dir,params.deriv_length);
+      fin = Gamma(1 << 3) * rightD(tmp,u,params.deriv_dir,length);
       
       tmp = fin;
 
@@ -721,10 +756,11 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5\gamma_i D_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * rightD(tmp,u,k,params.deriv_length);
+	fin += Gamma(1 << k) * rightD(tmp,u,k,length);
       
       tmp = fin;
 
@@ -743,13 +779,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (ETensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -769,13 +806,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (symTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -795,13 +833,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -821,10 +860,11 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i D_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * rightD(tmp,u,k,params.deriv_length);
+	fin += Gamma(1 << k) * rightD(tmp,u,k,length);
 
       tmp = fin;
 
@@ -843,13 +883,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (ETensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
 
       tmp = fin;
@@ -869,13 +910,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (symTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
 
       tmp = fin;
@@ -895,13 +937,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_4\gamma_5 \epsilon_{ijk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
 
       tmp = fin;
@@ -921,10 +964,11 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_i D_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * rightD(tmp,u,k,params.deriv_length);
+	fin += Gamma(1 << k) * rightD(tmp,u,k,length);
       
       tmp = fin;
 
@@ -943,13 +987,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (symTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -969,13 +1014,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j D_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,params.deriv_length));
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -995,9 +1041,10 @@ namespace Chroma
 
       LatticePropagator fin;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
-      fin = Gamma(1 << 3) * (Gamma(G5) * rightD(tmp,u,params.deriv_dir,params.deriv_length));
+      fin = Gamma(1 << 3) * (Gamma(G5) * rightD(tmp,u,params.deriv_dir,length));
       
       tmp = fin;
 
@@ -1016,9 +1063,10 @@ namespace Chroma
 
       LatticePropagator fin;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5 B_i\f$  
-      fin = Gamma(G5) * rightB(tmp,u,params.deriv_dir,params.deriv_length);
+      fin = Gamma(G5) * rightB(tmp,u,params.deriv_dir,length);
       
       tmp = fin;
 
@@ -1037,13 +1085,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j B_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,params.deriv_length));
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -1063,13 +1112,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv s_{ijk}\gamma_j B_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (symTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,params.deriv_length));
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -1089,10 +1139,11 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5 \gamma_i B_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * rightB(tmp,u,k,params.deriv_length);
+	fin += Gamma(1 << k) * rightB(tmp,u,k,length);
       
       tmp = fin;
 
@@ -1111,13 +1162,14 @@ namespace Chroma
 
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j B_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,params.deriv_length));
+	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -1137,13 +1189,14 @@ namespace Chroma
       
       LatticePropagator fin = zero;
       int G5 = Ns*Ns-1;
+      int length = plusMinus(isign) * params.deriv_length;
 
       // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j B_k\f$  
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
 	  if (symTensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,params.deriv_length));
+	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,length));
 	}
       
       tmp = fin;
@@ -1158,91 +1211,91 @@ namespace Chroma
       bool foo = true;
 
       //! Register all the factories
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-PIONxNABLA_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxNABLA_T1-DERIV"),
 									   mesPionxNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A0xNABLA_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0xNABLA_T1-DERIV"),
 									   mesA0xNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A0_2xNABLA_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0_2xNABLA_T1-DERIV"),
 									   mesA02xNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-RHOxNABLA_A1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_A1-DERIV"),
 									   mesRhoxNablaA1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-RHOxNABLA_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_T1-DERIV"),
 									   mesRhoxNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-RHOxNABLA_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_T2-DERIV"),
 									   mesRhoxNablaT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xNABLA_A1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_A1-DERIV"),
 									   mesA1xNablaA1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xNABLA_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_T2-DERIV"),
 									   mesA1xNablaT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xNABLA_E"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_E-DERIV"),
 									   mesA1xNablaEDisplace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-B1xNABLA_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xNABLA_T1-DERIV"),
 									   mesB1xNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A0_2xD_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0_2xD_T2-DERIV"),
 									   mesA02xDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xD_A2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_A2-DERIV"),
 									   mesA1xDA2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xD_E"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_E-DERIV"),
 									   mesA1xDEDisplace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xD_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_T1-DERIV"),
 									   mesA1xDT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xD_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_T2-DERIV"),
 									   mesA1xDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-B1xD_A2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_A2-DERIV"),
 									   mesB1xDA2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-B1xD_E"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_E-DERIV"),
 									   mesB1xDEDisplace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-B1xD_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_T1-DERIV"),
 									   mesB1xDT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-B1xD_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_T2-DERIV"),
 									   mesB1xDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-RHOxD_A2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_A2-DERIV"),
 									   mesRhoxDA2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-RHOxD_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_T1-DERIV"),
 									   mesRhoxDT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-RHOxD_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_T2-DERIV"),
 									   mesRhoxDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-PIONxD_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxD_T2-DERIV"),
 									   mesPionxDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-PIONxB_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxB_T1-DERIV"),
 									   mesPionxBT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-RHOxB_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxB_T1-DERIV"),
 									   mesRhoxBT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-RHOxB_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxB_T2-DERIV"),
 									   mesRhoxBT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xB_A1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_A1-DERIV"),
 									   mesA1xBA1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xB_T1"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_T1-DERIV"),
 									   mesA1xBT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("DISPLACE-A1xB_T2"),
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_T2-DERIV"),
 									   mesA1xBT2Displace);
 
       return foo;
