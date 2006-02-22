@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eig.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: eig.h,v 2.1 2006-02-22 16:09:42 streuer Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalues
@@ -20,5 +20,6 @@
 #include "inline_eig_aggregate.h"
 
 #include "inline_eigbnds.h"
+#include "inline_ritz_H_w.h"
 
 #endif

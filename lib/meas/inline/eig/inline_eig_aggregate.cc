@@ -1,10 +1,11 @@
-// $Id: inline_eig_aggregate.cc,v 2.1 2005-10-19 01:05:53 edwards Exp $
+// $Id: inline_eig_aggregate.cc,v 2.2 2006-02-22 16:09:42 streuer Exp $
 /*! \file
  *  \brief Inline eig measurement aggregator
  */
 
 #include "meas/inline/eig/inline_eig_aggregate.h"
 #include "meas/inline/eig/inline_eigbnds.h"
+#include "meas/inline/eig/inline_ritz_H_w.h"
 
 // Grab all fermacts to make sure they are registered
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -24,6 +25,7 @@ namespace Chroma
 
       // Eig stuff
       success &= InlineEigBndsMdagMEnv::registered;
+      success &= InlineRitzEnv::registered;
       return success;
     }
 
