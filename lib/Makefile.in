@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.57 2006-02-22 16:27:11 streuer Exp $
+# $Id: Makefile.in,v 2.58 2006-02-22 23:48:03 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -729,6 +729,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
+	actions/ferm/fermacts/eigen_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
@@ -1290,6 +1291,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermacts/overlap_state.h \
+	actions/ferm/fermacts/eigen_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \

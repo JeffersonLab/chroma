@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.4 2006-01-04 03:17:42 edwards Exp $
+#  $Id: regres.pl,v 1.5 2006-02-22 23:48:05 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -13,11 +13,20 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/unprec-zolo-ev-multi-v8.ini.xml" , 
+	 output      => "unprec-zolo-ev-multi-v8.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/unprec-zolo-ev-multi-v8.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/unprec-zolo-ev-multi-v8.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
 	 input       => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.ini.xml" , 
 	 output      => "prec_wilson-v9.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_wilson-v9.out.xml" ,
      },
+
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 

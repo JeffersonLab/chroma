@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 2.2 2006-02-22 16:27:12 streuer Exp $
+// $Id: qio_read_obj_funcmap.cc,v 2.3 2006-02-22 23:48:05 bjoo Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -155,27 +155,65 @@ namespace Chroma
 			  const string& file,
 			  QDP_serialparallel_t serpar)
     {
-      multi1d<Real64> evalsD;
-      multi1d<Real64> largestD;
-      LatticeFermion evecD;
-      XMLReader file_xml, record_xml;
 
+      
+      multi1d<Real64> evalsD;
+
+      // BUG? Need to read these as an array even though there is only one
+      // and also I need to know in advance the array size.
+      multi1d<Real64> largestD(1);
+
+      // Would like this to be double, but casting double prec to single prec doesn't work.
+      LatticeFermion evecD;
+
+      // Stuff 
+      XMLReader file_xml, record_xml, largest_record_xml;
+
+      // Open file
       QDPFileReader to(file_xml,file,serpar);
-      read(to, record_xml, largestD);
+
+      // Create object
+      TheNamedObjMap::Instance().create< EigenInfo >(buffer_id);
+
+      // Read largest ev plus XML file containing number of eval/evec pairs
+      read(to, largest_record_xml, largestD);
+
+      // Extract number of EVs from XML
+      int size;
+      try { 
+      read(largest_record_xml, "/NumElem/n_vec", size);
+      }
+      catch(const std::string& e) { 
+	QDPIO::cerr<< "Caught Exception while reading XML: " << e << endl;
+	QDP_abort(1);
+      }
+
+      // Set largest EV
       TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getLargest()=largestD[0];
 
+      // REsize eval arrays so that IO works correctly
+      evalsD.resize(size);
+
+      // Read evals
       read(to, record_xml, evalsD);
 
+      QDPIO::cout << "Read " << evalsD.size() << "Evals " << endl;
+      for(int i=0; i < evalsD.size(); i++) { 
+	QDPIO::cout << "Eval["<<i<<"] = " << Real(evalsD[i]) << endl;
+      }
 
-      TheNamedObjMap::Instance().create< EigenInfo >(buffer_id);
+      // Resize eval array 
       TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvalues().resize(evalsD.size());
-
+      
+      // Downcast evals to Real() precision
       for (int i=0; i<evalsD.size(); i++)
 	TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvalues()[i] = Real(evalsD[i]);
 
+
+      // Resize evec arrays
       TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvectors().resize(evalsD.size());
 
-
+      // Loop and read evecs
       for (int i=0; i<evalsD.size(); i++)
       {
 	XMLReader record_xml_dummy;
@@ -186,9 +224,11 @@ namespace Chroma
 	(TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvectors())[i]=evecR;
       }
  
+      // Set File and Record XML throw away dummy XMLs
       TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
       TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
 
+      // Done - That too was unnecessarily painful
       close(to);
     }
   }  // end namespace QIOReadObjCallMap
@@ -217,6 +257,9 @@ namespace Chroma
 
       success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
 								   QIOReadObjCallMap::QIOReadArrayLatColMat);
+
+      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfo"),
+								   QIOReadObjCallMap::QIOReadEigenInfo);
 
       return success;
     }

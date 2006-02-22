@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial_w.cc,v 2.5 2006-02-16 02:59:03 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.cc,v 2.6 2006-02-22 23:48:05 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -64,7 +64,12 @@ namespace Chroma
 
     QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial: construct " << fermact_string << endl;
 
-    const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    const WilsonTypeFermAct< LatticeFermion, 
+                             multi1d<LatticeColorMatrix> 
+                           >* tmp_act = 
+      TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, 
+							   fermact_reader, 
+							   "/FermionAction");
 
     const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
 

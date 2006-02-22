@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 2.4 2006-02-22 05:23:18 bjoo Exp $
+// $Id: inline_multi_propagator_w.cc,v 2.5 2006-02-22 23:48:05 bjoo Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -166,6 +166,7 @@ namespace Chroma
     START_CODE();
 
     push(xml_out, "multi_propagator");
+
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << "MULTI_PROPAGATOR: multimass propagator calculation" << endl;
@@ -287,7 +288,11 @@ namespace Chroma
     // stored as a string called "stateInfo" in the param struct.
 
     // Make a reader for the stateInfo
+    QDPIO::cout << "State info is " << params.stateInfo << endl;
     std::istringstream state_info_is(params.stateInfo);
+
+
+
     XMLReader state_info_xml(state_info_is);
     string state_info_path="/StateInfo";
 
@@ -423,7 +428,7 @@ namespace Chroma
    
     
     pop(xml_out);  // propagator
-    
+
     QDPIO::cout << "MultiPropagator ran successfully" << endl;
     
     END_CODE();

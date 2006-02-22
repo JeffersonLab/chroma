@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 2.2 2006-02-22 23:48:04 bjoo Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -10,9 +10,9 @@
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
-#include "actions/ferm/fermacts/overlap_state.h"
+#include "actions/ferm/fermacts/eigen_state.h"
 #include "meas/eig/eig_w.h"
-#include "io/overlap_state_info.h"
+// #include "io/overlap_state_info.h"
 #include "io/enum_io/enum_io.h"
 
 
@@ -161,7 +161,7 @@ namespace Chroma
     // Create state functions
     
     //! Create OverlapConnectState from XML
-    const OverlapConnectState* 
+    const EigenConnectState* 
     createState(const multi1d<LatticeColorMatrix>& u, 
 		XMLReader& state_info_xml,
 		const string& state_info_path) const;
@@ -170,35 +170,9 @@ namespace Chroma
     /*! Override the parent */
     
     //! Create a ConnectState with just the gauge fields
-    const OverlapConnectState*
+    const EigenConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_) const ;
 
-    //! Create a ConnectState with just the gauge fields, and a lower
-    //!  approximation bound
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& approxMin_) const ;
- 
-    
-    //! Create a connect State with just approximation range bounds
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& approxMin_, 
-		const Real& approxMax_) const;
-
-
-    //! Create OverlapConnectState with eigenvalues/vectors 
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const multi1d<Real>& lambda_lo_,
-		const multi1d<LatticeFermion>& evecs_lo_, 
-		const Real& lambda_hi_) const;
-
-
-    //! Create from OverlapStateInfo Structure
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const OverlapStateInfo& state_info) const;
 
     //! Produce a linear operator for this action
     /*! 
@@ -260,7 +234,7 @@ namespace Chroma
 	      multi1d<Real>& rootQ, 
 	      int& NEig, 
 	      multi1d<Real>& EigValFunc,
-	      const OverlapConnectState& state) const;
+	      const EigenConnectState& state) const;
 
     //! Construct stuff but use RatPolyDegPrec in the polynomial
     void initPrec(int& numroot, 
@@ -269,7 +243,7 @@ namespace Chroma
 		  multi1d<Real>& rootQ, 
 		  int& NEig, 
 		  multi1d<Real>& EigValFunc,
-		  const OverlapConnectState& state) const;
+		  const EigenConnectState& state) const;
 
 
   private:

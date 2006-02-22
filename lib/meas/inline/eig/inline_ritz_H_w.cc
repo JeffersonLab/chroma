@@ -1,4 +1,4 @@
-// $Id: inline_ritz_H_w.cc,v 2.1 2006-02-22 16:09:42 streuer Exp $
+// $Id: inline_ritz_H_w.cc,v 2.2 2006-02-22 23:48:04 bjoo Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -17,7 +17,7 @@
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/eig/eig_spec.h"
-
+#include "actions/ferm/linop/lopscl.h"
 
 
 namespace Chroma 
@@ -189,14 +189,14 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
   {
     START_CODE();
 
-    StopWatch snoop;
+    QDP::StopWatch snoop;
     snoop.reset();
     snoop.start();
 
-    push(xml_out, "RitzEigen");
+    push(xml_out, "RitzEigenHw");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineRitzEnv::name << ": RitzEigen" << endl;
+    QDPIO::cout << InlineRitzEnv::name << ": RitzEigenHw" << endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -219,6 +219,22 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
       TheNamedObjMap::Instance().getData<EigenInfo>(params.named_obj.eigen_id);
 
 
+    // File XML - the name of the measurement and and ID
+    XMLBufferWriter file_xml;
+    push(file_xml, "RitzEigenHw");
+    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+    write(file_xml, "id", id);
+    pop(file_xml);
+
+    XMLBufferWriter record_xml; 
+    push(record_xml, "Params");
+    write(record_xml, "version", params.version);
+    write(record_xml, "RitzParams", params.ritz_params);
+    // More stuff here 
+    pop(record_xml);
+
+    TheNamedObjMap::Instance().get(params.named_obj.eigen_id).setFileXML(file_xml);
+    TheNamedObjMap::Instance().get(params.named_obj.eigen_id).setRecordXML(record_xml);
     //
     // Initialize fermion action
     //
@@ -267,7 +283,7 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
 	Handle< const LinearOperator<LatticeFermion> > MM(S_f->lMdagM(state));
 
 	Handle< const LinearOperator<LatticeFermion> > H(S_f->hermitianLinOp(state));
-
+	swatch.start();
 	RitzCode4DHw(MM, H, params.ritz_params, xml_out, eigenvec_val);
 	swatch.stop();
 	QDPIO::cout << "Eigenvalues/-vectors computed: time= " 
@@ -295,7 +311,9 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
 		<< " secs" << endl;
 
     QDPIO::cout << InlineRitzEnv::name << ": ran successfully" << endl;
-    
+
+    pop(xml_out);
+    pop(xml_out);
     END_CODE();
   
   }
@@ -443,13 +461,15 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
   
   multi1d<Real> lambda_high_aux(1);
   multi1d<LatticeFermion> lambda_high_vec(1);
+
   gaussian(lambda_high_vec[0],s);
+
   lambda_high_vec[0][s] /= sqrt(norm2(lambda_high_vec[0],s));
 
   int n_cg_high;
   XMLBufferWriter high_xml;
   
-  Handle<const LinearOperator<LatticeFermion> > MinusMM;// = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
+  Handle<const LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
   // Initial guess -- upper bound on spectrum
   lambda_high_aux[0] = Real(8);
   
@@ -459,6 +479,7 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
   // Minus MM ought to produce a negative e-value
   // since MM is herm_pos_def
   // ie minus MM is hermitian -ve definite
+
   EigSpecRitzCG( *MinusMM,
 		 lambda_high_aux,
 		 lambda_high_vec,
@@ -472,7 +493,9 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
 		 params.ProjApsiP,
 		 n_cg_high,
 		 high_xml);
-  
+
+  QDPIO::cout << "Got Here" << endl << flush ;
+
   lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
   QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
   

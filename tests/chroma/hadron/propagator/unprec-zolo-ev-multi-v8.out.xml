@@ -1,0 +1,1175 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+; $Id: unprec-zolo-ev-multi-v8.out.xml,v 1.1 2006-02-22 23:48:05 bjoo Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+
+    <elem>
+      <Name>RITZ_KS_HERM_WILSON</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<FermionAction>
+          <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+          <Mass>-1.4</Mass>
+        <boundary>1 1 1 -1</boundary>
+        </FermionAction>
+	<RitzParams>
+	  <Neig>8</Neig>
+	  <Ndummy>4</Ndummy>
+	  <RsdR>1.0e-3</RsdR>
+	  <RsdA>1.0e-4</RsdA>
+	  <RsdZero>5.0e-6</RsdZero>
+	  <ProjApsiP>false</ProjApsiP>
+	  <GammaFactor>0.1</GammaFactor>
+	  <MaxKS>200</MaxKS>
+	  <MaxCG>10000</MaxCG>
+	  <MinKSIter>5</MinKSIter>
+	  <MaxKSIter>200</MaxKSIter>
+	  <Nrenorm>10</Nrenorm>
+	</RitzParams>
+      </Param>     
+      <NamedObject>
+        <eigen_id>eigen_info_0</eigen_id>
+      </NamedObject>
+    </elem>
+    
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigen_info_0</object_id>
+        <object_type>EigenInfo</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./eig</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+   
+    <elem> 
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigen_info_0</object_id>
+        <object_type>EigenInfo</object_type>
+      </NamedObject>
+    </elem>
+
+   
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigen_info_0</object_id>
+        <object_type>EigenInfo</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./eig</file_name>
+      </File>
+    </elem>
+    
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+
+          <noLinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </noLinkSmearing>
+        </Source>
+      </Param>
+      <NamedObject>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MULTI_PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>8</version>
+        <nonRelProp>false</nonRelProp>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>OVERLAP_PARTIAL_FRACTION_4D</FermAct>
+          <IsChiral>true</IsChiral>
+          <ApproximationType>ZOLOTAREV</ApproximationType>
+          <Mass>0</Mass>
+          <RatPolyDeg>12</RatPolyDeg>
+          <ApproxMin>0.64</ApproxMin>
+          <ApproxMax>6.55</ApproxMax>
+          <InnerSolve>
+            <MaxCG>1000</MaxCG>
+            <RsdCG>1.0e-5</RsdCG>
+            <ReorthFreq>6</ReorthFreq>
+          </InnerSolve>	
+          <AuxFermAct>
+            <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+            <Mass>-1.4</Mass>   
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </AuxFermAct>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-2 1.0e-2 1.0e-2</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <StateInfo>
+          
+	  <eigen_info_id>eigen_info_0</eigen_info_id>
+        </StateInfo>
+	<MultiMasses>0.1 0.2 0.3</MultiMasses>
+
+      </Param>
+      <NamedObject>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_prop_0_000</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_prop_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_prop_0_001</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_prop_1</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_prop_0_002</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_prop_2</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+   
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>2.11.0</chroma>
+      <qdp>1.18.3</qdp>
+    </code_version>
+    <run_date>22 Feb 06 18:05:16 EST</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
+
+    </file_xml>
+    <gauge_xml><weak_field>
+</weak_field>
+
+    </gauge_xml>
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994804</w_plaq>
+    <s_plaq>0.994798</s_plaq>
+    <t_plaq>0.99481</t_plaq>
+    <link>0.379449</link>
+    <pollp>
+      <elem>
+        <re>0.966586</re>
+        <im>-0.00132089</im>
+      </elem>
+      <elem>
+        <re>0.966366</re>
+        <im>-0.00123499</im>
+      </elem>
+      <elem>
+        <re>0.967146</re>
+        <im>-0.0011231</im>
+      </elem>
+      <elem>
+        <re>0.878769</re>
+        <im>-0.00991386</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <RitzEigenHw>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>2.11.0</chroma>
+            <qdp>1.18.3</qdp>
+          </code_version>
+          <run_date>22 Feb 06 18:05:17 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param><StateInfo>
+</StateInfo>
+
+            <NamedObject>
+              <eigen_id>eigen_info_0</eigen_id>
+            </NamedObject>
+          </Param>
+          <Config_info><weak_field>
+</weak_field>
+
+
+          </Config_info>
+          <Output_version>
+            <out_version>1</out_version>
+          </Output_version>
+          <Observables>
+            <w_plaq>0.994804</w_plaq>
+            <s_plaq>0.994798</s_plaq>
+            <t_plaq>0.99481</t_plaq>
+            <link>0.379449</link>
+            <pollp>
+              <elem>
+                <re>0.966586</re>
+                <im>-0.00132089</im>
+              </elem>
+              <elem>
+                <re>0.966366</re>
+                <im>-0.00123499</im>
+              </elem>
+              <elem>
+                <re>0.967146</re>
+                <im>-0.0011231</im>
+              </elem>
+              <elem>
+                <re>0.878769</re>
+                <im>-0.00991386</im>
+              </elem>
+            </pollp>
+          </Observables>
+<EigSpecRitzKS>
+  <KS_iter>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.94174</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.96692</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.99646</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.96041</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.94745</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.97145</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>2.00198</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>2.00928</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.96226</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.92172</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.9745</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>1.97338</final_grad>
+    </ev>
+    <n_jacob>5</n_jacob>
+  </KS_iter>
+  <KS_iter>
+    <ev>
+      <n_count>8</n_count>
+      <final_grad>0.544579</final_grad>
+    </ev>
+    <ev>
+      <n_count>8</n_count>
+      <final_grad>0.588709</final_grad>
+    </ev>
+    <ev>
+      <n_count>8</n_count>
+      <final_grad>0.567606</final_grad>
+    </ev>
+    <ev>
+      <n_count>8</n_count>
+      <final_grad>0.564076</final_grad>
+    </ev>
+    <ev>
+      <n_count>9</n_count>
+      <final_grad>0.565011</final_grad>
+    </ev>
+    <ev>
+      <n_count>9</n_count>
+      <final_grad>0.571949</final_grad>
+    </ev>
+    <ev>
+      <n_count>9</n_count>
+      <final_grad>0.60635</final_grad>
+    </ev>
+    <ev>
+      <n_count>9</n_count>
+      <final_grad>0.618559</final_grad>
+    </ev>
+    <ev>
+      <n_count>10</n_count>
+      <final_grad>0.566016</final_grad>
+    </ev>
+    <ev>
+      <n_count>9</n_count>
+      <final_grad>0.632286</final_grad>
+    </ev>
+    <ev>
+      <n_count>10</n_count>
+      <final_grad>0.573023</final_grad>
+    </ev>
+    <ev>
+      <n_count>10</n_count>
+      <final_grad>0.603354</final_grad>
+    </ev>
+    <n_jacob>5</n_jacob>
+  </KS_iter>
+  <KS_iter>
+    <ev>
+      <n_count>13</n_count>
+      <final_grad>0.159813</final_grad>
+    </ev>
+    <ev>
+      <n_count>17</n_count>
+      <final_grad>0.165867</final_grad>
+    </ev>
+    <ev>
+      <n_count>17</n_count>
+      <final_grad>0.170337</final_grad>
+    </ev>
+    <ev>
+      <n_count>18</n_count>
+      <final_grad>0.139896</final_grad>
+    </ev>
+    <ev>
+      <n_count>18</n_count>
+      <final_grad>0.148664</final_grad>
+    </ev>
+    <ev>
+      <n_count>18</n_count>
+      <final_grad>0.150295</final_grad>
+    </ev>
+    <ev>
+      <n_count>18</n_count>
+      <final_grad>0.165359</final_grad>
+    </ev>
+    <ev>
+      <n_count>18</n_count>
+      <final_grad>0.172941</final_grad>
+    </ev>
+    <ev>
+      <n_count>25</n_count>
+      <final_grad>0.181098</final_grad>
+    </ev>
+    <ev>
+      <n_count>18</n_count>
+      <final_grad>0.180779</final_grad>
+    </ev>
+    <ev>
+      <n_count>19</n_count>
+      <final_grad>0.19188</final_grad>
+    </ev>
+    <ev>
+      <n_count>19</n_count>
+      <final_grad>0.195738</final_grad>
+    </ev>
+    <n_jacob>5</n_jacob>
+  </KS_iter>
+  <KS_iter>
+    <ev>
+      <n_count>14</n_count>
+      <final_grad>0.0492534</final_grad>
+    </ev>
+    <ev>
+      <n_count>17</n_count>
+      <final_grad>0.0485452</final_grad>
+    </ev>
+    <ev>
+      <n_count>14</n_count>
+      <final_grad>0.0530965</final_grad>
+    </ev>
+    <ev>
+      <n_count>23</n_count>
+      <final_grad>0.0489887</final_grad>
+    </ev>
+    <ev>
+      <n_count>22</n_count>
+      <final_grad>0.0477033</final_grad>
+    </ev>
+    <ev>
+      <n_count>24</n_count>
+      <final_grad>0.0489454</final_grad>
+    </ev>
+    <ev>
+      <n_count>23</n_count>
+      <final_grad>0.050898</final_grad>
+    </ev>
+    <ev>
+      <n_count>23</n_count>
+      <final_grad>0.0540047</final_grad>
+    </ev>
+    <ev>
+      <n_count>24</n_count>
+      <final_grad>0.0529981</final_grad>
+    </ev>
+    <ev>
+      <n_count>47</n_count>
+      <final_grad>0.0470613</final_grad>
+    </ev>
+    <ev>
+      <n_count>23</n_count>
+      <final_grad>0.0589491</final_grad>
+    </ev>
+    <ev>
+      <n_count>48</n_count>
+      <final_grad>0.0565668</final_grad>
+    </ev>
+    <n_jacob>5</n_jacob>
+  </KS_iter>
+  <KS_iter>
+    <ev>
+      <n_count>26</n_count>
+      <final_grad>0.015175</final_grad>
+    </ev>
+    <ev>
+      <n_count>29</n_count>
+      <final_grad>0.0132826</final_grad>
+    </ev>
+    <ev>
+      <n_count>30</n_count>
+      <final_grad>0.0159348</final_grad>
+    </ev>
+    <ev>
+      <n_count>45</n_count>
+      <final_grad>0.0151282</final_grad>
+    </ev>
+    <ev>
+      <n_count>37</n_count>
+      <final_grad>0.0161185</final_grad>
+    </ev>
+    <ev>
+      <n_count>64</n_count>
+      <final_grad>0.0146102</final_grad>
+    </ev>
+    <ev>
+      <n_count>71</n_count>
+      <final_grad>0.0146431</final_grad>
+    </ev>
+    <ev>
+      <n_count>91</n_count>
+      <final_grad>0.0133365</final_grad>
+    </ev>
+    <ev>
+      <n_count>28</n_count>
+      <final_grad>0.0150849</final_grad>
+    </ev>
+    <ev>
+      <n_count>37</n_count>
+      <final_grad>0.0158178</final_grad>
+    </ev>
+    <ev>
+      <n_count>37</n_count>
+      <final_grad>0.018547</final_grad>
+    </ev>
+    <ev>
+      <n_count>45</n_count>
+      <final_grad>0.0163886</final_grad>
+    </ev>
+    <n_jacob>4</n_jacob>
+  </KS_iter>
+  <KS_iter>
+    <ev>
+      <n_count>24</n_count>
+      <final_grad>0.00477806</final_grad>
+    </ev>
+    <ev>
+      <n_count>41</n_count>
+      <final_grad>0.00432972</final_grad>
+    </ev>
+    <ev>
+      <n_count>44</n_count>
+      <final_grad>0.00459035</final_grad>
+    </ev>
+    <ev>
+      <n_count>55</n_count>
+      <final_grad>0.00438632</final_grad>
+    </ev>
+    <ev>
+      <n_count>27</n_count>
+      <final_grad>0.00462042</final_grad>
+    </ev>
+    <ev>
+      <n_count>42</n_count>
+      <final_grad>0.00470373</final_grad>
+    </ev>
+    <ev>
+      <n_count>37</n_count>
+      <final_grad>0.00429828</final_grad>
+    </ev>
+    <ev>
+      <n_count>71</n_count>
+      <final_grad>0.00425123</final_grad>
+    </ev>
+    <ev>
+      <n_count>33</n_count>
+      <final_grad>0.00505233</final_grad>
+    </ev>
+    <ev>
+      <n_count>115</n_count>
+      <final_grad>0.00450458</final_grad>
+    </ev>
+    <ev>
+      <n_count>117</n_count>
+      <final_grad>0.00437918</final_grad>
+    </ev>
+    <ev>
+      <n_count>33</n_count>
+      <final_grad>0.00496583</final_grad>
+    </ev>
+    <n_jacob>4</n_jacob>
+  </KS_iter>
+  <KS_iter>
+    <ev>
+      <n_count>36</n_count>
+      <final_grad>0.00129408</final_grad>
+    </ev>
+    <ev>
+      <n_count>33</n_count>
+      <final_grad>0.00150454</final_grad>
+    </ev>
+    <ev>
+      <n_count>29</n_count>
+      <final_grad>0.00141453</final_grad>
+    </ev>
+    <ev>
+      <n_count>31</n_count>
+      <final_grad>0.0013487</final_grad>
+    </ev>
+    <ev>
+      <n_count>39</n_count>
+      <final_grad>0.00136241</final_grad>
+    </ev>
+    <ev>
+      <n_count>49</n_count>
+      <final_grad>0.00139774</final_grad>
+    </ev>
+    <ev>
+      <n_count>40</n_count>
+      <final_grad>0.00130899</final_grad>
+    </ev>
+    <ev>
+      <n_count>26</n_count>
+      <final_grad>0.00135202</final_grad>
+    </ev>
+    <ev>
+      <n_count>95</n_count>
+      <final_grad>0.00125064</final_grad>
+    </ev>
+    <ev>
+      <n_count>104</n_count>
+      <final_grad>0.00142399</final_grad>
+    </ev>
+    <ev>
+      <n_count>107</n_count>
+      <final_grad>0.00136815</final_grad>
+    </ev>
+    <ev>
+      <n_count>200</n_count>
+      <final_grad>0.00970211</final_grad>
+    </ev>
+    <n_jacob>2</n_jacob>
+  </KS_iter>
+  <KS_iter>
+    <ev>
+      <n_count>48</n_count>
+      <final_grad>0.000393646</final_grad>
+    </ev>
+    <ev>
+      <n_count>48</n_count>
+      <final_grad>0.000402863</final_grad>
+    </ev>
+    <ev>
+      <n_count>41</n_count>
+      <final_grad>0.000414231</final_grad>
+    </ev>
+    <ev>
+      <n_count>37</n_count>
+      <final_grad>0.000410618</final_grad>
+    </ev>
+    <ev>
+      <n_count>62</n_count>
+      <final_grad>0.000376387</final_grad>
+    </ev>
+    <ev>
+      <n_count>44</n_count>
+      <final_grad>0.000428631</final_grad>
+    </ev>
+    <ev>
+      <n_count>53</n_count>
+      <final_grad>0.000419788</final_grad>
+    </ev>
+    <ev>
+      <n_count>52</n_count>
+      <final_grad>0.00036989</final_grad>
+    </ev>
+    <ev>
+      <n_count>200</n_count>
+      <final_grad>0.00113716</final_grad>
+    </ev>
+    <ev>
+      <n_count>200</n_count>
+      <final_grad>0.000793181</final_grad>
+    </ev>
+    <ev>
+      <n_count>200</n_count>
+      <final_grad>0.00117759</final_grad>
+    </ev>
+    <ev>
+      <n_count>158</n_count>
+      <final_grad>0.00291328</final_grad>
+    </ev>
+    <n_jacob>4</n_jacob>
+  </KS_iter>
+  <KS_iter>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>0.00037404</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>0.000354224</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>0.000403177</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>0.000315842</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>0.000247325</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>0.000341589</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>0.000383073</final_grad>
+    </ev>
+    <ev>
+      <n_count>5</n_count>
+      <final_grad>0.000253206</final_grad>
+    </ev>
+    <ev>
+      <n_count>19</n_count>
+      <final_grad>0.000489111</final_grad>
+    </ev>
+    <ev>
+      <n_count>17</n_count>
+      <final_grad>0.000658643</final_grad>
+    </ev>
+    <ev>
+      <n_count>16</n_count>
+      <final_grad>0.00042722</final_grad>
+    </ev>
+    <ev>
+      <n_count>31</n_count>
+      <final_grad>0.000589532</final_grad>
+    </ev>
+    <n_jacob>1</n_jacob>
+  </KS_iter>
+  <final_n_jacob>1</final_n_jacob>
+  <n_cg_tot>3921</n_cg_tot>
+  <n_KS>9</n_KS>
+  <lambda_H>0.41554 0.41556 0.415762 0.415777 0.419647 0.41978 0.420035 0.42006 1 1 1 1</lambda_H>
+</EigSpecRitzKS>
+
+          <lambda_Msq>0.41554 0.41556 0.415762 0.415777 0.419647 0.41978 0.420035 0.42006 1 1 1 1</lambda_Msq>
+          <check_norm>0.00037404 0.000354224 0.000403177 0.000315842 0.000247325 0.000341589 0.000383073 0.000253206</check_norm>
+          <check_norm_rel>0.00090013 0.0008524 0.000969732 0.000759642 0.000589365 0.000813734 0.000912003 0.000602784</check_norm_rel>
+          <eigFix>
+            <lambda_Hw>0.644611 -0.644643 0.644787 -0.644812 -0.647797 0.647879 0.648082 -0.648128 1 1 1 1</lambda_Hw>
+            <n_valid>8</n_valid>
+            <valid_eig>1 1 1 1 1 1 1 1</valid_eig>
+            <check_norm>0.00163203 0.00148813 0.00286039 0.00251346 0.00117435 0.00580413 0.00318237 0.00246929</check_norm>
+            <check_norm_rel>0.0025318 0.00230846 0.00443617 0.00389797 0.00181283 0.00895866 0.00491044 0.00380988</check_norm_rel>
+          </eigFix>
+<LambdaHighRitz>
+  <EigSpecRitzCG>
+    <eval1>
+      <n_count>65</n_count>
+    </eval1>
+    <eValues>
+      <lambda>-42.8655</lambda>
+    </eValues>
+    <n_cg_tot>65</n_cg_tot>
+  </EigSpecRitzCG>
+</LambdaHighRitz>
+
+          <Highest>
+            <lambda_hi>6.54718</lambda_hi>
+          </Highest>
+        </Input>
+      </RitzEigenHw>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>eigen_info_0</object_id>
+      </qio_write_named_obj>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>eigen_info_0</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <qio_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>eigen_info_0</object_id>
+      </qio_read_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>2.11.0</chroma>
+            <qdp>1.18.3</qdp>
+          </code_version>
+          <run_date>22 Feb 06 18:05:48 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1131</elem>
+            <elem>1442</elem>
+            <elem>537</elem>
+            <elem>799</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <noLinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </noLinkSmearing>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <source_id>sh_source_0</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994804</w_plaq>
+          <s_plaq>0.994798</s_plaq>
+          <t_plaq>0.99481</t_plaq>
+          <link>0.379449</link>
+          <pollp>
+            <elem>
+              <re>0.966586</re>
+              <im>-0.00132089</im>
+            </elem>
+            <elem>
+              <re>0.966366</re>
+              <im>-0.00123499</im>
+            </elem>
+            <elem>
+              <re>0.967146</re>
+              <im>-0.0011231</im>
+            </elem>
+            <elem>
+              <re>0.878769</re>
+              <im>-0.00991386</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>6.634 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <multi_propagator>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>8</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <MultiMasses>0.1 0.2 0.3</MultiMasses><FermionAction>
+      <FermAct>OVERLAP_PARTIAL_FRACTION_4D</FermAct>
+      <IsChiral>true</IsChiral>
+      <ApproximationType>ZOLOTAREV</ApproximationType>
+      <Mass>0</Mass>
+      <RatPolyDeg>12</RatPolyDeg>
+      <ApproxMin>0.64</ApproxMin>
+      <ApproxMax>6.55</ApproxMax>
+      <InnerSolve>
+        <MaxCG>1000</MaxCG>
+        <RsdCG>1.0e-5</RsdCG>
+        <ReorthFreq>6</ReorthFreq>
+      </InnerSolve>
+      <AuxFermAct>
+        <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+        <Mass>-1.4</Mass>
+        <FermionBC>
+          <FermBC>SIMPLE_FERMBC</FermBC>
+          <boundary>1 1 1 -1</boundary>
+        </FermionBC>
+      </AuxFermAct>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>0.01 0.01 0.01</RsdCG>
+              <MaxCG>1000</MaxCG>
+              <MROver>1</MROver>
+            </InvertParam>
+          </Param><StateInfo>
+      <eigen_info_id>eigen_info_0</eigen_info_id>
+    </StateInfo>
+
+          <NamedObject>
+            <source_id>sh_source_0</source_id>
+            <prop_id>sh_prop_0</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994804</w_plaq>
+          <s_plaq>0.994798</s_plaq>
+          <t_plaq>0.99481</t_plaq>
+          <link>0.379449</link>
+          <pollp>
+            <elem>
+              <re>0.966586</re>
+              <im>-0.00132089</im>
+            </elem>
+            <elem>
+              <re>0.966366</re>
+              <im>-0.00123499</im>
+            </elem>
+            <elem>
+              <re>0.967146</re>
+              <im>-0.0011231</im>
+            </elem>
+            <elem>
+              <re>0.878769</re>
+              <im>-0.00991386</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>0</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+          <noLinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </noLinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <RNG>
+        <Seed>
+          <elem>1131</elem>
+          <elem>1442</elem>
+          <elem>537</elem>
+          <elem>799</elem>
+        </Seed>
+      </RNG>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <ProgramInfo>
+          <code_version>
+            <chroma>2.11.0</chroma>
+            <qdp>1.18.3</qdp>
+          </code_version>
+          <run_date>22 Feb 06 18:05:49 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Source_correlator>
+          <source_corr>6.634 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+        <multiQuarkProp4>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+          <Qprop>
+            <RsdCG>0.01 0.01 0.01</RsdCG>
+            <n_count>10</n_count>
+          </Qprop>
+        </multiQuarkProp4>
+        <Relaxation_Iterations>
+          <ncg_had>120</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <Number>0</Number>
+          <Mass>0.1</Mass>
+          <prop_corr>0.210061 0.382807 0.200502 0.134672 0.115027 0.134659 0.200584 0.382642</prop_corr>
+        </Prop_correlator>
+        <Prop_correlator>
+          <Number>1</Number>
+          <Mass>0.2</Mass>
+          <prop_corr>0.228535 0.280405 0.074672 0.0268296 0.0151656 0.0268339 0.0747285 0.280311</prop_corr>
+        </Prop_correlator>
+        <Prop_correlator>
+          <Number>2</Number>
+          <Mass>0.3</Mass>
+          <prop_corr>0.206055 0.188568 0.0267634 0.00452322 0.00133978 0.00452655 0.0267915 0.188517</prop_corr>
+        </Prop_correlator>
+      </multi_propagator>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>sh_prop_0_000</object_id>
+      </qio_write_named_obj>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>sh_prop_0_001</object_id>
+      </qio_write_named_obj>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>sh_prop_0_002</object_id>
+      </qio_write_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>

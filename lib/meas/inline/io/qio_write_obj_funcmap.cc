@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 2.2 2006-02-22 16:27:12 streuer Exp $
+// $Id: qio_write_obj_funcmap.cc,v 2.3 2006-02-22 23:48:05 bjoo Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -186,32 +186,63 @@ namespace Chroma
       close(to);
     }
 
+
+    //! Write out an EigenInfo Type
     void QIOWriteEigenInfo(const string& buffer_id,
 			   const string& file,
 			   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
     {
+
+      // This is needed for QIO writing
       XMLBufferWriter file_xml, record_xml;
 
+      // A shorthand for the object
       EigenInfo& obj=TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id);
 
+      // get the file XML and record XML out of the named buffer
       TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
       TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
 
+      // Write out the largest EV in BINARY so as not to loose precision
+      // BUG!?? :For some reason I need to write this as a 1 element array and 
+      // read it as a 1 element  array. 
+
+      // BUG!?? I need to know my array length in advance to read back the
+      //   data so I need to dump the number of Ev pairs
+
+      // BUG!?? What is more because I cannot write primitive types using QIO 
+      // (such as int or float) as it is integratedi into QDP++, I have
+      // to write the number of evalues/vectors into a record XML for this
+      // largest ev. 
       multi1d<Real64> largestD(1);
       largestD[0]=obj.getLargest();
+
+      // SHorthand
+      multi1d<Real> evals = obj.getEvalues();
+
+      // Open file
       QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
-      write(to, record_xml, largestD);
-      multi1d<Real>& evals=obj.getEvalues();
+
+      // Make up an XML doc with the number of ev pairs in it
+      XMLBufferWriter largest_record_xml;
+      push(largest_record_xml, "NumElem");
+      write(largest_record_xml, "n_vec", evals.size());
+      pop(largest_record_xml);
+
+      // Write largest EV plus XML doc
+      write(to, largest_record_xml, largestD);
+      
+      // Convert ev-s to double if they are not that already 
       multi1d<Real64> evalsD(evals.size());
 
       for (int i=0; i<evals.size(); i++)
 	evalsD[i]=Real64(evals[i]);
 
-      write(to,record_xml,evalsD);
+      // Write them with record XML
+      write(to, record_xml, evalsD);
 
-
+      // Now write the evectors 1 by 1 to avoid double storing
       multi1d<LatticeFermion>& evecs=obj.getEvectors();
-
       for (int i=0; i<evecs.size(); i++)
       {
 	XMLBufferWriter record_xml_dummy;
@@ -221,6 +252,8 @@ namespace Chroma
 	// evecD=LatticeFermionD(evecs[i]);
 	write(to, record_xml_dummy, evecs[i]);
       }
+
+      // Done! That was unnecessarily painful
       close(to);
     }
 

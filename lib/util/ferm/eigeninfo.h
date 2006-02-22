@@ -27,14 +27,27 @@ namespace Chroma
       }
 
 
+      const multi1d<Real>& getEvalues() const { 
+	return evalues;
+	
+      }
+
       multi1d<Real>& getEvalues() {
 	return evalues;
+      }
+
+
+      const Real& getLargest() const { 
+	return largest;
       }
 
       Real& getLargest() {
 	return largest;
       }
 
+      const multi1d<LatticeFermion>& getEvectors() const { 
+	return evectors;
+      }
 
       multi1d<LatticeFermion>& getEvectors() {
 	return evectors;
