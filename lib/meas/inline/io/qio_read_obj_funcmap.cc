@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 2.1 2005-09-26 05:14:13 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 2.2 2006-02-22 16:27:12 streuer Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -6,6 +6,7 @@
 #include "named_obj.h"
 #include "meas/inline/io/qio_read_obj_funcmap.h"
 #include "meas/inline/io/named_objmap.h"
+#include "util/ferm/eigeninfo.h"
 
 namespace Chroma
 {
@@ -150,6 +151,46 @@ namespace Chroma
       TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
     }
 
+    void QIOReadEigenInfo(const string& buffer_id,
+			  const string& file,
+			  QDP_serialparallel_t serpar)
+    {
+      multi1d<Real64> evalsD;
+      multi1d<Real64> largestD;
+      LatticeFermion evecD;
+      XMLReader file_xml, record_xml;
+
+      QDPFileReader to(file_xml,file,serpar);
+      read(to, record_xml, largestD);
+      TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getLargest()=largestD[0];
+
+      read(to, record_xml, evalsD);
+
+
+      TheNamedObjMap::Instance().create< EigenInfo >(buffer_id);
+      TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvalues().resize(evalsD.size());
+
+      for (int i=0; i<evalsD.size(); i++)
+	TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvalues()[i] = Real(evalsD[i]);
+
+      TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvectors().resize(evalsD.size());
+
+
+      for (int i=0; i<evalsD.size(); i++)
+      {
+	XMLReader record_xml_dummy;
+	read(to, record_xml_dummy, evecD);
+	LatticeFermion evecR;
+	evecR=evecD;
+
+	(TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvectors())[i]=evecR;
+      }
+ 
+      TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+      TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+
+      close(to);
+    }
   }  // end namespace QIOReadObjCallMap
 
 

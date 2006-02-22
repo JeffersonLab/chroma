@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 2.1 2005-09-26 05:14:13 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 2.2 2006-02-22 16:27:12 streuer Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -6,6 +6,7 @@
 #include "named_obj.h"
 #include "meas/inline/io/qio_write_obj_funcmap.h"
 #include "meas/inline/io/named_objmap.h"
+#include "util/ferm/eigeninfo.h"
 
 namespace Chroma
 {
@@ -185,8 +186,46 @@ namespace Chroma
       close(to);
     }
 
+    void QIOWriteEigenInfo(const string& buffer_id,
+			   const string& file,
+			   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+    {
+      XMLBufferWriter file_xml, record_xml;
+
+      EigenInfo& obj=TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id);
+
+      TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+      TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+
+      multi1d<Real64> largestD(1);
+      largestD[0]=obj.getLargest();
+      QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+      write(to, record_xml, largestD);
+      multi1d<Real>& evals=obj.getEvalues();
+      multi1d<Real64> evalsD(evals.size());
+
+      for (int i=0; i<evals.size(); i++)
+	evalsD[i]=Real64(evals[i]);
+
+      write(to,record_xml,evalsD);
+
+
+      multi1d<LatticeFermion>& evecs=obj.getEvectors();
+
+      for (int i=0; i<evecs.size(); i++)
+      {
+	XMLBufferWriter record_xml_dummy;
+	push(record_xml_dummy, "dummy_record_xml");
+	pop(record_xml_dummy);
+	
+	// evecD=LatticeFermionD(evecs[i]);
+	write(to, record_xml_dummy, evecs[i]);
+      }
+      close(to);
+    }
 
   }  // end namespace WriteObjCallMap
+
 
 
   //! IO function map environment
@@ -205,6 +244,8 @@ namespace Chroma
 
       success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
 								    QIOWriteObjCallMap::QIOWriteLatFerm);
+      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfo"), 
+								    QIOWriteObjCallMap::QIOWriteEigenInfo);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
 //								    QIOWriteObjCallMap::QIOWriteLatFermF);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
