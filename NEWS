@@ -1,3 +1,9 @@
+02/21/2006 -- Robert Edwards
+	Version 2.11.0. Yet another overhaul. This time, the idea of "displacement"
+        in make_source and sink_smear has been generalized to another factory generated
+        object. Now have lots of derivative things that are "displacements" of a source
+        or sink. More regression tests. New staggered spectrum regression tests and code.
+
 02/16/2006 -- Robert Edwards
 	Version 2.10.1. Removed chroma_config.h from chromabase.h and instead only
         include it in routines that require it. Thus, recompilations are drastically
