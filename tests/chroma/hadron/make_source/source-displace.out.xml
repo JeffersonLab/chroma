@@ -63,7 +63,7 @@ Make a propagator source
           </SmearingParam>
 
           <disp_length>1</disp_length>
-          <disp_dir>2</disp_dir>
+          <disp_dir>3</disp_dir>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -103,7 +103,7 @@ Make a propagator source
       <chroma>2.10.1</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>21 Feb 06 21:06:16 EST</run_date>
+    <run_date>21 Feb 06 23:27:32 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -164,7 +164,7 @@ Make a propagator source
             <chroma>2.10.1</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:06:16 EST</run_date>
+          <run_date>21 Feb 06 23:27:33 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -253,7 +253,7 @@ Make a propagator source
             <chroma>2.10.1</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:06:17 EST</run_date>
+          <run_date>21 Feb 06 23:27:33 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -284,7 +284,7 @@ Make a propagator source
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
       <disp_length>1</disp_length>
-      <disp_dir>2</disp_dir>
+      <disp_dir>3</disp_dir>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -330,7 +330,7 @@ Make a propagator source
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 3.52961 0 0 0 0 0</source_corr>
+          <source_corr>0 0 0 2.74813 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
