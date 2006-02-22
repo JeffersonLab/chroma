@@ -114,8 +114,8 @@ Sink smear a prop
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>-1</disp_length>
-          <disp_dir>2</disp_dir>
+          <disp_length>-2</disp_length>
+          <disp_dir>3</disp_dir>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -159,7 +159,7 @@ Sink smear a prop
       <chroma>2.10.1</chroma>
       <qdp>1.18.1</qdp>
     </code_version>
-    <run_date>21 Feb 06 21:50:53 EST</run_date>
+    <run_date>21 Feb 06 23:22:38 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -220,7 +220,7 @@ Sink smear a prop
             <chroma>2.10.1</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:50:53 EST</run_date>
+          <run_date>21 Feb 06 23:22:39 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -309,7 +309,7 @@ Sink smear a prop
             <chroma>2.10.1</chroma>
             <qdp>1.18.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:50:53 EST</run_date>
+          <run_date>21 Feb 06 23:22:39 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -618,8 +618,8 @@ Sink smear a prop
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>-1</disp_length>
-      <disp_dir>2</disp_dir>
+      <disp_length>-2</disp_length>
+      <disp_dir>3</disp_dir>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -731,8 +731,8 @@ Sink smear a prop
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>-1</disp_length>
-      <disp_dir>2</disp_dir>
+      <disp_length>-2</disp_length>
+      <disp_dir>3</disp_dir>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -744,7 +744,7 @@ Sink smear a prop
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.0317786 4.01607e-05 1.64748e-06 1.1566e-07 9.73974e-09 1.30724e-07 2.05547e-06 2.97327e-05</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.05547e-06 2.97327e-05 0.0317786 4.01607e-05 1.64748e-06 1.1566e-07 9.73974e-09 1.30724e-07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>

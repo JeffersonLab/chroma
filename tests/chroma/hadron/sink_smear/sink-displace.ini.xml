@@ -111,8 +111,8 @@ Sink smear a prop
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>-1</disp_length>
-          <disp_dir>2</disp_dir>
+          <disp_length>-2</disp_length>
+          <disp_dir>3</disp_dir>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
