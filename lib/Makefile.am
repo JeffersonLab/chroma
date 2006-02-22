@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.44 2006-02-20 17:50:42 edwards Exp $
+# $Id: Makefile.am,v 2.45 2006-02-22 04:34:47 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -132,9 +132,15 @@ nobase_include_HEADERS = \
 	meas/smear/ape_link_smearing.h \
 	meas/smear/hyp_link_smearing.h \
 	meas/smear/stout_link_smearing.h \
+	meas/smear/quark_displacement.h \
+	meas/smear/quark_displacement_factory.h \
+        meas/smear/quark_displacement_aggregate.h \
+	meas/smear/no_quark_displacement.h \
+	meas/smear/simple_quark_displacement.h \
 	meas/smear/quark_smearing.h \
 	meas/smear/quark_smearing_factory.h \
         meas/smear/quark_smearing_aggregate.h \
+	meas/smear/gaus_quark_smearing.h \
         meas/smear/quark_source_sink.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
 	meas/sources/source_construction.h \
@@ -348,8 +354,8 @@ nobase_include_HEADERS += \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
+	meas/smear/deriv_quark_displacement_w.h \
         meas/sources/sources_w.h \
-	meas/sources/deriv_sh_source_const_w.h \
 	meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h \
         meas/sources/walfil_w.h \
@@ -625,6 +631,9 @@ libchroma_a_SOURCES = \
 	meas/smear/stout_link_smearing.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/gaus_quark_smearing.cc \
+	meas/smear/quark_displacement_aggregate.cc \
+	meas/smear/no_quark_displacement.cc \
+	meas/smear/simple_quark_displacement.cc \
         meas/sources/pt_source_const.cc \
         meas/sources/pt_source_smearing.cc \
         meas/sources/sh_source_const.cc \
@@ -794,8 +803,8 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
+	meas/smear/deriv_quark_displacement_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
-	meas/sources/deriv_sh_source_const_w.cc \
         meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
