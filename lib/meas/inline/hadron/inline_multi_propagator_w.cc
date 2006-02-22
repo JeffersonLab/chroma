@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 2.3 2005-12-15 04:03:28 edwards Exp $
+// $Id: inline_multi_propagator_w.cc,v 2.4 2006-02-22 05:23:18 bjoo Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -81,8 +81,8 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read any auxiliary state information
-      if( paramtop.count("StateInfo") == 1 ) {
-	XMLReader xml_state_info(paramtop, "StateInfo");
+      if( paramtop.count("Param/StateInfo") == 1 ) {
+	XMLReader xml_state_info(paramtop, "Param/StateInfo");
 	std::ostringstream os;
 	xml_state_info.print(os);
 	stateInfo = os.str();
@@ -192,7 +192,7 @@ namespace Chroma
     try
     {
       // Create the space
-      TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.source_id);
+      //      TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.source_id);
 	
       // Snarf the prop info. This is will throw if the source_id is not there
       TheNamedObjMap::Instance().get(params.named_obj.source_id).getFileXML(source_file_xml);

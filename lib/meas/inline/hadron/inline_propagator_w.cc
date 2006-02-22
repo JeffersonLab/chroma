@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 2.4 2005-12-15 04:03:28 edwards Exp $
+// $Id: inline_propagator_w.cc,v 2.5 2006-02-22 05:23:18 bjoo Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -79,8 +79,8 @@ namespace Chroma
       read(paramtop, "Param", param);
 
       // Read any auxiliary state information
-      if( paramtop.count("StateInfo") == 1 ) {
-	XMLReader xml_state_info(paramtop, "StateInfo");
+      if( paramtop.count("Param/StateInfo") == 1 ) {
+	XMLReader xml_state_info(paramtop, "Param/StateInfo");
 	std::ostringstream os;
 	xml_state_info.print(os);
 	stateInfo = os.str();
