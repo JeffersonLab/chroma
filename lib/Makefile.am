@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.45 2006-02-22 04:34:47 edwards Exp $
+# $Id: Makefile.am,v 2.46 2006-02-22 16:22:13 streuer Exp $
 #
 # Path for all files used in building the library
 
@@ -161,6 +161,7 @@ nobase_include_HEADERS = \
 	meas/sources/source_smearing_factory.h \
 	meas/sources/source_smearing_aggregate.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
+	util/ferm/eigeninfo.h \
 	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
 	util/gauge/eesu3.h \
@@ -443,6 +444,7 @@ nobase_include_HEADERS += \
 	meas/inline/eig/eig.h \
 	meas/inline/eig/inline_eig_aggregate.h \
 	meas/inline/eig/inline_eigbnds.h \
+	meas/inline/eig/inline_ritz_H_w.h \
 	meas/inline/glue/glue.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
@@ -848,6 +850,7 @@ libchroma_a_SOURCES += \
 	meas/inline/make_xml_file.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
+	meas/inline/eig/inline_ritz_H_w.cc \
 	meas/inline/glue/inline_glue_aggregate.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
