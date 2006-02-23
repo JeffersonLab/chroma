@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.59 2006-02-23 15:45:33 bjoo Exp $
+# $Id: Makefile.in,v 2.60 2006-02-23 21:00:41 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -370,6 +370,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
 	meas/inline/eig/inline_ritz_H_w.cc \
+	meas/inline/gfix/inline_gfix_aggregate.cc \
+	meas/inline/gfix/inline_coulgauge.cc \
 	meas/inline/glue/inline_glue_aggregate.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
@@ -652,7 +654,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	symtensor.$(OBJEXT) inline_io.$(OBJEXT) \
 	inline_aggregate.$(OBJEXT) make_xml_file.$(OBJEXT) \
 	inline_eig_aggregate.$(OBJEXT) inline_eigbnds.$(OBJEXT) \
-	inline_ritz_H_w.$(OBJEXT) inline_glue_aggregate.$(OBJEXT) \
+	inline_ritz_H_w.$(OBJEXT) inline_gfix_aggregate.$(OBJEXT) \
+	inline_coulgauge.$(OBJEXT) inline_glue_aggregate.$(OBJEXT) \
 	inline_plaquette.$(OBJEXT) inline_polylp.$(OBJEXT) \
 	inline_wilslp.$(OBJEXT) inline_fuzwilp.$(OBJEXT) \
 	inline_hadron_aggregate.$(OBJEXT) \
@@ -1070,7 +1073,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
 	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
 	meas/inline/eig/inline_eigbnds.h \
-	meas/inline/eig/inline_ritz_H_w.h meas/inline/glue/glue.h \
+	meas/inline/eig/inline_ritz_H_w.h meas/inline/gfix/gfix.h \
+	meas/inline/gfix/inline_gfix_aggregate.h \
+	meas/inline/gfix/inline_coulgauge.h meas/inline/glue/glue.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
@@ -1632,7 +1637,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
 	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
 	meas/inline/eig/inline_eigbnds.h \
-	meas/inline/eig/inline_ritz_H_w.h meas/inline/glue/glue.h \
+	meas/inline/eig/inline_ritz_H_w.h meas/inline/gfix/gfix.h \
+	meas/inline/gfix/inline_gfix_aggregate.h \
+	meas/inline/gfix/inline_coulgauge.h meas/inline/glue/glue.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
@@ -1996,6 +2003,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
 	meas/inline/eig/inline_ritz_H_w.cc \
+	meas/inline/gfix/inline_gfix_aggregate.cc \
+	meas/inline/gfix/inline_coulgauge.cc \
 	meas/inline/glue/inline_glue_aggregate.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
@@ -2261,11 +2270,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_ape_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_bar3ptfn_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_building_blocks_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eig_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eigbnds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_erase_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_gaussian_obj.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_gfix_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_glue_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadspec_w.Po@am__quote@
@@ -7225,6 +7236,34 @@ inline_ritz_H_w.obj: meas/inline/eig/inline_ritz_H_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_ritz_H_w.obj `if test -f 'meas/inline/eig/inline_ritz_H_w.cc'; then $(CYGPATH_W) 'meas/inline/eig/inline_ritz_H_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/eig/inline_ritz_H_w.cc'; fi`
 
+inline_gfix_aggregate.o: meas/inline/gfix/inline_gfix_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_gfix_aggregate.o -MD -MP -MF "$(DEPDIR)/inline_gfix_aggregate.Tpo" -c -o inline_gfix_aggregate.o `test -f 'meas/inline/gfix/inline_gfix_aggregate.cc' || echo '$(srcdir)/'`meas/inline/gfix/inline_gfix_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_gfix_aggregate.Tpo" "$(DEPDIR)/inline_gfix_aggregate.Po"; else rm -f "$(DEPDIR)/inline_gfix_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/gfix/inline_gfix_aggregate.cc' object='inline_gfix_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_gfix_aggregate.o `test -f 'meas/inline/gfix/inline_gfix_aggregate.cc' || echo '$(srcdir)/'`meas/inline/gfix/inline_gfix_aggregate.cc
+
+inline_gfix_aggregate.obj: meas/inline/gfix/inline_gfix_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_gfix_aggregate.obj -MD -MP -MF "$(DEPDIR)/inline_gfix_aggregate.Tpo" -c -o inline_gfix_aggregate.obj `if test -f 'meas/inline/gfix/inline_gfix_aggregate.cc'; then $(CYGPATH_W) 'meas/inline/gfix/inline_gfix_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/gfix/inline_gfix_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_gfix_aggregate.Tpo" "$(DEPDIR)/inline_gfix_aggregate.Po"; else rm -f "$(DEPDIR)/inline_gfix_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/gfix/inline_gfix_aggregate.cc' object='inline_gfix_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_gfix_aggregate.obj `if test -f 'meas/inline/gfix/inline_gfix_aggregate.cc'; then $(CYGPATH_W) 'meas/inline/gfix/inline_gfix_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/gfix/inline_gfix_aggregate.cc'; fi`
+
+inline_coulgauge.o: meas/inline/gfix/inline_coulgauge.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_coulgauge.o -MD -MP -MF "$(DEPDIR)/inline_coulgauge.Tpo" -c -o inline_coulgauge.o `test -f 'meas/inline/gfix/inline_coulgauge.cc' || echo '$(srcdir)/'`meas/inline/gfix/inline_coulgauge.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_coulgauge.Tpo" "$(DEPDIR)/inline_coulgauge.Po"; else rm -f "$(DEPDIR)/inline_coulgauge.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/gfix/inline_coulgauge.cc' object='inline_coulgauge.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_coulgauge.o `test -f 'meas/inline/gfix/inline_coulgauge.cc' || echo '$(srcdir)/'`meas/inline/gfix/inline_coulgauge.cc
+
+inline_coulgauge.obj: meas/inline/gfix/inline_coulgauge.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_coulgauge.obj -MD -MP -MF "$(DEPDIR)/inline_coulgauge.Tpo" -c -o inline_coulgauge.obj `if test -f 'meas/inline/gfix/inline_coulgauge.cc'; then $(CYGPATH_W) 'meas/inline/gfix/inline_coulgauge.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/gfix/inline_coulgauge.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_coulgauge.Tpo" "$(DEPDIR)/inline_coulgauge.Po"; else rm -f "$(DEPDIR)/inline_coulgauge.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/gfix/inline_coulgauge.cc' object='inline_coulgauge.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_coulgauge.obj `if test -f 'meas/inline/gfix/inline_coulgauge.cc'; then $(CYGPATH_W) 'meas/inline/gfix/inline_coulgauge.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/gfix/inline_coulgauge.cc'; fi`
+
 inline_glue_aggregate.o: meas/inline/glue/inline_glue_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_glue_aggregate.o -MD -MP -MF "$(DEPDIR)/inline_glue_aggregate.Tpo" -c -o inline_glue_aggregate.o `test -f 'meas/inline/glue/inline_glue_aggregate.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_glue_aggregate.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_glue_aggregate.Tpo" "$(DEPDIR)/inline_glue_aggregate.Po"; else rm -f "$(DEPDIR)/inline_glue_aggregate.Tpo"; exit 1; fi
@@ -8515,7 +8554,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/inline $(distdir)/meas/inline/eig $(distdir)/meas/inline/glue $(distdir)/meas/inline/hadron $(distdir)/meas/inline/hadron_s $(distdir)/meas/inline/io $(distdir)/meas/inline/smear $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/sinks $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
+	$(mkdir_p) $(distdir)/actions $(distdir)/actions/boson $(distdir)/actions/boson/operator $(distdir)/actions/ferm $(distdir)/actions/ferm/fermacts $(distdir)/actions/ferm/fermbcs $(distdir)/actions/ferm/invert $(distdir)/actions/ferm/linop $(distdir)/actions/ferm/qprop $(distdir)/actions/gauge $(distdir)/actions/gauge/gaugeacts $(distdir)/actions/gauge/gaugebcs $(distdir)/init $(distdir)/io $(distdir)/io/enum_io $(distdir)/meas $(distdir)/meas/eig $(distdir)/meas/gfix $(distdir)/meas/glue $(distdir)/meas/hadron $(distdir)/meas/inline $(distdir)/meas/inline/eig $(distdir)/meas/inline/gfix $(distdir)/meas/inline/glue $(distdir)/meas/inline/hadron $(distdir)/meas/inline/hadron_s $(distdir)/meas/inline/io $(distdir)/meas/inline/smear $(distdir)/meas/pbp $(distdir)/meas/schrfun $(distdir)/meas/sinks $(distdir)/meas/smear $(distdir)/meas/sources $(distdir)/update $(distdir)/update/heatbath $(distdir)/update/molecdyn $(distdir)/update/molecdyn/hamiltonian $(distdir)/update/molecdyn/hmc $(distdir)/update/molecdyn/integrator $(distdir)/update/molecdyn/monomial $(distdir)/update/molecdyn/predictor $(distdir)/util $(distdir)/util/ferm $(distdir)/util/ft $(distdir)/util/gauge $(distdir)/util/info
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
