@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 2.6 2006-02-16 02:26:48 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 2.7 2006-02-23 02:38:43 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -431,7 +431,11 @@ namespace Chroma
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial");
 
-      Double action = S_even_even(s) + S_odd_odd(s);
+      Double S_ee = S_even_even(s);
+
+      Double S_oo = S_odd_odd(s);
+
+      Double action = S_ee + S_oo;
 
       write(xml_out, "S", action);
       pop(xml_out);

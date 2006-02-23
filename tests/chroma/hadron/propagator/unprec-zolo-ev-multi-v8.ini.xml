@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: unprec-zolo-ev-multi-v8.ini.xml,v 1.1 2006-02-22 23:48:05 bjoo Exp $
+; $Id: unprec-zolo-ev-multi-v8.ini.xml,v 1.2 2006-02-23 02:38:43 bjoo Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -123,7 +123,7 @@
           <ApproximationType>ZOLOTAREV</ApproximationType>
           <Mass>0</Mass>
           <RatPolyDeg>12</RatPolyDeg>
-          <ApproxMin>0.64</ApproxMin>
+          <ApproxMin>0.648</ApproxMin>
           <ApproxMax>6.55</ApproxMax>
           <InnerSolve>
             <MaxCG>1000</MaxCG>

@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec-zolo-ev-multi-v8.out.xml,v 1.1 2006-02-22 23:48:05 bjoo Exp $
+; $Id: unprec-zolo-ev-multi-v8.out.xml,v 1.2 2006-02-23 02:38:43 bjoo Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -126,7 +126,7 @@
           <ApproximationType>ZOLOTAREV</ApproximationType>
           <Mass>0</Mass>
           <RatPolyDeg>12</RatPolyDeg>
-          <ApproxMin>0.64</ApproxMin>
+          <ApproxMin>0.648</ApproxMin>
           <ApproxMax>6.55</ApproxMax>
           <InnerSolve>
             <MaxCG>1000</MaxCG>
@@ -228,7 +228,7 @@
       <chroma>2.11.0</chroma>
       <qdp>1.18.3</qdp>
     </code_version>
-    <run_date>22 Feb 06 18:05:16 EST</run_date>
+    <run_date>22 Feb 06 21:20:31 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -289,7 +289,7 @@
             <chroma>2.11.0</chroma>
             <qdp>1.18.3</qdp>
           </code_version>
-          <run_date>22 Feb 06 18:05:17 EST</run_date>
+          <run_date>22 Feb 06 21:20:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -299,45 +299,67 @@
           </Setgeom>
         </ProgramInfo>
         <Input>
-          <Param><StateInfo>
+          <Frequency>1</Frequency>
+          <Param>
+            <version>1</version><FermionAction>
+      <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+      <Mass>-1.4</Mass>
+      <boundary>1 1 1 -1</boundary>
+    </FermionAction>
+
+            <RitzParams>
+              <Neig>8</Neig>
+              <RsdR>0.001</RsdR>
+              <RsdA>1e-04</RsdA>
+              <RsdZero>5e-06</RsdZero>
+              <ProjApsiP>false</ProjApsiP>
+              <Ndummy>4</Ndummy>
+              <GammaFactor>0.1</GammaFactor>
+              <MaxKS>200</MaxKS>
+              <MaxCG>10000</MaxCG>
+              <MinKSIter>5</MinKSIter>
+              <MaxKSIter>200</MaxKSIter>
+              <Nrenorm>10</Nrenorm>
+            </RitzParams>
+          </Param><StateInfo>
 </StateInfo>
 
-            <NamedObject>
-              <eigen_id>eigen_info_0</eigen_id>
-            </NamedObject>
-          </Param>
-          <Config_info><weak_field>
+          <NamedObject>
+            <eigen_id>eigen_info_0</eigen_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
 </weak_field>
 
 
-          </Config_info>
-          <Output_version>
-            <out_version>1</out_version>
-          </Output_version>
-          <Observables>
-            <w_plaq>0.994804</w_plaq>
-            <s_plaq>0.994798</s_plaq>
-            <t_plaq>0.99481</t_plaq>
-            <link>0.379449</link>
-            <pollp>
-              <elem>
-                <re>0.966586</re>
-                <im>-0.00132089</im>
-              </elem>
-              <elem>
-                <re>0.966366</re>
-                <im>-0.00123499</im>
-              </elem>
-              <elem>
-                <re>0.967146</re>
-                <im>-0.0011231</im>
-              </elem>
-              <elem>
-                <re>0.878769</re>
-                <im>-0.00991386</im>
-              </elem>
-            </pollp>
-          </Observables>
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994804</w_plaq>
+          <s_plaq>0.994798</s_plaq>
+          <t_plaq>0.99481</t_plaq>
+          <link>0.379449</link>
+          <pollp>
+            <elem>
+              <re>0.966586</re>
+              <im>-0.00132089</im>
+            </elem>
+            <elem>
+              <re>0.966366</re>
+              <im>-0.00123499</im>
+            </elem>
+            <elem>
+              <re>0.967146</re>
+              <im>-0.0011231</im>
+            </elem>
+            <elem>
+              <re>0.878769</re>
+              <im>-0.00991386</im>
+            </elem>
+          </pollp>
+        </Observables>
 <EigSpecRitzKS>
   <KS_iter>
     <ev>
@@ -804,16 +826,16 @@
   <lambda_H>0.41554 0.41556 0.415762 0.415777 0.419647 0.41978 0.420035 0.42006 1 1 1 1</lambda_H>
 </EigSpecRitzKS>
 
-          <lambda_Msq>0.41554 0.41556 0.415762 0.415777 0.419647 0.41978 0.420035 0.42006 1 1 1 1</lambda_Msq>
-          <check_norm>0.00037404 0.000354224 0.000403177 0.000315842 0.000247325 0.000341589 0.000383073 0.000253206</check_norm>
-          <check_norm_rel>0.00090013 0.0008524 0.000969732 0.000759642 0.000589365 0.000813734 0.000912003 0.000602784</check_norm_rel>
-          <eigFix>
-            <lambda_Hw>0.644611 -0.644643 0.644787 -0.644812 -0.647797 0.647879 0.648082 -0.648128 1 1 1 1</lambda_Hw>
-            <n_valid>8</n_valid>
-            <valid_eig>1 1 1 1 1 1 1 1</valid_eig>
-            <check_norm>0.00163203 0.00148813 0.00286039 0.00251346 0.00117435 0.00580413 0.00318237 0.00246929</check_norm>
-            <check_norm_rel>0.0025318 0.00230846 0.00443617 0.00389797 0.00181283 0.00895866 0.00491044 0.00380988</check_norm_rel>
-          </eigFix>
+        <lambda_Msq>0.41554 0.41556 0.415762 0.415777 0.419647 0.41978 0.420035 0.42006 1 1 1 1</lambda_Msq>
+        <check_norm>0.00037404 0.000354224 0.000403177 0.000315842 0.000247325 0.000341589 0.000383073 0.000253206</check_norm>
+        <check_norm_rel>0.00090013 0.0008524 0.000969732 0.000759642 0.000589365 0.000813734 0.000912003 0.000602784</check_norm_rel>
+        <eigFix>
+          <lambda_Hw>0.644611 -0.644643 0.644787 -0.644812 -0.647797 0.647879 0.648082 -0.648128 1 1 1 1</lambda_Hw>
+          <n_valid>8</n_valid>
+          <valid_eig>1 1 1 1 1 1 1 1</valid_eig>
+          <check_norm>0.00163203 0.00148813 0.00286039 0.00251346 0.00117435 0.00580413 0.00318237 0.00246929</check_norm>
+          <check_norm_rel>0.0025318 0.00230846 0.00443617 0.00389797 0.00181283 0.00895866 0.00491044 0.00380988</check_norm_rel>
+        </eigFix>
 <LambdaHighRitz>
   <EigSpecRitzCG>
     <eval1>
@@ -826,10 +848,9 @@
   </EigSpecRitzCG>
 </LambdaHighRitz>
 
-          <Highest>
-            <lambda_hi>6.54718</lambda_hi>
-          </Highest>
-        </Input>
+        <Highest>
+          <lambda_hi>6.54718</lambda_hi>
+        </Highest>
       </RitzEigenHw>
     </elem>
     <elem>
@@ -858,7 +879,7 @@
             <chroma>2.11.0</chroma>
             <qdp>1.18.3</qdp>
           </code_version>
-          <run_date>22 Feb 06 18:05:48 EST</run_date>
+          <run_date>22 Feb 06 21:20:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -952,7 +973,7 @@
       <ApproximationType>ZOLOTAREV</ApproximationType>
       <Mass>0</Mass>
       <RatPolyDeg>12</RatPolyDeg>
-      <ApproxMin>0.64</ApproxMin>
+      <ApproxMin>0.648</ApproxMin>
       <ApproxMax>6.55</ApproxMax>
       <InnerSolve>
         <MaxCG>1000</MaxCG>
@@ -1071,7 +1092,7 @@
             <chroma>2.11.0</chroma>
             <qdp>1.18.3</qdp>
           </code_version>
-          <run_date>22 Feb 06 18:05:49 EST</run_date>
+          <run_date>22 Feb 06 21:20:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1139,17 +1160,17 @@
         <Prop_correlator>
           <Number>0</Number>
           <Mass>0.1</Mass>
-          <prop_corr>0.210061 0.382807 0.200502 0.134672 0.115027 0.134659 0.200584 0.382642</prop_corr>
+          <prop_corr>0.21006 0.382807 0.200502 0.134671 0.115026 0.134659 0.200584 0.382642</prop_corr>
         </Prop_correlator>
         <Prop_correlator>
           <Number>1</Number>
           <Mass>0.2</Mass>
-          <prop_corr>0.228535 0.280405 0.074672 0.0268296 0.0151656 0.0268339 0.0747285 0.280311</prop_corr>
+          <prop_corr>0.228535 0.280404 0.0746719 0.0268295 0.0151656 0.0268338 0.0747285 0.280311</prop_corr>
         </Prop_correlator>
         <Prop_correlator>
           <Number>2</Number>
           <Mass>0.3</Mass>
-          <prop_corr>0.206055 0.188568 0.0267634 0.00452322 0.00133978 0.00452655 0.0267915 0.188517</prop_corr>
+          <prop_corr>0.206055 0.188568 0.0267633 0.00452321 0.00133978 0.00452654 0.0267915 0.188517</prop_corr>
         </Prop_correlator>
       </multi_propagator>
     </elem>

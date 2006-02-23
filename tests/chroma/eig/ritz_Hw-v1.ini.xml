@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: ritz_Hw-v1.ini.xml,v 1.1 2006-02-22 23:48:05 bjoo Exp $
+; $Id: ritz_Hw-v1.ini.xml,v 1.2 2006-02-23 02:38:43 bjoo Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -16,27 +16,28 @@
 	<FermionAction>
           <FermAct>UNPRECONDITIONED_WILSON</FermAct>
           <Mass>-1.4</Mass>
-        <boundary>1 1 1 -1</boundary>
-        </FermionAction>
-  <RitzParams>
-	<Neig>12</Neig>
-	<Ndummy>4</Ndummy>
-	<RsdR>1.0e-3</RsdR>
-	<RsdA>1.0e-4</RsdA>
-	<RsdZero>5.0e-6</RsdZero>
-	<ProjApsiP>false</ProjApsiP>
-	<GammaFactor>0.1</GammaFactor>
-	<MaxKS>200</MaxKS>
-	<MaxCG>10000</MaxCG>
-	<MinKSIter>5</MinKSIter>
-	<MaxKSIter>200</MaxKSIter>
-	<Nrenorm>10</Nrenorm>
-   </RitzParams>
+	  <boundary>1 1 1 -1</boundary>
+	</FermionAction>
+	<RitzParams>
+	  <Neig>8</Neig>
+	  <Ndummy>4</Ndummy>
+	  <RsdR>1.0e-3</RsdR>
+	  <RsdA>1.0e-4</RsdA>
+	  <RsdZero>5.0e-6</RsdZero>
+	  <ProjApsiP>false</ProjApsiP>
+	  <GammaFactor>0.1</GammaFactor>
+	  <MaxKS>200</MaxKS>
+	  <MaxCG>10000</MaxCG>
+	  <MinKSIter>5</MinKSIter>
+	  <MaxKSIter>200</MaxKSIter>
+	  <Nrenorm>10</Nrenorm>
+	</RitzParams>
       </Param>
       
       <NamedObject>
         <eigen_id>eigen_info_0</eigen_id>
       </NamedObject>
+      
     </elem>
 
     <elem>

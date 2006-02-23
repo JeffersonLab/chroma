@@ -1,4 +1,4 @@
-// $Id: inline_ritz_H_w.cc,v 2.2 2006-02-22 23:48:04 bjoo Exp $
+// $Id: inline_ritz_H_w.cc,v 2.3 2006-02-23 02:38:43 bjoo Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -18,7 +18,7 @@
 #include "meas/inline/io/named_objmap.h"
 #include "meas/eig/eig_spec.h"
 #include "actions/ferm/linop/lopscl.h"
-
+#include "io/eigen_io.h"
 
 namespace Chroma 
 { 
@@ -128,21 +128,26 @@ namespace Chroma
   InlineRitzParams::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
+    QDP::write(xml_out, "Frequency", frequency);
     
     push(xml_out, "Param");
+    QDP::write(xml_out, "version", version);
 
-//     istringstream is(stateInfo);
-//     XMLReader xml_header(header_is);
-//     xml_out << xml_header;
-    
-   
+    std::istringstream  fa_is(fermact);
+    XMLReader fa_reader(fa_is);
+    xml_out << fa_reader;
+
+    Chroma::write(xml_out, "RitzParams", ritz_params);
+    pop(xml_out); // Param
+      
+
     istringstream header_is(stateInfo);
     XMLReader xml_header(header_is);
     xml_out << xml_header;
-  
+    
     Chroma::write(xml_out, "NamedObject", named_obj);
-
-    pop(xml_out);
+   
+    pop(xml_out); //  Path
   }
 
 
@@ -165,7 +170,8 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
     {
       string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-      push(xml_out, "propagator");
+
+      push(xml_out, "RitzEigenHw");
       write(xml_out, "update_no", update_no);
       write(xml_out, "xml_file", xml_file);
       pop(xml_out);
@@ -203,6 +209,9 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
     // Write out the input
     params.write(xml_out, "Input");
 
+    XMLBufferWriter record_xml; 
+    params.write(record_xml, "RecordXML");
+
     // Write out the config header
     write(xml_out, "Config_info", gauge_xml);
 
@@ -226,12 +235,6 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
     write(file_xml, "id", id);
     pop(file_xml);
 
-    XMLBufferWriter record_xml; 
-    push(record_xml, "Params");
-    write(record_xml, "version", params.version);
-    write(record_xml, "RitzParams", params.ritz_params);
-    // More stuff here 
-    pop(record_xml);
 
     TheNamedObjMap::Instance().get(params.named_obj.eigen_id).setFileXML(file_xml);
     TheNamedObjMap::Instance().get(params.named_obj.eigen_id).setRecordXML(record_xml);
@@ -313,7 +316,7 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
     QDPIO::cout << InlineRitzEnv::name << ": ran successfully" << endl;
 
     pop(xml_out);
-    pop(xml_out);
+
     END_CODE();
   
   }
