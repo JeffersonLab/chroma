@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 2.5 2006-02-22 23:48:05 bjoo Exp $
+// $Id: inline_multi_propagator_w.cc,v 2.6 2006-02-23 15:44:52 bjoo Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -368,6 +368,8 @@ namespace Chroma
 	pop(file_xml);
       
 	XMLBufferWriter record_xml;
+	
+
 	push(record_xml, "Propagator");
       
 	// Jiggery pokery. Substitute the ChromaMultiProp_t with a 
@@ -381,12 +383,35 @@ namespace Chroma
       
 	ChromaProp_t out_param;
 	out_param.quarkSpinType = params.param.quarkSpinType;
-	out_param.fermact = params.param.fermact;
+
 	// I need a way to glom a mass into an XML document
-	//
-	// something like XMLReader::replace(path, value)
-	// for now all masses have the same mass on output
-	// buggerisations...
+	// and this is it
+
+	// copy fermact
+	std::string fermact_str = params.param.fermact;
+	
+	// make a reader
+	std::istringstream fermact_is(fermact_str);
+	XMLReader fermact_reader(fermact_is);
+
+	
+	// Replace mass using BasicXPathReader interface directly
+	try {
+	  fermact_reader.set<QDP::Real>("/FermionAction/Mass", params.param.MultiMasses[m]);
+	}
+	catch(const std::string& e) {
+	  QDPIO::cerr << "Caught exception processing XML: " << e << endl;
+	  QDP_abort(1);
+	}
+	
+	// turn back into a string
+	XMLBufferWriter newfermact_writer;
+	newfermact_writer << fermact_reader ;
+
+	out_param.fermact = newfermact_writer.printCurrentContext() ;
+	// print to debug
+	QDPIO::cout << "Modified fermact is: " << out_param.fermact << endl << flush;
+
 	out_param.invParam.invType = params.param.invParam.invType;
 	out_param.invParam.MROver = params.param.invParam.MROver;
 	out_param.invParam.MaxCG = params.param.invParam.MaxCG;
