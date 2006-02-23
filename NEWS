@@ -1,7 +1,7 @@
 02/23/2006 -- Balint Joo & Thomas Streuer
 	MultiMass overlap and eigenvector projection. Inline Ritz measurement.
 	Some XML magic needed in writing the multiple props. For this reason
-	we now need qdp1-20-0.
+	we now need qdp1-20-1.
 
 02/21/2006 -- Robert Edwards
 	Version 2.11.0. Yet another overhaul. This time, the idea of "displacement"
