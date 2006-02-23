@@ -1,4 +1,4 @@
-// $Id: inline_stout_smear.cc,v 2.1 2005-11-22 19:15:28 edwards Exp $
+// $Id: inline_stout_smear.cc,v 2.2 2006-02-23 20:58:00 edwards Exp $
 /*! \file
  *  \brief Inline Stout smearing
  */
@@ -131,6 +131,8 @@ namespace Chroma
 			     unsigned long update_no,
 			     XMLWriter& xml_out) 
   {
+    START_CODE();
+
     push(xml_out, "stout_smear");
     write(xml_out, "update_no", update_no);
     
