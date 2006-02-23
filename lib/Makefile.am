@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.47 2006-02-22 23:48:03 bjoo Exp $
+# $Id: Makefile.am,v 2.48 2006-02-23 21:00:08 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -446,6 +446,9 @@ nobase_include_HEADERS += \
 	meas/inline/eig/inline_eig_aggregate.h \
 	meas/inline/eig/inline_eigbnds.h \
 	meas/inline/eig/inline_ritz_H_w.h \
+	meas/inline/gfix/gfix.h \
+	meas/inline/gfix/inline_gfix_aggregate.h \
+	meas/inline/gfix/inline_coulgauge.h \
 	meas/inline/glue/glue.h \
 	meas/inline/glue/inline_glue_aggregate.h \
 	meas/inline/glue/inline_plaquette.h \
@@ -852,6 +855,8 @@ libchroma_a_SOURCES += \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
 	meas/inline/eig/inline_ritz_H_w.cc \
+	meas/inline/gfix/inline_gfix_aggregate.cc \
+	meas/inline/gfix/inline_coulgauge.cc \
 	meas/inline/glue/inline_glue_aggregate.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
