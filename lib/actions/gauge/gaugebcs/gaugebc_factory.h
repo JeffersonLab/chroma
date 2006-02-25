@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: gaugebc_factory.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: gaugebc_factory.h,v 2.1 2006-02-25 19:47:46 edwards Exp $
 /*! \file
- *  \brief Fermion action factories
+ *  \brief Gauge boundary condition factories
  */
 
-#ifndef __gaugebcfactory_h__
-#define __gaugebcfactory_h__
+#ifndef __gaugebc_factory_h__
+#define __gaugebc_factory_h__
 
 #include "singleton.h"
 #include "objfactory.h"

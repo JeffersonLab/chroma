@@ -1,5 +1,11 @@
-#ifndef SCHRGAUGEBC_PARAM_H
-#define SCHRGAUGEBC_PARAM_H
+// -*- C++ -*-
+// $Id: gaugebc_schroedinger.h,v 2.1 2006-02-25 19:47:46 edwards Exp $
+/*! \file
+ *  \brief Schroedinger functional boundary conditions
+ */
+
+#ifndef __gaugebc_schroedinger_h__
+#define __gaugebc_schroedinger_h__
 
 #include "chromabase.h"
 #include "gaugebc.h"
@@ -7,8 +13,8 @@
 
 
 
-namespace Chroma { 
-  
+namespace Chroma 
+{ 
 
   /*! @ingroup gaugebcs */
   struct GaugeBCSchrParams {

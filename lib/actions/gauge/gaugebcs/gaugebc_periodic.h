@@ -1,5 +1,10 @@
-#ifndef GAUGEBC_PERIODIC_H
-#define GAUGEBC_PERIODIC_H
+// $Id: gaugebc_periodic.h,v 2.1 2006-02-25 19:47:46 edwards Exp $
+/*! \file
+ *  \brief Periodic gauge boundary conditions
+ */
+
+#ifndef __gaugebc_periodic_h__
+#define __gaugebc_periodic_h__
 
 #include "chromabase.h"
 #include "gaugebc.h"
@@ -43,6 +48,6 @@ namespace Chroma {
   private:
 
   };
-}; // End namespace Chroma
+} // End namespace Chroma
 
 #endif

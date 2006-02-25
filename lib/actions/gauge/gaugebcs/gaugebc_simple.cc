@@ -1,3 +1,8 @@
+// $Id: gaugebc_simple.cc,v 2.1 2006-02-25 19:47:46 edwards Exp $
+/*! \file
+ *  \brief Simple gauge boundary conditions
+ */
+
 #include "chromabase.h"
 #include "gaugebc.h"
 
@@ -7,8 +12,8 @@
 
 namespace Chroma {
 
-  namespace SimpleGaugeBCEnv { 
-
+  namespace SimpleGaugeBCEnv 
+  { 
     //! Calllback function to register with the factory
     GaugeBC* createGaugeBC(XMLReader& xml, const string& path)
     {

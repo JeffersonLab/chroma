@@ -1,3 +1,7 @@
+// $Id: gaugebc_schroedinger.cc,v 2.1 2006-02-25 19:47:46 edwards Exp $
+/*! \file
+ *  \brief Schroedinger functional boundary conditions
+ */
 #include "chromabase.h"
 #include "gaugebc.h"
 
