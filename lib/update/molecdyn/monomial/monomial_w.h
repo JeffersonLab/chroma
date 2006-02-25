@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_w.h,v 2.5 2006-02-16 02:26:48 bjoo Exp $
+// $Id: monomial_w.h,v 2.6 2006-02-25 22:48:58 bjoo Exp $
 
 /*! \file
  * \brief Monomials of actions
@@ -37,5 +37,5 @@
 #include "two_flavor_hasenbusch_monomial_w.h"
 #include "unprec_two_flavor_hasenbusch_monomial_w.h"
 #include "prec_constdet_two_flavor_hasenbusch_monomial_w.h"
-
+#include "update/molecdyn/monomial/prec_logdet_ee_monomial_w.h"
 #endif

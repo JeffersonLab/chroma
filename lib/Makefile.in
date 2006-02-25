@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.60 2006-02-23 21:00:41 edwards Exp $
+# $Id: Makefile.in,v 2.61 2006-02-25 22:48:57 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -364,6 +364,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
+	update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc \
 	util/ferm/gammasgn_w.cc util/ferm/antisymtensor.cc \
 	util/ferm/etensor.cc util/ferm/symtensor.cc io/inline_io.cc \
 	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
@@ -650,15 +651,15 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	prec_constdet_two_flavor_hasenbusch_monomial_w.$(OBJEXT) \
 	prec_constdet_two_flavor_polynomial_monomial_w.$(OBJEXT) \
 	prec_constdet_two_flavor_polyprec_monomial_w.$(OBJEXT) \
-	gammasgn_w.$(OBJEXT) antisymtensor.$(OBJEXT) etensor.$(OBJEXT) \
-	symtensor.$(OBJEXT) inline_io.$(OBJEXT) \
-	inline_aggregate.$(OBJEXT) make_xml_file.$(OBJEXT) \
-	inline_eig_aggregate.$(OBJEXT) inline_eigbnds.$(OBJEXT) \
-	inline_ritz_H_w.$(OBJEXT) inline_gfix_aggregate.$(OBJEXT) \
-	inline_coulgauge.$(OBJEXT) inline_glue_aggregate.$(OBJEXT) \
-	inline_plaquette.$(OBJEXT) inline_polylp.$(OBJEXT) \
-	inline_wilslp.$(OBJEXT) inline_fuzwilp.$(OBJEXT) \
-	inline_hadron_aggregate.$(OBJEXT) \
+	prec_logdet_ee_monomial_w.$(OBJEXT) gammasgn_w.$(OBJEXT) \
+	antisymtensor.$(OBJEXT) etensor.$(OBJEXT) symtensor.$(OBJEXT) \
+	inline_io.$(OBJEXT) inline_aggregate.$(OBJEXT) \
+	make_xml_file.$(OBJEXT) inline_eig_aggregate.$(OBJEXT) \
+	inline_eigbnds.$(OBJEXT) inline_ritz_H_w.$(OBJEXT) \
+	inline_gfix_aggregate.$(OBJEXT) inline_coulgauge.$(OBJEXT) \
+	inline_glue_aggregate.$(OBJEXT) inline_plaquette.$(OBJEXT) \
+	inline_polylp.$(OBJEXT) inline_wilslp.$(OBJEXT) \
+	inline_fuzwilp.$(OBJEXT) inline_hadron_aggregate.$(OBJEXT) \
 	inline_make_source_w.$(OBJEXT) \
 	inline_make_source_ferm_w.$(OBJEXT) \
 	inline_propagator_w.$(OBJEXT) \
@@ -1037,6 +1038,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/prec_logdet_ee_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
 	util/ferm/gammasgn_w.h util/ferm/tdiractodr.h \
 	util/ferm/paulitodr.h util/ferm/antisymtensor.h \
@@ -1601,6 +1603,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/prec_logdet_ee_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
 	util/ferm/gammasgn_w.h util/ferm/tdiractodr.h \
 	util/ferm/paulitodr.h util/ferm/antisymtensor.h \
@@ -1997,6 +2000,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
+	update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc \
 	util/ferm/gammasgn_w.cc util/ferm/antisymtensor.cc \
 	util/ferm/etensor.cc util/ferm/symtensor.cc io/inline_io.cc \
 	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
@@ -2428,6 +2432,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ht_contfrac5d_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_ht_contfrac5d_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_kno_fermact_array_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_logdet_ee_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_logdet_two_flavor_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_nef_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_nef_general_linop_array_w.Po@am__quote@
@@ -7095,6 +7100,20 @@ prec_constdet_two_flavor_polyprec_monomial_w.obj: update/molecdyn/monomial/prec_
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc' object='prec_constdet_two_flavor_polyprec_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_constdet_two_flavor_polyprec_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc'; fi`
+
+prec_logdet_ee_monomial_w.o: update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_logdet_ee_monomial_w.o -MD -MP -MF "$(DEPDIR)/prec_logdet_ee_monomial_w.Tpo" -c -o prec_logdet_ee_monomial_w.o `test -f 'update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_logdet_ee_monomial_w.Tpo" "$(DEPDIR)/prec_logdet_ee_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_logdet_ee_monomial_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc' object='prec_logdet_ee_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_logdet_ee_monomial_w.o `test -f 'update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc
+
+prec_logdet_ee_monomial_w.obj: update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT prec_logdet_ee_monomial_w.obj -MD -MP -MF "$(DEPDIR)/prec_logdet_ee_monomial_w.Tpo" -c -o prec_logdet_ee_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/prec_logdet_ee_monomial_w.Tpo" "$(DEPDIR)/prec_logdet_ee_monomial_w.Po"; else rm -f "$(DEPDIR)/prec_logdet_ee_monomial_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc' object='prec_logdet_ee_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o prec_logdet_ee_monomial_w.obj `if test -f 'update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc'; fi`
 
 gammasgn_w.o: util/ferm/gammasgn_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gammasgn_w.o -MD -MP -MF "$(DEPDIR)/gammasgn_w.Tpo" -c -o gammasgn_w.o `test -f 'util/ferm/gammasgn_w.cc' || echo '$(srcdir)/'`util/ferm/gammasgn_w.cc; \

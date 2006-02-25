@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+   <Hamiltonian>
+    <Monomials>
+      <elem>
+	<Name>N_FLAVOR_LOGDET_EVEN_EVEN_FERM_MONOMIAL</Name>
+        <FermionAction>
+	 <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.078</clovCoeffR>
+         <clovCoeffT>0.991</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+	<num_flavors>2</num_flavors>
+      </elem>
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_CONSTDET_FERM_MONOMIAL</Name>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+	 <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.078</clovCoeffR>
+         <clovCoeffT>0.991</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+      </elem>
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+	   <Name>WILSON_GAUGEACT</Name>
+	   <beta>5.2</beta>
+	   <GaugeBC>
+		<Name>PERIODIC_GAUGEBC</Name>
+           </GaugeBC>
+        </GaugeAction>
+      </elem>
+    </Monomials>
+   </Hamiltonian>
+   <MDIntegrator>
+	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
+	<n_steps>20</n_steps>
+	<tau0>0.5</tau0>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>DISORDERED</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>2 2 2 2</nrow>
+
+</LeapfrogTest>
