@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.51 2006-02-26 20:13:29 edwards Exp $
+# $Id: Makefile.am,v 2.52 2006-02-26 21:37:49 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -440,7 +440,7 @@ nobase_include_HEADERS += \
         meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h\
-	meas/inline/hadron_s/inline_hadron_aggregate.h
+	meas/inline/hadron_s/inline_hadron_aggregate_s.h
 
 
 #
@@ -902,6 +902,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
+	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \
