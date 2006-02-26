@@ -1,4 +1,4 @@
-// $Id: fuzwilp.cc,v 2.1 2006-02-26 14:11:41 mcneile Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+// $Id: fuzwilp.cc,v 2.2 2006-02-26 14:43:06 mcneile Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
 
 // // version with added tmax (ACI)
 /*! \file
@@ -60,7 +60,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   if (tmax < lengtht) 
     {
       lengtht = tmax;
-      QDPIO::cout << " using lengtht = " lengtht << endl;
+      QDPIO::cout << " using lengtht = " << lengtht << endl;
       
     }
   multi1d<LatticeColorMatrix> u_smear(Nd);
