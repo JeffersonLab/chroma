@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs.h,v 2.1 2006-02-26 03:47:51 edwards Exp $
+// $Id: fermbcs.h,v 2.2 2006-02-26 20:14:43 edwards Exp $
 
 /*! \file
  * \brief Fermion boundary conditions
@@ -16,6 +16,7 @@
 #ifndef __fermbcs_h__
 #define __fermbcs_h__
 
+#include "periodic_fermbc.h"
 #include "simple_fermbc.h"
 
 #include "fermbcs_reader_w.h"

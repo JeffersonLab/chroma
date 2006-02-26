@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.50 2006-02-26 03:43:01 edwards Exp $
+# $Id: Makefile.am,v 2.51 2006-02-26 20:13:29 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -32,6 +32,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermacts/eigen_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
+	actions/ferm/fermbcs/periodic_fermbc.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
