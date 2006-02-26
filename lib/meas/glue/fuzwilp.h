@@ -1,5 +1,6 @@
 // -*- C++ -*-
-// $Id: fuzwilp.h,v 2.0 2005-09-25 21:04:34 edwards Exp $
+// $Id: fuzwilp.h,v 2.1 2006-02-26 14:11:40 mcneile Exp $
+// version with added tmax
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */
@@ -29,6 +30,7 @@ namespace Chroma {
  *
  * \param u         gauge field ( Read )
  * \param j_decay   'time' direction for 'fuzzed' Wilson loops ( Read )
+ * \param tmax      maximum time-extent loops ( Read )
  * \param n_smear   number of applying smearing to the gauge links ( Read )
  * \param sm_fact   "smearing" factor = weight of old link w. r. to staples ( Read )
  * \param BlkAccu   accuracy in fuzzy link projection ( Read )
@@ -36,7 +38,7 @@ namespace Chroma {
  */
 
 void fuzwilp(const multi1d<LatticeColorMatrix>& u, 
-        int j_decay, int n_smear,
+	     int j_decay, int tmax, int n_smear,
         const Real& sm_fact, const Real& BlkAccu, int BlkMax,
 	XMLWriter& xml, const string& xml_group);
 

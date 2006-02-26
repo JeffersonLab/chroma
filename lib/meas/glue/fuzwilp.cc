@@ -1,4 +1,6 @@
-// $Id: fuzwilp.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+// $Id: fuzwilp.cc,v 2.1 2006-02-26 14:11:41 mcneile Exp $ fuzwilp.h,v 1.1 2004/04/26 16:12:49 mcneile Exp $
+
+// // version with added tmax (ACI)
 /*! \file
  *  \brief Calculate ape-fuzzed Wilson loops
  */
@@ -19,8 +21,6 @@ namespace Chroma {
  *
  * Warning: This version is VERY Slow as it has non-recursive shifting
  *          of some link products
- *          Search for 'cap' on loop values to control no of loops
- * 	    calculated
  * Warning: this works only for Nc = 2 and 3 ! (Projection of
  *                                              smeared/blocked links)
  *
@@ -29,6 +29,7 @@ namespace Chroma {
  *
  * \param u         gauge field ( Read )
  * \param j_decay   'time' direction for 'fuzzed' Wilson loops ( Read )
+  * \param tmax      maximum time-extent loops ( Read )
  * \param n_smear   number of applying smearing to the gauge links ( Read )
  * \param sm_fact   "smearing" factor = weight of old link w. r. to staples ( Read )
  * \param BlkAccu   accuracy in fuzzy link projection ( Read )
@@ -36,7 +37,7 @@ namespace Chroma {
  */
 
 void fuzwilp( const multi1d<LatticeColorMatrix>& u, 
-	int j_decay, int n_smear, 
+        int j_decay, int tmax, int n_smear,
 	const Real& sm_fact, const Real& BlkAccu, int BlkMax, 
 	XMLWriter& xml, const string& xml_group)
 
@@ -56,6 +57,12 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   lengthr  = nrow[0]/2;
   lengthrs = (lengthr) * (lengthr+1) / 2;
 
+  if (tmax < lengtht) 
+    {
+      lengtht = tmax;
+      QDPIO::cout << " using lengtht = " lengtht << endl;
+      
+    }
   multi1d<LatticeColorMatrix> u_smear(Nd);
   multi1d<LatticeColorMatrix> u_tmp(Nd);
   multi2d<LatticeColorMatrix> u_prod( (Nd-1), lengthr);
