@@ -1,4 +1,4 @@
-// $Id: inline_coulgauge.cc,v 1.1 2006-02-23 20:58:00 edwards Exp $
+// $Id: inline_coulgauge.cc,v 1.2 2006-02-26 04:19:46 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */
@@ -86,7 +86,7 @@ namespace Chroma
       }
     }
 
-    const std::string name = "WILSLP";
+    const std::string name = "COULOMB_GAUGEFIX";
     const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 
 
