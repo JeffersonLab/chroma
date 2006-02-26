@@ -5,7 +5,7 @@
 //
 
 #include "handle.h"
-#include "actions/ferm/fermbcs/fermbcs.h"
+//#include "actions/ferm/fermbcs/fermbcs.h"
 #include "actions/ferm/fermacts/fermacts_s.h"
 #include "meas/hadron/hadron_s.h"
 #include "meas/smear/fuzz_smear.h"

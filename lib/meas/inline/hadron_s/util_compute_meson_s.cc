@@ -1,4 +1,4 @@
-// $Id: util_compute_meson_s.cc,v 2.4 2006-02-06 18:15:45 egregory Exp $
+// $Id: util_compute_meson_s.cc,v 2.5 2006-02-26 21:40:46 edwards Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -6,7 +6,7 @@
  */
 
 #include "handle.h"
-#include "actions/ferm/fermbcs/fermbcs.h"
+//#include "actions/ferm/fermbcs/fermbcs.h"
 #include "actions/ferm/fermacts/fermacts_s.h"
 #include "meas/hadron/hadron_s.h"
 #include "meas/smear/fuzz_smear.h"
