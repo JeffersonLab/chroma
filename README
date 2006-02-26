@@ -8,15 +8,15 @@ with cvs tags labelled as
 
     major-minor-maintenance 
 
-Chroma version 2.5 requires QDP++ 1.18 or higher and
+Chroma version 2.12 requires QDP++ 1.20 or higher and
 QMP 2.X or higher . The latter follows the version 2.X specification
 of the API. QDP++ and Chroma no longer support the 1.X QMP API
 
 In JLab CVS module name and tag-ology, the current compatibility is
 
 module        tag                          description
-chroma        chroma2-5-X  or higher
-qdp++         qdp1-18-0    or higher
+chroma        chroma2-12-X  or higher
+qdp++         qdp1-20-0     or higher
 qmp           qmp2-0-X                     MPI and single node versions
 qmp-mvia-mesh qmp-mvia-mesh-2-0  or higher GigE version
 
