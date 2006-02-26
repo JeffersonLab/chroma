@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_fuzwilp.h,v 2.1 2006-02-20 20:42:38 edwards Exp $
+// $Id: inline_fuzwilp.h,v 2.2 2006-02-26 14:17:43 mcneile Exp $
 /*! \file
  * \brief Inline fuzzed Wilson loops
  */
@@ -28,6 +28,7 @@ namespace Chroma
 
     unsigned long frequency;
     int j_decay;
+    int tmax;
     int n_smear;
     int BlkMax;
     Real sm_fact;

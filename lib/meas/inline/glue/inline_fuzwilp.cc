@@ -1,4 +1,4 @@
-// $Id: inline_fuzwilp.cc,v 2.1 2006-02-20 20:42:38 edwards Exp $
+// $Id: inline_fuzwilp.cc,v 2.2 2006-02-26 14:17:43 mcneile Exp $
 /*! \file
  * \brief Inline fuzzed Wilson loops
  */
@@ -38,6 +38,7 @@ namespace Chroma
 	frequency = 1;
 
       read(paramtop, "j_decay", j_decay);
+      read(paramtop, "tmax", tmax);
       read(paramtop, "n_smear", n_smear);
       read(paramtop, "sm_fact", sm_fact);
       read(paramtop, "BlkMax",  BlkMax);
@@ -63,6 +64,7 @@ namespace Chroma
 
     fuzwilp(u, 
 	    params.j_decay, 
+            params.tmax,
 	    params.n_smear,
 	    params.sm_fact,
 	    params.BlkAccu,
