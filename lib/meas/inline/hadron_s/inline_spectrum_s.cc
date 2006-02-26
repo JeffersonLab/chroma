@@ -19,7 +19,7 @@
 // staggered stuff
 #include "handle.h"
 #include "state.h"
-#include "actions/ferm/fermbcs/fermbcs.h"
+#include "actions/ferm/fermbcs/simple_fermbc_s.h"
 #include "actions/ferm/fermacts/fermacts_s.h"
 
 
