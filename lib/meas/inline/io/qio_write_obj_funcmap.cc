@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 2.3 2006-02-22 23:48:05 bjoo Exp $
+// $Id: qio_write_obj_funcmap.cc,v 2.4 2006-02-26 22:45:12 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -125,6 +125,60 @@ namespace Chroma
       close(to);
     }
 #endif
+
+
+    //! Write a propagator
+    void QIOWriteLatStagProp(const string& buffer_id,
+			     const string& file, 
+			     QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+    {
+      LatticeStaggeredPropagator obj;
+      XMLBufferWriter file_xml, record_xml;
+
+      obj = TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(buffer_id);
+      TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+      TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+    
+      QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+      write(to,record_xml,obj);
+      close(to);
+    }
+
+
+    //! Write a single prec propagator
+    void QIOWriteLatStagPropF(const string& buffer_id,
+			      const string& file, 
+			      QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+    {
+      LatticeStaggeredPropagatorF obj;
+      XMLBufferWriter file_xml, record_xml;
+
+      obj = TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(buffer_id);
+      TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+      TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+    
+      QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+      write(to,record_xml,obj);
+      close(to);
+    }
+
+
+    //! Write a double prec propagator
+    void QIOWriteLatStagPropD(const string& buffer_id,
+			      const string& file, 
+			      QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+    {
+      LatticeStaggeredPropagatorD obj;
+      XMLBufferWriter file_xml, record_xml;
+
+      obj = TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(buffer_id);
+      TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+      TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+    
+      QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+      write(to,record_xml,obj);
+      close(to);
+    }
 
 
     //! Write a gauge field in floating precision
@@ -283,6 +337,13 @@ namespace Chroma
 //								    QIOWriteObjCallMap::QIOWriteLatFermF);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
 //								 QIOWriteObjCallMap::QIOWriteLatFermD);
+
+      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
+								    QIOWriteObjCallMap::QIOWriteLatStagProp);
+      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagatorF"), 
+								    QIOWriteObjCallMap::QIOWriteLatStagPropF);
+      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagatorD"), 
+								    QIOWriteObjCallMap::QIOWriteLatStagPropD);
 
       success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
 								    QIOWriteObjCallMap::QIOWriteArrayLatColMat);
