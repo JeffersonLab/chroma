@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+
+<chroma>
+<annotation>
+; $Id: spectrum_s.ini.xml,v 1.1 2006-02-26 21:42:12 edwards Exp $
+;
+; Chroma input file for staggered Spectrum_s measurement.
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>POLYAKOV_LOOP</Name>
+      <Frequency>1</Frequency>
+    </elem>
+
+<annotation>
+    <elem>
+      <!-- Coulomb gauge fix -->
+      <Name>COULOMB_GAUGEFIX</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GFAccu>2.0e-6</GFAccu>
+        <OrDo>true</OrDo>
+        <OrPara>1.8</OrPara>
+        <GFMax>500</GFMax>
+        <j_decay>3</j_decay>
+      </Param>
+      <NamedObject>
+        <gfix_id>coul_cfg</gfix_id>
+      </NamedObject>
+    </elem>
+</annotation>
+
+    <elem>
+      <!-- Staggered spectrum -->
+      <Name>SPECTRUM_S</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+ 
+        <Meson_local>true</Meson_local>
+        <Baryon_local>true</Baryon_local>
+        <Baryon_vary>true</Baryon_vary>
+        <singletPs_Conn_local>true</singletPs_Conn_local>
+        <eight_pions>true</eight_pions>
+        <eight_scalars>true</eight_scalars>
+        <eight_rhos>true</eight_rhos>
+        <LocalPion_vary>true</LocalPion_vary>
+
+        <fuzz_width>2</fuzz_width>
+        <disconnected_local>true</disconnected_local>
+        <disconnected_fuzz>false</disconnected_fuzz>
+        <Number_sample>4</Number_sample>
+        <CFGNO>234</CFGNO>
+        <volume_src>T_DILUTE_GAUSS</volume_src>
+
+        <gauge_invar_oper>true</gauge_invar_oper>
+        <sym_shift_oper>true</sym_shift_oper>
+        <loop_checkpoint>true</loop_checkpoint>
+        <src_seperation>4</src_seperation>
+
+	<!-- This is not supported here -->
+        <!-- do_gauge_transform>false</do_gauge_transform -->
+
+        <GFAccu>2.0e-6</GFAccu>
+        <OrPara>1.8</OrPara>
+        <GFMax>500</GFMax>
+
+        <j_decay>3</j_decay>
+        <nrow>4 4 4 4</nrow>
+        <boundary>1 1 1 1</boundary>
+        <t_srce> 0 0 0 0 </t_srce>
+      </Param>
+
+      <Inversion>
+        <Mass>0.1</Mass>
+        <u0>0.463032</u0>
+        <RsdCG>0.00001</RsdCG>
+        <MaxCG>3000</MaxCG>
+      </Inversion>
+
+      <NamedObject>
+        <prop_id>some_name_here</prop_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 4</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+
+</chroma>
