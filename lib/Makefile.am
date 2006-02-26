@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.49 2006-02-25 22:48:57 bjoo Exp $
+# $Id: Makefile.am,v 2.50 2006-02-26 03:43:01 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -69,9 +69,12 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
-	actions/gauge/gaugebcs/gaugebc_simple.h \
-	actions/gauge/gaugebcs/gaugebc_periodic.h \
-	actions/gauge/gaugebcs/gaugebc_schroedinger.h \
+	actions/gauge/gaugebcs/simple_gaugebc.h \
+	actions/gauge/gaugebcs/periodic_gaugebc.h \
+	actions/gauge/gaugebcs/schroedinger_gaugebc.h \
+	actions/gauge/gaugebcs/schr1link_gaugebc.h \
+	actions/gauge/gaugebcs/schr2link_gaugebc.h \
+	actions/gauge/gaugebcs/schr_gaugebc_params.h \
 	init/chroma_init.h \
 	io/io.h \
 	io/xmllog_io.h \
@@ -265,10 +268,15 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.h \
 	actions/ferm/fermacts/ovext_neuberger_strategy.h \
 	actions/ferm/fermacts/poly_cheb_fermact_w.h \
-	actions/ferm/fermbcs/fermbcs_w.h \
+	actions/ferm/fermbcs/fermbcs_aggregate_w.h \
+	actions/ferm/fermbcs/fermbcs_reader_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
+	actions/ferm/fermbcs/periodic_fermbc_w.h \
+	actions/ferm/fermbcs/schr_fermbc_params.h \
+	actions/ferm/fermbcs/schr1link_fermbc_w.h \
+	actions/ferm/fermbcs/schr2link_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/lg5Rherm_w.h \
@@ -400,7 +408,8 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
-	actions/ferm/fermbcs/fermbcs_s.h \
+	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
+	actions/ferm/fermbcs/fermbcs_reader_s.h \
 	actions/ferm/fermbcs/fermbc_factory_s.h \
 	actions/ferm/fermbcs/simple_fermbc_s.h \
 	actions/ferm/linop/asqtad_linop_s.h \
@@ -578,8 +587,11 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/staggered_qprop.cc \
 	actions/ferm/qprop/asqtad_qprop.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
-	actions/gauge/gaugebcs/gaugebc_periodic.cc \
-	actions/gauge/gaugebcs/gaugebc_simple.cc \
+	actions/gauge/gaugebcs/periodic_gaugebc.cc \
+	actions/gauge/gaugebcs/simple_gaugebc.cc \
+	actions/gauge/gaugebcs/schr1link_gaugebc.cc \
+	actions/gauge/gaugebcs/schr2link_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_gaugebc_params.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
@@ -739,9 +751,14 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
-	actions/ferm/fermbcs/fermbcs_w.cc \
+	actions/ferm/fermbcs/fermbcs_aggregate_w.cc \
+	actions/ferm/fermbcs/fermbcs_reader_w.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
+	actions/ferm/fermbcs/periodic_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_fermbc_params.cc \
+	actions/ferm/fermbcs/schr1link_fermbc_w.cc \
+	actions/ferm/fermbcs/schr2link_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc actions/ferm/linop/lDeltaLs_w.cc \
 	actions/ferm/linop/lg5eps_double_pass_w.cc \
@@ -959,7 +976,8 @@ endif
 # Staggered specific sources
 libchroma_a_SOURCES += \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
-	actions/ferm/fermbcs/fermbcs_s.cc \
+	actions/ferm/fermbcs/fermbcs_reader_s.cc \
+	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
 	actions/ferm/linop/asqtad_linop_s.cc \
 	actions/ferm/linop/asqtad_mdagm_s.cc \
