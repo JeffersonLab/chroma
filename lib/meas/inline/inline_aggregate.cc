@@ -1,4 +1,4 @@
-// $Id: inline_aggregate.cc,v 2.2 2006-02-23 20:58:00 edwards Exp $
+// $Id: inline_aggregate.cc,v 2.3 2006-02-26 21:41:20 edwards Exp $
 /*! \file
  *  \brief Inline measurement aggregator
  */
@@ -10,6 +10,8 @@
 #include "meas/inline/hadron/inline_hadron_aggregate.h"
 #include "meas/inline/smear/inline_smear_aggregate.h"
 #include "meas/inline/io/inline_io_aggregate.h"
+
+#include "meas/inline/hadron_s/inline_hadron_aggregate_s.h"
 
 namespace Chroma
 {
@@ -26,6 +28,9 @@ namespace Chroma
       success &= InlineHadronAggregateEnv::registered;
       success &= InlineSmearAggregateEnv::registered;
       success &= InlineIOAggregateEnv::registered;
+
+      success &= InlineStaggeredHadronAggregateEnv::registered;
+
       return success;
     }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hadron_aggregate.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_hadron_aggregate_s.h,v 2.1 2006-02-26 21:41:20 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
