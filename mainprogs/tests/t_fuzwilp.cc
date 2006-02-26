@@ -1,4 +1,4 @@
-// $Id: t_fuzwilp.cc,v 2.0 2005-09-25 21:04:47 edwards Exp $
+// $Id: t_fuzwilp.cc,v 2.1 2006-02-26 14:31:29 mcneile Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -97,14 +97,15 @@ int main(int argc, char *argv[])
 
   int BlkMax = 100;    // max iterations in max-ing trace
   Real BlkAccu = 1.0e-5;  // accuracy of max-ing
-  
+  int tmax = 3 ; 
+
   QDPIO::cout << "sm_fact: " << sm_fact << endl;
   QDPIO::cout << "n_smear: " << n_smear << endl;
 
   swatch.reset();
   swatch.start();
 
-   fuzwilp(u, j_decay, n_smear, sm_fact, BlkAccu, BlkMax, xml, 
+   fuzwilp(u, j_decay, t_max, n_smear, sm_fact, BlkAccu, BlkMax, xml, 
 	"Fuzzed_Wilson_Loops");
 
   swatch.stop();
