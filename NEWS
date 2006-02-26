@@ -1,5 +1,6 @@
 02/25/2006 -- Robert Edwards
 	Version 2.12.1. Small cleanups before reorg of fermbc and gaugebc.
+        New monomials for clover.
 
 02/23/2006 -- Balint Joo & Thomas Streuer
         Version 2.12.0. MultiMass overlap and eigenvector projection. 
