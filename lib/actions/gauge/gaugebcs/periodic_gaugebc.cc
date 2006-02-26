@@ -5,8 +5,8 @@
 #include "chromabase.h"
 #include "gaugebc.h"
 
-#include "actions/gauge/gaugebcs/gaugebc_periodic.h"
 #include "actions/gauge/gaugebcs/gaugebc_factory.h"
+#include "actions/gauge/gaugebcs/periodic_gaugebc.h"
 
 namespace Chroma 
 {
@@ -25,6 +25,6 @@ namespace Chroma
     const bool registered = TheGaugeBCFactory::Instance().registerObject(name,
 									 createGaugeBC);
 
-  };
+  }
 
-}; // End namespace Chroma 
+} // End namespace Chroma 

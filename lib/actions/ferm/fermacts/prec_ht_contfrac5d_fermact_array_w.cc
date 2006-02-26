@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 2.2 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 2.3 2006-02-26 03:47:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -15,7 +15,9 @@
 #include "zolotarev.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_w.h"
+#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermbcs/simple_fermbc_w.h"
+#include "actions/ferm/fermbcs/periodic_fermbc_w.h"
 
 #include "io/enum_io/enum_io.h"
 #include "io/overlap_state_info.h"

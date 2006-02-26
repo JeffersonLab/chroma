@@ -1,9 +1,9 @@
-// $Id: fermacts_aggregate_w.cc,v 2.13 2006-02-10 02:45:29 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 2.14 2006-02-26 03:47:51 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
 
-#include "actions/ferm/fermbcs/fermbcs_w.h"
+#include "actions/ferm/fermbcs/fermbcs_aggregate_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
 #include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
@@ -95,7 +95,7 @@ namespace Chroma
       bool success = true;
 
       // All 5D bcs
-      success &= WilsonTypeFermBCArrayEnv::registered;
+      success &= WilsonTypeFermBCEnv::registered;
 
       // 5D actions
       success &= EvenOddPrecDWFermActArrayEnv::registered;

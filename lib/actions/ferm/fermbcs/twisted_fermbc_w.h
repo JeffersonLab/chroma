@@ -1,13 +1,15 @@
 // -*- C++ -*-
-// $Id: twisted_fermbc_w.h,v 2.1 2005-10-24 05:50:43 edwards Exp $
+// $Id: twisted_fermbc_w.h,v 2.2 2006-02-26 03:47:52 edwards Exp $
 /*! \file
  *  \brief Twisted fermionic BC
  */
 
-#ifndef twisted_fermbc_w_h
-#define twisted_fermbc_w_h
+#ifndef __twisted_fermbc_w_h__
+#define __twisted_fermbc_w_h__
 
-#include "fermbcs.h"
+#include "fermbc.h"
+#include "handle.h"
+#include "actions/ferm/fermbcs/simple_fermbc.h"
 
 namespace Chroma 
 {
@@ -26,18 +28,10 @@ namespace Chroma
   void write(XMLWriter& xml, const std::string& path, const TwistedFermBCParams& param);
 
 
-  // 4d & 5D part
-  //! 4d name and registration
+  //! Name and registration
   /*! \ingroup fermbc */
   namespace WilsonTypeTwistedFermBCEnv 
   {
-    extern const std::string name;
-    extern const bool registered;
-  }
-
-  //! 5d Name and registration
-  /*! \ingroup fermbc */
-  namespace WilsonTypeTwistedFermBCArrayEnv {
     extern const std::string name;
     extern const bool registered;
   }

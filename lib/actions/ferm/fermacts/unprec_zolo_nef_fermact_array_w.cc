@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 2.2 2006-02-26 03:47:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -9,7 +9,9 @@
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_w.h"
+#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermbcs/simple_fermbc_w.h"
+#include "actions/ferm/fermbcs/periodic_fermbc_w.h"
 
 #include "actions/ferm/fermacts/zolotarev.h"
 

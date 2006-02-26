@@ -1,12 +1,11 @@
-// $Id: fermbcs_w.cc,v 2.1 2005-10-24 05:53:55 edwards Exp $
+// $Id: fermbcs_reader_w.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
- *  \brief All fermionic BC
+ *  \brief Fermionic BC reader
  */
 
+#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 #include "actions/ferm/fermbcs/fermbc_factory_w.h"
 #include "actions/ferm/fermbcs/simple_fermbc_w.h"
-#include "actions/ferm/fermbcs/twisted_fermbc_w.h"
-#include "actions/ferm/fermbcs/fermbcs_w.h"
 
 namespace Chroma
 {
@@ -14,17 +13,6 @@ namespace Chroma
   //! Name and registration
   namespace WilsonTypeFermBCEnv
   {
-    bool registerAll(void) 
-    {
-      bool success = true;
-      success &= WilsonTypeSimpleFermBCEnv::registered;
-      success &= WilsonTypeTwistedFermBCEnv::registered;
-
-      return success;
-    }
-
-    const bool registered = registerAll();
-
     // Helper function for the FermionAction readers
     /*
      * This structure should not be replicated. This routine helps maintain
@@ -34,8 +22,6 @@ namespace Chroma
     Handle< FermBC<LatticeFermion> > reader(XMLReader& xml_in, const std::string& path)
     {
       XMLReader top(xml_in, path);
-
-      bool success = registered;  // make sure all codes loaded
 
       std::string fermbc;
       std::string fermbc_path;
@@ -68,17 +54,6 @@ namespace Chroma
   //! Name and registration
   namespace WilsonTypeFermBCArrayEnv
   {
-    bool registerAll(void) 
-    {
-      bool success = true;
-      success &= WilsonTypeSimpleFermBCArrayEnv::registered;
-      success &= WilsonTypeTwistedFermBCArrayEnv::registered;
-
-      return success;
-    }
-
-    const bool registered = registerAll();
-
     // Helper function for the FermionAction readers
     /*
      * This structure should not be replicated. This routine helps maintain
@@ -88,8 +63,6 @@ namespace Chroma
     Handle< FermBC< multi1d<LatticeFermion> > > reader(XMLReader& xml_in, const std::string& path)
     {
       XMLReader top(xml_in, path);
-
-      bool success = registered;  // make sure all codes loaded
 
       std::string fermbc;
       std::string fermbc_path;
@@ -101,7 +74,7 @@ namespace Chroma
       else if (top.count("boundary") != 0)
       {
 	fermbc_path = ".";
-	fermbc = WilsonTypeSimpleFermBCArrayEnv::name;
+	fermbc = WilsonTypeSimpleFermBCEnv::name;
       }
       else
       {

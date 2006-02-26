@@ -1,4 +1,4 @@
-// $Id: prec_ovext_fermact_array_w.cc,v 2.2 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_ovext_fermact_array_w.cc,v 2.3 2006-02-26 03:47:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -9,7 +9,7 @@
 #include "actions/ferm/invert/invcg2_array.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_w.h"
+#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 #include "io/enum_io/enum_io.h"
 #include "io/overlap_state_info.h"

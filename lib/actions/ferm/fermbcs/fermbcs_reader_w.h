@@ -1,13 +1,14 @@
 // -*- C++ -*-
-// $Id: fermbcs_w.h,v 2.1 2005-10-24 05:51:40 edwards Exp $
+// $Id: fermbcs_reader_w.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
- *  \brief All fermionic boundary conditions
+ *  \brief Fermionic boundary condition reader
  */
 
-#ifndef __fermbcs_w_h__
-#define __fermbcs_w_h__
+#ifndef __fermbcs_reader_w_h__
+#define __fermbcs_reader_w_h__
 
 #include "fermbc.h"
+#include "handle.h"
 
 namespace Chroma
 {
@@ -15,9 +16,6 @@ namespace Chroma
   /*! \ingroup fermbc */
   namespace WilsonTypeFermBCEnv
   {
-    /*! \ingroup fermbc */
-    extern const bool registered;
-
     //! Helper function for the FermionAction readers
     /*! 
      * \ingroup fermbc
@@ -34,8 +32,6 @@ namespace Chroma
   /*! \ingroup fermbc */
   namespace WilsonTypeFermBCArrayEnv
   {
-    extern const bool registered;
-
     //! Helper function for the FermionAction readers
     /*! 
      * \ingroup fermbc

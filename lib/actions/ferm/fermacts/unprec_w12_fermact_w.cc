@@ -1,4 +1,4 @@
-// $Id: unprec_w12_fermact_w.cc,v 2.1 2006-02-09 02:23:29 edwards Exp $
+// $Id: unprec_w12_fermact_w.cc,v 2.2 2006-02-26 03:47:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned W12 fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/unprec_w12_linop_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_w.h"
+#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 namespace Chroma
 {

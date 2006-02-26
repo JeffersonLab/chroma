@@ -1,12 +1,14 @@
-// $Id: gaugebc_aggregate.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: gaugebc_aggregate.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */
 
 #include "actions/gauge/gaugebcs/gaugebc_factory.h"
 #include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
-#include "actions/gauge/gaugebcs/gaugebc_simple.h"
-#include "actions/gauge/gaugebcs/gaugebc_periodic.h"
+#include "actions/gauge/gaugebcs/simple_gaugebc.h"
+#include "actions/gauge/gaugebcs/periodic_gaugebc.h"
+#include "actions/gauge/gaugebcs/schr1link_gaugebc.h"
+#include "actions/gauge/gaugebcs/schr2link_gaugebc.h"
 
 namespace Chroma
 {
@@ -19,6 +21,8 @@ namespace Chroma
       bool success = true; 
       success &= SimpleGaugeBCEnv::registered;
       success &= PeriodicGaugeBCEnv::registered;
+      success &= Schr1LinkGaugeBCEnv::registered;
+      success &= Schr2LinkGaugeBCEnv::registered;
       return success;
     }
 

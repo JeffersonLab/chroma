@@ -1,4 +1,4 @@
-// $Id: twisted_fermbc_w.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: twisted_fermbc_w.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -9,13 +9,8 @@
 namespace Chroma
 {
 
-  // Name for both 4d and 5d 
-  namespace TwistedFermBCEnv {
-    const std::string name = "TWISTED_FERMBC";
-  }
-
   // Readers and writerss for the params 
- //! Read parameters
+  //! Read parameters
   TwistedFermBCParams::TwistedFermBCParams(XMLReader& xml, const string& path)
   {
     XMLReader paramtop(xml, path);
@@ -61,7 +56,7 @@ namespace Chroma
     if ( path != "." )
       push(xml_out, path);
   
-    write(xml_out, "FermBC", TwistedFermBCEnv::name);
+    write(xml_out, "FermBC", WilsonTypeTwistedFermBCEnv::name);
     write(xml_out, "boundary", param.boundary);
     write(xml_out, "phases_by_pi", param.phases_by_pi);
     write(xml_out, "phases_dir", param.phases_dir);
@@ -69,6 +64,7 @@ namespace Chroma
     if( path != "." )
       pop(xml_out);
   }
+
 
   //! Name and registration
   namespace WilsonTypeTwistedFermBCEnv
@@ -82,19 +78,8 @@ namespace Chroma
 					       bc.phases_dir);
     }
 
-    //! Name to be used
-    const std::string name = TwistedFermBCEnv::name;
-
-    //! Register the fermbc
-    const bool registered = TheWilsonTypeFermBCFactory::Instance().registerObject(name, createFermBC);
-  }
-
-
-  //! Name and registration
-  namespace WilsonTypeTwistedFermBCArrayEnv
-  {
     //! Callback function
-    FermBC< multi1d<LatticeFermion> >* createFermBC(XMLReader& xml_in, const std::string& path)
+    FermBC< multi1d<LatticeFermion> >* createFermBCArray(XMLReader& xml_in, const std::string& path)
     {
       TwistedFermBCParams bc(xml_in, path);
       return new TwistedFermBC< multi1d<LatticeFermion> >(bc.boundary,
@@ -103,10 +88,17 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name = TwistedFermBCEnv::name;
+    const std::string name = "TWISTED_FERMBC";
 
-    //! Register the fermbc
-    const bool registered = TheWilsonTypeFermBCArrayFactory::Instance().registerObject(name, createFermBC);
+    //! Register all the factories
+    bool registerAll()
+    {
+      bool foo = true;
+      foo &= Chroma::TheWilsonTypeFermBCFactory::Instance().registerObject(name, createFermBC);
+      foo &= Chroma::TheWilsonTypeFermBCArrayFactory::Instance().registerObject(name, createFermBCArray);
+      return foo;
+    }
+
+    const bool registered = registerAll();
   }
-
 }

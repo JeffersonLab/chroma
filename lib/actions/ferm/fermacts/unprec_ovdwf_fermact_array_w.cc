@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_fermact_array_w.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.cc,v 2.1 2006-02-26 03:47:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/unprec_ovdwf_linop_array_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_w.h"
+#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 namespace Chroma
 {

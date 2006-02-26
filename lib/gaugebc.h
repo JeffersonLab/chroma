@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: gaugebc.h,v 2.1 2006-02-26 03:47:51 edwards Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
@@ -14,7 +14,7 @@
 namespace Chroma
 {
   //! Base class for all gauge action boundary conditions
-  /*! @ingroup actions
+  /*! @ingroup gaugebc
    *
    */
   class GaugeBC
@@ -42,33 +42,7 @@ namespace Chroma
     virtual bool nontrivialP() const = 0;
   };
 
-  //! Abstract class for all gauge action boundary conditions with Schroedinger BC
-  /*! @ingroup actions
-   *
-   *  Schroedinger BC implies periodic in dirs orthog to decay dir, and some
-   *  kind of fixed BC in the decay dir.
-   */
-  class SchrGaugeBC : public GaugeBC
-  {
-  public:
-    //! Virtual destructor to help with cleanup;
-    virtual ~SchrGaugeBC() {}
 
-#if defined(EXPOSE_THIS_STUFF)
-    //! Type of Schroedinger BC
-    virtual SchrFunType getSFBC() const = 0;
-#endif
-
-    //! Decay direction
-    virtual int getDir() const = 0;
-  };
-
-
-
-
- 
-};
-
-
+}
 
 #endif

@@ -1,8 +1,9 @@
-// $Id: fermbcs_s.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: fermbcs_reader_s.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
- *  \brief All fermionic BC
+ *  \brief Fermionic BC reader
  */
 
+#include "actions/ferm/fermbcs/fermbcs_reader_s.h"
 #include "actions/ferm/fermbcs/fermbc_factory_s.h"
 #include "actions/ferm/fermbcs/simple_fermbc_s.h"
 
@@ -12,16 +13,6 @@ namespace Chroma
   //! Name and registration
   namespace StaggeredTypeFermBCEnv
   {
-    bool registerAll(void) 
-    {
-      bool success; 
-      success = StaggeredTypeSimpleFermBCEnv::registered;
-      return success;
-    }
-
-    const bool registered = registerAll();
-
-
     // Helper function for the FermionAction readers
     /*
      * This structure should not be replicated. This routine helps maintain
@@ -31,8 +22,6 @@ namespace Chroma
     Handle< FermBC<LatticeStaggeredFermion> > reader(XMLReader& xml_in, const std::string& path)
     {
       XMLReader top(xml_in, path);
-
-      bool success = registered;  // make sure all codes loaded
 
       std::string fermbc;
       std::string fermbc_path;

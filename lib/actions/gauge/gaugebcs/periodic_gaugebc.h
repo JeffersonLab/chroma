@@ -1,12 +1,11 @@
-// $Id: gaugebc_periodic.h,v 2.1 2006-02-25 19:47:46 edwards Exp $
+// $Id: periodic_gaugebc.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
  *  \brief Periodic gauge boundary conditions
  */
 
-#ifndef __gaugebc_periodic_h__
-#define __gaugebc_periodic_h__
+#ifndef __periodic_gaugebc_h__
+#define __periodic_gaugebc_h__
 
-#include "chromabase.h"
 #include "gaugebc.h"
 #include "actions/gauge/gaugebcs/gaugebc_factory.h"
 

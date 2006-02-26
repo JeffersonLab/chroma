@@ -1,4 +1,4 @@
-// $Id: poly_cheb_fermact_w.cc,v 2.2 2006-02-10 02:45:29 edwards Exp $
+// $Id: poly_cheb_fermact_w.cc,v 2.3 2006-02-26 03:47:51 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -9,7 +9,7 @@
 #include "actions/ferm/linop/polynomial_op.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_w.h"
+#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 namespace Chroma
 {

@@ -1,13 +1,12 @@
 // -*- C++ -*-
-// $Id: gaugebc_simple.h,v 2.1 2006-02-25 19:47:46 edwards Exp $
+// $Id: simple_gaugebc.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
 
-#ifndef __gaugebc_simple_h__
-#define __gaugebc_simple_h__
+#ifndef __simple_gaugebc_h__
+#define __simple_gaugebc_h__
 
-#include "chromabase.h"
 #include "gaugebc.h"
 
 namespace Chroma 

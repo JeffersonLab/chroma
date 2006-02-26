@@ -1,31 +1,31 @@
-// $Id: simple_fermbc_w.cc,v 2.3 2006-02-26 03:47:52 edwards Exp $
+// $Id: periodic_fermbc_w.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
- *  \brief Simple fermionic BC
+ *  \brief Periodic fermionic BC
  */
 
-#include "actions/ferm/fermbcs/simple_fermbc_w.h"
+#include "actions/ferm/fermbcs/periodic_fermbc_w.h"
 #include "actions/ferm/fermbcs/fermbc_factory_w.h"
 
 namespace Chroma
 {
 
   //! Name and registration
-  namespace WilsonTypeSimpleFermBCEnv
+  namespace WilsonTypePeriodicFermBCEnv
   {
     //! Callback function
     FermBC<LatticeFermion>* createFermBC(XMLReader& xml_in, const std::string& path)
     {
-      return new SimpleFermBC<LatticeFermion>(SimpleFermBCParams(xml_in, path));
+      return new PeriodicFermBC<LatticeFermion>();
     }
 
     //! Callback function
     FermBC< multi1d<LatticeFermion> >* createFermBCArray(XMLReader& xml_in, const std::string& path)
     {
-      return new SimpleFermBC< multi1d<LatticeFermion> >(SimpleFermBCParams(xml_in, path));
+      return new PeriodicFermBC< multi1d<LatticeFermion> >();
     }
 
     //! Name to be used
-    const std::string name = "SIMPLE_FERMBC";
+    const std::string name = "PERIODIC_FERMBC";
 
     //! Register all the factories
     bool registerAll()

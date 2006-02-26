@@ -1,12 +1,9 @@
-// $Id: gaugebc_simple.cc,v 2.1 2006-02-25 19:47:46 edwards Exp $
+// $Id: simple_gaugebc.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
 
-#include "chromabase.h"
-#include "gaugebc.h"
-
-#include "actions/gauge/gaugebcs/gaugebc_simple.h"
+#include "actions/gauge/gaugebcs/simple_gaugebc.h"
 #include "actions/gauge/gaugebcs/gaugebc_factory.h"
 
 
@@ -24,8 +21,7 @@ namespace Chroma {
     const std::string name = "SIMPLE_GAUGEBC";
     const bool registered = TheGaugeBCFactory::Instance().registerObject(name,
 									 createGaugeBC);
-
-  };
+  }
 
   SimpleGaugeBCParams::SimpleGaugeBCParams(XMLReader& xml, 
 					   const std::string& path) {
