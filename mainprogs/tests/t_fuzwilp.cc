@@ -1,4 +1,4 @@
-// $Id: t_fuzwilp.cc,v 2.1 2006-02-26 14:31:29 mcneile Exp $
+// $Id: t_fuzwilp.cc,v 2.2 2006-02-26 15:47:10 mcneile Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
   swatch.reset();
   swatch.start();
 
-   fuzwilp(u, j_decay, t_max, n_smear, sm_fact, BlkAccu, BlkMax, xml, 
+   fuzwilp(u, j_decay, tmax, n_smear, sm_fact, BlkAccu, BlkMax, xml, 
 	"Fuzzed_Wilson_Loops");
 
   swatch.stop();
