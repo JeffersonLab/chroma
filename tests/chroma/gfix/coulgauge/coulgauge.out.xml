@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+; $Id: coulgauge.out.xml,v 1.1 2006-02-26 04:30:07 edwards Exp $
+;
+; Coulomb gauge fixing
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>POLYAKOV_LOOP</Name>
+      <Frequency>1</Frequency>
+    </elem>
+
+    <elem>
+      <!-- Coulomb gauge fix -->
+      <Name>COULOMB_GAUGEFIX</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GFAccu>1.0e-5</GFAccu>
+        <GFMax>200</GFMax>
+        <OrDo>false</OrDo>
+        <OrPara>1.0</OrPara>
+        <j_decay>3</j_decay>
+      </Param>
+      <NamedObject>
+        <gfix_id>coul_cfg</gfix_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the config
+      </annotation>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>coul_cfg</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>qio.cfg</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>2.13.0</chroma>
+      <qdp>1.20.1</qdp>
+    </code_version>
+    <run_date>25 Feb 06 23:23:38 EST</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
+
+    </file_xml>
+    <gauge_xml><weak_field>
+</weak_field>
+
+    </gauge_xml>
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994765</w_plaq>
+    <s_plaq>0.994801</s_plaq>
+    <t_plaq>0.994729</t_plaq>
+    <link>0.379318</link>
+    <pollp>
+      <elem>
+        <re>0.967223</re>
+        <im>-0.00121316</im>
+      </elem>
+      <elem>
+        <re>0.967032</re>
+        <im>-0.00129617</im>
+      </elem>
+      <elem>
+        <re>0.967468</re>
+        <im>-0.00114548</im>
+      </elem>
+      <elem>
+        <re>0.879539</re>
+        <im>-0.0104403</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <PolyakovLoop>
+        <update_no>0</update_no>
+        <poly_loop>
+          <elem>
+            <re>0.967223</re>
+            <im>-0.00121316</im>
+          </elem>
+          <elem>
+            <re>0.967032</re>
+            <im>-0.00129617</im>
+          </elem>
+          <elem>
+            <re>0.967468</re>
+            <im>-0.00114548</im>
+          </elem>
+          <elem>
+            <re>0.879539</re>
+            <im>-0.0104403</im>
+          </elem>
+        </poly_loop>
+      </PolyakovLoop>
+    </elem>
+    <elem>
+      <CoulGauge>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>2.13.0</chroma>
+            <qdp>1.20.1</qdp>
+          </code_version>
+          <run_date>25 Feb 06 23:23:38 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>1</version>
+            <GFAccu>1e-05</GFAccu>
+            <GFMax>200</GFMax>
+            <OrDo>false</OrDo>
+            <OrPara>1</OrPara>
+            <j_decay>3</j_decay>
+          </Param>
+          <NamedObject>
+            <gfix_id>coul_cfg</gfix_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994765</w_plaq>
+          <s_plaq>0.994801</s_plaq>
+          <t_plaq>0.994729</t_plaq>
+          <link>0.379318</link>
+          <pollp>
+            <elem>
+              <re>0.967223</re>
+              <im>-0.00121316</im>
+            </elem>
+            <elem>
+              <re>0.967032</re>
+              <im>-0.00129617</im>
+            </elem>
+            <elem>
+              <re>0.967468</re>
+              <im>-0.00114548</im>
+            </elem>
+            <elem>
+              <re>0.879539</re>
+              <im>-0.0104403</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Gauge_fixing_parameters>
+          <GFAccu>1e-05</GFAccu>
+          <GFMax>200</GFMax>
+          <iterations>11</iterations>
+        </Gauge_fixing_parameters>
+        <Gfix_observables>
+          <w_plaq>0.994765</w_plaq>
+          <s_plaq>0.994801</s_plaq>
+          <t_plaq>0.994729</t_plaq>
+          <link>0.795029</link>
+          <pollp>
+            <elem>
+              <re>0.967223</re>
+              <im>-0.00121317</im>
+            </elem>
+            <elem>
+              <re>0.967032</re>
+              <im>-0.00129617</im>
+            </elem>
+            <elem>
+              <re>0.967468</re>
+              <im>-0.00114549</im>
+            </elem>
+            <elem>
+              <re>0.87954</re>
+              <im>-0.0104403</im>
+            </elem>
+          </pollp>
+        </Gfix_observables>
+      </CoulGauge>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>coul_cfg</object_id>
+      </qio_write_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>
