@@ -1,4 +1,8 @@
 02/25/2006 -- Robert Edwards
+	Version 2.13.0. Reorg of the fermbcs and gaugebcs. Now putting in 
+        Schroedinger functional.
+
+02/25/2006 -- Robert Edwards
 	Version 2.12.1. Small cleanups before reorg of fermbc and gaugebc.
         New monomials for clover.
 
