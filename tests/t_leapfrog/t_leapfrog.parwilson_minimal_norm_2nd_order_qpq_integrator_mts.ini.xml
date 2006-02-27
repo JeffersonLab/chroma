@@ -3,7 +3,7 @@
    <Hamiltonian>
     <Monomials>
       <elem>
-	<Name>TWO_FLAVOR_PARWILSON_FERM_MONOMIAL</Name>
+	<Name>TWO_FLAVOR_EOPREC_CONSTDET_FERM_MONOMIAL</Name>
         <InvertParam>
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
@@ -23,7 +23,7 @@
         </ChronologicalPredictor>
       </elem>
       <elem>
-	<Name>TWO_FLAVOR_PARWILSON_HASENBUSCH_FERM_MONOMIAL</Name>
+	<Name>TWO_FLAVOR_EOPREC_CONSTDET_HASENBUSCH_FERM_MONOMIAL</Name>
 	<InvertParam>
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
@@ -61,7 +61,7 @@
         </FermionActionPrec>
       </elem>
       <elem>
-	<Name>WILSON_GAUGEACT_MONOMIAL</Name>
+	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
 	   <Name>WILSON_GAUGEACT</Name>
 	   <beta>5.2</beta>
@@ -73,7 +73,7 @@
     </Monomials>
    </Hamiltonian>
    <MDIntegrator>
-        <Name>LCM_PQP_LEAPFROG_INTEGRATOR_MTS</Name>
+        <Name>LCM_MINIMUM_NORM_2ND_ORDER_QPQ_INTEGRATOR_MTS</Name>
 	<tau>1.0</tau>
 	<number_of_timescales>3</number_of_timescales>
 	<monomial_list>
@@ -81,7 +81,8 @@
 	  <elem>1</elem>
 	  <elem>0</elem>
 	</monomial_list>
-	<n_steps_list>3 2 5</n_steps_list>
+	<n_steps_list>1 1 1</n_steps_list>
+	<lambda_list>0.19 0.19 0.19</lambda_list>
    </MDIntegrator>
    <!--MDIntegrator>
 	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>

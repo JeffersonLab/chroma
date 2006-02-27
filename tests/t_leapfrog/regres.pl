@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.8 2006-02-16 02:23:36 bjoo Exp $
+#  $Id: regres.pl,v 1.9 2006-02-27 17:06:17 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -17,7 +17,7 @@
 	 output      => "t_leapfrog.unprec_clover.candidate.xml",
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.unprec_clover.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.unprec_clover.out.xml" ,
-     },     
+     },  
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 
@@ -26,6 +26,18 @@
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_2flav_clover.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_2flav_clover.out.xml" ,
      },
+
+
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_2flav_clover_ee_oo.ini.xml" , 
+	 output      => "t_leapfrog.prec_2flav_clover.ee_oo_candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_2flav_clover_ee_oo.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_2flav_clover_ee_oo.out.xml" ,
+     },
+
+
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 
@@ -42,6 +54,33 @@
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_parwilson.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_parwilson.out.xml" ,
      },
+
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.parwilson_pqp_integrator_mts.ini.xml" , 
+	 output      => "t_leapfrog.parwilson_pqp_integrator_mts.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.parwilson_pqp_integrator_mts.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.parwilson_pqp_integrator_mts.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.parwilson_minimal_norm_2nd_order_integrator_mts.ini.xml" , 
+	 output      => "t_leapfrog.parwilson_minimal_norm_2nd_order_integrator_mts.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.parwilson_minimal_norm_2nd_order_integrator_mts.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.parwilson_minimal_norm_2nd_order_integrator_mts.out.xml" ,
+     },
+
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.parwilson_minimal_norm_2nd_order_qpq_integrator_mts.ini.xml" , 
+	 output      => "t_leapfrog.parwilson_minimal_norm_2nd_order_qpq_integrator_mts.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.parwilson_minimal_norm_2nd_order_qpq_integrator_mts.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.parwilson_minimal_norm_2nd_order_qpq_integrator_mts.out.xml" ,
+     },
+
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 
