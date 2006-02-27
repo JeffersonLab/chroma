@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.64 2006-02-26 21:40:00 edwards Exp $
+# $Id: Makefile.in,v 2.65 2006-02-27 15:34:38 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -239,6 +239,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
 	update/molecdyn/integrator/lcm_sw_min_mixed.cc \
+	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc \
+	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc \
+	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -557,7 +560,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	integrator_aggregate.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
 	lcm_pqp_leapfrog.$(OBJEXT) lcm_sexton_weingarten.$(OBJEXT) \
 	lcm_minimum_norm2_integrator.$(OBJEXT) \
-	lcm_sw_min_mixed.$(OBJEXT) global_metropolis_accrej.$(OBJEXT) \
+	lcm_sw_min_mixed.$(OBJEXT) \
+	lcm_minimum_norm2_integrator.$(OBJEXT) \
+	lcm_minimum_norm2_integrator_mts.$(OBJEXT) \
+	lcm_minimum_norm2_qpq_integrator_mts.$(OBJEXT) \
+	lcm_pqp_leapfrog_mts.$(OBJEXT) \
+	global_metropolis_accrej.$(OBJEXT) \
 	predictor_aggregate.$(OBJEXT) zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
 	linear_extrap_predictor.$(OBJEXT) lu_solve.$(OBJEXT) \
@@ -890,6 +898,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
 	update/molecdyn/integrator/lcm_sexton_weingarten.h \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.h \
+	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h \
+	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h \
+	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
 	update/molecdyn/integrator/lcm_sw_min_mixed.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
@@ -1466,6 +1477,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
 	update/molecdyn/integrator/lcm_sexton_weingarten.h \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.h \
+	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h \
+	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h \
+	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
 	update/molecdyn/integrator/lcm_sw_min_mixed.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
@@ -1914,6 +1928,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
 	update/molecdyn/integrator/lcm_sw_min_mixed.cc \
+	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
+	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc \
+	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc \
+	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -2395,7 +2413,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/last_solution_predictor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_integrator_leaps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_minimum_norm2_integrator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_pqp_leapfrog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_pqp_leapfrog_mts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sexton_weingarten.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sw_min_mixed.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_double_pass_w.Po@am__quote@
@@ -5170,6 +5191,48 @@ lcm_sw_min_mixed.obj: update/molecdyn/integrator/lcm_sw_min_mixed.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sw_min_mixed.cc' object='lcm_sw_min_mixed.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sw_min_mixed.obj `if test -f 'update/molecdyn/integrator/lcm_sw_min_mixed.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sw_min_mixed.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sw_min_mixed.cc'; fi`
+
+lcm_minimum_norm2_integrator_mts.o: update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_minimum_norm2_integrator_mts.o -MD -MP -MF "$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Tpo" -c -o lcm_minimum_norm2_integrator_mts.o `test -f 'update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Tpo" "$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Po"; else rm -f "$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc' object='lcm_minimum_norm2_integrator_mts.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_minimum_norm2_integrator_mts.o `test -f 'update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc
+
+lcm_minimum_norm2_integrator_mts.obj: update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_minimum_norm2_integrator_mts.obj -MD -MP -MF "$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Tpo" -c -o lcm_minimum_norm2_integrator_mts.obj `if test -f 'update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Tpo" "$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Po"; else rm -f "$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc' object='lcm_minimum_norm2_integrator_mts.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_minimum_norm2_integrator_mts.obj `if test -f 'update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc'; fi`
+
+lcm_minimum_norm2_qpq_integrator_mts.o: update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_minimum_norm2_qpq_integrator_mts.o -MD -MP -MF "$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Tpo" -c -o lcm_minimum_norm2_qpq_integrator_mts.o `test -f 'update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Tpo" "$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Po"; else rm -f "$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc' object='lcm_minimum_norm2_qpq_integrator_mts.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_minimum_norm2_qpq_integrator_mts.o `test -f 'update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc
+
+lcm_minimum_norm2_qpq_integrator_mts.obj: update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_minimum_norm2_qpq_integrator_mts.obj -MD -MP -MF "$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Tpo" -c -o lcm_minimum_norm2_qpq_integrator_mts.obj `if test -f 'update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Tpo" "$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Po"; else rm -f "$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc' object='lcm_minimum_norm2_qpq_integrator_mts.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_minimum_norm2_qpq_integrator_mts.obj `if test -f 'update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc'; fi`
+
+lcm_pqp_leapfrog_mts.o: update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog_mts.o -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog_mts.Tpo" -c -o lcm_pqp_leapfrog_mts.o `test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_pqp_leapfrog_mts.Tpo" "$(DEPDIR)/lcm_pqp_leapfrog_mts.Po"; else rm -f "$(DEPDIR)/lcm_pqp_leapfrog_mts.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc' object='lcm_pqp_leapfrog_mts.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog_mts.o `test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc
+
+lcm_pqp_leapfrog_mts.obj: update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_pqp_leapfrog_mts.obj -MD -MP -MF "$(DEPDIR)/lcm_pqp_leapfrog_mts.Tpo" -c -o lcm_pqp_leapfrog_mts.obj `if test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_pqp_leapfrog_mts.Tpo" "$(DEPDIR)/lcm_pqp_leapfrog_mts.Po"; else rm -f "$(DEPDIR)/lcm_pqp_leapfrog_mts.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc' object='lcm_pqp_leapfrog_mts.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_pqp_leapfrog_mts.obj `if test -f 'update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc'; fi`
 
 global_metropolis_accrej.o: update/molecdyn/hmc/global_metropolis_accrej.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.o -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/hmc/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/hmc/global_metropolis_accrej.cc; \

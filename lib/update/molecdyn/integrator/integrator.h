@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: integrator.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: integrator.h,v 2.1 2006-02-27 15:34:39 bjoo Exp $
 
 /*! \file
  * \brief HMD integrators
@@ -23,6 +23,11 @@
 #include "update/molecdyn/integrator/lcm_sexton_weingarten.h"
 #include "update/molecdyn/integrator/lcm_minimum_norm2_integrator.h"
 #include "update/molecdyn/integrator/lcm_sw_min_mixed.h"
-#include "update/molecdyn/integrator/integrator_aggregate.h"
 
+// Multi timescale integrators from Carsten
+#include "update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h"
+#include "update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h"
+#include "update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h"
+
+#include "update/molecdyn/integrator/integrator_aggregate.h"
 #endif

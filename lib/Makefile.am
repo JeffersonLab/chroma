@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.52 2006-02-26 21:37:49 edwards Exp $
+# $Id: Makefile.am,v 2.53 2006-02-27 15:34:38 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -199,6 +199,9 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
 	update/molecdyn/integrator/lcm_sexton_weingarten.h \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.h \
+	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h \
+	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h \
+	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
 	update/molecdyn/integrator/lcm_sw_min_mixed.h \
 	update/molecdyn/hmc/hmc.h\
 	update/molecdyn/hmc/abs_hmc.h \
@@ -692,6 +695,10 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
 	update/molecdyn/integrator/lcm_sw_min_mixed.cc \
+	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
+	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc \
+	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc \
+	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
