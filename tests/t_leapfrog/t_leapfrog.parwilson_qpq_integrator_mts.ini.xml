@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+   <Hamiltonian>
+    <Monomials>
+      <elem>
+	<Name>TWO_FLAVOR_PARWILSON_FERM_MONOMIAL</Name>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+          <FermAct>PARWILSON</FermAct>
+          <Kappa>0.177</Kappa>
+          <H> 0.8 </H>
+	  <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+	  </FermionBC>
+        </FermionAction>
+        <ChronologicalPredictor>
+          <Name>LAST_SOLUTION_4D_PREDICTOR</Name>
+        </ChronologicalPredictor>
+      </elem>
+      <elem>
+	<Name>TWO_FLAVOR_PARWILSON_HASENBUSCH_FERM_MONOMIAL</Name>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+          <FermAct>PARWILSON</FermAct>
+	  <Kappa>0.11</Kappa>
+	  <H>0.5</H>
+          <!--AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam-->
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <FermionActionPrec>
+          <FermAct>PARWILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <H>0.8</H>
+          <!--AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam-->
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionActionPrec>
+      </elem>
+      <elem>
+	<Name>WILSON_GAUGEACT_MONOMIAL</Name>
+	<GaugeAction>
+	   <Name>WILSON_GAUGEACT</Name>
+	   <beta>5.2</beta>
+	   <GaugeBC>
+		<Name>PERIODIC_GAUGEBC</Name>
+           </GaugeBC>
+        </GaugeAction>
+      </elem>
+    </Monomials>
+   </Hamiltonian>
+   <MDIntegrator>
+        <Name>LCM_PQP_LEAPFROG_INTEGRATOR_MTS</Name>
+	<tau>1.0</tau>
+	<number_of_timescales>3</number_of_timescales>
+	<monomial_list>
+	  <elem>2</elem>
+	  <elem>1</elem>
+	  <elem>0</elem>
+	</monomial_list>
+	<n_steps_list>3 2 5</n_steps_list>
+   </MDIntegrator>
+   <!--MDIntegrator>
+	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
+	<n_steps>100</n_steps>
+	<tau0>0.05</tau0>
+   </MDIntegratori-->
+   <GaugeStartup>
+	<cfg_type>UNIT</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>2 2 2 2</nrow>
+</LeapfrogTest>
