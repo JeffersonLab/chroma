@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+; $Id: fuzwilp.out.xml,v 1.1 2006-02-27 05:51:01 edwards Exp $
+;
+; Test input file for chroma program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>POLYAKOV_LOOP</Name>
+      <Frequency>1</Frequency>
+    </elem>
+
+    <elem>
+      <!-- Fuzzed Wilson loops -->
+      <Name>FUZZED_WILSON_LOOP</Name>
+      <Frequency>1</Frequency>
+      <tmax>6</tmax>
+      <j_decay>3</j_decay>
+      <n_smear>2</n_smear>
+      <sm_fact>2.5</sm_fact>
+      <BlkMax>20</BlkMax>
+      <BlkAccu>1.0e-5</BlkAccu>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>2.13.1</chroma>
+      <qdp>1.20.1</qdp>
+    </code_version>
+    <run_date>27 Feb 06 00:44:00 EST</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
+
+    </file_xml>
+    <gauge_xml><weak_field>
+</weak_field>
+
+    </gauge_xml>
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994765</w_plaq>
+    <s_plaq>0.994801</s_plaq>
+    <t_plaq>0.994729</t_plaq>
+    <link>0.379318</link>
+    <pollp>
+      <elem>
+        <re>0.967223</re>
+        <im>-0.00121316</im>
+      </elem>
+      <elem>
+        <re>0.967032</re>
+        <im>-0.00129617</im>
+      </elem>
+      <elem>
+        <re>0.967468</re>
+        <im>-0.00114548</im>
+      </elem>
+      <elem>
+        <re>0.879539</re>
+        <im>-0.0104403</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <PolyakovLoop>
+        <update_no>0</update_no>
+        <poly_loop>
+          <elem>
+            <re>0.967223</re>
+            <im>-0.00121316</im>
+          </elem>
+          <elem>
+            <re>0.967032</re>
+            <im>-0.00129617</im>
+          </elem>
+          <elem>
+            <re>0.967468</re>
+            <im>-0.00114548</im>
+          </elem>
+          <elem>
+            <re>0.879539</re>
+            <im>-0.0104403</im>
+          </elem>
+        </poly_loop>
+      </PolyakovLoop>
+    </elem>
+    <elem>
+      <APE_Smeared_Wilsonloop>
+        <update_no>0</update_no>
+        <fuz_wlp1>
+          <lengthr>2</lengthr>
+          <r>0</r>
+          <wloopr>0.996309 0.993743 0.991236 0.988823</wloopr>
+          <r>1</r>
+          <wloopr>0.996013 0.993413 0.990758 0.988269</wloopr>
+        </fuz_wlp1>
+        <fuz_wlp2>
+          <lengthr>2</lengthr>
+          <r>0</r>
+          <s>0</s>
+          <wlooprs>0.996062 0.993448 0.990939 0.988385</wlooprs>
+          <r>1</r>
+          <s>0</s>
+          <wlooprs>0.995799 0.993241 0.990639 0.98817</wlooprs>
+          <s>1</s>
+          <wlooprs>0.995606 0.992995 0.990265 0.987665</wlooprs>
+        </fuz_wlp2>
+      </APE_Smeared_Wilsonloop>
+    </elem>
+  </InlineObservables>
+</chroma>

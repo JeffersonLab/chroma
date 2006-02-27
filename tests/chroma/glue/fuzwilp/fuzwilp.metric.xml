@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/APE_Smeared_Wilsonloop/fuz_wlp1/wloopr[1]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/APE_Smeared_Wilsonloop/fuz_wlp1/wloopr[2]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/APE_Smeared_Wilsonloop/fuz_wlp2/wlooprs[1]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/APE_Smeared_Wilsonloop/fuz_wlp2/wlooprs[2]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/APE_Smeared_Wilsonloop/fuz_wlp2/wlooprs[3]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>
