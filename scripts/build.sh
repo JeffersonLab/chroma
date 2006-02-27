@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: build.sh,v 1.4 2006-02-04 16:11:37 edwards Exp $
+# $Id: build.sh,v 1.5 2006-02-27 16:37:23 edwards Exp $
 #
 #  Original author: Zbigniew Sroczynski
 #  See README_buildtest.sh for more information.
@@ -17,7 +17,7 @@ failcnt=0
 
 # Send mail to these addresses
 # In case of failure mail everyone on this list  
-failmailto="edwards@jlab.org bjoo@jlab.org mcneile@sune.amtp.liv.ac.uk"
+failmailto="edwards@jlab.org bjoo@jlab.org mcneile@jlab.org"
 
 # In case of success send to archive list only
 successmailto=""
@@ -42,7 +42,7 @@ echo "do not send out successes" > /dev/null
 # Send mail to indicate the tests are all done -- send to everyone
 finishmail(){
     mail -s "buildtest: All Tests Complete: $failcnt errors" $failmailto &> /dev/null <<EOF
-All tests done. 
+All tests done: $failcnt errors
 EOF
 }
 
