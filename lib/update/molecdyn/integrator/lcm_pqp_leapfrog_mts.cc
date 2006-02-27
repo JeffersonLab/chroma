@@ -1,4 +1,4 @@
-// $Id: lcm_pqp_leapfrog_mts.cc,v 2.1 2006-02-27 15:34:40 bjoo Exp $
+// $Id: lcm_pqp_leapfrog_mts.cc,v 2.2 2006-02-27 17:09:21 bjoo Exp $
 
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
@@ -24,7 +24,7 @@ namespace Chroma {
       return new LatColMatPQPLeapfrogIntegratorMts(p, H);
     }
 
-    const std::string name = "LCM_PQP_LEAPFROG_INTEGRATOR_MTS";
+    const std::string name = std::string("LCM_PQP_LEAPFROG_INTEGRATOR_MTS");
     const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
   };
 

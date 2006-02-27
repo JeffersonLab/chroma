@@ -16,7 +16,7 @@ bool linkageHack(void)
   foo &= WilsonTypeFermMonomialAggregrateEnv::registered;
     
   // MD Integrators
-  foo &= LatColMatPQPLeapfrogIntegratorEnv::registered;
+  foo &= LCMMDIntegratorAggregateEnv::registered;
     
   // Chrono predictor
   foo &= ChronoPredictorAggregrateEnv::registered;
