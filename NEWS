@@ -1,3 +1,7 @@
+02/27/2006 -- Robert Edwards
+	Version 2.13.1. Some mods in supporting staggered spectrum as an inline.
+        Some changes by Alistair Hart via Craig McNeile to fuzzed wilson loops.
+
 02/25/2006 -- Robert Edwards
 	Version 2.13.0. Reorg of the fermbcs and gaugebcs. Now putting in 
         Schroedinger functional.
