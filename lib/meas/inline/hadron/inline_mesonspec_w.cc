@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 2.1 2006-02-28 20:55:32 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 2.2 2006-02-28 21:40:45 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -189,7 +189,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 11);
+    write(xml_out, "out_version", 1);
     pop(xml_out);
 
 
@@ -439,7 +439,7 @@ namespace Chroma
     }
     pop(xml_array);
 
-    // Do the mesons first
+    // Do the mesons
     {
       // Length of lattice in decay direction
       int length = phases.numSubsets();
