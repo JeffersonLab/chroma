@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 2.2 2006-02-28 19:59:18 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -189,7 +189,7 @@ namespace Chroma
     {
       string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-      push(xml_out, "spectrum_w");
+      push(xml_out, "hadspec_w");
       write(xml_out, "update_no", update_no);
       write(xml_out, "xml_file", xml_file);
       pop(xml_out);
