@@ -300,7 +300,7 @@ regression test spectrum output is kept within the chroma xml output
       <chroma>2.13.1</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>28 Feb 06 15:54:14 EST</run_date>
+    <run_date>28 Feb 06 16:45:46 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -361,7 +361,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.13.1</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>28 Feb 06 15:54:14 EST</run_date>
+          <run_date>28 Feb 06 16:45:46 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -452,7 +452,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.13.1</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>28 Feb 06 15:54:14 EST</run_date>
+          <run_date>28 Feb 06 16:45:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -785,7 +785,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.13.1</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>28 Feb 06 15:54:15 EST</run_date>
+          <run_date>28 Feb 06 16:45:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -878,7 +878,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.13.1</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>28 Feb 06 15:54:15 EST</run_date>
+          <run_date>28 Feb 06 16:45:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1219,7 +1219,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>2.13.1</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>28 Feb 06 15:54:17 EST</run_date>
+          <run_date>28 Feb 06 16:45:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1248,7 +1248,7 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Output_version>
-          <out_version>11</out_version>
+          <out_version>1</out_version>
         </Output_version>
         <Observables>
           <w_plaq>0.994804</w_plaq>
@@ -1472,28 +1472,30 @@ regression test spectrum output is kept within the chroma xml output
                 <sink_disp_type>A0xNABLA_T1-DERIV</sink_disp_type>
               </elem>
             </SourceSinkType>
-            <momenta>
-              <elem>
-                <sink_mom_num>0</sink_mom_num>
-                <sink_mom>0 0 0</sink_mom>
-                <mesprop>0.154269 -0.00014082 -0.000104717 -9.02546e-05 -9.03243e-05 -9.17303e-05 -0.00010603 -0.000139952</mesprop>
-              </elem>
-              <elem>
-                <sink_mom_num>1</sink_mom_num>
-                <sink_mom>1 0 0</sink_mom>
-                <mesprop>0.0129544 -4.41512e-06 -3.41697e-07 5.13638e-07 -4.11702e-07 6.07244e-07 -2.71744e-07 -4.03513e-06</mesprop>
-              </elem>
-              <elem>
-                <sink_mom_num>2</sink_mom_num>
-                <sink_mom>1 1 0</sink_mom>
-                <mesprop>0.00097449 -2.34764e-07 1.07845e-07 -2.86222e-07 2.08764e-08 1.76736e-07 -1.02763e-07 -1.71956e-07</mesprop>
-              </elem>
-              <elem>
-                <sink_mom_num>3</sink_mom_num>
-                <sink_mom>1 1 1</sink_mom>
-                <mesprop>9.18193e-05 1.59056e-08 5.81298e-09 -4.02265e-09 2.53444e-11 2.49814e-09 -5.44098e-09 3.08581e-08</mesprop>
-              </elem>
-            </momenta>
+            <Mesons>
+              <momenta>
+                <elem>
+                  <sink_mom_num>0</sink_mom_num>
+                  <sink_mom>0 0 0</sink_mom>
+                  <mesprop>0.154269 -0.00014082 -0.000104717 -9.02546e-05 -9.03243e-05 -9.17303e-05 -0.00010603 -0.000139952</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>1</sink_mom_num>
+                  <sink_mom>1 0 0</sink_mom>
+                  <mesprop>0.0129544 -4.41512e-06 -3.41697e-07 5.13638e-07 -4.11702e-07 6.07244e-07 -2.71744e-07 -4.03513e-06</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>2</sink_mom_num>
+                  <sink_mom>1 1 0</sink_mom>
+                  <mesprop>0.00097449 -2.34764e-07 1.07845e-07 -2.86222e-07 2.08764e-08 1.76736e-07 -1.02763e-07 -1.71956e-07</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>3</sink_mom_num>
+                  <sink_mom>1 1 1</sink_mom>
+                  <mesprop>9.18193e-05 1.59056e-08 5.81298e-09 -4.02265e-09 2.53444e-11 2.49814e-09 -5.44098e-09 3.08581e-08</mesprop>
+                </elem>
+              </momenta>
+            </Mesons>
           </elem>
         </Wilson_hadron_measurements>
       </MesonSpectrum>
