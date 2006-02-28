@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.53 2006-02-27 15:34:38 bjoo Exp $
+# $Id: Makefile.am,v 2.54 2006-02-28 20:55:48 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -478,6 +478,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_multi_propagator_w.h \
 	meas/inline/hadron/inline_seqsource_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
+	meas/inline/hadron/inline_mesonspec_w.h \
 	meas/inline/hadron/inline_spectrum_w.h \
 	meas/inline/hadron/inline_spectrumOct_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
@@ -897,6 +898,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_multi_propagator_w.cc \
 	meas/inline/hadron/inline_seqsource_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
+	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_spectrum_w.cc \
 	meas/inline/hadron/inline_spectrumOct_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
