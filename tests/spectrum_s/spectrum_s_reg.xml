@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<spectrum_s>
+<annotation>
+; $Id: spectrum_s_reg.xml,v 1.1 2006-02-28 10:41:23 mcneile Exp $
+;
+; SPECTRUM_S input file.
+;
+; This program is the input file for a spectrum_w test run on Wilson-type
+; propagators
+;
+; NOTE: steps needed to run
+;
+;
+</annotation>
+
+<Param>
+ <version>9</version>
+ 
+ <Meson_local>true</Meson_local>
+ <Baryon_local>true</Baryon_local>
+ <Baryon_vary>true</Baryon_vary>
+ <singletPs_Conn_local>true</singletPs_Conn_local>
+ <eight_pions>true</eight_pions>
+ <eight_scalars>true</eight_scalars>
+ <eight_rhos>true</eight_rhos>
+<LocalPion_vary>true</LocalPion_vary>
+
+<fuzz_width>2</fuzz_width>
+ <disconnected_local>true</disconnected_local>
+ <disconnected_fuzz>false</disconnected_fuzz>
+<Number_sample>4</Number_sample>
+<CFGNO>234</CFGNO>
+<volume_src>T_DILUTE_GAUSS</volume_src>
+
+<gauge_invar_oper>true</gauge_invar_oper>
+<sym_shift_oper>true</sym_shift_oper>
+<loop_checkpoint>true</loop_checkpoint>
+<src_seperation>4</src_seperation>
+
+<do_gauge_transform>false</do_gauge_transform>
+
+<GFAccu>2.0e-6</GFAccu>
+<OrPara>1.8</OrPara>
+<GFMax>500</GFMax>
+
+<j_decay>3</j_decay>
+ <nrow>4 4 4 4</nrow>
+ <boundary>1 1 1 1</boundary>
+<t_srce> 0 0 0 0 </t_srce>
+</Param>
+
+<Cfg>
+ <cfg_type>DISORDERED</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+
+<Inversion>
+<Mass>0.1</Mass>
+<u0>0.463032</u0>
+<RsdCG>0.00001</RsdCG>
+<MaxCG>3000</MaxCG>
+</Inversion>
+
+</spectrum_s>
