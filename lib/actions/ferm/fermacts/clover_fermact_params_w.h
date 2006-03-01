@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_fermact_params_w.h,v 2.1 2005-12-03 21:19:38 edwards Exp $
+// $Id: clover_fermact_params_w.h,v 2.2 2006-03-01 18:58:23 bjoo Exp $
 /*! \file
  *  \brief Parameters for Clover fermion action
  */
@@ -23,7 +23,12 @@ namespace Chroma
     Real clovCoeffT;
     Real u0;
 
+    // Optional Anisotropy
     AnisoParam_t anisoParam;
+    
+    // Optional External field strength
+    bool ext_fieldP;
+    Real ext_field_strength;
   };
 
 
