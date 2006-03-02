@@ -62,6 +62,23 @@ Make a propagator source
     </elem>
 
     <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>WALL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+        </Source>
+      </Param>
+      <NamedObject>
+        <source_id>wl_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
       <Name>QIO_WRITE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
