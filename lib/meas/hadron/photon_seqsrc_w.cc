@@ -1,4 +1,4 @@
-// $Id: photon_seqsrc_w.cc,v 1.3 2006-02-13 22:27:45 edwards Exp $
+// $Id: photon_seqsrc_w.cc,v 1.4 2006-03-02 17:38:03 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -185,6 +185,7 @@ namespace Chroma
 
 	  omega = sqrt( Real(c_sq/xi_sq)*norm2_ppf - params.Q_sq );
 	}
+	QDPIO::cout << __func__ << ": omega= " << omega << endl;
 
 	// Multiply in exp from time dependence of 4-vector
 	// Note positive sign of omega
