@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 2.3 2006-03-01 20:14:20 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 2.4 2006-03-03 07:32:22 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -410,7 +410,7 @@ namespace Chroma
     }
 
     string snk_type;
-    if (sink_type[0] == "POINT_SOURCE")
+    if (sink_type[0] == "POINT_SINK")
       snk_type = "Point";
     else if (sink_type[0] == "SHELL_SINK")
       snk_type = "Shell";
