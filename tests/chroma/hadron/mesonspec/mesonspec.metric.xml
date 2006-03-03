@@ -8,17 +8,21 @@
 
 <assertion xpath="/chroma/InlineObservables/elem[3]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[4]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[5]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[5]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[6]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[6]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[7]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[8]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 
 <!-- p=[0,0,0] -->
-<assertion xpath="/chroma/InlineObservables/elem[7]/MesonSpectrum/Wilson_hadron_measurements/elem[1]/Mesons/momenta/elem[1]/mesprop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[9]/MesonSpectrum/Wilson_hadron_measurements/elem[1]/Mesons/momenta/elem[1]/mesprop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 <!-- sh-pt, p=[1,0,0] avg -->
-<assertion xpath="/chroma/InlineObservables/elem[7]/MesonSpectrum/Wilson_hadron_measurements/elem[1]/Mesons/momenta/elem[2]/mesprop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[9]/MesonSpectrum/Wilson_hadron_measurements/elem[1]/Mesons/momenta/elem[2]/mesprop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 </assertions>
