@@ -1,6 +1,7 @@
 03/02/2006 -- Robert Edwards
 	Version 2.13.2. Added new partial wall source. More regression tests. Added
-        flop counts on clover.
+        flop counts on clover. Start of new simplistic (minimal) meson and future
+        baryon spectroscopy.
 
 02/27/2006 -- Robert Edwards
 	Version 2.13.1. Some mods in supporting staggered spectrum as an inline.
