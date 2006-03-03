@@ -1,4 +1,4 @@
-// $Id: prec_clover_linop_w.cc,v 2.6 2006-03-01 18:58:23 bjoo Exp $
+// $Id: prec_clover_linop_w.cc,v 2.7 2006-03-03 02:37:39 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -252,8 +252,8 @@ namespace Chroma
   //! Return flops performed by the operator()
   unsigned long EvenOddPrecCloverLinOp::nFlops() const
   {
-    // DO NOT REMEMBER THE CORRECT VALUE HERE!!!
-    return 0;    // NEED CORRECT VALUE
+    unsigned long cbsite_flops = 2*D.nFlops()+2*clov.nFlops()+4*Nc*Ns;
+    return cbsite_flops*(Layout::sitesOnNode()/2);
   }
 
   //! Get the log det of the even even part

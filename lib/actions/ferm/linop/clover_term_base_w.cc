@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 2.6 2006-02-16 19:03:56 bjoo Exp $
+// $Id: clover_term_base_w.cc,v 2.7 2006-03-03 02:37:39 edwards Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -11,7 +11,7 @@ namespace Chroma
 
   //! Return flops performed by the operator()
   unsigned long 
-  CloverTermBase::nFlops() const {return 0;}     // NOTE: NEED TO FIGURE THIS OUT!!
+  CloverTermBase::nFlops() const {return 552;}     // NOTE: NEED TO FIGURE THIS OUT!!
 
 
   //! Take deriv of D

@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 2.2 2005-12-18 23:53:26 edwards Exp $
+// $Id: unprec_wilson_linop_w.cc,v 2.3 2006-03-03 02:37:39 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -97,6 +97,14 @@ namespace Chroma
       ds_u[mu] *= Real(-0.5);
 
     END_CODE();
+  }
+
+
+  //! Return flops performed by the operator()
+  unsigned long UnprecWilsonLinOp::nFlops() const
+  {
+    unsigned long site_flops = D.nFlops()+4*Nc*Ns;
+    return site_flops*Layout::sitesOnNode();
   }
 
 }; // End Namespace Chroma

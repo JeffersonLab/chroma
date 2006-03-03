@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 2.2 2005-12-18 23:53:26 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 2.3 2006-03-03 02:37:39 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -72,6 +72,9 @@ namespace Chroma
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
 	       enum PlusMinus isign) const;
+
+    //! Return flops performed by the operator()
+    unsigned long nFlops() const;
 
   private:
     Real fact;  // tmp holding  Nd+Mass

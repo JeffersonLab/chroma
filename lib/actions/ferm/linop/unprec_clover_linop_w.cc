@@ -1,4 +1,4 @@
-// $Id: unprec_clover_linop_w.cc,v 2.5 2006-03-01 18:58:23 bjoo Exp $
+// $Id: unprec_clover_linop_w.cc,v 2.6 2006-03-03 02:37:39 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -105,8 +105,8 @@ namespace Chroma
   //! Return flops performed by the operator()
   unsigned long UnprecCloverLinOp::nFlops() const
   {
-    // DO NOT REMEMBER THE CORRECT VALUE HERE!!!
-    return 0;    // NEED CORRECT VALUE
+    unsigned long site_flops = D.nFlops()+clov.nFlops()+4*Nc*Ns;
+    return site_flops*Layout::sitesOnNode();
   }
 
 } // End Namespace Chroma
