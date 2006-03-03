@@ -97,18 +97,6 @@ Make a propagator source
               <dir>0</dir>
               <coord>0</coord>
             </elem>
-            <elem>
-              <dir>1</dir>
-              <coord>1</coord>
-            </elem>
-            <elem>
-              <dir>2</dir>
-              <coord>3</coord>
-            </elem>
-            <elem>
-              <dir>1</dir>
-              <coord>2</coord>
-            </elem>
           </FixedDirs>
           <j_decay>3</j_decay>
           <t_source>0</t_source>
@@ -167,10 +155,10 @@ Make a propagator source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.13.1</chroma>
+      <chroma>2.13.2</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>02 Mar 06 17:23:24 EST</run_date>
+    <run_date>03 Mar 06 02:25:56 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -228,10 +216,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.1</chroma>
+            <chroma>2.13.2</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>02 Mar 06 17:23:24 EST</run_date>
+          <run_date>03 Mar 06 02:25:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -305,10 +293,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.1</chroma>
+            <chroma>2.13.2</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>02 Mar 06 17:23:24 EST</run_date>
+          <run_date>03 Mar 06 02:25:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -394,10 +382,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.1</chroma>
+            <chroma>2.13.2</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>02 Mar 06 17:23:25 EST</run_date>
+          <run_date>03 Mar 06 02:25:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -469,10 +457,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.1</chroma>
+            <chroma>2.13.2</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>02 Mar 06 17:23:25 EST</run_date>
+          <run_date>03 Mar 06 02:25:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -502,18 +490,6 @@ Make a propagator source
         <elem>
           <dir>0</dir>
           <coord>0</coord>
-        </elem>
-        <elem>
-          <dir>1</dir>
-          <coord>1</coord>
-        </elem>
-        <elem>
-          <dir>2</dir>
-          <coord>3</coord>
-        </elem>
-        <elem>
-          <dir>1</dir>
-          <coord>2</coord>
         </elem>
       </FixedDirs>
       <j_decay>3</j_decay>
@@ -557,7 +533,7 @@ Make a propagator source
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 0</source_corr>
+          <source_corr>192 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
