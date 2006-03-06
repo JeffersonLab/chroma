@@ -297,8 +297,18 @@ Meson Spectrum input
        </Param>
       <NamedObject>
         <prop_ids>
-          <elem>sh_pt_sink_0</elem>
-          <elem>deriv_pt_sink_0</elem>
+          <elem>
+            <sink_ids>
+              <elem>sh_pt_sink_0</elem>
+              <elem>deriv_pt_sink_0</elem>
+            </sink_ids>
+          </elem>
+          <elem>
+            <sink_ids>
+              <elem>sh_sh_sink_0</elem>
+              <elem>deriv_sh_sink_0</elem>
+            </sink_ids>
+          </elem>
         </prop_ids>
       </NamedObject>
       <!--  
@@ -325,61 +335,21 @@ regression test spectrum output is kept within the chroma xml output
        </Param>
       <NamedObject>
         <prop_ids>
-          <elem>sh_pt_sink_0</elem>
-          <elem>deriv_pt_sink_0</elem>
+          <elem>
+            <sink_ids>
+              <elem>sh_pt_sink_0</elem>
+              <elem>deriv_pt_sink_0</elem>
+            </sink_ids>
+          </elem>
+          <elem>
+            <sink_ids>
+              <elem>sh_sh_sink_0</elem>
+              <elem>deriv_sh_sink_0</elem>
+            </sink_ids>
+          </elem>
         </prop_ids>
       </NamedObject>
-        <xml_file>mesonspec-pt.dat.xml</xml_file>
-    </elem>
-
-    <elem>
-      <annotation>
-         Compute the meson spectrum. 
-         This version is a clone of the one below, however the xml output is
-         written within the same chroma output file
-      </annotation>
-      <Name>MESON_SPECTRUM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>1</version>
-        <mom2_max>3</mom2_max>
-        <avg_equiv_mom>true</avg_equiv_mom>
-       </Param>
-      <NamedObject>
-        <prop_ids>
-          <elem>sh_sh_sink_0</elem>
-          <elem>deriv_sh_sink_0</elem>
-        </prop_ids>
-      </NamedObject>
-      <!--  
-The USER should write to a separate file. However, for the
-regression test spectrum output is kept within the chroma xml output
-         <xml_file>mesonspec-sh.dat.xml</xml_file>
-	-->
-    </elem>
-
-    <elem>
-      <annotation>
-         This is the duplicate of the spectrum run above, but the spectrum output
-         is written to a separate file.
-         NOTE: the user should normally write the spectrum output to a separate file,
-         but for this test the xml spectrum output is contained within the
-         chroma xml output solely for the regression test.
-      </annotation>
-      <Name>MESON_SPECTRUM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>1</version>
-        <mom2_max>3</mom2_max>
-        <avg_equiv_mom>true</avg_equiv_mom>
-       </Param>
-      <NamedObject>
-        <prop_ids>
-          <elem>sh_sh_sink_0</elem>
-          <elem>deriv_sh_sink_0</elem>
-        </prop_ids>
-      </NamedObject>
-        <xml_file>mesonspec-sh.dat.xml</xml_file>
+      <xml_file>mesonspec.dat.xml</xml_file>
     </elem>
 
   </InlineMeasurements>
