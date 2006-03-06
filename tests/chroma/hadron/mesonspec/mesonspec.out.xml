@@ -285,6 +285,77 @@ Meson Spectrum input
       </NamedObject>
     </elem>
 
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>2</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <prop_id>deriv_prop_0</prop_id>
+        <smeared_prop_id>deriv_pt_sink_1</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>2</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <prop_id>deriv_prop_0</prop_id>
+        <smeared_prop_id>deriv_sh_sink_1</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+
     <elem>
       <annotation>
          Compute the meson spectrum. 
@@ -312,12 +383,24 @@ Meson Spectrum input
               <elem>deriv_sh_sink_0</elem>
             </sink_ids>
           </elem>
+          <elem>
+            <sink_ids>
+              <elem>sh_pt_sink_0</elem>
+              <elem>deriv_pt_sink_1</elem>
+            </sink_ids>
+          </elem>
+          <elem>
+            <sink_ids>
+              <elem>sh_sh_sink_0</elem>
+              <elem>deriv_sh_sink_1</elem>
+            </sink_ids>
+          </elem>
         </prop_ids>
       </NamedObject>
       <!--  
 The USER should write to a separate file. However, for the
 regression test spectrum output is kept within the chroma xml output
-         <xml_file>mesonspec-pt.dat.xml</xml_file>
+         <xml_file>mesonspec.dat.xml</xml_file>
 	-->
     </elem>
 
@@ -377,10 +460,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.13.2</chroma>
+      <chroma>2.13.3</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>06 Mar 06 16:17:24 EST</run_date>
+    <run_date>06 Mar 06 17:09:01 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -438,10 +521,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.2</chroma>
+            <chroma>2.13.3</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 16:17:25 EST</run_date>
+          <run_date>06 Mar 06 17:09:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -529,10 +612,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.2</chroma>
+            <chroma>2.13.3</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 16:17:25 EST</run_date>
+          <run_date>06 Mar 06 17:09:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1002,10 +1085,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.2</chroma>
+            <chroma>2.13.3</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 16:17:27 EST</run_date>
+          <run_date>06 Mar 06 17:09:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1095,10 +1178,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.2</chroma>
+            <chroma>2.13.3</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 16:17:28 EST</run_date>
+          <run_date>06 Mar 06 17:09:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1578,14 +1661,318 @@ regression test spectrum output is kept within the chroma xml output
       </sink_smear>
     </elem>
     <elem>
+      <sink_smear>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>5</version>
+            <SinkType>POINT_SINK</SinkType><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+            <j_decay>3</j_decay>
+          </Param>
+          <NamedObject>
+            <prop_id>deriv_prop_0</prop_id>
+            <smeared_prop_id>deriv_pt_sink_1</smeared_prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994804</w_plaq>
+          <s_plaq>0.994798</s_plaq>
+          <t_plaq>0.99481</t_plaq>
+          <link>0.379449</link>
+          <pollp>
+            <elem>
+              <re>0.966586</re>
+              <im>-0.00132089</im>
+            </elem>
+            <elem>
+              <re>0.966366</re>
+              <im>-0.00123499</im>
+            </elem>
+            <elem>
+              <re>0.967146</re>
+              <im>-0.0011231</im>
+            </elem>
+            <elem>
+              <re>0.878769</re>
+              <im>-0.00991386</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Forward_prop_correlator>
+          <forward_prop_corr>0.0115018 0.00094374 0.000360203 0.000163366 0.000113055 0.00016327 0.00036006 0.00094308</forward_prop_corr>
+        </Forward_prop_correlator>
+        <PropSource>
+          <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+        </PropSource>
+        <ForwardProp>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1e-12</RsdCG>
+            <MaxCG>1000</MaxCG>
+            <MROver>1</MROver>
+            <RsdCGPrec>1e-12</RsdCGPrec>
+            <MaxCGPrec>1000</MaxCGPrec>
+          </InvertParam>
+        </ForwardProp>
+        <PropSink>
+          <version>5</version>
+          <SinkType>POINT_SINK</SinkType><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+          <j_decay>3</j_decay>
+        </PropSink>
+        <SinkSmearedProp_correlator>
+          <sink_smeared_prop_corr>0.000989648 8.23905e-05 3.06907e-05 1.39843e-05 9.82333e-06 1.36962e-05 3.13588e-05 7.87857e-05</sink_smeared_prop_corr>
+        </SinkSmearedProp_correlator>
+      </sink_smear>
+    </elem>
+    <elem>
+      <sink_smear>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>5</version>
+            <SinkType>SHELL_SINK</SinkType><Sink>
+      <version>2</version>
+      <SinkType>SHELL_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+            <j_decay>3</j_decay>
+          </Param>
+          <NamedObject>
+            <prop_id>deriv_prop_0</prop_id>
+            <smeared_prop_id>deriv_sh_sink_1</smeared_prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994804</w_plaq>
+          <s_plaq>0.994798</s_plaq>
+          <t_plaq>0.99481</t_plaq>
+          <link>0.379449</link>
+          <pollp>
+            <elem>
+              <re>0.966586</re>
+              <im>-0.00132089</im>
+            </elem>
+            <elem>
+              <re>0.966366</re>
+              <im>-0.00123499</im>
+            </elem>
+            <elem>
+              <re>0.967146</re>
+              <im>-0.0011231</im>
+            </elem>
+            <elem>
+              <re>0.878769</re>
+              <im>-0.00991386</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Forward_prop_correlator>
+          <forward_prop_corr>0.0115018 0.00094374 0.000360203 0.000163366 0.000113055 0.00016327 0.00036006 0.00094308</forward_prop_corr>
+        </Forward_prop_correlator>
+        <PropSource>
+          <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+        </PropSource>
+        <ForwardProp>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1e-12</RsdCG>
+            <MaxCG>1000</MaxCG>
+            <MROver>1</MROver>
+            <RsdCGPrec>1e-12</RsdCGPrec>
+            <MaxCGPrec>1000</MaxCGPrec>
+          </InvertParam>
+        </ForwardProp>
+        <PropSink>
+          <version>5</version>
+          <SinkType>SHELL_SINK</SinkType><Sink>
+      <version>2</version>
+      <SinkType>SHELL_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+          <j_decay>3</j_decay>
+        </PropSink>
+        <SinkSmearedProp_correlator>
+          <sink_smeared_prop_corr>0.0140598 0.000196603 3.1544e-05 1.34893e-05 9.45508e-06 1.32196e-05 3.22401e-05 0.000188268</sink_smeared_prop_corr>
+        </SinkSmearedProp_correlator>
+      </sink_smear>
+    </elem>
+    <elem>
       <MesonSpectrum>
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.2</chroma>
+            <chroma>2.13.3</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 16:17:29 EST</run_date>
+          <run_date>06 Mar 06 17:09:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1612,6 +1999,18 @@ regression test spectrum output is kept within the chroma xml output
                 <sink_ids>
                   <elem>sh_sh_sink_0</elem>
                   <elem>deriv_sh_sink_0</elem>
+                </sink_ids>
+              </elem>
+              <elem>
+                <sink_ids>
+                  <elem>sh_pt_sink_0</elem>
+                  <elem>deriv_pt_sink_1</elem>
+                </sink_ids>
+              </elem>
+              <elem>
+                <sink_ids>
+                  <elem>sh_sh_sink_0</elem>
+                  <elem>deriv_sh_sink_1</elem>
                 </sink_ids>
               </elem>
             </prop_ids>
@@ -1651,6 +2050,438 @@ regression test spectrum output is kept within the chroma xml output
           </pollp>
         </Observables>
         <Wilson_hadron_measurements>
+          <elem>
+            <Masses>0.545455 0.545455</Masses>
+            <t0>0</t0>
+            <ForwardProp>
+              <elem>
+                <version>1</version>
+                <PropSinkSmear>
+                  <version>5</version>
+                  <SinkType>POINT_SINK</SinkType><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+                  <j_decay>3</j_decay>
+                </PropSinkSmear>
+                <ForwardProp>
+                  <version>9</version>
+                  <quarkSpinType>FULL</quarkSpinType>
+                  <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+
+                  <InvertParam>
+                    <invType>CG_INVERTER</invType>
+                    <RsdCG>1e-12</RsdCG>
+                    <MaxCG>1000</MaxCG>
+                    <MROver>1</MROver>
+                    <RsdCGPrec>1e-12</RsdCGPrec>
+                    <MaxCGPrec>1000</MaxCGPrec>
+                  </InvertParam>
+                </ForwardProp>
+                <PropSource>
+                  <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+                  <j_decay>3</j_decay>
+                  <t_source>0</t_source>
+                </PropSource>
+              </elem>
+              <elem>
+                <version>1</version>
+                <PropSinkSmear>
+                  <version>5</version>
+                  <SinkType>POINT_SINK</SinkType><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+                  <j_decay>3</j_decay>
+                </PropSinkSmear>
+                <ForwardProp>
+                  <version>9</version>
+                  <quarkSpinType>FULL</quarkSpinType>
+                  <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+
+                  <InvertParam>
+                    <invType>CG_INVERTER</invType>
+                    <RsdCG>1e-12</RsdCG>
+                    <MaxCG>1000</MaxCG>
+                    <MROver>1</MROver>
+                    <RsdCGPrec>1e-12</RsdCGPrec>
+                    <MaxCGPrec>1000</MaxCGPrec>
+                  </InvertParam>
+                </ForwardProp>
+                <PropSource>
+                  <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+                  <j_decay>3</j_decay>
+                  <t_source>0</t_source>
+                </PropSource>
+              </elem>
+            </ForwardProp>
+            <Forward_prop_correlator>
+              <forward_prop_corr>
+                <elem>0.192609 0.0159808 0.00618063 0.00284181 0.00198267 0.0028389 0.00617589 0.0159631</elem>
+                <elem>0.000989648 8.23905e-05 3.06907e-05 1.39843e-05 9.82333e-06 1.36962e-05 3.13588e-05 7.87857e-05</elem>
+              </forward_prop_corr>
+            </Forward_prop_correlator>
+            <SourceSinkType>
+              <elem>
+                <quark_number>0</quark_number>
+                <source_type>SHELL_SOURCE</source_type>
+                <source_disp_type>NONE</source_disp_type>
+                <sink_type>POINT_SINK</sink_type>
+                <sink_disp_type>NONE</sink_disp_type>
+              </elem>
+              <elem>
+                <quark_number>1</quark_number>
+                <source_type>SHELL_SOURCE</source_type>
+                <source_disp_type>A0xNABLA_T1-DERIV</source_disp_type>
+                <sink_type>POINT_SINK</sink_type>
+                <sink_disp_type>A0xNABLA_T1-DERIV</sink_disp_type>
+              </elem>
+            </SourceSinkType>
+            <Mesons>
+              <momenta>
+                <elem>
+                  <sink_mom_num>0</sink_mom_num>
+                  <sink_mom>0 0 0</sink_mom>
+                  <mesprop>0.0106623 -0.000146253 -0.000108468 -9.32334e-05 -9.33765e-05 -9.47476e-05 -0.000109663 -0.000145695</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>1</sink_mom_num>
+                  <sink_mom>1 0 0</sink_mom>
+                  <mesprop>0.00287491 -1.11495e-05 -2.87119e-06 -4.17316e-07 -1.04604e-06 -2.79564e-07 -2.73339e-06 -1.07203e-05</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>2</sink_mom_num>
+                  <sink_mom>1 1 0</sink_mom>
+                  <mesprop>0.000761723 -6.81693e-07 7.36856e-08 -2.83993e-07 -6.55397e-09 1.93491e-07 -1.39362e-07 -7.02509e-07</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>3</sink_mom_num>
+                  <sink_mom>1 1 1</sink_mom>
+                  <mesprop>0.000116861 7.40423e-08 1.46298e-08 -5.6175e-09 8.74803e-10 3.54856e-09 4.32914e-09 5.96933e-08</mesprop>
+                </elem>
+              </momenta>
+            </Mesons>
+          </elem>
+          <elem>
+            <Masses>0.545455 0.545455</Masses>
+            <t0>0</t0>
+            <ForwardProp>
+              <elem>
+                <version>1</version>
+                <PropSinkSmear>
+                  <version>5</version>
+                  <SinkType>SHELL_SINK</SinkType><Sink>
+      <version>2</version>
+      <SinkType>SHELL_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+                  <j_decay>3</j_decay>
+                </PropSinkSmear>
+                <ForwardProp>
+                  <version>9</version>
+                  <quarkSpinType>FULL</quarkSpinType>
+                  <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+
+                  <InvertParam>
+                    <invType>CG_INVERTER</invType>
+                    <RsdCG>1e-12</RsdCG>
+                    <MaxCG>1000</MaxCG>
+                    <MROver>1</MROver>
+                    <RsdCGPrec>1e-12</RsdCGPrec>
+                    <MaxCGPrec>1000</MaxCGPrec>
+                  </InvertParam>
+                </ForwardProp>
+                <PropSource>
+                  <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+                  <j_decay>3</j_decay>
+                  <t_source>0</t_source>
+                </PropSource>
+              </elem>
+              <elem>
+                <version>1</version>
+                <PropSinkSmear>
+                  <version>5</version>
+                  <SinkType>SHELL_SINK</SinkType><Sink>
+      <version>2</version>
+      <SinkType>SHELL_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+                  <j_decay>3</j_decay>
+                </PropSinkSmear>
+                <ForwardProp>
+                  <version>9</version>
+                  <quarkSpinType>FULL</quarkSpinType>
+                  <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+
+                  <InvertParam>
+                    <invType>CG_INVERTER</invType>
+                    <RsdCG>1e-12</RsdCG>
+                    <MaxCG>1000</MaxCG>
+                    <MROver>1</MROver>
+                    <RsdCGPrec>1e-12</RsdCGPrec>
+                    <MaxCGPrec>1000</MaxCGPrec>
+                  </InvertParam>
+                </ForwardProp>
+                <PropSource>
+                  <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+                  <j_decay>3</j_decay>
+                  <t_source>0</t_source>
+                </PropSource>
+              </elem>
+            </ForwardProp>
+            <Forward_prop_correlator>
+              <forward_prop_corr>
+                <elem>2.7681 0.0382033 0.00643155 0.00278467 0.00193899 0.00278129 0.00642889 0.0381603</elem>
+                <elem>0.0140598 0.000196603 3.1544e-05 1.34893e-05 9.45508e-06 1.32196e-05 3.22401e-05 0.000188268</elem>
+              </forward_prop_corr>
+            </Forward_prop_correlator>
+            <SourceSinkType>
+              <elem>
+                <quark_number>0</quark_number>
+                <source_type>SHELL_SOURCE</source_type>
+                <source_disp_type>NONE</source_disp_type>
+                <sink_type>SHELL_SINK</sink_type>
+                <sink_disp_type>NONE</sink_disp_type>
+              </elem>
+              <elem>
+                <quark_number>1</quark_number>
+                <source_type>SHELL_SOURCE</source_type>
+                <source_disp_type>A0xNABLA_T1-DERIV</source_disp_type>
+                <sink_type>SHELL_SINK</sink_type>
+                <sink_disp_type>A0xNABLA_T1-DERIV</sink_disp_type>
+              </elem>
+            </SourceSinkType>
+            <Mesons>
+              <momenta>
+                <elem>
+                  <sink_mom_num>0</sink_mom_num>
+                  <sink_mom>0 0 0</sink_mom>
+                  <mesprop>0.154269 -0.00014082 -0.000104717 -9.02546e-05 -9.03243e-05 -9.17303e-05 -0.00010603 -0.000139952</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>1</sink_mom_num>
+                  <sink_mom>1 0 0</sink_mom>
+                  <mesprop>0.0129544 -4.41512e-06 -3.41697e-07 5.13638e-07 -4.11702e-07 6.07244e-07 -2.71744e-07 -4.03513e-06</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>2</sink_mom_num>
+                  <sink_mom>1 1 0</sink_mom>
+                  <mesprop>0.00097449 -2.34764e-07 1.07845e-07 -2.86222e-07 2.08764e-08 1.76736e-07 -1.02763e-07 -1.71956e-07</mesprop>
+                </elem>
+                <elem>
+                  <sink_mom_num>3</sink_mom_num>
+                  <sink_mom>1 1 1</sink_mom>
+                  <mesprop>9.18193e-05 1.59056e-08 5.81298e-09 -4.02265e-09 2.53444e-11 2.49814e-09 -5.44098e-09 3.08581e-08</mesprop>
+                </elem>
+              </momenta>
+            </Mesons>
+          </elem>
           <elem>
             <Masses>0.545455 0.545455</Masses>
             <t0>0</t0>
