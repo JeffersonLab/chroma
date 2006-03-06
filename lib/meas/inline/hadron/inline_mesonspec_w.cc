@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 2.5 2006-03-06 21:22:26 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 2.6 2006-03-06 22:14:11 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -239,11 +239,11 @@ namespace Chroma
 	QDP_abort(2);
       }
 
-      multi1d<ForwardProp_t> prop_header(named_obj.sink_ids.size());
-      multi1d<LatticePropagator> quark_propagator(named_obj.sink_ids.size());
-      multi1d<Real> Mass(named_obj.sink_ids.size());
+      multi1d<ForwardProp_t> prop_header(Nprops);
+      multi1d<LatticePropagator> quark_propagator(Nprops);
+      multi1d<Real> Mass(Nprops);
     
-      multi2d<int> bc(params.named_obj.prop_ids.size(), 4); 
+      multi2d<int> bc(Nprops, 4); 
     
       // Now loop over the various fermion masses
       multi1d<string> source_type(Nprops);
@@ -354,7 +354,7 @@ namespace Chroma
       // width of sink smearing is the same since no antisymmetrization
       // is done.
       //
-      for (int loop(1); loop < params.named_obj.prop_ids.size(); ++loop)
+      for (int loop(1); loop < Nprops; ++loop)
       {
 	if (source_type[loop] != source_type[loop])
 	{
@@ -374,7 +374,7 @@ namespace Chroma
       int j_decay = prop_header[0].source_header.j_decay;
       int t0      = prop_header[0].source_header.t_source;
       int bc_spec = bc[0][j_decay] ;
-      for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
+      for (int loop(0); loop < Nprops; ++loop)
       {
 	if (prop_header[loop].source_header.j_decay != j_decay)
 	{
@@ -410,8 +410,8 @@ namespace Chroma
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification
       {
-	multi1d< multi1d<Double> > forward_prop_corr(params.named_obj.prop_ids.size());
-	for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
+	multi1d< multi1d<Double> > forward_prop_corr(Nprops);
+	for (int loop=0; loop < Nprops; ++loop)
 	{
 	  forward_prop_corr[loop] = sumMulti(localNorm2(quark_propagator[loop]), 
 					     phases.getSet());
@@ -455,7 +455,7 @@ namespace Chroma
       QDPIO::cout << "Sink type = "   << snk_type << endl;
 
       push(xml_out, "SourceSinkType");
-      for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
+      for (int loop=0; loop < Nprops; ++loop)
       {
 	push(xml_out, "elem");
 	write(xml_out, "quark_number", loop);
