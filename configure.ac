@@ -1,4 +1,4 @@
-AC_INIT(chroma,2.13.2,edwards@jlab.org)
+AC_INIT(chroma,2.13.3,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AM_INIT_AUTOMAKE
