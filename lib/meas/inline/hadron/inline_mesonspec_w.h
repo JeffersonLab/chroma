@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mesonspec_w.h,v 2.1 2006-02-28 20:55:32 edwards Exp $
+// $Id: inline_mesonspec_w.h,v 2.2 2006-03-06 21:22:26 edwards Exp $
 /*! \file
  * \brief Inline meson spectrum calculations
  *
@@ -39,7 +39,11 @@ namespace Chroma
 
     struct NamedObject_t
     {
-      multi1d<std::string> prop_ids;
+      struct Props_t
+      {
+	multi1d<std::string> sink_ids;
+      };
+      multi1d<Props_t> prop_ids;
     } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern
