@@ -1,4 +1,4 @@
-// $Id: clover_fermact_params_w.cc,v 2.3 2006-03-01 18:58:23 bjoo Exp $
+// $Id: clover_fermact_params_w.cc,v 2.4 2006-03-08 22:45:14 edwards Exp $
 /*! \file
  *  \brief Clover fermion action parameters
  */
@@ -17,8 +17,6 @@ namespace Chroma
     Mass = Real(0);
     u0   = Real(1);
     clovCoeffR = clovCoeffT = Real(0);
-    ext_fieldP = false;
-    ext_field_strength = Real(0);
   }
 
   //! Read parameters
@@ -76,11 +74,6 @@ namespace Chroma
       QDPIO::cout << "clovCoeffR=" << clovCoeffR << endl;
       QDPIO::cout << "clovCOeffT=" << clovCoeffT << endl;
     }
-
-    if( paramtop.count("ext_field_strength") != 0 ) {
-      ext_fieldP = true;
-      read(paramtop, "ext_field_strength", ext_field_strength);
-    }
   }
 
   //! Read parameters
@@ -107,10 +100,6 @@ namespace Chroma
     else
     {
       write(xml, "clovCoeff", param.clovCoeffR);
-    }
-    
-    if( param.ext_fieldP == true ) { 
-      write(xml, "ext_field_strength", param.ext_field_strength);
     }
 
     pop(xml);

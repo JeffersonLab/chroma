@@ -1,4 +1,4 @@
-// $Id: unprec_clover_linop_w.cc,v 2.7 2006-03-03 02:51:13 edwards Exp $
+// $Id: unprec_clover_linop_w.cc,v 2.8 2006-03-08 22:45:14 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -23,37 +23,7 @@ namespace Chroma
     param = param_;
 
     A.create(u_, param);
-
-    if( param.ext_fieldP ) {
-      LatticeInteger my_coord = Layout::latticeCoordinate(0);
-      LatticeReal re = Real(1);
-
-      // field strength * x coordinate
-      LatticeReal im = param.ext_field_strength*LatticeReal(my_coord);
-    
-      // The actual complex number factor for applying the field
-      LatticeComplex factor = cmplx(re,im);
-
-      // Now get the modified field
-      multi1d<LatticeColorMatrix> u_prime(Nd);
-
-      for(int mu=0; mu < Nd; mu++) {
-	
-	// X dependent factor on Y links (dim =1) for field in Z direction
-	if ( mu == 1 ) {
-
-	  u_prime[mu] = factor*u_[mu];
-	}
-	else {
-	  // Otherwise leave field alone for other directiosn
-	  u_prime[mu] = u_[mu];
-	}
-      }
-      D.create(u_prime, param.anisoParam);
-    }
-    else { 
-      D.create(u_, param.anisoParam);
-    }
+    D.create(u_, param.anisoParam);
 
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }

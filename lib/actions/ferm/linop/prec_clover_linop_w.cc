@@ -1,4 +1,4 @@
-// $Id: prec_clover_linop_w.cc,v 2.7 2006-03-03 02:37:39 edwards Exp $
+// $Id: prec_clover_linop_w.cc,v 2.8 2006-03-08 22:45:14 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -29,59 +29,8 @@ namespace Chroma
     invclov = clov;  // make a copy
     invclov.choles(0);  // invert the cb=0 part
 
-#if 0
-    for(int mu=0; mu < Nd; mu++) { 
+    D.create(u_, param.anisoParam);
 
-      for(int nu = mu+1; nu < Nd; nu++) { 
-
-	int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
-	LatticeColorMatrix sigma_XY_dag=zero;
-	
-	// Need Sigma On Both Checkerboards
-	invclov.triacntr(sigma_XY_dag, mu_nu_index, 0);
-	
-	std::ostringstream filename;
-	filename << "triacntr" << mu_nu_index;
-	XMLFileWriter outxml(filename.str());
-	push(outxml, "root");
-	write(outxml, "mu_nu_index", mu_nu_index);
-	write(outxml, "sigma_TrAinv", sigma_XY_dag);
-	pop(outxml);
-	
-	outxml.close();
-      }
-    }
-#endif
-
-    if( param.ext_fieldP ) {
-      LatticeInteger my_coord = Layout::latticeCoordinate(0);
-      LatticeReal re = Real(1);
-
-      // field strength * x coordinate
-      LatticeReal im = param.ext_field_strength*LatticeReal(my_coord);
-    
-      // The actual complex number factor for applying the field
-      LatticeComplex factor = cmplx(re,im);
-
-      // Now get the modified field
-      multi1d<LatticeColorMatrix> u_prime(Nd);
-
-      for(int mu=0; mu < Nd; mu++) {
-	// X dependent factor on Y links (dim =1) for field in Z direction
-	if ( mu == 1 ) {
-	 
-	  u_prime[mu] = factor*u_[mu];
-	}
-	else {
-	  // Otherwise leave field alone for other directiosn
-	  u_prime[mu] = u_[mu];
-	}
-      }
-      D.create(u_prime, param.anisoParam);
-    }
-    else { 
-      D.create(u_, param.anisoParam);
-    }
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
 
