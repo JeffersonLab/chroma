@@ -1,4 +1,8 @@
 03/06/2006 -- Robert Edwards
+	Version 2.13.4. Backed out changes to clover with external field. It's
+        breaking something but passes regression test.
+
+03/06/2006 -- Robert Edwards
 	Version 2.13.3. Changes to mesonspec code.
 
 03/02/2006 -- Robert Edwards
