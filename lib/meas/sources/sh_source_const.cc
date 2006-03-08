@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 2.7 2006-02-22 04:34:05 edwards Exp $
+// $Id: sh_source_const.cc,v 2.8 2006-03-08 22:45:34 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -190,6 +190,7 @@ namespace Chroma
 	// Smear the gauge field if needed
 	//
 	multi1d<LatticeColorMatrix> u_smr = u;
+        QDPIO::cout << "Link smearing type = " << params.link_smearing_type << endl;
 	linkSmear(u_smr, std::string("/LinkSmearing"), params.link_smearing, params.link_smearing_type);
 
 
@@ -199,6 +200,7 @@ namespace Chroma
 	std::istringstream  xml_s(params.quark_smearing);
 	XMLReader  smeartop(xml_s);
 	const string smear_path = "/SmearingParam";
+        QDPIO::cout << "Quark smearing type = " << params.quark_smearing_type << endl;
 	
 	Handle< QuarkSmearing<LatticePropagator> >
 	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing_type,
@@ -211,6 +213,7 @@ namespace Chroma
 	std::istringstream  xml_d(params.quark_displacement);
 	XMLReader  displacetop(xml_d);
 	const string displace_path = "/Displacement";
+        QDPIO::cout << "Displacement type = " << params.quark_displacement_type << endl;
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement_type,
