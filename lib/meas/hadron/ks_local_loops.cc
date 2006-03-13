@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 2.4 2006-02-09 18:14:45 egregory Exp $ ($Date: 2006-02-09 18:14:45 $) */
+/* $Id: ks_local_loops.cc,v 2.5 2006-03-13 14:34:35 egregory Exp $ ($Date: 2006-03-13 14:34:35 $) */
 
 
 #include "fermact.h"
@@ -667,6 +667,173 @@ void ks_fuzz_loops(
 }
 
 
+/**********************************************************************/
+
+
+void ks_local_loops_and_stoch_conn(
+		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 LatticeStaggeredFermion & q_source1, 
+		 LatticeStaggeredFermion & psi1 ,
+		 const multi1d<LatticeColorMatrix> & u,
+		 XMLWriter & xml_out, 
+		 bool gauge_shift,
+		 bool sym_shift,
+		 bool loop_checkpoint,
+		 int t_length,
+		 Real Mass,
+		 int Nsamp,
+		 Real RsdCG,
+		 int CFGNO,
+		 VolSrc_type volume_source,
+		 int src_seperation,
+		 int j_decay){
+
+
+  LatticeStaggeredFermion psi2 ;
+  LatticeStaggeredFermion q_source2 ;
+
+
+  push(xml_out,"local_loops_s");
+
+  // write common parameters
+  write(xml_out, "Mass" , Mass);
+
+  write_out_source_type(xml_out, volume_source);
+
+  write(xml_out, "Number_of_samples" , Nsamp);
+
+  Stag_shift_option type_of_shift ;
+  if( gauge_shift ){
+    if(sym_shift){
+      type_of_shift = SYM_GAUGE_INVAR ;
+    }else{
+      type_of_shift = GAUGE_INVAR ;
+    }
+  }else{
+    if(sym_shift){
+      type_of_shift = SYM_NON_GAUGE_INVAR ;
+    }else{
+      type_of_shift = NON_GAUGE_INVAR ;
+    }
+  }
+
+  // set up the loop code
+  local_scalar_loop                 scalar_one_loop(t_length,Nsamp,
+						    u,type_of_shift) ;
+  non_local_scalar_loop             scalar_two_loop(t_length,Nsamp,
+						    u,type_of_shift) ;
+  threelink_pseudoscalar_loop       eta3_loop(t_length,Nsamp,
+					      u,type_of_shift) ;
+  fourlink_pseudoscalar_loop        eta4_loop(t_length,Nsamp,
+					      u,type_of_shift) ;
+
+  fourlink_pseudoscalar_kilcup_loop eta4_kilcup_loop(t_length,Nsamp,
+						     u,type_of_shift) ;
+
+  zerolink_pseudoscalar_loop        eta0_loop(t_length, Nsamp,
+					      u,type_of_shift) ;
+
+  fourlink_pseudoscalar_stoch_conn   eta4_conn(t_length,Nsamp,
+					       u,type_of_shift) ;
+
+  // Seed the RNG with the cfg number for now
+  QDP::Seed seed;
+  seed = CFGNO;
+  RNG::setrn(seed);
+
+  int src_tslice=0;
+  int src_color_ind = 0;
+  int src_parity_ind = 0;
+  int src_corner_ind =0;
+
+  int src_tslice2=0;
+  int src_color_ind2 = 0;
+  int src_parity_ind2 = 0;
+  int src_corner_ind2 =0;
+
+  Real coverage_fraction;
+
+  for(int i = 0; i < Nsamp; ++i){
+    psi1 = zero;   // note this is ``zero'' and not 0
+    psi2 = zero;   // note this is ``zero'' and not 0
+    RNG::savern(seed);
+    QDPIO::cout << "SEED = " << seed << endl;
+
+    QDPIO::cout << "Noise sample: " << i << endl;
+
+    // Fill the volume with random noise 
+    coverage_fraction = fill_volume_source(q_source1, volume_source, 
+					   t_length, &src_tslice, 
+					   &src_color_ind, &src_parity_ind, 
+					   &src_corner_ind, src_seperation, 
+					   j_decay);
+
+    //fill 2nd source for stochastic connected correlators
+    coverage_fraction = fill_volume_source(q_source2, volume_source, 
+					   t_length, &src_tslice2, 
+					   &src_color_ind2, &src_parity_ind2, 
+					   &src_corner_ind2, src_seperation, 
+					   j_decay);
+
+    // Compute the solution vector for the particular source
+    int n_count = (*qprop)(psi1, q_source1);
+    int n_count2 = (*qprop)(psi2, q_source2);
+      
+    push(xml_out,"Qprop_noise");
+    write(xml_out, "Noise_number" , i);
+    write(xml_out, "RsdCG" , RsdCG);
+    write(xml_out, "n_count", n_count);
+    write(xml_out, "Seed" , seed);
+    pop(xml_out);
+
+
+    scalar_one_loop.compute(q_source1,psi1,i) ;
+    scalar_two_loop.compute(q_source1,psi1,i) ;
+    eta3_loop.compute(q_source1,psi1,i) ;
+    eta4_loop.compute(q_source1,psi1,i) ;
+    eta4_kilcup_loop.compute(psi1,i, Mass);
+    eta0_loop.compute(q_source1,psi1,i) ;
+
+    eta4_conn.compute(q_source1, q_source2, psi1, psi2, i) ;
+
+    if(loop_checkpoint){
+      //write each measurement to the XML file
+
+      scalar_one_loop.dump(xml_out,i) ;
+      scalar_two_loop.dump(xml_out,i) ;
+      eta3_loop.dump(xml_out,i) ;
+      eta4_loop.dump(xml_out,i) ;
+      eta4_kilcup_loop.dump(xml_out,i) ;
+      eta0_loop.dump(xml_out,i) ;
+    }
+
+    // MUST checkpoint stochastic connected correlator measurements!
+    eta4_conn.dump(xml_out,i) ;
+    printf("OUTNOW!!!!\n");fflush(stdout);
+ } // Nsamples
+
+
+  // write output from the loop calc
+  scalar_one_loop.dump(xml_out) ;
+  scalar_two_loop.dump(xml_out) ;
+  eta3_loop.dump(xml_out) ;
+  eta4_loop.dump(xml_out) ;
+  eta4_kilcup_loop.dump(xml_out) ;
+  eta0_loop.dump(xml_out) ;
+
+  // no point in dumping connected correlator measurements, 
+  // since corrs must be formed with each noise source, but what the hell, 
+  // maybe there is a diagnostic use for it.
+    printf("OUTNOW1!!!!\n");fflush(stdout);
+  eta4_conn.dump(xml_out) ;
+
+    printf("OUTNOW2!!!!\n");fflush(stdout);
+  // end of this section
+  pop(xml_out);
+
+}
+
+  /**********************************************************************/
 
 
 
