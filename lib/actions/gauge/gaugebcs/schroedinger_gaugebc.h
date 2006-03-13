@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schroedinger_gaugebc.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: schroedinger_gaugebc.h,v 2.2 2006-03-13 05:19:01 edwards Exp $
 /*! @file
  * @brief Schroedinger Gauge boundary conditions
  */
@@ -21,16 +21,29 @@ namespace Chroma
   class SchrGaugeBC : public GaugeBC
   {
   public:
-    //! Virtual destructor to help with cleanup;
+    //! Virtual destructor
     virtual ~SchrGaugeBC() {}
 
-#if defined(EXPOSE_THIS_STUFF)
-    //! Type of Schroedinger BC
-    virtual SchrFunType getSFBC() const = 0;
-#endif
+    //! Modify U fields in place
+    /*! Default version provided */
+    void modify(multi1d<LatticeColorMatrix>& u) const;
+
+    //! Zero the some gauge-like field in place on the masked links
+    /*! Default version provided */
+    void zero(multi1d<LatticeColorMatrix>& p) const;
+
+    //! Says if there are fixed links within the lattice
+    bool nontrivialP() const {return true;}
 
     //! Decay direction
     virtual int getDir() const = 0;
+
+  protected:
+    //! Mask which lattice sites have fixed gauge links
+    virtual const multi1d<LatticeBoolean>& lSFmask() const = 0;
+
+    //! Fixed gauge links on only the lSFmask() sites
+    virtual const multi1d<LatticeColorMatrix>& SFBndFld() const = 0;
   };
 
 }

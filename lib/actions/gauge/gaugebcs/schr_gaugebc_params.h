@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_gaugebc_params.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: schr_gaugebc_params.h,v 2.2 2006-03-13 05:19:01 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional gauge boundary conditions
  */
@@ -17,8 +17,10 @@ namespace Chroma
   struct SchrGaugeBCParams {
     SchrGaugeBCParams();
     SchrGaugeBCParams(XMLReader& xml, const std::string& path);
-    SchrFunType SchrFun;
-    Real SchrPhiMult;
+
+    int  loop_extent;    /*!< Maximum loop extent in decay direction */
+    Real SchrPhiMult;    /*!< Multiplier of phases on boundaries */
+    int  decay_dir;      /*!< Decay direction */
   };
   
   /*! @ingroup gaugebcs */

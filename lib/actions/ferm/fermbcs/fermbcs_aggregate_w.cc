@@ -1,4 +1,4 @@
-// $Id: fermbcs_aggregate_w.cc,v 2.1 2006-02-26 03:47:51 edwards Exp $
+// $Id: fermbcs_aggregate_w.cc,v 2.2 2006-03-13 05:19:01 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion boundary conditions
  */
@@ -7,8 +7,8 @@
 #include "actions/ferm/fermbcs/simple_fermbc_w.h"
 #include "actions/ferm/fermbcs/periodic_fermbc_w.h"
 #include "actions/ferm/fermbcs/twisted_fermbc_w.h"
-#include "actions/ferm/fermbcs/schr1link_fermbc_w.h"
-#include "actions/ferm/fermbcs/schr2link_fermbc_w.h"
+//#include "actions/ferm/fermbcs/schr1link_fermbc_w.h"
+//#include "actions/ferm/fermbcs/schr2link_fermbc_w.h"
 
 namespace Chroma
 {
