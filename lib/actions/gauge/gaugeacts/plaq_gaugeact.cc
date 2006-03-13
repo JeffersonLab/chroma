@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 2.1 2006-03-13 05:13:43 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -208,6 +208,9 @@ namespace Chroma
       ds_u[mu] *= Real(-param.coeff)/(Real(2*Nc));
     }
 #endif
+
+    // Zero the force on any fixed boundaries
+    getGaugeBC().zero(ds_u);
 
     END_CODE();
   }

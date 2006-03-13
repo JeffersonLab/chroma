@@ -1,4 +1,4 @@
-// $Id: pg_gaugeact.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: pg_gaugeact.cc,v 2.1 2006-03-13 05:13:43 edwards Exp $
 /*! \file
  *  \brief Parallelogram gauge action
  */
@@ -211,6 +211,9 @@ namespace Chroma
       ds_u[mu] += u[mu] * tmp_tot;
     }
   
+    // Zero the force on any fixed boundaries
+    getGaugeBC().zero(ds_u);
+
     END_CODE();
   }
 
