@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.55 2006-03-02 22:24:40 edwards Exp $
+# $Id: Makefile.am,v 2.56 2006-03-13 05:15:19 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -73,9 +73,11 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugebcs/simple_gaugebc.h \
 	actions/gauge/gaugebcs/periodic_gaugebc.h \
 	actions/gauge/gaugebcs/schroedinger_gaugebc.h \
-	actions/gauge/gaugebcs/schr1link_gaugebc.h \
-	actions/gauge/gaugebcs/schr2link_gaugebc.h \
 	actions/gauge/gaugebcs/schr_gaugebc_params.h \
+	actions/gauge/gaugebcs/schr_sf_gaugebc.h \
+	actions/gauge/gaugebcs/schr_triv_gaugebc.h \
+	actions/gauge/gaugebcs/schr_nonpert_gaugebc.h \
+	actions/gauge/gaugebcs/schr_coupling_gaugebc.h \
 	init/chroma_init.h \
 	io/io.h \
 	io/xmllog_io.h \
@@ -280,8 +282,6 @@ nobase_include_HEADERS += \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/fermbcs/periodic_fermbc_w.h \
 	actions/ferm/fermbcs/schr_fermbc_params.h \
-	actions/ferm/fermbcs/schr1link_fermbc_w.h \
-	actions/ferm/fermbcs/schr2link_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/lg5Rherm_w.h \
@@ -407,6 +407,8 @@ nobase_include_HEADERS += \
         util/ferm/antisymtensor.h \
         util/ferm/etensor.h \
         util/ferm/symtensor.h
+#	actions/ferm/fermbcs/schr1link_fermbc_w.h
+#	actions/ferm/fermbcs/schr2link_fermbc_w.h
 
 # Staggered specific headers
 nobase_include_HEADERS += \
@@ -595,9 +597,12 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/periodic_gaugebc.cc \
 	actions/gauge/gaugebcs/simple_gaugebc.cc \
-	actions/gauge/gaugebcs/schr1link_gaugebc.cc \
-	actions/gauge/gaugebcs/schr2link_gaugebc.cc \
+	actions/gauge/gaugebcs/schroedinger_gaugebc.cc \
 	actions/gauge/gaugebcs/schr_gaugebc_params.cc \
+	actions/gauge/gaugebcs/schr_sf_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_triv_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_nonpert_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_coupling_gaugebc.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
@@ -768,8 +773,6 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
 	actions/ferm/fermbcs/periodic_fermbc_w.cc \
 	actions/ferm/fermbcs/schr_fermbc_params.cc \
-	actions/ferm/fermbcs/schr1link_fermbc_w.cc \
-	actions/ferm/fermbcs/schr2link_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc actions/ferm/linop/lDeltaLs_w.cc \
 	actions/ferm/linop/lg5eps_double_pass_w.cc \
@@ -864,6 +867,8 @@ libchroma_a_SOURCES += \
         util/ferm/antisymtensor.cc \
         util/ferm/etensor.cc \
         util/ferm/symtensor.cc
+#	actions/ferm/fermbcs/schr1link_fermbc_w.cc
+#	actions/ferm/fermbcs/schr2link_fermbc_w.cc
 
 
 # Taken out for now
