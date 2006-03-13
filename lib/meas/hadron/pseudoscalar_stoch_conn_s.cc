@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_stoch_conn_s.cc,v 1.1 2006-03-13 14:40:17 egregory Exp $
+// $Id: pseudoscalar_stoch_conn_s.cc,v 1.2 2006-03-13 14:56:55 egregory Exp $
 #include "chromabase.h"
 #include "pseudoscalar_stoch_conn_s.h"
 #include "util/gauge/stag_phases_s.h"
@@ -19,6 +19,19 @@ public:
 private:
   TimeSliceFunc() {}  // hide default constructor
 };
+
+
+  /* README:
+   * this code hopefully does the measurements necessary to compute 
+   * connected correlators (for 4-link taste singlet pseudoscalar mesons.
+   * it does not  compute the correlator itself. Two quantities are 
+   * written out for each pair of noise source vectors; call them C1 and C2.
+   * the connected correlator should be <<C1(x)*C2(y)>>, where <<>> is an 
+   * average over noise sources, This is in contrast to the disconnected
+   * correlator, which should be assembled as <<D1(x)*>><<D1(y)>>. Of course
+   * and average over configurations is assumed.
+   */
+
 
 
 void fourlink_pseudoscalar_stoch_conn::compute(
