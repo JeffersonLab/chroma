@@ -619,6 +619,8 @@ namespace Chroma {
     bool do_fuzzed_disc_loops    = params.param.disconnected_fuzz  ;
     bool do_local_disc_loops     = params.param.disconnected_local  ;
 
+    bool do_stoch_conn_corr      = true;
+
     bool do_fuzzing              = false;
     bool do_variational_spectra  = false;
 
@@ -628,6 +630,7 @@ namespace Chroma {
 
     bool done_ps4_singlet        = false;
     bool done_local_baryons      = false;
+    bool done_local_disc_loops   = false;
 
     bool have_basic_8            = false;
     bool have_local_corner_prop  = false;
@@ -734,13 +737,27 @@ namespace Chroma {
 
     // Do disconnected loops --- independent of other measurements
 
-    if( do_local_disc_loops  ) {
+    if ((  do_local_disc_loops ) && (do_stoch_conn_corr )){
+      push(xml_out, "disconnected_loops");
+      ks_local_loops_and_stoch_conn(qprop, q_source, psi , u, xml_out, 
+		     gauge_shift, sym_shift, loop_checkpoint,
+		     t_length, Mass, Nsamp, RsdCG, CFGNO, volume_source, 
+		     src_seperation, j_decay);
+      pop(xml_out);
+
+      done_local_disc_loops = true;
+    }
+
+
+    if(( do_local_disc_loops  )  && (!done_local_disc_loops)){
       push(xml_out, "disconnected_loops");
 
       ks_local_loops(qprop, q_source, psi , u, xml_out, 
 		     gauge_shift, sym_shift, loop_checkpoint,
 		     t_length, Mass, Nsamp, RsdCG, CFGNO, volume_source, 
 		     src_seperation, j_decay);
+
+      done_local_disc_loops = true;
 
       pop(xml_out);
     }
@@ -948,8 +965,7 @@ namespace Chroma {
 
 
 
-
-      if( do_fuzzed_disc_loops  ) {
+      if(( do_fuzzed_disc_loops  )) {
 	push(xml_out, "disconnected_loops");
 	ks_fuzz_loops(qprop,q_source, psi ,psi_fuzz , u, u_smr,xml_out, 
 		      gauge_shift, sym_shift, loop_checkpoint, t_length, Mass, 
