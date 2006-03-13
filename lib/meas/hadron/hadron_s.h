@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_s.h,v 2.1 2005-11-01 04:10:34 edwards Exp $
+// $Id: hadron_s.h,v 2.2 2006-03-13 14:32:00 egregory Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -36,6 +36,7 @@
 #include "loops_s.h"
 #include "scalar_loops_s.h"
 #include "pseudoscalar_loops_s.h"
+#include "pseudoscalar_stoch_conn_s.h"
 
 #include "ks_local_loops.h"
 
