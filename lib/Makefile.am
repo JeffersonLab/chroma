@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.56 2006-03-13 05:15:19 edwards Exp $
+# $Id: Makefile.am,v 2.57 2006-03-13 14:28:59 egregory Exp $
 #
 # Path for all files used in building the library
 
@@ -436,8 +436,10 @@ nobase_include_HEADERS += \
 	meas/hadron/pions_s.h \
         meas/hadron/pion_local_s.h\
 	meas/hadron/loops_s.h \
+	meas/hadron/stoch_conn_s.h \
 	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
+	meas/hadron/pseudoscalar_stoch_conn_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h \
 	meas/hadron/stag_propShift_s.h \
@@ -1013,6 +1015,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/pion_sing_s.cc \
         meas/hadron/scalar_loops_s.cc\
         meas/hadron/pseudoscalar_loops_s.cc \
+	meas/hadron/pseudoscalar_stoch_conn_s.cc \
         meas/sources/walfil_s.cc \
 	util/gauge/stag_phases_s.cc
 
