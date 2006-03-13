@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 2.2 2006-03-11 20:25:30 edwards Exp $
+// $Id: gaugebc.h,v 2.3 2006-03-13 05:16:20 edwards Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
@@ -41,15 +41,6 @@ namespace Chroma
      * namely the conjugate momenta.
      */
     virtual void zero(multi1d<LatticeColorMatrix>& p) const = 0;
-
-#if defined(EXPOSE_THIS_STUFF)
-    // NOT SURE THIS STUFF IS ABSOLUTELY REQUIRED - TRY TO AVOID EXPOSING THIS
-    //! Mask which lattice sites have fixed gauge links
-    virtual const multi1d<LatticeBoolean>& lbmaskU() const = 0;
-
-    //! Fixed gauge links on only the lbmaskU() sites
-    virtual const multi1d<LatticeColorMatrix>& lFldU() const = 0;
-#endif
 
     //! Says if there are fixed links within the lattice
     virtual bool nontrivialP() const = 0;
