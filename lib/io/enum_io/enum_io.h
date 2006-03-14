@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_io.h,v 2.1 2005-12-15 04:03:28 edwards Exp $
+// $Id: enum_io.h,v 2.2 2006-03-14 04:54:37 edwards Exp $
 
 /*! \file
  * \brief Enums
@@ -32,7 +32,7 @@
 #include "enum_srcsnktype_io.h"
 #include "enum_wavetype_io.h"
 #include "enum_heatbathtype_io.h"
-#include "enum_gaugebc_io.h"
+//#include "enum_gaugebc_io.h"
 #include "enum_md_integrator_type_io.h"
 #include "enum_inner_solver_type_io.h"
 #include "enum_quarkspintype_io.h"
