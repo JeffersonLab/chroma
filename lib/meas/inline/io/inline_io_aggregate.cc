@@ -1,4 +1,4 @@
-// $Id: inline_io_aggregate.cc,v 2.2 2005-11-01 22:00:01 edwards Exp $
+// $Id: inline_io_aggregate.cc,v 2.3 2006-03-14 04:55:30 edwards Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */
@@ -12,6 +12,8 @@
 #include "meas/inline/io/inline_szin_read_obj.h"
 #include "meas/inline/io/inline_szin_write_obj.h"
 #include "meas/inline/io/inline_nersc_write_obj.h"
+
+#include "meas/inline/io/inline_xml_write_obj.h"
 
 #include "meas/inline/io/inline_snarf_obj.h"
 #include "meas/inline/io/inline_gaussian_obj.h"
@@ -40,6 +42,8 @@ namespace Chroma
       success &= InlineSZINWriteNamedObjEnv::registered;
 
       success &= InlineNERSCWriteNamedObjEnv::registered;
+
+      success &= InlineXMLWriteNamedObjEnv::registered;
 
       return success;
     }
