@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.57 2006-03-13 14:28:59 egregory Exp $
+# $Id: Makefile.am,v 2.58 2006-03-14 04:51:07 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -78,6 +78,8 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugebcs/schr_triv_gaugebc.h \
 	actions/gauge/gaugebcs/schr_nonpert_gaugebc.h \
 	actions/gauge/gaugebcs/schr_coupling_gaugebc.h \
+	actions/gauge/gaugebcs/schr_chromomag_gaugebc.h \
+	actions/gauge/gaugebcs/schr_dirich_gaugebc.h \
 	init/chroma_init.h \
 	io/io.h \
 	io/xmllog_io.h \
@@ -97,7 +99,6 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_srcsnktype_io.h \
 	io/enum_io/enum_wavetype_io.h \
 	io/enum_io/enum_heatbathtype_io.h \
-	io/enum_io/enum_gaugebc_io.h \
 	io/enum_io/enum_md_integrator_type_io.h \
 	io/enum_io/enum_inner_solver_type_io.h \
         io/enum_io/enum_stochsrc_io.h\
@@ -231,6 +232,7 @@ nobase_include_HEADERS = \
 #	actions/ferm/fermacts/prec_stout_fermact_w.h
 #	actions/ferm/fermacts/unprec_stout_fermact_array_w.h
 #	actions/ferm/fermacts/prec_stout_fermact_array_w.h
+#	io/enum_io/enum_gaugebc_io.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -508,6 +510,7 @@ nobase_include_HEADERS += \
 	meas/inline/io/inline_szin_read_obj.h \
 	meas/inline/io/inline_szin_write_obj.h \
 	meas/inline/io/inline_nersc_write_obj.h \
+	meas/inline/io/inline_xml_write_obj.h \
 	meas/inline/io/inline_erase_obj.h \
 	meas/inline/io/inline_list_obj.h \
 	meas/inline/io/inline_snarf_obj.h \
@@ -516,6 +519,7 @@ nobase_include_HEADERS += \
         meas/inline/io/qio_write_obj_funcmap.h \
         meas/inline/io/szin_read_obj_funcmap.h \
         meas/inline/io/szin_write_obj_funcmap.h \
+        meas/inline/io/xml_write_obj_funcmap.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
@@ -605,6 +609,8 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugebcs/schr_triv_gaugebc.cc \
 	actions/gauge/gaugebcs/schr_nonpert_gaugebc.cc \
 	actions/gauge/gaugebcs/schr_coupling_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_chromomag_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_dirich_gaugebc.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
@@ -618,7 +624,7 @@ libchroma_a_SOURCES = \
         io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
-	io/enum_io/enum_gaugeacttype_io.cc io/enum_io/enum_gaugebc_io.cc \
+	io/enum_io/enum_gaugeacttype_io.cc \
 	io/enum_io/enum_heatbathtype_io.cc \
 	io/enum_io/enum_inner_solver_type_io.cc \
 	io/enum_io/enum_invtype_io.cc \
@@ -719,6 +725,7 @@ libchroma_a_SOURCES = \
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
+#       io/enum_io/enum_gaugebc_io.cc 
 
 #	actions/ferm/fermacts/stout_state.cc 
 # 	actions/ferm/fermacts/stout_fermact_params.cc 
@@ -936,6 +943,7 @@ libchroma_a_SOURCES += \
 	meas/inline/io/inline_szin_read_obj.cc \
 	meas/inline/io/inline_szin_write_obj.cc \
 	meas/inline/io/inline_nersc_write_obj.cc \
+	meas/inline/io/inline_xml_write_obj.cc \
 	meas/inline/io/inline_erase_obj.cc \
 	meas/inline/io/inline_list_obj.cc \
 	meas/inline/io/inline_snarf_obj.cc \
@@ -944,6 +952,7 @@ libchroma_a_SOURCES += \
         meas/inline/io/qio_write_obj_funcmap.cc \
         meas/inline/io/szin_read_obj_funcmap.cc \
         meas/inline/io/szin_write_obj_funcmap.cc \
+        meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_link_smear.cc \
 	meas/inline/smear/inline_ape_smear.cc \
