@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebcs.h,v 2.2 2006-03-13 05:19:01 edwards Exp $
+// $Id: gaugebcs.h,v 2.3 2006-03-14 04:49:54 edwards Exp $
 
 /*! \file
  * \brief Gauge boundary conditions
@@ -26,5 +26,7 @@
 #include "schr_triv_gaugebc.h"
 #include "schr_nonpert_gaugebc.h"
 #include "schr_coupling_gaugebc.h"
+#include "schr_chromomag_gaugebc.h"
+#include "schr_dirich_gaugebc.h"
 
 #endif

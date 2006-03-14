@@ -1,4 +1,4 @@
-// $Id: gaugebc_aggregate.cc,v 2.2 2006-03-13 05:19:01 edwards Exp $
+// $Id: gaugebc_aggregate.cc,v 2.3 2006-03-14 04:49:54 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */
@@ -10,6 +10,8 @@
 #include "actions/gauge/gaugebcs/schr_triv_gaugebc.h"
 #include "actions/gauge/gaugebcs/schr_nonpert_gaugebc.h"
 #include "actions/gauge/gaugebcs/schr_coupling_gaugebc.h"
+#include "actions/gauge/gaugebcs/schr_chromomag_gaugebc.h"
+#include "actions/gauge/gaugebcs/schr_dirich_gaugebc.h"
 
 namespace Chroma
 {
@@ -25,6 +27,8 @@ namespace Chroma
       success &= SchrTrivialGaugeBCEnv::registered;
       success &= SchrNonPertGaugeBCEnv::registered;
       success &= SchrCouplingGaugeBCEnv::registered;
+      success &= SchrChromoMagGaugeBCEnv::registered;
+      success &= SchrDirichletGaugeBCEnv::registered;
       return success;
     }
 
