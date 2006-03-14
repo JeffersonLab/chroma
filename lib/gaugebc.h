@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 2.3 2006-03-13 05:16:20 edwards Exp $
+// $Id: gaugebc.h,v 2.4 2006-03-14 04:53:08 edwards Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
@@ -8,7 +8,6 @@
 #define __gaugebc_h__
 
 #include "chromabase.h"
-#include "io/enum_io/enum_gaugebc_io.h"
 
 
 namespace Chroma
