@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_fermbc_params.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: schr_fermbc_params.h,v 2.2 2006-03-14 04:53:32 edwards Exp $
 /*! \file
  *  \brief Schroedinger fermion bc
  */
@@ -8,7 +8,6 @@
 #define __schr_fermbc_params_h__
 
 #include "chromabase.h"
-#include "io/enum_io/enum_gaugebc_io.h"
 
 namespace Chroma 
 {
@@ -19,8 +18,7 @@ namespace Chroma
     SchrFermBCParams() {}
     SchrFermBCParams(XMLReader& in, const std::string& path);
 
-    Real  theta;
-    SchrFunType SchrFun;
+    Real theta;
     Real SchrPhiMult;
   };
   
