@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: enum_gaugebc_io.h,v 2.1 2006-02-04 16:42:25 edwards Exp $
+// $Id: enum_gaugebc_io.h,v 2.2 2006-03-14 04:54:18 edwards Exp $
 /*! \file
  * \brief Gauge bc enum
  */
+
+#error "THIS CODE IS OBSOLETE - DO NOT USE"
+
 #ifndef enum_gaugebc_io_h
 #define enum_gaugebc_io_h
 
