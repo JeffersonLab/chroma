@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.59 2006-03-16 02:58:16 edwards Exp $
+# $Id: Makefile.am,v 2.60 2006-03-16 17:20:13 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -283,6 +283,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/fermbcs/periodic_fermbc_w.h \
+	actions/ferm/fermbcs/schroedinger_fermbc_w.h \
 	actions/ferm/fermbcs/schr_fermbc_params_w.h \
 	actions/ferm/fermbcs/schr_sf_fermbc_w.h \
 	actions/ferm/fermbcs/schr_triv_fermbc_w.h \
