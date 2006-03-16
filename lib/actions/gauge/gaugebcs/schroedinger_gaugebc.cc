@@ -1,4 +1,4 @@
-// $Id: schroedinger_gaugebc.cc,v 2.1 2006-03-13 05:19:01 edwards Exp $
+// $Id: schroedinger_gaugebc.cc,v 2.2 2006-03-16 02:59:02 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional base class
  */
@@ -22,14 +22,14 @@ namespace Chroma
   }
 
   // Zero some gauge-like field in place on the masked links
-  void SchrGaugeBC::zero(multi1d<LatticeColorMatrix>& p) const
+  void SchrGaugeBC::zero(multi1d<LatticeColorMatrix>& ds_u) const
   {
     START_CODE();
 
     LatticeColorMatrix z = QDP::zero;
 
-    for(int mu=0; mu < p.size(); ++mu)
-      copymask(p[mu], lSFmask()[mu], z);
+    for(int mu=0; mu < ds_u.size(); ++mu)
+      copymask(ds_u[mu], lSFmask()[mu], z);
 
     END_CODE();
   }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schroedinger_gaugebc.h,v 2.2 2006-03-13 05:19:01 edwards Exp $
+// $Id: schroedinger_gaugebc.h,v 2.3 2006-03-16 02:59:02 edwards Exp $
 /*! @file
  * @brief Schroedinger Gauge boundary conditions
  */
@@ -30,7 +30,7 @@ namespace Chroma
 
     //! Zero the some gauge-like field in place on the masked links
     /*! Default version provided */
-    void zero(multi1d<LatticeColorMatrix>& p) const;
+    void zero(multi1d<LatticeColorMatrix>& ds_u) const;
 
     //! Says if there are fixed links within the lattice
     bool nontrivialP() const {return true;}
@@ -38,7 +38,6 @@ namespace Chroma
     //! Decay direction
     virtual int getDir() const = 0;
 
-  protected:
     //! Mask which lattice sites have fixed gauge links
     virtual const multi1d<LatticeBoolean>& lSFmask() const = 0;
 

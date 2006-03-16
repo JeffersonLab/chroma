@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_dirich_gaugebc.h,v 2.1 2006-03-14 04:49:54 edwards Exp $
+// $Id: schr_dirich_gaugebc.h,v 2.2 2006-03-16 02:59:02 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - dirichlet gauge BC
  */
@@ -38,7 +38,6 @@ namespace Chroma
     //! Decay direction
     int getDir() const {return param.decay_dir;}
 
-  protected:
     //! Mask which lattice sites have fixed gauge links
     const multi1d<LatticeBoolean>& lSFmask() const {return mask;}
 
