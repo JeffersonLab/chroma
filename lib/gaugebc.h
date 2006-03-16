@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 2.4 2006-03-14 04:53:08 edwards Exp $
+// $Id: gaugebc.h,v 2.5 2006-03-16 02:57:52 edwards Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
@@ -39,7 +39,7 @@ namespace Chroma
      * This routine may be dropped in favor of zero of a template type,
      * namely the conjugate momenta.
      */
-    virtual void zero(multi1d<LatticeColorMatrix>& p) const = 0;
+    virtual void zero(multi1d<LatticeColorMatrix>& ds_u) const = 0;
 
     //! Says if there are fixed links within the lattice
     virtual bool nontrivialP() const = 0;
