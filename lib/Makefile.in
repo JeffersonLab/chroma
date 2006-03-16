@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.71 2006-03-14 04:52:01 edwards Exp $
+# $Id: Makefile.in,v 2.72 2006-03-16 02:58:31 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -291,7 +291,13 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
 	actions/ferm/fermbcs/periodic_fermbc_w.cc \
-	actions/ferm/fermbcs/schr_fermbc_params.cc \
+	actions/ferm/fermbcs/schr_fermbc_params_w.cc \
+	actions/ferm/fermbcs/schr_sf_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_triv_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_coupling_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_dirich_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc \
 	actions/ferm/linop/lDeltaLs_w.cc \
@@ -613,7 +619,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	poly_cheb_fermact_w.$(OBJEXT) fermbcs_aggregate_w.$(OBJEXT) \
 	fermbcs_reader_w.$(OBJEXT) simple_fermbc_w.$(OBJEXT) \
 	twisted_fermbc_w.$(OBJEXT) periodic_fermbc_w.$(OBJEXT) \
-	schr_fermbc_params.$(OBJEXT) inv_borici_w.$(OBJEXT) \
+	schr_fermbc_params_w.$(OBJEXT) schr_sf_fermbc_w.$(OBJEXT) \
+	schr_triv_fermbc_w.$(OBJEXT) schr_nonpert_fermbc_w.$(OBJEXT) \
+	schr_coupling_fermbc_w.$(OBJEXT) \
+	schr_chromomag_fermbc_w.$(OBJEXT) \
+	schr_dirich_fermbc_w.$(OBJEXT) inv_borici_w.$(OBJEXT) \
 	dwffld_w.$(OBJEXT) lDeltaLs_w.$(OBJEXT) \
 	lg5eps_double_pass_w.$(OBJEXT) lg5eps_w.$(OBJEXT) \
 	lovddag_double_pass_w.$(OBJEXT) lovddag_w.$(OBJEXT) \
@@ -982,7 +992,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/fermbcs/periodic_fermbc_w.h \
-	actions/ferm/fermbcs/schr_fermbc_params.h \
+	actions/ferm/fermbcs/schr_fermbc_params_w.h \
+	actions/ferm/fermbcs/schr_sf_fermbc_w.h \
+	actions/ferm/fermbcs/schr_triv_fermbc_w.h \
+	actions/ferm/fermbcs/schr_nonpert_fermbc_w.h \
+	actions/ferm/fermbcs/schr_coupling_fermbc_w.h \
+	actions/ferm/fermbcs/schr_chromomag_fermbc_w.h \
+	actions/ferm/fermbcs/schr_dirich_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h actions/ferm/linop/lg5Rherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -1570,7 +1586,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/fermbcs/periodic_fermbc_w.h \
-	actions/ferm/fermbcs/schr_fermbc_params.h \
+	actions/ferm/fermbcs/schr_fermbc_params_w.h \
+	actions/ferm/fermbcs/schr_sf_fermbc_w.h \
+	actions/ferm/fermbcs/schr_triv_fermbc_w.h \
+	actions/ferm/fermbcs/schr_nonpert_fermbc_w.h \
+	actions/ferm/fermbcs/schr_coupling_fermbc_w.h \
+	actions/ferm/fermbcs/schr_chromomag_fermbc_w.h \
+	actions/ferm/fermbcs/schr_dirich_fermbc_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h actions/ferm/linop/lg5Rherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -2010,7 +2032,13 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermbcs/simple_fermbc_w.cc \
 	actions/ferm/fermbcs/twisted_fermbc_w.cc \
 	actions/ferm/fermbcs/periodic_fermbc_w.cc \
-	actions/ferm/fermbcs/schr_fermbc_params.cc \
+	actions/ferm/fermbcs/schr_fermbc_params_w.cc \
+	actions/ferm/fermbcs/schr_sf_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_triv_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_coupling_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc \
+	actions/ferm/fermbcs/schr_dirich_fermbc_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc \
 	actions/ferm/linop/lDeltaLs_w.cc \
@@ -2596,13 +2624,19 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rndz2wall_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rot_colvec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_loops_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_chromomag_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_chromomag_gaugebc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_coupling_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_coupling_gaugebc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_dirich_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_dirich_gaugebc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_fermbc_params.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_fermbc_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_gaugebc_params.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_nonpert_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_nonpert_gaugebc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_sf_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_sf_gaugebc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_triv_fermbc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schr_triv_gaugebc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schroedinger_gaugebc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
@@ -5951,19 +5985,103 @@ periodic_fermbc_w.obj: actions/ferm/fermbcs/periodic_fermbc_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o periodic_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/periodic_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/periodic_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/periodic_fermbc_w.cc'; fi`
 
-schr_fermbc_params.o: actions/ferm/fermbcs/schr_fermbc_params.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_fermbc_params.o -MD -MP -MF "$(DEPDIR)/schr_fermbc_params.Tpo" -c -o schr_fermbc_params.o `test -f 'actions/ferm/fermbcs/schr_fermbc_params.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_fermbc_params.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_fermbc_params.Tpo" "$(DEPDIR)/schr_fermbc_params.Po"; else rm -f "$(DEPDIR)/schr_fermbc_params.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_fermbc_params.cc' object='schr_fermbc_params.o' libtool=no @AMDEPBACKSLASH@
+schr_fermbc_params_w.o: actions/ferm/fermbcs/schr_fermbc_params_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_fermbc_params_w.o -MD -MP -MF "$(DEPDIR)/schr_fermbc_params_w.Tpo" -c -o schr_fermbc_params_w.o `test -f 'actions/ferm/fermbcs/schr_fermbc_params_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_fermbc_params_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_fermbc_params_w.Tpo" "$(DEPDIR)/schr_fermbc_params_w.Po"; else rm -f "$(DEPDIR)/schr_fermbc_params_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_fermbc_params_w.cc' object='schr_fermbc_params_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_fermbc_params.o `test -f 'actions/ferm/fermbcs/schr_fermbc_params.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_fermbc_params.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_fermbc_params_w.o `test -f 'actions/ferm/fermbcs/schr_fermbc_params_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_fermbc_params_w.cc
 
-schr_fermbc_params.obj: actions/ferm/fermbcs/schr_fermbc_params.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_fermbc_params.obj -MD -MP -MF "$(DEPDIR)/schr_fermbc_params.Tpo" -c -o schr_fermbc_params.obj `if test -f 'actions/ferm/fermbcs/schr_fermbc_params.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_fermbc_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_fermbc_params.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_fermbc_params.Tpo" "$(DEPDIR)/schr_fermbc_params.Po"; else rm -f "$(DEPDIR)/schr_fermbc_params.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_fermbc_params.cc' object='schr_fermbc_params.obj' libtool=no @AMDEPBACKSLASH@
+schr_fermbc_params_w.obj: actions/ferm/fermbcs/schr_fermbc_params_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_fermbc_params_w.obj -MD -MP -MF "$(DEPDIR)/schr_fermbc_params_w.Tpo" -c -o schr_fermbc_params_w.obj `if test -f 'actions/ferm/fermbcs/schr_fermbc_params_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_fermbc_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_fermbc_params_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_fermbc_params_w.Tpo" "$(DEPDIR)/schr_fermbc_params_w.Po"; else rm -f "$(DEPDIR)/schr_fermbc_params_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_fermbc_params_w.cc' object='schr_fermbc_params_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_fermbc_params.obj `if test -f 'actions/ferm/fermbcs/schr_fermbc_params.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_fermbc_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_fermbc_params.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_fermbc_params_w.obj `if test -f 'actions/ferm/fermbcs/schr_fermbc_params_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_fermbc_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_fermbc_params_w.cc'; fi`
+
+schr_sf_fermbc_w.o: actions/ferm/fermbcs/schr_sf_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_sf_fermbc_w.o -MD -MP -MF "$(DEPDIR)/schr_sf_fermbc_w.Tpo" -c -o schr_sf_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_sf_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_sf_fermbc_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_sf_fermbc_w.Tpo" "$(DEPDIR)/schr_sf_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_sf_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_sf_fermbc_w.cc' object='schr_sf_fermbc_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_sf_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_sf_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_sf_fermbc_w.cc
+
+schr_sf_fermbc_w.obj: actions/ferm/fermbcs/schr_sf_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_sf_fermbc_w.obj -MD -MP -MF "$(DEPDIR)/schr_sf_fermbc_w.Tpo" -c -o schr_sf_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_sf_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_sf_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_sf_fermbc_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_sf_fermbc_w.Tpo" "$(DEPDIR)/schr_sf_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_sf_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_sf_fermbc_w.cc' object='schr_sf_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_sf_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_sf_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_sf_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_sf_fermbc_w.cc'; fi`
+
+schr_triv_fermbc_w.o: actions/ferm/fermbcs/schr_triv_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_triv_fermbc_w.o -MD -MP -MF "$(DEPDIR)/schr_triv_fermbc_w.Tpo" -c -o schr_triv_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_triv_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_triv_fermbc_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_triv_fermbc_w.Tpo" "$(DEPDIR)/schr_triv_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_triv_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_triv_fermbc_w.cc' object='schr_triv_fermbc_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_triv_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_triv_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_triv_fermbc_w.cc
+
+schr_triv_fermbc_w.obj: actions/ferm/fermbcs/schr_triv_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_triv_fermbc_w.obj -MD -MP -MF "$(DEPDIR)/schr_triv_fermbc_w.Tpo" -c -o schr_triv_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_triv_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_triv_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_triv_fermbc_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_triv_fermbc_w.Tpo" "$(DEPDIR)/schr_triv_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_triv_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_triv_fermbc_w.cc' object='schr_triv_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_triv_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_triv_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_triv_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_triv_fermbc_w.cc'; fi`
+
+schr_nonpert_fermbc_w.o: actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_nonpert_fermbc_w.o -MD -MP -MF "$(DEPDIR)/schr_nonpert_fermbc_w.Tpo" -c -o schr_nonpert_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_nonpert_fermbc_w.Tpo" "$(DEPDIR)/schr_nonpert_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_nonpert_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc' object='schr_nonpert_fermbc_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_nonpert_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc
+
+schr_nonpert_fermbc_w.obj: actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_nonpert_fermbc_w.obj -MD -MP -MF "$(DEPDIR)/schr_nonpert_fermbc_w.Tpo" -c -o schr_nonpert_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_nonpert_fermbc_w.Tpo" "$(DEPDIR)/schr_nonpert_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_nonpert_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc' object='schr_nonpert_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_nonpert_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_nonpert_fermbc_w.cc'; fi`
+
+schr_coupling_fermbc_w.o: actions/ferm/fermbcs/schr_coupling_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_coupling_fermbc_w.o -MD -MP -MF "$(DEPDIR)/schr_coupling_fermbc_w.Tpo" -c -o schr_coupling_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_coupling_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_coupling_fermbc_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_coupling_fermbc_w.Tpo" "$(DEPDIR)/schr_coupling_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_coupling_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_coupling_fermbc_w.cc' object='schr_coupling_fermbc_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_coupling_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_coupling_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_coupling_fermbc_w.cc
+
+schr_coupling_fermbc_w.obj: actions/ferm/fermbcs/schr_coupling_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_coupling_fermbc_w.obj -MD -MP -MF "$(DEPDIR)/schr_coupling_fermbc_w.Tpo" -c -o schr_coupling_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_coupling_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_coupling_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_coupling_fermbc_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_coupling_fermbc_w.Tpo" "$(DEPDIR)/schr_coupling_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_coupling_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_coupling_fermbc_w.cc' object='schr_coupling_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_coupling_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_coupling_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_coupling_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_coupling_fermbc_w.cc'; fi`
+
+schr_chromomag_fermbc_w.o: actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_chromomag_fermbc_w.o -MD -MP -MF "$(DEPDIR)/schr_chromomag_fermbc_w.Tpo" -c -o schr_chromomag_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_chromomag_fermbc_w.Tpo" "$(DEPDIR)/schr_chromomag_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_chromomag_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc' object='schr_chromomag_fermbc_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_chromomag_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc
+
+schr_chromomag_fermbc_w.obj: actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_chromomag_fermbc_w.obj -MD -MP -MF "$(DEPDIR)/schr_chromomag_fermbc_w.Tpo" -c -o schr_chromomag_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_chromomag_fermbc_w.Tpo" "$(DEPDIR)/schr_chromomag_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_chromomag_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc' object='schr_chromomag_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_chromomag_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc'; fi`
+
+schr_dirich_fermbc_w.o: actions/ferm/fermbcs/schr_dirich_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_dirich_fermbc_w.o -MD -MP -MF "$(DEPDIR)/schr_dirich_fermbc_w.Tpo" -c -o schr_dirich_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_dirich_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_dirich_fermbc_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_dirich_fermbc_w.Tpo" "$(DEPDIR)/schr_dirich_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_dirich_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_dirich_fermbc_w.cc' object='schr_dirich_fermbc_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_dirich_fermbc_w.o `test -f 'actions/ferm/fermbcs/schr_dirich_fermbc_w.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/schr_dirich_fermbc_w.cc
+
+schr_dirich_fermbc_w.obj: actions/ferm/fermbcs/schr_dirich_fermbc_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT schr_dirich_fermbc_w.obj -MD -MP -MF "$(DEPDIR)/schr_dirich_fermbc_w.Tpo" -c -o schr_dirich_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_dirich_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_dirich_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_dirich_fermbc_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/schr_dirich_fermbc_w.Tpo" "$(DEPDIR)/schr_dirich_fermbc_w.Po"; else rm -f "$(DEPDIR)/schr_dirich_fermbc_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermbcs/schr_dirich_fermbc_w.cc' object='schr_dirich_fermbc_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o schr_dirich_fermbc_w.obj `if test -f 'actions/ferm/fermbcs/schr_dirich_fermbc_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermbcs/schr_dirich_fermbc_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermbcs/schr_dirich_fermbc_w.cc'; fi`
 
 inv_borici_w.o: actions/ferm/invert/inv_borici_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inv_borici_w.o -MD -MP -MF "$(DEPDIR)/inv_borici_w.Tpo" -c -o inv_borici_w.o `test -f 'actions/ferm/invert/inv_borici_w.cc' || echo '$(srcdir)/'`actions/ferm/invert/inv_borici_w.cc; \
