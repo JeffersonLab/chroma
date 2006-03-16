@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs_reader_s.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: fermbcs_reader_s.h,v 2.2 2006-03-16 03:00:11 edwards Exp $
 /*! \file
  *  \brief Fermionic boundary condition reader
  */
@@ -12,7 +12,7 @@
 namespace Chroma
 {
   //! Registration aggregator
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   namespace StaggeredTypeFermBCEnv
   {
   }

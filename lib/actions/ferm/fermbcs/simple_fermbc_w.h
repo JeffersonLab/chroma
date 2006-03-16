@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc_w.h,v 2.2 2006-02-26 03:47:52 edwards Exp $
+// $Id: simple_fermbc_w.h,v 2.3 2006-03-16 03:00:13 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -12,7 +12,7 @@
 namespace Chroma
 {
   //! Name and registration 
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   namespace WilsonTypeSimpleFermBCEnv
   {
     extern const std::string name;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc.h,v 2.2 2006-02-26 03:47:52 edwards Exp $
+// $Id: simple_fermbc.h,v 2.3 2006-03-16 03:00:12 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -16,7 +16,7 @@ namespace Chroma
 {
 
   //! Params for simple fermbc
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   struct SimpleFermBCParams
   {
     SimpleFermBCParams() {}
@@ -26,14 +26,14 @@ namespace Chroma
   };
 
   // Reader/writers
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   void read(XMLReader& xml, const std::string& path, SimpleFermBCParams& param);
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   void write(XMLWriter& xml, const std::string& path, const SimpleFermBCParams& param);
 
 
   //! Concrete class for all gauge actions with simple boundary conditions
-  /*! @ingroup fermbc
+  /*! @ingroup fermbcs
    *
    *  Simple BC, where boundary array is multiplied on the links on the
    *  edge of the lattice
@@ -111,6 +111,9 @@ namespace Chroma
     /*! NOP */
     void modifyF(T& psi) const {}
  
+    //! Zero some gauge-like field in place on the masked links
+    void zero(multi1d<LatticeColorMatrix>& ds_u) const {}
+
     //! Says if there are non-trivial BC links
     bool nontrivialP() const {return nontriv;}
 

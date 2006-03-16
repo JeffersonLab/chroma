@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: periodic_fermbc.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: periodic_fermbc.h,v 2.2 2006-03-16 03:00:12 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -13,7 +13,7 @@ namespace Chroma
 {
 
   //! Concrete class for all fermionic actions with trivial boundary conditions
-  /*! @ingroup fermbc
+  /*! @ingroup fermbcs
    *
    *  No BC
    */
@@ -41,6 +41,9 @@ namespace Chroma
     /*! NOP */
     void modifyF(T& psi) const {}
  
+    //! Zero some gauge-like field in place on the masked links
+    void zero(multi1d<LatticeColorMatrix>& ds_u) const {}
+
     //! Says if there are non-trivial BC links
     bool nontrivialP() const {return false;}
   };

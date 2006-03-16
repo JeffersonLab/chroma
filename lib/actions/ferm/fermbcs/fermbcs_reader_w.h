@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs_reader_w.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: fermbcs_reader_w.h,v 2.2 2006-03-16 03:00:12 edwards Exp $
 /*! \file
  *  \brief Fermionic boundary condition reader
  */
@@ -13,12 +13,12 @@
 namespace Chroma
 {
   //! Registration aggregator
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   namespace WilsonTypeFermBCEnv
   {
     //! Helper function for the FermionAction readers
     /*! 
-     * \ingroup fermbc
+     * \ingroup fermbcs
      *
      * This structure should not be replicated. This routine helps maintain
      * backwards compatibility with the FermionAction readers by looking for
@@ -29,12 +29,12 @@ namespace Chroma
 
 
   //! Registration aggregator
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   namespace WilsonTypeFermBCArrayEnv
   {
     //! Helper function for the FermionAction readers
     /*! 
-     * \ingroup fermbc
+     * \ingroup fermbcs
      *
      * This structure should not be replicated. This routine helps maintain
      * backwards compatibility with the FermionAction readers by looking for

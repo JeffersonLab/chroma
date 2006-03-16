@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: twisted_fermbc_w.h,v 2.2 2006-02-26 03:47:52 edwards Exp $
+// $Id: twisted_fermbc_w.h,v 2.3 2006-03-16 03:00:13 edwards Exp $
 /*! \file
  *  \brief Twisted fermionic BC
  */
@@ -14,7 +14,7 @@
 namespace Chroma 
 {
   //! Params struct for twisted params
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   struct TwistedFermBCParams {
     TwistedFermBCParams() {}
     TwistedFermBCParams(XMLReader& in, const std::string& path);
@@ -29,7 +29,7 @@ namespace Chroma
 
 
   //! Name and registration
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   namespace WilsonTypeTwistedFermBCEnv 
   {
     extern const std::string name;
@@ -38,7 +38,7 @@ namespace Chroma
 
   //! Concrete class for all fermionic actions with twisted boundary conditions
   /*!
-   * \ingroup fermbc
+   * \ingroup fermbcs
    *
    *  Twisted BC
    */
@@ -113,6 +113,10 @@ namespace Chroma
     /*! NOP */
     void modifyF(T& psi) const {}
  
+    //! Zero some gauge-like field in place on the masked links
+    /*! NOP */
+    void zero(multi1d<LatticeColorMatrix>& ds_u) const {}
+
     //! Says if there are non-trivial BC links
     bool nontrivialP() const {return true;}
 

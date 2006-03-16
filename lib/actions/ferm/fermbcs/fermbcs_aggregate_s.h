@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs_aggregate_s.h,v 2.1 2006-02-26 03:47:51 edwards Exp $
+// $Id: fermbcs_aggregate_s.h,v 2.2 2006-03-16 03:00:11 edwards Exp $
 /*! \file
  *  \brief All Staggered-type fermion boundary conditions
  */
@@ -12,7 +12,7 @@
 namespace Chroma
 {
   //! Name and registration 
-  /*! \ingroup fermbc */
+  /*! \ingroup fermbcs */
   namespace StaggeredTypeFermBCEnv
   {
     extern const bool registered;

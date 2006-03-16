@@ -1,4 +1,4 @@
-// $Id: fermbcs_aggregate_w.cc,v 2.2 2006-03-13 05:19:01 edwards Exp $
+// $Id: fermbcs_aggregate_w.cc,v 2.3 2006-03-16 03:00:11 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion boundary conditions
  */
@@ -7,8 +7,11 @@
 #include "actions/ferm/fermbcs/simple_fermbc_w.h"
 #include "actions/ferm/fermbcs/periodic_fermbc_w.h"
 #include "actions/ferm/fermbcs/twisted_fermbc_w.h"
-//#include "actions/ferm/fermbcs/schr1link_fermbc_w.h"
-//#include "actions/ferm/fermbcs/schr2link_fermbc_w.h"
+#include "actions/ferm/fermbcs/schr_triv_fermbc_w.h"
+#include "actions/ferm/fermbcs/schr_nonpert_fermbc_w.h"
+#include "actions/ferm/fermbcs/schr_coupling_fermbc_w.h"
+#include "actions/ferm/fermbcs/schr_chromomag_fermbc_w.h"
+#include "actions/ferm/fermbcs/schr_dirich_fermbc_w.h"
 
 namespace Chroma
 {
@@ -23,8 +26,11 @@ namespace Chroma
       success &= WilsonTypeSimpleFermBCEnv::registered;
       success &= WilsonTypePeriodicFermBCEnv::registered;
       success &= WilsonTypeTwistedFermBCEnv::registered;
-//      success &= WilsonTypeSchr1LinkFermBCEnv::registered;
-//      success &= WilsonTypeSchr2LinkFermBCEnv::registered;
+      success &= SchrTrivialFermBCEnv::registered;
+      success &= SchrNonPertFermBCEnv::registered;
+      success &= SchrCouplingFermBCEnv::registered;
+      success &= SchrChromoMagFermBCEnv::registered;
+      success &= SchrDirichletFermBCEnv::registered;
 
       return success;
     }
