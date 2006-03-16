@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.72 2006-03-16 02:58:31 edwards Exp $
+# $Id: Makefile.in,v 2.73 2006-03-16 17:21:11 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -992,6 +992,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/fermbcs/periodic_fermbc_w.h \
+	actions/ferm/fermbcs/schroedinger_fermbc_w.h \
 	actions/ferm/fermbcs/schr_fermbc_params_w.h \
 	actions/ferm/fermbcs/schr_sf_fermbc_w.h \
 	actions/ferm/fermbcs/schr_triv_fermbc_w.h \
@@ -1586,6 +1587,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
 	actions/ferm/fermbcs/periodic_fermbc_w.h \
+	actions/ferm/fermbcs/schroedinger_fermbc_w.h \
 	actions/ferm/fermbcs/schr_fermbc_params_w.h \
 	actions/ferm/fermbcs/schr_sf_fermbc_w.h \
 	actions/ferm/fermbcs/schr_triv_fermbc_w.h \
