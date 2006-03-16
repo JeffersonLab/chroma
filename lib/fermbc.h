@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 2.1 2006-02-26 03:47:51 edwards Exp $
+// $Id: fermbc.h,v 2.2 2006-03-16 02:57:29 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -28,6 +28,13 @@ namespace Chroma
     //! Modify fermion fields in place
     virtual void modifyF(T& psi) const = 0;
  
+    //! Zero some gauge-like field in place on the masked links
+    /*! 
+     * This routine may be dropped in favor of zero of a template type,
+     * namely the conjugate momenta.
+     */
+    virtual void zero(multi1d<LatticeColorMatrix>& ds_u) const = 0;
+
     //! Says if there are fermion non-trivial 
     virtual bool nontrivialP() const = 0;
   };
