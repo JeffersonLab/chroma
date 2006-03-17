@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_sf_fermbc_w.h,v 2.1 2006-03-16 03:00:12 edwards Exp $
+// $Id: schr_sf_fermbc_w.h,v 2.2 2006-03-17 16:59:11 edwards Exp $
 /*! @file
  * @brief Schroedinger ferm boundary conditions
  */
@@ -30,11 +30,11 @@ namespace Chroma
 
   protected:
     //! Construct the mask and boundary fields
-    virtual void SchrSFFermBC::initBnd(multi1d<LatticeColorMatrix>& SFBndFld,
-				       multi1d<LatticeBoolean>& lSFmask,
-				       LatticeBoolean& lSFmaskF,
-				       const multi1d<LatticeColorMatrix>& SFBndFldG,
-				       const multi1d<LatticeBoolean>& lSFmaskG) const;
+    virtual void initBnd(multi1d<LatticeColorMatrix>& SFBndFld,
+			 multi1d<LatticeBoolean>& lSFmask,
+			 LatticeBoolean& lSFmaskF,
+			 const multi1d<LatticeColorMatrix>& SFBndFldG,
+			 const multi1d<LatticeBoolean>& lSFmaskG) const;
 
     //! Get the angles on the boundaries
     virtual const multi1d<Real>& getTheta() const = 0;
