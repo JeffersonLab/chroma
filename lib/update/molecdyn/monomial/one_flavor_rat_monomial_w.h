@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 2.5 2006-02-25 22:48:58 bjoo Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 2.6 2006-03-17 02:05:56 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -183,6 +183,9 @@ namespace Chroma
 	eta = zero;
 	gaussian(eta, M->subset());
       
+	// Account for fermion BC by modifying the proposed field
+	S_f.getFermBC().modifyF(eta);
+
 	// Temporary: Move to correct normalisation
 	eta *= sqrt(0.5);
       

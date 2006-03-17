@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 2.4 2006-01-17 16:01:46 bjoo Exp $
+// $Id: two_flavor_monomial5d_w.h,v 2.5 2006-03-17 02:05:56 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -151,6 +151,9 @@ namespace Chroma
       // Fill the eta field with gaussian noise
       for(int s=0; s < N5; ++s)
 	gaussian(eta[s], M->subset());
+
+      // Account for fermion BC by modifying the proposed field
+      FA.getFermBC().modifyF(eta);
       
       // Temporary: Move to correct normalisation
       for(int s=0; s < N5; ++s)

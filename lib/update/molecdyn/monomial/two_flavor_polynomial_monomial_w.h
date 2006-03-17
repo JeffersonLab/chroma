@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_polynomial_monomial_w.h,v 2.2 2006-02-10 02:45:55 edwards Exp $
+// $Id: two_flavor_polynomial_monomial_w.h,v 2.3 2006-03-17 02:05:56 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials
@@ -105,6 +105,9 @@ namespace Chroma
       // Fill the eta field with gaussian noise
       gaussian(eta, MdagM->subset());
       
+      // Account for fermion BC by modifying the proposed field
+      FA.getFermBC().modifyF(eta);
+
       // Temporary: Move to correct normalisation
       eta *= sqrt(0.5);
       
