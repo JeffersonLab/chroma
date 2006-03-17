@@ -1,3 +1,11 @@
+03/16/2006 -- Robert Edwards
+	Version 2.14.0. Major overhaul in GaugeBC's and FermBC's . New initial
+        support for Schroedinger functional BC's. The GaugeBC's seem to work
+        under HMC (at least energy is conserved). Carried over BC's known under
+        SZIN. However, the FermBC's don't conserve energy yet. This is understood -
+        the LinOP.deriv() functions do not know the BC's hence can't enforce
+        them - only important to HMC. This needs more work.
+
 03/06/2006 -- Robert Edwards
 	Version 2.13.4. Backed out changes to clover with external field. It's
         breaking something but passes regression test.
