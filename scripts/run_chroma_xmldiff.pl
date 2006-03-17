@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.11 2006-01-03 05:49:54 bjoo Exp $
+#  $Id: run_chroma_xmldiff.pl,v 1.12 2006-03-17 02:05:22 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -74,7 +74,7 @@ for $file (&regresDirs())
     #
     # Run the tests
     #
-    printf "\n%-15s %-40s         %s\n", "Program", "Candidate","Conclusion";
+    printf "\n%-15s  %-10s  %s\n", "Program", "Conclusion", "Candidate";
     for $h (@regres_list) 
     {
 	my($exec_path) =  $h->{"exec_path"} ; 
@@ -86,6 +86,7 @@ for $file (&regresDirs())
 	my($input)     =  $h->{"input"} ; 
 
 	my $canddir = "$regres_dir/$outdir";
+	my($error_string) = "";
 
 #       printf "exec_path=$exec_path\n";
 #       printf "canddir=$canddir\n";
@@ -97,7 +98,7 @@ for $file (&regresDirs())
 	mkpath([$canddir], 0, 0755);
 	chdir($canddir) || die "error cd $canddir : $!\n";
 
-	printf "%-15s %-40s      ", $execute, $candidate;
+	printf "%-15s", $execute;
 	if (-x "$exec_path/$execute")
 	{
 	    if( $input ne "NOTHING" )
@@ -116,7 +117,7 @@ for $file (&regresDirs())
 	    my($status_tmp) = system("$exe") / 256 ; 
 	    if( $status_tmp != 0  ) 
 	    {
-		print "   RUN_FAIL\n"  ; 
+		$error_string = "RUN_FAIL"; 
 		++$num_errors;
 	    }
 	    else
@@ -130,21 +131,22 @@ for $file (&regresDirs())
 
 		if( $status == 0 ) 
 		{
-		    print "   PASS\n"  ; 
+		    $error_string = "PASS"; 
 		}
 		else
 		{
-		    print "   FAIL\n"  ; 
+		    $error_string = "FAIL";
 		    ++$num_errors;
 		}
 	    }
 	}
 	else
 	{
-	    printf("FAIL (compile)\n"); 
+	    $error_string = "FAIL (compile)";
 	    ++$num_errors;
 	}
 
+	printf "  %-10s  %s\n", $error_string, $candidate;
     }
 }
 
