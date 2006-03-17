@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 2.8 2006-02-25 22:48:58 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 2.9 2006-03-17 01:39:14 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -76,7 +76,7 @@ namespace Chroma
       (*lin)(Y, X, PLUS);
 
       lin->deriv(F, X, Y, MINUS);
-      
+
       // fold M^dag into X^dag ->  Y  !!
       P F_tmp;
       lin->deriv(F_tmp, Y, X, PLUS);
@@ -85,6 +85,7 @@ namespace Chroma
       for(int mu=0; mu < F.size(); ++mu)
 	F[mu] *= Real(-1);
 
+      FA.getFermBC().zero(F);  // HACK - THIS SHOULD BE IN DERIV!!!
 
       // F now holds derivative with respect to possibly fat links
       // now derive it with respect to the thin links if needs be
@@ -116,6 +117,9 @@ namespace Chroma
       // Fill the eta field with gaussian noise
       gaussian(eta, M->subset());
       
+      // Account for fermion BC by modifying the proposed field
+      S_f.getFermBC().modifyF(eta);
+
       // Temporary: Move to correct normalisation
       eta *= sqrt(0.5);
       
