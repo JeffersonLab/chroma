@@ -1,4 +1,4 @@
-// $Id: qpropqio.cc,v 2.1 2005-11-08 06:42:59 edwards Exp $
+// $Id: qpropqio.cc,v 2.2 2006-03-20 04:22:47 edwards Exp $
 /*! \file
  *  \brief Reads a scidac prop and converts only the volume format
  */
@@ -64,18 +64,11 @@ int main(int argc, char *argv[])
   Layout::setLattSize(input.nrow);
   Layout::create();
 
-  // Gauge field not needed, fake one
-  multi1d<LatticeColorMatrix> u(Nd);
-  u = zero;
-  XMLBufferWriter config_xml;
-  push(config_xml, "config");
-  pop(config_xml);
-
   // Output
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
 
   unsigned long cur_update = 0;
-  meas(u, config_xml, cur_update, xml_out);
+  meas(cur_update, xml_out);
 
   xml_out.flush();
         

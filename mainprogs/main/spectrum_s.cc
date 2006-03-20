@@ -1,4 +1,4 @@
-// $Id: spectrum_s.cc,v 2.2 2006-02-20 14:45:38 egregory Exp $
+// $Id: spectrum_s.cc,v 2.3 2006-03-20 04:22:47 edwards Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */
@@ -27,20 +27,20 @@ int main(int argc, char **argv)
   XMLReader xml_in ;
   string in_name = Chroma::getXMLInputFileName() ;
   try
-    {
-      xml_in.open(in_name);
-    }
+  {
+    xml_in.open(in_name);
+  }
   catch (...)
-    {
-      QDPIO::cerr << "Error reading input file " << in_name << endl;
-      QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
-      QDPIO::cerr << "The default name is ./DATA" << endl;
-      throw;
-    }
+  {
+    QDPIO::cerr << "Error reading input file " << in_name << endl;
+    QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
+    QDPIO::cerr << "The default name is ./DATA" << endl;
+    throw;
+  }
 
   // Read data
-  InlineSpectrumParams_s input(xml_in, "/spectrum_s");
-  InlineSpectrum_s  meas(input);
+  InlineStaggeredSpectrumParams input(xml_in, "/spectrum_s");
+  InlineStaggeredSpectrum  meas(input);
 
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
@@ -76,10 +76,10 @@ int main(int argc, char **argv)
   bool do_gauge_transform = false;
   read(xml_in, "/spectrum_s/Param/do_gauge_transform",do_gauge_transform );
   if( do_gauge_transform )
-    {
-      rgauge(u); 
-      QDPIO::cout << "Random gauge transform on gauge fields done." << endl;
-    }
+  {
+    rgauge(u); 
+    QDPIO::cout << "Random gauge transform on gauge fields done." << endl;
+  }
 
 
   // Output
@@ -89,35 +89,65 @@ int main(int argc, char **argv)
   bool gauge_invar_oper = false;
   read(xml_in, "/spectrum_s/Param/gauge_invar_oper",gauge_invar_oper );
 
-    // GAUGE FIX 
-    if( !gauge_invar_oper){
-      //not using covariant shifts, should gauge-fix
+  // GAUGE FIX 
+  if( !gauge_invar_oper){
+    //not using covariant shifts, should gauge-fix
 
-      //read some input the sloppy way
-      Real GFAccu;  // Gauge fixing tolerance 
-      Real OrPara;  // Gauge fixing over-relaxation param
-      int  GFMax;   // Maximum gauge fixing iterations
-      int  j_decay; // the t-direction
+    //read some input the sloppy way
+    Real GFAccu;  // Gauge fixing tolerance 
+    Real OrPara;  // Gauge fixing over-relaxation param
+    int  GFMax;   // Maximum gauge fixing iterations
+    int  j_decay; // the t-direction
 
-      read(xml_in, "/spectrum_s/Param/GFAccu", GFAccu );
-      read(xml_in, "/spectrum_s/Param/OrPara", OrPara );
-      read(xml_in, "/spectrum_s/Param/GFMax", GFMax );
-      read(xml_in, "/spectrum_s/Param/j_decay",j_decay  );
-      int  n_gf;
-
-
-      QDPIO::cout << "Not using covariant shift operators.";
-      QDPIO::cout << "Must gauge-fix" <<  endl;
-
-      QDPIO::cout << "Starting to fix to Coulomb gauge" <<  endl;
-      coulGauge(u, n_gf, j_decay, GFAccu, GFMax, true,	OrPara);
-      QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
-    }
+    read(xml_in, "/spectrum_s/Param/GFAccu", GFAccu );
+    read(xml_in, "/spectrum_s/Param/OrPara", OrPara );
+    read(xml_in, "/spectrum_s/Param/GFMax", GFMax );
+    read(xml_in, "/spectrum_s/Param/j_decay",j_decay  );
+    int  n_gf;
 
 
+    QDPIO::cout << "Not using covariant shift operators.";
+    QDPIO::cout << "Must gauge-fix" <<  endl;
 
-  unsigned long cur_update = 0;
-  meas(u, config_xml, cur_update, xml_out);
+    QDPIO::cout << "Starting to fix to Coulomb gauge" <<  endl;
+    coulGauge(u, n_gf, j_decay, GFAccu, GFMax, true,	OrPara);
+    QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
+  }
+
+
+  // Reset and set the default gauge field
+  InlineDefaultGaugeField::reset();
+  InlineDefaultGaugeField::set(u, config_xml);
+
+  // Do the measurement
+  try
+  {
+    unsigned long cur_update = 0;
+    meas(cur_update, xml_out);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "SPECTRUM_S: caught cast error" << endl;
+    QDP_abort(1);
+  }
+  catch(const std::string& e) 
+  {
+    QDPIO::cerr << "SPECTRUM_S: Caught Exception: " << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::exception& e) 
+  {
+    QDPIO::cerr << "SPECTRUM_S: Caught standard library exception: " << e.what() << endl;
+    QDP_abort(1);
+  }
+  catch(...)
+  {
+    QDPIO::cerr << "SPECTRUM_S: caught generic exception during measurement" << endl;
+    QDP_abort(1);
+  }
+
+  // Reset the default gauge field
+  InlineDefaultGaugeField::reset();
 
   xml_out.flush();
   xml_out.close();

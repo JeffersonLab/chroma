@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 2.2 2005-09-26 04:49:06 edwards Exp $
+// $Id: chroma.cc,v 2.3 2006-03-20 04:22:47 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -103,6 +103,11 @@ int main(int argc, char *argv[])
     QDPIO::cerr << "CHROMA: Caught Exception reading XML: " << e << endl;
     QDP_abort(1);
   }
+  catch(std::exception& e) 
+  {
+    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << endl;
+    QDP_abort(1);
+  }
   catch(...)
   {
     QDPIO::cerr << "CHROMA: caught generic exception reading XML" << endl;
@@ -162,6 +167,10 @@ int main(int argc, char *argv[])
 
     QDPIO::cout << "There are " << the_measurements.size() << " measurements " << endl;
 
+    // Reset and set the default gauge field
+    InlineDefaultGaugeField::reset();
+    InlineDefaultGaugeField::set(u, config_xml);
+
     // Measure inline observables 
     push(xml_out, "InlineObservables");
 
@@ -175,16 +184,29 @@ int main(int argc, char *argv[])
       {
 	// Caller writes elem rule
 	push(xml_out, "elem");
-	the_meas(u, config_xml, cur_update, xml_out);
+	the_meas(cur_update, xml_out);
 	pop(xml_out); 
       }
     }
 
     pop(xml_out); // pop("InlineObservables");
+
+    // Reset the default gauge field
+    InlineDefaultGaugeField::reset();
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "CHROMA: caught cast error" << endl;
+    QDP_abort(1);
   }
   catch(const std::string& e) 
   {
     QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::exception& e) 
+  {
+    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << endl;
     QDP_abort(1);
   }
   catch(...)

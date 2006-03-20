@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: purgaug.cc,v 2.1 2006-03-20 04:22:47 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -351,6 +351,10 @@ namespace Chroma
 	  write(gauge_xml, "HBItr", hb_control.hbitr_params);
 	  pop(gauge_xml);
 
+	  // Reset and set the default gauge field
+	  InlineDefaultGaugeField::reset();
+	  InlineDefaultGaugeField::set(u, gauge_xml);
+
 	  // Measure inline observables 
 	  push(xml_out, "InlineObservables");
 
@@ -360,7 +364,7 @@ namespace Chroma
 	    // Caller writes elem rule 
 	    AbsInlineMeasurement& the_meas = *(default_measurements[m]);
 	    push(xml_out, "elem");
-	    the_meas( u, gauge_xml, cur_update, xml_out);
+	    the_meas(cur_update, xml_out);
 	    pop(xml_out);
 	  }
 	
@@ -376,12 +380,15 @@ namespace Chroma
 	      { 
 		// Caller writes elem rule
 		push(xml_out, "elem");
-		the_meas( u, gauge_xml, cur_update, xml_out );
+		the_meas(cur_update, xml_out );
 		pop(xml_out); 
 	      }
 	    }
 	  }
 	  pop(xml_out); // pop("InlineObservables");
+
+	  // Reset the default gauge field
+	  InlineDefaultGaugeField::reset();
 	}
 
 	if( cur_update % hb_control.mc_control.save_interval == 0 ) 

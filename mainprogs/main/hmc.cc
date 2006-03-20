@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 2.3 2006-01-25 05:08:21 edwards Exp $
+// $Id: hmc.cc,v 2.4 2006-03-20 04:22:47 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -263,8 +263,7 @@ namespace Chroma {
     // It is a handle
     default_measurements[0] = new InlinePlaquette(plaq_params);
 
-    try {
-
+    {
       // Initialise the RNG
       QDP::RNG::setrn(mc_control.rng_seed);
       
@@ -329,17 +328,27 @@ namespace Chroma {
 	  write(gauge_xml, "HMCTrj", update_params);
 	  pop(gauge_xml);
 
+	  // Reset and set the default gauge field
+	  InlineDefaultGaugeField::reset();
+	  InlineDefaultGaugeField::set(gauge_state.getQ(), gauge_xml);
+
 	  // Measure inline observables 
 	  push(xml_out, "InlineObservables");
 
 	  // Always measure defaults
 	  for(int m=0; m < default_measurements.size(); m++) 
 	  {
+	    QDPIO::cout << "HMC: do measurement = " << m << endl;
+	    QDPIO::cout << "HMC: dump named objects" << endl;
+	    TheNamedObjMap::Instance().dump();
+
 	    // Caller writes elem rule 
 	    AbsInlineMeasurement& the_meas = *(default_measurements[m]);
 	    push(xml_out, "elem");
-	    the_meas( gauge_state.getQ(), gauge_xml, cur_update, xml_out);
+	    the_meas(cur_update, xml_out);
 	    pop(xml_out);
+
+	    QDPIO::cout << "HMC: finished measurement = " << m << endl;
 	  }
 	
 	  // Only measure user measurements after warm up
@@ -354,12 +363,15 @@ namespace Chroma {
 	      { 
 		// Caller writes elem rule
 		push(xml_out, "elem");
-		the_meas( gauge_state.getQ(), gauge_xml, cur_update, xml_out );
+		the_meas(cur_update, xml_out);
 		pop(xml_out); 
 	      }
 	    }
 	  }
 	  pop(xml_out); // pop("InlineObservables");
+
+	  // Reset the default gauge field
+	  InlineDefaultGaugeField::reset();
 	}
 
 	if( cur_update % mc_control.save_interval == 0 ) {
@@ -376,10 +388,6 @@ namespace Chroma {
       saveState<UpdateParams>(update_params, mc_control, cur_update, gauge_state.getQ());
       
       pop(xml_out); // pop("MCUpdates")
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
-      QDP_abort(1);
     }
 
     pop(xml_out);
@@ -504,7 +512,8 @@ int main(int argc, char *argv[])
   multi1d < Handle< AbsInlineMeasurement > > the_measurements;
 
   // Get the measurements
-  try { 
+  try 
+  { 
     std::istringstream Measurements_is(mc_control.inline_measurement_xml);
 
     XMLReader MeasXML(Measurements_is);
@@ -513,9 +522,7 @@ int main(int argc, char *argv[])
     MeasXML.print(os);
     QDPIO::cout << os.str() << endl << flush;
 
-
     read(MeasXML, "/InlineMeasurements", the_measurements);
-
   }
   catch(const std::string& e) { 
     QDPIO::cerr << "hmc: Caught exception while reading measurements: " << e << endl
@@ -531,15 +538,23 @@ int main(int argc, char *argv[])
   try { 
     doHMC<HMCTrjParams>(u, theHMCTrj, mc_control, trj_params, the_measurements);
   } 
-  catch( const std::string& e ) { 
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "hmc: caught cast error" << endl;
+    QDP_abort(1);
+  }
+  catch(const std::string& e) 
+  { 
     QDPIO::cerr << "hmc: Caught string exception: " << e << endl;
     QDP_abort(1);
   }
-  catch( std::exception& e ) {
+  catch(std::exception& e) 
+  {
     QDPIO::cerr << "hmc: Caught standard library exception: " << e.what() << endl;
     QDP_abort(1);
   }
-  catch(...) {
+  catch(...) 
+  {
     QDPIO::cerr << "hmc: Caught generic/unknown exception" << endl;
     QDP_abort(1);
   }
