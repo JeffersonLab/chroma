@@ -1,13 +1,18 @@
 // -*- C++ -*-
-#ifndef EO_PREC_LINOP
-#define EO_PREC_LINOP
+/*! @file
+ * @brief Base class for even-odd preconditioned 4D and 5D Linop
+ */
+
+#ifndef __eo_prec_linop_h__
+#define __eo_prec_linop_h__
 
 #include "chromabase.h"
 #include "linearop.h"
 
 using namespace QDP::Hints;
 
-namespace Chroma { 
+namespace Chroma 
+{
   
   //! Even-odd preconditioned linear operator
   /*! @ingroup linop
@@ -447,8 +452,6 @@ namespace Chroma {
 
 
   };
-
-
 
 
 } // End namespace Chroma
