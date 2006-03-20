@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson-twisted.ini.xml,v 1.1 2006-03-20 04:23:22 edwards Exp $
+; $Id: prec_wilson-twisted.ini.xml,v 1.2 2006-03-20 05:48:10 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -23,6 +23,11 @@
           <SourceType>POINT_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
         </Source>
       </Param>
       <NamedObject>
