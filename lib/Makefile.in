@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 2.74 2006-03-17 02:07:55 edwards Exp $
+# $Id: Makefile.in,v 2.75 2006-03-20 04:18:08 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -430,6 +430,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron_s/util_compute_8_vectors_s.cc \
 	meas/inline/hadron_s/util_baryon_s.cc \
 	meas/inline/io/inline_io_aggregate.cc \
+	meas/inline/io/default_gauge_field.cc \
 	meas/inline/io/inline_qio_read_obj.cc \
 	meas/inline/io/inline_qio_write_obj.cc \
 	meas/inline/io/inline_qio_write_erase_obj.cc \
@@ -723,8 +724,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	util_compute_8_pions_s.$(OBJEXT) \
 	util_compute_8_scalars_s.$(OBJEXT) \
 	util_compute_8_vectors_s.$(OBJEXT) util_baryon_s.$(OBJEXT) \
-	inline_io_aggregate.$(OBJEXT) inline_qio_read_obj.$(OBJEXT) \
-	inline_qio_write_obj.$(OBJEXT) \
+	inline_io_aggregate.$(OBJEXT) default_gauge_field.$(OBJEXT) \
+	inline_qio_read_obj.$(OBJEXT) inline_qio_write_obj.$(OBJEXT) \
 	inline_qio_write_erase_obj.$(OBJEXT) \
 	inline_szin_read_obj.$(OBJEXT) inline_szin_write_obj.$(OBJEXT) \
 	inline_nersc_write_obj.$(OBJEXT) \
@@ -1179,6 +1180,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/util_compute_quark_prop_s.h \
 	meas/inline/io/io.h meas/inline/io/named_objmap.h \
+	meas/inline/io/default_gauge_field.h \
 	meas/inline/io/inline_io_aggregate.h \
 	meas/inline/io/inline_qio_read_obj.h \
 	meas/inline/io/inline_qio_write_obj.h \
@@ -1774,6 +1776,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/util_compute_quark_prop_s.h \
 	meas/inline/io/io.h meas/inline/io/named_objmap.h \
+	meas/inline/io/default_gauge_field.h \
 	meas/inline/io/inline_io_aggregate.h \
 	meas/inline/io/inline_qio_read_obj.h \
 	meas/inline/io/inline_qio_write_obj.h \
@@ -2173,6 +2176,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron_s/util_compute_8_vectors_s.cc \
 	meas/inline/hadron_s/util_baryon_s.cc \
 	meas/inline/io/inline_io_aggregate.cc \
+	meas/inline/io/default_gauge_field.cc \
 	meas/inline/io/inline_qio_read_obj.cc \
 	meas/inline/io/inline_qio_write_obj.cc \
 	meas/inline/io/inline_qio_write_erase_obj.cc \
@@ -2336,6 +2340,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cppacs_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/default_gauge_field.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_quark_displacement_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/derivmesonseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilute_gauss_src_s.Po@am__quote@
@@ -8226,6 +8231,20 @@ inline_io_aggregate.obj: meas/inline/io/inline_io_aggregate.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_io_aggregate.cc' object='inline_io_aggregate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_io_aggregate.obj `if test -f 'meas/inline/io/inline_io_aggregate.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_io_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_io_aggregate.cc'; fi`
+
+default_gauge_field.o: meas/inline/io/default_gauge_field.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT default_gauge_field.o -MD -MP -MF "$(DEPDIR)/default_gauge_field.Tpo" -c -o default_gauge_field.o `test -f 'meas/inline/io/default_gauge_field.cc' || echo '$(srcdir)/'`meas/inline/io/default_gauge_field.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/default_gauge_field.Tpo" "$(DEPDIR)/default_gauge_field.Po"; else rm -f "$(DEPDIR)/default_gauge_field.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/default_gauge_field.cc' object='default_gauge_field.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o default_gauge_field.o `test -f 'meas/inline/io/default_gauge_field.cc' || echo '$(srcdir)/'`meas/inline/io/default_gauge_field.cc
+
+default_gauge_field.obj: meas/inline/io/default_gauge_field.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT default_gauge_field.obj -MD -MP -MF "$(DEPDIR)/default_gauge_field.Tpo" -c -o default_gauge_field.obj `if test -f 'meas/inline/io/default_gauge_field.cc'; then $(CYGPATH_W) 'meas/inline/io/default_gauge_field.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/default_gauge_field.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/default_gauge_field.Tpo" "$(DEPDIR)/default_gauge_field.Po"; else rm -f "$(DEPDIR)/default_gauge_field.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/default_gauge_field.cc' object='default_gauge_field.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o default_gauge_field.obj `if test -f 'meas/inline/io/default_gauge_field.cc'; then $(CYGPATH_W) 'meas/inline/io/default_gauge_field.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/default_gauge_field.cc'; fi`
 
 inline_qio_read_obj.o: meas/inline/io/inline_qio_read_obj.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_qio_read_obj.o -MD -MP -MF "$(DEPDIR)/inline_qio_read_obj.Tpo" -c -o inline_qio_read_obj.o `test -f 'meas/inline/io/inline_qio_read_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_qio_read_obj.cc; \
