@@ -15,7 +15,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Param>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -27,8 +27,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -92,7 +94,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSink>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
 
@@ -103,8 +105,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -138,7 +142,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSink>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
 
@@ -149,8 +153,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -185,7 +191,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSink>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
 
@@ -196,8 +202,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -382,7 +390,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>19 Mar 06 23:28:02 EST</run_date>
+    <run_date>20 Mar 06 00:08:19 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -443,7 +451,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:02 EST</run_date>
+          <run_date>20 Mar 06 00:08:19 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -463,7 +471,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <Input>
           <Param>
             <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -473,8 +481,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -535,7 +545,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:03 EST</run_date>
+          <run_date>20 Mar 06 00:08:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -623,7 +633,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -633,8 +643,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -717,7 +729,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:04 EST</run_date>
+          <run_date>20 Mar 06 00:08:21 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -739,7 +751,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSink>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -748,8 +760,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -837,7 +851,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -847,8 +861,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -894,7 +910,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:04 EST</run_date>
+          <run_date>20 Mar 06 00:08:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -916,7 +932,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSink>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -925,8 +941,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1015,7 +1033,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -1025,8 +1043,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -1087,7 +1107,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -1097,8 +1117,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -1147,7 +1169,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:05 EST</run_date>
+          <run_date>20 Mar 06 00:08:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1169,7 +1191,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSink>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -1178,8 +1200,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1267,7 +1291,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -1277,8 +1301,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -1324,7 +1350,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:06 EST</run_date>
+          <run_date>20 Mar 06 00:08:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1414,7 +1440,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <version>5</version>
         <SinkType>SHELL_SINK</SinkType>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
           <SmearingParam>
@@ -1423,8 +1449,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -1451,7 +1479,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -1460,8 +1488,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -1501,7 +1531,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -1511,8 +1541,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -1589,7 +1621,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:07 EST</run_date>
+          <run_date>20 Mar 06 00:08:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1679,7 +1711,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <version>5</version>
         <SinkType>SHELL_SINK</SinkType>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
           <SmearingParam>
@@ -1688,8 +1720,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -1716,7 +1750,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -1725,8 +1759,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -1766,7 +1802,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -1776,8 +1812,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -1795,7 +1833,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -1804,8 +1842,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -1845,7 +1885,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -1855,8 +1895,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -1933,7 +1975,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:08 EST</run_date>
+          <run_date>20 Mar 06 00:08:26 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2023,7 +2065,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <version>5</version>
         <SinkType>SHELL_SINK</SinkType>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
           <SmearingParam>
@@ -2032,8 +2074,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2060,7 +2104,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -2069,8 +2113,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2110,7 +2156,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -2120,8 +2166,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2198,7 +2246,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:28:09 EST</run_date>
+          <run_date>20 Mar 06 00:08:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2296,7 +2344,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -2306,8 +2354,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2378,7 +2428,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <version>5</version>
         <SinkType>SHELL_SINK</SinkType>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
           <SmearingParam>
@@ -2387,8 +2437,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2415,7 +2467,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -2424,8 +2476,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2465,7 +2519,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -2475,8 +2529,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2545,7 +2601,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <version>5</version>
         <SinkType>SHELL_SINK</SinkType>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
           <SmearingParam>
@@ -2554,8 +2610,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2582,7 +2640,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -2591,8 +2649,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2632,7 +2692,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -2642,8 +2702,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2661,7 +2723,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -2670,8 +2732,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2711,7 +2775,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -2721,8 +2785,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2791,7 +2857,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <version>5</version>
         <SinkType>SHELL_SINK</SinkType>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
           <SmearingParam>
@@ -2800,8 +2866,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2828,7 +2896,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -2837,8 +2905,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2878,7 +2948,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -2888,8 +2958,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
