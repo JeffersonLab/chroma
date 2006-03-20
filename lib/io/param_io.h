@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
+// $Id: param_io.h,v 2.1 2006-03-20 04:20:39 edwards Exp $
 /*! \file
  *  \brief Various parameter structs and reader/writers
  */
@@ -54,25 +54,9 @@ namespace Chroma
   };
 
 
-  //! Parameters for chiral fermion actions
-  struct ChiralParam_t
-  {
-    ChiralParam_t();  // default constructor
-    ~ChiralParam_t() {}
-
-    Real       OverMass;
-    int        N5;
-    Real       a5;
-    int        NWilsVec;
-  };
-
-
   //---------------------------- Readers -----------------------------
   //! Configuration input
   void read(XMLReader& xml, const string& path, Cfg_t& input);
-
-  //! Read chiral action like parameters
-  void read(XMLReader& xml, const string& path, ChiralParam_t& param);
 
   //! Read inverter parameters
   void read(XMLReader& xml, const string& path, InvertParam_t& param);
@@ -84,9 +68,6 @@ namespace Chroma
   //---------------------------- Writers -----------------------------
   //! Configuration input
   void write(XMLWriter& xml, const string& path, const Cfg_t& input);
-
-  //! Write chiral action like parameters
-  void write(XMLWriter& xml, const string& path, const ChiralParam_t& param);
 
   //! Write inverter parameters
   void write(XMLWriter& xml, const string& path, const InvertParam_t& param);

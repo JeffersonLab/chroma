@@ -1,4 +1,4 @@
-// $Id: param_io.cc,v 2.0 2005-09-25 21:04:32 edwards Exp $
+// $Id: param_io.cc,v 2.1 2006-03-20 04:20:39 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
@@ -67,6 +67,7 @@ namespace Chroma
   }
 
 
+#if 0
   //! Initialize a chiral param struct
   ChiralParam_t::ChiralParam_t()
   {
@@ -98,6 +99,8 @@ namespace Chroma
     else
       param.NWilsVec = 0;
   }
+#endif
+
 
 
   //! Read inverter parameters
@@ -157,6 +160,7 @@ namespace Chroma
   }
 
 
+#if 0
   //! Write chiral action like parameters
   void write(XMLWriter& xml, const string& path, const ChiralParam_t& param)
   {
@@ -169,6 +173,7 @@ namespace Chroma
 
     pop(xml);
   }
+#endif
 
 
   //! Write inverter parameters
