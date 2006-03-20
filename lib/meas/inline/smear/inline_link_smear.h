@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_link_smear.h,v 2.1 2005-11-22 22:00:27 edwards Exp $
+// $Id: inline_link_smear.h,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  *  \brief Inline link smearing
  */
@@ -33,7 +33,9 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	std::string 	linksmear_id;	        // memory object linksmear config
+	std::string 	gauge_id;	     /*!< Input gauge field */
+	std::string 	linksmear_id;	     /*!< Output memory object ape config */
+
       } named_obj;
       
     };
@@ -49,9 +51,7 @@ namespace Chroma
       unsigned long getFrequency(void) const {return params.frequency;}
 
       //! Do the measurement
-      void operator()(const multi1d<LatticeColorMatrix>& u,
-		      XMLBufferWriter& gauge_xml,
-		      const unsigned long update_no,
+      void operator()(const unsigned long update_no,
 		      XMLWriter& xml_out); 
 
     private:

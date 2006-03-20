@@ -22,7 +22,8 @@
 #include "actions/ferm/fermbcs/simple_fermbc_s.h"
 #include "actions/ferm/fermacts/fermacts_s.h"
 
-
+#include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 #include "util/ferm/transf.h"
 #include "meas/hadron/ks_local_loops.h"
@@ -35,15 +36,15 @@
 
 namespace Chroma { 
   int build_basic_8_props(multi1d<LatticeStaggeredPropagator> stag_prop,
-			   stag_src_type type_of_src,
-			   bool gauge_shift, bool sym_shift,
-			   int fuzz_width,
-			   const multi1d<LatticeColorMatrix> & u,
-			   const multi1d<LatticeColorMatrix> & u_smr,
-			   Handle<const SystemSolver<LatticeStaggeredFermion> >
-   			       & qprop,
-			   XMLWriter & xml_out,
-			   Real RsdCG, Real Mass, int j_decay ) ;
+			  stag_src_type type_of_src,
+			  bool gauge_shift, bool sym_shift,
+			  int fuzz_width,
+			  const multi1d<LatticeColorMatrix> & u,
+			  const multi1d<LatticeColorMatrix> & u_smr,
+			  Handle<const SystemSolver<LatticeStaggeredFermion> >
+			  & qprop,
+			  XMLWriter & xml_out,
+			  Real RsdCG, Real Mass, int j_decay ) ;
 
 }
 
@@ -96,13 +97,13 @@ namespace Chroma {
   void compute_vary_baryon_s(XMLWriter &xml_out, int t_source, int fuzz_width,
 			     int j_decay, int t_len,
 			     LatticeStaggeredPropagator & 
-  			           quark_propagator_Lsink_Lsrc,
+			     quark_propagator_Lsink_Lsrc,
 			     LatticeStaggeredPropagator & 
-			           quark_propagator_Fsink_Lsrc,
+			     quark_propagator_Fsink_Lsrc,
 			     LatticeStaggeredPropagator & 
-                                   quark_propagator_Lsink_Fsrc,
+			     quark_propagator_Lsink_Fsrc,
 			     LatticeStaggeredPropagator & 
-   			           quark_propagator_Fsink_Fsrc) ;
+			     quark_propagator_Fsink_Fsrc) ;
 
 
   int compute_singlet_ps(LatticeStaggeredFermion & psi,
@@ -112,7 +113,7 @@ namespace Chroma {
 			 bool sym_shift,
 			 const multi1d<LatticeColorMatrix> & u ,
 			 Handle<const SystemSolver<LatticeStaggeredFermion> > &
-   			     qprop,
+			 qprop,
 			 XMLWriter & xml_out,
 			 Real RsdCG, Real Mass, 
 			 int j_decay, int t_source, int t_length);
@@ -130,13 +131,13 @@ namespace Chroma {
   namespace InlineStaggeredSpectrumEnv { 
     AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					    const std::string& path) {
-      return new InlineSpectrum_s(InlineSpectrumParams_s(xml_in, path));
+      return new InlineStaggeredSpectrum(InlineStaggeredSpectrumParams(xml_in, path));
     }
 
     const std::string name = "SPECTRUM_S";
     const bool registered = 
-        TheInlineMeasurementFactory::Instance().registerObject(name, 
-							       createMeasurement);
+    TheInlineMeasurementFactory::Instance().registerObject(name, 
+							   createMeasurement);
   };
 
 /***************************************************************************/
@@ -144,14 +145,14 @@ namespace Chroma {
 
   //! Reader for parameters
   void read(XMLReader& xml, const string& path,
-	    InlineSpectrumParams_s::Param_t& param) {
+	    InlineStaggeredSpectrumParams::Param_t& param) 
+  {
     XMLReader paramtop(xml, path);
 
     int version;
     read(paramtop, "version", version);
 
     //    switch (version) 
-
 
     read(paramtop, "Meson_local", param.Meson_local);
     read(paramtop, "Baryon_local", param.Baryon_local);
@@ -207,7 +208,7 @@ namespace Chroma {
 
   //! Writer for parameters
   void write(XMLWriter& xml, const string& path, 
-	     const InlineSpectrumParams_s::Param_t& param) {
+	     const InlineStaggeredSpectrumParams::Param_t& param) {
     push(xml, path);
 
     int version = 1;
@@ -229,7 +230,7 @@ namespace Chroma {
 
   //! Propagator generation params input
   void read(XMLReader& xml, const string& path, 
-	    InlineSpectrumParams_s::Quark_Prop_t& input) {
+	    InlineStaggeredSpectrumParams::Quark_Prop_t& input) {
     XMLReader inputtop(xml, path);
 
     //    read(inputtop, "prop_inversion", input.prop_param);
@@ -246,7 +247,7 @@ namespace Chroma {
 
   //! Propagator output
   void write(XMLWriter& xml, const string& path, 
-           const InlineSpectrumParams_s::Quark_Prop_t& input) {
+	     const InlineStaggeredSpectrumParams::Quark_Prop_t& input) {
     push(xml, path);
     write(xml, "Mass", input.Mass);
     write(xml,"Inverter",input.invParam.invType);
@@ -255,15 +256,41 @@ namespace Chroma {
     pop(xml);
   }
 
+
+/***************************************************************************/
+  //! Named object input
+  void read(XMLReader& xml, const string& path, InlineStaggeredSpectrumParams::NamedObject_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+  }
+
+/***************************************************************************/
+
+  //! Named object output
+  void write(XMLWriter& xml, const string& path, const InlineStaggeredSpectrumParams::NamedObject_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "gauge_id", input.gauge_id);
+
+    pop(xml);
+  }
+
 /***************************************************************************/
 
   // Param stuff
-  InlineSpectrumParams_s::InlineSpectrumParams_s() { frequency = 0; }
+  InlineStaggeredSpectrumParams::InlineStaggeredSpectrumParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
 
 /***************************************************************************/
 
-  InlineSpectrumParams_s::InlineSpectrumParams_s(XMLReader& xml_in, 
-						 const std::string& path) {
+  InlineStaggeredSpectrumParams::InlineStaggeredSpectrumParams(XMLReader& xml_in, 
+							       const std::string& path) {
     try {
       XMLReader paramtop(xml_in, path);
 
@@ -279,6 +306,11 @@ namespace Chroma {
       // Read in the output propagator/source configuration info
       read(paramtop, "Inversion", prop_param);
 
+      // Read in the gauge field id
+      // If this were changed to a read of NamedObject, then the
+      // IO routines above would pick up gauge_id
+      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
+
       // Possible alternate XML file pattern
       if (paramtop.count("xml_file") != 0) {
 	read(paramtop, "xml_file", xml_file);
@@ -292,12 +324,13 @@ namespace Chroma {
 /***************************************************************************/
 
   void
-  InlineSpectrumParams_s::write(XMLWriter& xml_out, 
-				const std::string& path) {
+  InlineStaggeredSpectrumParams::write(XMLWriter& xml_out, 
+				       const std::string& path) {
     push(xml_out, path);
     
     Chroma::write(xml_out, "Param", param);
     Chroma::write(xml_out, "Inversion", prop_param);
+    Chroma::write(xml_out, "NamedObject", named_obj);
     QDP::write(xml_out, "xml_file", xml_file);
 
     pop(xml_out);
@@ -314,7 +347,7 @@ namespace Chroma {
 		      const multi1d<LatticeColorMatrix> & u,
 		      multi1d<LatticeColorMatrix> & u_smr,
 		      Handle<const SystemSolver<LatticeStaggeredFermion> > & 
-  		        qprop,
+		      qprop,
 		      XMLWriter & xml_out,
 		      Real RsdCG, Real Mass, int j_decay){
 
@@ -365,7 +398,7 @@ namespace Chroma {
 		      bool gauge_shift, bool sym_shift,
 		      const multi1d<LatticeColorMatrix> & u,
 		      Handle<const SystemSolver<LatticeStaggeredFermion> > & 
-  		        qprop,
+		      qprop,
 		      XMLWriter & xml_out,
 		      Real RsdCG, Real Mass, int j_decay){
 
@@ -414,7 +447,7 @@ namespace Chroma {
 		       const multi1d<LatticeColorMatrix> & u , 
 		       multi1d<LatticeColorMatrix> & u_smr,
 		       Handle<const SystemSolver<LatticeStaggeredFermion> > & 
-		          qprop,
+		       qprop,
 		       XMLWriter & xml_out,
 		       Real RsdCG, Real Mass,
 		       int j_decay,
@@ -424,7 +457,7 @@ namespace Chroma {
 		       LatticeStaggeredPropagator &quark_propagator_Fsink_Lsrc,
 		       LatticeStaggeredPropagator &quark_propagator_Lsink_Fsrc,
 		       LatticeStaggeredPropagator &quark_propagator_Fsink_Fsrc
-		       ){
+    ){
 
     //    stag_src_type type_of_src = LOCAL_SRC ;
     stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE;
@@ -519,7 +552,7 @@ namespace Chroma {
 					    RsdCG, Mass,
 					    j_decay, src_ind, color_source) ;
 
-     /*
+      /*
        * Move the solution to the appropriate components
        * of quark propagator.
        */
@@ -568,10 +601,8 @@ namespace Chroma {
 
   // Function call
   void 
-  InlineSpectrum_s::operator()(const multi1d<LatticeColorMatrix>& u,
-			     XMLBufferWriter& gauge_xml,
-			     unsigned long update_no,
-			     XMLWriter& xml_out) {
+  InlineStaggeredSpectrum::operator()(unsigned long update_no,
+				      XMLWriter& xml_out) {
     // If xml file not empty, then use alternate
     if (params.xml_file != ""){
       string xml_file = makeXMLFileName(params.xml_file, update_no);
@@ -582,11 +613,11 @@ namespace Chroma {
       pop(xml_out);
 
       XMLFileWriter xml(xml_file);
-      func(u, gauge_xml, update_no, xml);
-
-    }else{
-
-      func(u, gauge_xml, update_no, xml_out);
+      func(update_no, xml);
+    }
+    else
+    {
+      func(update_no, xml_out);
     }
   }
 
@@ -594,12 +625,38 @@ namespace Chroma {
 
   // Real work done here
   void 
-  InlineSpectrum_s::func(const multi1d<LatticeColorMatrix>& u,
-		       XMLBufferWriter& gauge_xml,
-		       unsigned long update_no,
-		       XMLWriter& xml_out) {
+  InlineStaggeredSpectrum::func(unsigned long update_no,
+				XMLWriter& xml_out) 
+  {
+    START_CODE();
 
-    QDPIO::cout << "SPECTRUM_S: Spectroscopy for Staggered-like fermions" 
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineStaggeredSpectrumEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineStaggeredSpectrumEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+
+    QDPIO::cout << InlineStaggeredSpectrumEnv::name << ": Spectroscopy for Staggered-like fermions" 
 		<< endl;
     QDPIO::cout << "Gauge group: SU(" << Nc << ")" << endl;
 
@@ -740,9 +797,9 @@ namespace Chroma {
     if ((  do_local_disc_loops ) && (do_stoch_conn_corr )){
       push(xml_out, "disconnected_loops");
       ks_local_loops_and_stoch_conn(qprop, q_source, psi , u, xml_out, 
-		     gauge_shift, sym_shift, loop_checkpoint,
-		     t_length, Mass, Nsamp, RsdCG, CFGNO, volume_source, 
-		     src_seperation, j_decay);
+				    gauge_shift, sym_shift, loop_checkpoint,
+				    t_length, Mass, Nsamp, RsdCG, CFGNO, volume_source, 
+				    src_seperation, j_decay);
       pop(xml_out);
 
       done_local_disc_loops = true;
@@ -1028,11 +1085,16 @@ namespace Chroma {
     }
 
   
-  
     pop(xml_out); // spectrum_s
-    QDPIO::cout << "Staggered spectroscopy ran successfully" << endl;
+
+    snoop.stop();
+    QDPIO::cout << InlineStaggeredSpectrumEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineStaggeredSpectrumEnv::name << ": ran successfully" << endl;
 
     END_CODE();
-  }  // end of InlineSpectrum_s
+  }  // end of InlineStaggeredSpectrum
 
 }

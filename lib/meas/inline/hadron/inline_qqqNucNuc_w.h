@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqqNucNuc_w.h,v 1.2 2005-12-27 21:36:58 kostas Exp $
+// $Id: inline_qqqNucNuc_w.h,v 1.3 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -47,7 +47,8 @@ namespace Chroma
 
     struct NamedObject_t
     {
-      multi1d<std::string> prop_ids; 
+      std::string          gauge_id;  /*!< Input gauge field */
+      multi1d<std::string> prop_ids;  /*!< Input forward propagators */
     } named_obj;
 
     std::string qqq_file ;  // binary file to write the qqq object
@@ -69,16 +70,12 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:

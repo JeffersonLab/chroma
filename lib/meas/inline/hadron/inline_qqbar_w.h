@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqbar_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_qqbar_w.h,v 2.1 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline construction of qqbar
  *
@@ -40,8 +40,9 @@ namespace Chroma
 
     struct NamedObject_t
     {
-      multi1d<string>  prop_ids;        /*!< The file is expected to be in SciDAC format! */
-      string           qqbar_file;      /*!< The file is expected to be in SciDAC format! */
+      string           gauge_id;        /*!< Input gauge field */
+      multi1d<string>  prop_ids;        /*!< Input sink smeared propagators */
+      string           qqbar_file;      /*!< qqbar output file */
     } named_obj;
   };
 
@@ -58,9 +59,7 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

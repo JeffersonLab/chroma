@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_seqsource_w.h,v 2.2 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_seqsource_w.h,v 2.3 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -37,6 +37,7 @@ namespace Chroma
 
     struct NamedObject_t
     {
+      std::string            gauge_id;
       multi1d<std::string>   prop_ids;
       std::string            seqsource_id;
     } named_obj;
@@ -54,9 +55,7 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

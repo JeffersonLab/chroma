@@ -1,4 +1,4 @@
-// $Id: inline_fuzwilp.cc,v 2.2 2006-02-26 14:17:43 mcneile Exp $
+// $Id: inline_fuzwilp.cc,v 2.3 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline fuzzed Wilson loops
  */
@@ -7,6 +7,8 @@
 #include "meas/inline/glue/inline_fuzwilp.h"
 #include "meas/glue/fuzwilp.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
+#include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 
 using namespace QDP;
@@ -25,7 +27,12 @@ namespace Chroma
   };
 
   // Params
-  InlineFuzzedWilsonLoopParams::InlineFuzzedWilsonLoopParams() { frequency = 0; }
+  InlineFuzzedWilsonLoopParams::InlineFuzzedWilsonLoopParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
+
   InlineFuzzedWilsonLoopParams::InlineFuzzedWilsonLoopParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
@@ -43,6 +50,9 @@ namespace Chroma
       read(paramtop, "sm_fact", sm_fact);
       read(paramtop, "BlkMax",  BlkMax);
       read(paramtop, "BlkAccu", BlkAccu);
+ 
+      // Ids
+      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
     }
     catch(const std::string& e) 
     {
@@ -52,11 +62,21 @@ namespace Chroma
   }
 
   void 
-  InlineFuzzedWilsonLoop::operator()(const multi1d<LatticeColorMatrix>& u,
-				     XMLBufferWriter& gauge_xml,
-				     unsigned long update_no,
+  InlineFuzzedWilsonLoop::operator()(unsigned long update_no,
 				     XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    QDP::StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Grab the gauge field
+    XMLBufferWriter gauge_xml;
+    multi1d<LatticeColorMatrix> u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+    TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+
     push(xml_out, "APE_Smeared_Wilsonloop");
     write(xml_out, "update_no", update_no);
 
@@ -73,7 +93,13 @@ namespace Chroma
 	    "fuzwilp");
 
     pop(xml_out);
-    QDPIO::cout << "FuzzedWilsonLoop ran successfully" << endl;
+ 
+    snoop.stop();
+    QDPIO::cout << InlineFuzzedWilsonLoopEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineFuzzedWilsonLoopEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

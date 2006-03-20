@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 2.1 2006-01-12 05:45:17 edwards Exp $
+// $Id: inline_eigbnds.cc,v 2.2 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -10,6 +10,8 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/eig/eig_spec.h"
 #include "meas/eig/eig_spec_array.h"
+#include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 #include "actions/ferm/linop/lopscl.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -62,8 +64,32 @@ namespace Chroma {
   }
 
 
+  //! Object buffer
+  void write(XMLWriter& xml, const string& path, const InlineEigBndsMdagMParams::NamedObject_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "gauge_id", input.gauge_id);
+
+    pop(xml);
+  }
+
+
+  //! Object buffer
+  void read(XMLReader& xml, const string& path, InlineEigBndsMdagMParams::NamedObject_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+  }
+
+
   // Param stuff
-  InlineEigBndsMdagMParams::InlineEigBndsMdagMParams() { frequency = 0; }
+  InlineEigBndsMdagMParams::InlineEigBndsMdagMParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
 
   InlineEigBndsMdagMParams::InlineEigBndsMdagMParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -83,6 +109,9 @@ namespace Chroma {
       std::ostringstream os;
       xml_tmp.print(os);
       ferm_act = os.str();
+ 
+      // Ids
+      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
     }
     catch(const std::string& e) 
     {
@@ -102,6 +131,9 @@ namespace Chroma {
     QDP::write(xml, "usePV", usePV);
     xml << ferm_act;
     Chroma::write(xml, "Ritz", ritz);
+
+    // Ids
+    Chroma::write(xml, "NamedObject", named_obj);
 
     pop(xml);
   }
@@ -270,9 +302,7 @@ namespace Chroma {
 
   // The "do" function
   void 
-  InlineEigBndsMdagM::operator()(const multi1d<LatticeColorMatrix>& u,
-				 XMLBufferWriter& gauge_xml,
-				 unsigned long update_no,
+  InlineEigBndsMdagM::operator()(unsigned long update_no,
 				 XMLWriter& xml_out) 
   {
     // Check success of the downcast 
@@ -283,6 +313,27 @@ namespace Chroma {
     // Possible actions
     const FermAct5D<LatticeFermion>* S_5d = 
       dynamic_cast<const FermAct5D<LatticeFermion>*>(fermact.operator->()); // get pointer
+
+
+    multi1d<LatticeColorMatrix> u;
+    try
+    {
+      // Grab the object
+      u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+    }
+    catch (std::bad_cast) 
+    {
+      QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": error message: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    
 
     Handle< const ConnectState > connect_state(fermact->createState(u));
 
@@ -310,7 +361,8 @@ namespace Chroma {
     }
     else
     {
-      throw string("InlineEigBndsMdagM: no suitable cast found");
+      QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": no suitable cast found" << endl;
+      QDP_abort(1);
     }
   } 
 

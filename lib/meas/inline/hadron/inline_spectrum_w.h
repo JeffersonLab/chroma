@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_w.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_spectrum_w.h,v 2.1 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
@@ -63,6 +63,7 @@ namespace Chroma
 
     struct NamedObject_t
     {
+      std::string          gauge_id;
       multi1d<std::string> prop_ids;
     } named_obj;
 
@@ -82,16 +83,12 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:

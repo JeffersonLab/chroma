@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mesonspec_w.h,v 2.2 2006-03-06 21:22:26 edwards Exp $
+// $Id: inline_mesonspec_w.h,v 2.3 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline meson spectrum calculations
  *
@@ -33,12 +33,13 @@ namespace Chroma
 
     struct Param_t
     {
-      int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
-      bool avg_equiv_mom;      // average over equivalent momenta
+      int mom2_max;            /*!< (mom)^2 <= mom2_max. mom2_max=7 in szin. */
+      bool avg_equiv_mom;      /*!< average over equivalent momenta */
     } param;
 
     struct NamedObject_t
     {
+      std::string    gauge_id; 
       struct Props_t
       {
 	multi1d<std::string> sink_ids;
@@ -62,16 +63,12 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:

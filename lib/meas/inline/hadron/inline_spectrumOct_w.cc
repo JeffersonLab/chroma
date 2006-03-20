@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 2.4 2005-12-25 05:08:41 edwards Exp $
+// $Id: inline_spectrumOct_w.cc,v 2.5 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -23,6 +23,7 @@
 #include "util/gauge/taproj.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -136,6 +137,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "prop_ids", input.prop_ids);
   }
 
@@ -144,6 +146,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "prop_ids", input.prop_ids);
 
     pop(xml);
@@ -199,9 +202,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineSpectrumOct::operator()(const multi1d<LatticeColorMatrix>& u,
-				XMLBufferWriter& gauge_xml,
-				unsigned long update_no,
+  InlineSpectrumOct::operator()(unsigned long update_no,
 				XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
@@ -215,20 +216,18 @@ namespace Chroma
       pop(xml_out);
 
       XMLFileWriter xml(xml_file);
-      func(u, gauge_xml, update_no, xml);
+      func(update_no, xml);
     }
     else
     {
-      func(u, gauge_xml, update_no, xml_out);
+      func(update_no, xml_out);
     }
   }
 
 
   // Real work done here
   void 
-  InlineSpectrumOct::func(const multi1d<LatticeColorMatrix>& u,
-			  XMLBufferWriter& gauge_xml,
-			  unsigned long update_no,
+  InlineSpectrumOct::func(unsigned long update_no,
 			  XMLWriter& xml_out) 
   {
     START_CODE();
@@ -236,6 +235,28 @@ namespace Chroma
     StopWatch snoop;
     snoop.reset();
     snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineSpectrumOctEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineSpectrumOctEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     push(xml_out, "spectrumOct_w");
     write(xml_out, "update_no", update_no);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 2.3 2006-02-09 17:58:56 egregory Exp $
+// $Id: inline_spectrum_s.h,v 2.4 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -25,10 +25,10 @@ namespace Chroma
 
   //! Parameter structure
   /*! \ingroup inlinehadron */
-  struct InlineSpectrumParams_s 
+  struct InlineStaggeredSpectrumParams 
   {
-    InlineSpectrumParams_s();
-    InlineSpectrumParams_s(XMLReader& xml_in, const std::string& path);
+    InlineStaggeredSpectrumParams();
+    InlineStaggeredSpectrumParams(XMLReader& xml_in, const std::string& path);
     void write(XMLWriter& xml_out, const std::string& path);
 
     unsigned long frequency;
@@ -79,36 +79,37 @@ namespace Chroma
 
     } prop_param ;
 
+    struct NamedObject_t
+    {
+      std::string   gauge_id;
+    } named_obj;
+
     std::string xml_file;  // Alternate XML file pattern
   };
 
 
   //! Inline measurement of Wilson loops
   /*! \ingroup inlinehadron */
-  class InlineSpectrum_s : public AbsInlineMeasurement 
+  class InlineStaggeredSpectrum : public AbsInlineMeasurement 
   {
   public:
-    ~InlineSpectrum_s() {}
-    InlineSpectrum_s(const InlineSpectrumParams_s& p) : params(p) {}
-    InlineSpectrum_s(const InlineSpectrum_s& p) : params(p.params) {}
+    ~InlineStaggeredSpectrum() {}
+    InlineStaggeredSpectrum(const InlineStaggeredSpectrumParams& p) : params(p) {}
+    InlineStaggeredSpectrum(const InlineStaggeredSpectrum& p) : params(p.params) {}
 
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:
-    InlineSpectrumParams_s params;
+    InlineStaggeredSpectrumParams params;
   };
 
 };

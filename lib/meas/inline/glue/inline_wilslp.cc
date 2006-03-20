@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_wilslp.cc,v 2.1 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -6,6 +6,8 @@
 #include "meas/inline/glue/inline_wilslp.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/wilslp.h"
+#include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -24,7 +26,11 @@ namespace Chroma
 
 
   // Param stuff
-  InlineWilsonLoopParams::InlineWilsonLoopParams() { frequency = 0; }
+  InlineWilsonLoopParams::InlineWilsonLoopParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
 
   InlineWilsonLoopParams::InlineWilsonLoopParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -35,6 +41,9 @@ namespace Chroma
       read(paramtop, "Frequency", frequency);
       read(paramtop, "kind", kind);
       read(paramtop, "j_decay", j_decay);
+
+      // Ids
+      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
     }
     catch(const std::string& e) 
     {
@@ -45,11 +54,19 @@ namespace Chroma
 
 
   void 
-  InlineWilsonLoop::operator()(const multi1d<LatticeColorMatrix>& u,
-			       XMLBufferWriter& gauge_xml,
-			       unsigned long update_no,
+  InlineWilsonLoop::operator()(unsigned long update_no,
 			       XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    QDP::StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Grab the gauge field
+    multi1d<LatticeColorMatrix> u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+
     push(xml_out, "WilsonLoop");
     write(xml_out, "update_no", update_no);
 
@@ -58,7 +75,16 @@ namespace Chroma
 	   xml_out, "wilslp");
     
     pop(xml_out); // pop("WilsonLoop");
-    
+
+ 
+    snoop.stop();
+    QDPIO::cout << InlineWilsonLoopEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineWilsonLoopEnv::name << ": ran successfully" << endl;
+
+    END_CODE();
   } 
 
 };

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_coulgauge.h,v 1.1 2006-02-23 20:58:00 edwards Exp $
+// $Id: inline_coulgauge.h,v 1.2 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */
@@ -39,7 +39,8 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	std::string     gfix_id;
+	std::string     gauge_id;  /*!< input gauge field */
+	std::string     gfix_id;   /*!< output gauge field */
       } named_obj;
 
     };
@@ -57,9 +58,7 @@ namespace Chroma
       unsigned long getFrequency(void) const {return params.frequency;}
 
       //! Do the measurement
-      void operator()(const multi1d<LatticeColorMatrix>& u,
-		      XMLBufferWriter& gauge_xml,
-		      const unsigned long update_no,
+      void operator()(const unsigned long update_no,
 		      XMLWriter& xml_out); 
 
     private:

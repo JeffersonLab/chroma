@@ -1,4 +1,4 @@
-// $Id: inline_qpropqio_w.cc,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_qpropqio_w.cc,v 2.1 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropqio
  *
@@ -137,9 +137,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineQpropQIO::operator()(const multi1d<LatticeColorMatrix>& u,
-			     XMLBufferWriter& gauge_xml,
-			     unsigned long update_no,
+  InlineQpropQIO::operator()(unsigned long update_no,
 			     XMLWriter& xml_out) 
   {
     START_CODE();

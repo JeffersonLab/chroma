@@ -1,4 +1,4 @@
-// $Id: inline_multipole_w.cc,v 2.2 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_multipole_w.cc,v 2.3 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurement
  */
@@ -12,6 +12,7 @@
 #include "io/qprop_io.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -71,6 +72,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "seqprop_id", input.seqprop_id);
     read(inputtop, "GammaInsertion", input.GammaInsertion);
   }
@@ -80,6 +82,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "seqprop_id", input.seqprop_id);
     write(xml, "GammaInsertion", input.GammaInsertion);
 
@@ -154,9 +157,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineMultipole::operator()(const multi1d<LatticeColorMatrix>& u,
-			      XMLBufferWriter& gauge_xml,
-			      unsigned long update_no,
+  InlineMultipole::operator()(unsigned long update_no,
 			      XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
@@ -170,22 +171,48 @@ namespace Chroma
       pop(xml_out);
 
       XMLFileWriter xml(xml_file);
-      func(u, gauge_xml, update_no, xml);
+      func(update_no, xml);
     }
     else
     {
-      func(u, gauge_xml, update_no, xml_out);
+      func(update_no, xml_out);
     }
   }
 
 
   // Real work done here
   void 
-  InlineMultipole::func(const multi1d<LatticeColorMatrix>& u,
-			XMLBufferWriter& gauge_xml,
-			unsigned long update_no,
+  InlineMultipole::func(unsigned long update_no,
 			XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineMultipoleEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineMultipoleEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+
     push(xml_out, "multipole");
     write(xml_out, "update_no", update_no);
 
@@ -371,7 +398,13 @@ namespace Chroma
     // Close the namelist output file XMLDAT
     pop(xml_out);     // multipole
 
-    QDPIO::cout << "Multipole ran successfully" << endl;
+
+    snoop.stop();
+    QDPIO::cout << InlineMultipoleEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineMultipoleEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

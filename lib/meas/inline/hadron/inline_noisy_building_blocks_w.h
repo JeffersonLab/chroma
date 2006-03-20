@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_noisy_building_blocks_w.h,v 2.1 2005-10-21 15:55:39 flemingg Exp $
+// $Id: inline_noisy_building_blocks_w.h,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -55,10 +55,11 @@ namespace Chroma
     //! BB output
     struct BB_out_t
     {
-      std::string       OutFileName;
-      std::string       FrwdPropId;     // input forward prop
+      std::string   OutFileName;
+      std::string   GaugeId;            // input forward prop
+      std::string   FrwdPropId;         // input forward prop
 //    multi1d<NamedObject_t>   BkwdProps;
-      std::string       NoisySrcId;     // input noisy source
+      std::string   NoisySrcId;         // input noisy source
       std::string   NoisySrcG5Format;   // noisy source Gamma5 Format
       int           GammaInsertion;     // second gamma insertion
       std::string   Flavor;             // Flavor id - values like U, D, S, C, B, T
@@ -81,16 +82,12 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:

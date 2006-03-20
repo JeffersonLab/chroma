@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: abs_inline_measurement.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: abs_inline_measurement.h,v 2.1 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Abstract inline measurements
  */
 
-#ifndef ABS_INLINE_MEASUREMENT_H
-#define ABS_INLINE_MEASUREMENT_H
+#ifndef __abs_inline_measurement_h__
+#define __abs_inline_measurement_h__
 
 #include "chromabase.h"
 
@@ -16,21 +16,18 @@ namespace Chroma
   class AbsInlineMeasurement 
   {
   public:
-
-    // Virtual Destructor
+    //! Virtual Destructor
     virtual ~AbsInlineMeasurement(void) {}
 
-    // Tell me how often I should measure this beastie
+    //! Tell me how often I should measure this beastie
     virtual unsigned long getFrequency(void) const = 0;
 
-    // Do the measurement
-    virtual void operator()(const multi1d<LatticeColorMatrix>& u,
-			    XMLBufferWriter& gauge_xml,
-			    unsigned long update_no,
+    //! Do the measurement
+    virtual void operator()(unsigned long update_no,
 			    XMLWriter& xml_out) = 0;
   };
 
-}; // End namespace
+} // End namespace
 
 #endif
 

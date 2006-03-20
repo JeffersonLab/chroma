@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_multipole_w.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_multipole_w.h,v 2.1 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurements
  */
@@ -44,7 +44,8 @@ namespace Chroma
     //! Multipole output
     struct Multipole_out_t
     {
-      std::string             prop_id;      // input forward prop
+      std::string             gauge_id;     /*!< input forward prop */
+      std::string             prop_id;      /*!< input forward prop */
       multi1d<NamedObject_t>  seqprops;
     } pole;
 
@@ -63,16 +64,12 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:

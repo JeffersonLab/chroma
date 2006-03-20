@@ -1,4 +1,4 @@
-// $Id: inline_snarf_obj.cc,v 2.1 2005-09-26 03:21:37 edwards Exp $
+// $Id: inline_snarf_obj.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline task to copy gauge arg to a named object
  *
@@ -8,7 +8,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/inline/io/inline_snarf_obj.h"
-#include "meas/inline/io/inline_snarf_obj.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -94,30 +94,28 @@ namespace Chroma
 
 
   void 
-  InlineSnarfNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
-				  XMLBufferWriter& gauge_xml,
-				  unsigned long update_no,
+  InlineSnarfNamedObj::operator()(unsigned long update_no,
 				  XMLWriter& xml_out) 
   {
     START_CODE();
 
-    push(xml_out, "list_named_obj");
+    push(xml_out, "snarf_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineSnarfNamedObjEnv::name << ": object list" << endl;
-
     // Snarf the object
-    QDPIO::cout << "Attempt to list all object names" << endl;
+    QDPIO::cout << InlineSnarfNamedObjEnv::name << ": snarf default gauge field" << endl;
     try
     {
-      XMLBufferWriter file_xml;
-      push(file_xml, "FileXML");
-      pop(file_xml);
+      XMLBufferWriter file_xml, record_xml;
+      multi1d<LatticeColorMatrix> u;
+
+      // Get the default field
+      InlineDefaultGaugeField::get(u, file_xml, record_xml);
 
       TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id) = u;
       TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(gauge_xml);
+      TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
     }
     catch (std::bad_cast) 
     {
@@ -134,7 +132,7 @@ namespace Chroma
     
     QDPIO::cout << InlineSnarfNamedObjEnv::name << ": ran successfully" << endl;
 
-    pop(xml_out);  // list_named_obj
+    pop(xml_out);  // snarf_named_obj
 
     END_CODE();
   } 

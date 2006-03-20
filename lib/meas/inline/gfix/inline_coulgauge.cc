@@ -1,4 +1,4 @@
-// $Id: inline_coulgauge.cc,v 1.2 2006-02-26 04:19:46 edwards Exp $
+// $Id: inline_coulgauge.cc,v 1.3 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */
@@ -10,6 +10,7 @@
 #include "util/info/proginfo.h"
 #include "util/gauge/unit_check.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -59,6 +60,8 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, InlineCoulGaugeEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
+
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "gfix_id", input.gfix_id);
   }
 
@@ -67,6 +70,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "gfix_id", input.gfix_id);
 
     pop(xml);
@@ -91,7 +95,11 @@ namespace Chroma
 
 
     // Param stuff
-    Params::Params() { frequency = 0; }
+    Params::Params()
+    { 
+      frequency = 0; 
+      named_obj.gauge_id = InlineDefaultGaugeField::getId();
+    }
 
     Params::Params(XMLReader& xml_in, const std::string& path) 
     {
@@ -132,12 +140,19 @@ namespace Chroma
 
 
     void 
-    InlineMeas::operator()(const multi1d<LatticeColorMatrix>& u,
-			   XMLBufferWriter& gauge_xml,
-			   unsigned long update_no,
+    InlineMeas::operator()(unsigned long update_no,
 			   XMLWriter& xml_out) 
     {
       START_CODE();
+
+      QDP::StopWatch snoop;
+      snoop.reset();
+      snoop.start();
+
+      XMLBufferWriter gauge_xml;
+      multi1d<LatticeColorMatrix> u = 
+	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
       push(xml_out, "CoulGauge");
       write(xml_out, "update_no", update_no);
@@ -196,6 +211,13 @@ namespace Chroma
       }
 
       pop(xml_out);
+
+      snoop.stop();
+      QDPIO::cout << InlineCoulGaugeEnv::name << ": total time = "
+		  << snoop.getTimeInSeconds() 
+		  << " secs" << endl;
+
+      QDPIO::cout << InlineCoulGaugeEnv::name << ": ran successfully" << endl;
 
       END_CODE();
     } 

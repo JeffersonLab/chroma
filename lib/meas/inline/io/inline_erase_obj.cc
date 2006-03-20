@@ -1,4 +1,4 @@
-// $Id: inline_erase_obj.cc,v 2.1 2005-09-26 19:37:16 edwards Exp $
+// $Id: inline_erase_obj.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline task to erase an object from a named buffer
  *
@@ -93,9 +93,7 @@ namespace Chroma
 
 
   void 
-  InlineEraseNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
-				  XMLBufferWriter& gauge_xml,
-				  unsigned long update_no,
+  InlineEraseNamedObj::operator()(unsigned long update_no,
 				  XMLWriter& xml_out) 
   {
     START_CODE();

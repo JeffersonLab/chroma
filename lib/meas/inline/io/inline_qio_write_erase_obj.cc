@@ -1,4 +1,4 @@
-// $Id: inline_qio_write_erase_obj.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_qio_write_erase_obj.cc,v 2.1 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline task to write and delete an object from a named buffer
  *
@@ -126,10 +126,8 @@ namespace Chroma
 
   // Func
   void 
-  InlineQIOWriteEraseNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
-				       XMLBufferWriter& gauge_xml,
-				       unsigned long update_no,
-				       XMLWriter& xml_out) 
+  InlineQIOWriteEraseNamedObj::operator()(unsigned long update_no,
+					  XMLWriter& xml_out) 
   {
     START_CODE();
 

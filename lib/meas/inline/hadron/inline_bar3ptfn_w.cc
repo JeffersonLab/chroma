@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 2.4 2006-02-09 02:25:25 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 2.5 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -14,6 +14,7 @@
 #include "meas/hadron/formfac_w.h"
 
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -35,6 +36,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "prop_id", input.prop_id);
     read(inputtop, "seqprop_ids", input.seqprop_ids);
     read(inputtop, "bar3ptfn_file", input.bar3ptfn_file);
@@ -45,6 +47,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "prop_id", input.prop_id);
     write(xml, "seqprop_ids", input.seqprop_ids);
     write(xml, "bar3ptfn_file", input.bar3ptfn_file);
@@ -95,7 +98,11 @@ namespace Chroma
 
 
   // Param stuff
-  InlineBar3ptfnParams::InlineBar3ptfnParams() { frequency = 0; }
+  InlineBar3ptfnParams::InlineBar3ptfnParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
 
   InlineBar3ptfnParams::InlineBar3ptfnParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -213,9 +220,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineBar3ptfn::operator()(const multi1d<LatticeColorMatrix>& u,
-			     XMLBufferWriter& gauge_xml,
-			     unsigned long update_no,
+  InlineBar3ptfn::operator()(unsigned long update_no,
 			     XMLWriter& xml_out) 
   {
     START_CODE();
@@ -223,6 +228,28 @@ namespace Chroma
     StopWatch snoop;
     snoop.reset();
     snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineBar3ptfnEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineBar3ptfnEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     push(xml_out, "bar3ptfn");
     write(xml_out, "update_no", update_no);

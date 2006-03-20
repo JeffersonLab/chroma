@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_wilslp.h,v 2.1 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -29,6 +29,11 @@ namespace Chroma
     unsigned long frequency;
     int kind;
     int j_decay;
+
+    struct NamedObject_t
+    {
+      std::string   gauge_id;
+    } named_obj;
   };
 
 
@@ -44,9 +49,7 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

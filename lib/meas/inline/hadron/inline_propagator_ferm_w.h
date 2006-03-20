@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_propagator_ferm_w.h,v 2.1 2005-11-08 21:16:23 edwards Exp $
+// $Id: inline_propagator_ferm_w.h,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator returning only a single lattice fermion
  *
@@ -36,6 +36,7 @@ namespace Chroma
 
     struct NamedObject_t
     {
+      std::string     gauge_id;
       std::string     source_id;
       std::string     prop_id;
     } named_obj;
@@ -64,16 +65,12 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:

@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 2.2 2006-02-28 19:59:18 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 2.3 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -21,6 +21,7 @@
 #include "util/gauge/taproj.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -116,6 +117,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "prop_ids", input.prop_ids);
   }
 
@@ -124,6 +126,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "prop_ids", input.prop_ids);
 
     pop(xml);
@@ -131,7 +134,11 @@ namespace Chroma
 
 
   // Param stuff
-  InlineHadSpecParams::InlineHadSpecParams() { frequency = 0; }
+  InlineHadSpecParams::InlineHadSpecParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
 
   InlineHadSpecParams::InlineHadSpecParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -179,9 +186,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineHadSpec::operator()(const multi1d<LatticeColorMatrix>& u,
-			    XMLBufferWriter& gauge_xml,
-			    unsigned long update_no,
+  InlineHadSpec::operator()(unsigned long update_no,
 			    XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
@@ -195,22 +200,48 @@ namespace Chroma
       pop(xml_out);
 
       XMLFileWriter xml(xml_file);
-      func(u, gauge_xml, update_no, xml);
+      func(update_no, xml);
     }
     else
     {
-      func(u, gauge_xml, update_no, xml_out);
+      func(update_no, xml_out);
     }
   }
 
 
   // Real work done here
   void 
-  InlineHadSpec::func(const multi1d<LatticeColorMatrix>& u,
-		      XMLBufferWriter& gauge_xml,
-		      unsigned long update_no,
+  InlineHadSpec::func(unsigned long update_no,
 		      XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineHadSpecEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineHadSpecEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+
     push(xml_out, "hadspec");
     write(xml_out, "update_no", update_no);
 
@@ -542,7 +573,13 @@ namespace Chroma
     pop(xml_array);  // Wilson_spectroscopy
     pop(xml_out);  // hadspec
 
-    QDPIO::cout << "Wilson spectroscopy ran successfully" << endl;
+
+    snoop.stop();
+    QDPIO::cout << InlineHadSpecEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineHadSpecEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

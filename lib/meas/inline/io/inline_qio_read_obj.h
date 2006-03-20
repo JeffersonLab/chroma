@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qio_read_obj.h,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_qio_read_obj.h,v 2.1 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -56,9 +56,7 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the writing
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

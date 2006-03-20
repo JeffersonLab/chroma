@@ -1,4 +1,4 @@
-// $Id: inline_qpropadd_w.cc,v 2.1 2005-10-27 21:31:32 kostas Exp $
+// $Id: inline_qpropadd_w.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropadd
  *
@@ -7,7 +7,6 @@
 
 #include "meas/inline/hadron/inline_qpropadd_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
-
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -91,9 +90,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineQpropAdd::operator()(const multi1d<LatticeColorMatrix>& u,
-			     XMLBufferWriter& gauge_xml,
-			     unsigned long update_no,
+  InlineQpropAdd::operator()(unsigned long update_no,
 			     XMLWriter& xml_out) 
   {
     START_CODE();

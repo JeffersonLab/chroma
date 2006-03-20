@@ -1,4 +1,4 @@
-// $Id: inline_ape_smear.cc,v 2.1 2005-11-22 19:15:28 edwards Exp $
+// $Id: inline_ape_smear.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -10,6 +10,7 @@
 #include "util/info/proginfo.h"
 #include "util/gauge/unit_check.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 
 namespace Chroma 
@@ -71,6 +72,7 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, InlineAPESmearParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "ape_id", input.ape_id);
   }
 
@@ -79,6 +81,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "ape_id", input.ape_id);
 
     pop(xml);
@@ -86,7 +89,11 @@ namespace Chroma
 
 
   // Param stuff
-  InlineAPESmearParams::InlineAPESmearParams() { frequency = 0; }
+  InlineAPESmearParams::InlineAPESmearParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
 
   InlineAPESmearParams::InlineAPESmearParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -127,11 +134,21 @@ namespace Chroma
 
 
   void 
-  InlineAPESmear::operator()(const multi1d<LatticeColorMatrix>& u,
-			     XMLBufferWriter& gauge_xml,
-			     unsigned long update_no,
+  InlineAPESmear::operator()(unsigned long update_no,
 			     XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Grab the gauge field
+    XMLBufferWriter gauge_xml;
+    multi1d<LatticeColorMatrix> u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+    TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+
     push(xml_out, "apesmear");
     write(xml_out, "update_no", update_no);
     
@@ -208,6 +225,14 @@ namespace Chroma
     }
 
     pop(xml_out);
+
+
+    snoop.stop();
+    QDPIO::cout << InlineAPESmearEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineAPESmearEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

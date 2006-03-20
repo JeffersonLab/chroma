@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: abs_inline_measurement_factory.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: abs_inline_measurement_factory.h,v 2.1 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline measurement factory
  */
 
-#ifndef LCM_INLINE_MEASUREMENT_FACTORY_H
-#define LCM_INLINE_MEASUREMENT_FACTORY_H
+#ifndef __inline_measurement_factory_h__
+#define __inline_measurement_factory_h__
 
 #include "chromabase.h"
 #include "singleton.h"
@@ -23,15 +23,12 @@ namespace Chroma
     AbsInlineMeasurement ,
     std::string,
     TYPELIST_2(XMLReader&, const std::string&),
-   
     AbsInlineMeasurement* (*)(XMLReader&,
-				       const std::string&), 
+			      const std::string&), 
     StringFactoryError> >
   TheInlineMeasurementFactory;
 
-
-
-}; // End namespace
+} // End namespace
 
 #endif
 

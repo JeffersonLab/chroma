@@ -1,4 +1,4 @@
-// $Id: inline_link_smear.cc,v 2.1 2005-11-22 22:00:27 edwards Exp $
+// $Id: inline_link_smear.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  *  \brief Inline Link smearing
  */
@@ -8,6 +8,7 @@
 #include "meas/glue/mesplq.h"
 #include "util/gauge/unit_check.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 #include "meas/smear/link_smearing_factory.h"
 
 
@@ -17,6 +18,7 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, InlineLinkSmearEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "linksmear_id", input.linksmear_id);
   }
 
@@ -25,6 +27,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "linksmear_id", input.linksmear_id);
 
     pop(xml);
@@ -44,7 +47,11 @@ namespace Chroma
 
 
     // Param stuff
-    Params::Params() { frequency = 0; }
+    Params::Params()
+    { 
+      frequency = 0; 
+      named_obj.gauge_id = InlineDefaultGaugeField::getId();
+    }
 
     Params::Params(XMLReader& xml_in, const std::string& path) 
     {
@@ -91,11 +98,21 @@ namespace Chroma
 
 
     void 
-    InlineMeas::operator()(const multi1d<LatticeColorMatrix>& u,
-			   XMLBufferWriter& gauge_xml,
-			   unsigned long update_no,
+    InlineMeas::operator()(unsigned long update_no,
 			   XMLWriter& xml_out) 
     {
+      START_CODE();
+
+      StopWatch snoop;
+      snoop.reset();
+      snoop.start();
+
+      // Grab the gauge field
+      XMLBufferWriter gauge_xml;
+      multi1d<LatticeColorMatrix> u = 
+	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+
       push(xml_out, "linksmear");
       write(xml_out, "update_no", update_no);
     
@@ -140,6 +157,14 @@ namespace Chroma
       }
 
       pop(xml_out);
+
+
+      snoop.stop();
+      QDPIO::cout << InlineLinkSmearEnv::name << ": total time = "
+		  << snoop.getTimeInSeconds() 
+		  << " secs" << endl;
+
+      QDPIO::cout << InlineLinkSmearEnv::name << ": ran successfully" << endl;
 
       END_CODE();
     } 

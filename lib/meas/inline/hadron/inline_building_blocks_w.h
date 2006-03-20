@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_building_blocks_w.h,v 2.2 2005-09-29 15:53:30 edwards Exp $
+// $Id: inline_building_blocks_w.h,v 2.3 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -45,18 +45,19 @@ namespace Chroma
     //! Propagators
     struct NamedObject_t
     {
-      std::string   BkwdPropId;         // backward propagator
-      std::string   BkwdPropG5Format;   // backward propagators Gamma5 Format
-      int           GammaInsertion;     // second gamma insertion
-      std::string   Flavor;             // Flavor id - values like U, D, S, C, B, T
-      std::string   BBFileNamePattern;  // BB output file name pattern
+      std::string   BkwdPropId;         /*!< backward propagator */
+      std::string   BkwdPropG5Format;   /*!< backward propagators Gamma5 Format */
+      int           GammaInsertion;     /*!< second gamma insertion */
+      std::string   Flavor;             /*!< Flavor id - values like U, D, S, C, B, T */
+      std::string   BBFileNamePattern;  /*!< BB output file name pattern */
     };
 
     //! BB output
     struct BB_out_t
     {
       std::string       OutFileName;
-      std::string       FrwdPropId;     // input forward prop
+      std::string       GaugeId;        /*!< Input Gauge id */
+      std::string       FrwdPropId;     /*!< Input forward prop */
       multi1d<NamedObject_t>   BkwdProps;
     } bb;
 
@@ -76,16 +77,12 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:

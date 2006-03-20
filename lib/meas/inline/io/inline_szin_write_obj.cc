@@ -1,4 +1,4 @@
-// $Id: inline_szin_write_obj.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: inline_szin_write_obj.cc,v 2.1 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
@@ -142,9 +142,7 @@ namespace Chroma
 
 
   void 
-  InlineSZINWriteNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
-				      XMLBufferWriter& gauge_xml,
-				      unsigned long update_no,
+  InlineSZINWriteNamedObj::operator()(unsigned long update_no,
 				      XMLWriter& xml_out) 
   {
     START_CODE();

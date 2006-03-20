@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hyp_smear.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: inline_hyp_smear.h,v 2.1 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -43,7 +43,8 @@ namespace Chroma
 
     struct NamedObject_t
     {
-      std::string   hyp_id;             // Memory object for hyp config
+      std::string 	gauge_id;	/*!< Input gauge field */
+      std::string 	hyp_id;	        /*!< Output memory object hyp config */
     } named_obj;
 
   };
@@ -61,9 +62,7 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

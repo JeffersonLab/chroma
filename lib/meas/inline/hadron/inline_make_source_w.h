@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_make_source_w.h,v 2.2 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_make_source_w.h,v 2.3 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -36,6 +36,7 @@ namespace Chroma
 
     struct NamedObject_t
     {
+      std::string     gauge_id;
       std::string     source_id;
     } named_obj;
 
@@ -54,16 +55,12 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
     //! Do the measurement
-    void func(const multi1d<LatticeColorMatrix>& u,
-	      XMLBufferWriter& gauge_xml,
-	      const unsigned long update_no,
+    void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
 
   private:

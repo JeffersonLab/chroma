@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qpropadd_w.h,v 2.1 2005-10-27 21:31:32 kostas Exp $
+// $Id: inline_qpropadd_w.h,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropadd
  *
@@ -53,9 +53,7 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

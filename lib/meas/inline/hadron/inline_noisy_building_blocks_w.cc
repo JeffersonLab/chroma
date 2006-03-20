@@ -1,4 +1,4 @@
-// $Id: inline_noisy_building_blocks_w.cc,v 2.3 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_noisy_building_blocks_w.cc,v 2.4 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -14,6 +14,7 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -113,6 +114,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "OutFileName", input.OutFileName);
+    input.GaugeId = InlineDefaultGaugeField::readGaugeId(inputtop, "GaugeId");
     read(inputtop, "FrwdPropId", input.FrwdPropId);
 //  read(inputtop, "BkwdProps", input.BkwdProps);
     read(inputtop, "NoisySrcId", input.NoisySrcId);
@@ -127,6 +129,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "OutFileName", input.OutFileName);
+    write(xml, "GaugeId", input.GaugeId);
     write(xml, "FrwdPropId", input.FrwdPropId);
 //  write(xml, "BkwdProps", input.BkwdProps);
     write(xml, "NoisySrcId", input.NoisySrcId);
@@ -201,10 +204,8 @@ namespace Chroma
 
   // Function call
   void 
-  InlineNoisyBuildingBlocks::operator()(const multi1d<LatticeColorMatrix>& u,
-                                   XMLBufferWriter& gauge_xml,
-                                   unsigned long update_no,
-                                   XMLWriter& xml_out) 
+  InlineNoisyBuildingBlocks::operator()(unsigned long update_no,
+					XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
@@ -217,23 +218,47 @@ namespace Chroma
       pop(xml_out);
 
       XMLFileWriter xml(xml_file);
-      func(u, gauge_xml, update_no, xml);
+      func(update_no, xml);
     }
     else
     {
-      func(u, gauge_xml, update_no, xml_out);
+      func(update_no, xml_out);
     }
   }
 
 
   // Function call
   void 
-  InlineNoisyBuildingBlocks::func(const multi1d<LatticeColorMatrix>& U,
-                             XMLBufferWriter& gauge_xml,
-                             unsigned long update_no,
-                             XMLWriter& XmlOut) 
+  InlineNoisyBuildingBlocks::func(unsigned long update_no,
+				  XMLWriter& XmlOut) 
   {
     START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.bb.GaugeId);
+      TheNamedObjMap::Instance().get(params.bb.GaugeId).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& U = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.bb.GaugeId);
 
     push(XmlOut, "ExampleBuildingBlocks");
     write(XmlOut, "update_no", update_no);
@@ -626,8 +651,14 @@ namespace Chroma
 
     Out << "\n" << "FINISHED" << "\n" << "\n";
     Out.close();
-    QDPIO::cout << InlineNoisyBuildingBlocksEnv::name
-      << ": ran successfully" << endl;
+
+
+    snoop.stop();
+    QDPIO::cout << InlineNoisyBuildingBlocksEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineNoisyBuildingBlocksEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_ape_smear.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: inline_ape_smear.h,v 2.1 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -40,7 +40,8 @@ namespace Chroma
 
     struct NamedObject_t
     {
-      std::string 	ape_id;	        // memory object ape config
+      std::string 	gauge_id;	/*!< Input gauge field */
+      std::string 	ape_id;	        /*!< Output memory object ape config */
     } named_obj;
 
   };
@@ -57,9 +58,7 @@ namespace Chroma
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    const unsigned long update_no,
+    void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:

@@ -1,4 +1,4 @@
-// $Id: inline_szin_read_obj.cc,v 2.1 2005-11-01 22:00:01 edwards Exp $
+// $Id: inline_szin_read_obj.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -123,10 +123,8 @@ namespace Chroma
 
 
   void 
-  InlineSZINReadNamedObj::operator()(const multi1d<LatticeColorMatrix>& u,
-				      XMLBufferWriter& gauge_xml,
-				      unsigned long update_no,
-				      XMLWriter& xml_out) 
+  InlineSZINReadNamedObj::operator()(unsigned long update_no,
+				     XMLWriter& xml_out) 
   {
     START_CODE();
 

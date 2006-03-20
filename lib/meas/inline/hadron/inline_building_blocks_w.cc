@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 2.7 2006-02-09 02:25:25 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 2.8 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -14,6 +14,7 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -113,6 +114,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "OutFileName", input.OutFileName);
+    input.GaugeId = InlineDefaultGaugeField::readGaugeId(inputtop, "GaugeId");
     read(inputtop, "FrwdPropId", input.FrwdPropId);
     read(inputtop, "BkwdProps", input.BkwdProps);
   }
@@ -123,6 +125,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "OutFileName", input.OutFileName);
+    write(xml, "GaugeId", input.GaugeId);
     write(xml, "FrwdPropId", input.FrwdPropId);
     write(xml, "BkwdProps", input.BkwdProps);
 
@@ -131,7 +134,7 @@ namespace Chroma
 
 
   // Param stuff
-  InlineBuildingBlocksParams::InlineBuildingBlocksParams() { frequency = 0; }
+  InlineBuildingBlocksParams::InlineBuildingBlocksParams() {frequency = 0;}
 
   InlineBuildingBlocksParams::InlineBuildingBlocksParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -194,9 +197,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineBuildingBlocks::operator()(const multi1d<LatticeColorMatrix>& u,
-				   XMLBufferWriter& gauge_xml,
-				   unsigned long update_no,
+  InlineBuildingBlocks::operator()(unsigned long update_no,
 				   XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
@@ -210,20 +211,18 @@ namespace Chroma
       pop(xml_out);
 
       XMLFileWriter xml(xml_file);
-      func(u, gauge_xml, update_no, xml);
+      func(update_no, xml);
     }
     else
     {
-      func(u, gauge_xml, update_no, xml_out);
+      func(update_no, xml_out);
     }
   }
 
 
   // Function call
   void 
-  InlineBuildingBlocks::func(const multi1d<LatticeColorMatrix>& U,
-			     XMLBufferWriter& gauge_xml,
-			     unsigned long update_no,
+  InlineBuildingBlocks::func(unsigned long update_no,
 			     XMLWriter& XmlOut) 
   {
     START_CODE();
@@ -231,6 +230,28 @@ namespace Chroma
     StopWatch snoop;
     snoop.reset();
     snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.bb.GaugeId);
+      TheNamedObjMap::Instance().get(params.bb.GaugeId).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& U = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.bb.GaugeId);
 
     push(XmlOut, "ExampleBuildingBlocks");
     write(XmlOut, "update_no", update_no);

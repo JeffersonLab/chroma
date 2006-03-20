@@ -1,4 +1,4 @@
-// $Id: inline_ritz_H_w.cc,v 2.3 2006-02-23 02:38:43 bjoo Exp $
+// $Id: inline_ritz_H_w.cc,v 2.4 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -19,6 +19,8 @@
 #include "meas/eig/eig_spec.h"
 #include "actions/ferm/linop/lopscl.h"
 #include "io/eigen_io.h"
+
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -48,6 +50,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "eigen_id", input.eigen_id);
   }
 
@@ -56,6 +59,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "eigen_id", input.eigen_id);
 
     pop(xml);
@@ -63,7 +67,11 @@ namespace Chroma
 
 
   // Param stuff
-  InlineRitzParams::InlineRitzParams() { frequency = 0; }
+  InlineRitzParams::InlineRitzParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
 
   InlineRitzParams::InlineRitzParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -151,19 +159,17 @@ namespace Chroma
   }
 
 
-void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
-		  Handle< const LinearOperator<LatticeFermion> >& H,
-		  const RitzParams_t& params,
-		  XMLWriter& xml_out,
-		  EigenInfo& eigenvec_val);
+  void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
+		    Handle< const LinearOperator<LatticeFermion> >& H,
+		    const RitzParams_t& params,
+		    XMLWriter& xml_out,
+		    EigenInfo& eigenvec_val);
 
 
   // Function call
   void 
-  InlineRitz::operator()(const multi1d<LatticeColorMatrix>& u,
-			       XMLBufferWriter& gauge_xml,
-			       unsigned long update_no,
-			       XMLWriter& xml_out) 
+  InlineRitz::operator()(unsigned long update_no,
+			 XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
@@ -177,20 +183,18 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
       pop(xml_out);
 
       XMLFileWriter xml(xml_file);
-      func(u, gauge_xml, update_no, xml);
+      func(update_no, xml);
     }
     else
     {
-      func(u, gauge_xml, update_no, xml_out);
+      func(update_no, xml_out);
     }
   }
 
 
   // Real work done here
   void 
-  InlineRitz::func(const multi1d<LatticeColorMatrix>& u,
-		   XMLBufferWriter& gauge_xml,
-		   unsigned long update_no,
+  InlineRitz::func(unsigned long update_no,
 		   XMLWriter& xml_out) 
   {
     START_CODE();
@@ -198,6 +202,12 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
     QDP::StopWatch snoop;
     snoop.reset();
     snoop.start();
+
+    // Grab the gauge field
+    XMLBufferWriter gauge_xml;
+    multi1d<LatticeColorMatrix> u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+    TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
     push(xml_out, "RitzEigenHw");
     write(xml_out, "update_no", update_no);
@@ -318,209 +328,206 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
     pop(xml_out);
 
     END_CODE();
-  
   }
 
 
 
 
 
+  void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
+		    Handle< const LinearOperator<LatticeFermion> >& H,
+		    const RitzParams_t& params,
+		    XMLWriter& xml_out,
+		    EigenInfo& eigenvec_val)
+  {
 
-
-void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
-		  Handle< const LinearOperator<LatticeFermion> >& H,
-		  const RitzParams_t& params,
-		  XMLWriter& xml_out,
-		  EigenInfo& eigenvec_val)
-{
-
-  // Try and get lowest eigenvalue of MM
-  const OrderedSubset& s = MM->subset();
+    // Try and get lowest eigenvalue of MM
+    const OrderedSubset& s = MM->subset();
   
-  multi1d<Real> lambda(params.Neig+params.Ndummy);
-  multi1d<Real> check_norm(params.Neig);
-  multi1d<LatticeFermion> psi(params.Neig
-			      +params.Ndummy);
+    multi1d<Real> lambda(params.Neig+params.Ndummy);
+    multi1d<Real> check_norm(params.Neig);
+    multi1d<LatticeFermion> psi(params.Neig
+				+params.Ndummy);
       
   
-  for(int i =0; i < params.Neig + params.Ndummy; i++){
-    psi[i] = zero;
-    gaussian(psi[i],s);
-    lambda[i] = Real(1);
-  }
-
-    
-  int n_CG_count;
-  Real delta_cycle = Real(1);
-  XMLBufferWriter eig_spec_xml;
-  int n_KS_count = 0;
-  int n_jacob_count = 0;
-  EigSpecRitzKS(*MM, 
-		lambda, 
-		psi, 
-		params.Neig,
-		params.Ndummy,                // No of dummies
-		params.Nrenorm, 
-		params.MinKSIter, 
-		params.MaxKSIter,             // Max iters / KS cycle
-		params.MaxKS,            // Max no of KS cycles
-		params.GammaFactor,       // Gamma factor
-		params.MaxCG,
-		params.RsdR,
-		params.RsdA,  
-		params.RsdZero,
-		params.ProjApsiP,
-		n_CG_count,
-		n_KS_count,
-		n_jacob_count,
-		eig_spec_xml);
-  
-  // Dump output
-  xml_out << eig_spec_xml;
-  write(xml_out, "lambda_Msq", lambda); 
-  
-  // Check norms
-  for(int i=0; i < params.Neig; i++) { 
-    LatticeFermion Me;
-    LatticeFermion lambda_e;
-    (*MM)(Me, psi[i], PLUS);
-    lambda_e[s] = lambda[i]*psi[i];
-    
-    
-    LatticeFermion r_norm;
-    r_norm[s] = Me - lambda_e;
-    
-    check_norm[i] = norm2(r_norm,s);
-    check_norm[i] = sqrt(check_norm[i]);
-  }
-  write(xml_out, "check_norm", check_norm);
-  
-  for(int i=0; i < params.Neig; i++) {
-    check_norm[i] /= fabs(lambda[i]);
-  }
-  write(xml_out, "check_norm_rel", check_norm);
-  
-  // Fix to ev-s of gamma_5 wilson...
-  // Try to get one:
-  multi1d<bool> valid_eig(params.Neig);
-  int n_valid;
-  int n_jacob;
-  
-  fixMMev2Mev(*H, 
-	      lambda, 
-	      psi, 
-	      params.Neig, 
-	      params.RsdR,
-	      params.RsdA, 
-	      params.RsdZero, 
-	      valid_eig, 
-	      n_valid, 
-	      n_jacob);
-  
-  push(xml_out, "eigFix");
-  write(xml_out, "lambda_Hw", lambda);
-  write(xml_out, "n_valid", n_valid);
-  write(xml_out, "valid_eig", valid_eig);
-  
-  for(int i=0; i < params.Neig; i++) { 
-    LatticeFermion Me;
-    (*H)(Me, psi[i], PLUS);
-    
-    bool zeroP = toBool( fabs(lambda[i]) <  params.RsdZero );
-    if( zeroP ) {
-      check_norm[i] = norm2(Me,s);
-      check_norm[i] = sqrt(check_norm[i]);
+    for(int i =0; i < params.Neig + params.Ndummy; i++){
+      psi[i] = zero;
+      gaussian(psi[i],s);
+      lambda[i] = Real(1);
     }
-    else {
+
+    
+    int n_CG_count;
+    Real delta_cycle = Real(1);
+    XMLBufferWriter eig_spec_xml;
+    int n_KS_count = 0;
+    int n_jacob_count = 0;
+    EigSpecRitzKS(*MM, 
+		  lambda, 
+		  psi, 
+		  params.Neig,
+		  params.Ndummy,                // No of dummies
+		  params.Nrenorm, 
+		  params.MinKSIter, 
+		  params.MaxKSIter,             // Max iters / KS cycle
+		  params.MaxKS,            // Max no of KS cycles
+		  params.GammaFactor,       // Gamma factor
+		  params.MaxCG,
+		  params.RsdR,
+		  params.RsdA,  
+		  params.RsdZero,
+		  params.ProjApsiP,
+		  n_CG_count,
+		  n_KS_count,
+		  n_jacob_count,
+		  eig_spec_xml);
+  
+    // Dump output
+    xml_out << eig_spec_xml;
+    write(xml_out, "lambda_Msq", lambda); 
+  
+    // Check norms
+    for(int i=0; i < params.Neig; i++) { 
+      LatticeFermion Me;
       LatticeFermion lambda_e;
-      LatticeFermion r_norm;
-      
+      (*MM)(Me, psi[i], PLUS);
       lambda_e[s] = lambda[i]*psi[i];
+    
+    
+      LatticeFermion r_norm;
       r_norm[s] = Me - lambda_e;
-      
-      
+    
       check_norm[i] = norm2(r_norm,s);
       check_norm[i] = sqrt(check_norm[i]);
     }
-   
-    QDPIO::cout << "lambda_lo[" << i << "] = " << lambda[i] << "  "; 
-    QDPIO::cout << "check_norm["<<i<<"] = " << check_norm[i] << endl;
-  }
-  write(xml_out, "check_norm", check_norm);
+    write(xml_out, "check_norm", check_norm);
   
-  for(int i=0; i < params.Neig; i++) { 
-    check_norm[i] /= fabs(lambda[i]);
-    QDPIO::cout << "check_norm_rel["<< i <<"] = " << check_norm[i] << endl;
-  }
-  QDPIO::cout << flush ;
-  write(xml_out, "check_norm_rel", check_norm);
-  pop(xml_out);
+    for(int i=0; i < params.Neig; i++) {
+      check_norm[i] /= fabs(lambda[i]);
+    }
+    write(xml_out, "check_norm_rel", check_norm);
   
+    // Fix to ev-s of gamma_5 wilson...
+    // Try to get one:
+    multi1d<bool> valid_eig(params.Neig);
+    int n_valid;
+    int n_jacob;
   
-  // Now get the absolute value of the  highest e-value
-  // Work with H^{dag}H = M^{dag}M
-  Real hi_RsdR = 1.0e-4;
-  Real hi_RsdA = 1.0e-4;
+    fixMMev2Mev(*H, 
+		lambda, 
+		psi, 
+		params.Neig, 
+		params.RsdR,
+		params.RsdA, 
+		params.RsdZero, 
+		valid_eig, 
+		n_valid, 
+		n_jacob);
   
-  multi1d<Real> lambda_high_aux(1);
-  multi1d<LatticeFermion> lambda_high_vec(1);
-
-  gaussian(lambda_high_vec[0],s);
-
-  lambda_high_vec[0][s] /= sqrt(norm2(lambda_high_vec[0],s));
-
-  int n_cg_high;
-  XMLBufferWriter high_xml;
+    push(xml_out, "eigFix");
+    write(xml_out, "lambda_Hw", lambda);
+    write(xml_out, "n_valid", n_valid);
+    write(xml_out, "valid_eig", valid_eig);
   
-  Handle<const LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
-  // Initial guess -- upper bound on spectrum
-  lambda_high_aux[0] = Real(8);
-  
-  
-  push(high_xml, "LambdaHighRitz");
+    for(int i=0; i < params.Neig; i++) { 
+      LatticeFermion Me;
+      (*H)(Me, psi[i], PLUS);
+    
+      bool zeroP = toBool( fabs(lambda[i]) <  params.RsdZero );
+      if( zeroP ) {
+	check_norm[i] = norm2(Me,s);
+	check_norm[i] = sqrt(check_norm[i]);
+      }
+      else {
+	LatticeFermion lambda_e;
+	LatticeFermion r_norm;
       
-  // Minus MM ought to produce a negative e-value
-  // since MM is herm_pos_def
-  // ie minus MM is hermitian -ve definite
-
-  EigSpecRitzCG( *MinusMM,
-		 lambda_high_aux,
-		 lambda_high_vec,
-		 1,
-		 params.Nrenorm,
-		 params.MinKSIter,
-		 params.MaxCG,
-		 hi_RsdR,
-		 hi_RsdA,
-		 params.RsdZero,
-		 params.ProjApsiP,
-		 n_cg_high,
-		 high_xml);
-
-  QDPIO::cout << "Got Here" << endl << flush ;
-
-  lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
-  QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
+	lambda_e[s] = lambda[i]*psi[i];
+	r_norm[s] = Me - lambda_e;
+      
+      
+	check_norm[i] = norm2(r_norm,s);
+	check_norm[i] = sqrt(check_norm[i]);
+      }
+   
+      QDPIO::cout << "lambda_lo[" << i << "] = " << lambda[i] << "  "; 
+      QDPIO::cout << "check_norm["<<i<<"] = " << check_norm[i] << endl;
+    }
+    write(xml_out, "check_norm", check_norm);
   
-  pop(high_xml);
-  xml_out << high_xml;
+    for(int i=0; i < params.Neig; i++) { 
+      check_norm[i] /= fabs(lambda[i]);
+      QDPIO::cout << "check_norm_rel["<< i <<"] = " << check_norm[i] << endl;
+    }
+    QDPIO::cout << flush ;
+    write(xml_out, "check_norm_rel", check_norm);
+    pop(xml_out);
   
-  push(xml_out, "Highest");
-  write(xml_out, "lambda_hi", lambda_high_aux[0]);
-  pop(xml_out);
+  
+    // Now get the absolute value of the  highest e-value
+    // Work with H^{dag}H = M^{dag}M
+    Real hi_RsdR = 1.0e-4;
+    Real hi_RsdA = 1.0e-4;
+  
+    multi1d<Real> lambda_high_aux(1);
+    multi1d<LatticeFermion> lambda_high_vec(1);
 
-  eigenvec_val.getEvalues().resize(params.Neig);
-  eigenvec_val.getEvectors().resize(params.Neig);
-  for (int i=0; i<params.Neig; i++)
-    eigenvec_val.getEvalues()[i]=lambda[i];
-  eigenvec_val.getLargest()=lambda_high_aux[0];
-  for (int i=0; i<params.Neig; i++)
-    eigenvec_val.getEvectors()[i]=psi[i];
+    gaussian(lambda_high_vec[0],s);
+
+    lambda_high_vec[0][s] /= sqrt(norm2(lambda_high_vec[0],s));
+
+    int n_cg_high;
+    XMLBufferWriter high_xml;
+  
+    Handle<const LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
+    // Initial guess -- upper bound on spectrum
+    lambda_high_aux[0] = Real(8);
+  
+  
+    push(high_xml, "LambdaHighRitz");
+      
+    // Minus MM ought to produce a negative e-value
+    // since MM is herm_pos_def
+    // ie minus MM is hermitian -ve definite
+
+    EigSpecRitzCG( *MinusMM,
+		   lambda_high_aux,
+		   lambda_high_vec,
+		   1,
+		   params.Nrenorm,
+		   params.MinKSIter,
+		   params.MaxCG,
+		   hi_RsdR,
+		   hi_RsdA,
+		   params.RsdZero,
+		   params.ProjApsiP,
+		   n_cg_high,
+		   high_xml);
+
+    QDPIO::cout << "Got Here" << endl << flush ;
+
+    lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
+    QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
+  
+    pop(high_xml);
+    xml_out << high_xml;
+  
+    push(xml_out, "Highest");
+    write(xml_out, "lambda_hi", lambda_high_aux[0]);
+    pop(xml_out);
+
+    eigenvec_val.getEvalues().resize(params.Neig);
+    eigenvec_val.getEvectors().resize(params.Neig);
+    for (int i=0; i<params.Neig; i++)
+      eigenvec_val.getEvalues()[i]=lambda[i];
+    eigenvec_val.getLargest()=lambda_high_aux[0];
+    for (int i=0; i<params.Neig; i++)
+      eigenvec_val.getEvectors()[i]=psi[i];
 
 
 //   QDPIO::cout << "Writing low eigenvalues/vectors" << endl;
 //   writeEigen(input, lambda, psi, lambda_high_aux[0], QDPIO_SERIAL);
 
-}
+  }
 
-};
+}

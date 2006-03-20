@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 2.2 2005-11-30 04:46:39 edwards Exp $
+// $Id: inline_mres_w.cc,v 2.3 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -18,6 +18,7 @@
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -81,6 +82,8 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, InlineMresParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
+
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "prop_id", input.prop_id);
   }
 
@@ -89,6 +92,7 @@ namespace Chroma
   void write(XMLWriter& xml, const string& path, const InlineMresParams::NamedObject_t& input)
   {
     push(xml, path);
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "prop_id", input.prop_id);
     pop(xml);
   }
@@ -158,9 +162,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineMres::operator()(const multi1d<LatticeColorMatrix>& u,
-			 XMLBufferWriter& gauge_xml,
-			 unsigned long update_no,
+  InlineMres::operator()(unsigned long update_no,
 			 XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
@@ -174,22 +176,48 @@ namespace Chroma
       pop(xml_out);
 
       XMLFileWriter xml(xml_file);
-      func(u, gauge_xml, update_no, xml);
+      func(update_no, xml);
     }
     else
     {
-      func(u, gauge_xml, update_no, xml_out);
+      func(update_no, xml_out);
     }
   }
 
 
   // Function call
   void 
-  InlineMres::func(const multi1d<LatticeColorMatrix>& u,
-		   XMLBufferWriter& gauge_xml,
-		   unsigned long update_no,
+  InlineMres::func(unsigned long update_no,
 		   XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Test and grab a reference to the gauge field
+    XMLBufferWriter gauge_xml;
+    try
+    {
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineMresEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineMresEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+    const multi1d<LatticeColorMatrix>& u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+
     push(xml_out, "mres");
     write(xml_out, "update_no", update_no);
 
@@ -417,7 +445,12 @@ namespace Chroma
   
     pop(xml_out); // mres
 
-    QDPIO::cout << "Mres ran successfully" << endl;
+    snoop.stop();
+    QDPIO::cout << InlineMresEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineMresEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

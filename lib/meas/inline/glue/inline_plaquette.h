@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_plaquette.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_plaquette.h,v 2.1 2006-03-20 04:22:02 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -22,21 +22,15 @@ namespace Chroma
   /*! \ingroup inlineglue */
   struct InlinePlaquetteParams 
   {
-    InlinePlaquetteParams() { frequency = 0; }
-
-    InlinePlaquetteParams(XMLReader& xml_in, const std::string& path) 
-    {
-      try {
-	XMLReader paramtop(xml_in, path);
-	read(paramtop, "./Frequency", frequency);
-      }
-      catch(const std::string& e) { 
-	QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
-	QDP_abort(1);
-      }
-    }
+    InlinePlaquetteParams();
+    InlinePlaquetteParams(XMLReader& xml_in, const std::string& path);
 
     unsigned long frequency;
+
+    struct NamedObject_t
+    {
+      std::string   gauge_id;
+    } named_obj;
   };
 
 
@@ -45,18 +39,16 @@ namespace Chroma
   {
   public:
     ~InlinePlaquette() {}
-    InlinePlaquette(const InlinePlaquetteParams& p) : frequency(p.frequency) {}
-    InlinePlaquette(const InlinePlaquette& p) : frequency(p.frequency) {}
+    InlinePlaquette(const InlinePlaquetteParams& p) : params(p) {}
+    InlinePlaquette(const InlinePlaquette& p) : params(p.params) {}
 
-    unsigned long getFrequency(void) const {return frequency;}
+    unsigned long getFrequency(void) const {return params.frequency;}
 
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    unsigned long update_no,
+    void operator()(unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:
-    const unsigned long frequency;
+    InlinePlaquetteParams params;
   };
 
 };

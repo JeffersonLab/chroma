@@ -1,4 +1,4 @@
-// $Id: inline_hyp_smear.cc,v 2.1 2005-11-07 17:30:57 edwards Exp $
+// $Id: inline_hyp_smear.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -11,6 +11,7 @@
 #include "util/info/proginfo.h"
 #include "util/gauge/unit_check.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/io/default_gauge_field.h"
 
 #include <sys/time.h>   // for timings
 
@@ -34,6 +35,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
+    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
     read(inputtop, "hyp_id", input.hyp_id);
   }
 
@@ -42,6 +44,7 @@ namespace Chroma
   void write(XMLWriter& xml, const string& path, const InlineHypSmearParams::NamedObject_t& input)
   {
     push(xml, path);
+    write(xml, "gauge_id", input.gauge_id);
     write(xml, "hyp_id", input.hyp_id);
     pop(xml);
   }
@@ -106,7 +109,11 @@ namespace Chroma
 
 
   // Param stuff
-  InlineHypSmearParams::InlineHypSmearParams() { frequency = 0; }
+  InlineHypSmearParams::InlineHypSmearParams()
+  { 
+    frequency = 0; 
+    named_obj.gauge_id = InlineDefaultGaugeField::getId();
+  }
 
   InlineHypSmearParams::InlineHypSmearParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -146,11 +153,21 @@ namespace Chroma
 
 
   void 
-  InlineHypSmear::operator()(const multi1d<LatticeColorMatrix>& u,
-			     XMLBufferWriter& gauge_xml,
-			     unsigned long update_no,
+  InlineHypSmear::operator()(unsigned long update_no,
 			     XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
+    // Grab the gauge field
+    XMLBufferWriter gauge_xml;
+    multi1d<LatticeColorMatrix> u = 
+      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+    TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+
     push(xml_out, "hypsmear");
     write(xml_out, "update_no", update_no);
     
@@ -230,6 +247,13 @@ namespace Chroma
       TheNamedObjMap::Instance().get(params.named_obj.hyp_id).setRecordXML(record_xml);
     }
     pop(xml_out);
+
+    snoop.stop();
+    QDPIO::cout << InlineHypSmearEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    QDPIO::cout << InlineHypSmearEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

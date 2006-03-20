@@ -20,21 +20,15 @@ namespace Chroma
   /*! \ingroup inlineglue */
   struct InlinePolyakovLoopParams 
   {
-    InlinePolyakovLoopParams() { frequency = 0; }
-
-    InlinePolyakovLoopParams(XMLReader& xml_in, const std::string& path) 
-    {
-      try {
-	XMLReader paramtop(xml_in, path);
-	read(paramtop, "./Frequency", frequency);
-      }
-      catch(const std::string& e) { 
-	QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
-	QDP_abort(1);
-      }
-    }
+    InlinePolyakovLoopParams();
+    InlinePolyakovLoopParams(XMLReader& xml_in, const std::string& path);
 
     unsigned long frequency;
+
+    struct NamedObject_t
+    {
+      std::string   gauge_id;
+    } named_obj;
   };
 
 
@@ -43,18 +37,16 @@ namespace Chroma
   {
   public:
     ~InlinePolyakovLoop() {}
-    InlinePolyakovLoop(const InlinePolyakovLoopParams& p_) : p(p_) {}
-    InlinePolyakovLoop(const InlinePolyakovLoop& p_) : p(p_.p) {}
+    InlinePolyakovLoop(const InlinePolyakovLoopParams& p) : params(p) {}
+    InlinePolyakovLoop(const InlinePolyakovLoop& p) : params(p.params) {}
 
-    unsigned long getFrequency(void) const {return p.frequency;}
+    unsigned long getFrequency(void) const {return params.frequency;}
 
-    void operator()(const multi1d<LatticeColorMatrix>& u,
-		    XMLBufferWriter& gauge_xml,
-		    unsigned long update_no,
+    void operator()(unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   private:
-    const InlinePolyakovLoopParams p;
+    InlinePolyakovLoopParams params;
   };
 
 };
