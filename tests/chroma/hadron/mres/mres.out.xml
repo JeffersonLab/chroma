@@ -15,12 +15,15 @@ Mres calculation
       <Param>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>POINT_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
         </Source>
       </Param>
       <NamedObject>
@@ -108,7 +111,7 @@ Mres calculation
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>19 Mar 06 23:32:31 EST</run_date>
+    <run_date>20 Mar 06 00:23:19 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -169,7 +172,7 @@ Mres calculation
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:32:31 EST</run_date>
+          <run_date>20 Mar 06 00:23:19 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -189,12 +192,14 @@ Mres calculation
         <Input>
           <Param>
             <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>POINT_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
     </Source>
 
             <j_decay>3</j_decay>
@@ -249,7 +254,7 @@ Mres calculation
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:32:31 EST</run_date>
+          <run_date>20 Mar 06 00:23:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -337,12 +342,14 @@ Mres calculation
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>POINT_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
         </Source>
         <j_decay>3</j_decay>
         <t_source>0</t_source>
@@ -419,7 +426,7 @@ Mres calculation
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:32:32 EST</run_date>
+          <run_date>20 Mar 06 00:23:21 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

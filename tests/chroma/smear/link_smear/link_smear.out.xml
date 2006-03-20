@@ -83,10 +83,10 @@ Stout smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:18:56 EST</run_date>
+    <run_date>20 Mar 06 00:29:50 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -150,11 +150,14 @@ Stout smear task
     </Param>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <linksmear_id>ape</linksmear_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -225,11 +228,14 @@ Stout smear task
     </Param>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <linksmear_id>hyp_3</linksmear_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -300,11 +306,14 @@ Stout smear task
     </Param>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <linksmear_id>hyp_4</linksmear_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -372,11 +381,14 @@ Stout smear task
     </Param>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <linksmear_id>stout</linksmear_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>

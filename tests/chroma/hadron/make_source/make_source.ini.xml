@@ -14,12 +14,15 @@ Make a propagator source
       <Param>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>POINT_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
         </Source>
       </Param>
       <NamedObject>
@@ -33,7 +36,7 @@ Make a propagator source
       <Param>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -45,8 +48,10 @@ Make a propagator source
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>

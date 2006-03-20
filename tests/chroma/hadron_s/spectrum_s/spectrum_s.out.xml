@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: spectrum_s.out.xml,v 1.3 2006-03-16 02:56:26 edwards Exp $
+; $Id: spectrum_s.out.xml,v 1.4 2006-03-20 05:31:16 edwards Exp $
 ;
 ; Chroma input file for staggered Spectrum_s measurement.
 ;
@@ -101,10 +101,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.14.0</chroma>
+      <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>15 Mar 06 21:55:28 EST</run_date>
+    <run_date>20 Mar 06 00:30:43 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -185,10 +185,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.14.0</chroma>
+            <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>15 Mar 06 21:55:28 EST</run_date>
+          <run_date>20 Mar 06 00:30:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -215,10 +215,15 @@
             <RsdCG>1e-05</RsdCG>
             <MaxCG>3000</MaxCG>
           </Inversion>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+          </NamedObject>
           <xml_file></xml_file>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1206,21 +1211,21 @@
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>108</n_count>
-          <time_in_sec>0.211</time_in_sec>
+          <time_in_sec>0.284</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>119</n_count>
-          <time_in_sec>0.231</time_in_sec>
+          <time_in_sec>0.31</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>115</n_count>
-          <time_in_sec>0.224</time_in_sec>
+          <time_in_sec>0.3</time_in_sec>
         </Qprop>
         <Pseudoscalars>
           <Lsink_Lsrc>
@@ -1343,7 +1348,7 @@
                 <Vec>0.00535968 -0.00556493 0.00522318 -0.00554077</Vec>
               </gamma_z_CROSS_gamma_z>
               <M_VT>
-                <Vec>-5.32988e-11 1.52745e-15 8.7746e-12 4.22866e-10</Vec>
+                <Vec>1.64092e-15 -6.4181e-12 2.33742e-13 6.31469e-15</Vec>
               </M_VT>
             </Vector_meson>
           </Lsink_Lsrc>
@@ -1353,19 +1358,19 @@
             <Mass>0.1</Mass>
             <RsdCG>1e-05</RsdCG>
             <n_count>117</n_count>
-            <time_in_sec>0.227</time_in_sec>
+            <time_in_sec>0.315</time_in_sec>
           </Qprop>
           <Qprop>
             <Mass>0.1</Mass>
             <RsdCG>1e-05</RsdCG>
             <n_count>117</n_count>
-            <time_in_sec>0.228</time_in_sec>
+            <time_in_sec>0.315</time_in_sec>
           </Qprop>
           <Qprop>
             <Mass>0.1</Mass>
             <RsdCG>1e-05</RsdCG>
             <n_count>117</n_count>
-            <time_in_sec>0.227</time_in_sec>
+            <time_in_sec>0.307</time_in_sec>
           </Qprop>
           <SingletPseudoscalar>
             <gamma5_CROSS_one>
@@ -1405,42 +1410,42 @@
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>108</n_count>
-          <time_in_sec>0.216</time_in_sec>
+          <time_in_sec>0.277</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>115</n_count>
-          <time_in_sec>0.228</time_in_sec>
+          <time_in_sec>0.301</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>104</n_count>
-          <time_in_sec>0.209</time_in_sec>
+          <time_in_sec>0.275</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>108</n_count>
-          <time_in_sec>0.216</time_in_sec>
+          <time_in_sec>0.291</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>115</n_count>
-          <time_in_sec>0.227</time_in_sec>
+          <time_in_sec>0.305</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>104</n_count>
-          <time_in_sec>0.206</time_in_sec>
+          <time_in_sec>0.284</time_in_sec>
         </Qprop>
         <baryon_correlators>
           <source_time>0</source_time>

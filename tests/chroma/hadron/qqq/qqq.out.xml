@@ -15,7 +15,7 @@ QQQ on props
       <Param>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -27,8 +27,12 @@ QQQ on props
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+            <disp_length>0</disp_length>
+            <disp_dir>0</disp_dir>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -84,9 +88,14 @@ QQQ on props
       <Param>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
         </Sink>
       </Param>
       <NamedObject>
@@ -101,7 +110,7 @@ QQQ on props
       <Param>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
 
@@ -112,8 +121,12 @@ QQQ on props
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+            <disp_length>0</disp_length>
+            <disp_dir>0</disp_dir>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -180,7 +193,7 @@ QQQ on props
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>19 Mar 06 23:36:50 EST</run_date>
+    <run_date>20 Mar 06 00:28:42 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -241,7 +254,7 @@ QQQ on props
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:36:50 EST</run_date>
+          <run_date>20 Mar 06 00:28:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -261,7 +274,7 @@ QQQ on props
         <Input>
           <Param>
             <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -271,8 +284,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -333,7 +350,7 @@ QQQ on props
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:36:51 EST</run_date>
+          <run_date>20 Mar 06 00:28:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -421,7 +438,7 @@ QQQ on props
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -431,8 +448,12 @@ QQQ on props
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+            <disp_length>0</disp_length>
+            <disp_dir>0</disp_dir>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -514,9 +535,13 @@ QQQ on props
           <Param>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
     </Sink>
 
             <j_decay>3</j_decay>
@@ -563,7 +588,7 @@ QQQ on props
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -573,8 +598,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -616,9 +645,13 @@ QQQ on props
         <PropSink>
           <version>5</version>
           <SinkType>POINT_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
     </Sink>
 
           <j_decay>3</j_decay>
@@ -635,7 +668,7 @@ QQQ on props
           <Param>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -644,8 +677,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -698,7 +735,7 @@ QQQ on props
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -708,8 +745,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -751,7 +792,7 @@ QQQ on props
         <PropSink>
           <version>5</version>
           <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -760,8 +801,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -801,7 +846,7 @@ QQQ on props
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:36:52 EST</run_date>
+          <run_date>20 Mar 06 00:28:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -875,9 +920,13 @@ QQQ on props
               <PropSinkSmear>
                 <version>5</version>
                 <SinkType>POINT_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
     </Sink>
 
                 <j_decay>3</j_decay>
@@ -911,7 +960,7 @@ QQQ on props
               </ForwardProp>
               <PropSource>
                 <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -921,8 +970,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -940,9 +993,13 @@ QQQ on props
               <PropSinkSmear>
                 <version>5</version>
                 <SinkType>POINT_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
     </Sink>
 
                 <j_decay>3</j_decay>
@@ -976,7 +1033,7 @@ QQQ on props
               </ForwardProp>
               <PropSource>
                 <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -986,8 +1043,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1005,9 +1066,13 @@ QQQ on props
               <PropSinkSmear>
                 <version>5</version>
                 <SinkType>POINT_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
     </Sink>
 
                 <j_decay>3</j_decay>
@@ -1041,7 +1106,7 @@ QQQ on props
               </ForwardProp>
               <PropSource>
                 <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -1051,8 +1116,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1105,7 +1174,7 @@ QQQ on props
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:36:56 EST</run_date>
+          <run_date>20 Mar 06 00:28:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1179,7 +1248,7 @@ QQQ on props
               <PropSinkSmear>
                 <version>5</version>
                 <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -1188,8 +1257,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1229,7 +1302,7 @@ QQQ on props
               </ForwardProp>
               <PropSource>
                 <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -1239,8 +1312,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1258,7 +1335,7 @@ QQQ on props
               <PropSinkSmear>
                 <version>5</version>
                 <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -1267,8 +1344,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1308,7 +1389,7 @@ QQQ on props
               </ForwardProp>
               <PropSource>
                 <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -1318,8 +1399,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1337,7 +1422,7 @@ QQQ on props
               <PropSinkSmear>
                 <version>5</version>
                 <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -1346,8 +1431,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1387,7 +1476,7 @@ QQQ on props
               </ForwardProp>
               <PropSource>
                 <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -1397,8 +1486,12 @@ QQQ on props
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>0</disp_length>
+        <disp_dir>0</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>

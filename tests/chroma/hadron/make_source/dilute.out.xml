@@ -88,7 +88,7 @@ Make a dilute source
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>19 Mar 06 22:52:44 EST</run_date>
+    <run_date>20 Mar 06 00:11:28 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -149,7 +149,7 @@ Make a dilute source
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 22:52:44 EST</run_date>
+          <run_date>20 Mar 06 00:11:28 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
