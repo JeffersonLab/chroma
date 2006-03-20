@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.1 2006-02-22 03:23:48 edwards Exp $
+#  $Id: regres.pl,v 1.2 2006-03-20 04:50:01 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -13,10 +13,10 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/sink_smear/sink_smearing-v5.ini.xml" , 
-	 output      => "sink_smearing-v5.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/sink_smear/sink_smearing-v5.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/sink_smear/sink_smearing-v5.out.xml" ,
+	 input       => "$test_dir/chroma/hadron/sink_smear/sink_smearing.ini.xml" , 
+	 output      => "sink_smearing.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/sink_smear/sink_smearing.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/sink_smear/sink_smearing.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 

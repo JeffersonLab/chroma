@@ -796,10 +796,10 @@ Sequential source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.8</chroma>
-      <qdp>1.19.0</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>08 Feb 06 23:52:43 EST</run_date>
+    <run_date>19 Mar 06 23:41:27 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -857,10 +857,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:43 EST</run_date>
+          <run_date>19 Mar 06 23:41:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -904,11 +904,14 @@ Sequential source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -946,10 +949,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:43 EST</run_date>
+          <run_date>19 Mar 06 23:41:28 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -989,12 +992,15 @@ Sequential source
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1125,10 +1131,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:29 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1172,6 +1178,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -1180,6 +1187,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1305,10 +1314,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1338,6 +1347,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -1346,6 +1356,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1471,10 +1483,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1504,6 +1516,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -1512,6 +1525,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1637,10 +1652,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1670,6 +1685,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -1678,6 +1694,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1803,10 +1821,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1836,6 +1854,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -1844,6 +1863,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1969,10 +1990,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2002,6 +2023,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -2010,6 +2032,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2135,10 +2159,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2168,6 +2192,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -2176,6 +2201,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2301,10 +2328,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2334,6 +2361,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -2342,6 +2370,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2467,10 +2497,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2500,6 +2530,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -2508,6 +2539,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2633,10 +2666,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2666,6 +2699,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -2674,6 +2708,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2799,10 +2835,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2832,6 +2868,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -2840,6 +2877,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2965,10 +3004,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2998,6 +3037,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -3006,6 +3046,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3131,10 +3173,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3164,6 +3206,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -3172,6 +3215,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3297,10 +3342,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3330,6 +3375,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -3338,6 +3384,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3463,10 +3511,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3496,6 +3544,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -3504,6 +3553,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3629,10 +3680,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3662,6 +3713,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -3670,6 +3722,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3795,10 +3849,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:44 EST</run_date>
+          <run_date>19 Mar 06 23:41:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3828,6 +3882,7 @@ Sequential source
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -3836,6 +3891,8 @@ Sequential source
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>

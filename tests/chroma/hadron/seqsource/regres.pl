@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.3 2006-02-09 02:19:57 edwards Exp $
+#  $Id: regres.pl,v 1.4 2006-03-20 04:50:00 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -13,17 +13,17 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/seqsource/seqsource-meson-v1.ini.xml" , 
-	 output      => "seqsource-meson-v1.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/seqsource/seqsource-meson-v1.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/seqsource/seqsource-meson-v1.out.xml" ,
+	 input       => "$test_dir/chroma/hadron/seqsource/seqsource-meson.ini.xml" , 
+	 output      => "seqsource-meson.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/seqsource/seqsource-meson.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/seqsource/seqsource-meson.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/seqsource/seqsource-baryon-v1.ini.xml" , 
-	 output      => "seqsource-baryon-v1.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/seqsource/seqsource-baryon-v1.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/seqsource/seqsource-baryon-v1.out.xml" ,
+	 input       => "$test_dir/chroma/hadron/seqsource/seqsource-baryon.ini.xml" , 
+	 output      => "seqsource-baryon.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/seqsource/seqsource-baryon.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/seqsource/seqsource-baryon.out.xml" ,
      }
      );

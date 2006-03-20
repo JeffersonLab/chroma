@@ -1238,10 +1238,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.10.1</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>21 Feb 06 22:21:38 EST</run_date>
+    <run_date>19 Mar 06 23:45:17 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1299,10 +1299,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 22:21:39 EST</run_date>
+          <run_date>19 Mar 06 23:45:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1350,11 +1350,14 @@ Sink smear a prop
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -1392,10 +1395,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 22:21:40 EST</run_date>
+          <run_date>19 Mar 06 23:45:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1435,12 +1438,15 @@ Sink smear a prop
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -1591,12 +1597,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -1743,12 +1752,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -1895,12 +1907,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -2035,12 +2050,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -2175,12 +2193,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -2315,12 +2336,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -2455,12 +2479,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -2595,12 +2622,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -2735,12 +2765,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -2875,12 +2908,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -3015,12 +3051,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -3155,12 +3194,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -3295,12 +3337,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -3435,12 +3480,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -3575,12 +3623,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -3715,12 +3766,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -3855,12 +3909,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -3995,12 +4052,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -4135,12 +4195,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -4275,12 +4338,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -4415,12 +4481,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -4555,12 +4624,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -4695,12 +4767,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -4835,12 +4910,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -4975,12 +5053,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -5115,12 +5196,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -5255,12 +5339,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -5395,12 +5482,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -5535,12 +5625,15 @@ Sink smear a prop
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sink_tmp</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
