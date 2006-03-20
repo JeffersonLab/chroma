@@ -1018,7 +1018,7 @@ Calculate building blocks - insertions in 3-pt functions
          </elem>
        </BkwdProps>
       </BuildingBlocks>
-      <xml_file>bb-v2.dat.xml</xml_file>
+      <xml_file>bb.dat.xml</xml_file>
     </elem>
 
   </InlineMeasurements>
@@ -1043,10 +1043,10 @@ Calculate building blocks - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.8</chroma>
-      <qdp>1.19.0</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>08 Feb 06 23:52:47 EST</run_date>
+    <run_date>19 Mar 06 23:56:35 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1104,10 +1104,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:47 EST</run_date>
+          <run_date>19 Mar 06 23:56:36 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1151,11 +1151,14 @@ Calculate building blocks - insertions in 3-pt functions
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1193,10 +1196,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:47 EST</run_date>
+          <run_date>19 Mar 06 23:56:36 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1236,12 +1239,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1372,10 +1378,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:47 EST</run_date>
+          <run_date>19 Mar 06 23:56:37 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1419,6 +1425,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -1427,6 +1434,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1546,10 +1555,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:47 EST</run_date>
+          <run_date>19 Mar 06 23:56:38 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1589,12 +1598,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_PION</source_id>
             <prop_id>seqprop_PION</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1808,10 +1820,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:48 EST</run_date>
+          <run_date>19 Mar 06 23:56:39 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1841,6 +1853,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
               <elem>sh_prop_0</elem>
@@ -1850,6 +1863,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2044,10 +2059,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:48 EST</run_date>
+          <run_date>19 Mar 06 23:56:39 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2087,12 +2102,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_U_UNPOL</source_id>
             <prop_id>seqprop_NUCL_U_UNPOL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2343,10 +2361,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:48 EST</run_date>
+          <run_date>19 Mar 06 23:56:41 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2376,6 +2394,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -2384,6 +2403,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2503,10 +2524,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:48 EST</run_date>
+          <run_date>19 Mar 06 23:56:41 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2546,12 +2567,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_D_UNPOL</source_id>
             <prop_id>seqprop_NUCL_D_UNPOL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2737,10 +2761,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:49 EST</run_date>
+          <run_date>19 Mar 06 23:56:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2770,6 +2794,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
               <elem>sh_prop_0</elem>
@@ -2779,6 +2804,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2973,10 +3000,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:49 EST</run_date>
+          <run_date>19 Mar 06 23:56:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3016,12 +3043,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_U_POL</source_id>
             <prop_id>seqprop_NUCL_U_POL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3272,10 +3302,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:49 EST</run_date>
+          <run_date>19 Mar 06 23:56:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3305,6 +3335,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -3313,6 +3344,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3432,10 +3465,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:49 EST</run_date>
+          <run_date>19 Mar 06 23:56:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3475,12 +3508,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_D_POL</source_id>
             <prop_id>seqprop_NUCL_D_POL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3657,7 +3693,7 @@ Calculate building blocks - insertions in 3-pt functions
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.76809e-14 9.2509e-14 2.27564e-13 5.60115e-13 1.37885e-12 3.3971e-12 8.36868e-12 2.0451e-11</prop_corr>
+          <prop_corr>3.76809e-14 9.2509e-14 2.27563e-13 5.60115e-13 1.37885e-12 3.3971e-12 8.36868e-12 2.0451e-11</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3666,10 +3702,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:49 EST</run_date>
+          <run_date>19 Mar 06 23:56:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3699,6 +3735,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
               <elem>sh_prop_0</elem>
@@ -3708,6 +3745,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3902,10 +3941,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:50 EST</run_date>
+          <run_date>19 Mar 06 23:56:46 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3945,12 +3984,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_DELTA_U_UNPOL</source_id>
             <prop_id>seqprop_DELTA_U_UNPOL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -4201,10 +4243,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:50 EST</run_date>
+          <run_date>19 Mar 06 23:56:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4234,6 +4276,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -4242,6 +4285,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -4361,10 +4406,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:50 EST</run_date>
+          <run_date>19 Mar 06 23:56:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4404,12 +4449,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_DELTA_D_UNPOL</source_id>
             <prop_id>seqprop_DELTA_D_UNPOL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -4595,10 +4643,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:50 EST</run_date>
+          <run_date>19 Mar 06 23:56:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4628,6 +4676,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
               <elem>sh_prop_0</elem>
@@ -4637,6 +4686,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -4831,10 +4882,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:50 EST</run_date>
+          <run_date>19 Mar 06 23:56:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4874,12 +4925,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_U_UNPOL_NONREL</source_id>
             <prop_id>seqprop_NUCL_U_UNPOL_NONREL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -5130,10 +5184,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:51 EST</run_date>
+          <run_date>19 Mar 06 23:56:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5163,6 +5217,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -5171,6 +5226,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -5290,10 +5347,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:51 EST</run_date>
+          <run_date>19 Mar 06 23:56:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5333,12 +5390,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_D_UNPOL_NONREL</source_id>
             <prop_id>seqprop_NUCL_D_UNPOL_NONREL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -5524,10 +5584,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:51 EST</run_date>
+          <run_date>19 Mar 06 23:56:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5557,6 +5617,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
               <elem>sh_prop_0</elem>
@@ -5566,6 +5627,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -5760,10 +5823,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:51 EST</run_date>
+          <run_date>19 Mar 06 23:56:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5803,12 +5866,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_U_POL_NONREL</source_id>
             <prop_id>seqprop_NUCL_U_POL_NONREL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -6059,10 +6125,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:52 EST</run_date>
+          <run_date>19 Mar 06 23:56:53 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6092,6 +6158,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -6100,6 +6167,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -6219,10 +6288,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:52 EST</run_date>
+          <run_date>19 Mar 06 23:56:54 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6262,12 +6331,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_D_POL_NONREL</source_id>
             <prop_id>seqprop_NUCL_D_POL_NONREL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -6453,10 +6525,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:52 EST</run_date>
+          <run_date>19 Mar 06 23:56:55 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6486,6 +6558,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
               <elem>sh_prop_0</elem>
@@ -6495,6 +6568,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -6689,10 +6764,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:52 EST</run_date>
+          <run_date>19 Mar 06 23:56:55 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6732,12 +6807,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
             <prop_id>seqprop_NUCL_U_MIXED_NONREL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -6988,10 +7066,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:52 EST</run_date>
+          <run_date>19 Mar 06 23:56:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7021,6 +7099,7 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -7029,6 +7108,8 @@ Calculate building blocks - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -7148,10 +7229,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.8</chroma>
-            <qdp>1.19.0</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>08 Feb 06 23:52:53 EST</run_date>
+          <run_date>19 Mar 06 23:56:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7191,12 +7272,15 @@ Calculate building blocks - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
             <prop_id>seqprop_NUCL_D_MIXED_NONREL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -7373,14 +7457,14 @@ Calculate building blocks - insertions in 3-pt functions
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.74619e-13 9.19658e-13 2.26213e-12 5.56754e-12 1.37049e-11 3.3763e-11 8.31702e-11 2.04638e-10</prop_corr>
+          <prop_corr>3.74618e-13 9.19658e-13 2.26213e-12 5.56754e-12 1.37049e-11 3.3763e-11 8.31702e-11 2.04638e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
     <elem>
       <ExampleBuildingBlocks>
         <update_no>0</update_no>
-        <xml_file>bb-v2.dat.xml</xml_file>
+        <xml_file>bb.dat.xml</xml_file>
       </ExampleBuildingBlocks>
     </elem>
   </InlineObservables>

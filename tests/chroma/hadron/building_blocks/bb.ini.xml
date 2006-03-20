@@ -1015,7 +1015,7 @@ Calculate building blocks - insertions in 3-pt functions
          </elem>
        </BkwdProps>
       </BuildingBlocks>
-      <xml_file>bb-v2.dat.xml</xml_file>
+      <xml_file>bb.dat.xml</xml_file>
     </elem>
 
   </InlineMeasurements>

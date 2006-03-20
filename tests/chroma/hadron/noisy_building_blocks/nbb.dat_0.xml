@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+
+
+<ExampleBuildingBlocks>
+  <update_no>0</update_no>
+  <ProgramInfo>
+    <code_version>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
+    </code_version>
+    <run_date>19 Mar 06 23:53:23 EST</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <Output_version>
+    <out_version>2</out_version>
+  </Output_version>
+  <Input>
+    <Param>
+      <version>3</version>
+      <links_max>1</links_max>
+      <mom2_max>1</mom2_max>
+      <canonical>false</canonical>
+      <nrow>4 4 4 8</nrow>
+    </Param>
+    <BuildingBlocks>
+      <OutFileName>nbb.dat_0.out</OutFileName>
+      <GaugeId>default_gauge_field</GaugeId>
+      <FrwdPropId>nprop_0</FrwdPropId>
+      <NoisySrcId>nsrc_0</NoisySrcId>
+      <GammaInsertion>0</GammaInsertion>
+      <Flavor>S</Flavor>
+      <BBFileNamePattern>S_1_qz%c%1d_qy%c%1d_qx%c%1d.nbb.0</BBFileNamePattern>
+    </BuildingBlocks>
+    <xml_file>nbb.dat_0.xml</xml_file>
+  </Input>
+  <Config_info><weak_field>
+</weak_field>
+
+
+
+
+  </Config_info>
+  <Observables>
+    <ave_plaq>0.994737</ave_plaq>
+    <ave_spacelike_plaq>0.994879</ave_spacelike_plaq>
+    <ave_timelike_plaq>0.994595</ave_timelike_plaq>
+    <ave_link_trace>0.379316</ave_link_trace>
+  </Observables>
+  <ForwardProp>
+    <FrwdPropId>nprop_0</FrwdPropId>
+    <FrwdPropXML><propagator>
+      <id>0</id>
+    </propagator>
+
+    </FrwdPropXML>
+    <FrwdPropRecordXML><Propagator>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 0</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+          <MROver>1</MROver>
+          <RsdCGPrec>1e-12</RsdCGPrec>
+          <MaxCGPrec>1000</MaxCGPrec>
+        </InvertParam>
+      </ForwardProp>
+      <StateInfo>
+</StateInfo>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <RNG>
+        <Seed>
+          <elem>1835</elem>
+          <elem>101</elem>
+          <elem>3722</elem>
+          <elem>262</elem>
+        </Seed>
+      </RNG>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+    </FrwdPropRecordXML>
+    <FrwdPropCheck>49.5045 3.29053 0.863153 0.316279 0.126203 0.0513244 0.020979 0.00860028</FrwdPropCheck>
+  </ForwardProp>
+  <NoisySource>
+    <NoisySrcId>nsrc_0</NoisySrcId>
+    <NoisySrcXML><make_source>
+      <id>0</id>
+    </make_source>
+
+    </NoisySrcXML>
+    <NoisySrcRecordXML><MakeSource>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <RNG>
+        <Seed>
+          <elem>1835</elem>
+          <elem>101</elem>
+          <elem>3722</elem>
+          <elem>262</elem>
+        </Seed>
+      </RNG>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+    </NoisySrcRecordXML>
+    <NoisySrcCheck>768 0 0 0 0 0 0 0</NoisySrcCheck>
+  </NoisySource>
+</ExampleBuildingBlocks>
