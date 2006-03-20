@@ -12,7 +12,7 @@ Calculate building blocks - insertions in 3-pt functions
       <Param>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -24,8 +24,10 @@ Calculate building blocks - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -90,7 +92,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSink>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
 
@@ -101,8 +103,10 @@ Calculate building blocks - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>

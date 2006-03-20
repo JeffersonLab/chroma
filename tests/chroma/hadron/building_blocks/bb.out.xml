@@ -15,7 +15,7 @@ Calculate building blocks - insertions in 3-pt functions
       <Param>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -27,8 +27,10 @@ Calculate building blocks - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -93,7 +95,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSink>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
 
@@ -104,8 +106,10 @@ Calculate building blocks - insertions in 3-pt functions
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -1046,7 +1050,7 @@ Calculate building blocks - insertions in 3-pt functions
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>19 Mar 06 23:56:35 EST</run_date>
+    <run_date>20 Mar 06 00:10:03 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1107,7 +1111,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:36 EST</run_date>
+          <run_date>20 Mar 06 00:10:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1127,7 +1131,7 @@ Calculate building blocks - insertions in 3-pt functions
         <Input>
           <Param>
             <version>6</version><Source>
-      <version>1</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
@@ -1137,8 +1141,10 @@ Calculate building blocks - insertions in 3-pt functions
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1199,7 +1205,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:36 EST</run_date>
+          <run_date>20 Mar 06 00:10:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1287,7 +1293,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -1297,8 +1303,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -1381,7 +1389,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:37 EST</run_date>
+          <run_date>20 Mar 06 00:10:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1403,7 +1411,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSink>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
       <SmearingParam>
@@ -1412,8 +1420,10 @@ Calculate building blocks - insertions in 3-pt functions
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -1501,7 +1511,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -1511,8 +1521,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -1558,7 +1570,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:38 EST</run_date>
+          <run_date>20 Mar 06 00:10:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1648,7 +1660,7 @@ Calculate building blocks - insertions in 3-pt functions
         <version>5</version>
         <SinkType>SHELL_SINK</SinkType>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
           <SmearingParam>
@@ -1657,8 +1669,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -1685,7 +1699,7 @@ Calculate building blocks - insertions in 3-pt functions
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType>
             <Sink>
-              <version>1</version>
+              <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
               <j_decay>3</j_decay>
               <SmearingParam>
@@ -1694,8 +1708,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -1735,7 +1751,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -1745,8 +1761,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -1823,7 +1841,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:39 EST</run_date>
+          <run_date>20 Mar 06 00:10:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1930,7 +1948,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -1940,8 +1958,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2002,7 +2022,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -2012,8 +2032,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2062,7 +2084,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:39 EST</run_date>
+          <run_date>20 Mar 06 00:10:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2211,7 +2233,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -2221,8 +2243,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2276,7 +2300,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -2286,8 +2310,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2364,7 +2390,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:41 EST</run_date>
+          <run_date>20 Mar 06 00:10:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2470,7 +2496,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -2480,8 +2506,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2527,7 +2555,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:41 EST</run_date>
+          <run_date>20 Mar 06 00:10:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2676,7 +2704,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -2686,8 +2714,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -2764,7 +2794,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:42 EST</run_date>
+          <run_date>20 Mar 06 00:10:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2871,7 +2901,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -2881,8 +2911,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -2943,7 +2975,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -2953,8 +2985,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -3003,7 +3037,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:42 EST</run_date>
+          <run_date>20 Mar 06 00:10:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3152,7 +3186,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -3162,8 +3196,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -3217,7 +3253,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -3227,8 +3263,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -3305,7 +3343,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:44 EST</run_date>
+          <run_date>20 Mar 06 00:10:11 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3411,7 +3449,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -3421,8 +3459,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -3468,7 +3508,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:44 EST</run_date>
+          <run_date>20 Mar 06 00:10:11 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3617,7 +3657,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -3627,8 +3667,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -3705,7 +3747,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:45 EST</run_date>
+          <run_date>20 Mar 06 00:10:13 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3812,7 +3854,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -3822,8 +3864,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -3884,7 +3928,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -3894,8 +3938,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -3944,7 +3990,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:46 EST</run_date>
+          <run_date>20 Mar 06 00:10:13 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4093,7 +4139,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -4103,8 +4149,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -4158,7 +4206,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -4168,8 +4216,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -4246,7 +4296,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:47 EST</run_date>
+          <run_date>20 Mar 06 00:10:14 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4352,7 +4402,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -4362,8 +4412,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -4409,7 +4461,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:47 EST</run_date>
+          <run_date>20 Mar 06 00:10:15 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4558,7 +4610,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -4568,8 +4620,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -4646,7 +4700,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:49 EST</run_date>
+          <run_date>20 Mar 06 00:10:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4753,7 +4807,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -4763,8 +4817,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -4825,7 +4881,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -4835,8 +4891,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -4885,7 +4943,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:49 EST</run_date>
+          <run_date>20 Mar 06 00:10:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5034,7 +5092,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -5044,8 +5102,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -5099,7 +5159,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -5109,8 +5169,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -5187,7 +5249,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:50 EST</run_date>
+          <run_date>20 Mar 06 00:10:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5293,7 +5355,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -5303,8 +5365,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -5350,7 +5414,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:50 EST</run_date>
+          <run_date>20 Mar 06 00:10:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5499,7 +5563,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -5509,8 +5573,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -5587,7 +5653,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:52 EST</run_date>
+          <run_date>20 Mar 06 00:10:19 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5694,7 +5760,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -5704,8 +5770,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -5766,7 +5834,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -5776,8 +5844,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -5826,7 +5896,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:52 EST</run_date>
+          <run_date>20 Mar 06 00:10:19 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5975,7 +6045,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -5985,8 +6055,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -6040,7 +6112,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -6050,8 +6122,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -6128,7 +6202,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:53 EST</run_date>
+          <run_date>20 Mar 06 00:10:21 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6234,7 +6308,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -6244,8 +6318,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -6291,7 +6367,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:54 EST</run_date>
+          <run_date>20 Mar 06 00:10:21 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6440,7 +6516,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -6450,8 +6526,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -6528,7 +6606,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:55 EST</run_date>
+          <run_date>20 Mar 06 00:10:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6635,7 +6713,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -6645,8 +6723,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -6707,7 +6787,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -6717,8 +6797,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -6767,7 +6849,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:55 EST</run_date>
+          <run_date>20 Mar 06 00:10:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6916,7 +6998,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -6926,8 +7008,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -6981,7 +7065,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -6991,8 +7075,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
@@ -7069,7 +7155,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:57 EST</run_date>
+          <run_date>20 Mar 06 00:10:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7175,7 +7261,7 @@ Calculate building blocks - insertions in 3-pt functions
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
@@ -7185,8 +7271,10 @@ Calculate building blocks - insertions in 3-pt functions
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -7232,7 +7320,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:56:57 EST</run_date>
+          <run_date>20 Mar 06 00:10:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7381,7 +7469,7 @@ Calculate building blocks - insertions in 3-pt functions
           <PropSource>
             <version>6</version>
             <Source>
-              <version>1</version>
+              <version>2</version>
               <SourceType>SHELL_SOURCE</SourceType>
               <j_decay>3</j_decay>
               <t_srce>0 0 0 0</t_srce>
@@ -7391,8 +7479,10 @@ Calculate building blocks - insertions in 3-pt functions
                 <wvfIntPar>5</wvfIntPar>
                 <no_smear_dir>3</no_smear_dir>
               </SmearingParam>
-              <disp_length>0</disp_length>
-              <disp_dir>0</disp_dir>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
               <LinkSmearing>
                 <LinkSmearingType>APE_SMEAR</LinkSmearingType>
                 <link_smear_fact>2.5</link_smear_fact>
