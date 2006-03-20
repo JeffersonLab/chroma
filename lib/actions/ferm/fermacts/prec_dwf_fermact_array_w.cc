@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 2.2 2006-02-26 03:47:51 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 2.3 2006-03-20 04:21:07 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -46,12 +46,83 @@ namespace Chroma
     bool registerAll()
     {
       return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+	& Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
     }
 
     //! Register the fermact
     const bool registered = registerAll();
   }
+
+
+  // Ancient obsolete crap
+  namespace
+  {
+
+    //! Parameters for chiral fermion actions
+    /*! Ancient obsolete junk */
+    struct ChiralParam_t
+    {
+      ChiralParam_t();  // default constructor
+      ~ChiralParam_t() {}
+
+      Real       OverMass;
+      int        N5;
+      Real       a5;
+      int        NWilsVec;
+    };
+
+    //! Read chiral action like parameters
+    void read(XMLReader& xml, const string& path, ChiralParam_t& param);
+
+    //! Write chiral action like parameters
+    void write(XMLWriter& xml, const string& path, const ChiralParam_t& param);
+
+    //! Initialize a chiral param struct
+    ChiralParam_t::ChiralParam_t()
+    {
+      OverMass = 0;
+      N5       = 0;
+      a5       = 1;
+      NWilsVec = 0;
+    }
+
+    //! Read chiral action like parameters
+    void read(XMLReader& xml, const string& path, ChiralParam_t& param)
+    {
+      XMLReader paramtop(xml, path);
+
+      read(paramtop, "OverMass", param.OverMass);
+      read(paramtop, "N5", param.N5);
+
+      string xpath;
+      xpath = "a5";
+      if (paramtop.count(xpath) != 0)
+	read(paramtop, xpath, param.a5);
+      else
+	param.a5 = 1;
+
+      xpath = "NWilsVec";
+      if (paramtop.count(xpath) != 0)
+	read(paramtop, xpath, param.NWilsVec);
+      else
+	param.NWilsVec = 0;
+    }
+
+    //! Write chiral action like parameters
+    void write(XMLWriter& xml, const string& path, const ChiralParam_t& param)
+    {
+      push(xml, path);
+
+      write(xml, "OverMass", param.OverMass);
+      write(xml, "N5", param.N5);
+      write(xml, "a5", param.a5);
+      write(xml, "NWilsVec", param.NWilsVec);
+
+      pop(xml);
+    }
+
+  } // end namespace
+
 
 
   //! Read parameters
