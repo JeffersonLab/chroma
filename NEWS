@@ -1,3 +1,11 @@
+03/20/2006 -- Robert Edwards
+	Version 2.15.0. Major change of inline suite. There is no longer a gauge field
+        passed into the measurements. Instead, tasks must read a gauge field. By default,
+        they all will try to read a "default_gauge_field" buffer placed there by the
+        main program. With this change, any task can smear a gauge field and hand
+        that to the next task for use instead of having to write the config, exiting,
+        and restarting.
+
 03/16/2006 -- Robert Edwards
 	Version 2.14.0. Major overhaul in GaugeBC's and FermBC's . New initial
         support for Schroedinger functional BC's. The GaugeBC's seem to work
