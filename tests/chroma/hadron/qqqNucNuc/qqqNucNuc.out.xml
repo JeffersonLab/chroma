@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: qqqNucNuc-v1.out.xml,v 1.1 2005-12-28 01:33:16 kostas Exp $
+; $Id: qqqNucNuc.out.xml,v 1.1 2006-03-20 04:41:12 edwards Exp $
 ;
 ; Test input for the qqqNucNuc program
 ;
@@ -146,10 +146,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.7</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>27 Dec 05 17:48:36 EST</run_date>
+    <run_date>19 Mar 06 23:39:33 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -207,10 +207,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>27 Dec 05 17:48:36 EST</run_date>
+          <run_date>19 Mar 06 23:39:33 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -254,11 +254,14 @@
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -296,10 +299,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>27 Dec 05 17:48:36 EST</run_date>
+          <run_date>19 Mar 06 23:39:33 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -341,12 +344,15 @@
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_0</source_id>
             <prop_id>propagator_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -477,10 +483,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>27 Dec 05 17:48:39 EST</run_date>
+          <run_date>19 Mar 06 23:39:40 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -522,12 +528,15 @@
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_0</source_id>
             <prop_id>propagator_1</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -658,10 +667,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>27 Dec 05 17:48:41 EST</run_date>
+          <run_date>19 Mar 06 23:39:46 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -681,6 +690,7 @@
             <max_p2>1</max_p2>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>propagator_0</elem>
               <elem>propagator_1</elem>
@@ -691,6 +701,8 @@
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -845,6 +857,8 @@
         </Propagator_info>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>

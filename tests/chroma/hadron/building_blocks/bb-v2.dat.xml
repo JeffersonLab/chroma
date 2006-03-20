@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>2.8</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>25 Jan 06 00:47:11 EST</run_date>
+    <run_date>19 Mar 06 23:30:01 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -30,6 +30,7 @@
     </Param>
     <BuildingBlocks>
       <OutFileName>./examplebb_v1.out</OutFileName>
+      <GaugeId>default_gauge_field</GaugeId>
       <FrwdPropId>sh_prop_0</FrwdPropId>
       <BkwdProps>
         <elem>
@@ -129,6 +130,8 @@
   </Input>
   <Config_info><weak_field>
 </weak_field>
+
+
 
 
   </Config_info>
@@ -283,10 +286,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>PION</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -436,10 +443,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_UNPOL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_UNPOL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -640,10 +651,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_UNPOL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_UNPOL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -779,10 +794,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_POL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_POL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -923,7 +942,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>1.35818e-12 3.33402e-12 8.20029e-12 2.01811e-11 4.96735e-11 1.22366e-10 3.01408e-10 7.38793e-10</BkwdPropCheck>
+        <BkwdPropCheck>6.04139e-13 1.48293e-12 3.64716e-12 8.97518e-12 2.20899e-11 5.44128e-11 1.3402e-10 3.29075e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_POL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -983,10 +1002,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_POL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_POL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -1062,7 +1085,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.76809e-14 9.2509e-14 2.27564e-13 5.60115e-13 1.37885e-12 3.3971e-12 8.36868e-12 2.0451e-11</BkwdPropCheck>
+        <BkwdPropCheck>3.76809e-14 9.2509e-14 2.27563e-13 5.60115e-13 1.37885e-12 3.3971e-12 8.36868e-12 2.0451e-11</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_POL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1122,10 +1145,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>DELTA_U_UNPOL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>DELTA_U_UNPOL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -1266,7 +1293,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>9.15926e-12 2.24852e-11 5.53082e-11 1.36124e-10 3.35076e-10 8.25482e-10 2.03345e-09 4.99474e-09</BkwdPropCheck>
+        <BkwdPropCheck>9.15926e-12 2.24852e-11 5.53082e-11 1.36124e-10 3.35076e-10 8.25482e-10 2.03345e-09 4.99475e-09</BkwdPropCheck>
       </BackwardProp>
       <seq_src>DELTA_U_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1326,10 +1353,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>DELTA_D_UNPOL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>DELTA_D_UNPOL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -1465,10 +1496,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_UNPOL_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_UNPOL_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -1669,10 +1704,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_UNPOL_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_UNPOL_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -1808,10 +1847,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_POL_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_POL_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2012,10 +2055,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_POL_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_POL_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2091,7 +2138,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.74623e-14 9.19669e-14 2.26216e-13 5.56763e-13 1.37051e-12 3.37636e-12 8.31719e-12 2.04644e-11</BkwdPropCheck>
+        <BkwdPropCheck>3.74623e-14 9.1967e-14 2.26216e-13 5.56763e-13 1.37051e-12 3.37636e-12 8.31719e-12 2.04644e-11</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_POL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -2151,10 +2198,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_MIXED_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_MIXED_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2355,10 +2406,14 @@
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_MIXED_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_MIXED_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>

@@ -460,10 +460,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.13.3</chroma>
+      <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>06 Mar 06 17:09:01 EST</run_date>
+    <run_date>19 Mar 06 23:31:57 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -521,10 +521,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.3</chroma>
+            <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 17:09:01 EST</run_date>
+          <run_date>19 Mar 06 23:31:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -570,11 +570,14 @@ regression test spectrum output is kept within the chroma xml output
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -612,10 +615,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.3</chroma>
+            <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 17:09:02 EST</run_date>
+          <run_date>19 Mar 06 23:31:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -655,12 +658,15 @@ regression test spectrum output is kept within the chroma xml output
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -813,12 +819,15 @@ regression test spectrum output is kept within the chroma xml output
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sh_pt_sink_0</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -959,12 +968,15 @@ regression test spectrum output is kept within the chroma xml output
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sh_sh_sink_0</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1085,10 +1097,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.3</chroma>
+            <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 17:09:04 EST</run_date>
+          <run_date>19 Mar 06 23:32:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1136,11 +1148,14 @@ regression test spectrum output is kept within the chroma xml output
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>deriv_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1178,10 +1193,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.3</chroma>
+            <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 17:09:04 EST</run_date>
+          <run_date>19 Mar 06 23:32:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1221,12 +1236,15 @@ regression test spectrum output is kept within the chroma xml output
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>deriv_source_0</source_id>
             <prop_id>deriv_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1383,12 +1401,15 @@ regression test spectrum output is kept within the chroma xml output
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>deriv_prop_0</prop_id>
             <smeared_prop_id>deriv_pt_sink_0</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1535,12 +1556,15 @@ regression test spectrum output is kept within the chroma xml output
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>deriv_prop_0</prop_id>
             <smeared_prop_id>deriv_sh_sink_0</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1687,12 +1711,15 @@ regression test spectrum output is kept within the chroma xml output
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>deriv_prop_0</prop_id>
             <smeared_prop_id>deriv_pt_sink_1</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1839,12 +1866,15 @@ regression test spectrum output is kept within the chroma xml output
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>deriv_prop_0</prop_id>
             <smeared_prop_id>deriv_sh_sink_1</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1969,10 +1999,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.3</chroma>
+            <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>06 Mar 06 17:09:06 EST</run_date>
+          <run_date>19 Mar 06 23:32:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1988,6 +2018,7 @@ regression test spectrum output is kept within the chroma xml output
             <avg_equiv_mom>true</avg_equiv_mom>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>
                 <sink_ids>
@@ -2019,6 +2050,8 @@ regression test spectrum output is kept within the chroma xml output
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>

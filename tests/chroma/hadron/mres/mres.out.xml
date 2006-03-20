@@ -105,10 +105,10 @@ Mres calculation
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.7</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>26 Dec 05 15:24:20 EST</run_date>
+    <run_date>19 Mar 06 23:32:31 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -166,10 +166,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>26 Dec 05 15:24:20 EST</run_date>
+          <run_date>19 Mar 06 23:32:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -201,11 +201,14 @@ Mres calculation
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>pt_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -243,10 +246,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>26 Dec 05 15:24:20 EST</run_date>
+          <run_date>19 Mar 06 23:32:31 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -286,12 +289,15 @@ Mres calculation
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>pt_source_0</source_id>
             <prop_id>pt_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -410,10 +416,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>26 Dec 05 15:24:21 EST</run_date>
+          <run_date>19 Mar 06 23:32:32 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -439,12 +445,15 @@ Mres calculation
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>pt_prop_0</prop_id>
           </NamedObject>
           <xml_file></xml_file>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
