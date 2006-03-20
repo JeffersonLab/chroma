@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.60 2006-03-16 17:20:13 edwards Exp $
+# $Id: Makefile.am,v 2.61 2006-03-20 04:17:52 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -510,6 +510,7 @@ nobase_include_HEADERS += \
         meas/inline/hadron_s/util_compute_quark_prop_s.h \
 	meas/inline/io/io.h \
 	meas/inline/io/named_objmap.h \
+	meas/inline/io/default_gauge_field.h \
 	meas/inline/io/inline_io_aggregate.h \
 	meas/inline/io/inline_qio_read_obj.h \
 	meas/inline/io/inline_qio_write_obj.h \
@@ -950,6 +951,7 @@ libchroma_a_SOURCES += \
         meas/inline/hadron_s/util_compute_8_vectors_s.cc \
         meas/inline/hadron_s/util_baryon_s.cc \
 	meas/inline/io/inline_io_aggregate.cc \
+	meas/inline/io/default_gauge_field.cc \
 	meas/inline/io/inline_qio_read_obj.cc \
 	meas/inline/io/inline_qio_write_obj.cc \
 	meas/inline/io/inline_qio_write_erase_obj.cc \
