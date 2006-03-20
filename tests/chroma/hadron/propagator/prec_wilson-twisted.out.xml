@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+; $Id: prec_wilson-twisted.out.xml,v 1.1 2006-03-20 04:23:22 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>POLYAKOV_LOOP</Name>
+      <Frequency>1</Frequency>
+    </elem>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+        </Source>
+      </Param>
+      <NamedObject>
+        <source_id>pt_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+	 <N5>6</N5>
+         <Kappa>0.1</Kappa>
+	 <OverMass>1.4</OverMass>
+         <FermionBC>
+           <FermBC>TWISTED_FERMBC</FermBC>
+	   <boundary>1 1 1 1</boundary>
+           <phases_by_pi>0.2 0.4 0</phases_by_pi>
+	   <phases_dir>0 1 2</phases_dir>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-7</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <source_id>pt_source_0</source_id>
+        <prop_id>pt_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>pt_prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./pt_prop_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>UNIT</cfg_type>
+ <cfg_file>../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
+    </code_version>
+    <run_date>19 Mar 06 23:13:49 EST</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
+
+    </file_xml>
+    <gauge_xml><unit>
+</unit>
+
+    </gauge_xml>
+  </Config_info>
+  <Observables>
+    <w_plaq>1</w_plaq>
+    <s_plaq>1</s_plaq>
+    <t_plaq>1</t_plaq>
+    <link>1</link>
+    <pollp>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <PolyakovLoop>
+        <update_no>0</update_no>
+        <poly_loop>
+          <elem>
+            <re>1</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>1</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>1</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>1</re>
+            <im>0</im>
+          </elem>
+        </poly_loop>
+      </PolyakovLoop>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
+          </code_version>
+          <run_date>19 Mar 06 23:13:49 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>0</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>pt_source_0</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><unit>
+</unit>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>1</w_plaq>
+          <s_plaq>1</s_plaq>
+          <t_plaq>1</t_plaq>
+          <link>1</link>
+          <pollp>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Observables>

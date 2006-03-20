@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: coulgauge.out.xml,v 1.1 2006-02-26 04:30:07 edwards Exp $
+; $Id: coulgauge.out.xml,v 1.2 2006-03-20 04:23:22 edwards Exp $
 ;
 ; Coulomb gauge fixing
 ;
@@ -61,10 +61,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.13.0</chroma>
+      <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>25 Feb 06 23:23:38 EST</run_date>
+    <run_date>19 Mar 06 21:44:57 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -145,10 +145,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.13.0</chroma>
+            <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>25 Feb 06 23:23:38 EST</run_date>
+          <run_date>19 Mar 06 21:44:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -167,11 +167,14 @@
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <gfix_id>coul_cfg</gfix_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>

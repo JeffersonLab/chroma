@@ -100,10 +100,10 @@ Make a propagator source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.10.1</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>21 Feb 06 23:27:32 EST</run_date>
+    <run_date>19 Mar 06 22:53:24 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -161,10 +161,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 23:27:33 EST</run_date>
+          <run_date>19 Mar 06 22:53:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -208,11 +208,14 @@ Make a propagator source
             <t_source>2</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>
@@ -250,10 +253,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 23:27:33 EST</run_date>
+          <run_date>19 Mar 06 22:53:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -297,11 +300,14 @@ Make a propagator source
             <t_source>2</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_1</source_id>
           </NamedObject>
         </Input>
         <Config_info><disordered>
 </disordered>
+
+
 
 
         </Config_info>

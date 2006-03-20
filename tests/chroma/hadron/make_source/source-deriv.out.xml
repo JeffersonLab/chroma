@@ -1184,10 +1184,10 @@ Make a derivative propagator source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.10.1</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>21 Feb 06 21:47:01 EST</run_date>
+    <run_date>19 Mar 06 22:52:59 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1245,10 +1245,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:02 EST</run_date>
+          <run_date>19 Mar 06 22:52:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1296,11 +1296,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1344,10 +1347,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:02 EST</run_date>
+          <run_date>19 Mar 06 22:52:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1389,11 +1392,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1437,10 +1443,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:02 EST</run_date>
+          <run_date>19 Mar 06 22:53:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1476,11 +1482,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1524,10 +1533,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:02 EST</run_date>
+          <run_date>19 Mar 06 22:53:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1563,11 +1572,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1611,10 +1623,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:02 EST</run_date>
+          <run_date>19 Mar 06 22:53:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1650,11 +1662,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1698,10 +1713,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:02 EST</run_date>
+          <run_date>19 Mar 06 22:53:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1737,11 +1752,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1785,10 +1803,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:03 EST</run_date>
+          <run_date>19 Mar 06 22:53:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1824,11 +1842,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1872,10 +1893,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:03 EST</run_date>
+          <run_date>19 Mar 06 22:53:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1911,11 +1932,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1959,10 +1983,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:03 EST</run_date>
+          <run_date>19 Mar 06 22:53:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1998,11 +2022,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2046,10 +2073,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:03 EST</run_date>
+          <run_date>19 Mar 06 22:53:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2085,11 +2112,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2133,10 +2163,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:03 EST</run_date>
+          <run_date>19 Mar 06 22:53:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2172,11 +2202,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2220,10 +2253,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:04 EST</run_date>
+          <run_date>19 Mar 06 22:53:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2259,11 +2292,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2307,10 +2343,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:04 EST</run_date>
+          <run_date>19 Mar 06 22:53:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2346,11 +2382,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2394,10 +2433,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:04 EST</run_date>
+          <run_date>19 Mar 06 22:53:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2433,11 +2472,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2481,10 +2523,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:05 EST</run_date>
+          <run_date>19 Mar 06 22:53:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2520,11 +2562,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2568,10 +2613,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:05 EST</run_date>
+          <run_date>19 Mar 06 22:53:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2607,11 +2652,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2655,10 +2703,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:06 EST</run_date>
+          <run_date>19 Mar 06 22:53:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2694,11 +2742,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2742,10 +2793,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:06 EST</run_date>
+          <run_date>19 Mar 06 22:53:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2781,11 +2832,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2829,10 +2883,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:06 EST</run_date>
+          <run_date>19 Mar 06 22:53:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2868,11 +2922,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2916,10 +2973,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:07 EST</run_date>
+          <run_date>19 Mar 06 22:53:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2955,11 +3012,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3003,10 +3063,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:07 EST</run_date>
+          <run_date>19 Mar 06 22:53:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3042,11 +3102,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3090,10 +3153,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:07 EST</run_date>
+          <run_date>19 Mar 06 22:53:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3129,11 +3192,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3177,10 +3243,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:08 EST</run_date>
+          <run_date>19 Mar 06 22:53:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3216,11 +3282,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3264,10 +3333,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:08 EST</run_date>
+          <run_date>19 Mar 06 22:53:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3303,11 +3372,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3351,10 +3423,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:08 EST</run_date>
+          <run_date>19 Mar 06 22:53:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3390,11 +3462,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3438,10 +3513,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:08 EST</run_date>
+          <run_date>19 Mar 06 22:53:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3477,11 +3552,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3525,10 +3603,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:09 EST</run_date>
+          <run_date>19 Mar 06 22:53:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3564,11 +3642,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3612,10 +3693,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:09 EST</run_date>
+          <run_date>19 Mar 06 22:53:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3651,11 +3732,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -3699,10 +3783,10 @@ Make a derivative propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.10.1</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>21 Feb 06 21:47:09 EST</run_date>
+          <run_date>19 Mar 06 22:53:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3738,11 +3822,14 @@ Make a derivative propagator source
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>source_tmp</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
