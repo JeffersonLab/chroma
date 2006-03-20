@@ -174,10 +174,10 @@ QQbar on props
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.7</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>25 Dec 05 13:21:38 EST</run_date>
+    <run_date>19 Mar 06 23:26:48 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -235,10 +235,10 @@ QQbar on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>25 Dec 05 13:21:38 EST</run_date>
+          <run_date>19 Mar 06 23:26:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -282,11 +282,14 @@ QQbar on props
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -324,10 +327,10 @@ QQbar on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>25 Dec 05 13:21:38 EST</run_date>
+          <run_date>19 Mar 06 23:26:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -367,12 +370,15 @@ QQbar on props
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -513,12 +519,15 @@ QQbar on props
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sh_pt_prop_0</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -645,12 +654,15 @@ QQbar on props
             <j_decay>3</j_decay>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <smeared_prop_id>sh_sh_prop_0</smeared_prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -758,7 +770,7 @@ QQbar on props
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.136 8346.18 447543 2.51447e+07</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.137 8346.19 447543 2.51447e+07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -772,6 +784,7 @@ QQbar on props
             <nrow>4 4 4 8</nrow>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_pt_prop_0</elem>
               <elem>sh_pt_prop_0</elem>
@@ -781,10 +794,10 @@ QQbar on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>25 Dec 05 13:21:40 EST</run_date>
+          <run_date>19 Mar 06 23:26:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -800,6 +813,7 @@ QQbar on props
             <nrow>4 4 4 8</nrow>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_pt_prop_0</elem>
               <elem>sh_pt_prop_0</elem>
@@ -809,6 +823,8 @@ QQbar on props
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1000,6 +1016,7 @@ QQbar on props
             <nrow>4 4 4 8</nrow>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_sh_prop_0</elem>
               <elem>sh_sh_prop_0</elem>
@@ -1009,10 +1026,10 @@ QQbar on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>2.7</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>25 Dec 05 13:21:40 EST</run_date>
+          <run_date>19 Mar 06 23:26:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1028,6 +1045,7 @@ QQbar on props
             <nrow>4 4 4 8</nrow>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_sh_prop_0</elem>
               <elem>sh_sh_prop_0</elem>
@@ -1037,6 +1055,8 @@ QQbar on props
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1238,11 +1258,11 @@ QQbar on props
         </Propagator_input>
         <SinkSmearedProp_correlator>
           <correlator_num>0</correlator_num>
-          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.136 8346.18 447543 2.51447e+07</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.137 8346.19 447543 2.51447e+07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
         <SinkSmearedProp_correlator>
           <correlator_num>1</correlator_num>
-          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.136 8346.18 447543 2.51447e+07</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.83778e+09 2.51521e+07 447414 8781.32 582.137 8346.19 447543 2.51447e+07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqbar>
     </elem>

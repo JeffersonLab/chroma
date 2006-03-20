@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.3 2006-02-22 03:24:34 edwards Exp $
+#  $Id: regres.pl,v 1.4 2006-03-20 04:25:57 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -13,10 +13,10 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/make_source/make_source-v6.ini.xml" , 
-	 output      => "make_source-v6.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/make_source/make_source-v6.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/make_source/make_source-v6.out.xml" ,
+	 input       => "$test_dir/chroma/hadron/make_source/make_source.ini.xml" , 
+	 output      => "make_source.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/make_source/make_source.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/make_source/make_source.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 

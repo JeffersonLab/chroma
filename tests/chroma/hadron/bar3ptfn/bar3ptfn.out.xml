@@ -379,10 +379,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>2.15.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:20:09 EST</run_date>
+    <run_date>19 Mar 06 23:28:02 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -440,10 +440,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:09 EST</run_date>
+          <run_date>19 Mar 06 23:28:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -487,11 +487,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <t_source>0</t_source>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -529,10 +532,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:10 EST</run_date>
+          <run_date>19 Mar 06 23:28:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -572,12 +575,15 @@ Calculate bar3ptfn - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
             <prop_id>sh_prop_0</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -708,10 +714,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:11 EST</run_date>
+          <run_date>19 Mar 06 23:28:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -722,11 +728,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>PION</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>PION</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
@@ -752,6 +761,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -760,6 +770,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -879,10 +891,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:11 EST</run_date>
+          <run_date>19 Mar 06 23:28:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -893,11 +905,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_U_MIXED_NONREL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_U_MIXED_NONREL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
@@ -923,6 +938,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
               <elem>sh_prop_0</elem>
@@ -932,6 +948,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1126,10 +1144,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:12 EST</run_date>
+          <run_date>19 Mar 06 23:28:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1140,11 +1158,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>1</version>
-            <seq_src>NUCL_D_MIXED_NONREL</seq_src>
-            <t_sink>7</t_sink>
-            <sink_mom>0 0 0</sink_mom>
-          </Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>NUCL_D_MIXED_NONREL</SeqSourceType>
+      <sink_mom>0 0 0</sink_mom>
+      <t_sink>7</t_sink>
+      <j_decay>3</j_decay>
+    </SeqSource>
+</Param>
           <PropSink>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
@@ -1170,6 +1191,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSink>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
@@ -1178,6 +1200,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1297,10 +1321,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:12 EST</run_date>
+          <run_date>19 Mar 06 23:28:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1340,12 +1364,15 @@ Calculate bar3ptfn - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_PION</source_id>
             <prop_id>seqprop_PION</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1408,10 +1435,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>PION</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -1555,10 +1586,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:13 EST</run_date>
+          <run_date>19 Mar 06 23:28:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1598,12 +1629,15 @@ Calculate bar3ptfn - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
             <prop_id>seqprop_NUCL_U_MIXED_NONREL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -1666,10 +1700,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_MIXED_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_MIXED_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -1892,10 +1930,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:14 EST</run_date>
+          <run_date>19 Mar 06 23:28:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1935,12 +1973,15 @@ Calculate bar3ptfn - insertions in 3-pt functions
 </StateInfo>
 
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
             <prop_id>seqprop_NUCL_D_MIXED_NONREL</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2003,10 +2044,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_MIXED_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_MIXED_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2150,10 +2195,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>2.15.0</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:20:15 EST</run_date>
+          <run_date>19 Mar 06 23:28:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2169,6 +2214,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <nrow>4 4 4 8</nrow>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
             <seqprop_ids>
               <elem>seqprop_PION</elem>
@@ -2180,6 +2226,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -2351,10 +2399,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>PION</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2448,7 +2500,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <backward_prop_corr>5.15427e-08 1.25997e-07 3.08484e-07 7.55719e-07 1.85145e-06 4.53983e-06 1.11341e-05 2.70418e-05</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
-              <seq_src>PION</seq_src>
+              <seqsrc_type>PION</seqsrc_type>
               <t_source>0 0 0 0</t_source>
               <t_sink>7</t_sink>
               <sink_mom>0 0 0</sink_mom>
@@ -2514,10 +2566,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_U_MIXED_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_U_MIXED_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2690,7 +2746,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <backward_prop_corr>1.76312e-12 4.32833e-12 1.06467e-11 2.62037e-11 6.45029e-11 1.58916e-10 3.91558e-10 9.64097e-10</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
-              <seq_src>NUCL_U_MIXED_NONREL</seq_src>
+              <seqsrc_type>NUCL_U_MIXED_NONREL</seqsrc_type>
               <t_source>0 0 0 0</t_source>
               <t_sink>7</t_sink>
               <sink_mom>0 0 0</sink_mom>
@@ -2756,10 +2812,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
       </SeqSourceSinkSmear>
       <SeqSource>
-        <version>1</version>
-        <seq_src>NUCL_D_MIXED_NONREL</seq_src>
-        <t_sink>7</t_sink>
-        <sink_mom>0 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>NUCL_D_MIXED_NONREL</SeqSourceType>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>7</t_sink>
+          <j_decay>3</j_decay>
+        </SeqSource>
       </SeqSource>
       <ForwardProps>
         <elem>
@@ -2853,7 +2913,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <backward_prop_corr>3.39061e-13 8.32367e-13 2.04742e-12 5.0391e-12 1.24043e-11 3.05604e-11 7.52985e-11 1.854e-10</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
-              <seq_src>NUCL_D_MIXED_NONREL</seq_src>
+              <seqsrc_type>NUCL_D_MIXED_NONREL</seqsrc_type>
               <t_source>0 0 0 0</t_source>
               <t_sink>7</t_sink>
               <sink_mom>0 0 0</sink_mom>
