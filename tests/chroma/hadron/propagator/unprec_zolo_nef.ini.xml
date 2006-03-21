@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: unprec_zolo_nef.ini.xml,v 1.1 2006-03-21 03:18:40 edwards Exp $
+; $Id: unprec_zolo_nef.ini.xml,v 1.2 2006-03-21 15:46:00 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -69,7 +69,7 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-7</RsdCG>
+          <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </Param>
