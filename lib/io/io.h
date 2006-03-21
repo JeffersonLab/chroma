@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: io.h,v 2.1 2006-03-21 19:13:03 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -31,6 +31,7 @@
 #include "writemilc.h"
 
 #include "param_io.h"
+#include "cfgtype_io.h"
 #include "aniso_io.h"
 #include "smearing_io.h"
 #include "io_w.h"

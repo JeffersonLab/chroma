@@ -1,15 +1,14 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 2.1 2006-03-20 04:20:39 edwards Exp $
+// $Id: param_io.h,v 2.2 2006-03-21 19:13:03 edwards Exp $
 /*! \file
  *  \brief Various parameter structs and reader/writers
  */
 
 #ifndef __param_io_h__
 #define __param_io_h__
-#include "invtype.h"
 
-//! reading enums
-#include "io/enum_io/enum_io.h"
+#include "chromabase.h"
+#include "invtype.h"
 
 // ! now needed
 
@@ -23,7 +22,6 @@ namespace Chroma
    *
    * @{
    */
-
   //! Convert a Kappa to a mass
   Real kappaToMass(const Real& Kappa);
 
@@ -47,17 +45,7 @@ namespace Chroma
   };
 
 
-  struct Cfg_t
-  {
-    CfgType      cfg_type;   // storage order for stored gauge configuration
-    string       cfg_file;
-  };
-
-
   //---------------------------- Readers -----------------------------
-  //! Configuration input
-  void read(XMLReader& xml, const string& path, Cfg_t& input);
-
   //! Read inverter parameters
   void read(XMLReader& xml, const string& path, InvertParam_t& param);
 
@@ -66,9 +54,6 @@ namespace Chroma
 
 
   //---------------------------- Writers -----------------------------
-  //! Configuration input
-  void write(XMLWriter& xml, const string& path, const Cfg_t& input);
-
   //! Write inverter parameters
   void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
 

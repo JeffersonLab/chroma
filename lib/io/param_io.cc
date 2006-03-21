@@ -1,11 +1,11 @@
-// $Id: param_io.cc,v 2.1 2006-03-20 04:20:39 edwards Exp $
+// $Id: param_io.cc,v 2.2 2006-03-21 19:13:03 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
 
 #include "chromabase.h"
 #include "io/param_io.h"
-
+#include "io/enum_io/enum_invtype_io.h"
 
 namespace Chroma 
 {
@@ -57,51 +57,6 @@ namespace Chroma
   }
 
 
-  //! Configuration input
-  void read(XMLReader& xml, const string& path, Cfg_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "cfg_type", input.cfg_type);
-    read(inputtop, "cfg_file", input.cfg_file);
-  }
-
-
-#if 0
-  //! Initialize a chiral param struct
-  ChiralParam_t::ChiralParam_t()
-  {
-    OverMass = 0;
-    N5       = 0;
-    a5       = 1;
-    NWilsVec = 0;
-  }
-
-
-  //! Read chiral action like parameters
-  void read(XMLReader& xml, const string& path, ChiralParam_t& param)
-  {
-    XMLReader paramtop(xml, path);
-
-    read(paramtop, "OverMass", param.OverMass);
-    read(paramtop, "N5", param.N5);
-
-    string xpath;
-    xpath = "a5";
-    if (paramtop.count(xpath) != 0)
-      read(paramtop, xpath, param.a5);
-    else
-      param.a5 = 1;
-
-    xpath = "NWilsVec";
-    if (paramtop.count(xpath) != 0)
-      read(paramtop, xpath, param.NWilsVec);
-    else
-      param.NWilsVec = 0;
-  }
-#endif
-
-
 
   //! Read inverter parameters
   void read(XMLReader& xml, const string& path, InvertParam_t& param)
@@ -150,32 +105,6 @@ namespace Chroma
 
 
   //---------------------------- Writers -----------------------------
-  //! Write a config struct
-  void write(XMLWriter& xml, const string& path, const Cfg_t& cfg)
-  {
-    push(xml, "Cfg");
-    write(xml, "cfg_type", cfg.cfg_type);
-    write(xml, "cfg_file", cfg.cfg_file);
-    pop(xml);
-  }
-
-
-#if 0
-  //! Write chiral action like parameters
-  void write(XMLWriter& xml, const string& path, const ChiralParam_t& param)
-  {
-    push(xml, path);
-
-    write(xml, "OverMass", param.OverMass);
-    write(xml, "N5", param.N5);
-    write(xml, "a5", param.a5);
-    write(xml, "NWilsVec", param.NWilsVec);
-
-    pop(xml);
-  }
-#endif
-
-
   //! Write inverter parameters
   void write(XMLWriter& xml, const string& path, const InvertParam_t& param)
   {
