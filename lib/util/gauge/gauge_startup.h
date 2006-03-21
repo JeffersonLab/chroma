@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_startup.h,v 2.0 2005-09-25 21:04:44 edwards Exp $
+// $Id: gauge_startup.h,v 2.1 2006-03-21 19:14:36 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -7,7 +7,7 @@
 #ifndef GAUGE_STARTUP_H
 #define GAUGE_STARTUP_H
 
-#include "io/param_io.h"
+#include "io/cfgtype_io.h"
 
 namespace Chroma {
 
