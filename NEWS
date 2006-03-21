@@ -1,4 +1,7 @@
 03/21/2006 -- Robert Edwards
+	Version 2.15.2. Bug fixes in new derivative displacements.
+
+03/21/2006 -- Robert Edwards
 	Version 2.15.1. Removed use of overlap_state from various 5d fermacts
         since it is not used. Added more regression tests. Cleaned out some
         old input files.
