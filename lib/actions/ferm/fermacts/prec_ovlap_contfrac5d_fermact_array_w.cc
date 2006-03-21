@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 2.3 2006-02-26 03:47:51 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_fermact_array_w.cc,v 2.4 2006-03-21 04:42:49 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -151,15 +151,14 @@ namespace Chroma
   void
   EvenOddPrecOvlapContFrac5DFermActArray::init(Real& scale_fac,
 					       multi1d<Real>& alpha,
-					       multi1d<Real>& beta,
-					       const OverlapConnectState& state) const
+					       multi1d<Real>& beta) const
   {
     int type = 0;
     zolotarev_data *rdata;
     Real epsilon;
 
-    Real approxMin = (state.getEigVal().size() != 0) ? state.getApproxMin() : params.ApproxMin;
-    Real approxMax = (state.getEigVal().size() != 0) ? state.getApproxMax() : params.ApproxMax;
+    Real approxMin = params.ApproxMin;
+    Real approxMax = params.ApproxMax;
 
     switch(params.approximation_type) 
     {
@@ -292,40 +291,21 @@ namespace Chroma
   EvenOddPrecOvlapContFrac5DFermActArray::linOp(Handle<const ConnectState> state_) const
   {
     START_CODE();
-    try { 
       
-      // This throws a bad cast exception if the cast fails
-      // Hence the "try" above
-      const OverlapConnectState& state = 
-	dynamic_cast<const OverlapConnectState&>(*state_);
+    multi1d<Real> alpha;
+    multi1d<Real> beta;
+    Real scale_factor;
       
-      multi1d<Real> alpha;
-      multi1d<Real> beta;
-      Real scale_factor;
+    init(scale_factor, alpha, beta);
       
-      init(scale_factor, alpha, beta, state);
-      
-      return new EvenOddPrecOvlapContFrac5DLinOpArray(state_,
-						      params.Mass,
-						      params.OverMass,
-						      N5,
-						      scale_factor,
-						      alpha,
-						      beta,
-						      isLastZeroP);
-      
-      
-      
-    }
-    catch( bad_cast ) { 
-      QDPIO::cerr << "EvenOddPrecOvlapContFrac5DFermActArray::linOp(): ";
-      QDPIO::cerr << "Couldnt cast ConnectState to OverlapConnectState " 
-		  << endl;
-      QDP_abort(1);
-    }
-    
-    // Should never get here... Just to satisfy type system
-    return 0;
+    return new EvenOddPrecOvlapContFrac5DLinOpArray(state_,
+						    params.Mass,
+						    params.OverMass,
+						    N5,
+						    scale_factor,
+						    alpha,
+						    beta,
+						    isLastZeroP);
   }
   
 
@@ -336,38 +316,21 @@ namespace Chroma
   const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
   EvenOddPrecOvlapContFrac5DFermActArray::linOpPV(Handle<const ConnectState> state_) const
   {
-    try { 
+    multi1d<Real> alpha;
+    multi1d<Real> beta;
+    Real scale_factor;
       
-      // This throws a bad cast exception if the cast fails
-      // Hence the "try" above
-      const OverlapConnectState& state = 
-	dynamic_cast<const OverlapConnectState&>(*state_);
+    init(scale_factor, alpha, beta);
       
-      multi1d<Real> alpha;
-      multi1d<Real> beta;
-      Real scale_factor;
-      
-      init(scale_factor, alpha, beta, state);
-      
-      // Hmm, not sure about what all the rescaling does to the PV....
-      return new EvenOddPrecOvlapContFrac5DPVLinOpArray(state_,
-							params.Mass,
-							params.OverMass,
-							N5,
-							scale_factor,
-							alpha,
-							beta,
-							isLastZeroP);
-    }
-    catch( bad_cast ) { 
-      QDPIO::cerr << "EvenOddPrecOvlapContFrac5DFermActArray::linOp(): ";
-      QDPIO::cerr << "Couldnt cast ConnectState to OverlapConnectState " 
-		  << endl;
-      QDP_abort(1);
-    }
-    
-    // Should never get here... Just to satisfy type system
-    return 0;
+    // Hmm, not sure about what all the rescaling does to the PV....
+    return new EvenOddPrecOvlapContFrac5DPVLinOpArray(state_,
+						      params.Mass,
+						      params.OverMass,
+						      N5,
+						      scale_factor,
+						      alpha,
+						      beta,
+						      isLastZeroP);
   }
   
   
@@ -539,171 +502,6 @@ namespace Chroma
       Handle< const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(linOp(state)),
       getQuarkMass(),
       invParam);
-  }
-  
-
-  //! Create a ConnectState with just the gauge fields
-  const OverlapConnectState*
-  EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_) const
-  {
-    const OverlapConnectState *ret_val;
-    try { 
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(u_, 
-						   getFermBC()
-	  );
-    } 
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
-      QDP_abort(1);
-    }
-    
-    return ret_val;
-  }
-  
-  //! Create a ConnectState with just the gauge fields, and a lower
-  //  approximation bound
-  const OverlapConnectState*
-  EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      const Real& approxMin_) const 
-  {
-    const OverlapConnectState *ret_val;
-    try { 
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(u_, 
-						   getFermBC(),
-						   approxMin_
-	  );
-    } 
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
-      QDP_abort(1);
-    }
-
-    return ret_val;
-  }
-
-  //! Create a connect State with just approximation range bounds
-  const OverlapConnectState*
-  EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      const Real& approxMin_,
-						      const Real& approxMax_) const
-  {
-    const OverlapConnectState *ret_val;
-    try { 
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(u_, 
-						   getFermBC(),
-						   approxMin_,
-						   approxMax_
-	  );
-    } 
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
-      QDP_abort(1);
-    }
-
-    return ret_val;
-  }
-  
-  //! Create OverlapConnectState with eigenvalues/vectors
-  const OverlapConnectState*
-  EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      const multi1d<Real>& lambda_lo_, 
-						      const multi1d<LatticeFermion>& evecs_lo_,
-						      const Real& lambda_hi_) const
-  {
-    const OverlapConnectState *ret_val;
-    try { 
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(u_, 
-						   getFermBC(),
-						   lambda_lo_, 
-						   evecs_lo_, 
-						   lambda_hi_);
-      
-    } 
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
-      QDP_abort(1);
-    }
-    
-    return ret_val;
-  }    
-  
-  //! Create OverlapConnectState from XML
-  const OverlapConnectState*
-  EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      XMLReader& state_info_xml,
-						      const string& state_info_path) const
-  {
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    
-    // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
-    getFermBC().modifyU(u_tmp);
-
-    Handle< FermBC<LatticeFermion> > fbc4 = new PeriodicFermBC<LatticeFermion>();
-    UnprecWilsonFermAct S_w(fbc4, Real(-params.OverMass));
-
-    Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
-    Handle< const LinearOperator<LatticeFermion> > Maux = 
-      S_w.hermitianLinOp(state_aux);
-    
-    
-    const OverlapConnectState *ret_val;
-    
-    QDPIO::cout << "EOContFrac::createstate - create an overlap state" << endl;
-
-    try {
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(
-	  u_,
-	  getFermBC(),
-	  state_info_xml,
-	  state_info_path,
-	  *Maux);
-    }
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
-      QDP_abort(1);
-    }
-    
-    return ret_val;
-  }
-
-  //! Create OverlapConnectState from XML
-  const OverlapConnectState*
-  EvenOddPrecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-						      const OverlapStateInfo& state_info) const
-  {
-    // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    getFermBC().modifyU(u_tmp);
-
-    Handle< FermBC<LatticeFermion> > fbc4 = new PeriodicFermBC<LatticeFermion>();
-    UnprecWilsonFermAct S_w(fbc4, Real(-params.OverMass));
-
-    Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
-    Handle< const LinearOperator<LatticeFermion> > Maux = 
-      S_w.hermitianLinOp(state_aux);
-    
-    
-    const OverlapConnectState* ret_val;    
-    try {
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(
-	  u_,
-	  getFermBC(),
-	  state_info,
-	  *Maux);
-    }
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
-      QDP_abort(1);
-    }
-    
-    return ret_val;
-
   }
 
 } // End namespace Chroma

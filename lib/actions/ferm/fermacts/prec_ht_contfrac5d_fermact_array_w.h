@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 2.2 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 2.3 2006-03-21 04:42:49 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Continued Fraction 5D
  */
@@ -8,9 +8,9 @@
 #define __prec_ht_contfrac5d_fermact_array_w_h__
 
 #include "fermact.h"
-#include "actions/ferm/fermacts/overlap_state.h"
 #include "actions/ferm/linop/lgherm_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
+#include "io/enum_io/enum_coeffs_io.h"
 
 
 namespace Chroma
@@ -124,56 +124,12 @@ namespace Chroma
     //! Destructor is automatic
     ~EvenOddPrecHtContFrac5DFermActArray() {}
 
-
-    // Create state functions
-
-    //! Create OverlapConnectState from XML
-    const OverlapConnectState* 
-    createState(const multi1d<LatticeColorMatrix>& u, 
-		XMLReader& state_info_xml,
-		const string& state_info_path) const;
-    
-    //! Given links, create the state needed for the linear operators
-    /*! Override the parent */
-    
-    //! Create a ConnectState with just the gauge fields
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_) const ;
-
-    //! Create a ConnectState with just the gauge fields, and a lower
-    //!  approximation bound
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& approxMin_) const ;
- 
-    
-    //! Create a connect State with just approximation range bounds
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& approxMin_, 
-		const Real& approxMax_) const;
-
-
-    //! Create OverlapConnectState with eigenvalues/vectors 
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const multi1d<Real>& lambda_lo_,
-		const multi1d<LatticeFermion>& evecs_lo_, 
-		const Real& lambda_hi_) const;
-
-
-    //! Create from OverlapStateInfo Structure
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const OverlapStateInfo& state_info) const;
-
-
   protected:
     //! Helper in construction
     void init(Real& scale_fac,
 	      multi1d<Real>& alpha,
-	      multi1d<Real>& beta,
-	      const OverlapConnectState& state) const;
+	      multi1d<Real>& beta) const;
+
   private:
     // Hide partial constructor
     EvenOddPrecHtContFrac5DFermActArray();

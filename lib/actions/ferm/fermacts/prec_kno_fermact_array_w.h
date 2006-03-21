@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: prec_kno_fermact_array_w.h,v 2.2 2006-03-21 04:42:49 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -9,8 +9,6 @@
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
-#include "actions/ferm/fermacts/overlap_state.h"
-#include "io/overlap_state_info.h"
 
 
 namespace Chroma
@@ -125,48 +123,6 @@ namespace Chroma
 		   QuarkSpinType quarkSpinType,
 		   bool obsvP,
 		   int& ncg_had);
-      
-    //! Create OverlapConnectState from XML
-    const OverlapConnectState* 
-    createState(const multi1d<LatticeColorMatrix>& u, 
-		XMLReader& state_info_xml,
-		const string& state_info_path) const;
-    
-    //! Given links, create the state needed for the linear operators
-    /*! Override the parent */
-    
-    //! Create a ConnectState with just the gauge fields
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_) const ;
-
-    //! Create a ConnectState with just the gauge fields, and a lower
-    //!  approximation bound
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& approxMin_) const ;
- 
-    
-    //! Create a connect State with just approximation range bounds
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_, 
-		const Real& approxMin_, 
-		const Real& approxMax_) const;
-
-
-    //! Create OverlapConnectState with eigenvalues/vectors 
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const multi1d<Real>& lambda_lo_,
-		const multi1d<LatticeFermion>& evecs_lo_, 
-		const Real& lambda_hi_) const;
-
-
-    //! Create from OverlapStateInfo Structure
-    const OverlapConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_,
-		const OverlapStateInfo& state_info) const;
-
-
 
   private:
     void init();
