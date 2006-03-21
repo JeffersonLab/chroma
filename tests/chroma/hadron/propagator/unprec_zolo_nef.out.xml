@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_zolo_nef.out.xml,v 1.2 2006-03-21 03:18:39 edwards Exp $
+; $Id: unprec_zolo_nef.out.xml,v 1.1 2006-03-21 03:18:40 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -56,7 +56,7 @@
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
-         <FermAct>ZOLO_NEF</FermAct>
+         <FermAct>UNPRECONDITIONED_ZOLO_NEF</FermAct>
          <ApproximationType>ZOLOTAREV</ApproximationType>
          <Mass>0.06</Mass>
          <N5>4</N5>
@@ -107,7 +107,7 @@
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>20 Mar 06 22:17:36 EST</run_date>
+    <run_date>20 Mar 06 22:16:44 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -168,7 +168,7 @@
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 22:17:36 EST</run_date>
+          <run_date>20 Mar 06 22:16:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -262,7 +262,7 @@
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 22:17:37 EST</run_date>
+          <run_date>20 Mar 06 22:16:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -276,7 +276,7 @@
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
-      <FermAct>ZOLO_NEF</FermAct>
+      <FermAct>UNPRECONDITIONED_ZOLO_NEF</FermAct>
       <ApproximationType>ZOLOTAREV</ApproximationType>
       <Mass>0.06</Mass>
       <N5>4</N5>
@@ -395,47 +395,47 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>85</n_count>
+            <n_count>211</n_count>
           </Qprop>
           <Qprop>
-            <n_count>85</n_count>
+            <n_count>211</n_count>
           </Qprop>
           <Qprop>
-            <n_count>83</n_count>
+            <n_count>195</n_count>
           </Qprop>
           <Qprop>
-            <n_count>83</n_count>
+            <n_count>196</n_count>
           </Qprop>
           <Qprop>
-            <n_count>85</n_count>
+            <n_count>209</n_count>
           </Qprop>
           <Qprop>
-            <n_count>85</n_count>
+            <n_count>208</n_count>
           </Qprop>
           <Qprop>
-            <n_count>84</n_count>
+            <n_count>198</n_count>
           </Qprop>
           <Qprop>
-            <n_count>84</n_count>
+            <n_count>198</n_count>
           </Qprop>
           <Qprop>
-            <n_count>85</n_count>
+            <n_count>211</n_count>
           </Qprop>
           <Qprop>
-            <n_count>85</n_count>
+            <n_count>211</n_count>
           </Qprop>
           <Qprop>
-            <n_count>84</n_count>
+            <n_count>198</n_count>
           </Qprop>
           <Qprop>
-            <n_count>84</n_count>
+            <n_count>198</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>1012</ncg_had>
+          <ncg_had>2444</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0165516 0.0751488 0.0349484 0.0302035 0.0284541 0.0302134 0.0349762 0.0751356</prop_corr>
+          <prop_corr>0.016552 0.0751488 0.0349483 0.0302034 0.028454 0.0302133 0.0349762 0.0751356</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

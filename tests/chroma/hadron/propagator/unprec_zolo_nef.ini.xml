@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_zolo_nef.ini.xml,v 1.2 2006-03-21 03:18:39 edwards Exp $
+; $Id: unprec_zolo_nef.ini.xml,v 1.1 2006-03-21 03:18:40 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -53,7 +53,7 @@
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
-         <FermAct>ZOLO_NEF</FermAct>
+         <FermAct>UNPRECONDITIONED_ZOLO_NEF</FermAct>
          <ApproximationType>ZOLOTAREV</ApproximationType>
          <Mass>0.06</Mass>
          <N5>4</N5>
