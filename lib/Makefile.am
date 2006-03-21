@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.61 2006-03-20 04:17:52 edwards Exp $
+# $Id: Makefile.am,v 2.62 2006-03-21 19:13:33 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -102,7 +102,7 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_md_integrator_type_io.h \
 	io/enum_io/enum_inner_solver_type_io.h \
         io/enum_io/enum_stochsrc_io.h\
-        io/aniso_io.h io/eigen_io.h \
+        io/aniso_io.h io/cfgtype_io.h io/eigen_io.h \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
         io/readcppacs.h io/cppacs_io.h \
@@ -643,7 +643,7 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_srcsnktype_io.cc io/enum_io/enum_wavetype_io.cc \
 	io/enum_io/enum_wvfkind_io.cc \
         io/enum_io/enum_stochsrc_io.cc \
-        io/aniso_io.cc \
+        io/aniso_io.cc io/cfgtype_io.cc \
 	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
 	io/milc_io.cc io/overlap_state_info.cc \
         io/readcppacs.cc io/cppacs_io.cc\
