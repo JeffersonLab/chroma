@@ -1,3 +1,8 @@
+03/21/2006 -- Robert Edwards
+	Version 2.15.1. Removed use of overlap_state from various 5d fermacts
+        since it is not used. Added more regression tests. Cleaned out some
+        old input files.
+
 03/20/2006 -- Robert Edwards
 	Version 2.15.0. Major change of inline suite. There is no longer a gauge field
         passed into the measurements. Instead, tasks must read a gauge field. By default,
