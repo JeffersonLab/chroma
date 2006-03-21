@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.11 2006-03-21 03:31:53 edwards Exp $
+#  $Id: regres.pl,v 1.12 2006-03-21 03:47:49 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -129,6 +129,22 @@
 	 output      => "unprec_zolo_nef.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/unprec_zolo_nef.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/unprec_zolo_nef.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_ovext.ini.xml" , 
+	 output      => "prec_ovext.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_ovext.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_ovext.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/unprec_ovext.ini.xml" , 
+	 output      => "unprec_ovext.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/unprec_ovext.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/unprec_ovext.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
