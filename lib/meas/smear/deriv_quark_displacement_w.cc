@@ -1,4 +1,4 @@
-// $Id: deriv_quark_displacement_w.cc,v 1.2 2006-02-22 03:27:36 edwards Exp $
+// $Id: deriv_quark_displacement_w.cc,v 1.3 2006-03-21 18:28:33 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -637,7 +637,7 @@ namespace Chroma
       for(int k=0; k < 3; ++k)
 	fin += Gamma(1 << k) * rightNabla(tmp,u,k,length);
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
@@ -664,7 +664,7 @@ namespace Chroma
 	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,length));
 	}
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
@@ -691,7 +691,7 @@ namespace Chroma
 	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,length));
 	}
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
@@ -718,7 +718,7 @@ namespace Chroma
 	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
-      tmp = fin;
+      tmp = Gamma(1 << 3) * (Gamma(G5) * fin);
 
       END_CODE();
     }
@@ -762,7 +762,7 @@ namespace Chroma
       for(int k=0; k < 3; ++k)
 	fin += Gamma(1 << k) * rightD(tmp,u,k,length);
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
@@ -789,7 +789,7 @@ namespace Chroma
 	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
@@ -816,7 +816,7 @@ namespace Chroma
 	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
@@ -843,7 +843,7 @@ namespace Chroma
 	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
@@ -866,7 +866,7 @@ namespace Chroma
       for(int k=0; k < 3; ++k)
 	fin += Gamma(1 << k) * rightD(tmp,u,k,length);
 
-      tmp = fin;
+      tmp = Gamma(1 << 3) * (Gamma(G5) * fin);
 
       END_CODE();
     }
@@ -893,7 +893,7 @@ namespace Chroma
 	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
 
-      tmp = fin;
+      tmp = Gamma(1 << 3) * (Gamma(G5) * fin);
 
       END_CODE();
     }
@@ -920,7 +920,7 @@ namespace Chroma
 	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
 
-      tmp = fin;
+      tmp = Gamma(1 << 3) * (Gamma(G5) * fin);
 
       END_CODE();
     }
@@ -947,7 +947,7 @@ namespace Chroma
 	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
 
-      tmp = fin;
+      tmp = Gamma(1 << 3) * (Gamma(G5) * fin);
 
       END_CODE();
     }
@@ -1145,13 +1145,13 @@ namespace Chroma
       for(int k=0; k < 3; ++k)
 	fin += Gamma(1 << k) * rightB(tmp,u,k,length);
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
 
 
-    //! Construct (RhoxB_T1) source
+    //! Construct (A1xB_T1) source
     template<>
     void
     MesA1xBT1Displace<LatticePropagator>::operator()(LatticePropagator& tmp,
@@ -1172,7 +1172,7 @@ namespace Chroma
 	    fin += Real(antiSymTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,length));
 	}
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
@@ -1199,7 +1199,7 @@ namespace Chroma
 	    fin += Real(symTensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightB(tmp,u,k,length));
 	}
       
-      tmp = fin;
+      tmp = Gamma(G5) * fin;
 
       END_CODE();
     }
