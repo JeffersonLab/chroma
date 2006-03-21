@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_clover.out.xml,v 1.2 2006-03-21 03:09:13 edwards Exp $
+; $Id: unprec_ovlap_contfrac5d.out.xml,v 1.1 2006-03-21 03:09:13 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -56,17 +56,20 @@
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
-         <FermAct>UNPRECONDITIONED_CLOVER</FermAct>
-         <Kappa>0.115</Kappa>
-         <clovCoeff>1.17</clovCoeff>
-         <clovCoeffR>0.91</clovCoeffR>
-         <clovCoeffT>1.07</clovCoeffT>
-         <AnisoParam>
-           <anisoP>true</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>2.464</xi_0>
-           <nu>0.95</nu>
-         </AnisoParam>
+         <FermAct>UNPRECONDITIONED_OVERLAP_CONTINUED_FRACTION_5D</FermAct>
+         <ApproximationType>ZOLOTAREV</ApproximationType>
+         <Mass>0.06</Mass>
+         <RatPolyDeg>4</RatPolyDeg>
+         <ApproxMin>0.66</ApproxMin>
+         <ApproxMax>6.46357</ApproxMax>
+         <AuxFermAct>
+           <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+           <Mass>-1.4</Mass>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+         </AuxFermAct>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
            <boundary>1 1 1 -1</boundary>
@@ -74,7 +77,7 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-8</RsdCG>
+          <RsdCG>1.0e-6</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </Param>
@@ -82,19 +85,6 @@
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>sh_prop_0</object_id>
-        <object_type>LatticePropagator</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./sh_prop_0</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
     </elem>
 
   </InlineMeasurements>
@@ -122,7 +112,7 @@
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>20 Mar 06 22:07:14 EST</run_date>
+    <run_date>20 Mar 06 22:08:26 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -183,7 +173,7 @@
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 22:07:14 EST</run_date>
+          <run_date>20 Mar 06 22:08:26 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -277,7 +267,7 @@
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 22:07:14 EST</run_date>
+          <run_date>20 Mar 06 22:08:26 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -291,17 +281,20 @@
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
-      <FermAct>UNPRECONDITIONED_CLOVER</FermAct>
-      <Kappa>0.115</Kappa>
-      <clovCoeff>1.17</clovCoeff>
-      <clovCoeffR>0.91</clovCoeffR>
-      <clovCoeffT>1.07</clovCoeffT>
-      <AnisoParam>
-        <anisoP>true</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>2.464</xi_0>
-        <nu>0.95</nu>
-      </AnisoParam>
+      <FermAct>UNPRECONDITIONED_OVERLAP_CONTINUED_FRACTION_5D</FermAct>
+      <ApproximationType>ZOLOTAREV</ApproximationType>
+      <Mass>0.06</Mass>
+      <RatPolyDeg>4</RatPolyDeg>
+      <ApproxMin>0.66</ApproxMin>
+      <ApproxMax>6.46357</ApproxMax>
+      <AuxFermAct>
+        <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+        <Mass>-1.4</Mass>
+        <FermionBC>
+          <FermBC>SIMPLE_FERMBC</FermBC>
+          <boundary>1 1 1 -1</boundary>
+        </FermionBC>
+      </AuxFermAct>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
         <boundary>1 1 1 -1</boundary>
@@ -310,10 +303,10 @@
 
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-08</RsdCG>
+              <RsdCG>1e-06</RsdCG>
               <MaxCG>1000</MaxCG>
               <MROver>1</MROver>
-              <RsdCGPrec>1e-08</RsdCGPrec>
+              <RsdCGPrec>1e-06</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </Param><StateInfo>
@@ -412,55 +405,49 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>67</n_count>
+            <n_count>180</n_count>
           </Qprop>
           <Qprop>
-            <n_count>67</n_count>
+            <n_count>180</n_count>
           </Qprop>
           <Qprop>
-            <n_count>67</n_count>
+            <n_count>180</n_count>
           </Qprop>
           <Qprop>
-            <n_count>67</n_count>
+            <n_count>180</n_count>
           </Qprop>
           <Qprop>
-            <n_count>70</n_count>
+            <n_count>182</n_count>
           </Qprop>
           <Qprop>
-            <n_count>69</n_count>
+            <n_count>182</n_count>
           </Qprop>
           <Qprop>
-            <n_count>69</n_count>
+            <n_count>182</n_count>
           </Qprop>
           <Qprop>
-            <n_count>70</n_count>
+            <n_count>182</n_count>
           </Qprop>
           <Qprop>
-            <n_count>70</n_count>
+            <n_count>182</n_count>
           </Qprop>
           <Qprop>
-            <n_count>70</n_count>
+            <n_count>182</n_count>
           </Qprop>
           <Qprop>
-            <n_count>70</n_count>
+            <n_count>182</n_count>
           </Qprop>
           <Qprop>
-            <n_count>70</n_count>
+            <n_count>182</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>826</ncg_had>
+          <ncg_had>2176</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.588734 0.0440055 0.0154934 0.00913658 0.00757904 0.00913719 0.0155015 0.04401</prop_corr>
+          <prop_corr>0.155076 0.403309 0.274773 0.225793 0.208538 0.225809 0.274883 0.403158</prop_corr>
         </Prop_correlator>
       </propagator>
-    </elem>
-    <elem>
-      <qio_write_named_obj>
-        <update_no>0</update_no>
-        <object_id>sh_prop_0</object_id>
-      </qio_write_named_obj>
     </elem>
   </InlineObservables>
 </chroma>

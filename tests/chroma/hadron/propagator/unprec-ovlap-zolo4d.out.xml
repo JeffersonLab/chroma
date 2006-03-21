@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec-ovlap-zolo4d.out.xml,v 1.1 2006-03-20 04:23:23 edwards Exp $
+; $Id: unprec-ovlap-zolo4d.out.xml,v 1.2 2006-03-21 03:09:13 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -83,7 +83,7 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
+          <RsdCG>1.0e-7</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
         <StateInfo>
@@ -141,7 +141,7 @@
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>19 Mar 06 23:13:52 EST</run_date>
+    <run_date>20 Mar 06 22:06:03 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -202,7 +202,7 @@
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:13:52 EST</run_date>
+          <run_date>20 Mar 06 22:06:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -296,7 +296,7 @@
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:13:52 EST</run_date>
+          <run_date>20 Mar 06 22:06:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -339,10 +339,10 @@
 
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1e-07</RsdCG>
               <MaxCG>1000</MaxCG>
               <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
+              <RsdCGPrec>1e-07</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </Param><StateInfo>
@@ -449,44 +449,44 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
           <Qprop>
-            <n_count>9</n_count>
+            <n_count>5</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>108</ncg_had>
+          <ncg_had>60</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.0126808 0.00350931 5.47981e-05 1.44416e-06 1.16046e-07 1.45108e-06 5.40803e-05 0.00349726</prop_corr>

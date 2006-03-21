@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson-twisted.out.xml,v 1.2 2006-03-20 05:48:10 edwards Exp $
+; $Id: prec_wilson-twisted.out.xml,v 1.3 2006-03-21 03:09:13 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -59,7 +59,7 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-7</RsdCG>
+          <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </Param>
@@ -107,7 +107,7 @@
       <chroma>2.15.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>20 Mar 06 00:47:56 EST</run_date>
+    <run_date>20 Mar 06 22:06:01 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -191,7 +191,7 @@
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:47:56 EST</run_date>
+          <run_date>20 Mar 06 22:06:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -273,7 +273,7 @@
             <chroma>2.15.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:47:56 EST</run_date>
+          <run_date>20 Mar 06 22:06:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -301,10 +301,10 @@
 
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-07</RsdCG>
+              <RsdCG>1e-08</RsdCG>
               <MaxCG>1000</MaxCG>
               <MROver>1</MROver>
-              <RsdCGPrec>1e-07</RsdCGPrec>
+              <RsdCGPrec>1e-08</RsdCGPrec>
               <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </Param><StateInfo>
@@ -391,44 +391,44 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
           <Qprop>
-            <n_count>16</n_count>
+            <n_count>17</n_count>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>192</ncg_had>
+          <ncg_had>204</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.550448 0.0187777 0.00191304 0.000304755 0.000111619 0.000304755 0.00191304 0.0187777</prop_corr>

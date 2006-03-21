@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.7 2006-03-20 05:58:18 edwards Exp $
+#  $Id: regres.pl,v 1.8 2006-03-21 03:09:13 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -33,6 +33,14 @@
 	 output      => "prec_wilson-smearing.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_wilson-smearing.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_wilson-smearing.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_parwilson.ini.xml" , 
+	 output      => "prec_parwilson.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_parwilson.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_parwilson.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
@@ -85,9 +93,25 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/propagator/prec_parwilson.ini.xml" , 
-	 output      => "prec_parwilson.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/propagator/prec_parwilson.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/propagator/prec_parwilson.out.xml" ,
+	 input       => "$test_dir/chroma/hadron/propagator/prec_ht_contfrac5d.ini.xml" , 
+	 output      => "prec_ht_contfrac5d.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_ht_contfrac5d.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_ht_contfrac5d.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_ovlap_contfrac5d.ini.xml" , 
+	 output      => "prec_ovlap_contfrac5d.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_ovlap_contfrac5d.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_ovlap_contfrac5d.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/unprec_ovlap_contfrac5d.ini.xml" , 
+	 output      => "unprec_ovlap_contfrac5d.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/unprec_ovlap_contfrac5d.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/unprec_ovlap_contfrac5d.out.xml" ,
      }
      );

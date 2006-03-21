@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: unprec_hamberwu.ini.xml,v 1.2 2006-03-21 03:09:13 edwards Exp $
+; $Id: unprec_ovlap_contfrac5d.ini.xml,v 1.1 2006-03-21 03:09:13 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -53,15 +53,20 @@
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
         <FermionAction>
-         <FermAct>UNPRECONDITIONED_HAMBER-WU</FermAct>
-         <Kappa>0.10</Kappa>
-         <u0>0.95</u0>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
+         <FermAct>UNPRECONDITIONED_OVERLAP_CONTINUED_FRACTION_5D</FermAct>
+         <ApproximationType>ZOLOTAREV</ApproximationType>
+         <Mass>0.06</Mass>
+         <RatPolyDeg>4</RatPolyDeg>
+         <ApproxMin>0.66</ApproxMin>
+         <ApproxMax>6.46357</ApproxMax>
+         <AuxFermAct>
+           <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+           <Mass>-1.4</Mass>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+         </AuxFermAct>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
            <boundary>1 1 1 -1</boundary>
@@ -69,7 +74,7 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-8</RsdCG>
+          <RsdCG>1.0e-6</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </Param>
@@ -77,19 +82,6 @@
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>sh_prop_0</object_id>
-        <object_type>LatticePropagator</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./sh_prop_0</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
     </elem>
 
   </InlineMeasurements>

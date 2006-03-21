@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson.ferm.ini.xml,v 1.1 2006-03-20 04:23:23 edwards Exp $
+; $Id: prec_wilson.ferm.ini.xml,v 1.2 2006-03-21 03:09:13 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -86,7 +86,7 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
+          <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
         <nrow>4 4 4 8</nrow>
