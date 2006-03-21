@@ -2,6 +2,6 @@
 
 <assertions>
 
-<assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 </assertions>
