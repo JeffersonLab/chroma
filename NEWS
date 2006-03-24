@@ -1,4 +1,8 @@
 03/21/2006 -- Robert Edwards
+	Version 2.15.3. Bug fix, or rather new addition to funcmap. Changed all
+        IO funcmaps to disambiguate them and not pile onto the same funcmap!!!
+
+03/21/2006 -- Robert Edwards
 	Version 2.15.2. Bug fixes in new derivative displacements. Changed around
         output regression tests. Some cleanups in IO.
 
