@@ -1,4 +1,4 @@
-// $Id: xml_write_obj_funcmap.cc,v 2.1 2006-03-14 04:55:30 edwards Exp $
+// $Id: xml_write_obj_funcmap.cc,v 2.2 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -11,117 +11,115 @@
 namespace Chroma
 {
  
-  //! IO function map
-  /*! \ingroup inlineio */
-  namespace XMLWriteObjCallMap
-  {
-    //! Write a propagator
-    void XMLWriteLatProp(const string& buffer_id,
-			 const string& file)
-    {
-      LatticePropagator obj;
-      XMLBufferWriter file_xml, record_xml;
-
-      obj = TheNamedObjMap::Instance().getData<LatticePropagator>(buffer_id);
-      TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
-      TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
-    
-      XMLFileWriter to(file);
-      push(to,"LatticePropagator");
-      write(to,"FileXML",file_xml);
-      write(to,"RecordXML",record_xml);
-      write(to,"Object",obj);
-      pop(to);
-      to.close();
-    }
-
-
-    //! Write a fermion
-    void XMLWriteLatFerm(const string& buffer_id,
-			 const string& file)
-    {
-      LatticeFermion obj;
-      XMLBufferWriter file_xml, record_xml;
-
-      obj = TheNamedObjMap::Instance().getData<LatticeFermion>(buffer_id);
-      TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
-      TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
-    
-      XMLFileWriter to(file);
-      push(to,"LatticeFermion");
-      write(to,"FileXML",file_xml);
-      write(to,"RecordXML",record_xml);
-      write(to,"Object",obj);
-      pop(to);
-      to.close();
-    }
-
-
-    //! Write a propagator
-    void XMLWriteLatStagProp(const string& buffer_id,
-			     const string& file)
-    {
-      LatticeStaggeredPropagator obj;
-      XMLBufferWriter file_xml, record_xml;
-
-      obj = TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(buffer_id);
-      TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
-      TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
-    
-      XMLFileWriter to(file);
-      push(to,"LatticeStaggeredPropagator");
-      write(to,"FileXML",file_xml);
-      write(to,"RecordXML",record_xml);
-      write(to,"Object",obj);
-      pop(to);
-      to.close();
-    }
-
-
-    //! Write a gauge field in floating precision
-    void XMLWriteArrayLatColMat(const string& buffer_id,
-				const string& file)
-    {
-      multi1d<LatticeColorMatrix> obj;
-      XMLBufferWriter file_xml, record_xml;
-
-      obj = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id);
-      TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
-      TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
-    
-      XMLFileWriter to(file);
-      push(to,"Multi1dLatticeColorMatrix");
-      write(to,"FileXML",file_xml);
-      write(to,"RecordXML",record_xml);
-      write(to,"Object",obj);
-      pop(to);
-      to.close();
-    }
-
-  }  // end namespace WriteObjCallMap
-
-
-
   //! IO function map environment
   /*! \ingroup inlineio */
   namespace XMLWriteObjCallMapEnv
   { 
+    // Anonymous namespace
+    namespace
+    {
+      //! Write a propagator
+      void XMLWriteLatProp(const string& buffer_id,
+			   const string& file)
+      {
+	LatticePropagator obj;
+	XMLBufferWriter file_xml, record_xml;
+
+	obj = TheNamedObjMap::Instance().getData<LatticePropagator>(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+    
+	XMLFileWriter to(file);
+	push(to,"LatticePropagator");
+	write(to,"FileXML",file_xml);
+	write(to,"RecordXML",record_xml);
+	write(to,"Object",obj);
+	pop(to);
+	to.close();
+      }
+
+
+      //! Write a fermion
+      void XMLWriteLatFerm(const string& buffer_id,
+			   const string& file)
+      {
+	LatticeFermion obj;
+	XMLBufferWriter file_xml, record_xml;
+
+	obj = TheNamedObjMap::Instance().getData<LatticeFermion>(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+    
+	XMLFileWriter to(file);
+	push(to,"LatticeFermion");
+	write(to,"FileXML",file_xml);
+	write(to,"RecordXML",record_xml);
+	write(to,"Object",obj);
+	pop(to);
+	to.close();
+      }
+
+
+      //! Write a propagator
+      void XMLWriteLatStagProp(const string& buffer_id,
+			       const string& file)
+      {
+	LatticeStaggeredPropagator obj;
+	XMLBufferWriter file_xml, record_xml;
+
+	obj = TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+    
+	XMLFileWriter to(file);
+	push(to,"LatticeStaggeredPropagator");
+	write(to,"FileXML",file_xml);
+	write(to,"RecordXML",record_xml);
+	write(to,"Object",obj);
+	pop(to);
+	to.close();
+      }
+
+
+      //! Write a gauge field in floating precision
+      void XMLWriteArrayLatColMat(const string& buffer_id,
+				  const string& file)
+      {
+	multi1d<LatticeColorMatrix> obj;
+	XMLBufferWriter file_xml, record_xml;
+
+	obj = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+    
+	XMLFileWriter to(file);
+	push(to,"Multi1dLatticeColorMatrix");
+	write(to,"FileXML",file_xml);
+	write(to,"RecordXML",record_xml);
+	write(to,"Object",obj);
+	pop(to);
+	to.close();
+      }
+
+    }  // end anonymous namespace
+
+
     bool registerAll(void) 
     {
       bool success = true;
       success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-								    XMLWriteObjCallMap::XMLWriteLatProp);
+								    XMLWriteLatProp);
       success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
-								    XMLWriteObjCallMap::XMLWriteLatFerm);
+								    XMLWriteLatFerm);
       success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
-								    XMLWriteObjCallMap::XMLWriteLatStagProp);
+								    XMLWriteLatStagProp);
       success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-								    XMLWriteObjCallMap::XMLWriteArrayLatColMat);
+								    XMLWriteArrayLatColMat);
 
       return success;
     }
 
     bool registered = registerAll();
-  };
+  }
 
 }

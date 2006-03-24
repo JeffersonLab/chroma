@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: szin_read_obj_funcmap.h,v 2.1 2005-11-01 22:00:01 edwards Exp $
+// $Id: szin_read_obj_funcmap.h,v 2.2 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -16,21 +16,23 @@ namespace Chroma
 
   //! Read object function map
   /*! \ingroup inlineio */
-  typedef SingletonHolder< 
-    FunctionMap<void,
-		std::string,
-		TYPELIST_2(const string&,
-			   const string&),
-		void (*)(const string& buffer_id,
-			 const string& filename),
-		StringFunctionMapError> >
-  TheSZINReadObjFuncMap;
-
-
-  //! Read object function map
-  /*! \ingroup inlineio */
   namespace SZINReadObjCallMapEnv
   { 
+    struct DumbDisambiguator {};
+
+    //! Read object function map
+    /*! \ingroup inlineio */
+    typedef SingletonHolder< 
+      FunctionMap<DumbDisambiguator,
+		  void,
+		  std::string,
+		  TYPELIST_2(const string&,
+			     const string&),
+		  void (*)(const string& buffer_id,
+			   const string& filename),
+		  StringFunctionMapError> >
+    TheSZINReadObjFuncMap;
+
     extern bool registered;   // forward decl
   };
 

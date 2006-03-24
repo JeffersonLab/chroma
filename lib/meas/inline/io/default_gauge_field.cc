@@ -1,10 +1,8 @@
-// $Id: default_gauge_field.cc,v 2.1 2006-03-20 04:22:03 edwards Exp $
+// $Id: default_gauge_field.cc,v 2.2 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */
 
-#include "singleton.h"
-#include "funcmap.h"
 #include "chromabase.h"
 
 #include "meas/inline/io/named_objmap.h"

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qio_read_obj_funcmap.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: qio_read_obj_funcmap.h,v 2.1 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -15,25 +15,27 @@ namespace Chroma
 
   //! Read object function map
   /*! \ingroup inlineio */
-  typedef SingletonHolder< 
-    FunctionMap<void, 
-		std::string,
-		TYPELIST_3(const string&,
-			   const string&, 
-			   QDP_serialparallel_t),
-		void (*)(const string& buffer_id,
-			 const string& filename, 
-			 QDP_serialparallel_t serpar),
-		StringFunctionMapError> >
-  TheQIOReadObjFuncMap;
-
-
-  //! Read object function map
-  /*! \ingroup inlineio */
   namespace QIOReadObjCallMapEnv
   { 
+    struct DumbDisambiguator {};
+
+    //! Read object function map
+    /*! \ingroup inlineio */
+    typedef SingletonHolder< 
+      FunctionMap<DumbDisambiguator,
+		  void, 
+		  std::string,
+		  TYPELIST_3(const string&,
+			     const string&, 
+			     QDP_serialparallel_t),
+		  void (*)(const string& buffer_id,
+			   const string& filename, 
+			   QDP_serialparallel_t serpar),
+		  StringFunctionMapError> >
+    TheQIOReadObjFuncMap;
+
     extern bool registered;   // forward decl
-  };
+  }
 
 } // end namespace Chroma
 

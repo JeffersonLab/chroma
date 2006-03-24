@@ -1,4 +1,4 @@
-// $Id: inline_szin_read_obj.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_szin_read_obj.cc,v 2.3 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -137,20 +137,24 @@ namespace Chroma
     // Read the object
     // ONLY SZIN output format is supported in this task
     // Other tasks could support other disk formats
-    QDPIO::cout << "Attempt to readobject name = " << params.named_obj.object_id << endl;
+    QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
+    QDPIO::cout << "Attempt to read file name = " << params.file.file_name << endl;
     write(xml_out, "object_id", params.named_obj.object_id);
     try
     {
       swatch.reset();
 
+//      // Read the object
+//      TheSZINReadObjFuncMap::Instance().dump();
+
       // Read the object
       swatch.start();
-      TheSZINReadObjFuncMap::Instance().callFunction(params.named_obj.object_type,
-						     params.named_obj.object_id,
-						     params.file.file_name);
+      SZINReadObjCallMapEnv::TheSZINReadObjFuncMap::Instance().callFunction(params.named_obj.object_type,
+									    params.named_obj.object_id,
+									    params.file.file_name);
       swatch.stop();
 
-      QDPIO::cout << "Object successfully written: time= " 
+      QDPIO::cout << "SZIN Object successfully read: time= " 
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
     }

@@ -1,4 +1,4 @@
-// $Id: inline_qio_write_obj.cc,v 2.1 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_qio_write_obj.cc,v 2.2 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
@@ -147,10 +147,10 @@ namespace Chroma
 
       // Write the object
       swatch.start();
-      TheQIOWriteObjFuncMap::Instance().callFunction(params.named_obj.object_type,
-						     params.named_obj.object_id,
-						     params.file.file_name, 
-						     params.file.file_volfmt, QDPIO_SERIAL);
+      QIOWriteObjCallMapEnv::TheQIOWriteObjFuncMap::Instance().callFunction(params.named_obj.object_type,
+									    params.named_obj.object_id,
+									    params.file.file_name, 
+									    params.file.file_volfmt, QDPIO_SERIAL);
       swatch.stop();
 
       QDPIO::cout << "Object successfully written: time= " 

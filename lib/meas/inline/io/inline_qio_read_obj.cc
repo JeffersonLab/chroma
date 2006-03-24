@@ -1,4 +1,4 @@
-// $Id: inline_qio_read_obj.cc,v 2.1 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_qio_read_obj.cc,v 2.2 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -145,10 +145,10 @@ namespace Chroma
 
       // Read the object
       swatch.start();
-      TheQIOReadObjFuncMap::Instance().callFunction(params.named_obj.object_type,
-						    params.named_obj.object_id,
-						    params.file.file_name, 
-						    QDPIO_SERIAL);
+      QIOReadObjCallMapEnv::TheQIOReadObjFuncMap::Instance().callFunction(params.named_obj.object_type,
+									  params.named_obj.object_id,
+									  params.file.file_name, 
+									  QDPIO_SERIAL);
       swatch.stop();
 
       QDPIO::cout << "Object successfully read: time= " 

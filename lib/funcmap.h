@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: funcmap.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: funcmap.h,v 2.1 2006-03-24 22:16:40 edwards Exp $
 /*! @file
  * @brief Map of function calls
  */
@@ -68,17 +68,24 @@ namespace Chroma
   };
 
 
+  ////////////////////////////////////////////////////////////////////////////////
+  // class template DefaultDisambiguator
+  ////////////////////////////////////////////////////////////////////////////////
+
+  struct DefaultDisambiguator {};
+
+
   //! Object factory class
   /*! @ingroup actions
    *
    * Supports abstract creation of objects
    */
-  template<class AbstractProduct, 
-           typename IdentifierType,
+  template<typename Disambiguator,
+           class AbstractProduct, 
+	   typename IdentifierType,
            class TList = NullType,
            typename ProductCall = AbstractProduct (*)(),
-           template<typename, class>
-  class FunctionMapErrorPolicy = DefaultFunctionMapError>
+           template<typename, class> class FunctionMapErrorPolicy = DefaultFunctionMapError>
   class FunctionMap : public FunctionMapErrorPolicy<IdentifierType, AbstractProduct>
   {
   public:

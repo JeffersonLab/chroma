@@ -1,4 +1,4 @@
-// $Id: szin_read_obj_funcmap.cc,v 2.1 2005-11-01 22:00:01 edwards Exp $
+// $Id: szin_read_obj_funcmap.cc,v 2.2 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -13,67 +13,76 @@
 namespace Chroma
 {
  
-  //! IO function map
-  /*! \ingroup inlineio */
-  namespace SZINReadObjCallMap
-  {
-    //! Read a propagator
-    void SZINReadLatProp(const string& buffer_id,
-			 const string& file)
-    {
-      LatticePropagator obj;
-      XMLReader record_xml;
-    
-      readSzinQprop(record_xml, obj, file);
-
-      XMLBufferWriter file_xml;
-      push(file_xml, "SZIN");
-      pop(file_xml);
-
-      TheNamedObjMap::Instance().create<LatticePropagator>(buffer_id);
-      TheNamedObjMap::Instance().getData<LatticePropagator>(buffer_id) = obj;
-      TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
-    }
-
-    //! Read a gauge field in floating precision
-    void SZINReadArrayLatColMat(const string& buffer_id,
-				const string& file)
-    {
-      XMLReader record_xml;
-      multi1d<LatticeColorMatrix> obj(Nd);
-
-      readSzin(record_xml, obj, file);
-
-      XMLBufferWriter file_xml;
-      push(file_xml, "SZIN");
-      pop(file_xml);
-
-      TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(buffer_id);
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id) = obj;
-      TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
-    }
-
-
-  }  // end namespace ReadObjCallMap
-
-
   //! IO function map environment
   /*! \ingroup inlineio */
   namespace SZINReadObjCallMapEnv
   { 
+    // Anonymous namespace
+    namespace
+    {
+      //! Read a propagator
+      void SZINReadLatProp(const string& buffer_id,
+			   const string& file)
+      {
+	LatticePropagator obj;
+	XMLReader record_xml;
+    
+	readSzinQprop(record_xml, obj, file);
+
+	XMLBufferWriter file_xml;
+	push(file_xml, "SZIN");
+	pop(file_xml);
+
+	TheNamedObjMap::Instance().create<LatticePropagator>(buffer_id);
+	TheNamedObjMap::Instance().getData<LatticePropagator>(buffer_id) = obj;
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+      }
+
+      //! Read a gauge field in floating precision
+      void SZINReadArrayLatColMat(const string& buffer_id,
+				  const string& file)
+      {
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+	XMLReader record_xml;
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+	multi1d<LatticeColorMatrix> obj(Nd);
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+
+	readSzin(record_xml, obj, file);
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+
+	XMLBufferWriter file_xml;
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+	push(file_xml, "SZIN");
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+	pop(file_xml);
+
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+	TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(buffer_id);
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id) = obj;
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
+      }
+
+    }  // end anonymous namespace
+
+
     bool registerAll(void) 
     {
       bool success = true;
       success &= TheSZINReadObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-								    SZINReadObjCallMap::SZINReadLatProp);
+								    SZINReadLatProp);
       success &= TheSZINReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-								    SZINReadObjCallMap::SZINReadArrayLatColMat);
+								    SZINReadArrayLatColMat);
       return success;
     }
 
     bool registered = registerAll();
-  };
+  }
 
 }

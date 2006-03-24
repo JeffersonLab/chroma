@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 2.3 2006-03-24 22:16:40 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -15,55 +15,80 @@
 
 namespace Chroma 
 { 
-  //! GaussianInit init function map
-  /*! \ingroup inlineio */
-  typedef SingletonHolder< 
-    FunctionMap<void,
-		std::string,
-		TYPELIST_1(const string&),
-		void (*)(const string& buffer_id),
-		StringFunctionMapError> >
-  TheGaussianInitObjFuncMap;
-
-
-  //! IO function map
-  /*! \ingroup inlineio */
-  namespace GaussianInitObjCallMap
-  {
-    //! Init a propagator
-    void GaussianInitLatProp(const string& buffer_id)
-    {
-      TheNamedObjMap::Instance().create<LatticePropagator>(buffer_id);
-      XMLBufferWriter file_xml, record_xml;
-
-      push(file_xml,"FileXML");
-      pop(file_xml);
-
-      push(record_xml,"RecordXML");
-      pop(record_xml);
-
-      gaussian(TheNamedObjMap::Instance().getData<LatticePropagator>(buffer_id));
-      TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
-    }
-
-  }  // end namespace GaussianInitCallMap
-
-
   //! IO function map environment
   /*! \ingroup inlineio */
   namespace GaussianInitObjCallMapEnv
   { 
+    // Anonymous namespace
+    namespace
+    {
+      struct DumbDisambiguator {};
+
+      //! GaussianInit init function map
+      /*! \ingroup inlineio */
+      typedef SingletonHolder< 
+	FunctionMap<DumbDisambiguator,
+		    void,
+		    std::string,
+		    TYPELIST_1(const string&),
+		    void (*)(const string& buffer_id),
+		    StringFunctionMapError> >
+      TheGaussianInitObjFuncMap;
+
+
+      //! Init a propagator
+      void GaussianInitLatProp(const string& buffer_id)
+      {
+	TheNamedObjMap::Instance().create<LatticePropagator>(buffer_id);
+	XMLBufferWriter file_xml, record_xml;
+
+	push(file_xml,"FileXML");
+	pop(file_xml);
+
+	push(record_xml,"RecordXML");
+	pop(record_xml);
+
+	gaussian(TheNamedObjMap::Instance().getData<LatticePropagator>(buffer_id));
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+      }
+
+      //! Init a propagator
+      void GaussianInitMulti1dLatColMat(const string& buffer_id)
+      {
+	multi1d<LatticeColorMatrix> u(Nd);
+	for(int mu=0; mu < u.size(); ++mu)
+	  gaussian(u[mu]);
+
+	XMLBufferWriter file_xml, record_xml;
+
+	push(file_xml,"FileXML");
+	pop(file_xml);
+
+	push(record_xml,"RecordXML");
+	pop(record_xml);
+
+	TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(buffer_id);
+	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id) = u;
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+      }
+
+    }  // end namespace GaussianInitCallMap
+
+
     bool registerAll(void) 
     {
       bool success = true;
       success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-									GaussianInitObjCallMap::GaussianInitLatProp);
+									GaussianInitLatProp);
+      success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+									GaussianInitMulti1dLatColMat);
       return success;
     }
 
     bool registered = registerAll();
-  };
+  }  // end CallMap namespace
 
 
   namespace InlineGaussianInitNamedObjEnv 
@@ -90,7 +115,7 @@ namespace Chroma
     }
 
     const bool registered = registerAll();
-  };
+  }
 
 
   //! Object buffer
@@ -168,8 +193,8 @@ namespace Chroma
     try
     {
       // Gaussian init the object
-      TheGaussianInitObjFuncMap::Instance().callFunction(params.named_obj.object_type,
-							 params.named_obj.object_id);
+      GaussianInitObjCallMapEnv::TheGaussianInitObjFuncMap::Instance().callFunction(params.named_obj.object_type,
+										    params.named_obj.object_id);
     }
     catch (std::bad_cast) 
     {
@@ -191,4 +216,4 @@ namespace Chroma
     END_CODE();
   } 
 
-};
+}
