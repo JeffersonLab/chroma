@@ -1,4 +1,4 @@
-// $Id: szin_read_obj_funcmap.cc,v 2.2 2006-03-24 22:16:40 edwards Exp $
+// $Id: szin_read_obj_funcmap.cc,v 2.3 2006-03-24 22:26:32 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -43,30 +43,19 @@ namespace Chroma
       void SZINReadArrayLatColMat(const string& buffer_id,
 				  const string& file)
       {
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 	XMLReader record_xml;
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 	multi1d<LatticeColorMatrix> obj(Nd);
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 
 	readSzin(record_xml, obj, file);
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 
 	XMLBufferWriter file_xml;
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 	push(file_xml, "SZIN");
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 	pop(file_xml);
 
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 	TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(buffer_id);
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id) = obj;
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
-	QDPIO::cerr << __func__ << ": line " << __LINE__ << endl;
       }
 
     }  // end anonymous namespace
