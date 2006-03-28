@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: named_obj.h,v 2.2 2005-09-27 01:26:53 edwards Exp $
+// $Id: named_obj.h,v 2.3 2006-03-28 05:11:35 edwards Exp $
 
 /*! @file
  * @brief Named object support
@@ -170,6 +170,7 @@ namespace Chroma
       }
     }
 
+
     //! Create an entry of arbitrary type.
     template<typename T>
     void create(const std::string& id) 
@@ -191,6 +192,19 @@ namespace Chroma
       the_map[id] = dynamic_cast<NamedObjectBase*>(new NamedObject<T>());
     }
 
+
+    //! Check if an id exists
+    bool check(const std::string& id) 
+    {
+      // Do a lookup
+      typedef std::map<std::string, NamedObjectBase*>::iterator I;
+      I iter = the_map.find(id);
+    
+      // If found then return true
+      return (iter != the_map.end()) ? true : false;
+    }
+  
+  
     //! Delete an item that we no longer neeed
     void erase(const std::string& id) 
     {
