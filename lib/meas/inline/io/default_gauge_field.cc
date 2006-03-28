@@ -1,4 +1,4 @@
-// $Id: default_gauge_field.cc,v 2.2 2006-03-24 22:16:40 edwards Exp $
+// $Id: default_gauge_field.cc,v 2.3 2006-03-28 05:12:01 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */
@@ -43,23 +43,27 @@ namespace Chroma
       // If initialized, then destroy and reset
       if (initP)
       {
-	try
+	// Only delete if the object is still present
+	if ( TheNamedObjMap::Instance().check(private_id) )
 	{
-	  // Now erase the object
-	  TheNamedObjMap::Instance().erase(private_id);
-	  QDPIO::cout << "Default gauge field erased" << endl;
-	}
-	catch( std::bad_cast ) 
-	{
-	  QDPIO::cerr << __func__ << ": cast error" 
-		      << endl;
-	  QDP_abort(1);
-	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << __func__ << ": error message: " << e 
-		      << endl;
-	  QDP_abort(1);
+	  try
+	  {
+	    // Now erase the object
+	    TheNamedObjMap::Instance().erase(private_id);
+	    QDPIO::cout << "Default gauge field erased" << endl;
+	  }
+	  catch( std::bad_cast ) 
+	  {
+	    QDPIO::cerr << __func__ << ": cast error" 
+			<< endl;
+	    QDP_abort(1);
+	  }
+	  catch (const string& e) 
+	  {
+	    QDPIO::cerr << __func__ << ": error message: " << e 
+			<< endl;
+	    QDP_abort(1);
+	  }
 	}
       }
 
