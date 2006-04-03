@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+//  $Id: stout_smear.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief Stout-link smearing of the gauge configuration
  */

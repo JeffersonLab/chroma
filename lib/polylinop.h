@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polylinop.h,v 1.1 2006-02-10 02:44:55 edwards Exp $
+// $Id: polylinop.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 
 /*! @file
  * @brief Polynomial Linear Operators
@@ -19,8 +19,8 @@ namespace Chroma
    *
    * Support for polynomial linear operators with derivative
    */
-  template<typename T, typename P>
-  class PolyLinearOperator : public DiffLinearOperator<T,P>
+  template<typename T, typename P, typename Q>
+  class PolyLinearOperator : public DiffLinearOperator<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;

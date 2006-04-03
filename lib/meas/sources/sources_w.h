@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sources_w.h,v 2.2 2005-11-07 06:30:06 edwards Exp $
+// $Id: sources_w.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  * \brief Quark sources
  *

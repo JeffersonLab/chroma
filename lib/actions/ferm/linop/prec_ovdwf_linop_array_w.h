@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_linop_array_w.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_ovdwf_linop_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -20,19 +20,22 @@ namespace Chroma
    * This routine is specific to Wilson fermions!
    */
 
-  class EvenOddPrecOvDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray<LatticeFermion, 
+				    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! Partial constructor
-    EvenOddPrecOvDWLinOpArray() {}
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
-    EvenOddPrecOvDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    EvenOddPrecOvDWLinOpArray(Handle< FermState<T,P,Q> > fs,
 			      const Real& WilsonMass_, const Real& m_q, int N5_)
-    {create(u_,WilsonMass_,m_q,N5_);}
+    {create(fs,WilsonMass_,m_q,N5_);}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& WilsonMass_, const Real& m_q_, int N5_);
 
     //! Destructor is automatic
@@ -40,6 +43,9 @@ namespace Chroma
 
     //! Length of DW flavor index/space
     int size() const {return N5;}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
 
     //! Apply the even-even block onto a source vector
     inline
@@ -138,6 +144,12 @@ namespace Chroma
 		      enum PlusMinus isign,
 		      const int cb) const;
 
+  protected:
+    //! Partial constructor
+    EvenOddPrecOvDWLinOpArray() {}
+    //! Hide =
+    void operator=(const EvenOddPrecOvDWLinOpArray&) {}
+
   private:
     Real WilsonMass;
     Real m_q;
@@ -156,7 +168,7 @@ namespace Chroma
     WilsonDslash  D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: prec_clover_linop_w.cc,v 2.8 2006-03-08 22:45:14 edwards Exp $
+// $Id: prec_clover_linop_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -11,25 +11,24 @@ using namespace QDP::Hints;
 namespace Chroma 
 { 
 
-
   //! Creation routine with Anisotropy
   /*!
    * \param u_ 	    gauge field     	       (Read)
    * \param param_  fermion kappa   	       (Read)
    */
-  void EvenOddPrecCloverLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void EvenOddPrecCloverLinOp::create(Handle< FermState<T,P,Q> > fs, 
 				      const CloverFermActParams& param_)
   {
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
 
     param = param_;
 
-    clov.create(u_, param);
+    clov.create(fs, param);
  
     invclov = clov;  // make a copy
     invclov.choles(0);  // invert the cb=0 part
 
-    D.create(u_, param.anisoParam);
+    D.create(fs, param.anisoParam);
 
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }

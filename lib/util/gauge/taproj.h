@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: taproj.h,v 2.0 2005-09-25 21:04:45 edwards Exp $
+// $Id: taproj.h,v 3.0 2006-04-03 04:59:13 edwards Exp $
 /*! \file
  *  \brief Take the traceless antihermitian projection of a color matrix
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_parwilson_fermact_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: unprec_parwilson_fermact_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action with parity breaking term
  */
@@ -45,43 +45,47 @@ namespace Chroma
    *
    *      M  =  (d+M) + i*H*gamma_5  - (1/2) D'
    */
-  class UnprecParWilsonFermAct : public UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecParWilsonFermAct : public UnprecWilsonTypeFermAct<LatticeFermion, 
+				 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! General FermBC
-    UnprecParWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+    UnprecParWilsonFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
 			   const UnprecParWilsonFermActParams& param_) : 
-      fbc(fbc_), param(param_) {}
+      cfs(cfs_), param(param_) {}
 
     //! Copy constructor
     UnprecParWilsonFermAct(const UnprecParWilsonFermAct& a) : 
-      fbc(a.fbc), param(a.param) {}
-
-    //! Assignment
-    UnprecParWilsonFermAct& operator=(const UnprecParWilsonFermAct& a)
-      {fbc=a.fbc; param=a.param; return *this;}
-
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
+      cfs(a.cfs), param(a.param) {}
 
     //! Produce a linear operator for this action
-    const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    UnprecLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce the gamma_5 hermitin op gamma_5 M
-    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle<const ConnectState> state) const {
-
-      QDP_error_exit("hermitianLinOp not implemented yet for this action\n");
-      return 0;
-    }
+    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+      {
+	QDP_error_exit("hermitianLinOp not implemented yet for this action\n");
+	return 0;
+      }
 
     //! Destructor is automatic
     ~UnprecParWilsonFermAct() {}
 
+  protected:
+    //! Return the fermion create state for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
   private:
     UnprecParWilsonFermAct() {} //hide default constructor
+    void operator=(const UnprecParWilsonFermAct& a) {}   // Hide =
   
   private:
-    Handle< FermBC<LatticeFermion> >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     UnprecParWilsonFermActParams param;
   };
 

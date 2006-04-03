@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_state.h,v 2.3 2005-10-02 03:08:49 bjoo Exp $
+// $Id: stout_state.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
 
 /*! @file 
  *  @brief Connection State for stout links
@@ -16,7 +16,8 @@
 
 namespace Chroma 
 {
-  class StoutConnectState : public ConnectState
+  class StoutConnectState : public ConnectState<multi1d<LatticeColorMatrix>,
+			    multi1d<LatticeColorMatrix> >
   {
   public: 
     

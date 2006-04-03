@@ -1,4 +1,4 @@
-$Id: README_buildtest.sh,v 1.1 2005-10-15 09:35:24 mcneile Exp $
+$Id: README_buildtest.sh,v 3.0 2006-04-03 04:59:22 edwards Exp $
 Original author: Zbigniew Sroczynski
 
 Check the build of the modules QMP, QDP++ and Chroma.

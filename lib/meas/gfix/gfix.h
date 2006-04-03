@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gfix.h,v 2.0 2005-09-25 21:04:33 edwards Exp $
+// $Id: gfix.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
 /*! \file
  * \brief Gauge fixing routines
  *

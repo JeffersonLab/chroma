@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 1.3 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *

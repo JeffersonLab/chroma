@@ -1,4 +1,4 @@
-// $Id: global_metropolis_accrej.cc,v 2.2 2006-02-02 18:45:45 edwards Exp $
+// $Id: global_metropolis_accrej.cc,v 3.0 2006-04-03 04:59:07 edwards Exp $
 /*! \file
  * \brief Simple metropolis accept/reject
  *

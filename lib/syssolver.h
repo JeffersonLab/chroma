@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: syssolver.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 /*! @file
  * @brief Linear system solvers
  */
@@ -45,11 +45,11 @@ namespace Chroma
    * Solves linear systems of equations. The solver may only live on a subset.
    */
   template<typename T>
-  class SystemSolver< multi1d<T> >
+  class SystemSolverArray
   {
   public:
     //! Virtual destructor to help with cleanup;
-    virtual ~SystemSolver() {}
+    virtual ~SystemSolverArray() {}
 
     //! Expected length of array index
     virtual int size() const = 0;

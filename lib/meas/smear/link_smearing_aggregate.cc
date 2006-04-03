@@ -1,4 +1,4 @@
-// $Id: link_smearing_aggregate.cc,v 1.3 2005-11-07 18:06:05 edwards Exp $
+// $Id: link_smearing_aggregate.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief All link smearing applicators
  */

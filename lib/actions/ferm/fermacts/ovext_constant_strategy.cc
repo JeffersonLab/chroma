@@ -1,10 +1,19 @@
+// -*- C++ -*-
+// $Id: ovext_constant_strategy.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+/*! \file
+ *  \brief Ovext rescale strategy
+ */
+
 #include "chromabase.h"
 #include "actions/ferm/fermacts/ovext_constant_strategy.h"
 
 using namespace QDP;
 
-namespace Chroma { 
-  namespace OvExtConstantStrategyEnv { 
+namespace Chroma 
+{ 
+
+  namespace OvExtConstantStrategyEnv 
+  { 
     
     AbsOvExtTuningStrategy* createStrategy(XMLReader& xml_in,
 					   const std::string& path) 

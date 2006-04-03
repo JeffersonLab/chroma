@@ -1,4 +1,4 @@
-// $Id: inline_io_aggregate.cc,v 2.3 2006-03-14 04:55:30 edwards Exp $
+// $Id: inline_io_aggregate.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */

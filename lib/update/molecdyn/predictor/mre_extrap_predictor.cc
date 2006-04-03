@@ -204,7 +204,7 @@ namespace Chroma {
 
   void MinimalResidualExtrapolation5DChronoPredictor::operator()(
 		    multi1d<LatticeFermion>& psi,
-		    const LinearOperator<multi1d<LatticeFermion> >& M,
+		    const LinearOperatorArray<LatticeFermion>& M,
 		    const multi1d<LatticeFermion>& chi) 
   {
 
@@ -235,7 +235,7 @@ namespace Chroma {
   void 
   MinimalResidualExtrapolation5DChronoPredictor::find_extrap_solution(
 		       	  multi1d<LatticeFermion>& psi,
-			  const LinearOperator<multi1d<LatticeFermion> >& A,
+			  const LinearOperatorArray<LatticeFermion>& A,
 			  const multi1d<LatticeFermion>& chi) 
   {
     const OrderedSubset& s= A.subset();

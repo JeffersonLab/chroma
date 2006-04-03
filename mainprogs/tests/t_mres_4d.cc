@@ -1,4 +1,4 @@
-// $Id: t_mres_4d.cc,v 2.1 2005-11-30 04:47:27 edwards Exp $
+// $Id: t_mres_4d.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
 
 #include "chroma.h"
 

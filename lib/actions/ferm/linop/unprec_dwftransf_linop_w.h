@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_linop_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -21,19 +21,25 @@ namespace Chroma
    *    H_T  =  (b5 + c5) H_w * ( 2 + (b5 + c5) D_w )^(-1)
    *         =  (b5 + c5) ( 2 + (b5 + c5) D_w^dag )^(-1) * H_w
    */
-  class UnprecDWFTransfLinOp : public UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecDWFTransfLinOp : public UnprecLinearOperator<LatticeFermion, 
+			       multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     UnprecDWFTransfLinOp() {}
 
     //! Full constructor
-    UnprecDWFTransfLinOp(const multi1d<LatticeColorMatrix>& u_, 
+    UnprecDWFTransfLinOp(Handle< FermState<T,P,Q> > fs,
 			 const Real& Mass_,
 			 const Real& b5_,
 			 const Real& c5_,
 			 const InvertParam_t& invParam_)
-    {create(u_,Mass_, b5_, c5_, invParam_);}
+    {create(fs,Mass_, b5_, c5_, invParam_);}
 
     //! Destructor is automatic
     ~UnprecDWFTransfLinOp() {}
@@ -42,7 +48,7 @@ namespace Chroma
     const OrderedSubset& subset() const {return all;}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& Mass_,
 		const Real& b5_,
 		const Real& c5_,
@@ -51,6 +57,8 @@ namespace Chroma
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
   private:
     Real Mass;
@@ -59,6 +67,7 @@ namespace Chroma
     InvertParam_t invParam;
     Handle< LinearOperator<LatticeFermion> > D_w;
     Handle< LinearOperator<LatticeFermion> > D_denum;  
+    Handle< FermBC<T,P,Q> > fbc;
   };
 
 
@@ -67,19 +76,25 @@ namespace Chroma
    * where
    *    H_T^2 = (b5 + c5)^2 * H_w * [( 2 + (b5 + c5) D_w^dag )*( 2 + (b5 + c5) D_w )]^(-1) * H_w
    */
-  class UnprecDWFTransfMdagMLinOp : public UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecDWFTransfMdagMLinOp : public UnprecLinearOperator<LatticeFermion, 
+				    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     UnprecDWFTransfMdagMLinOp() {}
 
     //! Full constructor
-    UnprecDWFTransfMdagMLinOp(const multi1d<LatticeColorMatrix>& u_, 
+    UnprecDWFTransfMdagMLinOp(Handle< FermState<T,P,Q> > fs,
 			      const Real& Mass_,
 			      const Real& b5_,
 			      const Real& c5_,
 			      const InvertParam_t& invParam_)
-    {create(u_,Mass_, b5_, c5_, invParam_);}
+    {create(fs, Mass_, b5_, c5_, invParam_);}
 
     //! Destructor is automatic
     ~UnprecDWFTransfMdagMLinOp() {}
@@ -87,8 +102,11 @@ namespace Chroma
     //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& Mass_,
 		const Real& b5_,
 		const Real& c5_,
@@ -105,7 +123,9 @@ namespace Chroma
     InvertParam_t invParam;
     Handle< LinearOperator<LatticeFermion> > D_w;
     Handle< LinearOperator<LatticeFermion> > D_denum;  
+    Handle< FermBC<T,P,Q> > fbc;
   };
+
 
 
   //! Operator to apply the denominator
@@ -119,8 +139,7 @@ namespace Chroma
     UnprecDWFTransfDenLinOp() {}
 
     //! Full constructor
-    UnprecDWFTransfDenLinOp(const multi1d<LatticeColorMatrix>& u_, 
-			    const Real& b5_minus_c5_,
+    UnprecDWFTransfDenLinOp(const Real& b5_minus_c5_,
 			    const Handle<LinearOperator<LatticeFermion> > D_w_ ) 
       : b5_minus_c5(b5_minus_c5_), D_w(D_w_) {}
 
@@ -134,7 +153,6 @@ namespace Chroma
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const 
     {
-
       // Apply chi ( 2 + (b5-c5) D_w ) psi
       (*D_w)(chi, psi, isign);
       chi *= b5_minus_c5;
@@ -147,7 +165,7 @@ namespace Chroma
     Handle< LinearOperator<LatticeFermion> > D_w;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 

@@ -1,4 +1,4 @@
-// $Id: lcm_pqp_leapfrog_mts.h,v 2.1 2006-02-27 15:34:40 bjoo Exp $
+// $Id: lcm_pqp_leapfrog_mts.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
 /*! @file
  * @brief Second order minimal norm (2MN) integrator with multiple time scales
  *

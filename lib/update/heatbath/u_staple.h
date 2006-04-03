@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: u_staple.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: u_staple.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
 /*! \file
  *  \brief calculate the sum of all staples for a particular u_mu link
  */

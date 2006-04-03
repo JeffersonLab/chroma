@@ -1,4 +1,4 @@
-// $Id: invbicgstab.cc,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: invbicgstab.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

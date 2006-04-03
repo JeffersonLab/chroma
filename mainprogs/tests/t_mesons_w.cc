@@ -1,10 +1,19 @@
-// $Id: t_mesons_w.cc,v 2.0 2005-09-25 21:04:47 edwards Exp $
+// $Id: t_mesons_w.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
 //
 //! \file
 //  \brief Test the Wilson mesons() routine
 //
 // $Log: t_mesons_w.cc,v $
-// Revision 2.0  2005-09-25 21:04:47  edwards
+// Revision 3.0  2006-04-03 04:59:15  edwards
+// Major overhaul of fermion and gauge action interface. Basically,
+// all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
+// the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
+// in the sense of Hamilton's equations. The fermbc's have been rationalized to never
+// be over multi1d<T>. The "createState" within the FermionAction is now fixed meaning
+// the "u" fields are now from the coordinate type. There are now "ConnectState" that
+// derive into FermState<T,P,Q> and GaugeState<P,Q>.
+//
+// Revision 2.0  2005/09/25 21:04:47  edwards
 // Moved to version 2.0
 //
 // Revision 1.8  2005/03/02 00:44:19  edwards

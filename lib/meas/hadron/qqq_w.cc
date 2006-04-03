@@ -1,6 +1,15 @@
-//  $Id: qqq_w.cc,v 2.1 2005-12-27 20:41:41 kostas Exp $
+//  $Id: qqq_w.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
 //  $Log: qqq_w.cc,v $
-//  Revision 2.1  2005-12-27 20:41:41  kostas
+//  Revision 3.0  2006-04-03 04:59:00  edwards
+//  Major overhaul of fermion and gauge action interface. Basically,
+//  all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
+//  the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
+//  in the sense of Hamilton's equations. The fermbc's have been rationalized to never
+//  be over multi1d<T>. The "createState" within the FermionAction is now fixed meaning
+//  the "u" fields are now from the coordinate type. There are now "ConnectState" that
+//  derive into FermState<T,P,Q> and GaugeState<P,Q>.
+//
+//  Revision 2.1  2005/12/27 20:41:41  kostas
 //  added NPLQCD code
 //
 //  constructs 3 quark propagators contracted at the sink

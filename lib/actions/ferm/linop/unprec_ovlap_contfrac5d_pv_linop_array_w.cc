@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -87,6 +87,8 @@ namespace Chroma
 //      // This term does not contribute to PV
 //    }
 
+    getFermBC().modifyF(chi);
+
     END_CODE();
   }
 
@@ -170,10 +172,12 @@ namespace Chroma
       QDP_abort(1);
     }
                             
+    getFermBC().zero(ds_u);
+
     END_CODE();
   }
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 

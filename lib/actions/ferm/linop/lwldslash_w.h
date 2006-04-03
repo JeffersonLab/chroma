@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -7,6 +7,7 @@
 #ifndef __lwldslash_h__
 #define __lwldslash_h__
 
+#include "state.h"
 #include "io/aniso_io.h"
 #include "actions/ferm/linop/lwldslash_base_w.h"
 
@@ -46,21 +47,26 @@ namespace Chroma
   class QDPWilsonDslash : public WilsonDslashBase
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Empty constructor. Must use create later
     QDPWilsonDslash();
 
     //! Full constructor
-    QDPWilsonDslash(const multi1d<LatticeColorMatrix>& u_);
+    QDPWilsonDslash(Handle< FermState<T,P,Q> > state);
 
     //! Full constructor with anisotropy
-    QDPWilsonDslash(const multi1d<LatticeColorMatrix>& u_, 
+    QDPWilsonDslash(Handle< FermState<T,P,Q> > state,
 		    const AnisoParam_t& aniso_);
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_);
+    void create(Handle< FermState<T,P,Q> > state);
 
     //! Creation routine with anisotropy
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > state,
 		const AnisoParam_t& aniso_);
 
     //! No real need for cleanup here
@@ -78,17 +84,21 @@ namespace Chroma
      */
     void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
+
   protected:
     //! Get the anisotropy parameters
     const AnisoParam_t& getAnisoParam() const {return anisoParam;}
 
   private:
-    AnisoParam_t  anisoParam;
-    multi1d<LatticeColorMatrix> u;  // fold in anisotropy
+    AnisoParam_t                  anisoParam;
+    Handle< FermBC<T,P,Q> >  fbc;
+    multi1d<LatticeColorMatrix>   u;
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

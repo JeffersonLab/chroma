@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: t_dwf4d.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -154,20 +154,20 @@ int main(int argc, char **argv)
   string fermact_4d;
 
   try
-    {
-      read(fermacttop_5d, fermact_path_5d + "/FermAct", fermact_5d);
-      read(fermacttop_4d, fermact_path_4d + "/FermAct", fermact_4d);
-    }
+  {
+    read(fermacttop_5d, fermact_path_5d + "/FermAct", fermact_5d);
+    read(fermacttop_4d, fermact_path_4d + "/FermAct", fermact_4d);
+  }
   catch (const std::string& e) 
-    {
-      QDPIO::cerr << "Error reading fermact: " << e << endl;
-      throw;
-    }
+  {
+    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    throw;
+  }
   catch (const char* e) 
-    {
-      QDPIO::cerr << "Error reading fermact: " << e << endl;
-      throw;
-    }
+  {
+    QDPIO::cerr << "Error reading fermact: " << e << endl;
+    throw;
+  }
 
   QDPIO::cout << "FermAct5D = " << fermact_5d << endl;
   QDPIO::cout << "FermAct4D = " << fermact_4d << endl;
@@ -179,85 +179,89 @@ int main(int argc, char **argv)
 
   try {
 
-  // Make a reader for the stateInfo
-  const string state_info_path_5d = "/Action5D/StateInfo";
-  const string state_info_path_4d = "/Action4D/StateInfo";
-  XMLReader state_info_xml_5d(fermacttop_5d,state_info_path_5d);
-  XMLReader state_info_xml_4d(fermacttop_4d,state_info_path_4d);
+    // Make a reader for the stateInfo
+    const string state_info_path_5d = "/Action5D/StateInfo";
+    const string state_info_path_4d = "/Action4D/StateInfo";
+    XMLReader state_info_xml_5d(fermacttop_5d,state_info_path_5d);
+    XMLReader state_info_xml_4d(fermacttop_4d,state_info_path_4d);
 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
-  // DWF-like 5D Wilson-Type stuff 
-  bool success = false; 
+    // DWF-like 5D Wilson-Type stuff 
+    bool success = false; 
 
-  QDPIO::cerr << "create dwf = " << fermact_5d << endl;
+    QDPIO::cerr << "create dwf = " << fermact_5d << endl;
 
-  Handle< WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > >
-    S_f_5d(TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_5d,
-								  fermacttop_5d,
-								  fermact_path_5d));
+    Handle< WilsonTypeFermAct5D<T,P,Q> >
+      S_f_5d(TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_5d,
+								    fermacttop_5d,
+								    fermact_path_5d));
   
-  Handle<const ConnectState> state_5d(S_f_5d->createState(u,
-							  state_info_xml_5d,
-							  state_info_path_5d));
+    Handle< FermState<T,P,Q> > state_5d(S_f_5d->createState(u,
+							    state_info_xml_5d,
+							    state_info_path_5d));
   
     // Overlap-like stuff
-  QDPIO::cerr << "create overlap" << endl;
-  Handle< WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
-    S_f_4d(TheWilsonTypeFermActFactory::Instance().createObject(fermact_4d,
-								fermacttop_4d,
-								fermact_path_4d));
+    QDPIO::cerr << "create overlap" << endl;
+    Handle< WilsonTypeFermAct<T,P,Q> >
+      S_f_4d(TheWilsonTypeFermActFactory::Instance().createObject(fermact_4d,
+								  fermacttop_4d,
+								  fermact_path_4d));
   
   
-  Handle<const ConnectState> state_4d(S_f_4d->createState(u,
-							  state_info_xml_4d,
-							  state_info_path_4d));
+    Handle< FermState<T,P,Q> > state_4d(S_f_4d->createState(u,
+							    state_info_xml_4d,
+							    state_info_path_4d));
   
   
-  //-------------------------------------------------------------------------------
-  Handle<const LinearOperator<LatticeFermion> > A5(S_f_5d->linOp4D(state_5d,S_f_5d->getQuarkMass(),input.param.invParam));
-  Handle<const LinearOperator<LatticeFermion> > A4(S_f_4d->linOp(state_4d));
+    //-------------------------------------------------------------------------------
+    Handle< LinearOperator<T> > A5(S_f_5d->linOp4D(state_5d,S_f_5d->getQuarkMass(),input.param.invParam));
+    Handle< LinearOperator<T> > A4(S_f_4d->linOp(state_4d));
   
-  LatticeFermion psi, chi;
+    LatticeFermion psi, chi;
   
-  random(psi);
-  random(chi);
+    random(psi);
+    random(chi);
     
-  LatticeFermion tmp1,tmp2;
-  QDPIO::cout << "A5 plus" << endl;
-  (*A5)(tmp1, psi, PLUS);
-  DComplex nn5_plus  = innerProduct(chi, tmp1);
-  QDPIO::cout << "A5 minus" << endl;
-  (*A5)(tmp2, chi, MINUS);
-  DComplex nn5_minus = innerProduct(tmp2, psi);
+    LatticeFermion tmp1,tmp2;
+    QDPIO::cout << "A5 plus" << endl;
+    (*A5)(tmp1, psi, PLUS);
+    DComplex nn5_plus  = innerProduct(chi, tmp1);
+    QDPIO::cout << "A5 minus" << endl;
+    (*A5)(tmp2, chi, MINUS);
+    DComplex nn5_minus = innerProduct(tmp2, psi);
   
-  LatticeFermion tmp3,tmp4;
-  QDPIO::cout << "A4 plus" << endl;
-  (*A4)(tmp3, psi, PLUS);
-  DComplex nn4_plus  = innerProduct(chi, tmp3);
-  QDPIO::cout << "A4 minus" << endl;
-  (*A4)(tmp4, chi, MINUS);
-  DComplex nn4_minus = innerProduct(tmp4, psi);
+    LatticeFermion tmp3,tmp4;
+    QDPIO::cout << "A4 plus" << endl;
+    (*A4)(tmp3, psi, PLUS);
+    DComplex nn4_plus  = innerProduct(chi, tmp3);
+    QDPIO::cout << "A4 minus" << endl;
+    (*A4)(tmp4, chi, MINUS);
+    DComplex nn4_minus = innerProduct(tmp4, psi);
   
-  push(xml_out,"Innerprods");
-  write(xml_out, "nn5_plus", nn5_plus);
-  write(xml_out, "nn4_plus", nn4_plus);
-  write(xml_out, "norm_diff_plus", Real(norm2(tmp1-tmp3)));
-  write(xml_out, "nn5_minus", nn5_minus);
-  write(xml_out, "nn4_minus", nn4_minus);
-  write(xml_out, "norm_diff_minus", Real(norm2(tmp2-tmp4)));
-  pop(xml_out);
+    push(xml_out,"Innerprods");
+    write(xml_out, "nn5_plus", nn5_plus);
+    write(xml_out, "nn4_plus", nn4_plus);
+    write(xml_out, "norm_diff_plus", Real(norm2(tmp1-tmp3)));
+    write(xml_out, "nn5_minus", nn5_minus);
+    write(xml_out, "nn4_minus", nn4_minus);
+    write(xml_out, "norm_diff_minus", Real(norm2(tmp2-tmp4)));
+    pop(xml_out);
   
   }
   catch (const std::string& e) 
-    {
-      QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
-      throw;
-    }
+  {
+    QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
+    throw;
+  }
   catch (const char* e) 
-    {
-      QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
-      throw;
-    }
+  {
+    QDPIO::cerr << "Error in t_dwf4d: " << e << endl;
+    throw;
+  }
   
   pop(xml_out);
 

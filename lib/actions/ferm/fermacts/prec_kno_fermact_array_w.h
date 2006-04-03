@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 2.2 2006-03-21 04:42:49 edwards Exp $
+// $Id: prec_kno_fermact_array_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -47,42 +47,32 @@ namespace Chroma
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    * See also Brower et.al. LATTICE04
    */
-  class EvenOddPrecKNOFermActArray : public EvenOddPrecDWFermActBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecKNOFermActArray : public EvenOddPrecDWFermActBaseArray<LatticeFermion, 
+				   multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! General FermBC
-    EvenOddPrecKNOFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-				   const Real& OverMass_, 
-				   const Real& Mass_, 
-			           const Real& a5_, 
-				   const multi1d<Real>& c_,
-				   int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), a5(a5_), coefs(c_), N5(N5_) {init();}
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! General FermBC
-    EvenOddPrecKNOFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			      const EvenOddPrecKNOFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), coefs(param.coefs), N5(param.N5) {init();}
+    EvenOddPrecKNOFermActArray(Handle< CreateFermState<T,P,Q> > cfs_, 
+			       const Real& OverMass_, 
+			       const Real& Mass_, 
+			       const Real& a5_, 
+			       const multi1d<Real>& c_,
+			       int N5_) : 
+      cfs(cfs_), OverMass(OverMass_), Mass(Mass_), a5(a5_), coefs(c_), N5(N5_) {init();}
+
+    //! General FermBC
+    EvenOddPrecKNOFermActArray(Handle< CreateFermState<T,P,Q> > cfs_, 
+			       const EvenOddPrecKNOFermActArrayParams& param) :
+      cfs(cfs_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), coefs(param.coefs), N5(param.N5) {init();}
 
     //! Copy constructor
     EvenOddPrecKNOFermActArray(const EvenOddPrecKNOFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), coefs(a.coefs), N5(a.N5) {}
-
-    //! Assignment
-    EvenOddPrecKNOFermActArray& operator=(const EvenOddPrecKNOFermActArray& a)
-      {
-	fbc=a.fbc; 
-	OverMass=a.OverMass; 
-	Mass=a.Mass; 
-	a5 = a.a5 ;
-	coefs=a.coefs;
-	N5=a.N5; 
-
-	return *this;
-      }
-
-    //! Return the fermion BC object for this action
-    const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+      cfs(a.cfs), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), coefs(a.coefs), N5(a.N5) {}
 
     //! Length of DW flavor index/space
     int size() const {return N5;}
@@ -91,12 +81,12 @@ namespace Chroma
     Real getQuarkMass() const {return Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
-											     const Real& m_q) const;
+    UnprecDWLikeLinOpBaseArray<T,P,Q>* unprecLinOp(Handle< FermState<T,P,Q> > state, 
+						   const Real& m_q) const;
 
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-    const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
-												const Real& m_q) const;
+    EvenOddPrecDWLikeLinOpBaseArray<T,P,Q>* precLinOp(Handle< FermState<T,P,Q> > state, 
+						      const Real& m_q) const;
 
     //! Destructor is automatic
     ~EvenOddPrecKNOFermActArray() {}
@@ -118,19 +108,27 @@ namespace Chroma
 		   XMLWriter& xml_out,
 		   const LatticePropagator& q_src,
 		   int t_src, int j_decay,
-		   Handle<const ConnectState> state,
+		   Handle< FermState<T,P,Q> > state,
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
 		   bool obsvP,
 		   int& ncg_had);
 
+  protected:
+    //! Return the fermion create state object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
+    //! Partial constructor
+    EvenOddPrecKNOFermActArray() {}
+    //! Hide =
+    void operator=(const EvenOddPrecKNOFermActArray& a) {}
+
   private:
     void init();
-
-    void initCoeffs(multi1d<Real>& b5_arr, multi1d<Real>& c5_arr) const ;
+    void initCoeffs(multi1d<Real>& b5_arr, multi1d<Real>& c5_arr) const;
 
   private:
-    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     Real OverMass;
     Real Mass;
     Real a5 ;

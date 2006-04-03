@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf4d_linop_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D
  */
@@ -25,14 +25,14 @@ namespace Chroma
   public:
     //! Initialize pointer with existing pointer
     /*! Requires that the pointer p is a return value of new */
-    UnprecDWF4DLinOp(const LinearOperator< multi1d<T> >* D_, 
-		     const LinearOperator< multi1d<T> >* PV_,
+    UnprecDWF4DLinOp(LinearOperatorArray<T>* D_, 
+		     LinearOperatorArray<T>* PV_,
 		     const InvertParam_t& invParam_) : 
       D(D_), PV(PV_), invParam(invParam_) {}
 
     //! Copy pointer (one more owner)
-    UnprecDWF4DLinOp(Handle<const LinearOperator< multi1d<T> > > D_, 
-		     Handle<const LinearOperator< multi1d<T> > > PV_,
+    UnprecDWF4DLinOp(Handle< LinearOperatorArray<T> > D_, 
+		     Handle< LinearOperatorArray<T> > PV_,
 		     const InvertParam_t& invParam_) : 
       D(D_), PV(PV_), invParam(invParam_) {}
 
@@ -50,8 +50,8 @@ namespace Chroma
     void operator() (T& chi, const T& psi, enum PlusMinus isign) const;
 
   private:
-    const Handle< const LinearOperator< multi1d<T> > > D;
-    const Handle< const LinearOperator< multi1d<T> > > PV;
+    Handle< LinearOperatorArray<T> > D;
+    Handle< LinearOperatorArray<T> > PV;
     const InvertParam_t& invParam;
   };
 

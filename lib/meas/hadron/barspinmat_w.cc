@@ -1,4 +1,4 @@
-// $Id: barspinmat_w.cc,v 2.2 2006-01-05 16:34:55 kostas Exp $
+// $Id: barspinmat_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */

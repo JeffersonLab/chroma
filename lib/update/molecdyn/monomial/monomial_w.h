@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_w.h,v 2.6 2006-02-25 22:48:58 bjoo Exp $
+// $Id: monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 
 /*! \file
  * \brief Monomials of actions

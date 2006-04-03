@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_w.cc,v 2.4 2006-02-13 01:20:35 bjoo Exp $
+// $Id: lwldslash_base_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -121,6 +121,8 @@ namespace Chroma
       QDP_error_exit("unknown case");
     }
     
+    getFermBC().zero(ds_u);
+
     END_CODE();
   }
 

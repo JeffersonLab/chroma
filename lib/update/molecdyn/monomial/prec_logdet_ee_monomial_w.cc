@@ -5,7 +5,7 @@
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
-#include "actions/ferm/fermacts/prec_clover_fermact_w.h"
+//#include "actions/ferm/fermacts/prec_clover_fermact_w.h"
 
 using namespace std;
 
@@ -19,9 +19,7 @@ namespace Chroma {
     {
       QDPIO::cout << "Create Monomial: " << name << endl;
 
-      return new PrecLogDetEvenEvenMonomial4D(
-	            PrecLogDetEvenEvenMonomialParams(xml, path)
-	         );
+      return new PrecLogDetEvenEvenMonomial4D(PrecLogDetEvenEvenMonomialParams(xml, path));
     }
 
     const std::string name = std::string("N_FLAVOR_LOGDET_EVEN_EVEN_FERM_MONOMIAL");
@@ -29,7 +27,7 @@ namespace Chroma {
     bool registerAll()
     {
       bool foo = true;
-      foo &= EvenOddPrecCloverFermActEnv::registered;
+//      foo &= EvenOddPrecCloverFermActEnv::registered;
       foo &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
       return foo;
     }
@@ -89,9 +87,9 @@ namespace Chroma {
 
     QDPIO::cout << "EvanOddPrecConstDetTwoFlavorWilsonTypeFermMonomial: construct " << fermact_string << endl;
 
-    const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
-    const EvenOddPrecLogDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecLogDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+    EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {

@@ -1,4 +1,4 @@
-// $Id: hyp_link_smearing.cc,v 1.3 2005-11-16 02:34:58 edwards Exp $
+// $Id: hyp_link_smearing.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief Hyp link smearing
  */

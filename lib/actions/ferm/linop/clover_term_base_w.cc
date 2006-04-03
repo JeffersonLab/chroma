@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 2.7 2006-03-03 02:37:39 edwards Exp $
+// $Id: clover_term_base_w.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -11,7 +11,7 @@ namespace Chroma
 
   //! Return flops performed by the operator()
   unsigned long 
-  CloverTermBase::nFlops() const {return 552;}     // NOTE: NEED TO FIGURE THIS OUT!!
+  CloverTermBase::nFlops() const {return 552;}
 
 
   //! Take deriv of D
@@ -42,8 +42,8 @@ namespace Chroma
 
 
   void CloverTermBase::deriv_loops(const int mu, const int nu, const int cb,
-		   LatticeColorMatrix& ds_u,
-		   const LatticeColorMatrix& Lambda) const
+				   LatticeColorMatrix& ds_u,
+				   const LatticeColorMatrix& Lambda) const
   {
 
     const multi1d<LatticeColorMatrix>& u = getU();
@@ -74,7 +74,7 @@ namespace Chroma
 
     LatticeColorMatrix u_nu_for_mu = shift(u[nu],FORWARD, mu); // Can reuse these later
     LatticeColorMatrix u_mu_for_nu = shift(u[mu],FORWARD, nu)
-;
+      ;
     LatticeColorMatrix u_tmp1, u_tmp2, u_tmp3;
 
     //   u_tmp1 =   <-------
@@ -218,7 +218,6 @@ namespace Chroma
     //    |       |
     //    <-------V
     ds_u[rb[1-cb]] -= shift(Lambda, FORWARD, mu)*shift(staple_back, BACKWARD, nu);
-
   }
 
 
@@ -232,8 +231,8 @@ namespace Chroma
    * \return Computes   chi^dag * \dot(D} * psi  
    */
   void CloverTermBase::deriv(multi1d<LatticeColorMatrix>& ds_u, 
-				const LatticeFermion& chi, const LatticeFermion& psi, 
-				enum PlusMinus isign, int cb) const
+			     const LatticeFermion& chi, const LatticeFermion& psi, 
+			     enum PlusMinus isign, int cb) const
   {
     
     // Do I still need to do this?
@@ -242,8 +241,8 @@ namespace Chroma
     }
 
     // Force in each direction
-    for(int mu=0; mu < Nd; mu++) { 
-
+    for(int mu=0; mu < Nd; mu++) 
+    { 
       // Get the links
       const multi1d<LatticeColorMatrix>& u = getU();
 
@@ -262,10 +261,10 @@ namespace Chroma
       // write them as 2 sum nu > mu i sigma_mu F_munu
       //
       // 
-      for(int nu = 0; nu < Nd; nu++) { 
-
-	if ( mu != nu ) {
-
+      for(int nu = 0; nu < Nd; nu++) 
+      {
+	if ( mu != nu ) 
+	{
 	  // Index 
 	  int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
 
@@ -289,11 +288,12 @@ namespace Chroma
 	  ds_u[mu] += ds_tmp;
 	} // End if mu != nu
 	
-
       } // End loop over nu
       
     }
 
+    // Clear out the deriv on any fixed links
+    getFermBC().zero(ds_u);
   }
 
 
@@ -316,8 +316,8 @@ namespace Chroma
     }
 
     // Force in each direction
-    for(int mu=0; mu < Nd; mu++) { 
-
+    for(int mu=0; mu < Nd; mu++) 
+    { 
 
       // I am only computing this checkerboard, so initialise this
       ds_u[mu] = zero;
@@ -368,6 +368,9 @@ namespace Chroma
 
     } // end of loop over mu
     
+
+    // Not sure this is needed here, but will be sure
+    getFermBC().zero(ds_u);
   }
       
     

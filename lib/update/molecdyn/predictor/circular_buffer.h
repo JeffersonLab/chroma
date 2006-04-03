@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: circular_buffer.h,v 2.1 2005-12-07 03:51:48 edwards Exp $
+// $Id: circular_buffer.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  * \brief Circular buffers
  *

@@ -10,7 +10,7 @@ namespace Chroma
 
   void Triple_Links(multi1d<LatticeColorMatrix>& u, multi1d<LatticeColorMatrix>& u_triple, Real u0);
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

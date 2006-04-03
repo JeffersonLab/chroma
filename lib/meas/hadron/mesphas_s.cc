@@ -1,4 +1,4 @@
-// $Id: mesphas_s.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
+// $Id: mesphas_s.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
 
 
 /* This routine is specific to staggered fermions! */

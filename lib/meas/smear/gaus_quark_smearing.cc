@@ -1,4 +1,4 @@
-// $Id: gaus_quark_smearing.cc,v 2.6 2005-12-06 04:44:40 edwards Exp $
+// $Id: gaus_quark_smearing.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: source_construction.h,v 1.2 2005-11-07 06:28:35 edwards Exp $
+// $Id: source_construction.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 
 /*! @file
  * @brief Source construction

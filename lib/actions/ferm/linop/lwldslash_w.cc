@@ -1,4 +1,4 @@
-// $Id: lwldslash_w.cc,v 2.2 2005-12-20 19:30:32 edwards Exp $
+// $Id: lwldslash_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -41,31 +41,39 @@ namespace Chroma
   QDPWilsonDslash::QDPWilsonDslash() {}
   
   //! Full constructor
-  QDPWilsonDslash::QDPWilsonDslash(const multi1d<LatticeColorMatrix>& u_) 
+  QDPWilsonDslash::QDPWilsonDslash(Handle< FermState<T,P,Q> > state)
   {
-    create(u_);
+    create(state);
   }
   
   //! Full constructor with anisotropy
-  QDPWilsonDslash::QDPWilsonDslash(const multi1d<LatticeColorMatrix>& u_, 
+  QDPWilsonDslash::QDPWilsonDslash(Handle< FermState<T,P,Q> > state,
 				   const AnisoParam_t& aniso_) 
   {
-    create(u_, aniso_);
+    create(state, aniso_);
   }
 
   //! Creation routine
-  void QDPWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
+  void QDPWilsonDslash::create(Handle< FermState<T,P,Q> > state)
   {
     AnisoParam_t foo;
-    create(u_, foo);
+    create(state, foo);
   }
 
   //! Creation routine with anisotropy
-  void QDPWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_,
+  void QDPWilsonDslash::create(Handle< FermState<T,P,Q> > state,
 			       const AnisoParam_t& aniso_) 
   {
-    u = u_;
     anisoParam = aniso_;
+    fbc = state->getFermBC();
+    u   = state->getLinks();
+
+    // Sanity check
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << "WilsonDslash: error: fbc is null" << endl;
+      QDP_abort(1);
+    }
 
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
   

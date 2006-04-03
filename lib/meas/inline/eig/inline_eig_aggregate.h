@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eig_aggregate.h,v 2.0 2005-09-25 21:04:36 edwards Exp $
+// $Id: inline_eig_aggregate.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  *  \brief Inline eigenvalute measurement aggregator
  */

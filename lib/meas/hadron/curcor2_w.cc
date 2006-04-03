@@ -1,4 +1,4 @@
-// $Id: curcor2_w.cc,v 2.0 2005-09-25 21:04:35 edwards Exp $
+// $Id: curcor2_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
 /*! \file
  *  \brief Mesonic current correlators
  */

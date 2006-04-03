@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 2.2 2006-03-21 19:14:36 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -61,61 +61,47 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the zolotarev approx. to eps(H(m))
    */
-  class UnprecOvlapContFrac5DFermActArray : public UnprecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecOvlapContFrac5DFermActArray : public UnprecWilsonTypeFermAct5D<LatticeFermion, 
+					    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     // Construct the action out of a parameter structure
-    UnprecOvlapContFrac5DFermActArray(
-			     Handle< FermBC< multi1d< LatticeFermion> > > fbc_,
-			     const UnprecOvlapContFrac5DFermActParams& param);
+    UnprecOvlapContFrac5DFermActArray(Handle< FermBC<T,P,Q> > fbc_,
+				      const UnprecOvlapContFrac5DFermActParams& param);
   
-
-    //! Copy constructor
-    UnprecOvlapContFrac5DFermActArray(const UnprecOvlapContFrac5DFermActArray& a) : 
-      fbc(a.fbc), S_aux(a.S_aux), params(a.params), N5(a.N5), isLastZeroP(a.isLastZeroP)  {};
-
-    //! Assignment
-    /* Writer screws this up -- I might get rid of that 
-       UnprecOvlapContFrac5DFermActArray& operator=(const UnprecOvlapContFrac5DFermActArray& a) {
-       fbc=a.fbc; 
-       S_aux=a.S_aux;
-       Mass=a.Mass;
-       RatPolyDeg = a.RatPolyDeg;
-       writer=a.writer;
-       return *this;
-       }
-    */
-
-    //! Return the fermion BC object for this action
-    const FermBC< multi1d< LatticeFermion> >& getFermBC() const {return *fbc;}
-
+    //! 5D size
     int size(void) const { return N5; }
 
     //! Return the quark mass
     Real getQuarkMass() const {return params.Mass;}
 
     //! Produce a linear operator for this action
-    const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    UnprecLinearOperatorArray<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a Pauli-Villars linear operator for this action
-    const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOpPV(Handle<const ConnectState> state) const;
+    UnprecLinearOperatorArray<T,P,Q>* linOpPV(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator for this action
-    const LinearOperator< multi1d<LatticeFermion> >* lnonHermLinOp(Handle<const ConnectState> state) const;
+    LinearOperatorArray<T>* lnonHermLinOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator M^dag.M for this action
-    const LinearOperator< multi1d<LatticeFermion> >* lnonHermMdagM(Handle<const ConnectState> state) const;
+    LinearOperatorArray<T>* lnonHermMdagM(Handle< FermState<T,P,Q> > state) const;
 
     //! Matrix is itself hermitian so just return linOp here.
-    const LinearOperator< multi1d<LatticeFermion> >* hermitianLinOp(Handle<const ConnectState> state) const {
-      return linOp(state);
-    }
+    LinearOperatorArray<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+      {
+	return linOp(state);
+      }
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
-    const LinearOperator<LatticeFermion>* linOp4D(Handle<const ConnectState> state,
-						  const Real& m_q,
-						  const InvertParam_t& invParam) const
+    LinearOperator<T>* linOp4D(Handle< FermState<T,P,Q> > state,
+			       const Real& m_q,
+			       const InvertParam_t& invParam) const
     {
       QDPIO::cerr << "linOp4D not implemented" << endl;
       QDP_abort(1);
@@ -123,16 +109,16 @@ namespace Chroma
     }
     
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
-    const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state,
-						  const InvertParam_t& invParam) const 
-    {
-      Handle< const LinearOperator<LatticeFermion> >  lin(linOp4D(state,Real(0),invParam));
-      return new lDeltaLs(lin);
-    }
+    LinearOperator<T>* DeltaLs(Handle< FermState<T,P,Q> > state,
+			       const InvertParam_t& invParam) const 
+      {
+	Handle< LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
+	return new lDeltaLs(lin);
+      }
 
     //! Compute quark propagator over base type
-    const SystemSolver<LatticeFermion>* qprop(Handle<const ConnectState> state,
-					      const InvertParam_t& invParam) const;
+    SystemSolver<LatticeFermion>* qprop(Handle< FermState<T,P,Q> > state,
+					const InvertParam_t& invParam) const;
 
     //! Destructor is automatic
     ~UnprecOvlapContFrac5DFermActArray() {}
@@ -141,7 +127,7 @@ namespace Chroma
     // Create state functions
 
     //! Create OverlapConnectState from XML
-    const OverlapConnectState* 
+    OverlapConnectState* 
     createState(const multi1d<LatticeColorMatrix>& u, 
 		XMLReader& state_info_xml,
 		const string& state_info_path) const;
@@ -150,25 +136,25 @@ namespace Chroma
     /*! Override the parent */
     
     //! Create a ConnectState with just the gauge fields
-    const OverlapConnectState*
+    OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_) const ;
 
     //! Create a ConnectState with just the gauge fields, and a lower
     //!  approximation bound
-    const OverlapConnectState*
+    OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_, 
 		const Real& approxMin_) const ;
  
     
     //! Create a connect State with just approximation range bounds
-    const OverlapConnectState*
+    OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_, 
 		const Real& approxMin_, 
 		const Real& approxMax_) const;
 
 
     //! Create OverlapConnectState with eigenvalues/vectors 
-    const OverlapConnectState*
+    OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_,
 		const multi1d<Real>& lambda_lo_,
 		const multi1d<LatticeFermion>& evecs_lo_, 
@@ -176,12 +162,15 @@ namespace Chroma
 
 
     //! Create from OverlapStateInfo Structure
-    const OverlapConnectState*
+    OverlapConnectState*
     createState(const multi1d<LatticeColorMatrix>& u_,
 		const OverlapStateInfo& state_info) const;
 
 
   protected:
+    //! Return the fermion create state for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
     //! Helper in construction
     void init(Real& scale_fac,
 	      multi1d<Real>& alpha,
@@ -192,10 +181,13 @@ namespace Chroma
   private:
     // Hide partial constructor
     UnprecOvlapContFrac5DFermActArray();
+    //! Hide =
+    void operator=(const UnprecOvlapContFrac5DFermActArray& a) {}
 
   private:
-    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    Handle< UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > S_aux;
+    Handle< FermBC<T,P,Q> >           fbc;   // fermion bc
+    Handle< CreateFermState<T,P,Q> >  cfs;   // fermion state creator
+    Handle< UnprecWilsonTypeFermAct<T,P,Q> > S_aux;
     UnprecOvlapContFrac5DFermActParams params;
     int  N5;
     bool isLastZeroP;

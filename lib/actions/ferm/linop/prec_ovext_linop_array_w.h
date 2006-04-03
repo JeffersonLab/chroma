@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovext_linop_array_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_ovext_linop_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -28,29 +28,31 @@ namespace Chroma
    * This operator implements  hep-lat/0005004
    */
 
-  class EvenOddPrecOvExtLinOpArray : public EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvExtLinOpArray : public EvenOddPrecConstDetLinearOperatorArray<LatticeFermion, 
+				     multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! Partial constructor
-    EvenOddPrecOvExtLinOpArray() {}
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
-    EvenOddPrecOvExtLinOpArray(const multi1d<LatticeColorMatrix>& u_,
-			  const int Npoles_,
-			  const Real& coeffP_,
-			  const multi1d<Real>& resP_,
-			  const multi1d<Real>& rootQ_,
-			  const multi1d<Real>& beta_,
-			  const Real& OverMass_,
-			  const Real& Mass_,
-			  const Real& b5_,
-			  const Real& c5_)
-
-    {create(u_,Npoles_, coeffP_, resP_, rootQ_, beta_, 
-	    OverMass_,Mass_,b5_,c5_);}
+    EvenOddPrecOvExtLinOpArray(Handle< FermState<T,P,Q> > fs,
+			       const int Npoles_,
+			       const Real& coeffP_,
+			       const multi1d<Real>& resP_,
+			       const multi1d<Real>& rootQ_,
+			       const multi1d<Real>& beta_,
+			       const Real& OverMass_,
+			       const Real& Mass_,
+			       const Real& b5_,
+			       const Real& c5_)
+      {create(fs,Npoles_, coeffP_, resP_, rootQ_, beta_, 
+	      OverMass_,Mass_,b5_,c5_);}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const int Npoles_,
 		const Real& coeffP_,
 		const multi1d<Real>& resP_,
@@ -67,66 +69,69 @@ namespace Chroma
     //! Destructor is automatic
     ~EvenOddPrecOvExtLinOpArray() {}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return Dslash.getFermBC();}
+
     inline
     void evenEvenLinOp(multi1d<LatticeFermion>& chi, 
 		       const multi1d<LatticeFermion>& psi, 
 		       enum PlusMinus isign) const
-    {
-      applyDiag(chi, psi, isign, 0);
-    }
+      {
+	applyDiag(chi, psi, isign, 0);
+      }
 
     //! Apply the the odd-odd block onto a source vector
     inline
     void oddOddLinOp(multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const
-    {
-      applyDiag(chi, psi, isign, 1);
-    }
+      {
+	applyDiag(chi, psi, isign, 1);
+      }
   
     //! Apply the the even-odd block onto a source vector
     void evenOddLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
-    {
-      applyOffDiag(chi, psi, isign, 0);
-    }
+      {
+	applyOffDiag(chi, psi, isign, 0);
+      }
     
     //! Apply the the odd-even block onto a source vector
     void oddEvenLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
-    {
-      applyOffDiag(chi, psi, isign, 1);
-    }
+      {
+	applyOffDiag(chi, psi, isign, 1);
+      }
 
     //! Apply the inverse of the odd-odd block onto a source vector
     inline
     void evenEvenInvLinOp(multi1d<LatticeFermion>& chi, 
-			const multi1d<LatticeFermion>& psi, 
-			enum PlusMinus isign) const
-    {
-      applyDiagInv(chi, psi, isign, 0);
-    }
+			  const multi1d<LatticeFermion>& psi, 
+			  enum PlusMinus isign) const
+      {
+	applyDiagInv(chi, psi, isign, 0);
+      }
 
     //! Apply the inverse of the odd-odd block onto a source vector
     inline
     void oddOddInvLinOp(multi1d<LatticeFermion>& chi, 
 			const multi1d<LatticeFermion>& psi, 
 			enum PlusMinus isign) const
-    {
-      applyDiagInv(chi, psi, isign, 1);
-    }
+      {
+	applyDiagInv(chi, psi, isign, 1);
+      }
 
 
     //! Apply the even-even block onto a source vector
     void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			    enum PlusMinus isign) const
-    {
-      ds_u.resize(Nd);
-      ds_u = zero;
-    }
+      {
+	ds_u.resize(Nd);
+	ds_u = zero;
+      }
 
 
 
@@ -134,29 +139,29 @@ namespace Chroma
     void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			  const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			  enum PlusMinus isign) const
-    {
-      ds_u.resize(Nd);
-      ds_u = zero;
-    }
+      {
+	ds_u.resize(Nd);
+	ds_u = zero;
+      }
 
     //! Apply the the even-odd block onto a source vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			   enum PlusMinus isign) const
-    {
-      applyDerivOffDiag(ds_u, chi, psi, isign, 0);
-    }
+      {
+	applyDerivOffDiag(ds_u, chi, psi, isign, 0);
+      }
  
     //! Apply the the odd-even block onto a source vector
     void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			   enum PlusMinus isign) const
-    {
-      applyDerivOffDiag(ds_u, chi, psi, isign, 1);
-    }
+      {
+	applyDerivOffDiag(ds_u, chi, psi, isign, 1);
+      }
 
 
-   //! Return flops performed by the evenEvenLinOp
+    //! Return flops performed by the evenEvenLinOp
     unsigned long evenEvenNFlops(void) const { 
       return diagNFlops();
     }
@@ -192,7 +197,7 @@ namespace Chroma
     }
   protected:
 
-       //! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
+    //! Apply the even-even (odd-odd) coupling piece of the domain-wall fermion operator
     /*!
      * \param chi     result     	                   (Modify)
      * \param psi     source     	                   (Read)
@@ -243,7 +248,7 @@ namespace Chroma
 			   enum PlusMinus isign,
 			   int cb) const;
 
-   //! Return flops performed by the diagonal part
+    //! Return flops performed by the diagonal part
     unsigned long diagNFlops(void) const { 
       unsigned long cbsite_flops = (10*N5-8)*Nc*Ns;
       return cbsite_flops*(Layout::sitesOnNode()/2);
@@ -261,18 +266,24 @@ namespace Chroma
       return cbsite_flops*(Layout::sitesOnNode()/2);
     }
 
+  protected:
+    //! Partial constructor
+    EvenOddPrecOvExtLinOpArray() {}
+    //! Hide =
+    void operator=(const EvenOddPrecOvExtLinOpArray&) {}
+
   private:
     int Npoles;
     int N5;
  
     // Needed for applying Even-Even
-    Real Q; // (Nd-m)
+//    Real QQ; // (Nd-m)
     Real A; // -alpha Q
     multi1d<Real> B;  // B_p = sqrt(q_p beta_p) [ 2 + a5 Q ];
     multi1d<Real> D;  // D_p = sqrt(p_p beta_p) [ 2 + a5 Q ];
     multi1d<Real> C;  // C_p = alpha beta_p Q
     Real E; // (2R + (Ra5 + alpha p0)Q)
-    Handle< const WilsonDslashArray > Dslash; //Dslash Op
+    WilsonDslashArray  Dslash; //Dslash Op
 
     // Needed for applying Off Diag
     Real Aprime;  // -alpha/2
@@ -289,7 +300,7 @@ namespace Chroma
     Real S;  // Schur's complement: E + sum_p D_p^2 A tilde_p
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

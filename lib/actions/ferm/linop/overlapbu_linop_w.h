@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlapbu_linop_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: overlapbu_linop_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief A variant of the 4D overlap operator
  */
@@ -65,7 +65,7 @@ namespace Chroma
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

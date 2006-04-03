@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_fermact_w.cc,v 2.4 2006-02-26 03:47:51 edwards Exp $
+// $Id: prec_parwilson_fermact_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/prec_parwilson_linop_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 #include "io/param_io.h"       // to get kappaToMass
 
@@ -18,17 +18,21 @@ namespace Chroma
   namespace EvenOddPrecParWilsonFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
-										    const std::string& path)
+    WilsonTypeFermAct<LatticeFermion,
+		      multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+								     const std::string& path)
     {
-      return new EvenOddPrecParWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+      return new EvenOddPrecParWilsonFermAct(CreateFermStateEnv::reader(xml_in, path), 
 					     EvenOddPrecParWilsonFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct4D(xml_in, path);
     }
@@ -95,10 +99,12 @@ namespace Chroma
    *
    * \param state 	    gauge field     	       (Read)
    */
-  const EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
-  EvenOddPrecParWilsonFermAct::linOp(Handle<const ConnectState> state) const
+  EvenOddPrecConstDetLinearOperator<LatticeFermion,
+				    multi1d<LatticeColorMatrix>,
+				    multi1d<LatticeColorMatrix> >* 
+  EvenOddPrecParWilsonFermAct::linOp(Handle< FermState<T,P,Q> > state) const
   {
-    return new EvenOddPrecParWilsonLinOp(state->getLinks(),param.Mass,param.H);
+    return new EvenOddPrecParWilsonLinOp(state,param.Mass,param.H);
   }
 
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeacts_aggregate.h,v 1.1 2006-02-15 05:24:08 edwards Exp $
+// $Id: gaugeacts_aggregate.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief All gauge actions
  */

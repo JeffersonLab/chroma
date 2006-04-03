@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_linop_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_ovdwf_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -20,7 +20,7 @@ namespace Chroma
    * \param N5_           extent of 5D  (Read)
    */
   void 
-  EvenOddPrecOvDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  EvenOddPrecOvDWLinOpArray::create(Handle< FermState<T,P,Q> > fs,
 				    const Real& WilsonMass_, const Real& m_q_, int N5_)
   {
     WilsonMass = WilsonMass_;
@@ -28,7 +28,9 @@ namespace Chroma
     a5  = 1.0;
     N5  = N5_;
 
-    D.create(u_);
+
+    // Extract a 4D fermstate to use for the Wilson dslash
+    D.create(fs);
 
     c5InvTwoKappa = 1.0 - (Nd-WilsonMass) ;
     c5TwoKappa = 1.0 /  c5InvTwoKappa ;

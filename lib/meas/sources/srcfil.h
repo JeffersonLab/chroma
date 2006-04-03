@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: srcfil.h,v 1.2 2005-11-07 06:27:11 edwards Exp $
+// $Id: srcfil.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */

@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson.out.xml,v 1.2 2006-03-21 03:09:13 edwards Exp $
+; $Id: prec_wilson.out.xml,v 3.0 2006-04-03 04:59:26 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;

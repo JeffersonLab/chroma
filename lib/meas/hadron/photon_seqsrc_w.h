@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: photon_seqsrc_w.h,v 1.1 2006-02-13 20:47:51 edwards Exp $
+// $Id: photon_seqsrc_w.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */

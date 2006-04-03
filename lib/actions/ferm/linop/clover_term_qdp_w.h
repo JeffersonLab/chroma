@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 2.7 2006-02-16 02:24:46 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -7,6 +7,7 @@
 #ifndef __clover_term_qdp_w_h__
 #define __clover_term_qdp_w_h__
 
+#include "state.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/clover_term_base_w.h"
 
@@ -36,6 +37,11 @@ namespace Chroma
   class QDPCloverTerm : public CloverTermBase
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Empty constructor. Must use create later
     QDPCloverTerm();
 
@@ -43,7 +49,7 @@ namespace Chroma
     ~QDPCloverTerm() {}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 	
+    void create(Handle< FermState<T,P,Q> >& fs,
 		const CloverFermActParams& param_);
 
     //! Computes the inverse of the term on cb using Cholesky
@@ -78,7 +84,12 @@ namespace Chroma
      */
     void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 
+    //! Calculates Tr_D ( Gamma_mat L )
     void triacntr(LatticeColorMatrix& B, int mat, int cb) const;
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
+
   protected:
     //! Create the clover term on cb
     /*!
@@ -94,10 +105,10 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& getU() const {return u;}
 
     //! Calculates Tr_D ( Gamma_mat L )
-
-
     const Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const;
+
   private:
+    Handle< FermBC<T,P,Q> >      fbc;
     multi1d<LatticeColorMatrix>  u;
     CloverFermActParams          param;
     LatticeReal                  tr_log_diag_; // Fill this out during create

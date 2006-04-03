@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 2.4 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_wilson_linop_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -14,11 +14,11 @@ namespace Chroma
    * \param u_ 	  gauge field     	       (Read)
    * \param Mass_   fermion kappa   	       (Read)
    */
-  void EvenOddPrecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void EvenOddPrecWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
 				      const Real& Mass_)
   {
     AnisoParam_t anisoParam;
-    create(u_, Mass_, anisoParam);
+    create(fs, Mass_, anisoParam);
   }
 
 
@@ -28,11 +28,11 @@ namespace Chroma
    * \param Mass_   fermion kappa   	       (Read)
    * \param aniso   anisotropy struct   	       (Read)
    */
-  void EvenOddPrecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void EvenOddPrecWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
 				      const Real& Mass_,
 				      const AnisoParam_t& anisoParam)
   {
-    D.create(u_,anisoParam);
+    D.create(fs,anisoParam);
 
     Mass = Mass_;
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
@@ -125,6 +125,8 @@ namespace Chroma
     // in this order, this last job could be replaced with a 
     // vaxpy3_norm if we wanted the || M psi ||^2 over the subset.
     chi[rb[1]] = fact*psi + tmp3;
+
+    getFermBC().modifyF(chi, rb[1]);
   }
 
 

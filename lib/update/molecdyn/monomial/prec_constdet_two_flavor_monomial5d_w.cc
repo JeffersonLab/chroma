@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_monomial5d_w.cc,v 2.3 2006-02-16 02:59:03 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial5d_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -66,9 +66,9 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    WilsonTypeFermAct5D<T,P,Q>* tmp_act = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
-    const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+    EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>* downcast=dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_linop_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_wilson_linop_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
@@ -24,30 +24,42 @@ namespace Chroma
    *
    *      M  =  (d+M) - (1/2) D'
    */
-  class EvenOddPrecWilsonLinOp : public EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+
+  class EvenOddPrecWilsonLinOp : public EvenOddPrecConstDetLinearOperator<LatticeFermion, 
+				 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     EvenOddPrecWilsonLinOp() {}
 
     //! Full constructor
-    EvenOddPrecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_)
-    {create(u_,Mass_);}
+    EvenOddPrecWilsonLinOp(Handle< FermState<T,P,Q> > fs, 
+			   const Real& Mass_)
+    {create(fs,Mass_);}
 
     //! Full constructor with Anisotropy
-    EvenOddPrecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, 
+    EvenOddPrecWilsonLinOp(Handle< FermState<T,P,Q> > fs,
 			   const Real& Mass_,
 			   const AnisoParam_t& aniso)
-    {create(u_,Mass_,aniso);}
+    {create(fs,Mass_,aniso);}
 
     //! Destructor is automatic
     ~EvenOddPrecWilsonLinOp() {}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_);
+    void create(Handle< FermState<T,P,Q> > fs, 
+		const Real& Mass_);
 
     //! Creation routine with Anisotropy
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& Mass_,
 		const AnisoParam_t& aniso);
 
@@ -132,7 +144,7 @@ namespace Chroma
     WilsonDslash D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: eigen_state.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+/*! \file
+ *  \brief Eigenstate reader
+ */
+
 #ifndef eigen_state_h
 #define eigen_state_h
 
@@ -6,25 +12,41 @@
 #include "chromabase.h"
 #include "util/ferm/eigeninfo.h"
 #include "meas/inline/io/named_objmap.h"
-namespace Chroma {
 
+namespace Chroma 
+{
 
-
-  class EigenConnectState : public ConnectState {
+  //! Eigen-state holder
+  /*! @ingroup fermacts */
+  class EigenConnectState : public FermState<LatticeFermion, 
+			                     multi1d<LatticeColorMatrix>, 
+			                     multi1d<LatticeColorMatrix> >
+  {
   public:
-    EigenConnectState(const multi1d<LatticeColorMatrix>& u_) 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    //! Main constructor
+    EigenConnectState(Handle< FermBC<T,P,Q> > fbc_, 
+		      const multi1d<LatticeColorMatrix>& u_) : 
+      fbc(fbc_), u(u_)
     {
       QDPIO::cout << "Calling EigenConnectState constructor with no IDs" << endl;
-      u = u_;
+      fbc->modify(u);
       eigen_info_id = "";
       Neig = 0;
       dummy_evecs.resize(0);
       dummy_evals.resize(0);
     }
 
-    EigenConnectState(const multi1d<LatticeColorMatrix>& u_,
-		      std::string eigen_info_id_) {
-      u = u_;
+    EigenConnectState(Handle< FermBC<T,P,Q> > fbc_, 
+		      const multi1d<LatticeColorMatrix>& u_,
+		      std::string eigen_info_id_) :
+      fbc(fbc_), u(u_)
+    {
+      fbc->modify(u);
       eigen_info_id = eigen_info_id_;
       QDPIO::cout << "Creating EigenConnectState using eigen_info_id :" << eigen_info_id << endl << flush ;
 
@@ -35,7 +57,6 @@ namespace Chroma {
     }
 
     ~EigenConnectState() {}
-
 
     const multi1d<LatticeColorMatrix>& getLinks() const { 
       return u;
@@ -101,7 +122,20 @@ namespace Chroma {
       return Neig;
     }
 
+    //! Return the ferm BC object for this state
+    const FermBC<T,P,Q>& getBC() const {return *fbc;}
+
+    //! Return the gauge BC object for this state
+    /*! This is to help the optimized linops */
+    Handle< FermBC<T,P,Q> > getFermBC() const {return fbc;}
+
+  protected:
+    //! Hide default constructor
+    EigenConnectState() {}
+    void operator=(const EigenConnectState&) {}
+
   private:
+    Handle< FermBC<T,P,Q> > fbc;
     multi1d<LatticeColorMatrix> u;
     std::string eigen_info_id;
     int Neig;
@@ -109,6 +143,45 @@ namespace Chroma {
     multi1d<Real> dummy_evals;
   };
 
+
+
+  //! Create a simple ferm connection state
+  /*! @ingroup fermacts
+   *
+   * This is a factory class for producing a connection state
+   */
+  class CreateEigenConnectState : public CreateFermState<LatticeFermion, 
+			                                 multi1d<LatticeColorMatrix>, 
+			                                 multi1d<LatticeColorMatrix> >
+  {
+  public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    //! Full constructor
+    CreateEigenConnectState(Handle< FermBC<T,P,Q> > fbc_) : fbc(fbc_) {}
+
+    //! Destructor
+    ~CreateEigenConnectState() {}
+   
+    //! Construct a ConnectState
+    EigenConnectState* operator()(const Q& q) const
+      {
+	return new EigenConnectState(fbc, q);
+      }
+
+    //! Return the ferm BC object for this state
+    const FermBC<T,P,Q>& getBC() const {return *fbc;}
+
+  private:
+    CreateEigenConnectState() {}  // hide default constructur
+    void operator=(const CreateEigenConnectState&) {} // hide =
+
+  private:
+    Handle< FermBC<T,P,Q> >  fbc;
+  };
 
 
 

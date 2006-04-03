@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -40,29 +40,29 @@ namespace Chroma
   }
   
   //! Full constructor
-  SSEWilsonDslash::SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_) 
+  SSEWilsonDslash::SSEWilsonDslash(Handle< FermState<T,P,Q> > state)
   { 
     init();
-    create(u_);
+    create(state);
   }
   
   //! Full constructor with anisotropy
-  SSEWilsonDslash::SSEWilsonDslash(const multi1d<LatticeColorMatrix>& u_, 
+  SSEWilsonDslash::SSEWilsonDslash(Handle< FermState<T,P,Q> > state,
 				   const AnisoParam_t& aniso_) 
   {
     init();
-    create(u_, aniso_);
+    create(state, aniso_);
   }
 
   //! Creation routine
-  void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
+  void SSEWilsonDslash::create(Handle< FermState<T,P,Q> > state)
   {
     AnisoParam_t foo;
-    create(u_, foo);
+    create(state, foo);
   }
 
   //! Creation routine with anisotropy
-  void SSEWilsonDslash::create(const multi1d<LatticeColorMatrix>& uu_,
+  void SSEWilsonDslash::create(Handle< FermState<T,P,Q> > state,
 			       const AnisoParam_t& aniso_) 
   {
     START_CODE();
@@ -70,8 +70,18 @@ namespace Chroma
     // Save a copy of the aniso params original fields and with aniso folded in
     anisoParam = aniso_;
 
+    // Save a copy of the fermbc
+    fbc = state->getFermBC();
+
+    // Sanity check
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << "SSEWilsonDslash: error: fbc is null" << endl;
+      QDP_abort(1);
+    }
+
     // Fold in anisotropy
-    multi1d<LatticeColorMatrix> u = uu_;
+    multi1d<LatticeColorMatrix> u = state->getLinks();
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
   
     if (anisoParam.anisoP)
@@ -103,7 +113,7 @@ namespace Chroma
   }
 
 
-  SSEWilsonDslash::~SSEWilsonDslash(void) 
+  SSEWilsonDslash::~SSEWilsonDslash() 
   {
     START_CODE();
 
@@ -155,8 +165,10 @@ namespace Chroma
 			 (int)isign, (1-cb));
   
 
+    getFermBC().modifyF(chi, QDP::rb[cb]);
+
     END_CODE();
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

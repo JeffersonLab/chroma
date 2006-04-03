@@ -1,4 +1,4 @@
-// $Id: hadron_seqsource.cc,v 2.1 2006-02-09 02:25:24 edwards Exp $
+// $Id: hadron_seqsource.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
 /*! \file
  *  \brief Construct hadron sequential sources
  */

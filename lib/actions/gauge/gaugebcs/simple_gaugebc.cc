@@ -1,4 +1,4 @@
-// $Id: simple_gaugebc.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: simple_gaugebc.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
@@ -12,7 +12,8 @@ namespace Chroma {
   namespace SimpleGaugeBCEnv 
   { 
     //! Calllback function to register with the factory
-    GaugeBC* createGaugeBC(XMLReader& xml, const string& path)
+    GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeBC(XMLReader& xml, 
+										       const string& path)
     {
       QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << endl;
       return new SimpleGaugeBC(SimpleGaugeBCParams(xml, path));
@@ -58,4 +59,4 @@ namespace Chroma {
     pop(xml);
   }
 
-}; // End namespace Chroma 
+} // End namespace Chroma 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: derivmesonseqsrc_w.h,v 2.5 2006-02-11 21:18:39 edwards Exp $
+// $Id: derivmesonseqsrc_w.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
 /*! \file
  *  \brief Construct derivative meson sequential sources.
  *

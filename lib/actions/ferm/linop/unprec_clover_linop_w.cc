@@ -1,4 +1,4 @@
-// $Id: unprec_clover_linop_w.cc,v 2.8 2006-03-08 22:45:14 edwards Exp $
+// $Id: unprec_clover_linop_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -12,18 +12,18 @@ namespace Chroma
 { 
   //! Creation routine with Anisotropy
   /*!
-   * \param u_ 	    gauge field     	       (Read)
+   * \param fs 	    gauge field     	       (Read)
    * \param param_  parameters   	       (Read)
    */
-  void UnprecCloverLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void UnprecCloverLinOp::create(Handle< FermState<T,P,Q> > fs,
 				 const CloverFermActParams& param_)
   {
     //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
 
     param = param_;
 
-    A.create(u_, param);
-    D.create(u_, param.anisoParam);
+    A.create(fs, param);
+    D.create(fs, param.anisoParam);
 
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
@@ -49,6 +49,8 @@ namespace Chroma
     A(chi, psi, isign); 
     D(tmp, psi, isign);
     chi += mhalf * tmp;
+
+    getFermBC().modifyF(chi);
   }
 
 
@@ -69,6 +71,7 @@ namespace Chroma
       ds_u[mu] -= Real(0.5)*ds_tmp[mu];
     }
     
+    getFermBC().zero(ds_u);
   }
 
 

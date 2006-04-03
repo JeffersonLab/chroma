@@ -1,4 +1,4 @@
-// $Id: gauge_io.cc,v 2.1 2005-10-13 03:09:36 edwards Exp $
+// $Id: gauge_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator gauge IO
  */

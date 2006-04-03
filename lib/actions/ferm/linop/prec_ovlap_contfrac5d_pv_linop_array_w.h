@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -21,16 +21,21 @@ namespace Chroma
    * Even-odd precond. Pauli-Villars Cont. Frac. linop
    */
 
-  class EvenOddPrecOvlapContFrac5DPVLinOpArray : public EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvlapContFrac5DPVLinOpArray : public EvenOddPrecConstDetLinearOperatorArray<
+    LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
     /*! Pretty darn the same as for the unprec case
       except that the auxiliary linop M is no longer supplied, 
       but is created here 
     */
-    EvenOddPrecOvlapContFrac5DPVLinOpArray(Handle<const ConnectState> state,
+    EvenOddPrecOvlapContFrac5DPVLinOpArray(Handle< FermState<T,P,Q> > state,
 					   const Real& _m_q,
 					   const Real& _OverMass,
 					   int _N5,
@@ -45,6 +50,9 @@ namespace Chroma
 
     //! Destructor is automatic
     ~EvenOddPrecOvlapContFrac5DPVLinOpArray() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return Dslash.getFermBC();}
 
     //! Apply the even-even block onto a source vector
     inline
@@ -244,10 +252,14 @@ namespace Chroma
       return cbsite_flops*(Layout::sitesOnNode()/2);
     }
 
+  protected:
+    //! Hide partial constructor
+//    EvenOddPrecOvlapContFrac5DPVLinOpArray() {}
+    //! Hide partial constructor
+    void operator=(const EvenOddPrecOvlapContFrac5DPVLinOpArray&) {}
 
   private:
-    // Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Dslash; //Dslash Op
-    Handle < const WilsonDslashArray > Dslash; // Dslash Op
+    WilsonDslashArray  Dslash; // Dslash Op
     const Real m_q;
     const Real OverMass;
     const int  N5;    // Size of the 5th dimension
@@ -262,7 +274,7 @@ namespace Chroma
     multi1d<Real> off_diag_coeff;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

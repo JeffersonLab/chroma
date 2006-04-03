@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.h,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: quarkprop4_s.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -26,11 +26,14 @@ namespace Chroma
   void quarkProp4(LatticeStaggeredPropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticeStaggeredPropagator& q_src,
-		  const StaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >& S_f,
-		  Handle<const ConnectState> state,
+		  const StaggeredTypeFermAct<LatticeStaggeredFermion, 
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >& S_f,
+		  Handle< FermState<LatticeStaggeredFermion, 
+		  multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		  const InvertParam_t& invParam,
 		  QuarkSpinType quarkSpinType,
 		  int& ncg_had);
 
-};
+}
 #endif

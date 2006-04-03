@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_fermact_w.h,v 2.4 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_clover_fermact_w.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -29,38 +29,48 @@ namespace Chroma
    * Only defined on odd subset.
    */
 
-  class EvenOddPrecCloverFermAct : public EvenOddPrecLogDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecCloverFermAct : public EvenOddPrecLogDetWilsonTypeFermAct<LatticeFermion, 
+				   multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! General FermBC
-    EvenOddPrecCloverFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    //! Partial constructor
+    EvenOddPrecCloverFermAct() {}
+
+    //! General FermState
+    EvenOddPrecCloverFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
 			     const CloverFermActParams& param_) : 
-      fbc(fbc_), param(param_) {}
+      cfs(cfs_), param(param_) {}
 
     //! Copy constructor
     EvenOddPrecCloverFermAct(const EvenOddPrecCloverFermAct& a) : 
-      fbc(a.fbc), param(a.param) {}
-
-    //! Assignment
-    EvenOddPrecCloverFermAct& operator=(const EvenOddPrecCloverFermAct& a)
-      {fbc=a.fbc; param=a.param; return *this;}
-
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
+      cfs(a.cfs), param(a.param) {}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecLogDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    EvenOddPrecLogDetLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce the gamma_5 hermitian operator H_w
-    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
-      return new lgherm<LatticeFermion>(linOp(state));
-    }
+    LinearOperator<LatticeFermion>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+      { 
+	return new lgherm<LatticeFermion>(linOp(state));
+      }
 
     //! Destructor is automatic
     ~EvenOddPrecCloverFermAct() {}
 
+  protected:
+    //! Return the fermion BC object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
+    //! Assignment
+    void operator=(const EvenOddPrecCloverFermAct& a) {}
+
   private:
-    Handle< FermBC<LatticeFermion> >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     CloverFermActParams param;
   };
 

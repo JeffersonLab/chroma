@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: abs_monomial.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -243,7 +243,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action for pseudofermion field i
-    virtual const WilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
+    virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
   };
 
@@ -277,7 +277,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action for pseudofermion field i
-    virtual const WilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
+    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
 
   };
 

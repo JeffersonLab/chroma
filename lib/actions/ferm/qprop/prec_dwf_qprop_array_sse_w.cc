@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 2.1 2006-02-17 02:07:57 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -292,7 +292,9 @@ namespace Chroma
 
   //----------------------------------------------------------------------------------
   //! Private internal initializer
-  void SSEDWFQpropT::init(Handle<const ConnectState> state)
+  void SSEDWFQpropT::init(Handle< FermState<LatticeFermion,
+			  multi1d<LatticeColorMatrix>,
+			  multi1d<LatticeColorMatrix> > > state)
   {
     QDPIO::cout << "entering SSEDWFQpropT::init" << endl;
 

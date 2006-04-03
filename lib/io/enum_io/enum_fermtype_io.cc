@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_fermtype_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+// $Id: enum_fermtype_io.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
 /*! \file
  * \brief FermType enum
  */

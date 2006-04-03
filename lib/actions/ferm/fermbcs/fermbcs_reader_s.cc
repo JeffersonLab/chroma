@@ -1,4 +1,4 @@
-// $Id: fermbcs_reader_s.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: fermbcs_reader_s.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Fermionic BC reader
  */
@@ -19,7 +19,10 @@ namespace Chroma
      * backwards compatibility with the FermionAction readers by looking for
      * either the "boundary" tag or the FermionBC group
      */
-    Handle< FermBC<LatticeStaggeredFermion> > reader(XMLReader& xml_in, const std::string& path)
+    Handle< FermBC<LatticeStaggeredFermion,
+                   multi1d<LatticeColorMatrix>,
+		   multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 
+							  const std::string& path)
     {
       XMLReader top(xml_in, path);
 
@@ -41,7 +44,9 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      Handle< FermBC<LatticeStaggeredFermion> > 
+      Handle< FermBC<LatticeStaggeredFermion,
+	             multi1d<LatticeColorMatrix>,
+	             multi1d<LatticeColorMatrix> > >
 	fbc(TheStaggeredTypeFermBCFactory::Instance().createObject(fermbc,
 								   top,
 								   fermbc_path));

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs_aggregate_w.h,v 2.2 2006-03-16 03:00:11 edwards Exp $
+// $Id: fermbcs_aggregate_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion boundary conditions
  */

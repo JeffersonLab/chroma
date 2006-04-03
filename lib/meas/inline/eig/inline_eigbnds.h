@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 2.1 2006-03-20 04:22:02 edwards Exp $
+// $Id: inline_eigbnds.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -71,20 +71,22 @@ namespace Chroma
 
   protected:
     //! 4D
-    void do4d(Handle< const LinearOperator<LatticeFermion> > MM,
+    void do4d(Handle< LinearOperator<LatticeFermion> > MM,
 	      unsigned long update_no,
 	      XMLWriter& xml_out);
 
     //! 5D
-    void do5d(Handle< const LinearOperator< multi1d<LatticeFermion> > > MM,
+    void do5d(Handle< LinearOperatorArray<LatticeFermion> > MM,
 	      unsigned long update_no,
 	      XMLWriter& xml_out);
 
   private:
     InlineEigBndsMdagMParams params;
-    Handle< const FermionAction<LatticeFermion> > fermact;
+    Handle< FermionAction<LatticeFermion,
+			  multi1d<LatticeColorMatrix>,
+			  multi1d<LatticeColorMatrix> > > fermact;
   };
 
-};
+}
 
 #endif

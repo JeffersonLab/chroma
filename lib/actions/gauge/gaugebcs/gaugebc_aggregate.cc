@@ -1,4 +1,4 @@
-// $Id: gaugebc_aggregate.cc,v 2.3 2006-03-14 04:49:54 edwards Exp $
+// $Id: gaugebc_aggregate.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */
@@ -35,7 +35,8 @@ namespace Chroma
     const bool registered = registerAll();
 
     // Helper function for the GaugeAction readers
-    Handle<GaugeBC> reader(XMLReader& xml_in, const std::string& path)
+    Handle<GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 
+											const std::string& path)
     {
       XMLReader top(xml_in, path);
 
@@ -54,7 +55,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      Handle<GaugeBC> 
+      Handle<GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
 	gbc(TheGaugeBCFactory::Instance().createObject(gaugebc,
 						       top,
 						       gaugebc_path));

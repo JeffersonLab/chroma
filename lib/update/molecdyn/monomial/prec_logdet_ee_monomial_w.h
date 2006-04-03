@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_logdet_ee_monomial_w.h,v 2.1 2006-02-25 22:48:58 bjoo Exp $
+// $Id: prec_logdet_ee_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -23,25 +23,24 @@ namespace Chroma
    * Monomial is expected to be the same for these fermacts
    */
   template<typename P, typename Q, typename Phi>
-  class PrecLogDetEvenEvenMonomial :
-    public  ExactMonomial<P,Q>    
-    {
-    public: 
-      virtual ~PrecLogDetEvenEvenMonomial() {}
+  class PrecLogDetEvenEvenMonomial : public ExactMonomial<P,Q>    
+  {
+  public: 
+    virtual ~PrecLogDetEvenEvenMonomial() {}
 
-      void dsdq(P& F, const AbsFieldState<P,Q>& s) 
+    void dsdq(P& F, const AbsFieldState<P,Q>& s) 
       {
 	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 	push(xml_out, "PrecLogDetEvenEvenMonomial");
 
 	// Create FermAct
-	const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P >& FA = getFermAct();
+	const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
       
 	// Create a state for linop
-	Handle< const ConnectState> state(FA.createState(s.getQ()));
+	Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
 	//Create LinOp
-	Handle< const EvenOddPrecLogDetLinearOperator<Phi,P> > lin(FA.linOp(state));
+	Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
 
 	lin->derivEvenEvenLogDet(F, PLUS);
 
@@ -57,40 +56,40 @@ namespace Chroma
       }
 
 
-      //! Gauge action value
-      Double S(const AbsFieldState<P,Q>& s)  {
+    //! Gauge action value
+    Double S(const AbsFieldState<P,Q>& s)  {
 
-	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 
-	push(xml_out, "PrecLogDetEvenEvenMonomial");
-	const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P>& FA = getFermAct();
-	Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
+      push(xml_out, "PrecLogDetEvenEvenMonomial");
+      const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
 
-	// Need way to get gauge state from AbsFieldState<P,Q>
-	Handle< const EvenOddPrecLogDetLinearOperator<Phi,P> > lin(FA.linOp(bc_g_state));
+      // Need way to get gauge state from AbsFieldState<P,Q>
+      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
       
-	Double S_ee =(Double(-getNumFlavors())*lin->LogDetEvenEven());
-	write(xml_out, "S", S_ee);
-	pop(xml_out);
+      Double S_ee =(Double(-getNumFlavors())*lin->LogDetEvenEven());
+      write(xml_out, "S", S_ee);
+      pop(xml_out);
 
-	return S_ee;
-      }
+      return S_ee;
+    }
 	
 	
-      void refreshInternalFields(const AbsFieldState<multi1d<LatticeColorMatrix>,
-				 multi1d<LatticeColorMatrix> >& s) {
-	//No internal fields to refresh => Nop
-      }
+    void refreshInternalFields(const AbsFieldState<multi1d<LatticeColorMatrix>,
+			       multi1d<LatticeColorMatrix> >& s) {
+      //No internal fields to refresh => Nop
+    }
 
-      void setInternalFields(const Monomial<multi1d<LatticeColorMatrix>, 
-			     multi1d<LatticeColorMatrix> >& m) {
-	// No internal fields to refresh => Nop
-      }
+    void setInternalFields(const Monomial<multi1d<LatticeColorMatrix>, 
+			   multi1d<LatticeColorMatrix> >& m) {
+      // No internal fields to refresh => Nop
+    }
 
-    protected:
-      virtual const EvenOddPrecLogDetWilsonTypeFermAct<Phi, P>& getFermAct() const = 0;
-      virtual const int getNumFlavors() const = 0;
-    };
+  protected:
+    virtual const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
+    virtual const int getNumFlavors() const = 0;
+  };
 
 
   /*! @ingroup monomial */
@@ -124,10 +123,15 @@ namespace Chroma
    */
   class PrecLogDetEvenEvenMonomial4D : 
     public PrecLogDetEvenEvenMonomial<multi1d<LatticeColorMatrix>, 
-      multi1d<LatticeColorMatrix>,
-      LatticeFermion> {
-    
+                                      multi1d<LatticeColorMatrix>,
+                                      LatticeFermion> 
+  {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Construct from param struct
     PrecLogDetEvenEvenMonomial4D(const PrecLogDetEvenEvenMonomialParams& p);
 
@@ -139,7 +143,7 @@ namespace Chroma
 
 
   protected:
-    const EvenOddPrecLogDetWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> > & getFermAct(void) const {
+    const EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q> & getFermAct(void) const {
       return *fermact;
     }
 
@@ -149,7 +153,7 @@ namespace Chroma
 
   private:
     int num_flavors;
-    Handle< const EvenOddPrecLogDetWilsonTypeFermAct<LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+    Handle< EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q> > fermact;
   };
 }; //end namespace chroma
 

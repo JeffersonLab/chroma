@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 2.1 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -24,16 +24,21 @@ namespace Chroma
    *
    * Propagator solver for DWF fermions
    */
-  class SSEDWFQpropT : public SystemSolver< multi1d<LatticeFermion> >
+  class SSEDWFQpropT : public SystemSolverArray<LatticeFermion>
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Constructor
     /*!
      * Preferred constructor
      *
      * \param m_q_       quark mass ( Read )
      */
-    SSEDWFQpropT(Handle<const ConnectState> state_, 
+    SSEDWFQpropT(Handle< FermState<T,P,Q> > state_, 
 		 const Real& OverMass_,
 		 const Real& Mass_,
 		 int N5_,
@@ -47,8 +52,8 @@ namespace Chroma
     /*!
      * \param m_q_       quark mass ( Read )
      */
-    SSEDWFQpropT(Handle< const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > > A,  // throw away
-		 Handle<const ConnectState> state_, 
+    SSEDWFQpropT(Handle< EvenOddPrecConstDetLinearOperator<T,P,Q> > A,  // throw away
+		 Handle< FermState<T,P,Q> > state_, 
 		 const Real& OverMass_,
 		 const Real& Mass_,
 		 const AnisoParam_t& anisoParam_,
@@ -76,7 +81,7 @@ namespace Chroma
 
   protected:
     //! Private internal initializer
-    void init(Handle<const ConnectState> state);
+    void init(Handle< FermState<T,P,Q> > state);
 
     //! Private internal destructor
     void fini();

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_parwilson_linop_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_parwilson_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -37,16 +37,22 @@ namespace Chroma
    *      M  =  (d+M) + i*H*gamma_5  - (1/2) D'
    */
 
-  class UnprecParWilsonLinOp : public UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecParWilsonLinOp : public UnprecLinearOperator<LatticeFermion, 
+            multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     UnprecParWilsonLinOp() {}
 
     //! Full constructor
-    UnprecParWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, 
+    UnprecParWilsonLinOp(Handle< FermState<T,P,Q> > fs,
 			 const Real& Mass_, const Real& H_)
-    {create(u_,Mass_,H_);}
+    {create(fs,Mass_,H_);}
 
     //! Destructor is automatic
     ~UnprecParWilsonLinOp() {}
@@ -54,8 +60,11 @@ namespace Chroma
     //! Only defined on the odd subset
     const OrderedSubset& subset() const {return all;}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& Mass_, const Real& H_);
 
     //! Apply the operator onto a source vector
@@ -69,11 +78,11 @@ namespace Chroma
   private:
     Real Mass;
     Real H;
-    multi1d<LatticeColorMatrix> u;
+//    multi1d<LatticeColorMatrix> u;
     WilsonDslash D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

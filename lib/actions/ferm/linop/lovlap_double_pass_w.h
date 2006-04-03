@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovlap_double_pass_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: lovlap_double_pass_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -14,27 +14,33 @@
 
 namespace Chroma 
 { 
-//! Internal Overlap-pole operator
-/*!
- * \ingroup linop
- *
- * This routine is specific to Wilson fermions!
- *
- *   Chi  =   (1/2)*((1+m_q) + (1-m_q) * gamma_5 * B) . Psi 
- *  where  B  is the pole approx. to eps(H(m)) 
- *
- * Internally, it computes
- *   Chi  =   ((1+m_q)/(1-m_q) + gamma_5 * B) . Psi 
- * and then rescales at the end to the correct normalization
- *
- *  NOTE: B is hermitian, so       
- *     (1 + gamma_5 * B)^dag = (1 + B * gamma_5) 
- *                           = gamma_5 * (1 + gamma_5 * B) * gamma_5 
- */
+  //! Internal Overlap-pole operator
+  /*!
+   * \ingroup linop
+   *
+   * This routine is specific to Wilson fermions!
+   *
+   *   Chi  =   (1/2)*((1+m_q) + (1-m_q) * gamma_5 * B) . Psi 
+   *  where  B  is the pole approx. to eps(H(m)) 
+   *
+   * Internally, it computes
+   *   Chi  =   ((1+m_q)/(1-m_q) + gamma_5 * B) . Psi 
+   * and then rescales at the end to the correct normalization
+   *
+   *  NOTE: B is hermitian, so       
+   *     (1 + gamma_5 * B)^dag = (1 + B * gamma_5) 
+   *                           = gamma_5 * (1 + gamma_5 * B) * gamma_5 
+   */
 
-  class lovlap_double_pass : public UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class lovlap_double_pass : public UnprecLinearOperator<LatticeFermion, 
+	    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Creation routine
     /*!
      * \ingroup linop
@@ -52,8 +58,8 @@ namespace Chroma
      * \param _MaxCG          MaxCG inner CG                     (Read)
      * \param _RsdCG          residual for inner CG              (Read)
      */
-    lovlap_double_pass(const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& S_aux,
-		       Handle<const ConnectState> state,
+    lovlap_double_pass(const UnprecWilsonTypeFermAct<T,P,Q>& S_aux,
+		       Handle< FermState<T,P,Q> > state,
 		       const Real& _m_q, int _numroot, 
 		       const Real& _constP, 
 		       const multi1d<Real>& _resP,
@@ -64,8 +70,8 @@ namespace Chroma
 		       int _MaxCG,
 		       const Real& _RsdCG,
 		       const int _ReorthFreq ) :
-      M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)), m_q(_m_q), 
-      numroot(_numroot), constP(_constP),
+      M(S_aux.linOp(state)), MdagM(S_aux.lMdagM(state)), fbc(state->getFermBC()),
+      m_q(_m_q), numroot(_numroot), constP(_constP),
       resP(_resP), rootQ(_rootQ), EigVec(_EigVec), EigValFunc(_EigValFunc),
       NEig(_NEig), MaxCG(_MaxCG), RsdCG(_RsdCG),  ReorthFreq(_ReorthFreq) {}
 
@@ -83,9 +89,13 @@ namespace Chroma
     //
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, Real epsilon) const;
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
+
   private:
-    Handle<const LinearOperator<LatticeFermion> > M;
-    Handle<const LinearOperator<LatticeFermion> > MdagM;
+    Handle< LinearOperator<T> > M;
+    Handle< LinearOperator<T> > MdagM;
+    Handle< FermBC<T,P,Q> >     fbc;
 
     // Copy all of these rather than reference them.
     const Real m_q;
@@ -102,7 +112,7 @@ namespace Chroma
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

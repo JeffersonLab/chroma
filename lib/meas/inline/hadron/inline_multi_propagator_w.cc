@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 2.7 2006-03-20 04:22:02 edwards Exp $
+// $Id: inline_multi_propagator_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -327,8 +327,13 @@ namespace Chroma
     try {
       QDPIO::cout << "Try the various factories" << endl;
 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Generic Wilson-Type stuff
-      Handle< FermionAction<LatticeFermion> >
+      Handle< FermionAction<T,P,Q> >
 	S_f(TheFermionActionFactory::Instance().createObject(fermact,
 							     fermacttop,
 							     fermact_path));
@@ -337,7 +342,7 @@ namespace Chroma
       // If this cast fails a bad cast exception is thrown.
       OverlapFermActBase& S_ov = dynamic_cast<OverlapFermActBase&>(*S_f);
       
-      Handle<const ConnectState> state(S_ov.createState(u,
+      Handle< FermState<T,P,Q> > state(S_ov.createState(u,
 							state_info_xml,
 							state_info_path));  // uses phase-multiplied u-fields
       

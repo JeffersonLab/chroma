@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: md_integrator_factory.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
 /*! \file
  *  \brief Integrator factories
  */

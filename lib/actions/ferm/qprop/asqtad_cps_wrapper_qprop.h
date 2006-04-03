@@ -1,4 +1,4 @@
-// $Id: asqtad_cps_wrapper_qprop.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: asqtad_cps_wrapper_qprop.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -27,6 +27,11 @@ namespace Chroma
   class AsqtadCPSWrapperQprop : public SystemSolver<LatticeStaggeredFermion>
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeStaggeredFermion      T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Constructor
     /*!
       // Keeping the same interface as for the ordinary staggered 
@@ -36,10 +41,8 @@ namespace Chroma
       // (are ignored) -- is there a nice way around this ? 
       // Perhaps not
      */
-
-
-    AsqtadCPSWrapperQprop(const EvenOddStaggeredTypeFermAct<LatticeStaggeredFermion,multi1d<LatticeColorMatrix> >& S_,
-			  Handle< const ConnectState > state, 
+    AsqtadCPSWrapperQprop(const EvenOddStaggeredTypeFermAct<T,P,Q>& S_,
+			  Handle< FermState<T,P,Q> > state, 
 			  const InvertParam_t& invParam_);
 
     //! Destructor is automatic
@@ -62,10 +65,10 @@ namespace Chroma
 
     const Real Mass;
     const InvertParam_t invParam;
-    Handle< const ConnectState> state;
+    Handle< FermState<T,P,Q> > state;
   };
 
-}; // End namespace
+} // End namespace
 
 #endif 
 

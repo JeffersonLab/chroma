@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: gaugeact.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 
 /*! @file
  * @brief Class structure for gauge actions
@@ -11,6 +11,7 @@
 
 #include "state.h"
 #include "gaugebc.h"
+#include "create_state.h"
 
 namespace Chroma
 {
@@ -20,51 +21,78 @@ namespace Chroma
    *
    * Supports creation and application for gauge actions
    */
+  template<typename P, typename Q>
   class GaugeAction
   {
   public:
-    //! Given links, create the state needed for the linear operators
+    //! Virtual destructor to help with cleanup;
+    virtual ~GaugeAction() {}
+
+    //! Return the factory object that produces a state
     /*! 
-     * Default version uses a SimpleConnectState 
+     * The user will supply the FermState in a derived class 
+     *
+     * NOTE: this function is public since we have nested gaugeacts
+     * that forward this call to the member gaugeact
      */
-    virtual const ConnectState* createState(const multi1d<LatticeColorMatrix>& u) const
+    virtual const CreateGaugeState<P,Q>& getCreateState() const = 0;
+
+    //! Given links, create the state
+    virtual GaugeState<P,Q>* createState(const Q& q) const
     {
-      multi1d<LatticeColorMatrix> u_tmp = u;
-      getGaugeBC().modify(u_tmp);
-      return new SimpleConnectState(u_tmp);
+      return getCreateState()(q);
+    }
+
+    //! Return the gauge BC object for this action
+    virtual const GaugeBC<P,Q>& getGaugeBC() const
+    {
+      return getCreateState().getBC();
     }
 
     //! Return the set on which the gauge action is defined
     virtual const OrderedSet& getSet(void) const = 0;
 
-    //! Produce a gauge boundary condition object
-    virtual const GaugeBC& getGaugeBC(void) const = 0;
-
-    //! Compute staple
-    /*! Default version. Derived class should override this if needed. */
-    virtual void staple(LatticeColorMatrix& result,
-			Handle<const ConnectState> state,
-			int mu, int cb) const
-    {
-      QDPIO::cerr << "GaugeAction::staple not implemented" << endl;
-      QDP_abort(1);
-    }
-
     //! Compute dS/dU
     /*! Default version. Derived class should override this if needed. */
-    virtual void dsdu(multi1d<LatticeColorMatrix>& result,
-		      const Handle<const ConnectState> state) const {
-      QDPIO::cerr << "GaugeAction::dsdu not implemented" << endl;
+    virtual void deriv(P& result, const Handle< GaugeState<P,Q> >& state) const 
+    {
+      QDPIO::cerr << "GaugeAction::deriv not implemented" << endl;
       QDP_abort(1);
     }
 
-    
-    //! Virtual destructor to help with cleanup;
-    virtual ~GaugeAction() {}
-
     //! Compute the action on a gauge configuration
-    virtual Double S(const Handle<const ConnectState> state) const = 0;
+    virtual Double S(const Handle< GaugeState<P,Q> >& state) const = 0;
 
+  };
+
+
+
+  //! Base class for gauge actions with links appearing linearly in the action
+  /*! @ingroup actions
+   *
+   * Here, we are assuming that the "Q" must be a multi1d<LatticeColorMatrix>
+   * to be able to use heatbath. Namely, each gauge link must appear in the 
+   * Lagrangian density only once.
+   *
+   * To fully support heatbath, this code needs more work so that 2-link actions
+   * can also be supported.
+   */
+  class LinearGaugeAction : public GaugeAction< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+  {
+  public:
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    //! Virtual destructor to help with cleanup;
+    virtual ~LinearGaugeAction() {}
+
+    //! Compute staple
+    /*! 
+     * Default version. Derived class should override this if needed. 
+     */
+    virtual void staple(LatticeColorMatrix& result,
+			const Handle< GaugeState<P,Q> >& state,
+			int mu, int cb) const = 0;
   };
 
 }

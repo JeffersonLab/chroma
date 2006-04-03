@@ -38,7 +38,7 @@ namespace Chroma {
 			 bool gauge_shift,
 			 bool sym_shift,
 			 const multi1d<LatticeColorMatrix> & u ,
-			 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+			 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 			 XMLWriter & xml_out,
 			 Real RsdCG, Real Mass, 
 			 int j_decay, int t_source, int t_length){

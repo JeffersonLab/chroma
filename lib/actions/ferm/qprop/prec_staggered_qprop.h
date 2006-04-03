@@ -1,4 +1,5 @@
-// $Id: prec_staggered_qprop.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// -*- C++ -*-
+// $Id: prec_staggered_qprop.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -19,7 +20,7 @@ namespace Chroma
    *
    * This routine is actually generic to all even-odd fermions
    */
-  template<typename T, typename P>
+  template<typename T, typename P, typename Q>
   class EvenOddFermActQprop : public SystemSolver<T>
   {
   public:
@@ -29,16 +30,16 @@ namespace Chroma
      * \param A_        M^dag*M operator ( Read )
      * \param invParam  inverter parameters ( Read )
      */
-    EvenOddFermActQprop(Handle< const EvenOddLinearOperator<T,P> > M_,
-			Handle< const LinearOperator<T> > A_,
+    EvenOddFermActQprop(Handle< EvenOddLinearOperator<T,P,Q> > M_,
+			Handle< LinearOperator<T> > A_,
 			const Real& Mass_,
 			const InvertParam_t& invParam_) : 
       M(M_), A(A_), Mass(Mass_), invParam(invParam_) 
       {}
 
-    EvenOddFermActQprop( const EvenOddStaggeredTypeFermAct<T,P>& S_,
-			 Handle< const ConnectState> state,
-			 const InvertParam_t& invParam_) :
+    EvenOddFermActQprop(const EvenOddStaggeredTypeFermAct<T,P,Q>& S_,
+			Handle< FermState<T,P,Q> > state,
+			const InvertParam_t& invParam_) :
       M(S_.linOp(state)), A(S_.lMdagM(state)), Mass(S_.getQuarkMass()), invParam(invParam_) {}
 
     //! Destructor is automatic
@@ -110,8 +111,8 @@ namespace Chroma
     // Hide default constructor
     EvenOddFermActQprop() {}
 
-    Handle< const EvenOddLinearOperator<T,P> > M;
-    Handle< const LinearOperator<T> > A;
+    Handle< EvenOddLinearOperator<T,P,Q> > M;
+    Handle< LinearOperator<T> > A;
     const Real Mass;
     const InvertParam_t invParam;
   };

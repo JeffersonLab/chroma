@@ -1,4 +1,4 @@
-// $Id: sink_smearing_aggregate.cc,v 1.2 2005-11-07 22:46:21 edwards Exp $
+// $Id: sink_smearing_aggregate.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
 /*! \file
  *  \brief All make sink constructors
  */

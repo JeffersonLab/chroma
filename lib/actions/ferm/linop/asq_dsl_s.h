@@ -1,4 +1,4 @@
-//  $Id: asq_dsl_s.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+//  $Id: asq_dsl_s.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief The "asq" or "asqtad" dslash operator D'
  */
@@ -7,6 +7,7 @@
 #define __asqdslash_h__
 
 #include "linearop.h"
+#include "actions/ferm/fermacts/asqtad_state.h"
 
 
 namespace Chroma 
@@ -47,20 +48,24 @@ namespace Chroma
    * Note the KS phase factors are already included in the U's!
    */
 
-  class QDPStaggeredDslash : public DslashLinearOperator< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >
+  class QDPStaggeredDslash : public DslashLinearOperator< 
+    LatticeStaggeredFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {  
   public:
+    // Typedefs to save typing
+    typedef LatticeStaggeredFermion      T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Empty constructor. Must use create later
     QDPStaggeredDslash() {}
  
     //! Full constructor
-    QDPStaggeredDslash(const multi1d<LatticeColorMatrix>& _u_fat, 
-		       const multi1d<LatticeColorMatrix>& _u_triple) 
-    {create(_u_fat,_u_triple);}
+    QDPStaggeredDslash(Handle<AsqtadConnectStateBase> state_)
+    {create(state_);}
  
     //! Creation routine  
-    void create(const multi1d<LatticeColorMatrix>& _u_fat, 
-		const multi1d<LatticeColorMatrix>& _u_triple);
+    void create(Handle<AsqtadConnectStateBase> state_);
  
     //! No real need for cleanup here
     ~QDPStaggeredDslash() {}
@@ -79,12 +84,14 @@ namespace Chroma
     //! Subset is all here
     const OrderedSubset& subset() const {return all;}
     
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return state->getBC();}
+
   private:
-    multi1d<LatticeColorMatrix> u_fat;
-    multi1d<LatticeColorMatrix> u_triple;
+    Handle<AsqtadConnectStateBase> state;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

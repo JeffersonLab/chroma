@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_linop_w.h,v 2.5 2006-02-16 02:24:46 bjoo Exp $
+// $Id: prec_clover_linop_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -7,6 +7,8 @@
 #ifndef __prec_clover_linop_w_h__
 #define __prec_clover_linop_w_h__
 
+#include "state.h"
+#include "fermbc.h"
 #include "prec_logdet_linop.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/dslash_w.h"
@@ -25,21 +27,31 @@ namespace Chroma
    *
    *      M  =  A + (d+M) - (1/2) D'
    */
-  class EvenOddPrecCloverLinOp : public EvenOddPrecLogDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecCloverLinOp : public EvenOddPrecLogDetLinearOperator<LatticeFermion, 
+				 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     EvenOddPrecCloverLinOp() {}
 
     //! Full constructor
-    EvenOddPrecCloverLinOp(const multi1d<LatticeColorMatrix>& u_, const CloverFermActParams& param_)
-      {create(u_,param_);}
+    EvenOddPrecCloverLinOp(Handle< FermState<T,P,Q> > fs,
+			   const CloverFermActParams& param_)
+      {create(fs,param_);}
 
     //! Destructor is automatic
     ~EvenOddPrecCloverLinOp() {}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 	
+    void create(Handle< FermState<T,P,Q> > fs,
 		const CloverFermActParams& param_);
 
     //! Apply the the even-even block onto a source vector
@@ -102,7 +114,7 @@ namespace Chroma
     CloverTerm   invclov;  // uggh, only needed for evenEvenLinOp
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

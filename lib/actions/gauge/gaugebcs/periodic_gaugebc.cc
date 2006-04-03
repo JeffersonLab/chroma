@@ -15,7 +15,8 @@ namespace Chroma
   { 
 
     //! Callback function to register with the factory
-    GaugeBC* createGaugeBC(XMLReader& xml, const string& path)
+    GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeBC(XMLReader& xml, 
+										       const string& path)
     {
       QDPIO::cout << "GaugeBC Callback: Creating PeriodicGaugeBC " << endl;
       return new PeriodicGaugeBC();

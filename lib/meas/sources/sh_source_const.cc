@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 2.8 2006-03-08 22:45:34 edwards Exp $
+// $Id: sh_source_const.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */

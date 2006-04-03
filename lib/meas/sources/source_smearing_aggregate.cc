@@ -1,4 +1,4 @@
-// $Id: source_smearing_aggregate.cc,v 2.2 2005-11-07 22:46:34 edwards Exp $
+// $Id: source_smearing_aggregate.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief All source smearing
  */

@@ -34,14 +34,15 @@
 #include "util_compute_quark_prop_s.h"
 #include "util_compute_meson_s.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   int build_basic_8_props(multi1d<LatticeStaggeredPropagator> stag_prop,
 			  stag_src_type type_of_src,
 			  bool gauge_shift, bool sym_shift,
 			  int fuzz_width,
 			  const multi1d<LatticeColorMatrix> & u,
 			  const multi1d<LatticeColorMatrix> & u_smr,
-			  Handle<const SystemSolver<LatticeStaggeredFermion> >
+			  Handle< SystemSolver<LatticeStaggeredFermion> >
 			  & qprop,
 			  XMLWriter & xml_out,
 			  Real RsdCG, Real Mass, int j_decay ) ;
@@ -61,7 +62,7 @@ namespace Chroma {
 				 int fuzz_width,
 				 const multi1d<LatticeColorMatrix> & u ,
 				 multi1d<LatticeColorMatrix> & u_smr,
-				 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+				 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 				 XMLWriter & xml_out,
 				 Real RsdCG, Real Mass, 
 				 int j_decay,
@@ -72,7 +73,7 @@ namespace Chroma {
 				 bool gauge_shift,
 				 bool sym_shift,
 				 const multi1d<LatticeColorMatrix> & u ,
-				 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+				 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 				 XMLWriter & xml_out,
 				 Real RsdCG, Real Mass, 
 				 int j_decay,
@@ -112,7 +113,7 @@ namespace Chroma {
 			 bool gauge_shift,
 			 bool sym_shift,
 			 const multi1d<LatticeColorMatrix> & u ,
-			 Handle<const SystemSolver<LatticeStaggeredFermion> > &
+			 Handle< SystemSolver<LatticeStaggeredFermion> > &
 			 qprop,
 			 XMLWriter & xml_out,
 			 Real RsdCG, Real Mass, 
@@ -346,7 +347,7 @@ namespace Chroma {
 		      int fuzz_width,
 		      const multi1d<LatticeColorMatrix> & u,
 		      multi1d<LatticeColorMatrix> & u_smr,
-		      Handle<const SystemSolver<LatticeStaggeredFermion> > & 
+		      Handle< SystemSolver<LatticeStaggeredFermion> > & 
 		      qprop,
 		      XMLWriter & xml_out,
 		      Real RsdCG, Real Mass, int j_decay){
@@ -397,7 +398,7 @@ namespace Chroma {
 		      stag_src_type type_of_src, 
 		      bool gauge_shift, bool sym_shift,
 		      const multi1d<LatticeColorMatrix> & u,
-		      Handle<const SystemSolver<LatticeStaggeredFermion> > & 
+		      Handle< SystemSolver<LatticeStaggeredFermion> > & 
 		      qprop,
 		      XMLWriter & xml_out,
 		      Real RsdCG, Real Mass, int j_decay){
@@ -446,7 +447,7 @@ namespace Chroma {
 		       bool gauge_shift, bool sym_shift,
 		       const multi1d<LatticeColorMatrix> & u , 
 		       multi1d<LatticeColorMatrix> & u_smr,
-		       Handle<const SystemSolver<LatticeStaggeredFermion> > & 
+		       Handle< SystemSolver<LatticeStaggeredFermion> > & 
 		       qprop,
 		       XMLWriter & xml_out,
 		       Real RsdCG, Real Mass,
@@ -529,7 +530,7 @@ namespace Chroma {
   MakeCornerProp(LatticeStaggeredFermion & psi,
 		 bool gauge_shift, bool sym_shift,
 		 const multi1d<LatticeColorMatrix> & u ,
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > &  qprop,
+		 Handle< SystemSolver<LatticeStaggeredFermion> > &  qprop,
 		 XMLWriter & xml_out,
 		 Real RsdCG, Real Mass,
 		 int j_decay,
@@ -771,16 +772,22 @@ namespace Chroma {
 
 
     // Create a fermion BC
-    Handle< FermBC<LatticeStaggeredFermion> >  
-      fbc(new SimpleFermBC<LatticeStaggeredFermion>(params.param.boundary));
+    Handle< FermBC<LatticeStaggeredFermion,
+		   multi1d<LatticeColorMatrix>,
+		   multi1d<LatticeColorMatrix> > >  
+      fbc(new SimpleFermBC<LatticeStaggeredFermion,
+		           multi1d<LatticeColorMatrix>,
+		           multi1d<LatticeColorMatrix> >(params.param.boundary));
 
 
     // Initialize fermion action
 
     AsqtadFermAct S_f(fbc, params.prop_param.Mass,
 		      params.prop_param.u0);
-    Handle<const ConnectState > state(S_f.createState(u));
-    Handle<const SystemSolver<LatticeStaggeredFermion> > 
+    Handle< FermState<LatticeStaggeredFermion,
+		      multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix> > > state(S_f.createState(u));
+    Handle< SystemSolver<LatticeStaggeredFermion> > 
       qprop(S_f.qprop(state, params.prop_param.invParam));
 
 

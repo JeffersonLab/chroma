@@ -308,14 +308,20 @@ int main(int argc, char **argv)
   xml_out.flush();
 
   // Create the fermion boundary conditions
-  Handle< FermBC<LatticeStaggeredFermion> >  fbc(new SimpleFermBC<LatticeStaggeredFermion>(input.param.boundary));
+  Handle< FermBC<LatticeStaggeredFermion,
+    multi1d<LatticeColorMatrix>,
+    multi1d<LatticeColorMatrix> > >  fbc(new SimpleFermBC<LatticeStaggeredFermion,
+					 multi1d<LatticeColorMatrix>,
+					 multi1d<LatticeColorMatrix> >(input.param.boundary));
 
   //
   // Initialize fermion action
   //
   AsqtadFermAct S_f(fbc, input.param.Mass, input.param.u0);
-  Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
+  Handle< FermState<LatticeStaggeredFermion,
+                    multi1d<LatticeColorMatrix>,
+                    multi1d<LatticeColorMatrix> > > state(S_f.createState(u));
+  Handle< SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
 
   LatticeStaggeredPropagator quark_propagator;

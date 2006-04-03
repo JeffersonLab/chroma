@@ -1,4 +1,4 @@
-// $Id: photon_seqsrc_w.cc,v 1.4 2006-03-02 17:38:03 edwards Exp $
+// $Id: photon_seqsrc_w.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */

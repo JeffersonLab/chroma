@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 2.4 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_wilson_fermact_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -29,37 +29,37 @@ namespace Chroma
    * Even-odd preconditioned wilson fermion action. 
    * Only defined on odd subset.
    */
-  class EvenOddPrecWilsonFermAct : public EvenOddPrecConstDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecWilsonFermAct : public EvenOddPrecConstDetWilsonTypeFermAct<LatticeFermion, 
+				   multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! General FermBC
-    EvenOddPrecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+    EvenOddPrecWilsonFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
 			     const Real& Mass_) : 
-      fbc(fbc_) {param.Mass=Mass_;}
+      cfs(cfs_) {param.Mass=Mass_;}
 
     //! General FermBC with Anisotropy
-    EvenOddPrecWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+    EvenOddPrecWilsonFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
 			     const WilsonFermActParams& param_) :
-      fbc(fbc_), param(param_) {}
+      cfs(cfs_), param(param_) {}
 
     //! Copy constructor
     EvenOddPrecWilsonFermAct(const EvenOddPrecWilsonFermAct& a) : 
-      fbc(a.fbc), param(a.param) {}
-
-    //! Assignment
-    EvenOddPrecWilsonFermAct& operator=(const EvenOddPrecWilsonFermAct& a)
-      {fbc=a.fbc; param=a.param; return *this;}
-
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
+      cfs(a.cfs), param(a.param) {}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    EvenOddPrecConstDetLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce the gamma_5 hermitian operator H_w
-    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
-      return new lgherm<LatticeFermion>(linOp(state));
-    }
+    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+      { 
+	return new lgherm<LatticeFermion>(linOp(state));
+      }
 
     //! Destructor is automatic
     ~EvenOddPrecWilsonFermAct() {}
@@ -68,8 +68,17 @@ namespace Chroma
       return param.Mass;
     }
 
+  protected:
+    //! Return the fermion BC object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
+    //! Partial constructor
+    EvenOddPrecWilsonFermAct() {}
+    //! Assignment
+    void operator=(const EvenOddPrecWilsonFermAct& a) {}
+
   private:
-    Handle< FermBC<LatticeFermion> >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     WilsonFermActParams param;
   };
 

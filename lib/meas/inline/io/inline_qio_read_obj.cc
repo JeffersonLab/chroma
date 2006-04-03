@@ -1,4 +1,4 @@
-// $Id: inline_qio_read_obj.cc,v 2.2 2006-03-24 22:16:40 edwards Exp $
+// $Id: inline_qio_read_obj.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *

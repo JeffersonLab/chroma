@@ -1,4 +1,4 @@
-// $Id: invcg2_timing_hacks_3.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: invcg2_timing_hacks_3.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */

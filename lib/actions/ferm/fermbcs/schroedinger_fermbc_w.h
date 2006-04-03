@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schroedinger_fermbc_w.h,v 2.2 2006-03-16 03:00:12 edwards Exp $
+// $Id: schroedinger_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -18,24 +18,47 @@ namespace Chroma
    *  Schroedinger BC implies periodic in dirs orthog to decay dir, and some
    *  kind of fixed BC in the decay dir.
    */
-  template<class T>
-  class SchrFermBC : public FermBC<T>
+  class SchrFermBC : public FermBC<LatticeFermion,
+		                   multi1d<LatticeColorMatrix>, 
+		                   multi1d<LatticeColorMatrix> >
   {
   public:
     //! Virtual destructor to help with cleanup;
     virtual ~SchrFermBC() {}
 
     //! Modify U fields according to the fermion BC in place
-    virtual void modifyU(multi1d<LatticeColorMatrix>& u) const
+    virtual void modify(multi1d<LatticeColorMatrix>& u) const
     {
       for(int mu=0; mu < u.size(); ++mu)
 	copymask(u[mu], lSFmask()[mu], SFBndFld()[mu]);
     }
 
     //! Modify fermion fields in place
-    virtual void modifyF(T& psi) const
+    virtual void modifyF(LatticeFermion& psi) const
     {
-      copymask(psi, lSFmaskF(), T(QDP::zero));
+      copymask(psi, lSFmaskF(), LatticeFermion(QDP::zero));
+    }
+
+    //! Modify fermion fields in place under a subset
+    virtual void modifyF(LatticeFermion& psi, 
+			 const OrderedSubset& s) const
+    {
+      // Ooops, this is ignoring the subset!! Need to fix
+      // but I don't think this is an error though
+      copymask(psi, lSFmaskF(), LatticeFermion(QDP::zero));
+    }
+
+    //! Modify fermion fields in place
+    virtual void modifyF(multi1d<LatticeFermion>& psi) const
+    {
+      QDP_error_exit("not implemented");
+    }
+    
+    //! Modify fermion fields in place under a subset
+    virtual void modifyF(multi1d<LatticeFermion>& psi, 
+			 const OrderedSubset& s) const
+    {
+      QDP_error_exit("not implemented");
     }
 
     //! Zero some gauge-like field in place on the masked links

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: poly_cheb_fermact_w.h,v 2.2 2006-02-10 02:45:29 edwards Exp $
+// $Id: poly_cheb_fermact_w.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -13,6 +13,7 @@
 namespace Chroma
 {
   //! Name and registration
+  /*! \ingroup fermacts */
   namespace PolyChebFermActEnv
   {
     extern const std::string name;
@@ -21,6 +22,7 @@ namespace Chroma
 
 
   //! Params for Chebyshev polynomial preconditioner
+  /*! \ingroup fermacts */
   struct PolyChebFermActParams
   {
     PolyChebFermActParams() {}
@@ -38,7 +40,9 @@ namespace Chroma
   };
 
   // Reader/writers
+  /*! \ingroup fermacts */
   void read(XMLReader& xml, const string& path, PolyChebFermActParams& param);
+  /*! \ingroup fermacts */
   void write(XMLWriter& xml, const string& path, const PolyChebFermActParams& param);
 
 
@@ -46,51 +50,62 @@ namespace Chroma
   /*! \ingroup fermacts
    *
    */
-  class PolyChebFermAct : public PolyWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class PolyChebFermAct : public PolyWilsonTypeFermAct<LatticeFermion, 
+			  multi1d<LatticeColorMatrix> ,
+			  multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! General FermBC
-    PolyChebFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+    PolyChebFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
 		    const PolyChebFermActParams& param_);
 
-    //! Copy constructor
-    PolyChebFermAct(const PolyChebFermAct& a) : 
-      fbc(a.fbc), param(a.param) {}
-
-    //! Assignment
-    PolyChebFermAct& operator=(const PolyChebFermAct& a)
-      {fbc=a.fbc; param=a.param; return *this;}
-
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
-
     //! Produce a linear operator for this action
-    const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    DiffLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const
+      {
+	return fermact->linOp(state);
+      }
 
     //! Produce a linear operator M^dag.M for this action
-    const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* lMdagM(Handle<const ConnectState> state) const;
+    DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state) const
+      {
+	return fermact->lMdagM(state);
+      }
 
     //! Produce the gamma_5 hermitian operator H_w
-    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const;
+    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const
+      {
+	return fermact->hermitianLinOp(state);
+      }
 
     //! Produce a linear operator for this action
-    const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* polyPrecLinOp(Handle<const ConnectState> state) const;
+    DiffLinearOperator<T,P,Q>* polyPrecLinOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator M^dag.M for this action
-    const PolyLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* polyLinOp(Handle<const ConnectState> state) const;
+    PolyLinearOperator<T,P,Q>* polyLinOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Destructor is automatic
     ~PolyChebFermAct() {}
 
-  private:
+  protected:
+    //! Return the factory object that produces a state
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
+    /*! The user will supply the FermState in a derived class */
     PolyChebFermAct() {} //hide default constructor
+    //! Assignment
+    void operator=(const PolyChebFermAct& a) {}
    
   private:
-    Handle< FermBC<LatticeFermion> >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;   /*!< fermion state creator */
     PolyChebFermActParams param;
 
     // A handle for the PrecWilsonFermAct
-    Handle<const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+    Handle< WilsonTypeFermAct<T,P,Q> > fermact;
   };
 
 }

@@ -1,4 +1,4 @@
-// $Id: grelax.cc,v 2.0 2005-09-25 21:04:33 edwards Exp $
+// $Id: grelax.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */

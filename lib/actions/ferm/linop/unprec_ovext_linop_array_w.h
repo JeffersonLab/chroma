@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_linop_array_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_ovext_linop_array_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -27,14 +27,17 @@ namespace Chroma
    * This operator implements  hep-lat/0005004
    */
 
-  class UnprecOvExtLinOpArray : public UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class UnprecOvExtLinOpArray : public UnprecLinearOperatorArray<LatticeFermion, 
+				multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! Partial constructor
-    UnprecOvExtLinOpArray() {}
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
-    UnprecOvExtLinOpArray(const multi1d<LatticeColorMatrix>& u_,
+    UnprecOvExtLinOpArray(Handle< FermState<T,P,Q> > fs,
 			  const int Npoles_,
 			  const Real& coeffP_,
 			  const multi1d<Real>& resP_,
@@ -45,11 +48,11 @@ namespace Chroma
 			  const Real& b5_,
 			  const Real& c5_)
 
-    {create(u_,Npoles_, coeffP_, resP_, rootQ_, beta_, 
+    {create(fs,Npoles_, coeffP_, resP_, rootQ_, beta_, 
 	    OverMass_,Mass_,b5_,c5_);}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const int Npoles_,
 		const Real& coeffP_,
 		const multi1d<Real>& resP_,
@@ -78,8 +81,18 @@ namespace Chroma
 	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 	       enum PlusMinus isign) const;
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
+
+  protected:
+    //! Partial constructor
+    UnprecOvExtLinOpArray() {}
+    //! Hide =
+    void operator=(const UnprecOvExtLinOpArray&) {}
+
   private:
-    Handle< const UnprecWilsonLinOp > Dw;
+    UnprecWilsonLinOp  Dw;
+    Handle< FermBC<T,P,Q> > fbc;
     int Npoles;
     int N5;
     Real R;
@@ -91,7 +104,7 @@ namespace Chroma
     multi1d<Real> beta;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

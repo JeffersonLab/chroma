@@ -1,4 +1,4 @@
-// $Id: szin_write_obj_funcmap.cc,v 2.1 2006-03-24 22:16:40 edwards Exp $
+// $Id: szin_write_obj_funcmap.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */

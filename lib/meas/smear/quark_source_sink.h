@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quark_source_sink.h,v 2.3 2005-11-22 22:00:27 edwards Exp $
+// $Id: quark_source_sink.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
 
 /*! @file
  * @brief Quark source or sink smearing

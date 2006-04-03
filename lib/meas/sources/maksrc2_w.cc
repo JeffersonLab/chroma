@@ -1,4 +1,4 @@
-/*   $Id: maksrc2_w.cc,v 1.2 2005-11-07 06:28:15 edwards Exp $ ($Date: 2005-11-07 06:28:15 $) */
+/*   $Id: maksrc2_w.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $ ($Date: 2006-04-03 04:59:06 $) */
 
 #error "DO NOT USE. ONLY FOR REFERENCE."
 

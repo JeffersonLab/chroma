@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ht_contfrac5d_linop_array_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_ht_contfrac5d_linop_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -28,25 +28,30 @@ namespace Chroma
    * 
    */
 
-  class EvenOddPrecHtContFrac5DLinOpArray : public EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecHtContFrac5DLinOpArray : public EvenOddPrecConstDetLinearOperatorArray<LatticeFermion,
+					    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
     /*! Pretty darn the same as for the unprec case
       except that the auxiliary linop M is no longer supplied, 
       but is created here 
     */
-    EvenOddPrecHtContFrac5DLinOpArray(Handle<const ConnectState> state,
-					 const Real& _m_q,
-					 const Real& _OverMass,
-					 int _N5,
-					 const Real& _scale_fac,
-					 const multi1d<Real>& _alpha,
-					 const multi1d<Real>& _beta,
-				         const Real& _b5,
-				         const Real& _c5,
-					 const bool _isLastZeroP );
+    EvenOddPrecHtContFrac5DLinOpArray(Handle< FermState<T,P,Q> > fs,
+				      const Real& _m_q,
+				      const Real& _OverMass,
+				      int _N5,
+				      const Real& _scale_fac,
+				      const multi1d<Real>& _alpha,
+				      const multi1d<Real>& _beta,
+				      const Real& _b5,
+				      const Real& _c5,
+				      const bool _isLastZeroP );
 
   
     //! Length of DW flavor index/space
@@ -64,87 +69,87 @@ namespace Chroma
     void evenEvenLinOp(multi1d<LatticeFermion>& chi, 
 		       const multi1d<LatticeFermion>& psi, 
 		       enum PlusMinus isign) const
-    {
-      applyDiag(chi, psi, isign, 0);
-    }
+      {
+	applyDiag(chi, psi, isign, 0);
+      }
 
     //! Apply the the odd-odd block onto a source vector
     inline
     void oddOddLinOp(multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const
-    {
-      applyDiag(chi, psi, isign, 1);
-    }
+      {
+	applyDiag(chi, psi, isign, 1);
+      }
   
   
     //! Apply the the even-odd block onto a source vector
     void evenOddLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
-    {
-      applyOffDiag(chi, psi, isign, 0);
-    }
+      {
+	applyOffDiag(chi, psi, isign, 0);
+      }
 
     //! Apply the the odd-even block onto a source vector
     void oddEvenLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
-    {
-      applyOffDiag(chi, psi, isign, 1);
-    }
+      {
+	applyOffDiag(chi, psi, isign, 1);
+      }
 
     //! Apply the inverse of the even-even block onto a source vector
     inline
     void evenEvenInvLinOp(multi1d<LatticeFermion>& chi, 
 			  const multi1d<LatticeFermion>& psi, 
 			  enum PlusMinus isign) const
-    {
-      applyDiagInv(chi, psi, isign, 0);
-    }
+      {
+	applyDiagInv(chi, psi, isign, 0);
+      }
 
     //! Apply the inverse of the odd-odd block onto a source vector
     inline
     void oddOddInvLinOp(multi1d<LatticeFermion>& chi, 
 			const multi1d<LatticeFermion>& psi, 
 			enum PlusMinus isign) const
-    {
-      applyDiagInv(chi, psi, isign, 1);
-    }
+      {
+	applyDiagInv(chi, psi, isign, 1);
+      }
   
     //! Apply the even-even block onto a source vector
     void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			    enum PlusMinus isign) const
-    {
-      ds_u.resize(Nd);
-      ds_u = zero;
-    }
+      {
+	ds_u.resize(Nd);
+	ds_u = zero;
+      }
 
     //! Apply the the odd-odd block onto a source vector
     void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			  const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			  enum PlusMinus isign) const
-    {
-      ds_u.resize(Nd);
-      ds_u = zero;
-    }
+      {
+	ds_u.resize(Nd);
+	ds_u = zero;
+      }
 
     //! Apply the the even-odd block onto a source vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			   enum PlusMinus isign) const
-    {
-      applyDerivOffDiag(ds_u, chi, psi, isign, 0);
-    }
+      {
+	applyDerivOffDiag(ds_u, chi, psi, isign, 0);
+      }
  
     //! Apply the the odd-even block onto a source vector
     void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			   enum PlusMinus isign) const
-    {
-      applyDerivOffDiag(ds_u, chi, psi, isign, 1);
-    }
+      {
+	applyDerivOffDiag(ds_u, chi, psi, isign, 1);
+      }
 
     //! Return flops performed by the evenEvenLinOp
     unsigned long evenEvenNFlops(void) const { 
@@ -250,9 +255,17 @@ namespace Chroma
       return cbsite_flops*(Layout::sitesOnNode()/2);
     }
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return Dslash.getFermBC();}
+
+  protected:
+    //! Hide partial constructor
+//    EvenOddPrecHtContFrac5DLinOpArray() {}
+    //! Hide =
+    void operator=(const EvenOddPrecHtContFrac5DLinOpArray&) {}
+
   private:
-    // Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Dslash; //Dslash Op
-    Handle< const WilsonDslashArray > Dslash;
+    WilsonDslashArray  Dslash;
     const Real m_q;
     const Real OverMass;
     const int  N5;    // Size of the 5th dimension
@@ -274,7 +287,7 @@ namespace Chroma
 
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

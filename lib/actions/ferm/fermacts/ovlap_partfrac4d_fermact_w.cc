@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 2.3 2006-02-26 03:47:51 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -29,7 +29,9 @@
 #include "meas/eig/ischiral_w.h"
 
 
+#include "actions/ferm/fermacts/simple_fermstate.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 namespace Chroma
@@ -39,8 +41,10 @@ namespace Chroma
   namespace OvlapPartFrac4DFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
-										      const std::string& path)
+    WilsonTypeFermAct<LatticeFermion, 
+		      multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+								     const std::string& path)
     {
       return new OvlapPartFrac4DFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
 					OvlapPartFrac4DFermActParams(xml_in, path));
@@ -48,8 +52,10 @@ namespace Chroma
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct4D(xml_in, path);
     }
@@ -173,12 +179,25 @@ namespace Chroma
 
 
   //! Constructor
-  OvlapPartFrac4DFermAct::OvlapPartFrac4DFermAct(Handle<FermBC<LatticeFermion> > fbc_, const OvlapPartFrac4DFermActParams& params_) : fbc(fbc_), params(params_)
- {
+  OvlapPartFrac4DFermAct::OvlapPartFrac4DFermAct(Handle< FermBC<T,P,Q> > fbc_, 
+						 const OvlapPartFrac4DFermActParams& params_) : 
+    fbc(fbc_), params(params_)
+  {
     QDPIO::cout << "Constructing OvlapPartFrac4D FermAct from params" << endl;
     std::istringstream  xml_s(params.AuxFermAct);
     XMLReader  fermacttop(xml_s);
     const string fermact_path = "/AuxFermAct";
+
+    // Sanity check
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << OvlapPartFrac4DFermActEnv::name << ": error: fbc is null" << endl;
+      QDP_abort(1);
+    }
+
+    // Fake a creator. This should be cleaned up
+    Handle< CreateFermState<T,P,Q> > cfs_(new CreateSimpleFermState<T,P,Q>(fbc));
+    cfs = cfs_;
 
     struct UnprecCastFailure {
       UnprecCastFailure(std::string e) : auxfermact(e) {};
@@ -194,13 +213,13 @@ namespace Chroma
       read(fermacttop, fermact_path + "/Mass", params.AuxMass);
       QDPIO::cout << "AuxFermAct Mass: " << params.AuxMass << endl;
       // Generic Wilson-Type stuff
-      FermionAction<LatticeFermion>* S_f =
+      FermionAction<T,P,Q>* S_f =
 	TheFermionActionFactory::Instance().createObject(auxfermact,
 							 fermacttop,
 							 fermact_path);
 
-      UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* S_aux; 
-      S_aux = dynamic_cast<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);
+      UnprecWilsonTypeFermAct<T,P,Q>* S_aux = 
+	dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(S_f);
 
       // Dumbass User specifies something that is not UnpreWilsonTypeFermAct
       // dynamic_cast MUST be checked for 0
@@ -209,7 +228,7 @@ namespace Chroma
 
       // Drop AuxFermAct into a Handle immediately.
       // This should free things up at the end
-      Handle<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >  S_w(S_aux);
+      Handle<UnprecWilsonTypeFermAct<T,P,Q> >  S_w(S_aux);
       Mact = S_w;
     }
     catch( const UnprecCastFailure& e) {
@@ -807,14 +826,15 @@ namespace Chroma
    * \param state_	 gauge field state  	 (Read)
    * \param m_q	         mass for this operator	 (Read)
    */
-  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
-  OvlapPartFrac4DFermAct::unprecLinOp(Handle<const ConnectState> state_, const Real& m_q) const
+  UnprecLinearOperator<LatticeFermion,
+		       multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix> >* 
+  OvlapPartFrac4DFermAct::unprecLinOp(Handle< FermState<T,P,Q> > state_, const Real& m_q) const
   {
     START_CODE();
 
     try {
-      const EigenConnectState& state = dynamic_cast<const EigenConnectState&>(*state_);
-      
+      const EigenConnectState& state = dynamic_cast<EigenConnectState&>(*state_);
           
       int NEigVal = state.getNEig();
       
@@ -887,8 +907,8 @@ namespace Chroma
    *
    * \param state_	 gauge field state  	 (Read)
    */
-  const LinearOperator<LatticeFermion>* 
-  OvlapPartFrac4DFermAct::linOpPrecondition(Handle<const ConnectState> state_) const
+  LinearOperator<LatticeFermion>* 
+  OvlapPartFrac4DFermAct::linOpPrecondition(Handle< FermState<T,P,Q> > state_) const
   {
     START_CODE();
     try {
@@ -960,8 +980,8 @@ namespace Chroma
    *
    * \param state_	 gauge field state  	 (Read)
    */
-  const LinearOperator<LatticeFermion>* 
-  OvlapPartFrac4DFermAct::lgamma5epsH(Handle<const ConnectState> state_) const
+  LinearOperator<LatticeFermion>* 
+  OvlapPartFrac4DFermAct::lgamma5epsH(Handle< FermState<T,P,Q> > state_) const
   {
     START_CODE();
 
@@ -1033,12 +1053,12 @@ namespace Chroma
    *
    * \param state_	 gauge field state  	 (Read)
    */
-  const LinearOperator<LatticeFermion>* 
-  OvlapPartFrac4DFermAct::lgamma5epsHPrecondition(Handle<const ConnectState> state_) const
+  LinearOperator<LatticeFermion>* 
+  OvlapPartFrac4DFermAct::lgamma5epsHPrecondition(Handle< FermState<T,P,Q> > state_) const
   {
     START_CODE();
   
-    const EigenConnectState& state = dynamic_cast<const EigenConnectState&>(*state_);
+    const EigenConnectState& state = dynamic_cast<EigenConnectState&>(*state_);
 
     int NEigVal = state.getNEig();
 
@@ -1099,14 +1119,16 @@ namespace Chroma
    *
    * \param state_     gauge field state       (Read)
    */
-  const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
-  OvlapPartFrac4DFermAct::lMdagM(Handle<const ConnectState> state_) const
+  DiffLinearOperator<LatticeFermion,
+		     multi1d<LatticeColorMatrix>,
+		     multi1d<LatticeColorMatrix> >* 
+  OvlapPartFrac4DFermAct::lMdagM(Handle< FermState<T,P,Q> > state_) const
   {
     // linOp news the linear operator and gives back pointer, 
     // We call lmdagm with this pointer.
     // lmdagm is the only owner
     // No need to grab linOp with handle at this stage.
-    return new DiffMdagMLinOp< LatticeFermion, multi1d<LatticeColorMatrix> >( linOp(state_) );
+    return new DiffMdagMLinOp<T,P,Q>( linOp(state_) );
   }
  
   //! Produce a linear operator for this action
@@ -1115,8 +1137,10 @@ namespace Chroma
    *
    * \param state_	 gauge field state  	 (Read)
    */
-  const DiffLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >* 
-  OvlapPartFrac4DFermAct::lMdagM(Handle<const ConnectState> state_, const Chirality& ichiral) const
+  DiffLinearOperator<LatticeFermion,
+		     multi1d<LatticeColorMatrix>,
+		     multi1d<LatticeColorMatrix> >* 
+  OvlapPartFrac4DFermAct::lMdagM(Handle< FermState<T,P,Q> > state_, const Chirality& ichiral) const
   {
 
     // If chirality is none, return traditional MdagM
@@ -1124,7 +1148,7 @@ namespace Chroma
       return lMdagM(state_);
     }
     else { 
-      const EigenConnectState& state = dynamic_cast<const EigenConnectState&>(*state_);
+      const EigenConnectState& state = dynamic_cast<EigenConnectState&>(*state_);
     
       int NEigVal = state.getNEig();
 
@@ -1186,8 +1210,8 @@ namespace Chroma
    *
    * \param state_	 gauge field state  	 (Read)
    */
-  const LinearOperator<LatticeFermion>* 
-  OvlapPartFrac4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_, const Chirality& ichiral) const
+  LinearOperator<LatticeFermion>* 
+  OvlapPartFrac4DFermAct::lMdagMPrecondition(Handle< FermState<T,P,Q> > state_, const Chirality& ichiral) const
   {
 
     // If chirality is none, return traditional MdagM
@@ -1195,7 +1219,7 @@ namespace Chroma
       return lMdagM(state_);
     }
     else { 
-      const EigenConnectState& state = dynamic_cast<const EigenConnectState&>(*state_);
+      const EigenConnectState& state = dynamic_cast<EigenConnectState&>(*state_);
     
       int NEigVal = state.getNEig();
 
@@ -1257,42 +1281,34 @@ namespace Chroma
    *
    * \param state_	 gauge field state  	 (Read)
    */
-  const LinearOperator<LatticeFermion>* 
-  OvlapPartFrac4DFermAct::lMdagMPrecondition(Handle<const ConnectState> state_) const
+  LinearOperator<LatticeFermion>* 
+  OvlapPartFrac4DFermAct::lMdagMPrecondition(Handle< FermState<T,P,Q> > state_) const
   {
     // linOp news the linear operator and gives back pointer, 
     // We call lmdagm with this pointer.
     // lmdagm is the only owner
     // No need to grab linOp with handle at this stage.
-    return new lmdagm<LatticeFermion>( linOpPrecondition(state_) );
+    return new MdagMLinOp<LatticeFermion>( linOpPrecondition(state_) );
   }
 
-    //! Create a ConnectState with just the gauge fields
-  const EigenConnectState*
+  //! Create a ConnectState with just the gauge fields
+  EigenConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_) const
   {
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    getFermBC().modifyU(u_tmp);
-    return new EigenConnectState(u_tmp);
+    return new EigenConnectState(fbc, u_);
   }
 
 
   //! Create OverlapConnectState from XML
-  const EigenConnectState*
+  EigenConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				      XMLReader& state_info_xml,
 				      const string& state_info_path) const
   {
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    getFermBC().modifyU(u_tmp);
-
     XMLFileWriter test("./test");
     test << state_info_xml;
 
-
     //QDPIO::cout << "Creating State from XML: " << reader_contents.str() << endl << flush;
-
-
  
     std::string eigen_info_id;
     if( state_info_xml.count("/StateInfo/eigen_info_id") == 1 ) {
@@ -1300,13 +1316,12 @@ namespace Chroma
       read(state_info_xml, "/StateInfo/eigen_info_id", eigen_info_id);
       QDPIO::cout << "Using eigen_info_id: " << eigen_info_id << endl;
 
-      EigenConnectState *ret_val = new EigenConnectState(u_tmp, eigen_info_id);
+      EigenConnectState *ret_val = new EigenConnectState(fbc, u_, eigen_info_id);
 
 
       // Check the low evs
-      Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
-      Handle< const LinearOperator<LatticeFermion> > Maux = 
-	Mact->hermitianLinOp(state_aux);
+      Handle< FermState<T,P,Q>  > state_aux(new SimpleFermState<T,P,Q>(fbc, u_));
+      Handle< LinearOperator<T> > Maux = Mact->hermitianLinOp(state_aux);
 
       for(int vec = 0; vec < ret_val->getNEig(); vec++) { 
 
@@ -1330,7 +1345,7 @@ namespace Chroma
     else {
       QDPIO::cout << "No StateInfo Found: " << endl;
 
-      return new EigenConnectState(u_tmp);
+      return new EigenConnectState(fbc, u_);
     }
     
 

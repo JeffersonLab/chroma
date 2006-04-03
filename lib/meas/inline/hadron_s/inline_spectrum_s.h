@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 2.4 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_spectrum_s.h,v 3.0 2006-04-03 04:59:03 edwards Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *

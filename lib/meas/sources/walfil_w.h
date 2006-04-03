@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: walfil_w.h,v 1.1 2005-10-28 21:06:41 edwards Exp $
+// $Id: walfil_w.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */

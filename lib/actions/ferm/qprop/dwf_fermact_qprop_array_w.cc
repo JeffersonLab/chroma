@@ -1,4 +1,4 @@
-// $Id: dwf_fermact_qprop_array_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: dwf_fermact_qprop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Base class for unprec and even-odd preconditioned DWF qprop
  */
@@ -27,8 +27,8 @@ namespace Chroma
      * \param PV_        Pauli-Villars linear operator ( Read )
      * \param m_q_       quark mass ( Read )
      */
-    DWFQprop(Handle< const SystemSolver< multi1d<T> > > qpropT_,
-	     Handle< const LinearOperator< multi1d<T> > > PV_,
+    DWFQprop(Handle< SystemSolverArray<T> > qpropT_,
+	     Handle< LinearOperatorArray<T> > PV_,
 	     const Real& m_q_) : 
       qpropT(qpropT_), PV(PV_), m_q(m_q_) {}
 
@@ -92,8 +92,8 @@ namespace Chroma
     // Hide default constructor
     DWFQprop() {}
 
-    Handle< const SystemSolver< multi1d<T> > > qpropT;
-    Handle< const LinearOperator< multi1d<T> > > PV;
+    Handle< SystemSolverArray<T> > qpropT;
+    Handle< LinearOperatorArray<T> > PV;
     const Real m_q;
   };
 
@@ -103,12 +103,12 @@ namespace Chroma
 
 
   template<>
-  const SystemSolver<LF>* 
-  EvenOddPrecDWFermActBaseArray<LF,LCM>::qprop(Handle<const ConnectState> state,
-					       const InvertParam_t& invParam) const
+  SystemSolver<LF>* 
+  EvenOddPrecDWFermActBaseArray<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
+						   const InvertParam_t& invParam) const
   {
-    return new DWFQprop<LF>(Handle< const SystemSolver< multi1d<LF> > >(qpropT(state,invParam)), 
-			    Handle< const LinearOperator< multi1d<LF> > >(unprecLinOp(state,Real(1))),
+    return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(qpropT(state,invParam)), 
+			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,Real(1))),
 			    getQuarkMass());
   }
   
@@ -116,12 +116,12 @@ namespace Chroma
 
 
   template<>
-  const SystemSolver<LF>* 
-  UnprecDWFermActBaseArray<LF,LCM>::qprop(Handle<const ConnectState> state,
-					  const InvertParam_t& invParam) const
-  {
-    return new DWFQprop<LF>(Handle< const SystemSolver< multi1d<LF> > >(qpropT(state,invParam)), 
-			    Handle< const LinearOperator< multi1d<LF> > >(unprecLinOp(state,Real(1))),
+  SystemSolver<LF>* 
+  UnprecDWFermActBaseArray<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
+					      const InvertParam_t& invParam) const
+  { 
+    return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(qpropT(state,invParam)), 
+			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,Real(1))),
 			    getQuarkMass());
   }
   

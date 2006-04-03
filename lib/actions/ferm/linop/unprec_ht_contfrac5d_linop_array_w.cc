@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_ht_contfrac5d_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) operator
  */
@@ -13,14 +13,15 @@ namespace Chroma
 { 
   // Initialize
   void
-  UnprecHTContFrac5DLinOpArray::init(const multi1d<LatticeColorMatrix>& u,
+  UnprecHTContFrac5DLinOpArray::init(Handle< FermState<T,P,Q> > state,
 				     const Real& b5, const Real& c5)
   {
     scale_fac = b5 + c5;
     a5 = b5 - c5;
 
-    D_w = new UnprecWilsonLinOp(u, Real(-OverMass));
-    D_denum = new UnprecDWFTransfDenLinOp(u, a5, D_w);
+    D_w = new UnprecWilsonLinOp(state, Real(-OverMass));
+    D_denum = new UnprecDWFTransfDenLinOp(a5, D_w);
+    fbc = state->getFermBC();
   }
 
 
@@ -128,6 +129,7 @@ namespace Chroma
       chi[TwoN] += pmscale*tmp2;
     }
 
+    getFermBC().modifyF(chi);
 
     END_CODE();
   }

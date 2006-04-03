@@ -1,4 +1,4 @@
-// $Id: expm12.cc,v 2.0 2005-09-25 21:04:44 edwards Exp $
+// $Id: expm12.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
 /*! \file
  *  \brief 12-th order exponentiation of a lattice color matrix
  */

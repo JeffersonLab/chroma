@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hmc.h,v 2.0 2005-09-25 21:04:41 edwards Exp $
+// $Id: abs_hmc.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
 /*! \file
  * \brief Abstract HMC trajectory
  *

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 2.2 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -22,7 +22,7 @@ namespace Chroma
    * \param aniso         aniso params  (Read)
    */
   EvenOddPrecDWLinOpArray::EvenOddPrecDWLinOpArray(
-    const multi1d<LatticeColorMatrix>& u_, 
+    Handle< FermState<T,P,Q> > fs,
     const Real& WilsonMass_, const Real& m_q_, int N5_,
     const AnisoParam_t& aniso)
   {
@@ -33,7 +33,7 @@ namespace Chroma
     a5  = 1;
     N5  = N5_;
 
-    D.create(u_,N5,aniso);   // construct using possibly aniso glue
+    D.create(fs,N5,aniso);   // construct using possibly aniso glue
 
     Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
     InvTwoKappa = 1 + a5*(1 + (Nd-1)*ff - WilsonMass); 

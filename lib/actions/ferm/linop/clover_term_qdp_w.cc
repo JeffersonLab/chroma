@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 2.12 2006-02-16 02:24:46 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -79,11 +79,19 @@ namespace Chroma
 
 
   //! Creation routine
-  void QDPCloverTerm::create(const multi1d<LatticeColorMatrix>& u_, 	
+  void QDPCloverTerm::create(Handle< FermState<T,P,Q> >& fs,
 			     const CloverFermActParams& param_)
   {
-    u = u_;
+    u = fs->getLinks();
+    fbc = fs->getFermBC();
     param = param_;
+
+    // Sanity check
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << endl;
+      QDP_abort(1);
+    }
 
     {
       Real ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
@@ -104,7 +112,7 @@ namespace Chroma
 
     /* Calculate F(mu,nu) */
     multi1d<LatticeColorMatrix> f;
-    mesField(f, u_);
+    mesField(f, u);
     makeClov(f, diag_mass);
     
     choles_done.resize(rb.numSubsets());
@@ -224,9 +232,9 @@ namespace Chroma
 
     /* Multiply in the appropriate clover coefficient */
     /*
-    switch (param.anisoParam.t_dir)
-    {
-    case 1:
+      switch (param.anisoParam.t_dir)
+      {
+      case 1:
       f0 = f[0] * param.clovCoeffT;
       f1 = f[1] * param.clovCoeffR;
       f2 = f[2] * param.clovCoeffR;
@@ -235,7 +243,7 @@ namespace Chroma
       f5 = f[5] * param.clovCoeffR;
       break;
 
-    case 2:
+      case 2:
       f0 = f[0] * param.clovCoeffR;
       f1 = f[1] * param.clovCoeffT;
       f2 = f[2] * param.clovCoeffR;
@@ -244,7 +252,7 @@ namespace Chroma
       f5 = f[5] * param.clovCoeffT;
       break;
 
-    case 3:
+      case 3:
       f0 = f[0] * param.clovCoeffR;
       f1 = f[1] * param.clovCoeffR;
       f2 = f[2] * param.clovCoeffT;
@@ -253,11 +261,11 @@ namespace Chroma
       f5 = f[5] * param.clovCoeffT;
       break;
 
-    default:
+      default:
       QDPIO::cerr << __func__ << ": invalid time direction: t_dir= " 
-		  << param.anisoParam.t_dir << endl;
+      << param.anisoParam.t_dir << endl;
       QDP_abort(1);
-    }
+      }
     */
 
     tri.resize(QDP::Layout::sitesOnNode());  // hold local lattice
@@ -643,6 +651,7 @@ namespace Chroma
 
     }
 
+    getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();
   }
@@ -976,37 +985,36 @@ namespace Chroma
       break;
     
     default:
-      {
-	B = zero;
-	QDPIO::cout << "BAD DEFAULT CASE HIT" << endl;
-      }
+    {
+      B = zero;
+      QDPIO::cout << "BAD DEFAULT CASE HIT" << endl;
+    }
     }
   
 
     END_CODE();
   }
 
-      //! Returns the appropriate clover coefficient for indices mu and nu
-    const Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const { 
-
-
-	if( param.anisoParam.anisoP ) { 
- 	  if (mu==param.anisoParam.t_dir || nu == param.anisoParam.t_dir) { 
-	    return param.clovCoeffT;
-	  }
-	  else { 
-	    // Otherwise return the spatial coeff
-	    return param.clovCoeffR;
-	  }
-	  
-	}
-	else { 
-	  // If there is no anisotropy just return the spatial one, it will
-	  // be the same as the temporal one
-	  return param.clovCoeffR; 
-	} 
+  //! Returns the appropriate clover coefficient for indices mu and nu
+  const Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const 
+  { 
+    if( param.anisoParam.anisoP ) 
+    { 
+      if (mu==param.anisoParam.t_dir || nu == param.anisoParam.t_dir) { 
+	return param.clovCoeffT;
       }
-
+      else { 
+	// Otherwise return the spatial coeff
+	return param.clovCoeffR;
+      }
+	  
+    }
+    else { 
+      // If there is no anisotropy just return the spatial one, it will
+      // be the same as the temporal one
+      return param.clovCoeffR; 
+    } 
+  }
 
 }
 

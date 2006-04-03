@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc_factory.h,v 2.1 2006-02-25 19:47:46 edwards Exp $
+// $Id: gaugebc_factory.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition factories
  */
@@ -19,10 +19,11 @@ namespace Chroma
   //! GaugeAct Factory 
   /*! @ingroup gaugebcs */
   typedef Chroma::SingletonHolder< 
-  ObjectFactory<GaugeBC, 
+  ObjectFactory<GaugeBC<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >, 
     std::string,
     TYPELIST_2(XMLReader&, const std::string&),
-    GaugeBC* (*)(XMLReader&, const std::string&), 
+    GaugeBC<multi1d<LatticeColorMatrix>, 
+	    multi1d<LatticeColorMatrix> >* (*)(XMLReader&, const std::string&), 
 		StringFactoryError> >
   TheGaugeBCFactory;
 }; // end namespace Chroma

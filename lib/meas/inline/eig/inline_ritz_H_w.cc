@@ -1,4 +1,4 @@
-// $Id: inline_ritz_H_w.cc,v 2.4 2006-03-20 04:22:02 edwards Exp $
+// $Id: inline_ritz_H_w.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -159,8 +159,8 @@ namespace Chroma
   }
 
 
-  void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
-		    Handle< const LinearOperator<LatticeFermion> >& H,
+  void RitzCode4DHw(Handle< LinearOperator<LatticeFermion> >& MM,
+		    Handle< LinearOperator<LatticeFermion> >& H,
 		    const RitzParams_t& params,
 		    XMLWriter& xml_out,
 		    EigenInfo& eigenvec_val);
@@ -283,19 +283,23 @@ namespace Chroma
 	swatch.reset();
 	QDPIO::cout << "Try the various factories" << endl;
 
+	// Typedefs to save typing
+	typedef LatticeFermion               T;
+	typedef multi1d<LatticeColorMatrix>  P;
+	typedef multi1d<LatticeColorMatrix>  Q;
 
-	Handle< WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
+	Handle< WilsonTypeFermAct<T,P,Q> >
 	  S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
 								   fermacttop,
 								   fermact_path));
 	
-	Handle<const ConnectState> state(S_f->createState(u,
+	Handle< FermState<T,P,Q> > state(S_f->createState(u,
 							  state_info_xml,
 							  state_info_path));
 
-	Handle< const LinearOperator<LatticeFermion> > MM(S_f->lMdagM(state));
+	Handle< LinearOperator<LatticeFermion> > MM(S_f->lMdagM(state));
 
-	Handle< const LinearOperator<LatticeFermion> > H(S_f->hermitianLinOp(state));
+	Handle< LinearOperator<LatticeFermion> > H(S_f->hermitianLinOp(state));
 	swatch.start();
 	RitzCode4DHw(MM, H, params.ritz_params, xml_out, eigenvec_val);
 	swatch.stop();
@@ -334,8 +338,8 @@ namespace Chroma
 
 
 
-  void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
-		    Handle< const LinearOperator<LatticeFermion> >& H,
+  void RitzCode4DHw(Handle< LinearOperator<LatticeFermion> >& MM,
+		    Handle< LinearOperator<LatticeFermion> >& H,
 		    const RitzParams_t& params,
 		    XMLWriter& xml_out,
 		    EigenInfo& eigenvec_val)
@@ -479,7 +483,7 @@ namespace Chroma
     int n_cg_high;
     XMLBufferWriter high_xml;
   
-    Handle<const LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
+    Handle< LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
     // Initial guess -- upper bound on spectrum
     lambda_high_aux[0] = Real(8);
   

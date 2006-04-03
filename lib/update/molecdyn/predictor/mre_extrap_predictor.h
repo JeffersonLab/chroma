@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mre_extrap_predictor.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
+// $Id: mre_extrap_predictor.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  * \brief Minimal residual predictor
  *
@@ -80,7 +80,7 @@ namespace Chroma
     const int N5;
 
     void find_extrap_solution(multi1d<LatticeFermion>& psi, 
-			      const LinearOperator<multi1d<LatticeFermion> >& A,
+			      const LinearOperatorArray<LatticeFermion>& A,
 			      const multi1d<LatticeFermion>& chi);
 
   public:
@@ -94,7 +94,7 @@ namespace Chroma
 
     // Zero out psi -- it is a zero guess after all
     void operator()(multi1d<LatticeFermion>& psi,
-		    const LinearOperator<multi1d<LatticeFermion> >& A,
+		    const LinearOperatorArray<LatticeFermion>& A,
 		    const multi1d<LatticeFermion>& chi); 
 
     // No internal state so reset is a Nop

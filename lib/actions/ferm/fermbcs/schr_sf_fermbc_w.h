@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_sf_fermbc_w.h,v 2.2 2006-03-17 16:59:11 edwards Exp $
+// $Id: schr_sf_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! @file
  * @brief Schroedinger ferm boundary conditions
  */
@@ -18,8 +18,7 @@ namespace Chroma
    *  Schroedinger BC implies periodic in dirs orthog to decay dir, and some
    *  kind of fixed BC in the decay dir.
    */
-  template<class T>
-  class SchrSFFermBC : public SchrFermBC<T>
+  class SchrSFFermBC : public SchrFermBC
   {
   public:
     //! Virtual destructor

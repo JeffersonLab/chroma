@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: asqtad_linop_s.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
 //! Asqtad Staggered-Dirac operator
 /*!
  * \ingroup linop
@@ -16,31 +16,35 @@
 
 namespace Chroma 
 { 
-  class AsqtadLinOp : public EvenOddLinearOperator< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >
+  class AsqtadLinOp : public EvenOddLinearOperator< LatticeStaggeredFermion, 
+		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Partial constructor - Must use create later
     AsqtadLinOp() {}
 
     //! Full constructor
-    AsqtadLinOp(const multi1d<LatticeColorMatrix>& u_fat_, 
-		const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) 
+    AsqtadLinOp(Handle<AsqtadConnectStateBase> state_, const Real& Mass_) 
     {
-      create(u_fat_, u_triple_, Mass_);
+      create(state_, Mass_);
     }
 
-
-    void create(const multi1d<LatticeColorMatrix>& u_fat_, 
-		const multi1d<LatticeColorMatrix>& u_triple_, const Real& Mass_) 
+    //! Creation routine
+    void create(Handle<AsqtadConnectStateBase> state_, const Real& Mass_) 
     {
       //u_fat = u_fat_;
       // u_triple = u_triple_;
       Mass = Mass_;
-      D.create(u_fat_, u_triple_);
+      D.create(state_);
     };
 
     //! Destructor is automatic
     ~AsqtadLinOp() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<LatticeStaggeredFermion,
+		 multi1d<LatticeColorMatrix>,
+		 multi1d<LatticeColorMatrix> >& getFermBC() const {return D.getFermBC();}
 
     //! Apply the the even-even block onto a source vector
     inline void evenEvenLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
@@ -76,7 +80,7 @@ namespace Chroma
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

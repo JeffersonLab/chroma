@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_params_w.h,v 2.1 2006-01-14 05:22:32 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_params_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief One-flavor monomial params
  */

@@ -14,6 +14,7 @@ using namespace QDP::Hints;
 namespace Chroma 
 {
   
+  //----------------------------------------------------------------
   //! Even-odd preconditioned linear operator
   /*! @ingroup linop
    *
@@ -86,8 +87,8 @@ namespace Chroma
    *
    */
 
-  template<typename T, typename P>
-  class EvenOddPrecLinearOperator : public DiffLinearOperator<T,P>
+  template<typename T, typename P, typename Q>
+  class EvenOddPrecLinearOperator : public DiffLinearOperator<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -95,6 +96,9 @@ namespace Chroma
 
     //! Only defined on the odd lattice
     const OrderedSubset& subset() const {return rb[1];}
+
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
     //! Apply the even-even block onto a source vector
     /*! This does not need to be optimized */
@@ -133,6 +137,8 @@ namespace Chroma
       /*     O      O,O    O        O */
       oddOddLinOp(chi, psi, isign);
       chi[rb[1]] -= tmp1;
+
+      getFermBC().modifyF(chi, rb[1]);
     }
 
 
@@ -154,6 +160,8 @@ namespace Chroma
       oddEvenLinOp(tmp1, psi, isign);
       oddOddLinOp(tmp2, psi, isign);
       chi[rb[1]] = tmp1 + tmp2;
+
+      getFermBC().modifyF(chi);
     }
 
 
@@ -194,6 +202,8 @@ namespace Chroma
       //  ds_u +=  chi^dag * A'_oo * psi
       derivOddOddLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
+
+      getFermBC().zero(ds_u);
     }
 
 
@@ -229,7 +239,8 @@ namespace Chroma
   };
 
 
-  //! Partial specialization of even-odd preconditioned linear operator including derivatives
+  //----------------------------------------------------------------
+  //! Even-odd preconditioned linear operator including derivatives for arrays
   /*! @ingroup linop
    *
    * Support for even-odd preconditioned linear operators with derivatives
@@ -296,18 +307,21 @@ namespace Chroma
    *
    */
 
-  template<typename T, typename P>
-  class EvenOddPrecLinearOperator< multi1d<T>, P > : public DiffLinearOperator< multi1d<T>, P >
+  template<typename T, typename P, typename Q>
+  class EvenOddPrecLinearOperatorArray : public DiffLinearOperatorArray<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecLinearOperator() {}
+    virtual ~EvenOddPrecLinearOperatorArray() {}
 
     //! Only defined on the odd lattice
     const OrderedSubset& subset() const {return rb[1];}
 
     //! Expected length of array index
     virtual int size(void) const = 0;
+
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
     //! Apply the even-even block onto a source vector
     /*! This does not need to be optimized */
@@ -348,6 +362,8 @@ namespace Chroma
       oddOddLinOp(chi, psi, isign);
       for(int n=0; n < size(); ++n)
 	chi[n][rb[1]] -= tmp1[n];
+
+      getFermBC().modifyF(chi, rb[1]);
     }
 
 
@@ -372,6 +388,8 @@ namespace Chroma
       oddOddLinOp(tmp2, psi, isign);
       for(int n=0; n < size(); ++n)
 	chi[n][rb[1]] = tmp1[n] + tmp2[n];
+
+      getFermBC().modifyF(chi);
     }
 
 
@@ -415,6 +433,8 @@ namespace Chroma
       //  ds_u +=  chi^dag * A'_oo * psi
       derivOddOddLinOp(ds_tmp, chi, psi, isign);
       ds_u += ds_tmp;
+
+      getFermBC().zero(ds_u);
     }
 
     //! Apply the operator onto a source vector

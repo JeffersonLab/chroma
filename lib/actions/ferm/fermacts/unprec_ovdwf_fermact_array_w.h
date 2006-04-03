@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_fermact_array_w.h,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -47,29 +47,28 @@ namespace Chroma
    * Unprecondition domain-wall fermion action. The conventions used here
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    */
-  class UnprecOvDWFermActArray : public UnprecDWFermActBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecOvDWFermActArray : public UnprecDWFermActBaseArray<LatticeFermion, 
+				   multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! General FermBC
-    UnprecOvDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			   const Real& OverMass_, const Real& Mass_, int N5_) : 
-      fbc(fbc_), OverMass(OverMass_), Mass(Mass_), N5(N5_) {a5=1;}
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! General FermBC
-    UnprecOvDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+    UnprecOvDWFermActArray(Handle< CreateFermState<T,P,Q> > cfs_, 
+			   const Real& OverMass_, const Real& Mass_, int N5_) : 
+      cfs(cfs_), OverMass(OverMass_), Mass(Mass_), N5(N5_) {a5=1;}
+
+    //! General FermBC
+    UnprecOvDWFermActArray(Handle< CreateFermState<T,P,Q> > cfs_, 
 			   const UnprecOvDWFermActArrayParams& param) :
-      fbc(fbc_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), N5(param.N5) {}
+      cfs(cfs_), OverMass(param.OverMass), Mass(param.Mass), a5(param.a5), N5(param.N5) {}
 
     //! Copy constructor
     UnprecOvDWFermActArray(const UnprecOvDWFermActArray& a) : 
-      fbc(a.fbc), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), N5(a.N5) {}
-
-    //! Assignment
-    UnprecOvDWFermActArray& operator=(const UnprecOvDWFermActArray& a)
-      {fbc=a.fbc; OverMass=a.OverMass; Mass=a.Mass; a5=a.a5; N5=a.N5; return *this;}
-
-    //! Return the fermion BC object for this action
-    const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+      cfs(a.cfs), OverMass(a.OverMass), Mass(a.Mass), a5(a.a5), N5(a.N5) {}
 
     //! Length of DW flavor index/space
     int size() const {return N5;}
@@ -78,14 +77,22 @@ namespace Chroma
     Real getQuarkMass() const {return Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
-											     const Real& m_q) const;
+    UnprecDWLikeLinOpBaseArray<T,P,Q>* unprecLinOp(Handle< FermState<T,P,Q> > state, 
+						   const Real& m_q) const;
 
     //! Destructor is automatic
     ~UnprecOvDWFermActArray() {}
 
+  protected:
+    //! Return the fermion BC object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
   private:
-    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
+    UnprecOvDWFermActArray() {} //! General FermBC
+    void operator=(const UnprecOvDWFermActArray& a) {} //! Hide =
+
+  private:
+    Handle< CreateFermState<T,P,Q> >  cfs;
     Real OverMass;
     Real Mass;
     Real a5;

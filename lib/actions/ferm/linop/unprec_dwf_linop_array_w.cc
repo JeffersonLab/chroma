@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_linop_array_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall linear operator
  */
@@ -18,7 +18,7 @@ namespace Chroma
    * \param m_q_          quark mass    (Read)
    */
   UnprecDWLinOpArray::UnprecDWLinOpArray(
-    const multi1d<LatticeColorMatrix>& u_, 
+    Handle< FermState<T,P,Q> > fs,
     const Real& WilsonMass_, const Real& m_q_, int N5_,
     const AnisoParam_t& aniso)
   {
@@ -27,7 +27,8 @@ namespace Chroma
     a5  = 1.0;
     N5  = N5_;
 
-    D.create(u_, aniso);   // construct using possibly aniso glue
+    fbc = fs->getFermBC();
+    D.create(fs, aniso);   // construct using possibly aniso glue
 
     Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
     fact1 =  1 + a5*(1 + (Nd-1)*ff - WilsonMass);
@@ -94,6 +95,8 @@ namespace Chroma
       }          
       break;
     }
+
+    getFermBC().modifyF(chi);
 
     END_CODE();
   }

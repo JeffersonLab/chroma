@@ -1,4 +1,4 @@
-// $Id: fermbcs_aggregate_w.cc,v 2.3 2006-03-16 03:00:11 edwards Exp $
+// $Id: fermbcs_aggregate_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion boundary conditions
  */

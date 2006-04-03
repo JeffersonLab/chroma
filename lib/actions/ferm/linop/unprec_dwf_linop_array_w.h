@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -20,11 +20,17 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class UnprecDWLinOpArray : public UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecDWLinOpArray : public UnprecDWLikeLinOpBaseArray<LatticeFermion, 
+			     multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Full constructor
-    UnprecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    UnprecDWLinOpArray(Handle< FermState<T,P,Q> > fs,
 		       const Real& WilsonMass_, const Real& m_q, int N5_,
 		       const AnisoParam_t& aniso_);
 
@@ -36,6 +42,9 @@ namespace Chroma
 
     //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
     //! Apply the operator onto a source vector
     void operator() (multi1d<LatticeFermion>& chi, 
@@ -62,7 +71,8 @@ namespace Chroma
   protected:
     //! Partial constructor
     UnprecDWLinOpArray() {}
-
+    //! Hide =
+    void operator=(const UnprecDWLinOpArray&) {}
 
   private:
     Real WilsonMass;
@@ -74,9 +84,10 @@ namespace Chroma
     Real fact2;
 
     WilsonDslash  D;
+    Handle< FermBC<T,P,Q> > fbc;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 

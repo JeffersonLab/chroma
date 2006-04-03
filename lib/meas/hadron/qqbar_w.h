@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qqbar_w.h,v 2.1 2005-12-27 20:41:41 kostas Exp $
+// $Id: qqbar_w.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
 /*! \file
  *  \brief constructs 2 quark propagators contracted at the sink
  */

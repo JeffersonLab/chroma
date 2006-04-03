@@ -1,4 +1,4 @@
-// $Id: schr_gaugebc_params.cc,v 2.2 2006-03-13 05:19:01 edwards Exp $
+// $Id: schr_gaugebc_params.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional gauge boundary conditions
  */

@@ -1,4 +1,4 @@
-// $Id: remez_gmp.cc,v 2.0 2005-09-25 21:04:26 edwards Exp $
+// $Id: remez_gmp.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */

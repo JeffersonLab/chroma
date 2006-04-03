@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_two_flavor_monomial5d_w.h,v 2.3 2006-02-16 02:59:03 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial5d_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
@@ -35,27 +35,28 @@ namespace Chroma
     LatticeFermion>
     {
     public: 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
       // Copy Constructor
       EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(const EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
-      const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
-	return getFermAct();
-      }
-      
     protected:
 
-      multi1d<LatticeFermion>& getPhi(void) {
+      multi1d<T>& getPhi(void) {
 	return phi;
       }
 
-      const multi1d<LatticeFermion>& getPhi(void) const {
+      const multi1d<T>& getPhi(void) const {
 	return phi;
       }
 
-      const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
+      const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -64,7 +65,7 @@ namespace Chroma
 	return inv_param;
       }
 
-      AbsChronologicalPredictor5D<LatticeFermion>& getMDSolutionPredictor(void) { 
+      AbsChronologicalPredictor5D<T>& getMDSolutionPredictor(void) { 
 	return *chrono_predictor;
       }
 
@@ -76,14 +77,14 @@ namespace Chroma
       void operator=(const EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D&);
 
       // Pseudofermion field phi
-      multi1d<LatticeFermion> phi;
+      multi1d<T> phi;
 
       // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q> > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;
-      Handle<AbsChronologicalPredictor5D<LatticeFermion> > chrono_predictor;
+      Handle<AbsChronologicalPredictor5D<T> > chrono_predictor;
     };
 
 

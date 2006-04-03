@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gammasgn_w.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
+// $Id: gammasgn_w.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: quarkprop4_s.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -26,12 +26,12 @@ namespace Chroma
    * \param ncg_had  number of CG iterations ( Write )
    */
 
-  template<typename T>
+  template<typename T, typename P, typename Q>
   void quarkProp_a(LatticeStaggeredPropagator& q_sol, 
 		   XMLWriter& xml_out,
 		   const LatticeStaggeredPropagator& q_src,
-		   const FermionAction<T>& S_f,
-		   Handle<const ConnectState> state,
+		   const StaggeredTypeFermAct<T,P,Q>& S_f,
+		   Handle< FermState<T,P,Q> > state,
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
 		   int& ncg_had)
@@ -104,13 +104,18 @@ namespace Chroma
   void quarkProp4(LatticeStaggeredPropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticeStaggeredPropagator& q_src,	
-		  const StaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >& S_f,
-		  Handle<const ConnectState> state,
+		  const StaggeredTypeFermAct<LatticeStaggeredFermion, 
+		  multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& S_f,
+		  Handle< FermState<LatticeStaggeredFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> > > state,
 		  const InvertParam_t& invParam,
 		  QuarkSpinType quarkSpinType,
 		  int& ncg_had)
   {
-    quarkProp_a<LatticeStaggeredFermion>(q_sol, xml_out, q_src, S_f, state, invParam, quarkSpinType, ncg_had);
+    quarkProp_a<LatticeStaggeredFermion,
+      multi1d<LatticeColorMatrix>,
+      multi1d<LatticeColorMatrix> >(q_sol, xml_out, q_src, S_f, state, invParam, quarkSpinType, ncg_had);
   }
 
 
@@ -127,14 +132,18 @@ namespace Chroma
    */
   template<>
   void 
-  StaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >::quarkProp(
+  StaggeredTypeFermAct<LatticeStaggeredFermion, 
+		       multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix> >::quarkProp(
     LatticeStaggeredPropagator& q_sol, 
     XMLWriter& xml_out,
     const LatticeStaggeredPropagator& q_src,
-    Handle<const ConnectState> state,
+    Handle< FermState<LatticeStaggeredFermion,
+    multi1d<LatticeColorMatrix>,
+    multi1d<LatticeColorMatrix> > > state,
     const InvertParam_t& invParam,
     QuarkSpinType quarkSpinType,
-    int& ncg_had)
+    int& ncg_had) const
   {
     quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, quarkSpinType, ncg_had);
   }

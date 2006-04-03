@@ -1,4 +1,4 @@
-// $Id: t_dwflinop.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: t_dwflinop.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -85,21 +85,26 @@ int main(int argc, char **argv)
   multi1d<int> boundary(Nd);
   boundary = bnd;
 
+  // Typedefs to save typing
+  typedef LatticeFermion               T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
+
   // Create a FermBC
-  Handle<FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(boundary));
+  Handle< CreateFermState<T,P,Q> >  cfs(new CreateSimpleFermState<T,P,Q>(boundary));
 
   Real WilsonMass = 1.5;
   Real m_q = 0.1;
 #if 1
   int  N5  = 8;
-  UnprecDWFermActArray S_f(fbc_a, WilsonMass, m_q, N5);
+  UnprecDWFermActArray S_f(cfs, WilsonMass, m_q, N5);
 #else
   int  N5  = 9;
-  UnprecOvExtFermActArray S_f(fbc_a, WilsonMass, m_q, N5);
+  UnprecOvExtFermActArray S_f(cfs, WilsonMass, m_q, N5);
 #endif
 
-  Handle<const ConnectState> state(S_f.createState(u));
-  Handle<const LinearOperator< multi1d<LatticeFermion> > > A(S_f.linOp(state));
+  Handle< FermState<T,P,Q> > state(S_f.createState(u));
+  Handle< LinearOperatorArray<T> > A(S_f.linOp(state));
 
   multi1d<LatticeFermion> psi(N5), chi(N5);
 
@@ -139,8 +144,7 @@ int main(int argc, char **argv)
     QDP_error_exit("N5 != Ls");
 
   // Create a FermBC
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(boundary));
-  UnprecDWFermAct S_f_dwf(fbc, WilsonMass, m_q);
+  UnprecDWFermAct S_f_dwf(cfs, WilsonMass, m_q);
   LatticeDWFermion psi5, chi5, tmp1a;
 
   for(int m=0; m < N5; ++m)

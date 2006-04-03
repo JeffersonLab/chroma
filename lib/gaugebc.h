@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc.h,v 2.5 2006-03-16 02:57:52 edwards Exp $
+// $Id: gaugebc.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 /*! @file
  * @brief Gauge boundary conditions
  */
@@ -8,6 +8,7 @@
 #define __gaugebc_h__
 
 #include "chromabase.h"
+#include "boundcond.h"
 
 
 namespace Chroma
@@ -25,21 +26,18 @@ namespace Chroma
    *  for the fermion type that is used in the "modifyF", but is fixed 
    *  for a LatticeColorMatrix in the "modifyU".
    */
-  class GaugeBC
+  template<typename P, typename Q>
+  class GaugeBC : public BoundCond<P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;
     virtual ~GaugeBC() {}
 
     //! Apply the BC onto the U fields in place
-    virtual void modify(multi1d<LatticeColorMatrix>& u) const = 0;
+    virtual void modify(Q& u) const = 0;
 
     //! Zero some gauge-like field in place on the masked links
-    /*! 
-     * This routine may be dropped in favor of zero of a template type,
-     * namely the conjugate momenta.
-     */
-    virtual void zero(multi1d<LatticeColorMatrix>& ds_u) const = 0;
+    virtual void zero(P& ds_u) const = 0;
 
     //! Says if there are fixed links within the lattice
     virtual bool nontrivialP() const = 0;

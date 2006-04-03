@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_w.h,v 2.2 2006-02-16 21:02:58 edwards Exp $
+// $Id: clover_term_w.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized Clover terms
  */

@@ -1,4 +1,4 @@
-// $Id: constgauge.cc,v 2.3 2005-12-18 02:45:03 edwards Exp $
+// $Id: constgauge.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
 /*! \file
  *  \brief Constant diagonal gauge field
  */

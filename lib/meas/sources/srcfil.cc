@@ -1,4 +1,4 @@
-// $Id: srcfil.cc,v 1.2 2005-11-01 14:22:10 edwards Exp $
+// $Id: srcfil.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */

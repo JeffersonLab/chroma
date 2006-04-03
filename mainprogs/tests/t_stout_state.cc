@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 2.4 2005-10-13 18:38:23 bjoo Exp $
+// $Id: t_stout_state.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

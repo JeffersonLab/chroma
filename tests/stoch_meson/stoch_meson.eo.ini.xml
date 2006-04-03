@@ -2,7 +2,7 @@
 <stoch_meson>
 <annotation>
 ;
-; $Id: stoch_meson.eo.ini.xml,v 1.1 2005-12-18 23:56:28 edwards Exp $ test input for stoch_meson code
+; $Id: stoch_meson.eo.ini.xml,v 3.0 2006-04-03 04:59:34 edwards Exp $ test input for stoch_meson code
 ;
 </annotation>
 <Param> 

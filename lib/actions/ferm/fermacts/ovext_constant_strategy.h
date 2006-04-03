@@ -1,18 +1,30 @@
+// -*- C++ -*-
+// $Id: ovext_constant_strategy.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+/*! \file
+ *  \brief Ovext rescale strategy
+ */
+
 #ifndef ovext_constant_strategy_h
 #define ovext_constant_strategy_h
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/ovext_tuning_strategy.h"
 
-namespace Chroma {
+namespace Chroma 
+{
     
-  namespace OvExtConstantStrategyEnv { 
+  /*! @ingroup fermacts */
+  namespace OvExtConstantStrategyEnv 
+  { 
     extern const std::string name;
     extern const bool registered;
-  };
+  }
   
   
-  class OvExtConstantStrategy : public AbsOvExtTuningStrategy {
+  //! Ovext rescale strategy
+  /*! @ingroup fermacts */
+  class OvExtConstantStrategy : public AbsOvExtTuningStrategy 
+  {
   public: 
     // Destructor is automatic
     ~OvExtConstantStrategy(void) {}

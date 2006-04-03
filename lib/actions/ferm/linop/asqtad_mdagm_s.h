@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: asqtad_mdagm_s.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -16,65 +16,68 @@
 
 namespace Chroma 
 { 
-//! Asqtad Staggered-Dirac operator
-/*!
- * \ingroup linop
- *
- * This routine is specific to Staggered fermions!
- *
- *                                           +
- * This subroutine applies the matrix  or  (M M)    to the vector
- *      					E,E
- * Psi,
- *
- *      	       	   {   ~
- *      	       	   {   M(U) . Psi      	       if  ISign = PLUS
- *      	   Chi  =  {
- *      	       	   {   ~   +
- *      	       	   {   M(U)  . Psi     	       if  ISign = MINUS
- * NEED TO THINK MORE ABOUT THE ISIGN HERE AS IS IT NOT REALLY NEEDED!!!
- * FOR NOW JUST CALL THIS ROUTINE WITH A PLUS!!
+  //! Asqtad Staggered-Dirac operator
+  /*!
+   * \ingroup linop
+   *
+   * This routine is specific to Staggered fermions!
+   *
+   *                                           +
+   * This subroutine applies the matrix  or  (M M)    to the vector
+   *      					E,E
+   * Psi,
+   *
+   *      	       	   {   ~
+   *      	       	   {   M(U) . Psi      	       if  ISign = PLUS
+   *      	   Chi  =  {
+   *      	       	   {   ~   +
+   *      	       	   {   M(U)  . Psi     	       if  ISign = MINUS
+   * NEED TO THINK MORE ABOUT THE ISIGN HERE AS IS IT NOT REALLY NEEDED!!!
+   * FOR NOW JUST CALL THIS ROUTINE WITH A PLUS!!
 
- * Algorithm:
+   * Algorithm:
 
- * The kernel for Staggered fermions is
- *        +
- *      (M M) =  4m**2  - D  D
- * 	     E             EO OE
- */
+   * The kernel for Staggered fermions is
+   *        +
+   *      (M M) =  4m**2  - D  D
+   * 	     E             EO OE
+   */
 
-class AsqtadMdagM : public DiffLinearOperator<LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >
-{
-public:
-  //! Partial constructor
-  AsqtadMdagM() {}
+  class AsqtadMdagM : public DiffLinearOperator<LatticeStaggeredFermion, 
+                             multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+  {
+  public:
+    //! Partial constructor
+    AsqtadMdagM() {}
 
-  //! Full constructor
-  AsqtadMdagM(const multi1d<LatticeColorMatrix>& _u_fat, const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass)
-    {create(_u_fat,_u_triple,_Mass);}
+    //! Full constructor
+    AsqtadMdagM(Handle<AsqtadConnectStateBase> state, const Real& Mass_)
+      {create(state, Mass_);}
 
-  //! Creation routine
-  void create(const multi1d<LatticeColorMatrix>& _u_fat,const multi1d<LatticeColorMatrix>& _u_triple, const Real& _Mass);
+    //! Creation routine
+    void create(Handle<AsqtadConnectStateBase> state, const Real& Mass_);
     
-  //! Destructor is automatic
-  ~AsqtadMdagM() {}
+    //! Destructor is automatic
+    ~AsqtadMdagM() {}
 
-  //! Only defined on the even subset
-  const OrderedSubset& subset() const {return rb[0];}
+    //! Only defined on the even subset
+    const OrderedSubset& subset() const {return rb[0];}
 
-  //! Apply the operator onto a source vector
-  void operator() (LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, enum PlusMinus isign) const;
+    //! Return the fermion BC object for this linear operator
+    const FermBC<LatticeStaggeredFermion,
+		 multi1d<LatticeColorMatrix>,
+		 multi1d<LatticeColorMatrix> >& getFermBC() const {return D.getFermBC();}
 
-private:
-  Real Mass;
-  // multi1d<LatticeColorMatrix> u_fat;
-  // multi1d<LatticeColorMatrix> u_triple;
+    //! Apply the operator onto a source vector
+    void operator() (LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, enum PlusMinus isign) const;
 
-  AsqtadDslash D;
-};
+  private:
+    Real Mass;
+    AsqtadDslash D;
+  };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 2.2 2006-02-26 03:47:51 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -14,7 +14,9 @@
 #include "actions/ferm/invert/invcg2_array.h"
 #include "zolotarev.h"
 
+#include "actions/ferm/fermacts/simple_fermstate.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
+//#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 #include "io/enum_io/enum_io.h"
@@ -27,17 +29,21 @@ namespace Chroma
   namespace UnprecOvlapContFrac5DFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
-										      const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion,
+			multi1d<LatticeColorMatrix>,
+			multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+								       const std::string& path)
     {
-      return new UnprecOvlapContFrac5DFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+      return new UnprecOvlapContFrac5DFermActArray(WilsonTypeFermBCEnv::reader(xml_in, path), 
 						   UnprecOvlapContFrac5DFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct5D(xml_in, path);
     }
@@ -135,10 +141,22 @@ namespace Chroma
   
   // Construct the action out of a parameter structure
   UnprecOvlapContFrac5DFermActArray::UnprecOvlapContFrac5DFermActArray(
-			Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
-			const UnprecOvlapContFrac5DFermActParams& params_) :
-    fbc(fbc_a_), params(params_) 
+    Handle< FermBC<T,P,Q> > fbc_, 
+    const UnprecOvlapContFrac5DFermActParams& params_) :
+    fbc(fbc_), params(params_) 
   {
+    QDPIO::cout << UnprecOvlapContFrac5DFermActArrayEnv::name << ": entering constructor" << endl;
+
+    // Sanity check
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << UnprecOvlapContFrac5DFermActArrayEnv::name << ": error: fbc is null" << endl;
+      QDP_abort(1);
+    }
+
+    // Fake a creator. This should be cleaned up
+    Handle< CreateFermState<T,P,Q> > cfs_(new CreateSimpleFermState<T,P,Q>(fbc));
+    cfs = cfs_;
 
     
     // WHAT IS BELOW ONLY WORKS FOR TYPE=0 approximations
@@ -175,26 +193,25 @@ namespace Chroma
       QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
             
       // Generic Wilson-Type stuff
-      FermionAction<LatticeFermion>* S_f =
+      FermionAction<T,P,Q>* S_f =
 	TheFermionActionFactory::Instance().createObject(auxfermact,
 							 fermacttop,
 							 fermact_path);
       
-      UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* S_aux_ptr; 
-      S_aux_ptr = dynamic_cast<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);
+      UnprecWilsonTypeFermAct<T,P,Q>* S_aux_ptr = 
+	dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(S_f);
       
       // Dumbass User specifies something that is not UnpreWilsonTypeFermAct
       // dynamic_cast MUST be checked for 0
       if( S_aux_ptr == 0 ) throw UnprecCastFailure(auxfermact);
       
-      
       // Drop AuxFermAct into a Handle immediately.
       // This should free things up at the end
-      Handle<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >  S_w(S_aux_ptr);
+      Handle<UnprecWilsonTypeFermAct<T,P,Q> >  S_w(S_aux_ptr);
       S_aux = S_w;
     }
-    catch( const UnprecCastFailure& e) {
-      
+    catch( const UnprecCastFailure& e) 
+    {
       // Breakage Scenario
       QDPIO::cerr << "Unable to upcast auxiliary fermion action to "
 		  << "UnprecWilsonTypeFermAct " << endl;
@@ -204,12 +221,14 @@ namespace Chroma
       QDPIO::cerr << e.auxfermact << endl;
       QDP_abort(1);
     }
-    catch (const std::exception& e) {
+    catch (const std::exception& e) 
+    {
       // General breakage Scenario
       QDPIO::cerr << "Error reading data: " << e.what() << endl;
       throw;
     }
-    catch( const std::string& e ) { 
+    catch( const std::string& e ) 
+    { 
       QDPIO::cerr << "Caught Exception" << e << endl;
       QDP_abort(1);
     }
@@ -382,8 +401,10 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
-  UnprecOvlapContFrac5DFermActArray::linOp(Handle<const ConnectState> state_) const
+  UnprecLinearOperatorArray<LatticeFermion,
+			    multi1d<LatticeColorMatrix>,
+			    multi1d<LatticeColorMatrix> >* 
+  UnprecOvlapContFrac5DFermActArray::linOp(Handle< FermState<T,P,Q> > state_) const
   {
     START_CODE();
     try { 
@@ -391,7 +412,7 @@ namespace Chroma
       // This throws a bad cast exception if the cast fails
       // Hence the "try" above
       const OverlapConnectState& state = 
-	dynamic_cast<const OverlapConnectState&>(*state_);
+	dynamic_cast<OverlapConnectState&>(*state_);
       
       if (state.getEigVec().size() != state.getEigVal().size()) {
 	QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::linOp(): ";
@@ -412,24 +433,23 @@ namespace Chroma
       
       init(scale_factor, alpha, beta, NEig, EigValFunc, state);
       
-      return new UnprecOvlapContFrac5DLinOpArray( *S_aux,
-						  state_,
-						  params.Mass,
-						  N5,
-						  scale_factor,
-						  alpha,
-						  beta,
-						  NEig,
-						  EigValFunc,
-						  state.getEigVec(),
-						  isLastZeroP);
-      
-      
+      return new UnprecOvlapContFrac5DLinOpArray(*S_aux,
+						 state_,
+						 params.Mass,
+						 N5,
+						 scale_factor,
+						 alpha,
+						 beta,
+						 NEig,
+						 EigValFunc,
+						 state.getEigVec(),
+						 isLastZeroP);
       
     }
-    catch( bad_cast ) { 
+    catch( bad_cast ) 
+    {
       QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::linOp(): ";
-      QDPIO::cerr << "Couldnt cast ConnectState to OverlapConnectState " 
+      QDPIO::cerr << "Couldnt cast FermState<T,P,Q>  to OverlapFermState<T,P,Q>  " 
 		  << endl;
       QDP_abort(1);
     }
@@ -445,8 +465,10 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
-  UnprecOvlapContFrac5DFermActArray::linOpPV(Handle<const ConnectState> state_) const
+  UnprecLinearOperatorArray<LatticeFermion,
+			    multi1d<LatticeColorMatrix>,
+			    multi1d<LatticeColorMatrix> >* 
+  UnprecOvlapContFrac5DFermActArray::linOpPV(Handle< FermState<T,P,Q> > state_) const
   {
     START_CODE();
     try { 
@@ -454,7 +476,7 @@ namespace Chroma
       // This throws a bad cast exception if the cast fails
       // Hence the "try" above
       const OverlapConnectState& state = 
-	dynamic_cast<const OverlapConnectState&>(*state_);
+	dynamic_cast<OverlapConnectState&>(*state_);
       
       if (state.getEigVec().size() != state.getEigVal().size()) {
 	QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::linOp(): ";
@@ -490,7 +512,7 @@ namespace Chroma
     }
     catch( bad_cast ) { 
       QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::linOp(): ";
-      QDPIO::cerr << "Couldnt cast ConnectState to OverlapConnectState " 
+      QDPIO::cerr << "Couldnt cast FermState<T,P,Q>  to OverlapFermState<T,P,Q>  " 
 		  << endl;
       QDP_abort(1);
     }
@@ -506,15 +528,15 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >* 
-  UnprecOvlapContFrac5DFermActArray::lnonHermLinOp(Handle<const ConnectState> state_) const
+  LinearOperatorArray<LatticeFermion>* 
+  UnprecOvlapContFrac5DFermActArray::lnonHermLinOp(Handle< FermState<T,P,Q> > state_) const
   {
     START_CODE();
     
     try { 
       // This cast throws an exception if it fails hence the " try " above
       const OverlapConnectState& state = 
-	dynamic_cast<const OverlapConnectState&>(*state_);
+	dynamic_cast<OverlapConnectState&>(*state_);
       
       if (state.getEigVec().size() != state.getEigVal().size()) {
 	QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::lnonHermLinOp(): ";
@@ -546,14 +568,13 @@ namespace Chroma
 						      NEig,
 						      EigValFunc,
 						      state.getEigVec() );
-      
     }
-    catch( bad_cast ) { 
+    catch( bad_cast ) 
+    {
       QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::lnonHermLinOp(): ";
-      QDPIO::cerr << "Couldnt cast ConnectState to OverlapConnectState " 
+      QDPIO::cerr << "Couldnt cast FermState<T,P,Q>  to OverlapConnectState  " 
 		  << endl;
       QDP_abort(1);
-      
     }
 
     return 0;
@@ -565,10 +586,10 @@ namespace Chroma
    * The operator acts on the entire lattice *
    * \param state	    gauge field     	       (Read)
    */
-  const LinearOperator<multi1d<LatticeFermion> >* 
-  UnprecOvlapContFrac5DFermActArray::lnonHermMdagM(Handle<const ConnectState> state) const
+  LinearOperatorArray<LatticeFermion>* 
+  UnprecOvlapContFrac5DFermActArray::lnonHermMdagM(Handle< FermState<T,P,Q> > state) const
   {
-    return new lmdagm<multi1d<LatticeFermion> >(lnonHermLinOp(state));
+    return new MdagMLinOpArray<T>(lnonHermLinOp(state));
   }
   
 
@@ -587,9 +608,9 @@ namespace Chroma
      * \param A_        Linear operator ( Read )
      * \param Mass_      quark mass ( Read )
      */
-    OvUnprecCF5DQprop(Handle< const LinearOperator< multi1d<T> > > A_,
-		 const Real& Mass_,
-		 const InvertParam_t& invParam_) : 
+    OvUnprecCF5DQprop(Handle< LinearOperatorArray<T> > A_,
+		      const Real& Mass_,
+		      const InvertParam_t& invParam_) : 
       A(A_), Mass(Mass_), invParam(invParam_) {}
 
     //! Destructor is automatic
@@ -691,176 +712,130 @@ namespace Chroma
     // Hide default constructor
     OvUnprecCF5DQprop() {}
 
-    Handle< const LinearOperator< multi1d<T> > > A;
-    const Real Mass;
-    const InvertParam_t invParam;
+    Handle< LinearOperatorArray<T> > A;
+    Real Mass;
+    InvertParam_t invParam;
   };
 
   
   //! Propagator of an un-preconditioned Extended-Overlap linear operator
-  const SystemSolver<LatticeFermion>* 
-  UnprecOvlapContFrac5DFermActArray::qprop(Handle<const ConnectState> state,
+  SystemSolver<LatticeFermion>* 
+  UnprecOvlapContFrac5DFermActArray::qprop(Handle< FermState<T,P,Q> > state,
 					   const InvertParam_t& invParam) const
   {
-    return new OvUnprecCF5DQprop<LatticeFermion>(Handle< const LinearOperator< multi1d<LatticeFermion> > >(linOp(state)),
-					    getQuarkMass(),
-					    invParam);
+    return new OvUnprecCF5DQprop<T>(Handle< LinearOperatorArray<T> >(linOp(state)),
+				    getQuarkMass(),
+				    invParam);
   }
 
 
   
   //! Create a ConnectState with just the gauge fields
-  const OverlapConnectState*
+  OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_) const
   {
-    const OverlapConnectState *ret_val;
     try { 
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(u_, 
-						   getFermBC()
-						   );
+      return new OverlapConnectState(fbc, u_);
     } 
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
     
-    return ret_val;
+    return 0;
   }
   
   //! Create a ConnectState with just the gauge fields, and a lower
   //  approximation bound
-  const OverlapConnectState*
+  OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 						 const Real& approxMin_) const 
   {
-    const OverlapConnectState *ret_val;
     try { 
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(u_, 
-						   getFermBC(),
-						   approxMin_
-						   );
+      return new OverlapConnectState(fbc, u_, approxMin_);
     } 
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
 
-    return ret_val;
+    return 0;
   }
 
   //! Create a connect State with just approximation range bounds
-  const OverlapConnectState*
+  OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 						 const Real& approxMin_,
 						 const Real& approxMax_) const
   {
-    const OverlapConnectState *ret_val;
     try { 
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(u_, 
-						   getFermBC(),
-						   approxMin_,
-						   approxMax_
-						   );
+      return new OverlapConnectState(fbc, u_, approxMin_, approxMax_);
     } 
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
 
-    return ret_val;
+    return 0;
   }
   
   //! Create OverlapConnectState with eigenvalues/vectors
-  const OverlapConnectState*
+  OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 						 const multi1d<Real>& lambda_lo_, 
 						 const multi1d<LatticeFermion>& evecs_lo_,
 						 const Real& lambda_hi_) const
   {
-    const OverlapConnectState *ret_val;
     try { 
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(u_, 
-						   getFermBC(),
-						   lambda_lo_, 
-						   evecs_lo_, 
-						   lambda_hi_);
-      
+      return new OverlapConnectState(fbc, u_, lambda_lo_, evecs_lo_, lambda_hi_);
     } 
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
     
-    return ret_val;
+    return 0;
   }    
   
   //! Create OverlapConnectState from XML
-  const OverlapConnectState*
+  OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 						 XMLReader& state_info_xml,
 						 const string& state_info_path) const
   {
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    
     // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
-    getFermBC().modifyU(u_tmp);
-    Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
-    Handle< const LinearOperator<LatticeFermion> > Maux = 
-      S_aux->hermitianLinOp(state_aux);
-    
-    
-    const OverlapConnectState *ret_val;
+    Handle< FermState<T,P,Q>  > state_aux = new SimpleFermState<T,P,Q> (fbc, u_);
+    Handle< LinearOperator<T> > Maux = S_aux->hermitianLinOp(state_aux);
     
     try {
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(
-						   u_,
-						   getFermBC(),
-						   state_info_xml,
-						   state_info_path,
-						   *Maux);
+      return new OverlapConnectState(fbc, u_, state_info_xml, state_info_path, *Maux);
     }
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
     
-    return ret_val;
+    return 0;
   }
 
   //! Create OverlapConnectState from XML
-  const OverlapConnectState*
+  OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
-				      const OverlapStateInfo& state_info) const
+						 const OverlapStateInfo& state_info) const
   {
     // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
-    multi1d<LatticeColorMatrix> u_tmp = u_;
-    getFermBC().modifyU(u_tmp);
-    Handle< const ConnectState > state_aux = new SimpleConnectState(u_tmp);
-    Handle< const LinearOperator<LatticeFermion> > Maux = 
-      S_aux->hermitianLinOp(state_aux);
+    Handle< FermState<T,P,Q>  > state_aux = new SimpleFermState<T,P,Q> (fbc, u_);
+    Handle< LinearOperator<T> > Maux = S_aux->hermitianLinOp(state_aux);
     
-    
-    const OverlapConnectState* ret_val;    
     try {
-      ret_val = 
-	OverlapConnectStateEnv::createOverlapState(
-						   u_,
-						   getFermBC(),
-						   state_info,
-						   *Maux);
+      return new OverlapConnectState(fbc, u_, state_info, *Maux);
     }
     catch(const string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
     
-    return ret_val;
-
+    return 0;
   }
 
 } // End namespace Chroma

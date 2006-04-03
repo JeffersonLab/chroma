@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron.h,v 2.1 2005-11-01 04:22:38 edwards Exp $
+// $Id: hadron.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
 
 /*! \file
  * \brief Hadronic observables

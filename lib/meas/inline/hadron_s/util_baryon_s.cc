@@ -1,4 +1,4 @@
-// $Id: util_baryon_s.cc,v 2.0 2005-09-25 21:04:38 edwards Exp $
+// $Id: util_baryon_s.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
 /*! \file
  *  \brief Wrappers to compute staggered baryon correlators
  *

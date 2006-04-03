@@ -1,4 +1,4 @@
-// $Id: unprec_w12_linop_w.cc,v 1.1 2006-02-09 02:23:29 edwards Exp $
+// $Id: unprec_w12_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned W12 action
  */
@@ -13,13 +13,13 @@ namespace Chroma
    * \param u_ 	    gauge field     	       (Read)
    * \param param_  parameters   	       (Read)
    */
-  void UnprecW12LinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void UnprecW12LinOp::create(Handle< FermState<T,P,Q> > fs,
 			      const CloverFermActParams& param_)
   {
-    u = u_;
+    u = fs->getLinks();
     param = param_;
 
-    A.create(u_, param); // Unaltered fields for clover
+    A.create(fs, param); // Unaltered fields for clover
 
     if (Nd != 4)
     {
@@ -50,6 +50,8 @@ namespace Chroma
       QDPIO::cerr << "W12: implementation restriction: j_decay must be Nd-1" << endl;
       QDP_abort(1);
     }
+
+    // Anisotropy not yet folded into gauge fields
   }
 
 

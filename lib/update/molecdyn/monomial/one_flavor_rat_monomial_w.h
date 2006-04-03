@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 2.6 2006-03-17 02:05:56 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -65,13 +65,13 @@ namespace Chroma
        *    X_i = (M^dag*M + q_i)^(-1)*chi   Y_i = M*X_i
        * In Robert's notation,  X_i -> psi_i .
        */
-      const WilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
       
       // Create a state for linop
-      Handle< const ConnectState> state(FA.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const DiffLinearOperator<Phi,P> > lin(FA.linOp(state));
+      Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
 
       // Partial Fraction Expansion coeffs for force
       const RemezCoeff_t& fpfe = getFPFE();
@@ -161,13 +161,13 @@ namespace Chroma
       push(xml_out, "OneFlavorRatExactWilsonTypeFermMonomial");
 
       // Get at the ferion action for piece i
-      const WilsonTypeFermAct<Phi,P>& S_f = getFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& S_f = getFermAct();
       
       // Create a Connect State, apply fermionic boundaries
-      Handle< const ConnectState > f_state(S_f.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > f_state(S_f.createState(s.getQ()));
       
       // Create a linear operator
-      Handle< const LinearOperator<Phi> > M(S_f.linOp(f_state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M(S_f.linOp(f_state));
       
       // Partial Fraction Expansion coeffs for heat-bath
       const RemezCoeff_t& sipfe = getSIPFE();
@@ -237,12 +237,12 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_subset");
 
-      const WilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
-      Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
+      Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const LinearOperator<Phi> > lin(FA.linOp(bc_g_state));
+      Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
 
       // Partial Fraction Expansion coeffs for action
       const RemezCoeff_t& spfe = getSPFE();
@@ -278,7 +278,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const WilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
+    virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -309,14 +309,14 @@ namespace Chroma
     {
       const InvertParam_t& inv_param = getInvParams();
 
-      // Upcast the fermact
-      const FermAct4D<Phi>& FA = getFermAct();
+      // Grab the fermact
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
       // Make the state
-      Handle< const ConnectState > state(FA.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 
       // Get linop
-      Handle< const LinearOperator<Phi> > MdagM(FA.lMdagM(state));
+      Handle< LinearOperator<Phi> > MdagM(FA.lMdagM(state));
 
       int n_count =0;
       multi1d<Real> RsdCG(shifts.size());
@@ -375,7 +375,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
+    virtual const UnprecWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -443,7 +443,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -491,7 +491,7 @@ namespace Chroma
 
   protected:
     //!  Replace thiw with PrecConstDet
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
   };
 
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polprec_op.h,v 1.2 2006-02-14 23:05:21 kostas Exp $
+// $Id: polprec_op.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Maybe usefull for polynomial preconditioning. It contructs an
  *     operator that is     QP(Q^2)Q, where Q = \gamma_5 M, with M any 4D dirac
@@ -19,89 +19,94 @@ using namespace QDP::Hints;
 
 namespace Chroma 
 {
-  template<typename T, typename P>
-  class PolyPrec: public DiffLinearOperator<T,P>
+  //! Polynomial preconditioner
+  /*! \ingroup linop */
+  template<typename T, typename P, typename Q>
+  class PolyPrec: public DiffLinearOperator<T,P,Q>
   {
   private:
-    const Handle<const DiffLinearOperator<T,P> > M   ;   // this is the operator
-    const Handle<const DiffLinearOperator<T,P> > Pol ;   // this is the preconditioner
+    Handle< DiffLinearOperator<T,P,Q> > M   ;   // this is the operator
+    Handle< DiffLinearOperator<T,P,Q> > Pol ;   // this is the preconditioner
     
   public:
     // constructor
-    PolyPrec(Handle<const DiffLinearOperator<T,P> > m_,
-	     Handle<const DiffLinearOperator<T,P> > p_) : M(m_), Pol(p_) {    }
+    PolyPrec(Handle< DiffLinearOperator<T,P,Q> > m_,
+	     Handle< DiffLinearOperator<T,P,Q> > p_) : M(m_), Pol(p_) {    }
    
    
-   ~PolyPrec(){}
+    ~PolyPrec(){}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return M->getFermBC();}
+    
     //! Subset comes from underlying operator
     // Hopefully the subsets of the preconditioner and the matrix
     // are the same...
     inline const OrderedSubset& subset() const {return M->subset();}
 
     inline void g5M(T& out, const T& in,  enum PlusMinus isign) const 
-    {
-      const int G5=Ns*Ns-1;
+      {
+	const int G5=Ns*Ns-1;
       
-      T  tmp;
-      const OrderedSubset& sub = M->subset();
+	T  tmp;
+	const OrderedSubset& sub = M->subset();
       
-      // [ Gamma(5) D ]^{dag} = Gamma(5) D
-      // using D = gamma_5 D^{dag} gamma_5
+	// [ Gamma(5) D ]^{dag} = Gamma(5) D
+	// using D = gamma_5 D^{dag} gamma_5
       
-      (*M)(tmp, in, PLUS);
-      out[sub] = Gamma(G5)*tmp;
-    }
+	(*M)(tmp, in, PLUS);
+	out[sub] = Gamma(G5)*tmp;
+      }
 
 
     //! The operator is Q P(Q^2) Q
     // Q is g5M 
     // If I ever do this for DWF the g5M definition has to change....
     void operator()(T& chi, const T& psi, PlusMinus isign) const
-    {
-      T tmp ;
+      {
+	T tmp ;
       
-      g5M(chi,psi,PLUS) ;
-      (*Pol)(tmp,chi,PLUS) ;
-      g5M(chi,tmp,PLUS) ;
+	g5M(chi,psi,PLUS) ;
+	(*Pol)(tmp,chi,PLUS) ;
+	g5M(chi,tmp,PLUS) ;
 
-    }
+      }
     
 
     //! Apply the derivative of the linop
     void deriv(P& ds_u, const T& chi, const T& psi, PlusMinus isign) const 
-    {
-       const int G5=Ns*Ns-1;
-      // So do something like
-      ds_u.resize(Nd);
-      ds_u = zero;
-      P  ds_tmp;
-      
-      
-      const OrderedSubset& sub = M->subset();
-
-      T g5Mchi,g5Mpsi ;
-      T g5Pg5Mchi, g5Pg5Mpsi ;
       {
-	T tt ;
-	g5M(g5Mchi,chi,PLUS);
-	(*Pol)(tt,g5Mchi,PLUS) ;
-	g5Pg5Mchi[sub] = Gamma(G5)*tt ;
+	const int G5=Ns*Ns-1;
+	// So do something like
+	ds_u.resize(Nd);
+	ds_u = zero;
+	P  ds_tmp;
+      
+      
+	const OrderedSubset& sub = M->subset();
 
-	g5M(g5Mpsi,psi,PLUS) ;
-	(*Pol)(tt,g5Mpsi,PLUS) ;
-	g5Pg5Mpsi[sub] = Gamma(G5)*tt ;
+	T g5Mchi,g5Mpsi ;
+	T g5Pg5Mchi, g5Pg5Mpsi ;
+	{
+	  T tt ;
+	  g5M(g5Mchi,chi,PLUS);
+	  (*Pol)(tt,g5Mchi,PLUS) ;
+	  g5Pg5Mchi[sub] = Gamma(G5)*tt ;
+
+	  g5M(g5Mpsi,psi,PLUS) ;
+	  (*Pol)(tt,g5Mpsi,PLUS) ;
+	  g5Pg5Mpsi[sub] = Gamma(G5)*tt ;
+	}
+
+	M->deriv(ds_tmp, g5Pg5Mchi, psi, PLUS);
+	ds_u += ds_tmp;   // build up force
+	Pol->deriv(ds_tmp, g5Mchi, g5Mpsi, PLUS);
+	ds_u += ds_tmp;   // build up force
+	M->deriv(ds_tmp, chi, g5Pg5Mpsi, MINUS);
+	ds_u += ds_tmp;   // build up force
       }
 
-      M->deriv(ds_tmp, g5Pg5Mchi, psi, PLUS);
-      ds_u += ds_tmp;   // build up force
-      Pol->deriv(ds_tmp, g5Mchi, g5Mpsi, PLUS);
-      ds_u += ds_tmp;   // build up force
-      M->deriv(ds_tmp, chi, g5Pg5Mpsi, MINUS);
-      ds_u += ds_tmp;   // build up force
-    }
-
-};
+  };
 
 }// End Namespace Chroma
 

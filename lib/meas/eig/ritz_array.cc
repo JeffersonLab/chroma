@@ -1,4 +1,4 @@
-// $Id: ritz_array.cc,v 2.0 2005-09-25 21:04:33 edwards Exp $
+// $Id: ritz_array.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -101,7 +101,7 @@ namespace Chroma {
  */
 
 template < typename T >
-void RitzArray_t(const LinearOperator< multi1d<T> >& A, // Herm Pos Def
+void RitzArray_t(const LinearOperatorArray<T>& A, // Herm Pos Def
 	    Real& lambda,               // Current E-value
 	    multi2d<T>& psi_all,        // E-vector array
 	    int N_eig,                  // Current evec index
@@ -643,7 +643,7 @@ void RitzArray_t(const LinearOperator< multi1d<T> >& A, // Herm Pos Def
 
 
 
-void Ritz(const LinearOperator<multi1d<LatticeFermion> >& A,   // Herm Pos Def
+void Ritz(const LinearOperatorArray<LatticeFermion>& A,   // Herm Pos Def
 	  Real& lambda,                            // Current E-value
 	  multi2d<LatticeFermion>& psi_all,        // E-vector array
 	  int N_eig,                  // Current evec index

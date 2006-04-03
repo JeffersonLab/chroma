@@ -1,4 +1,4 @@
-// $Id: dilute_gauss_src_s.cc,v 1.1 2006-01-31 14:29:00 mcneile Exp $
+// $Id: dilute_gauss_src_s.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Variety of Z2 noise sources
  */

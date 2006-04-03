@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.h,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: quarkprop4_w.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -26,8 +26,8 @@ namespace Chroma
   void quarkProp4(LatticePropagator& q_sol, 
 		  XMLWriter& xml_out,
 		  const LatticePropagator& q_src,
-		  Handle<const SystemSolver<LatticeFermion> > qprop,
+		  Handle< SystemSolver<LatticeFermion> > qprop,
 		  QuarkSpinType quarkSpinType,
 		  int& ncg_had);
-};
+}
 #endif

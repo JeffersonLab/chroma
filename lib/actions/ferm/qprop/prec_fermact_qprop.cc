@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -15,7 +15,7 @@ namespace Chroma
    *
    * This routine is actually generic to all even-odd preconditioned fermions
    */
-  template<typename T, typename P>
+  template<typename T, typename P, typename Q>
   class PrecFermActQprop : public SystemSolver<T>
   {
   public:
@@ -24,7 +24,7 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    PrecFermActQprop(Handle< const EvenOddPrecLinearOperator<T,P> > A_,
+    PrecFermActQprop(Handle< EvenOddPrecLinearOperator<T,P,Q> > A_,
 		     const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
       {}
 
@@ -113,7 +113,7 @@ namespace Chroma
     // Hide default constructor
     PrecFermActQprop() {}
 
-    Handle< const EvenOddPrecLinearOperator<T,P> > A;
+    Handle< EvenOddPrecLinearOperator<T,P,Q> > A;
     const InvertParam_t invParam;
   };
 
@@ -123,11 +123,13 @@ namespace Chroma
 
 
   template<>
-  const SystemSolver<LF>* 
-  EvenOddPrecWilsonTypeFermAct<LF,LCM>::qprop(Handle<const ConnectState> state,
-					      const InvertParam_t& invParam) const
+  SystemSolver<LF>* 
+  EvenOddPrecWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
+						  const InvertParam_t& invParam) const
   {
-    return new PrecFermActQprop<LF,LCM>(Handle< const EvenOddPrecLinearOperator<LF,LCM> >(linOp(state)), invParam);
+    return new PrecFermActQprop<LF,LCM,LCM>(
+      Handle< EvenOddPrecLinearOperator<LF,LCM,LCM> >(linOp(state)),
+      invParam);
   }
   
 } // namespace Chroma 

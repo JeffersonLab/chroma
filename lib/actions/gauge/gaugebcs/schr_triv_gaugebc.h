@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_triv_gaugebc.h,v 2.2 2006-03-16 02:59:02 edwards Exp $
+// $Id: schr_triv_gaugebc.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional trivial gauge boundary conditions
  */

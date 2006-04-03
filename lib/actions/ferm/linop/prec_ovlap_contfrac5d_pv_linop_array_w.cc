@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_pv_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -12,7 +12,7 @@ using namespace QDP::Hints;
 namespace Chroma 
 { 
   EvenOddPrecOvlapContFrac5DPVLinOpArray::EvenOddPrecOvlapContFrac5DPVLinOpArray(
-    Handle<const ConnectState> state,
+    Handle< FermState<T,P,Q> > state,
     const Real& _m_q,
     const Real& _OverMass,
     int _N5,
@@ -26,8 +26,7 @@ namespace Chroma
     START_CODE();
 
     // It is always N5-1...
-    Handle< const WilsonDslashArray > Ds(new WilsonDslashArray(state->getLinks(),N5-1));
-    Dslash  = Ds;  // Copy Handle -- M now owns dslash
+    Dslash.create(state,N5-1);
 
     // Now compute some coefficients.
     // First the beta_tilde_i
@@ -281,7 +280,7 @@ namespace Chroma
 
     // (N5-1)*(Dslash + 2NcNs)
     // Now donw with Dslash vector... 
-    Dslash->apply(tmp, psi, PLUS, cb);
+    Dslash.apply(tmp, psi, PLUS, cb);
 
     for(int i=0; i < N5-1; i++) 
     {
@@ -335,7 +334,7 @@ namespace Chroma
 	tmp[rb[cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*chi[i]);
 
 	// Apply g5 Dslash
-	Dslash->deriv(ds_tmp, tmp, psi[i], PLUS, cb);
+	Dslash.deriv(ds_tmp, tmp, psi[i], PLUS, cb);
 	ds_u += ds_tmp;
       }
       break;
@@ -355,7 +354,7 @@ namespace Chroma
 	tmp[rb[1-cb]] = off_diag_coeff[i]*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
 
 	// Apply g5 Dslash
-	Dslash->deriv(ds_tmp, chi[i], tmp, MINUS, cb);
+	Dslash.deriv(ds_tmp, chi[i], tmp, MINUS, cb);
 	ds_u += ds_tmp;
       }
       break;

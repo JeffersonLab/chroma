@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polar_dec.h,v 2.0 2005-09-25 21:04:34 edwards Exp $
+// $Id: polar_dec.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */

@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_polynomial_monomial_w.cc,v 2.3 2006-02-16 02:59:03 edwards Exp $
+// $Id: prec_constdet_two_flavor_polynomial_monomial_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -70,9 +70,9 @@ namespace Chroma
       
       QDPIO::cout << EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::name << ": construct " << fermact_string << endl;
       
-      const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+      WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
       
-      const PolyWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const PolyWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+      PolyWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<PolyWilsonTypeFermAct<T,P,Q>*>(tmp_act);
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {

@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_fermact_array_w.cc,v 2.1 2006-02-26 03:47:51 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/unprec_ovdwf_linop_array_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 namespace Chroma
 {
@@ -16,17 +16,21 @@ namespace Chroma
   namespace UnprecOvDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
-										      const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion,
+			multi1d<LatticeColorMatrix>,
+			multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+								       const std::string& path)
     {
-      return new UnprecOvDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+      return new UnprecOvDWFermActArray(CreateFermStateEnv::reader(xml_in, path), 
 					UnprecOvDWFermActArrayParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct5D(xml_in, path);
     }
@@ -37,8 +41,10 @@ namespace Chroma
     //! Register all the factories
     bool registerAll()
     {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      bool foo = true;
+      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+      foo &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      return foo;
     }
 
     //! Register the fermact
@@ -73,11 +79,13 @@ namespace Chroma
 
   
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLikeLinOpBaseArray<LatticeFermion, multi1d<LatticeColorMatrix> >* 
-  UnprecOvDWFermActArray::unprecLinOp(Handle<const ConnectState> state, 
+  UnprecDWLikeLinOpBaseArray<LatticeFermion,
+			     multi1d<LatticeColorMatrix>,
+			     multi1d<LatticeColorMatrix> >* 
+  UnprecOvDWFermActArray::unprecLinOp(Handle< FermState<T,P,Q> > state, 
 				      const Real& m_q) const
   {
-    return new UnprecOvDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
+    return new UnprecOvDWLinOpArray(state,OverMass,m_q,N5);
   }
 
 }

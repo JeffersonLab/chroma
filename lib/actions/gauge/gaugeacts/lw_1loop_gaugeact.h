@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lw_1loop_gaugeact.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: lw_1loop_gaugeact.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief 1-loop tadpole-improved Luscher-Weisz gauge action
  */
@@ -45,26 +45,22 @@ namespace Chroma
    * The standard LW1Loop gauge action
    */
 
-  class LW1LoopGaugeAct : public GaugeAction
+  class LW1LoopGaugeAct : public LinearGaugeAction
   {
   public:
-    //! General GaugeBC
-    LW1LoopGaugeAct(Handle< GaugeBC > gbc_, 
-		   const Real& beta_, const Real& u0_) : 
-      beta(beta_), u0(u0_) {init(gbc_);}
+    // Typedefs to save typing
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    //! General GaugeState
+    LW1LoopGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+		    const Real& beta_, const Real& u0_) : 
+      beta(beta_), u0(u0_) {init(cgs_);}
 
     //! Read beta from a param struct
-    LW1LoopGaugeAct(Handle< GaugeBC > gbc_, 
-		   const LW1LoopGaugeActParams& p) :
-      beta(p.beta), u0(p.u0) {init(gbc_);}
-
-    //! Copy constructor
-    LW1LoopGaugeAct(const LW1LoopGaugeAct& a) : 
-      beta(a.beta), u0(a.u0), plaq(a.plaq), rect(a.rect), pg(a.pg) {}
-
-    //! Assignment
-    LW1LoopGaugeAct& operator=(const LW1LoopGaugeAct& a)
-    {beta=a.beta; u0=a.u0; plaq=a.plaq; rect=a.rect; pg=a.pg; return *this;}
+    LW1LoopGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+		    const LW1LoopGaugeActParams& p) :
+      beta(p.beta), u0(p.u0) {init(cgs_);}
 
     //! Is anisotropy used?
     bool anisoP() const {return false;}
@@ -79,13 +75,10 @@ namespace Chroma
     /*! Defined on the even-off (red/black) set */
     const OrderedSet& getSet() const {return rb;}
 
-    //! Produce a gauge boundary condition object
-    const GaugeBC& getGaugeBC() const {return plaq->getGaugeBC();}
-
     //! Compute staple
     /*! Default version. Derived class should override this if needed. */
     void staple(LatticeColorMatrix& result,
-		Handle<const ConnectState> state,
+		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const
     {
       plaq->staple(result,state,mu,cb);
@@ -99,24 +92,27 @@ namespace Chroma
     }
 
     //! Compute dS/dU
-    void dsdu(multi1d<LatticeColorMatrix>& result,
-	      const Handle<const ConnectState> state) const
+    void deriv(P& result,
+	       const Handle< GaugeState<P,Q> >& state) const
     {
-      plaq->dsdu(result,state);
+      plaq->deriv(result,state);
 
       multi1d<LatticeColorMatrix> tmp;
-      rect->dsdu(tmp,state);
+      rect->deriv(tmp,state);
       result += tmp;
 
-      pg->dsdu(tmp,state);
+      pg->deriv(tmp,state);
       result += tmp;
     }
 
     //! Compute the actions
-    Double S(const Handle<const ConnectState> state) const
+    Double S(const Handle< GaugeState<P,Q> >& state) const
     {
       return plaq->S(state) + rect->S(state) + pg->S(state);
     }
+
+    //! Produce a gauge boundary condition object
+    const CreateGaugeState<P,Q>& getCreateState() const {return plaq->getCreateState();}
 
     //! Destructor is automatic
     ~LW1LoopGaugeAct() {}
@@ -126,7 +122,12 @@ namespace Chroma
 
   protected:
     //! Private initializer
-    void init(Handle< GaugeBC > gbc);
+    void init(Handle< CreateGaugeState<P,Q> > cgs);
+
+    //! General GaugeState
+    LW1LoopGaugeAct() {}
+    //! Hide assignment
+    void operator=(const LW1LoopGaugeAct& a) {}
 
   private:
     Real   beta;               // The coupling Beta

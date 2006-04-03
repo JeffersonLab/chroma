@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 2.1 2005-11-01 03:22:25 edwards Exp $
+// $Id: invcg2.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -8,223 +8,257 @@
 
 using namespace QDP::Hints;
 
-namespace Chroma {
-
-//! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
-/*! \ingroup invert
- * This subroutine uses the Conjugate Gradient (CG) algorithm to find
- * the solution of the set of linear equations
- *
- *   	    Chi  =  A . Psi
- *
- * where       A = M^dag . M
- *
- * Algorithm:
-
- *  Psi[0]  :=  initial guess;    	       Linear interpolation (argument)
- *  r[0]    :=  Chi - M^dag . M . Psi[0] ;     Initial residual
- *  p[1]    :=  r[0] ;	       	       	       Initial direction
- *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
- *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
- *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
- *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
- *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
- *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
- *      p[k+1] := r[k] + b[k+1] p[k];          New direction
- *
- * Arguments:
- *
- *  \param M       Linear Operator    	       (Read)
- *  \param chi     Source	               (Read)
- *  \param psi     Solution    	    	       (Modify)
- *  \param RsdCG   CG residual accuracy        (Read)
- *  \param MaxCG   Maximum CG iterations       (Read)
- *  \param n_count Number of CG iteration      (Write)
- *
- * Local Variables:
- *
- *  p   	       Direction vector
- *  r   	       Residual vector
- *  cp  	       | r[k] |**2
- *  c   	       | r[k-1] |**2
- *  k   	       CG iteration counter
- *  a   	       a[k]
- *  b   	       b[k+1]
- *  d   	       < p[k], A.p[k] >
- *  Mp  	       Temporary for  M.p
- *
- * Subroutines:
- *                             +               
- *  A       Apply matrix M or M  to vector
- *
- * Operations:
- *
- *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
- */
-
-template<typename T>
-void InvCG2_a(const LinearOperator<T>& M,
-	      const T& chi,
-	      T& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count)
+namespace Chroma 
 {
-  START_CODE();
 
-  const OrderedSubset& s = M.subset();
+  //! Conjugate-Gradient (CGNE) algorithm for a generic Linear Operator
+  /*! \ingroup invert
+   * This subroutine uses the Conjugate Gradient (CG) algorithm to find
+   * the solution of the set of linear equations
+   *
+   *   	    Chi  =  A . Psi
+   *
+   * where       A = M^dag . M
+   *
+   * Algorithm:
+
+   *  Psi[0]  :=  initial guess;    	       Linear interpolation (argument)
+   *  r[0]    :=  Chi - M^dag . M . Psi[0] ;     Initial residual
+   *  p[1]    :=  r[0] ;	       	       	       Initial direction
+   *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
+   *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
+   *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
+   *      Psi[k] += a[k] p[k] ;   	       New solution vector
+   *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
+   *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
+   *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
+   *      p[k+1] := r[k] + b[k+1] p[k];          New direction
+   *
+   * Arguments:
+   *
+   *  \param M       Linear Operator    	       (Read)
+   *  \param chi     Source	               (Read)
+   *  \param psi     Solution    	    	       (Modify)
+   *  \param RsdCG   CG residual accuracy        (Read)
+   *  \param MaxCG   Maximum CG iterations       (Read)
+   *  \param n_count Number of CG iteration      (Write)
+   *
+   * Local Variables:
+   *
+   *  p   	       Direction vector
+   *  r   	       Residual vector
+   *  cp  	       | r[k] |**2
+   *  c   	       | r[k-1] |**2
+   *  k   	       CG iteration counter
+   *  a   	       a[k]
+   *  b   	       b[k+1]
+   *  d   	       < p[k], A.p[k] >
+   *  Mp  	       Temporary for  M.p
+   *
+   * Subroutines:
+   *                             +               
+   *  A       Apply matrix M or M  to vector
+   *
+   * Operations:
+   *
+   *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
+   */
+
+  template<typename T, typename C>
+  void InvCG2_a(const C& M,
+		const T& chi,
+		T& psi,
+		const Real& RsdCG, 
+		int MaxCG, 
+		int& n_count)
+  {
+    START_CODE();
+
+    const OrderedSubset& s = M.subset();
 
 
-  T mp;                moveToFastMemoryHint(mp);
-  T mmp;               moveToFastMemoryHint(mmp);
-  T p;                 moveToFastMemoryHint(p);
-  moveToFastMemoryHint(psi,true);
-  T r;                 moveToFastMemoryHint(r);
-  T chi_internal;      moveToFastMemoryHint(chi_internal);
+    T mp;                moveToFastMemoryHint(mp);
+    T mmp;               moveToFastMemoryHint(mmp);
+    T p;                 moveToFastMemoryHint(p);
+    moveToFastMemoryHint(psi,true);
+    T r;                 moveToFastMemoryHint(r);
+    T chi_internal;      moveToFastMemoryHint(chi_internal);
 
-  chi_internal[s] = chi;
+    chi_internal[s] = chi;
 
-  QDPIO::cout << "InvCG2: starting" << endl;
-  FlopCounter flopcount;
-  flopcount.reset();
-  StopWatch swatch;
-  swatch.reset();
-  swatch.start();
+    QDPIO::cout << "InvCG2: starting" << endl;
+    FlopCounter flopcount;
+    flopcount.reset();
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
 
 //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
-  Real chi_sq =  Real(norm2(chi_internal,s));
-  flopcount.addSiteFlops(4*Nc*Ns,s);
+    Real chi_sq =  Real(norm2(chi_internal,s));
+    flopcount.addSiteFlops(4*Nc*Ns,s);
 
 #if 0
-  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+    QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
 #endif
 
-  Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
+    Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
-  //                                            +
-  //  r[0]  :=  Chi - A . Psi[0]    where  A = M  . M
+    //                                            +
+    //  r[0]  :=  Chi - A . Psi[0]    where  A = M  . M
     
-  //                      +
-  //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
-  M(mp, psi, PLUS);
-  M(mmp, mp, MINUS);
-  flopcount.addFlops(2*M.nFlops());
-
-  r[s] = chi_internal - mmp;
-  flopcount.addSiteFlops(2*Nc*Ns,s);
-
-  //  p[1]  :=  r[0]
-  p[s] = r;
-  
-  //  Cp = |r[0]|^2
-  Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
-  flopcount.addSiteFlops(4*Nc*Ns, s);
-
-#if 0
-  QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
-#endif
-
-  //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
-  if ( toBool(cp  <=  rsd_sq) )
-  {
-    n_count = 0;
-    swatch.stop();
-    flopcount.report("invcg2", swatch.getTimeInSeconds());
-    revertFromFastMemoryHint(psi,true);
-    END_CODE();
-    return;
-  }
-
-  //
-  //  FOR k FROM 1 TO MaxCG DO
-  //
-  Real a, b;
-  Double c, d;
-  
-  for(int k = 1; k <= MaxCG; ++k)
-  {
-    //  c  =  | r[k-1] |**2
-    c = cp;
-
-    //  a[k] := | r[k-1] |**2 / < p[k], Ap[k] > ;
-    //      	       	       	       	       	  +
-    //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
-    //  Mp = M(u) * p
-    M(mp, p, PLUS);  flopcount.addFlops(M.nFlops());
-
-    //  d = | mp | ** 2
-    d = norm2(mp, s);  flopcount.addSiteFlops(4*Nc*Ns,s);
-
-    a = Real(c)/Real(d);
-
-    //  Psi[k] += a[k] p[k]
-    psi[s] += a * p;    flopcount.addSiteFlops(4*Nc*Ns,s);
-
-    //  r[k] -= a[k] A . p[k] ;
-    //      	       +            +
-    //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
+    //                      +
+    //  r  :=  [ Chi  -  M(u)  . M(u) . psi ]
+    M(mp, psi, PLUS);
     M(mmp, mp, MINUS);
-    flopcount.addFlops(M.nFlops());
+    flopcount.addFlops(2*M.nFlops());
 
-    r[s] -= a * mmp;
+    r[s] = chi_internal - mmp;
+    flopcount.addSiteFlops(2*Nc*Ns,s);
+
+    //  p[1]  :=  r[0]
+    p[s] = r;
+  
+    //  Cp = |r[0]|^2
+    Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
     flopcount.addSiteFlops(4*Nc*Ns, s);
 
-    //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
+#if 0
+    QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+#endif
 
-    //  cp  =  | r[k] |**2
-    cp = norm2(r, s);    flopcount.addSiteFlops(4*Nc*Ns,s);
-
-//    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
-
+    //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
     if ( toBool(cp  <=  rsd_sq) )
     {
-      n_count = k;
+      n_count = 0;
       swatch.stop();
-      QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
       flopcount.report("invcg2", swatch.getTimeInSeconds());
       revertFromFastMemoryHint(psi,true);
       END_CODE();
       return;
     }
 
-    //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
-    b = Real(cp) / Real(c);
+    //
+    //  FOR k FROM 1 TO MaxCG DO
+    //
+    Real a, b;
+    Double c, d;
+  
+    for(int k = 1; k <= MaxCG; ++k)
+    {
+      //  c  =  | r[k-1] |**2
+      c = cp;
 
-    //  p[k+1] := r[k] + b[k+1] p[k]
-    p[s] = r + b*p;    flopcount.addSiteFlops(4*Nc*Ns,s);
+      //  a[k] := | r[k-1] |**2 / < p[k], Ap[k] > ;
+      //      	       	       	       	       	  +
+      //  First compute  d  =  < p, A.p >  =  < p, M . M . p >  =  < M.p, M.p >
+      //  Mp = M(u) * p
+      M(mp, p, PLUS);  flopcount.addFlops(M.nFlops());
+
+      //  d = | mp | ** 2
+      d = norm2(mp, s);  flopcount.addSiteFlops(4*Nc*Ns,s);
+
+      a = Real(c)/Real(d);
+
+      //  Psi[k] += a[k] p[k]
+      psi[s] += a * p;    flopcount.addSiteFlops(4*Nc*Ns,s);
+
+      //  r[k] -= a[k] A . p[k] ;
+      //      	       +            +
+      //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
+      M(mmp, mp, MINUS);
+      flopcount.addFlops(M.nFlops());
+
+      r[s] -= a * mmp;
+      flopcount.addSiteFlops(4*Nc*Ns, s);
+
+      //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
+
+      //  cp  =  | r[k] |**2
+      cp = norm2(r, s);    flopcount.addSiteFlops(4*Nc*Ns,s);
+
+//    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+
+      if ( toBool(cp  <=  rsd_sq) )
+      {
+	n_count = k;
+	swatch.stop();
+	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+	flopcount.report("invcg2", swatch.getTimeInSeconds());
+	revertFromFastMemoryHint(psi,true);
+	END_CODE();
+	return;
+      }
+
+      //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
+      b = Real(cp) / Real(c);
+
+      //  p[k+1] := r[k] + b[k+1] p[k]
+      p[s] = r + b*p;    flopcount.addSiteFlops(4*Nc*Ns,s);
+    }
+    n_count = MaxCG;
+    swatch.stop();
+    QDPIO::cerr << "Nonconvergence Warning" << endl;
+    flopcount.report("invcg2", swatch.getTimeInSeconds());
+    revertFromFastMemoryHint(psi,true);
+    QDPIO::cerr << "too many CG iterations: count =" << n_count <<" rsd^2= " << cp << endl <<flush;
+    END_CODE();
   }
-  n_count = MaxCG;
-  swatch.stop();
-  QDPIO::cerr << "Nonconvergence Warning" << endl;
-  flopcount.report("invcg2", swatch.getTimeInSeconds());
-  revertFromFastMemoryHint(psi,true);
-  QDPIO::cerr << "too many CG iterations: count =" << n_count <<" rsd^2= " << cp << endl <<flush;
-  END_CODE();
-}
-
-// Fix here for now
-template<>
-void InvCG2(const LinearOperator<LatticeFermion>& M,
-	    const LatticeFermion& chi,
-	    LatticeFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
-{
-  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
-}
 
 
-template<>
-void InvCG2(const LinearOperator<LatticeStaggeredFermion>& M,
-	    const LatticeStaggeredFermion& chi,
-	    LatticeStaggeredFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
-{
-  InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
-}
+  // Fix here for now
+  /*! \ingroup invert */
+  template<>
+  void InvCG2(const LinearOperator<LatticeFermion>& M,
+	      const LatticeFermion& chi,
+	      LatticeFermion& psi,
+	      const Real& RsdCG, 
+	      int MaxCG, 
+	      int& n_count)
+  {
+    InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+  }
+
+
+  /*! \ingroup invert */
+  template<>
+  void InvCG2(const LinearOperator<LatticeStaggeredFermion>& M,
+	      const LatticeStaggeredFermion& chi,
+	      LatticeStaggeredFermion& psi,
+	      const Real& RsdCG, 
+	      int MaxCG, 
+	      int& n_count)
+  {
+    InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+  }
+
+
+  /*! \ingroup invert */
+  template<>
+  void InvCG2(const DiffLinearOperator<LatticeFermion,
+	                               multi1d<LatticeColorMatrix>,
+	                               multi1d<LatticeColorMatrix> >& M,
+	      const LatticeFermion& chi,
+	      LatticeFermion& psi,
+	      const Real& RsdCG, 
+	      int MaxCG, 
+	      int& n_count)
+  {
+    InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+  }
+
+
+  /*! \ingroup invert */
+  template<>
+  void InvCG2(const DiffLinearOperator<LatticeStaggeredFermion,
+	                               multi1d<LatticeColorMatrix>,
+	                               multi1d<LatticeColorMatrix> >& M,
+	      const LatticeStaggeredFermion& chi,
+	      LatticeStaggeredFermion& psi,
+	      const Real& RsdCG, 
+	      int MaxCG, 
+	      int& n_count)
+  {
+    InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+  }
 
 }  // end namespace Chroma

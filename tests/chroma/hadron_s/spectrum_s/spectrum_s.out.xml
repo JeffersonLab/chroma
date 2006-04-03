@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: spectrum_s.out.xml,v 1.4 2006-03-20 05:31:16 edwards Exp $
+; $Id: spectrum_s.out.xml,v 3.0 2006-04-03 04:59:28 edwards Exp $
 ;
 ; Chroma input file for staggered Spectrum_s measurement.
 ;

@@ -1,4 +1,4 @@
-// $Id: schr_triv_gaugebc.cc,v 2.1 2006-03-13 05:19:01 edwards Exp $
+// $Id: schr_triv_gaugebc.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional trivial gauge BC
  */
@@ -12,7 +12,8 @@ namespace Chroma
   namespace SchrTrivialGaugeBCEnv 
   { 
     //! Callback function to register with the factory
-    GaugeBC* createGaugeBC(XMLReader& xml, const string& path)
+    GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeBC(XMLReader& xml, 
+										       const string& path)
     {
       return new SchrTrivialGaugeBC(SchrGaugeBCParams(xml, path));
     }

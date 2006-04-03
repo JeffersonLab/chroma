@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: trln.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: trln.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 
 /*! \file
  * \brief Trace-log support

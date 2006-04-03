@@ -1,4 +1,4 @@
-// $Id: periodic_fermbc_w.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: periodic_fermbc_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Periodic fermionic BC
  */
@@ -13,15 +13,14 @@ namespace Chroma
   namespace WilsonTypePeriodicFermBCEnv
   {
     //! Callback function
-    FermBC<LatticeFermion>* createFermBC(XMLReader& xml_in, const std::string& path)
+    FermBC<LatticeFermion,
+	   multi1d<LatticeColorMatrix>, 
+	   multi1d<LatticeColorMatrix> >* createFermBC(XMLReader& xml_in, 
+						       const std::string& path)
     {
-      return new PeriodicFermBC<LatticeFermion>();
-    }
-
-    //! Callback function
-    FermBC< multi1d<LatticeFermion> >* createFermBCArray(XMLReader& xml_in, const std::string& path)
-    {
-      return new PeriodicFermBC< multi1d<LatticeFermion> >();
+      return new PeriodicFermBC<LatticeFermion, 
+	                        multi1d<LatticeColorMatrix>, 
+                                multi1d<LatticeColorMatrix> >();
     }
 
     //! Name to be used
@@ -32,7 +31,6 @@ namespace Chroma
     {
       bool foo = true;
       foo &= Chroma::TheWilsonTypeFermBCFactory::Instance().registerObject(name, createFermBC);
-      foo &= Chroma::TheWilsonTypeFermBCArrayFactory::Instance().registerObject(name, createFermBCArray);
       return foo;
     }
 

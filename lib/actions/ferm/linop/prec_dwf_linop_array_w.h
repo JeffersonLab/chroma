@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_linop_array_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_dwf_linop_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned domain-wall fermion linear operator
  */
@@ -20,16 +20,25 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class EvenOddPrecDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray<LatticeFermion, 
+				  multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Full constructor
-    EvenOddPrecDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    EvenOddPrecDWLinOpArray(Handle< FermState<T,P,Q> > fs,
 			    const Real& WilsonMass_, const Real& m_q, int N5_,
 			    const AnisoParam_t& aniso_);
 
     //! Destructor is automatic
     ~EvenOddPrecDWLinOpArray() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
 
     //! Length of DW flavor index/space
     int size() const {return N5;}
@@ -252,7 +261,7 @@ namespace Chroma
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

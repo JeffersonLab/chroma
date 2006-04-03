@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovext_fermact_array_w.h,v 2.3 2006-03-21 19:14:36 edwards Exp $
+// $Id: prec_ovext_fermact_array_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -14,7 +14,6 @@
 #include "linearop.h"
 #include "prec_constdet_linop.h"
 #include "state.h"
-#include "actions/ferm/fermacts/overlap_state.h"
 #include "io/enum_io/enum_coeffs_io.h"
 
 #include "actions/ferm/fermacts/ovext_tuning_strategy.h"
@@ -59,56 +58,22 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the pole approx. to eps(H(m))
    */
-  class EvenOddPrecOvExtFermActArray : public EvenOddPrecConstDetWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvExtFermActArray : public EvenOddPrecConstDetWilsonTypeFermAct5D<LatticeFermion, 
+				       multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    /*
-    //! General FermBC
-    EvenOddPrecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			    const Real& OverMass_,
-			    const Real& b5_,
-			    const Real& c5_,
-			    const Real& Mass_, 
-			    const int RatPolyDeg_,
-			    const CoeffType approximation_type_) :  fbc(fbc_), param.OverMass(OverMass_),  param.b5(b5_), param.c5(c5_), param.Mass(Mass_),  param.RatPolyDeg(RatPolyDeg_), param.approximation_type(approximation_type_) {}
-    */
-    //! General FermBC
-    EvenOddPrecOvExtFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
-			    const EvenOddPrecOvExtFermActArrayParams& param_) :
-      fbc(fbc_), param(param_) {
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
-      // Set up the strategy for tuning the betas
-      std::istringstream ts_is(param.tuning_strategy_xml);
-      XMLReader tuning_xml(ts_is);
-      std::string strategy_name;
-      try { 
-	read(tuning_xml, "/TuningStrategy/Name", strategy_name);
-      }
-      catch(const std::string& e) { 
-	QDPIO::cerr << "Caught exception processing TuningStrategy: " << e << endl;
-      }
-      
-      
-      theTuningStrategy = TheAbsOvExtTuningStrategyFactory::Instance().createObject(strategy_name, tuning_xml, "/TuningStrategy");
-      
-    }
-
+    //! General FermBC
+    EvenOddPrecOvExtFermActArray(Handle< CreateFermState<T,P,Q> > cfs_, 
+				 const EvenOddPrecOvExtFermActArrayParams& param_);
 
     //! Copy constructor
     EvenOddPrecOvExtFermActArray(const EvenOddPrecOvExtFermActArray& a) : 
-      fbc(a.fbc), param(a.param), theTuningStrategy(a.theTuningStrategy) {}
-
-    //! Assignment
-    EvenOddPrecOvExtFermActArray& operator=(const EvenOddPrecOvExtFermActArray& a) {
-      fbc=a.fbc; 
-      param =a.param;
-      theTuningStrategy=a.theTuningStrategy;
-
-      return *this;
-    }
-
-    //! Return the fermion BC object for this action
-    const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+      cfs(a.cfs), param(a.param), theTuningStrategy(a.theTuningStrategy) {}
 
     //! Length of DW flavor index/space
     int size() const {return getN5FromRatPolyDeg(param.RatPolyDeg);}
@@ -117,18 +82,18 @@ namespace Chroma
     Real getQuarkMass() const {return param.Mass;}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    EvenOddPrecConstDetLinearOperatorArray<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a Pauli-Villars linear operator for this action
-    const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOpPV(Handle<const ConnectState> state) const
-    {
-      QDPIO::cerr << "Ovext::linOpPV not implemented" << endl;
-      QDP_abort(1);
-      return 0;
-    }
+    EvenOddPrecConstDetLinearOperatorArray<T,P,Q>* linOpPV(Handle< FermState<T,P,Q> > state) const
+      {
+	QDPIO::cerr << "Ovext::linOpPV not implemented" << endl;
+	QDP_abort(1);
+	return 0;
+      }
 
     //! Produce a hermitian version of the linear operator
-    const LinearOperator< multi1d<LatticeFermion> >* hermitianLinOp(Handle<const ConnectState> state) const
+    LinearOperatorArray<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const
       {
 	QDPIO::cerr << "EvenOddPrecOvExtFermActArray::gamma5HermLinOp not implemented" << endl;
 	QDP_abort(1);
@@ -136,50 +101,46 @@ namespace Chroma
       }
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
-    const LinearOperator<LatticeFermion>* linOp4D(Handle<const ConnectState> state,
-						  const Real& m_q,
-						  const InvertParam_t& invParam) const
-    {
-      QDPIO::cerr << "linOp4D not implemented" << endl;
-      QDP_abort(1);
-      return 0;
-    }
+    LinearOperator<T>* linOp4D(Handle< FermState<T,P,Q> > state,
+			       const Real& m_q,
+			       const InvertParam_t& invParam) const
+      {
+	QDPIO::cerr << "linOp4D not implemented" << endl;
+	QDP_abort(1);
+	return 0;
+      }
 
    
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
-    const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state,
-						  const InvertParam_t& invParam) const 
-    {
-      Handle< const LinearOperator<LatticeFermion> >  lin(linOp4D(state,Real(0),invParam));
-      QDPIO::cout << "NOt yet implemented" << endl;
-      QDP_abort(1);
-      return 0x0;
-    }
+    LinearOperator<T>* DeltaLs(Handle< FermState<T,P,Q> > state,
+			       const InvertParam_t& invParam) const 
+      {
+	Handle< LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
+	QDPIO::cout << "NOt yet implemented" << endl;
+	QDP_abort(1);
+	return 0x0;
+      }
 
 
     //! Compute quark propagator over base type
-    const SystemSolver<LatticeFermion>* qprop(Handle<const ConnectState> state,
-					      const InvertParam_t& invParam) const;
+    SystemSolver<LatticeFermion>* qprop(Handle< FermState<T,P,Q> > state,
+					const InvertParam_t& invParam) const;
 
     //! Destructor is automatic
     ~EvenOddPrecOvExtFermActArray() {}
 
-  private:
-    // Hide partial constructor
+  protected:
+    //! Return the fermion BC object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
+    //! Default constructor
     EvenOddPrecOvExtFermActArray() {}
-    int getN5FromRatPolyDeg(const int& RatPolyDeg) const {
+    //! Hide =
+    void operator=(const EvenOddPrecOvExtFermActArray& a) {}
 
-      // Type 0 and Tanh approximations: 
-
-      // If RatPolyDeg is even: => 2*(RatPolyDeg/2) + 1 = RatPolyDeg+1
-      // If RatPolyDeg is odd: =>  2*((RatPolyDeg-1)/2 + 1 = RatPolyDeg
-      if( RatPolyDeg % 2 == 0 ) { 
-	return RatPolyDeg+1; 
-      }
-      else { 
-	return RatPolyDeg;
-      }
-    }
+  private:
+    //! Part of initializer
+    int getN5FromRatPolyDeg(const int& RatPolyDeg) const;
 
     void init(int& Npoles, 
 	      Real& coeffP, 
@@ -187,7 +148,7 @@ namespace Chroma
 	      multi1d<Real>& rootQ) const;
 
   private:
-    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     Handle< AbsOvExtTuningStrategy > theTuningStrategy;
     EvenOddPrecOvExtFermActArrayParams param;
   };

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_make_source_w.h,v 2.3 2006-03-20 04:22:02 edwards Exp $
+// $Id: inline_make_source_w.h,v 3.0 2006-04-03 04:59:02 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *

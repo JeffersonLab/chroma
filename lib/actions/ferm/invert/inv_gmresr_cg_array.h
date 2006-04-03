@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_gmresr_cg_array.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: inv_gmresr_cg_array.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Relaxed GMRESR algorithm of the Wuppertal Group
  */
@@ -12,9 +12,9 @@
 namespace Chroma {
 
 template<typename T>
-void InvGMRESR_CG(const LinearOperator< multi1d<T> >& PrecMM,
-		  const LinearOperator< multi1d<T> >& PrecM,
-		  const LinearOperator< multi1d<T> >& UnprecM,
+void InvGMRESR_CG(const LinearOperatorArray<T>& PrecMM,
+		  const LinearOperatorArray<T>& PrecM,
+		  const LinearOperatorArray<T>& UnprecM,
 		  const multi1d<T>& b,
 		  multi1d<T>& x,
 		  const Real& epsilon, 

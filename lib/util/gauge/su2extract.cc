@@ -1,4 +1,4 @@
-// $Id: su2extract.cc,v 2.0 2005-09-25 21:04:44 edwards Exp $
+// $Id: su2extract.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
 /*! \file
  *  \brief  Extract an unnormalized SU(2) matrix from a GL(3,C) matrix
  */

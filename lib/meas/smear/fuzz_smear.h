@@ -1,4 +1,4 @@
-// $Id: fuzz_smear.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
+// $Id: fuzz_smear.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
 
 #ifndef __fuzz_smear__
 #define __fuzz_smear__

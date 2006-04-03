@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.h,v 2.2 2006-02-16 02:59:03 edwards Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -34,36 +34,37 @@ namespace Chroma
     LatticeFermion>
     {
     public: 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
 
       // Copy Constructor
       EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(const EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial& m) : phi(m.phi), fermact(m.fermact), fermact_prec(m.fermact_prec), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
-      const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
-	return getFermAct();
-      }
-      
     protected:
 
-      LatticeFermion& getPhi(void) {
+      T& getPhi(void) {
 	return phi;
       }
 
-      const LatticeFermion& getPhi(void) const {
+      const T& getPhi(void) const {
 	return phi;
       }
 
-      const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
+      const EvenOddPrecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
 	return *fermact;
       }
 
-      const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermActPrec(void) const { 
+      const EvenOddPrecWilsonTypeFermAct<T,P,Q>& getFermActPrec(void) const { 
 	return *fermact_prec;
       }
 
 
-      AbsChronologicalPredictor4D<LatticeFermion>& getMDSolutionPredictor(void) { 
+      AbsChronologicalPredictor4D<T>& getMDSolutionPredictor(void) { 
 	return *chrono_predictor;
       };
 
@@ -79,17 +80,17 @@ namespace Chroma
       void operator=(const EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial&);
 
       // Pseudofermion field phi
-      LatticeFermion phi;
+      T phi;
 
       // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const EvenOddPrecWilsonTypeFermAct<T,P,Q> > fermact;
 
-      Handle<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact_prec;
+      Handle<const EvenOddPrecWilsonTypeFermAct<T,P,Q> > fermact_prec;
 
       // The parameters for the inversion
       InvertParam_t inv_param;
 
-      Handle<AbsChronologicalPredictor4D<LatticeFermion> > chrono_predictor;
+      Handle<AbsChronologicalPredictor4D<T> > chrono_predictor;
     };
 
 

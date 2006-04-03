@@ -1,4 +1,4 @@
-// $Id: wilson_fermact_params_w.cc,v 2.1 2005-12-03 21:19:38 edwards Exp $
+// $Id: wilson_fermact_params_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Wilson fermion action parameters
  */

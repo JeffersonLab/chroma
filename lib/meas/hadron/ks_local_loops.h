@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ks_local_loops.h,v 2.3 2006-03-13 14:35:27 egregory Exp $
+// $Id: ks_local_loops.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
 /*! \file
  *  \brief Wrapper routines for computing loops with staggeref fermions
  */        
@@ -17,7 +17,7 @@
 namespace Chroma {
 
 void ks_local_loops(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi ,
 		 const multi1d<LatticeColorMatrix> & u,
@@ -55,7 +55,7 @@ void ks_local_loops(
 
 
 void ks_fuzz_loops(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi ,
 		 LatticeStaggeredFermion & psi_fuzz,
@@ -77,7 +77,7 @@ void ks_fuzz_loops(
 		 )  ;
 
 void ks_local_loops_and_stoch_conn(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source1, 
 		 LatticeStaggeredFermion & psi1 ,
 		 const multi1d<LatticeColorMatrix> & u,

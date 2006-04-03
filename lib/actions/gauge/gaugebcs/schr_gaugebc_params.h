@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_gaugebc_params.h,v 2.3 2006-03-14 04:49:54 edwards Exp $
+// $Id: schr_gaugebc_params.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional gauge boundary conditions
  */

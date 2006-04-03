@@ -1,4 +1,4 @@
-// $Id: unprec_nef_fermact_array_w.cc,v 2.2 2006-02-26 03:47:51 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/qprop/quarkprop4_w.h"
 #include "actions/ferm/qprop/nef_quarkprop4_w.h"
@@ -19,17 +19,21 @@ namespace Chroma
   namespace UnprecNEFFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
-										      const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion,
+			multi1d<LatticeColorMatrix>,
+			multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+								       const std::string& path)
     {
-      return new UnprecNEFFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+      return new UnprecNEFFermActArray(CreateFermStateEnv::reader(xml_in, path), 
 				       UnprecNEFFermActArrayParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct5D(xml_in, path);
     }
@@ -40,8 +44,10 @@ namespace Chroma
     //! Register all the factories
     bool registerAll()
     {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      bool foo = true;
+      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+      foo &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      return foo;
     }
 
     //! Register the fermact
@@ -73,8 +79,10 @@ namespace Chroma
 
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* 
-  UnprecNEFFermActArray::unprecLinOp(Handle<const ConnectState> state, 
+  UnprecDWLikeLinOpBaseArray<LatticeFermion,
+			     multi1d<LatticeColorMatrix>,
+			     multi1d<LatticeColorMatrix> >* 
+  UnprecNEFFermActArray::unprecLinOp(Handle< FermState<T,P,Q> > state, 
 				     const Real& m_q) const
   {
     multi1d<Real> bb5(N5);
@@ -82,7 +90,7 @@ namespace Chroma
 
     bb5 = b5;
     cc5 = c5;
-    return new UnprecNEFDWLinOpArray(state->getLinks(),OverMass,bb5,cc5,m_q,N5);
+    return new UnprecNEFDWLinOpArray(state,OverMass,bb5,cc5,m_q,N5);
   }
 
  
@@ -92,7 +100,7 @@ namespace Chroma
 				   XMLWriter& xml_out,
 				   const LatticePropagator& q_src,
 				   int t_src, int j_decay,
-				   Handle<const ConnectState> state,
+				   Handle< FermState<T,P,Q> > state,
 				   const InvertParam_t& invParam,
 				   QuarkSpinType quarkSpinType,
 				   bool obsvP,
@@ -102,7 +110,7 @@ namespace Chroma
       nef_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, *this, state, invParam, ncg_had);
     else
     {
-      Handle< const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
+      Handle< SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
       quarkProp4(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
     }
   }

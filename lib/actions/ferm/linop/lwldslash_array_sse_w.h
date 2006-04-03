@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_sse_w.h,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_array_sse_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -8,7 +8,7 @@
 #define __lwldslash_array_sse_w_h__
 
 #include "actions/ferm/linop/lwldslash_base_array_w.h"
-
+#include "state.h"
 
 namespace Chroma 
 { 
@@ -47,24 +47,29 @@ namespace Chroma
   class SSEWilsonDslashArray : public WilsonDslashBaseArray
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Empty constructor. Must use create later
     SSEWilsonDslashArray();
 
     //! Full constructor
-    SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+    SSEWilsonDslashArray(Handle< FermState<T,P,Q> > state,
 			 int N5_);
 
     //! Full constructor
-    SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+    SSEWilsonDslashArray(Handle< FermState<T,P,Q> > state,
 			 int N5_,
 			 const AnisoParam_t& aniso_);
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > state,
 		int N5_);
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > state,
 		int N5_,
 		const AnisoParam_t& aniso_);
 
@@ -102,6 +107,9 @@ namespace Chroma
 		const LatticeFermion& psi, 
 		enum PlusMinus isign, int cb) const;
     
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
+
   protected:
     //! Init internals
     void init();
@@ -113,10 +121,11 @@ namespace Chroma
     AnisoParam_t  anisoParam;
     multi1d<PrimitiveSU3Matrix> packed_gauge;
     int N5;
+    Handle< FermBC<T,P,Q> > fbc;
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

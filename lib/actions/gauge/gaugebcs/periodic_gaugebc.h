@@ -1,4 +1,4 @@
-// $Id: periodic_gaugebc.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: periodic_gaugebc.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Periodic gauge boundary conditions
  */
@@ -19,34 +19,35 @@ namespace Chroma {
 
   //! Periodic gauge
   /*! @ingroup gaugebcs */
-  class PeriodicGaugeBC : public GaugeBC
+  class PeriodicGaugeBC : public GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Only empty constructor
     PeriodicGaugeBC() {}
-
-    //! Copy constructor
-    PeriodicGaugeBC(const PeriodicGaugeBC& a) {}
 
     //! Destructor is automatic
     ~PeriodicGaugeBC() {}
 
-    //! Assignment
-    PeriodicGaugeBC& operator=(const PeriodicGaugeBC&) {return *this;}
-
     //! Modify U fields in place
     /*! NOP */
-    void modify(multi1d<LatticeColorMatrix>& u) const {}
+    void modify(Q& u) const {}
 
     //! Zero the U fields in place on the masked links
-    void zero(multi1d<LatticeColorMatrix>& u) const {}
+    void zero(P& u) const {}
 
     //! Says if there are non-trivial BC links
     bool nontrivialP() const {return false;}
 
   private:
+    //! Hide assignment
+    void operator=(const PeriodicGaugeBC&) {}
 
   };
+
 } // End namespace Chroma
 
 #endif

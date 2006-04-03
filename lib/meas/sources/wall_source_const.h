@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wall_source_const.h,v 2.2 2005-11-16 02:34:58 edwards Exp $
+// $Id: wall_source_const.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */

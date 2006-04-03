@@ -1,4 +1,4 @@
-// $Id: unprec_hamberwu_fermact_w.cc,v 2.3 2006-02-26 03:47:51 edwards Exp $
+// $Id: unprec_hamberwu_fermact_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/unprec_hamberwu_linop_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 #include "io/param_io.h"
 
@@ -19,17 +19,21 @@ namespace Chroma
   namespace UnprecHamberWuFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
-										    const std::string& path)
+    WilsonTypeFermAct<LatticeFermion,
+		      multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+								     const std::string& path)
     {
-      return new UnprecHamberWuFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+      return new UnprecHamberWuFermAct(CreateFermStateEnv::reader(xml_in, path), 
 				       UnprecHamberWuFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct4D(xml_in, path);
     }
@@ -101,8 +105,10 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  UnprecHamberWuFermAct::linOp(Handle<const ConnectState> state) const
+  UnprecLinearOperator<LatticeFermion,
+		       multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix> >*
+  UnprecHamberWuFermAct::linOp(Handle< FermState<T,P,Q> > state) const
   {
     if (param.anisoParam.anisoP)
     {
@@ -110,7 +116,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    return new UnprecHamberWuLinOp(state->getLinks(), param.Mass, param.u0); 
+    return new UnprecHamberWuLinOp(state, param.Mass, param.u0); 
   }
 
 }

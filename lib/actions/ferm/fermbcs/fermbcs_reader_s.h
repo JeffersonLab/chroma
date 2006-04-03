@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs_reader_s.h,v 2.2 2006-03-16 03:00:11 edwards Exp $
+// $Id: fermbcs_reader_s.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Fermionic boundary condition reader
  */
@@ -7,7 +7,8 @@
 #ifndef __fermbcs_reader_s_h__
 #define __fermbcs_reader_s_h__
 
-#include "chromabase.h"
+#include "fermbc.h"
+#include "handle.h"
 
 namespace Chroma
 {
@@ -15,6 +16,16 @@ namespace Chroma
   /*! \ingroup fermbcs */
   namespace StaggeredTypeFermBCEnv
   {
+    //! Helper function for the FermionAction readers
+    /*!
+     * This structure should not be replicated. This routine helps maintain
+     * backwards compatibility with the FermionAction readers by looking for
+     * either the "boundary" tag or the FermionBC group
+     */
+    Handle< FermBC<LatticeStaggeredFermion,
+                   multi1d<LatticeColorMatrix>,
+		   multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 
+							  const std::string& path);
   }
 }
 

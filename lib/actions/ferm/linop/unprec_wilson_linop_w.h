@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_wilson_linop_w.h,v 2.3 2006-03-03 02:37:39 edwards Exp $
+// $Id: unprec_wilson_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -37,31 +37,40 @@ namespace Chroma
    *
    */
   
-  class UnprecWilsonLinOp : public UnprecLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecWilsonLinOp : public UnprecLinearOperator<LatticeFermion, 
+                    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     UnprecWilsonLinOp() {}
 
     //! Full constructor
-    UnprecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_)
-      {create(u_,Mass_);}
+    UnprecWilsonLinOp(Handle< FermState<T,P,Q> > fs, const Real& Mass_)
+      {create(fs,Mass_);}
 
     //! Full constructor with Anisotropy
-    UnprecWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, 
+    UnprecWilsonLinOp(Handle< FermState<T,P,Q> > fs,
 		      const Real& Mass_,
 		      const AnisoParam_t& aniso)
-      {create(u_,Mass_,aniso);}
+      {create(fs,Mass_,aniso);}
 
     //! Destructor is automatic
     ~UnprecWilsonLinOp() {}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& Mass_);
 
     //! Creation routine with Anisotropy
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& Mass_,
 		const AnisoParam_t& aniso);
 
@@ -83,7 +92,7 @@ namespace Chroma
     WilsonDslash D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

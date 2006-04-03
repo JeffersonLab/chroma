@@ -1,10 +1,10 @@
-// $Id: overlap_fermact_base_w.cc,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
 
 #include "chromabase.h"
-#include "actions/ferm/fermacts/overlap_state.h"
+//#include "actions/ferm/fermacts/overlap_state.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "actions/ferm/invert/invcg1.h"
 #include "actions/ferm/invert/invcg2.h"
@@ -23,7 +23,6 @@
 #include "meas/eig/ischiral_w.h"
 
 
-
 namespace Chroma 
 { 
   //! Propagator for unpreconditioned overlap-like fermion actions
@@ -35,13 +34,18 @@ namespace Chroma
   class Ovlap4DQprop : public SystemSolver<LatticeFermion>
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Constructor
     /*!
      * \param S_f_       Fermion action ( Read )
      * \param state_     state ( Read )
      */
-    Ovlap4DQprop(Handle<const OverlapFermActBase> S_f_,
-		 Handle<const ConnectState> state_,
+    Ovlap4DQprop(Handle< OverlapFermActBase> S_f_,
+		 Handle< FermState<T,P,Q> > state_,
 		 const InvertParam_t& invParam_) : 
       S_f(S_f_), state(state_), invParam(invParam_) {}
     
@@ -71,7 +75,7 @@ namespace Chroma
 	  // We do our solve into tmp, so make sure this is the supplied initial guess
 	  LatticeFermion tmp = psi;
 
-	  Handle< const LinearOperator<LatticeFermion> > M(S_f->linOp(state));
+	  Handle< LinearOperator<T> > M(S_f->linOp(state));
     
 	  // Check whether the source is chiral.
 	  Chirality ichiral = isChiralVector(chi);
@@ -79,7 +83,7 @@ namespace Chroma
 
      
 
-	    Handle< const LinearOperator<LatticeFermion> > MM(S_f->lMdagM(state));
+	    Handle<LinearOperator<T> > MM(S_f->lMdagM(state));
 
 	    // Do this at the end as otherwise it may mix chiralities?
 	    (*M)(tmp, chi, MINUS);
@@ -95,7 +99,7 @@ namespace Chroma
 	    // If we have a chiral source we have M^{dag} M = M^{2}
 	    // but applying M at the front might mix chiralities hurting
 	    // convergence so we do it last
-	    Handle< const LinearOperator<LatticeFermion> > MM(S_f->lMdagM(state,ichiral));
+	    Handle<LinearOperator<T> > MM(S_f->lMdagM(state,ichiral));
 
 	    // Source is chiral. In this case we should use InvCG1
 	    // with the special MdagM
@@ -117,7 +121,7 @@ namespace Chroma
 	{
 
 	  LatticeFermion tmp = psi;
-	  Handle< const LinearOperator<LatticeFermion> > M(S_f->linOp(state));
+	  Handle<LinearOperator<T> > M(S_f->linOp(state));
 
 
 	  // Check whether the source is chiral.
@@ -134,7 +138,7 @@ namespace Chroma
 	
 	    // Source is chiral. In this case we should use InvCG1
 	    // with the special MdagM
-	    Handle< const LinearOperator<LatticeFermion> > MM( dynamic_cast<const LinearOperator<LatticeFermion>* >( S_f->lMdagM(state, ichiral) ) );
+	    Handle<LinearOperator<T> > MM( dynamic_cast< LinearOperator<LatticeFermion>* >( S_f->lMdagM(state, ichiral) ) );
 
 	    (*M)(tmp, chi, MINUS);	
 	    InvRelCG1(*MM, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
@@ -176,7 +180,7 @@ namespace Chroma
 	  Real mu = S_f->getQuarkMass();
 	  Complex zeta = cmplx(( Real(1) + mu ) / (Real(1) - mu),0);
 	  {
-	    Handle<const LinearOperator<LatticeFermion> > U(S_f->lgamma5epsH(state));
+	    Handle< LinearOperator<T> > U(S_f->lgamma5epsH(state));
 	
 	    // Now solve:
 	    InvSUMR(*U, chi, psi, zeta, rho, invParam.RsdCG, invParam.MaxCG, n_count);
@@ -188,7 +192,7 @@ namespace Chroma
 
 	  // Check back:
 	  // Get a proper operator and compute chi- Dpsi
-	  Handle<const LinearOperator<LatticeFermion> > D(S_f->linOp(state));
+	  Handle< LinearOperator<T> > D(S_f->linOp(state));
 	  LatticeFermion Dpsi;
 	  (*D)(Dpsi, psi, PLUS);
 	  Dpsi -= chi;
@@ -211,7 +215,7 @@ namespace Chroma
 	  Real mu = S_f->getQuarkMass();
 	  Complex zeta = cmplx(( Real(1) + mu ) / (Real(1) - mu),0);
 	  {
-	    Handle<const LinearOperator<LatticeFermion> > U( dynamic_cast<const LinearOperator<LatticeFermion>* >(S_f->lgamma5epsH(state)) );
+	    Handle< LinearOperator<T> > U( dynamic_cast< LinearOperator<LatticeFermion>* >(S_f->lgamma5epsH(state)) );
 
 	    Real fact = Real(2)/(Real(1) - mu);
 	
@@ -226,7 +230,7 @@ namespace Chroma
 
 	  // Check back:
 	  // Get a proper operator and compute chi- Dpsi
-	  Handle<const LinearOperator<LatticeFermion> > D(S_f->linOp(state));
+	  Handle< LinearOperator<T> > D(S_f->linOp(state));
 	  LatticeFermion Dpsi;
 	  (*D)(Dpsi, psi, PLUS);
 	  Dpsi -= chi;
@@ -248,9 +252,9 @@ namespace Chroma
 	  Real mu = S_f->getQuarkMass();
 	  Complex zeta = cmplx(( Real(1) + mu ) / (Real(1) - mu),0);
 	  {
-	    Handle<const LinearOperator<LatticeFermion> > UnprecU( dynamic_cast<const LinearOperator<LatticeFermion>* >(S_f->lgamma5epsH(state)) );
+	    Handle< LinearOperator<T> > UnprecU( dynamic_cast< LinearOperator<T>* >(S_f->lgamma5epsH(state)) );
 
-	    Handle<const LinearOperator<LatticeFermion> > PrecU( dynamic_cast<const LinearOperator<LatticeFermion>* >(S_f->lgamma5epsHPrecondition(state)) );
+	    Handle< LinearOperator<T> > PrecU( dynamic_cast< LinearOperator<T>* >(S_f->lgamma5epsHPrecondition(state)) );
 
 	
 	    Real fact = Real(2)/(Real(1) - mu);
@@ -266,7 +270,7 @@ namespace Chroma
 
 	  // Check back:
 	  // Get a proper operator and compute chi- Dpsi
-	  Handle<const LinearOperator<LatticeFermion> > D(S_f->linOp(state));
+	  Handle< LinearOperator<T> > D(S_f->linOp(state));
 	  LatticeFermion Dpsi;
 	  (*D)(Dpsi, psi, PLUS);
 	  Dpsi -= chi;
@@ -282,34 +286,34 @@ namespace Chroma
       
 	  LatticeFermion tmp= psi;
 	  Chirality ichiral = isChiralVector(chi);
-	  const LinearOperator<LatticeFermion> *MM_ptr;
-	  const LinearOperator<LatticeFermion> *MM_prec_ptr;
+	  LinearOperator<T> *MM_ptr;
+	  LinearOperator<T> *MM_prec_ptr;
 
 	  if( ichiral == CH_NONE || ( S_f->isChiral() == false )) { 
 	
-	    MM_ptr =  dynamic_cast<const LinearOperator<LatticeFermion>* >( S_f->lMdagM(state));
-	    MM_prec_ptr =  dynamic_cast<const LinearOperator<LatticeFermion>* >( S_f->lMdagMPrecondition(state));
+	    MM_ptr =  dynamic_cast< LinearOperator<T>* >( S_f->lMdagM(state));
+	    MM_prec_ptr =  dynamic_cast< LinearOperator<T>* >( S_f->lMdagMPrecondition(state));
 	  
 	  }
 	  else {
 	
 	    // Source is chiral. In this case we should use InvCG1
 	    // with the special MdagM
-	    MM_ptr = dynamic_cast<const LinearOperator<LatticeFermion>* >( S_f->lMdagM(state, ichiral) );
-	    MM_prec_ptr = dynamic_cast<const LinearOperator<LatticeFermion>* >( S_f->lMdagMPrecondition(state, ichiral) );
+	    MM_ptr = dynamic_cast< LinearOperator<T>* >( S_f->lMdagM(state, ichiral) );
+	    MM_prec_ptr = dynamic_cast< LinearOperator<T>* >( S_f->lMdagMPrecondition(state, ichiral) );
 
 	  }
 
-	  Handle<const LinearOperator<LatticeFermion> > MM(MM_ptr);
-	  Handle<const LinearOperator<LatticeFermion> > MM_prec(MM_prec_ptr);
-	  Handle<const LinearOperator<LatticeFermion> > M(S_f->linOp(state));
+	  Handle< LinearOperator<T> > MM(MM_ptr);
+	  Handle< LinearOperator<T> > MM_prec(MM_prec_ptr);
+	  Handle< LinearOperator<T> > M(S_f->linOp(state));
 
 	  (*M)(tmp,chi,MINUS);
 	  InvRelGMRESR_CG(*MM_prec,*MM, tmp, psi, invParam.RsdCG, invParam.RsdCGPrec, invParam.MaxCG, invParam.MaxCGPrec, n_count);
 	
    
 
-	  LatticeFermion Mpsi;
+	  T Mpsi;
 	  (*M)(Mpsi, psi, PLUS);
 	  Mpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = "
@@ -344,19 +348,19 @@ namespace Chroma
     // Hide default constructor
     Ovlap4DQprop() {}
 
-    Handle< const OverlapFermActBase> S_f;
-    Handle<const ConnectState> state;
+    Handle< OverlapFermActBase > S_f;
+    Handle< FermState<T,P,Q> > state;
     const InvertParam_t invParam;
   };
 
  
   // Propagator for unpreconditioned overlap-like fermion actions
   /* Yuk, just make a clone of the current action and pass it around */
-  const SystemSolver<LatticeFermion>* 
-  OverlapFermActBase::qprop(Handle<const ConnectState> state,
+  SystemSolver<LatticeFermion>* 
+  OverlapFermActBase::qprop(Handle< FermState<T,P,Q> > state,
 			    const InvertParam_t& invParam) const
   {
-    return new Ovlap4DQprop(Handle< const OverlapFermActBase>(clone()), state, invParam);
+    return new Ovlap4DQprop(Handle<OverlapFermActBase>(clone()), state, invParam);
   }
 
 
@@ -381,10 +385,10 @@ namespace Chroma
   /* psi      -- quark propagators ( Write ) */
   /* ncg_had  -- number of CG iterations ( Modify ) */
   void 
-  OverlapFermActBase::multiQprop(multi1d<LatticeFermion>& psi,
+  OverlapFermActBase::multiQprop(multi1d<T>& psi,
 				 const multi1d<Real>& masses,
-				 Handle<const ConnectState> state, 
-				 const LatticeFermion& chi, 
+				 Handle< FermState<T,P,Q> > state, 
+				 const T& chi, 
 				 const MultiInvertParam_t& invParam,
 				 const int n_soln,
 				 int& n_count) const
@@ -444,11 +448,11 @@ namespace Chroma
 	// This is M_scaled = 2 D(0). 
 	// the fact that D has zero masss is enforced earlier 
 	//
-	const Handle< const LinearOperator<LatticeFermion> > 
-	  M_scaled( new lopscl<LatticeFermion, Real>( linOp(state), Real(2) ) );
+	Handle< LinearOperator<T> > 
+	  M_scaled(new lopscl<T, Real>( linOp(state), Real(2) ) );
 
 	Chirality ischiral;
-	LinearOperator<LatticeFermion>* MdagMPtr;
+	LinearOperator<T>* MdagMPtr;
 	multi1d<Real> shifted_masses(n_mass);
     
 	for(int i = 0; i < n_mass; i++) { 
@@ -477,11 +481,11 @@ namespace Chroma
 	  // factor of 4. I don't need to recompute coeffs etc here.
 	  //
       
-	  MdagMPtr = new lmdagm<LatticeFermion>(M_scaled);
+	  MdagMPtr = new MdagMLinOp<T>(M_scaled);
 	}
 	else { 
 	  // Special lovddag version
-	  MdagMPtr = new lopscl<LatticeFermion, Real> ( lMdagM( state, ischiral ), Real(4) );
+	  MdagMPtr = new lopscl<T, Real> ( lMdagM( state, ischiral ), Real(4) );
 	}
       
 	// Do the solve
@@ -535,7 +539,7 @@ namespace Chroma
 	  for(int iset=0; iset < nsets; iset++) {
 	    for(int i=0; i < n_mass; i++) {
 	      int j = i+iset*n_mass;
-	      LatticeFermion tmp1;
+	      T tmp1;
 	    	    
 	      // Need to multiply:
 	      //
@@ -586,12 +590,12 @@ namespace Chroma
 	// This is M_scaled = 2 D(0). 
 	// the fact that D has zero masss is enforced earlier 
 	//
-	const Handle< const LinearOperator<LatticeFermion> > 
+	Handle< LinearOperator<T> > 
 	  // This is a really ugly construction but should work
-	  M_scaled( new approx_lopscl<LatticeFermion, Real>(dynamic_cast<const LinearOperator<LatticeFermion>* >(linOp(state)),Real(2) ) );
+	  M_scaled(new approx_lopscl<T, Real>(dynamic_cast<LinearOperator<T>* >(linOp(state)),Real(2) ) );
 
 	Chirality ischiral;
-	LinearOperator<LatticeFermion>* MdagMPtr;
+	LinearOperator<T>* MdagMPtr;
 	multi1d<Real> shifted_masses(n_mass);
 
 	for(int i = 0; i < n_mass; i++) { 
@@ -619,12 +623,12 @@ namespace Chroma
 	  // I have one scaled by 2. The MdagM fixes up the scale
 	  // factor of 4. I don't need to recompute coeffs etc here.
 	  //      
-	  MdagMPtr = new approx_lmdagm<LatticeFermion>(M_scaled);
+	  MdagMPtr = new approx_lmdagm<T>(M_scaled);
 	}
 	else { 
 	  // Special lovddag version
 	  // This is yet another ugly cast.
-	  MdagMPtr = new approx_lopscl<LatticeFermion, Real> ( dynamic_cast<const LinearOperator<LatticeFermion>* >(lMdagM( state, ischiral )), Real(4) );
+	  MdagMPtr = new approx_lopscl<T, Real> ( dynamic_cast<LinearOperator<T>* >(lMdagM( state, ischiral )), Real(4) );
 	}
       
 	// Do the solve
@@ -680,7 +684,7 @@ namespace Chroma
 	  for(int iset=0; iset < nsets; iset++) {
 	    for(int i=0; i < n_mass; i++) {
 	      int j = i+iset*n_mass;
-	      LatticeFermion tmp1;
+	      T tmp1;
 	    	    
 	      // Need to multiply:
 	      //
@@ -734,7 +738,7 @@ namespace Chroma
 	  QDP_error_exit("SUMMR inverter does not solve for D_dag");
 	}
 
-	Handle<const LinearOperator<LatticeFermion> > U = lgamma5epsH(state);
+	Handle< LinearOperator<T> > U = lgamma5epsH(state);
 
 	multi1d<Complex> shifted_masses(n_mass);
 
@@ -759,7 +763,7 @@ namespace Chroma
 	for(int s=0; s < n_mass; s++) { 
 
 	  // Check back solutions
-	  LatticeFermion r;
+	  T r;
 	  (*U)(r, psi[s], PLUS);
 	  r *= rho[s];
 	  r += shifted_masses[s]*psi[s];
@@ -797,7 +801,7 @@ namespace Chroma
 	  QDP_error_exit("SUMMR inverter does not solve for D_dag");
 	}
 
-	Handle<const LinearOperator<LatticeFermion> > U(lgamma5epsH(state));
+	Handle< LinearOperator<T> > U(lgamma5epsH(state));
 
 	multi1d<Complex> shifted_masses(n_mass);
 
@@ -829,7 +833,7 @@ namespace Chroma
 	for(int s=0; s < n_mass; s++) { 
 
 	  // Check back solutions
-	  LatticeFermion r;
+	  T r;
 	  (*U)(r, psi[s], PLUS);
 	  r *= rho[s];
 	  r += shifted_masses[s]*psi[s];

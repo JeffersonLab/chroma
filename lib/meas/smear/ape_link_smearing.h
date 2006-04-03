@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ape_link_smearing.h,v 1.3 2005-11-16 02:34:58 edwards Exp $
+// $Id: ape_link_smearing.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
 /*! \file
  *  \brief APE link smearing
  */

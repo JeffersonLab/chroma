@@ -1,4 +1,4 @@
-// $Id: szin_io.cc,v 2.1 2006-02-16 21:02:58 edwards Exp $
+// $Id: szin_io.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
 
 /*! \file
  *  \brief Reader/writers for szin headers

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: su3hb.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: su3hb.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */

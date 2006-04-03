@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: coulgauge.ini.xml,v 1.1 2006-02-26 04:30:07 edwards Exp $
+; $Id: coulgauge.ini.xml,v 3.0 2006-04-03 04:59:24 edwards Exp $
 ;
 ; Coulomb gauge fixing
 ;

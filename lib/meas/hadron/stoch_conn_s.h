@@ -1,4 +1,4 @@
-// $Id: stoch_conn_s.h,v 1.1 2006-03-13 14:37:11 egregory Exp $
+// $Id: stoch_conn_s.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
 
 #ifndef STOCH_CONN_S_H
 #define STOCH_CONN_S_H

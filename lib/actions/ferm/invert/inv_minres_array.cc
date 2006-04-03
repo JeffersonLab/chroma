@@ -6,7 +6,7 @@
 namespace Chroma {
 
 template<typename T>
-void InvMINRES_a(const LinearOperator< multi1d<T> >& A,
+void InvMINRES_a(const LinearOperatorArray<T>& A,
 		 const multi1d<T>& chi,
 		 multi1d<T>& psi,
 		 const Real& RsdCG,
@@ -177,7 +177,7 @@ void InvMINRES_a(const LinearOperator< multi1d<T> >& A,
 
 
 template<>
-void InvMINRES(const LinearOperator< multi1d<LatticeFermion> >& A,
+void InvMINRES(const LinearOperatorArray<LatticeFermion>& A,
 	       const multi1d<LatticeFermion>& chi,
 	       multi1d<LatticeFermion>& psi,
 	       const Real& RsdCG,

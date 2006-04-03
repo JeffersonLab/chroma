@@ -1,4 +1,4 @@
-// $Id: prec_nef_linop_array_w.cc,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_nef_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -15,7 +15,7 @@ namespace Chroma
   //! Creation routine
   /*! \ingroup fermact
    *
-   * \param u_            gauge field   (Read)
+   * \param fs            gauge field   (Read)
    * \param WilsonMass_   DWF height    (Read)
    * \param b5_           NEF parameter (Read)
    * \param c5_           NEF parameter (Read)
@@ -23,7 +23,7 @@ namespace Chroma
    * \param N5_           extent of 5D  (Read)
    */
   void 
-  EvenOddPrecNEFDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  EvenOddPrecNEFDWLinOpArray::create(Handle< FermState<T,P,Q> > fs,
 				     const Real& WilsonMass_, const Real &b5_, 
 				     const Real &c5_, const Real& m_q_, int N5_)
   {
@@ -35,7 +35,7 @@ namespace Chroma
     c5  = c5_;
     N5  = N5_;
   
-    D.create(u_, N5);
+    D.create(fs, N5);
   
   
     c5InvTwoKappa = 1.0 - c5*(Nd-WilsonMass) ;

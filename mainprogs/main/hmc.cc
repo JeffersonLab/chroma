@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 2.4 2006-03-20 04:22:47 edwards Exp $
+// $Id: hmc.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */

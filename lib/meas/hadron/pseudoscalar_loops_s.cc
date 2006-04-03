@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_loops_s.cc,v 2.1 2006-02-06 20:24:13 egregory Exp $
+// $Id: pseudoscalar_loops_s.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
 #include "chromabase.h"
 #include "pseudoscalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"

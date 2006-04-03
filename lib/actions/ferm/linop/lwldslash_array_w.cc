@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_array_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -39,22 +39,30 @@ namespace Chroma
 
 
   //! Creation routine
-  void QDPWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, int N5_)
+  void QDPWilsonDslashArray::create(Handle< FermState<T,P,Q> > state, int N5_)
   {
     AnisoParam_t aniso;
-    create(u_,N5_,aniso);
+    create(state,N5_,aniso);
   }
 
 
   //! Creation routine
-  void QDPWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, int N5_,
+  void QDPWilsonDslashArray::create(Handle< FermState<T,P,Q> > state, int N5_,
 				    const AnisoParam_t& aniso_)
   {
     START_CODE();
 
-    u = u_;
+    u = state->getLinks();
+    fbc = state->getFermBC();
     N5 = N5_;
     anisoParam = aniso_;
+
+    // Sanity check
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << "WilsonDslashArray: error: fbc is null" << endl;
+      QDP_abort(1);
+    }
 
     // Fold in anisotropy
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
@@ -180,6 +188,8 @@ namespace Chroma
 #endif
 	;
       break;
+
+      getFermBC().modifyF(chi, QDP::rb[cb]);
     }
 
     END_CODE();

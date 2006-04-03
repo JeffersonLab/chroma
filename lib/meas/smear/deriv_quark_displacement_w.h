@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_quark_displacement_w.h,v 1.1 2006-02-21 06:45:40 edwards Exp $
+// $Id: deriv_quark_displacement_w.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  *

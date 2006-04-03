@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial5d_w.h,v 2.3 2006-02-16 02:59:03 edwards Exp $
+// $Id: unprec_two_flavor_monomial5d_w.h,v 3.0 2006-04-03 04:59:10 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
@@ -35,38 +35,28 @@ namespace Chroma
     LatticeFermion>
     {
     public: 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Construct out of a parameter struct. Check against the desired FermAct name
       UnprecTwoFlavorWilsonTypeFermMonomial5D(const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
       // Copy Constructor
       UnprecTwoFlavorWilsonTypeFermMonomial5D(const UnprecTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
-#if 0 
-      const multi1d<LatticeFermion>& debugGetPhi(void) const {
-	return getPhi();
-      }
-
-      void debugGetX(multi1d<LatticeFermion>& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const {
-	getX(X,s);
-      }
-#endif
-
-      const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
-	return getFermAct();
-      }
-      
-
     protected:
 
-      multi1d<LatticeFermion>& getPhi(void) {
+      multi1d<T>& getPhi(void) {
 	return phi;
       }
 
-      const multi1d<LatticeFermion>& getPhi(void) const {
+      const multi1d<T>& getPhi(void) const {
 	return phi;
       }
 
-      const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
+      const UnprecWilsonTypeFermAct5D<T,P,Q>& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -75,7 +65,7 @@ namespace Chroma
 	return inv_param;
       }
      
-      AbsChronologicalPredictor5D< LatticeFermion >& getMDSolutionPredictor(void) {
+      AbsChronologicalPredictor5D<T>& getMDSolutionPredictor(void) {
 	return *chrono_predictor;
       }
 
@@ -85,16 +75,16 @@ namespace Chroma
       void operator=(const UnprecTwoFlavorWilsonTypeFermMonomial5D&);
 
       // Pseudofermion field phi
-      multi1d<LatticeFermion> phi;
+      multi1d<T> phi;
 
       // A handle for the UnprecWilsonFermAct
-      Handle<const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const UnprecWilsonTypeFermAct5D<T,P,Q> > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;
 
       // Chrono Predictor
-      Handle < AbsChronologicalPredictor5D<LatticeFermion> > chrono_predictor;
+      Handle < AbsChronologicalPredictor5D<T> > chrono_predictor;
     };
 
 

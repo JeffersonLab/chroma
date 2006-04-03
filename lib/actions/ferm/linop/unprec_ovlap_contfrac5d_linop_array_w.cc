@@ -1,4 +1,4 @@
-/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+/* $Id: unprec_ovlap_contfrac5d_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -138,6 +138,7 @@ namespace Chroma
 
     }
 
+    getFermBC().modifyF(chi);
 
     END_CODE();
   }
@@ -146,7 +147,8 @@ namespace Chroma
   //! Derivative
   void 
   UnprecOvlapContFrac5DLinOpArray::deriv(multi1d<LatticeColorMatrix>& ds_u, 
-					 const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+					 const multi1d<LatticeFermion>& chi, 
+					 const multi1d<LatticeFermion>& psi, 
 					 enum PlusMinus isign) const
   {
     START_CODE();
@@ -237,6 +239,8 @@ namespace Chroma
       QDPIO::cerr << "contfrac5d deriv - projection not supported" << endl;
       QDP_abort(1);
     }
+
+    getFermBC().zero(ds_u);
 
     END_CODE();
   }

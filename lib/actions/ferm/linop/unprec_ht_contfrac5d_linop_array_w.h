@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_linop_array_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_ht_contfrac5d_linop_array_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) operator
  */
@@ -28,12 +28,17 @@ namespace Chroma
    * The denom is multiplied through the 5D system of equations to the RHS
    */
 
-  class UnprecHTContFrac5DLinOpArray : public UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class UnprecHTContFrac5DLinOpArray : public UnprecLinearOperatorArray<LatticeFermion, 
+				       multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
-    UnprecHTContFrac5DLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    UnprecHTContFrac5DLinOpArray(Handle< FermState<T,P,Q> > fs,
 				 const Real& OverMass_, 
 				 const Real& _m_q,
 				 int _N5,
@@ -47,7 +52,7 @@ namespace Chroma
       isLastZeroP(_isLastZeroP) 
     {
       QDPIO::cout << "LinOp isLastZeroP = " << isLastZeroP << endl;
-      init(u_,b5_,c5_);
+      init(fs,b5_,c5_);
     }
 
     //! Length of DW flavor index/space
@@ -59,18 +64,27 @@ namespace Chroma
     //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
+
     //! Apply the operator onto a source vector
     void operator() (multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const;
 
   protected:
-    void init(const multi1d<LatticeColorMatrix>& u,
+    void init(Handle< FermState<T,P,Q> > fs,
 	      const Real& b5, const Real& c5);
 
+    //! Partial constructor
+//    UnprecHTContFrac5DLinOpArray() {}
+    //! Hide =
+    void operator=(const UnprecHTContFrac5DLinOpArray&) {}
+
   private:
-    Handle< LinearOperator<LatticeFermion> > D_w;
-    Handle< LinearOperator<LatticeFermion> > D_denum;  
+    Handle< LinearOperator<T> > D_w;
+    Handle< LinearOperator<T> > D_denum;  
+    Handle< FermBC<T,P,Q> > fbc;
     const Real OverMass;
     const Real m_q;
     const int  N5;    // Size of the 5th dimension
@@ -81,7 +95,7 @@ namespace Chroma
     const bool isLastZeroP;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

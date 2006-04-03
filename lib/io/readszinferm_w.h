@@ -1,4 +1,4 @@
-// $Id: readszinferm_w.h,v 2.0 2005-09-25 21:04:32 edwards Exp $
+// $Id: readszinferm_w.h,v 3.0 2006-04-03 04:58:55 edwards Exp $
 
 #ifndef __readszinferm_h__
 #define __readszinferm_h__

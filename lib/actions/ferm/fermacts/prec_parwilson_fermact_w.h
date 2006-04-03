@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_fermact_w.h,v 2.2 2006-01-17 16:01:46 bjoo Exp $
+// $Id: prec_parwilson_fermact_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -46,39 +46,48 @@ namespace Chroma
    *
    *      M  =  (d+M) + i*H*gamma_5  - (1/2) D'
    */
-  class EvenOddPrecParWilsonFermAct : public EvenOddPrecConstDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecParWilsonFermAct : public EvenOddPrecConstDetWilsonTypeFermAct<LatticeFermion, 
+				      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! General FermBC
-    EvenOddPrecParWilsonFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+    EvenOddPrecParWilsonFermAct(Handle< CreateFermState<T,P,Q> > fs_, 
 				const EvenOddPrecParWilsonFermActParams& param_) : 
-      fbc(fbc_), param(param_) {}
+      fs(fs_), param(param_) {}
 
     //! Copy constructor
     EvenOddPrecParWilsonFermAct(const EvenOddPrecParWilsonFermAct& a) : 
-      fbc(a.fbc), param(a.param) {}
-
-    //! Assignment
-    EvenOddPrecParWilsonFermAct& operator=(const EvenOddPrecParWilsonFermAct& a)
-      {fbc=a.fbc; param=a.param; return *this;}
-
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
+      fs(a.fs), param(a.param) {}
 
     //! Produce a linear operator for this action
-    const EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    EvenOddPrecConstDetLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce the gamma_5 hermitin op gamma_5 M
-    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle<const ConnectState> state) const {
-      QDP_error_exit("gamma5HermLinOp not implemented yet for this action\n");
-      return 0;
-    }
+    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+      {
+	QDP_error_exit("gamma5HermLinOp not implemented yet for this action\n");
+	return 0;
+      }
 
     //! Destructor is automatic
     ~EvenOddPrecParWilsonFermAct() {}
 
+  protected:
+    //! Return the fermion create state for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *fs;}
+
+    //! Partial constructor
+    EvenOddPrecParWilsonFermAct() {}
+    //! Hide =
+    void operator=(const EvenOddPrecParWilsonFermAct& a) {}
+
   private:
-    Handle< FermBC<LatticeFermion> >  fbc;
+    Handle< CreateFermState<T,P,Q> >  fs;
     EvenOddPrecParWilsonFermActParams param;
   };
 

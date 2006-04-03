@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_w.h,v 2.2 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_base_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -43,9 +43,15 @@ namespace Chroma
    *
    */
 
-  class WilsonDslashBase : public DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class WilsonDslashBase : public DslashLinearOperator<LatticeFermion, 
+           multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! No real need for cleanup here
     virtual ~WilsonDslashBase() {}
 
@@ -58,10 +64,10 @@ namespace Chroma
      * \param psi     right vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$ chi^dag * \dot(D} * psi \f$
      */
-    virtual void deriv(multi1d<LatticeColorMatrix>& ds_u, 
-		       const LatticeFermion& chi, const LatticeFermion& psi, 
+    virtual void deriv(P& ds_u, 
+		       const T& chi, const T& psi, 
 		       enum PlusMinus isign) const;
 
 
@@ -72,10 +78,10 @@ namespace Chroma
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      * \param cb      Checkerboard of chi vector                  (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$ chi^dag * \dot(D} * psi \f$
      */
-    virtual void deriv(multi1d<LatticeColorMatrix>& ds_u, 
-		       const LatticeFermion& chi, const LatticeFermion& psi, 
+    virtual void deriv(P& ds_u, 
+		       const T& chi, const T& psi, 
 		       enum PlusMinus isign, int cb) const;
 
     //! Return flops performed by the operator()
@@ -87,7 +93,7 @@ namespace Chroma
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

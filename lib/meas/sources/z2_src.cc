@@ -1,4 +1,4 @@
-// $Id: z2_src.cc,v 1.2 2005-11-10 04:55:10 edwards Exp $
+// $Id: z2_src.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Variety of Z2 noise sources
  */

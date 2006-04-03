@@ -1,4 +1,4 @@
-// $Id: lovddag_w.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: lovddag_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Overlap-pole operator
  */

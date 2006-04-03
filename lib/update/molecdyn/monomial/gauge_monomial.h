@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 2.1 2006-02-16 02:59:03 edwards Exp $
+// $Id: gauge_monomial.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -41,26 +41,29 @@ namespace Chroma
    * Monomial is expected to be the same for these fermacts
    */
   class GaugeMonomial :
-    public  ExactMonomial< multi1d<LatticeColorMatrix>,
-                           multi1d<LatticeColorMatrix> >    
-    {
-    public: 
-      //! Construct out of a parameter struct. Check against the desired GaugeAct name
-      GaugeMonomial(const GaugeMonomialParams& param_);
+    public ExactMonomial< multi1d<LatticeColorMatrix>,
+                          multi1d<LatticeColorMatrix> >    
+  {
+  public: 
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
-      //! Copy Constructor
-      GaugeMonomial(const GaugeMonomial& m) : gaugeact((m.gaugeact)) {}
+    //! Construct out of a parameter struct. Check against the desired GaugeAct name
+    GaugeMonomial(const GaugeMonomialParams& param_);
 
-      //! Create a suitable state and compute F
-      void dsdq(multi1d<LatticeColorMatrix>& F, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) 
+    //! Copy Constructor
+    GaugeMonomial(const GaugeMonomial& m) : gaugeact((m.gaugeact)) {}
+
+    //! Create a suitable state and compute F
+    void dsdq(P& F, const AbsFieldState<P,Q>& s) 
       {
 	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 	push(xml_out, "GaugeMonomial");
 
 	// Make a gauge connect state
-	Handle< const ConnectState> g_state(getGaugeAct().createState(s.getQ()));
+	Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
 
-	getGaugeAct().dsdu(F, g_state);
+	getGaugeAct().deriv(F, g_state);
 
 	Double F_sq = norm2(F);
 	write(xml_out, "F_sq", F_sq);
@@ -68,14 +71,14 @@ namespace Chroma
       }
 
 
-      //! Gauge action value
-      Double S(const AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s)  {
+    //! Gauge action value
+    Double S(const AbsFieldState<P,Q>& s)  
+      {
 
 	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 	push(xml_out, "GaugeMonomial");
 
-	Handle< const ConnectState> g_state(getGaugeAct().createState(s.getQ()));
+	Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
 	Double action = getGaugeAct().S(g_state);
 
 	write(xml_out, "S", action);
@@ -85,18 +88,18 @@ namespace Chroma
       }
 	
 	
-      void refreshInternalFields(const AbsFieldState<multi1d<LatticeColorMatrix>,
-				 multi1d<LatticeColorMatrix> >& s) {
+      void refreshInternalFields(const AbsFieldState<P,Q>& s) 
+      {
 	//No internal fields to refresh => Nop
       }
 
-      void setInternalFields(const Monomial<multi1d<LatticeColorMatrix>, 
-			     multi1d<LatticeColorMatrix> >& m) {
+      void setInternalFields(const Monomial<P,Q>& m) 
+      {
 	// No internal fields to refresh => Nop
       }
 
     protected:
-      const GaugeAction& getGaugeAct(void) const { 
+      const GaugeAction<P,Q>& getGaugeAct(void) const { 
 	return *gaugeact;
       }
 
@@ -106,8 +109,8 @@ namespace Chroma
       void operator=(const GaugeMonomial&);
 
     private:
-      // A handle for the UnprecFermAct
-      Handle<const GaugeAction> gaugeact;
+      // A handle for the gaugeact
+      Handle< GaugeAction<P,Q> > gaugeact;
     };
 
 

@@ -13,7 +13,7 @@
   </ProgramInfo>
   <Input><multiPropagatorComp>
 <annotation>
-; $Id: collect_multi_propcomp_szinev.linux-scalar-intel.xml,v 2.0 2005-09-25 21:05:00 edwards Exp $
+; $Id: collect_multi_propcomp_szinev.linux-scalar-intel.xml,v 3.0 2006-04-03 04:59:30 edwards Exp $
 ;
 ; PROPAGATOR input file.
 ;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_noisy_building_blocks_w.h,v 2.2 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_noisy_building_blocks_w.h,v 3.0 2006-04-03 04:59:02 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_nonhermop_array_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -25,13 +25,18 @@ namespace Chroma
    * This operator implements  hep-lat/0005004
    */
 
-  class UnprecOvlapContFrac5DNonHermOpArray : public UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class UnprecOvlapContFrac5DNonHermOpArray : public UnprecLinearOperatorArray<LatticeFermion, 
+					      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
-    UnprecOvlapContFrac5DNonHermOpArray(const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& S_aux,
-					Handle<const ConnectState> state,
+    UnprecOvlapContFrac5DNonHermOpArray(const UnprecWilsonTypeFermAct<T,P,Q>& S_aux,
+					Handle< FermState<T,P,Q> > state,
 					const Real& _m_q,
 					int _N5,
 					const Real& _scale_fac,
@@ -40,7 +45,8 @@ namespace Chroma
 					int _NEig,
 					const multi1d<Real>& _EigValFunc,
 					const multi1d<LatticeFermion>& _EigVec) :
-      M(S_aux.linOp(state)), m_q(_m_q), N5(_N5), scale_fac(_scale_fac), alpha(_alpha),
+      M(S_aux.linOp(state)), fbc(state->getFermBC()), 
+      m_q(_m_q), N5(_N5), scale_fac(_scale_fac), alpha(_alpha),
       beta(_beta), NEig(_NEig), EigVec(_EigVec), EigValFunc(_EigValFunc)
       {}
 
@@ -49,6 +55,9 @@ namespace Chroma
 
     //! Destructor is automatic
     ~UnprecOvlapContFrac5DNonHermOpArray() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
     //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
@@ -59,7 +68,8 @@ namespace Chroma
 		     enum PlusMinus isign) const;
 
   private:
-    Handle< const LinearOperator<LatticeFermion> > M;  // Wilson(esque) Op
+    Handle< LinearOperator<LatticeFermion> > M;  // Wilson(esque) Op
+    Handle< FermBC<T,P,Q> >  fbc;
     const Real m_q;
     const int  N5;    // Size of the 5th dimension
     const Real scale_fac;
@@ -70,7 +80,7 @@ namespace Chroma
     const multi1d<Real> EigValFunc;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

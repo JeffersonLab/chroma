@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_w12_linop_w.h,v 1.1 2006-02-09 02:23:29 edwards Exp $
+// $Id: unprec_w12_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned W12 action
  */
@@ -20,21 +20,30 @@ namespace Chroma
    * The W12 action does
    * Chi = (m0 - (2/3*((1/2)*(1/4))*sigma.F + W'  + (1/6)*W^2_mu) * Psi
    */
-  class UnprecW12LinOp : public UnprecLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecW12LinOp : public UnprecLinearOperator<LatticeFermion, 
+			 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     UnprecW12LinOp() {}
 
     //! Full constructor
-    UnprecW12LinOp(const multi1d<LatticeColorMatrix>& u_, const CloverFermActParams& param_)
-      {create(u_,param_);}
+    UnprecW12LinOp(Handle< FermState<T,P,Q> > fs, const CloverFermActParams& param_)
+      {create(fs,param_);}
 
     //! Destructor is automatic
     ~UnprecW12LinOp() {}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return A.getFermBC();}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 	
+    void create(Handle< FermState<T,P,Q> > fs,
 		const CloverFermActParams& param_);
 
     //! Apply the operator onto a source vector
@@ -93,7 +102,7 @@ namespace Chroma
     CloverTerm          A;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

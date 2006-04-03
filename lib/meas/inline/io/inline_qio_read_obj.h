@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qio_read_obj.h,v 2.1 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_qio_read_obj.h,v 3.0 2006-04-03 04:59:03 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_one_flavor_rat_monomial5d_w.h,v 2.3 2006-02-16 02:59:03 edwards Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial5d_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -34,6 +34,11 @@ namespace Chroma
     LatticeFermion>
     {
     public: 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
 
@@ -49,7 +54,7 @@ namespace Chroma
 
     protected:
 
-      const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
+      const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -59,16 +64,16 @@ namespace Chroma
       }
 
       //! Accessor for pseudofermion (read only)
-      const multi1d< multi1d<LatticeFermion> >& getPhi(void) const {return phi;}
+      const multi1d< multi1d<T> >& getPhi(void) const {return phi;}
 
       //! mutator for pseudofermion
-      multi1d< multi1d<LatticeFermion> >& getPhi(void) {return phi;}
+      multi1d< multi1d<T> >& getPhi(void) {return phi;}
 
       //! Accessor for PV pseudofermion (read only)
-      const multi1d< multi1d<LatticeFermion> >& getPhiPV(void) const {return phiPV;}
+      const multi1d< multi1d<T> >& getPhiPV(void) const {return phiPV;}
 
       //! mutator for PV pseudofermion 
-      multi1d< multi1d<LatticeFermion> >& getPhiPV(void) {return phiPV;}
+      multi1d< multi1d<T> >& getPhiPV(void) {return phiPV;}
 
       //! Return number of roots in used
       int getNthRoot() const {return nthRoot;}
@@ -97,13 +102,13 @@ namespace Chroma
       void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D&);
 
       // Pseudofermion field phi
-      multi1d< multi1d<LatticeFermion> > phi;
+      multi1d< multi1d<T> > phi;
       
       // Pseudofermion field phi
-      multi1d< multi1d<LatticeFermion> > phiPV;
+      multi1d< multi1d<T> > phiPV;
 
       // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q> > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;

@@ -1,4 +1,4 @@
-// $Id: inline_fuzwilp.cc,v 2.3 2006-03-20 04:22:02 edwards Exp $
+// $Id: inline_fuzwilp.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  * \brief Inline fuzzed Wilson loops
  */

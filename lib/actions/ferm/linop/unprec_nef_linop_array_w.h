@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_nef_linop_array_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_nef_linop_array_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion linear operator
  */
@@ -20,25 +20,28 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class UnprecNEFDWLinOpArray : public UnprecDWLikeLinOpBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >
+  class UnprecNEFDWLinOpArray : public UnprecDWLikeLinOpBaseArray<LatticeFermion,
+				multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! Partial constructor
-    UnprecNEFDWLinOpArray() {}
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
     /*!
       Set b5 = 1.0 and c5=0.0 to get Shamir DWF with a5=1.
       Set b5 = 1.0 and c5=1.0 to get Borichi DWF.
     */
-    UnprecNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    UnprecNEFDWLinOpArray(Handle< FermState<T,P,Q> > fs,
 			  const Real& WilsonMass_, 
 			  const multi1d<Real>& b5_, const multi1d<Real>& c5_, 
 			  const Real& m_q_, int N5_)
-      {create(u_,WilsonMass_,b5_,c5_,m_q_,N5_);}
+      {create(fs,WilsonMass_,b5_,c5_,m_q_,N5_);}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& WilsonMass_, 
 		const multi1d<Real>& b5_, const multi1d<Real>& c5_,
 		const Real& m_q_, int N5_);
@@ -48,6 +51,9 @@ namespace Chroma
 
     //! Destructor is automatic
     ~UnprecNEFDWLinOpArray() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
     //! Only defined on the entire lattice
     const OrderedSubset& subset() const {return all;}
@@ -68,6 +74,12 @@ namespace Chroma
 	       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 	       enum PlusMinus isign) const;
 
+  protected:
+    //! Partial constructor
+    UnprecNEFDWLinOpArray() {}
+    //! Hide =
+    void operator=(const UnprecNEFDWLinOpArray&) {}
+
   private:
     Real WilsonMass;
     multi1d<Real> b5;
@@ -75,12 +87,13 @@ namespace Chroma
     Real m_q;
     int  N5;
     WilsonDslash  D;
+    Handle< FermBC<T,P,Q> > fbc;
 
     multi1d<Real> fb5;
     multi1d<Real> fc5;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 

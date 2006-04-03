@@ -1,4 +1,4 @@
-// $Id: asqtad_qprop.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: asqtad_qprop.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -18,13 +18,12 @@ namespace Chroma
   typedef LatticeStaggeredFermion LF;
   typedef multi1d<LatticeColorMatrix> LCM;
 
-  const SystemSolver<LF>* 
-  AsqtadFermAct::qprop(Handle<const ConnectState> state,
+  SystemSolver<LF>* 
+  AsqtadFermAct::qprop(Handle< FermState<LF,LCM,LCM> > state,
 		       const InvertParam_t& invParam) const
   {
-    
-    const EvenOddStaggeredTypeFermAct<LF, LCM>& S_cast = 
-      dynamic_cast< const EvenOddStaggeredTypeFermAct<LF,LCM>& >(*this);
+    const EvenOddStaggeredTypeFermAct<LF,LCM,LCM>& S_cast = 
+      dynamic_cast< const EvenOddStaggeredTypeFermAct<LF,LCM,LCM>& >(*this);
 
     return new AsqtadQprop(S_cast,
 			   state,

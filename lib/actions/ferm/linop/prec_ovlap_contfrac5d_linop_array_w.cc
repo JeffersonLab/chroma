@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd prec. 5D continued fraction linop
  */
@@ -11,7 +11,7 @@
 namespace Chroma 
 { 
   QDPEvenOddPrecOvlapContFrac5DLinOpArray::QDPEvenOddPrecOvlapContFrac5DLinOpArray(
-    Handle<const ConnectState> state,
+    Handle< FermState<T,P,Q> > state,
     const Real& _m_q,
     const Real& _OverMass,
     int _N5,
@@ -24,7 +24,8 @@ namespace Chroma
   {
     START_CODE();
 
-    Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Ds(new WilsonDslash(state->getLinks()));
+    Handle< DslashLinearOperator<LatticeFermion, 
+      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > Ds(new WilsonDslash(state));
     Dslash  = Ds;  // Copy Handle -- M now owns dslash
 
     // The mass ratio

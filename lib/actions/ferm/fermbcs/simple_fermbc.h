@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc.h,v 2.3 2006-03-16 03:00:12 edwards Exp $
+// $Id: simple_fermbc.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -38,8 +38,8 @@ namespace Chroma
    *  Simple BC, where boundary array is multiplied on the links on the
    *  edge of the lattice
    */
-  template<class T>
-  class SimpleFermBC : public FermBC<T>
+  template<class T, typename P, typename Q>
+  class SimpleFermBC : public FermBC<T,P,Q>
   {
   public:
     //! Only full constructor
@@ -66,17 +66,11 @@ namespace Chroma
   
     //! Use both a Gauge BC and a boundary field
     /*!
-     * \param gbc       A simple Gauge BC
+     * \param gbc       A generic gaugebc
      * \param boundary  multiply links on edge of lattice by boundary
-     *
-     * The type of gbc is restricted here mainly for paranoia.
-     * The type could be loosened (in fact to an abstract type), but it makes
-     * no sense to apply these type FermBC to a Schr1LinkGaugeBC, for example.
-     *
-     * Currently, no code uses this capability...
      */
-    SimpleFermBC(const SimpleGaugeBC& gbc_, const multi1d<int>& boundary_) : 
-      gbc(new SimpleGaugeBC(gbc_)), boundary(boundary_)
+    SimpleFermBC(const Handle< GaugeBC<P,Q> >& gbc_, const multi1d<int>& boundary_) : 
+      gbc(gbc_), boundary(boundary_)
       {init();}
   
     //! Copy constructor
@@ -91,7 +85,7 @@ namespace Chroma
       {gbc = a.gbc; boundary = a.boundary; nontriv = a.nontriv; return *this;}
 
     //! Modify U fields in place
-    void modifyU(multi1d<LatticeColorMatrix>& u) const
+    void modify(Q& u) const
       {
 	gbc->modify(u);   // first modify the U fields
 
@@ -101,7 +95,7 @@ namespace Chroma
 	  for(int m = 0; m < Nd; ++m)
 	  {
 	    /* u[m] *=  (coord(m) == nrow(m)-1 ) ? boundary[m] : 1 */
-	    u[m] *= where(Layout::latticeCoordinate(m) == Layout::lattSize()[m]-1,
+	    u[m] *= where(Layout::latticeCoordinate(m) == (Layout::lattSize()[m]-1),
 			  Integer(boundary[m]), Integer(1));
 	  }
 	}
@@ -111,8 +105,20 @@ namespace Chroma
     /*! NOP */
     void modifyF(T& psi) const {}
  
+    //! Modify fermion fields in place under a subset
+    /*! NOP */
+    void modifyF(T& psi, const OrderedSubset& s) const {}
+
+    //! Modify fermion fields in place
+    /*! NOP */
+    void modifyF(multi1d<T>& psi) const {}
+    
+    //! Modify fermion fields in place under a subset
+    /*! NOP */
+    void modifyF(multi1d<T>& psi, const OrderedSubset& s) const {}
+
     //! Zero some gauge-like field in place on the masked links
-    void zero(multi1d<LatticeColorMatrix>& ds_u) const {}
+    void zero(P& ds_u) const {}
 
     //! Says if there are non-trivial BC links
     bool nontrivialP() const {return nontriv;}
@@ -132,7 +138,7 @@ namespace Chroma
     SimpleFermBC() {}
 
   private:
-    Handle<GaugeBC> gbc;
+    Handle< GaugeBC<P,Q> > gbc;
     multi1d<int> boundary;
     bool nontriv;
   };

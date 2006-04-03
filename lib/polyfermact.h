@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polyfermact.h,v 1.1 2006-02-10 02:44:55 edwards Exp $
+// $Id: polyfermact.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 
 /*! @file
  * @brief Class structure for polynomial fermion actions
@@ -20,18 +20,18 @@ namespace Chroma
    *
    * Polynomial like Wilson-like fermion actions
    */
-  template<typename T, typename P>
-  class PolyWilsonTypeFermAct : public WilsonTypeFermAct<T,P>
+  template<typename T, typename P, typename Q>
+  class PolyWilsonTypeFermAct : public WilsonTypeFermAct<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;
     virtual ~PolyWilsonTypeFermAct() {}
 
     //! Produce a polynomial preconditioned linear operator for this action
-    virtual const DiffLinearOperator<T,P>* polyPrecLinOp(Handle<const ConnectState> state) const = 0;
+    virtual DiffLinearOperator<T,P,Q>* polyPrecLinOp(Handle< FermState<T,P,Q> > state) const = 0;
 
     //! Produce a polynomial linear operator for this action
-    virtual const PolyLinearOperator<T,P>* polyLinOp(Handle<const ConnectState> state) const = 0;
+    virtual PolyLinearOperator<T,P,Q>* polyLinOp(Handle< FermState<T,P,Q> > state) const = 0;
   };
 
 }

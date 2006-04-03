@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 2.2 2006-03-20 04:22:02 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -27,7 +27,8 @@ namespace Chroma {
     }
 
     const std::string name = "EIGBNDSMDAGM";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, 
+										   createMeasurement);
   };
 
 
@@ -164,7 +165,7 @@ namespace Chroma {
 
   // "Do" helper on a 4D action
   void 
-  InlineEigBndsMdagM::do4d(Handle< const LinearOperator<LatticeFermion> > MM,
+  InlineEigBndsMdagM::do4d(Handle< LinearOperator<LatticeFermion> > MM,
 			   unsigned long update_no,
 			   XMLWriter& xml_out) 
   {
@@ -202,7 +203,7 @@ namespace Chroma {
     pop(xml_out); // LowestEv
 
     QDPIO::cout << "Look for highest ev" << endl;
-    Handle<const LinearOperator<LatticeFermion> > MinusMM(new lopscl<LatticeFermion, Real>(MM, Real(-1.0)));
+    Handle< LinearOperator<LatticeFermion> > MinusMM(new lopscl<LatticeFermion, Real>(MM, Real(-1.0)));
   
     // Look for highest ev
     for(int i =0; i < n_eig; i++)
@@ -231,7 +232,7 @@ namespace Chroma {
 
   // "Do" helper on a 5D action
   void 
-  InlineEigBndsMdagM::do5d(Handle< const LinearOperator< multi1d<LatticeFermion> > > MM,
+  InlineEigBndsMdagM::do5d(Handle< LinearOperatorArray<LatticeFermion> > MM,
 			   unsigned long update_no,
 			   XMLWriter& xml_out) 
   {
@@ -271,7 +272,7 @@ namespace Chroma {
     pop(xml_out); // LowestEv
 
     QDPIO::cout << "Look for highest ev" << endl;
-    Handle<const LinearOperator< multi1d<LatticeFermion> > > MinusMM(new lopscl< multi1d<LatticeFermion>, Real>(MM, Real(-1.0)));
+    Handle< LinearOperatorArray<LatticeFermion> > MinusMM(new lopsclArray<LatticeFermion, Real>(MM, Real(-1.0)));
   
     // Look for highest ev
     for(int i=0; i < n_eig; i++)
@@ -305,14 +306,19 @@ namespace Chroma {
   InlineEigBndsMdagM::operator()(unsigned long update_no,
 				 XMLWriter& xml_out) 
   {
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     // Check success of the downcast 
     // Possible actions
-    const FermAct4D<LatticeFermion>* S_4d = 
-      dynamic_cast<const FermAct4D<LatticeFermion>*>(fermact.operator->()); // get pointer
+    FermAct4D<T,P,Q>* S_4d = 
+      dynamic_cast< FermAct4D<T,P,Q>*>(fermact.operator->()); // get pointer
 
     // Possible actions
-    const FermAct5D<LatticeFermion>* S_5d = 
-      dynamic_cast<const FermAct5D<LatticeFermion>*>(fermact.operator->()); // get pointer
+    FermAct5D<T,P,Q>* S_5d = 
+      dynamic_cast< FermAct5D<T,P,Q>*>(fermact.operator->()); // get pointer
 
 
     multi1d<LatticeColorMatrix> u;
@@ -335,11 +341,11 @@ namespace Chroma {
     }
     
 
-    Handle< const ConnectState > connect_state(fermact->createState(u));
+    Handle< FermState<T,P,Q> > connect_state(fermact->createState(u));
 
     if (S_4d != 0)
     {
-      Handle< const LinearOperator<LatticeFermion> > MM(S_4d->lMdagM(connect_state));
+      Handle< LinearOperator<LatticeFermion> > MM(S_4d->lMdagM(connect_state));
       this->do4d(MM, update_no, xml_out);
     }
     else if (S_5d != 0)
@@ -347,14 +353,14 @@ namespace Chroma {
       if (! params.usePV)
       {
 	//! Find evs of base operator
-	Handle< const LinearOperator< multi1d<LatticeFermion> > > MM(S_5d->lMdagM(connect_state));
+	Handle< LinearOperatorArray<LatticeFermion> > MM(S_5d->lMdagM(connect_state));
 	this->do5d(MM, update_no, xml_out);
       }
       else
       {
 	//! Find evs of PV operator
-	Handle< const LinearOperator< multi1d<LatticeFermion> > > 
-	  MM(new lmdagm< multi1d<LatticeFermion> >(S_5d->linOpPV(connect_state)));
+	Handle< LinearOperatorArray<LatticeFermion> > 
+	  MM(new MdagMLinOpArray<LatticeFermion>(S_5d->linOpPV(connect_state)));
 
 	this->do5d(MM, update_no, xml_out);
       }
@@ -366,4 +372,4 @@ namespace Chroma {
     }
   } 
 
-};
+}

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smearing_factory.h,v 1.1 2005-11-07 06:24:09 edwards Exp $
+// $Id: sink_smearing_factory.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark prop sinks
  */

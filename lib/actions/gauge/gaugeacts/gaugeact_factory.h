@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact_factory.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: gaugeact_factory.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Fermion action factories
  */
@@ -19,10 +19,13 @@ namespace Chroma
   //! GaugeAct Factory 
   /*! @ingroup gaugeacts */
   typedef SingletonHolder< 
-  ObjectFactory<GaugeAction, 
+  ObjectFactory<GaugeAction<multi1d<LatticeColorMatrix>, 
+			    multi1d<LatticeColorMatrix> >, 
     std::string,
     TYPELIST_2(XMLReader&, const std::string&),
-    GaugeAction* (*)(XMLReader&, const std::string&), 
+    GaugeAction<multi1d<LatticeColorMatrix>, 
+		multi1d<LatticeColorMatrix> >* (*)(XMLReader&, 
+						   const std::string&), 
 		StringFactoryError> >
   TheGaugeActFactory;
 }; // end namespace Chroma

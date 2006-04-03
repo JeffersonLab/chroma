@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 2.1 2006-03-13 05:13:43 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -6,7 +6,8 @@
 #include "chromabase.h"
 #include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
+#include "actions/gauge/gaugeacts/gauge_createstate_factory.h"
+#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
 #include "meas/glue/mesplq.h"
 
 
@@ -15,9 +16,10 @@ namespace Chroma
  
   namespace PlaqGaugeActEnv 
   { 
-    GaugeAction* createGaugeAct(XMLReader& xml, const std::string& path) 
+    GaugeAction< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
+											    const std::string& path) 
     {
-      return new PlaqGaugeAct(GaugeTypeGaugeBCEnv::reader(xml, path), 
+      return new PlaqGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
 			      PlaqGaugeActParams(xml, path));
     }
 
@@ -61,7 +63,7 @@ namespace Chroma
    */
   void
   PlaqGaugeAct::staple(LatticeColorMatrix& u_staple,
-		       Handle<const ConnectState> state,
+		       const Handle< GaugeState<P,Q> >& state,
 		       int mu, int cb) const
   {
     QDPIO::cout << "PlaqGaugeAct::staple() --- Is this tested ? BJ" << endl;
@@ -133,8 +135,8 @@ namespace Chroma
    * \param state      gauge field ( Read )
    */
   void
-  PlaqGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-		     const Handle< const ConnectState> state) const
+  PlaqGaugeAct::deriv(multi1d<LatticeColorMatrix>& ds_u,
+		      const Handle< GaugeState<P,Q> >& state) const
   {
     START_CODE();
 
@@ -229,11 +231,11 @@ namespace Chroma
   //   = -coeff * (1/(Nc)) * Sum Re Tr Plaq
 
   Double
-  PlaqGaugeAct::S(const Handle<const ConnectState> state) const
+  PlaqGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
     Double S_pg = zero;
 
-    // Handle< const ConnectState> u_bc(createState(u));
+    // Handle< const GaugeState<P,Q> > u_bc(createState(u));
     // Apply boundaries
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 

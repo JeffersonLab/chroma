@@ -1,4 +1,4 @@
-// $Id: p_src_w.cc,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: p_src_w.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 
 #include "chromabase.h"
 #include "meas/sources/p_src_w.h"

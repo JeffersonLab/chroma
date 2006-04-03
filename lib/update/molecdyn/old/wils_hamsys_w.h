@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wils_hamsys_w.h,v 2.0 2005-09-25 21:04:42 edwards Exp $
+// $Id: wils_hamsys_w.h,v 3.0 2006-04-03 04:59:10 edwards Exp $
 /*! \file
  *  \brief HMC
  */

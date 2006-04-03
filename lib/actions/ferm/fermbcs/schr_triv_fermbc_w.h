@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_triv_fermbc_w.h,v 2.1 2006-03-16 03:00:12 edwards Exp $
+// $Id: schr_triv_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional trivial ferm boundary conditions
  */
@@ -27,8 +27,7 @@ namespace Chroma
    *
    *  Schroedinger BC for ferm actions
    */
-  template<class T>
-  class SchrTrivialFermBC : public SchrSFFermBC<T>
+  class SchrTrivialFermBC : public SchrSFFermBC
   {
   public:
     //! Only full constructor

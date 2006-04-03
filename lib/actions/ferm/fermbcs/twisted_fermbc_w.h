@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: twisted_fermbc_w.h,v 2.3 2006-03-16 03:00:13 edwards Exp $
+// $Id: twisted_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Twisted fermionic BC
  */
@@ -36,6 +36,7 @@ namespace Chroma
     extern const bool registered;
   }
 
+
   //! Concrete class for all fermionic actions with twisted boundary conditions
   /*!
    * \ingroup fermbcs
@@ -43,9 +44,12 @@ namespace Chroma
    *  Twisted BC
    */
   template<class T>
-  class TwistedFermBC : public FermBC<T>
+  class TwistedFermBC : public FermBC<T,
+				      multi1d<LatticeColorMatrix>, 
+				      multi1d<LatticeColorMatrix> >
   {
   public:
+
     //! Only full constructor
     /*!
      * \param boundary_phases  multiply links on edge of lattice by boundary
@@ -59,7 +63,9 @@ namespace Chroma
 		  const multi1d<int>& phases_dir_) : 
       phases_by_pi(phases_by_pi_),
       phases_dir(phases_dir_), 
-      simple_bc_handle(new SimpleFermBC<T>(boundary_)) 
+      simple_bc_handle(new SimpleFermBC<T,
+		       multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix> >(boundary_)) 
       {      
 	check_arrays(phases_by_pi_, phases_dir_);
       }
@@ -88,10 +94,10 @@ namespace Chroma
 
 
     //! Modify U fields in place
-    void modifyU(multi1d<LatticeColorMatrix>& u) const
+    void modify(multi1d<LatticeColorMatrix>& u) const
       {
 	// Apply the simple BC's first
-	(*simple_bc_handle).modifyU(u);
+	(*simple_bc_handle).modify(u);
 	const Real twopi = Real(6.283185307179586476925286);
 	const Real onepi = twopi/Real(2);
 
@@ -113,6 +119,18 @@ namespace Chroma
     /*! NOP */
     void modifyF(T& psi) const {}
  
+    //! Modify fermion fields in place under a subset
+    /*! NOP */
+    void modifyF(T& psi, const OrderedSubset& s) const {}
+
+    //! Modify fermion fields in place
+    /*! NOP */
+    void modifyF(multi1d<T>& psi) const {}
+    
+    //! Modify fermion fields in place under a subset
+    /*! NOP */
+    void modifyF(multi1d<T>& psi, const OrderedSubset& s) const {}
+
     //! Zero some gauge-like field in place on the masked links
     /*! NOP */
     void zero(multi1d<LatticeColorMatrix>& ds_u) const {}
@@ -150,10 +168,13 @@ namespace Chroma
     multi1d<int>  phases_dir;
     multi1d<int>  boundary;
 
-    Handle< SimpleFermBC<T> > simple_bc_handle;
+    Handle< SimpleFermBC<T,
+			 multi1d<LatticeColorMatrix>, 
+			 multi1d<LatticeColorMatrix> > > simple_bc_handle;
   };
 
-}; // Namespace Chroma 
+
+} // Namespace Chroma 
 
 
 // End of include guard 

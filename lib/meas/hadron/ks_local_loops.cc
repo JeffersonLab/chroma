@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 2.5 2006-03-13 14:34:35 egregory Exp $ ($Date: 2006-03-13 14:34:35 $) */
+/* $Id: ks_local_loops.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $ ($Date: 2006-04-03 04:58:59 $) */
 
 
 #include "fermact.h"
@@ -222,7 +222,7 @@ namespace Chroma {
 
 
 void ks_local_loops(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi ,
 		 const multi1d<LatticeColorMatrix> & u,
@@ -363,7 +363,7 @@ void ks_local_loops(
   //
 
   void ks_local_loops(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi ,
 		 multi1d<LatticeColorMatrix> & u,
@@ -523,7 +523,7 @@ void ks_local_loops(
 //  fuzz the loops
 
 void ks_fuzz_loops(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi ,
 		 LatticeStaggeredFermion & psi_fuzz ,
@@ -671,7 +671,7 @@ void ks_fuzz_loops(
 
 
 void ks_local_loops_and_stoch_conn(
-		 Handle<const SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source1, 
 		 LatticeStaggeredFermion & psi1 ,
 		 const multi1d<LatticeColorMatrix> & u,

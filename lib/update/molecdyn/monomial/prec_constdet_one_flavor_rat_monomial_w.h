@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_one_flavor_rat_monomial_w.h,v 2.4 2006-02-25 22:48:58 bjoo Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -34,6 +34,11 @@ namespace Chroma
     LatticeFermion>
     {
     public: 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Construct out of a parameter struct. Check against the desired FermAct name
       EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
       // Copy Constructor
@@ -42,10 +47,10 @@ namespace Chroma
 
     protected:
 
-      multi1d<LatticeFermion>& getPhi(void) {return phi;}
-      const multi1d<LatticeFermion>& getPhi(void) const {return phi;}
+      multi1d<T>& getPhi(void) {return phi;}
+      const multi1d<T>& getPhi(void) const {return phi;}
 
-      const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
+      const EvenOddPrecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -73,10 +78,10 @@ namespace Chroma
       void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial&);
 
       // Pseudofermion field phi
-      multi1d<LatticeFermion> phi;
+      multi1d<T> phi;
 
       // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const EvenOddPrecWilsonTypeFermAct<T,P,Q> > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;

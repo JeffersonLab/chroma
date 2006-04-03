@@ -1,4 +1,4 @@
-// $Id: prec_logdet_two_flavor_monomial_w.cc,v 2.2 2006-02-16 02:59:03 edwards Exp $
+// $Id: prec_logdet_two_flavor_monomial_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -72,9 +72,9 @@ namespace Chroma
     QDPIO::cout << "EvanOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << fermact_string << endl;
 
 
-    const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
-    const EvenOddPrecLogDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecLogDetWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+    EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {

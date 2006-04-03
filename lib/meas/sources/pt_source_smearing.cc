@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 2.9 2006-02-22 04:34:05 edwards Exp $
+// $Id: pt_source_smearing.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */

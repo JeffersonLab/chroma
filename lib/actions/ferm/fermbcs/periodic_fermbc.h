@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: periodic_fermbc.h,v 2.2 2006-03-16 03:00:12 edwards Exp $
+// $Id: periodic_fermbc.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -17,32 +17,38 @@ namespace Chroma
    *
    *  No BC
    */
-  template<class T>
-  class PeriodicFermBC : public FermBC<T>
+  template<class T, typename P, typename Q>
+  class PeriodicFermBC : public FermBC<T,P,Q>
   {
   public:
     //! Only full constructor
     PeriodicFermBC() {}
 
-    //! Copy constructor
-    PeriodicFermBC(const PeriodicFermBC& a) {}
-
     //! Destructor is automatic
     ~PeriodicFermBC() {}
 
-    //! Assignment
-    PeriodicFermBC& operator=(const PeriodicFermBC&) {return *this;}
-
     //! Modify U fields in place
     /*! NOP */
-    void modifyU(multi1d<LatticeColorMatrix>& u) const {}
+    void modify(Q& u) const {}
 
     //! Modify fermion fields in place
     /*! NOP */
     void modifyF(T& psi) const {}
  
+    //! Modify fermion fields in place under a subset
+    /*! NOP */
+    void modifyF(T& psi, const OrderedSubset& s) const {}
+
+    //! Modify fermion fields in place
+    /*! NOP */
+    void modifyF(multi1d<T>& psi) const {}
+    
+    //! Modify fermion fields in place under a subset
+    /*! NOP */
+    void modifyF(multi1d<T>& psi, const OrderedSubset& s) const {}
+
     //! Zero some gauge-like field in place on the masked links
-    void zero(multi1d<LatticeColorMatrix>& ds_u) const {}
+    void zero(P& ds_u) const {}
 
     //! Says if there are non-trivial BC links
     bool nontrivialP() const {return false;}

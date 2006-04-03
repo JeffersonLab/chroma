@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: D_j_w.h,v 2.0 2005-09-25 21:04:34 edwards Exp $
+// $Id: D_j_w.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
 
 #ifndef __D_j_h__
 #define __D_j_h__

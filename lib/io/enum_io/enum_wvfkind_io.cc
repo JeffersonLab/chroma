@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_wvfkind_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+// $Id: enum_wvfkind_io.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
 /*! \file
  * \brief Wavekind enum
  */

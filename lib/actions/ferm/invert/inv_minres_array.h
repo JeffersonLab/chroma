@@ -6,7 +6,7 @@
 namespace Chroma {
 
 template<typename T>
-void InvMINRES(const LinearOperator< multi1d<T> >& A,
+void InvMINRES(const LinearOperatorArray<T>& A,
 	       const multi1d<T>& chi,
 	       multi1d<T>& psi,
 	       const Real& RsdCG,

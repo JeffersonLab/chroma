@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.19 2006-02-28 21:20:05 edwards Exp $
+#  $Id: regres.pl,v 3.0 2006-04-03 04:59:23 edwards Exp $
 #
 #  This is the top-level script used by chroma/scripts/run_chroma_xmldiff.pl
 #

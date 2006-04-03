@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_ht_contfrac5d_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -11,8 +11,9 @@ using namespace QDP::Hints;
 
 namespace Chroma 
 { 
+  // Full constructor
   EvenOddPrecHtContFrac5DLinOpArray::EvenOddPrecHtContFrac5DLinOpArray(
-    Handle<const ConnectState> state,
+    Handle< FermState<T,P,Q> > fs,
     const Real& _m_q,
     const Real& _OverMass,
     int _N5,
@@ -27,11 +28,7 @@ namespace Chroma
   {
     START_CODE();
 
-    //    Handle< const DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > Ds(new WilsonDslash(state->getLinks()));
-
-    Handle< const WilsonDslashArray > Ds(new WilsonDslashArray(state->getLinks(), _N5));
-    
-    Dslash  = Ds;  // Copy Handle -- M now owns dslash
+    Dslash.create(fs, _N5);
 
     // The mass ratio
     Real mass = ( Real(1) + m_q ) / (Real(1) - m_q);
@@ -137,9 +134,9 @@ namespace Chroma
    */
   void 
   EvenOddPrecHtContFrac5DLinOpArray::applyDiag(multi1d<LatticeFermion>& chi, 
-						  const multi1d<LatticeFermion>& psi, 
-						  enum PlusMinus isign,
-						  const int cb) const
+					       const multi1d<LatticeFermion>& psi, 
+					       enum PlusMinus isign,
+					       const int cb) const
   {
     START_CODE();
 
@@ -280,166 +277,166 @@ namespace Chroma
     Real ftmp2;
     switch(isign) { 
     case PLUS : 
-      {
+    {
 
-	// [ A_0    B_0   0    .......        ]
-        // [ B_0    A_1   B_1  .......        ]
-	// [  0     B_1   A_2  B_2 .......    ]
-	// [  ......................... B_N5-2]
-        // [              0    B_N5-2   A_N5-1]
-	//
-	//
-	//  WIth 
-	// A[i]    = beta_tilde[i] gamma_5 (-1/2) Dslash        i < N5-1
-	//         = Dslash^dagger [ (-1/2) gamma_5 beta_tilde[i] ]
+      // [ A_0    B_0   0    .......        ]
+      // [ B_0    A_1   B_1  .......        ]
+      // [  0     B_1   A_2  B_2 .......    ]
+      // [  ......................... B_N5-2]
+      // [              0    B_N5-2   A_N5-1]
+      //
+      //
+      //  WIth 
+      // A[i]    = beta_tilde[i] gamma_5 (-1/2) Dslash        i < N5-1
+      //         = Dslash^dagger [ (-1/2) gamma_5 beta_tilde[i] ]
 
-	// A[N5-1] = mass*f_minus (-1/2) Dslash^dagger gamma_5 
-        //        +    beta_tilde[N5-1] gamma_5 (-1/2) Dslash
-	//        = Dslash^dagger [ (-1/2)gamma_g5{
-        //                         mass*f_minus + beta_tilde[N5-1] }
+      // A[N5-1] = mass*f_minus (-1/2) Dslash^dagger gamma_5 
+      //        +    beta_tilde[N5-1] gamma_5 (-1/2) Dslash
+      //        = Dslash^dagger [ (-1/2)gamma_g5{
+      //                         mass*f_minus + beta_tilde[N5-1] }
  
-	// (beta_tilde has f_plus folded into it already)
-	// 
-	// B_i = alpha_i * f_minus (-1/2) D^{\dagger} 
-	//     = D^{dagger} [ (-1/2)alpha_i*f_minus ]
+      // (beta_tilde has f_plus folded into it already)
+      // 
+      // B_i = alpha_i * f_minus (-1/2) D^{\dagger} 
+      //     = D^{dagger} [ (-1/2)alpha_i*f_minus ]
 
-	// Work everyhting out first. Apply D^dagger at the end.
+      // Work everyhting out first. Apply D^dagger at the end.
 	
 
-	multi1d<LatticeFermion> tmp5(N5);
-	moveToFastMemoryHint(tmp5);
-	Real coeff_1, coeff_2, coeff_3;
-	int otherCB = (cb + 1)%2;
+      multi1d<LatticeFermion> tmp5(N5);
+      moveToFastMemoryHint(tmp5);
+      Real coeff_1, coeff_2, coeff_3;
+      int otherCB = (cb + 1)%2;
 	
-	// First comomnent A_0 psi_0 + B_0 psi_1
-	// 
-	// without D^dagger we get:
-	//
-	// [ (-1/2)gamma_g5 beta_tilde[0] psi_0 + (-1/2)alpha_0 f_minus psi_1 ]
-	// = (-1/2) [ gamma_g5 beta_tilde[0] psi_0 + alpha_0 f_minus_psi_1 ]
+      // First comomnent A_0 psi_0 + B_0 psi_1
+      // 
+      // without D^dagger we get:
+      //
+      // [ (-1/2)gamma_g5 beta_tilde[0] psi_0 + (-1/2)alpha_0 f_minus psi_1 ]
+      // = (-1/2) [ gamma_g5 beta_tilde[0] psi_0 + alpha_0 f_minus_psi_1 ]
 	
 
 #if 0 
-	tmp[rb[otherCB]] = Gamma(G5)*psi[0];
-	coeff_1 = Real(-0.5)*beta_tilde[0];
-	coeff_2 = Real(-0.5)*alpha[0]*f_minus;
+      tmp[rb[otherCB]] = Gamma(G5)*psi[0];
+      coeff_1 = Real(-0.5)*beta_tilde[0];
+      coeff_2 = Real(-0.5)*alpha[0]*f_minus;
 
-	tmp5[0][rb[otherCB]] = coeff_1*tmp + coeff_2*psi[1];
+      tmp5[0][rb[otherCB]] = coeff_1*tmp + coeff_2*psi[1];
 #else
-	coeff_1 = Real(-0.5)*beta_tilde[0];
-	coeff_2 = Real(-0.5)*alpha[0]*f_minus;
+      coeff_1 = Real(-0.5)*beta_tilde[0];
+      coeff_2 = Real(-0.5)*alpha[0]*f_minus;
 
-	// 6NcNs flops
-	tmp5[0][rb[otherCB]] = coeff_2*psi[1] + coeff_1*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
+      // 6NcNs flops
+      tmp5[0][rb[otherCB]] = coeff_2*psi[1] + coeff_1*(GammaConst<Ns,Ns*Ns-1>()*psi[0]);
 #endif	
-	// N5-2*(10NcNs)
-	for(int i=1; i < N5-1; i++) { 
+      // N5-2*(10NcNs)
+      for(int i=1; i < N5-1; i++) { 
 
-	  // i=1 .. N5-2
-	  //
-	  // B_{i-1} psi_{i-1} + A_i psi_i + B_{i} psi_{i+1}
-	  //   (-1/2)alpha_{i-1} f_minus psi_{i-1}
-	  // + (-1/2)alpha_{i} f_minus psi_{i+1}
-	  // + (-1/2)gamma_g5 beta_tilde[i] psi_i
-	  coeff_1 = Real(-0.5)*alpha[i-1]*f_minus;
-	  coeff_2 = Real(-0.5)*alpha[i]*f_minus;
-	  coeff_3 = Real(-0.5)*beta_tilde[i];
-	  //	  tmp[rb[otherCB]] = Gamma(G5)*psi[i];
+	// i=1 .. N5-2
+	//
+	// B_{i-1} psi_{i-1} + A_i psi_i + B_{i} psi_{i+1}
+	//   (-1/2)alpha_{i-1} f_minus psi_{i-1}
+	// + (-1/2)alpha_{i} f_minus psi_{i+1}
+	// + (-1/2)gamma_g5 beta_tilde[i] psi_i
+	coeff_1 = Real(-0.5)*alpha[i-1]*f_minus;
+	coeff_2 = Real(-0.5)*alpha[i]*f_minus;
+	coeff_3 = Real(-0.5)*beta_tilde[i];
+	//	  tmp[rb[otherCB]] = Gamma(G5)*psi[i];
 	  
-	  tmp5[i][rb[otherCB]] = coeff_1*psi[i-1] + coeff_3*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
-	  //tmp5[i][rb[otherCB]] += coeff_3*tmp;
-	  tmp5[i][rb[otherCB]] += coeff_2*psi[i+1];
-	}
-
-	// i=N5-1
-	//
-	// B_{i-1} psi_{i-1} + A_[N5-1] psi_[N5-1]
-	// B_{i-1} psi_{i-1} = (-1/2) alpha[N5-1]*f_minus
-	
-	// A_[N5-1] psi[N5-1] = (-1/2)gamma_g5{
-        //                         mass*f_minus + beta_tilde[N5-1] }
-	coeff_1 = Real(-0.5)*alpha[N5-2]*f_minus;
-	coeff_2 = Real(-0.5)*(mass*f_minus + beta_tilde[N5-1]);
-	//tmp[rb[otherCB]] = Gamma(G5)*psi[N5-1];
-
-	// 6NcNs
-	tmp5[N5-1][rb[otherCB]] = coeff_1 * psi[N5-2] + coeff_2*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
-
-	// Now apply Dslash^{DAGGER} !!!!! 
-	//
-	// (the dagger comes from the denominator. Along the diagonal
-	//  we have gamma_5 D = D^{dagger} gamma_g5
-	// This could be done with a vec op. 
-	// Alternatively, I could infuse it with other loops
-	// don't know what's best.
-	// for(int i=0; i < N5; i++) {
-	//  Dslash->apply(chi[i], tmp5[i], MINUS, cb);
-	//}
-	Dslash->apply(chi,tmp5,MINUS, cb);
-
+	tmp5[i][rb[otherCB]] = coeff_1*psi[i-1] + coeff_3*(GammaConst<Ns,Ns*Ns-1>()*psi[i]);
+	//tmp5[i][rb[otherCB]] += coeff_3*tmp;
+	tmp5[i][rb[otherCB]] += coeff_2*psi[i+1];
       }
-      break;
+
+      // i=N5-1
+      //
+      // B_{i-1} psi_{i-1} + A_[N5-1] psi_[N5-1]
+      // B_{i-1} psi_{i-1} = (-1/2) alpha[N5-1]*f_minus
+	
+      // A_[N5-1] psi[N5-1] = (-1/2)gamma_g5{
+      //                         mass*f_minus + beta_tilde[N5-1] }
+      coeff_1 = Real(-0.5)*alpha[N5-2]*f_minus;
+      coeff_2 = Real(-0.5)*(mass*f_minus + beta_tilde[N5-1]);
+      //tmp[rb[otherCB]] = Gamma(G5)*psi[N5-1];
+
+      // 6NcNs
+      tmp5[N5-1][rb[otherCB]] = coeff_1 * psi[N5-2] + coeff_2*(GammaConst<Ns,Ns*Ns-1>()*psi[N5-1]);
+
+      // Now apply Dslash^{DAGGER} !!!!! 
+      //
+      // (the dagger comes from the denominator. Along the diagonal
+      //  we have gamma_5 D = D^{dagger} gamma_g5
+      // This could be done with a vec op. 
+      // Alternatively, I could infuse it with other loops
+      // don't know what's best.
+      // for(int i=0; i < N5; i++) {
+      //  Dslash->apply(chi[i], tmp5[i], MINUS, cb);
+      //}
+      Dslash.apply(chi,tmp5,MINUS, cb);
+
+    }
+    break;
 
     case MINUS:
-      {
-	multi1d<LatticeFermion> D_psi(N5); moveToFastMemoryHint(D_psi);
-	Real ftmp_mhalf = Real(-0.5);
+    {
+      multi1d<LatticeFermion> D_psi(N5); moveToFastMemoryHint(D_psi);
+      Real ftmp_mhalf = Real(-0.5);
 
-	Dslash->apply(D_psi, psi, PLUS, cb);
+      Dslash.apply(D_psi, psi, PLUS, cb);
 
-	for(int i=0; i < N5; i++) {
-	  // Do I need this? D_psi[i] = zero; Seemingly not!
+      for(int i=0; i < N5; i++) {
+	// Do I need this? D_psi[i] = zero; Seemingly not!
 
-	  //	  Dslash->apply(D_psi[i], psi[i], PLUS, cb);
-	  D_psi[i][rb[cb]] *= ftmp_mhalf;
-	}
+	//	  Dslash.apply(D_psi[i], psi[i], PLUS, cb);
+	D_psi[i][rb[cb]] *= ftmp_mhalf;
+      }
 
-	// First bit
-	// Bits involving beta_tilde are hermitian and do not change
-	//	chi[0][rb[cb]] = Gamma(G5)*D_psi[0];
-	//      chi[0][rb[cb]] *= beta_tilde[0];
-	ftmp = alpha[0]*f_minus;
-	chi[0][rb[cb]] = ftmp*D_psi[1] + beta_tilde[0]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[0]);
+      // First bit
+      // Bits involving beta_tilde are hermitian and do not change
+      //	chi[0][rb[cb]] = Gamma(G5)*D_psi[0];
+      //      chi[0][rb[cb]] *= beta_tilde[0];
+      ftmp = alpha[0]*f_minus;
+      chi[0][rb[cb]] = ftmp*D_psi[1] + beta_tilde[0]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[0]);
 
-	for(int i=1; i < N5-1; i++) {
+      for(int i=1; i < N5-1; i++) {
 		  
-	  ftmp = alpha[i-1]*f_minus;
-	  ftmp2 = alpha[i]*f_minus;
-	  chi[i][rb[cb]] = ftmp*D_psi[i-1] + beta_tilde[i]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[i]);
+	ftmp = alpha[i-1]*f_minus;
+	ftmp2 = alpha[i]*f_minus;
+	chi[i][rb[cb]] = ftmp*D_psi[i-1] + beta_tilde[i]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[i]);
 	  
-	  //	  ftmp = beta_tilde[i];
-	  //      tmp[rb[cb]] = Gamma(G5)*D_psi[i];
-	  // chi[i][rb[cb]] += ftmp*tmp;
+	//	  ftmp = beta_tilde[i];
+	//      tmp[rb[cb]] = Gamma(G5)*D_psi[i];
+	// chi[i][rb[cb]] += ftmp*tmp;
 
 
-	  chi[i][rb[cb]] += ftmp2*D_psi[i+1];
+	chi[i][rb[cb]] += ftmp2*D_psi[i+1];
 	  
-	}
-
-	// tmp[rb[cb]] = Gamma(G5) * D_psi[N5-1];
-	ftmp = mass*f_minus;
-	ftmp2 = alpha[N5-2]*f_minus;
-	chi[N5-1][rb[cb]] = ftmp2*D_psi[N5-2] + ftmp*(GammaConst<Ns,Ns*Ns-1>()*D_psi[N5-1]);
-
-
-
-
-	if( !isLastZeroP ) { 
-	  LatticeFermion tmp; moveToFastMemoryHint(tmp);
-	  tmp[rb[cb]] = beta_tilde[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[N5-1]);
-	  chi[N5-1][rb[cb]] += tmp;
-	}
-
-
-
       }
-      break;
+
+      // tmp[rb[cb]] = Gamma(G5) * D_psi[N5-1];
+      ftmp = mass*f_minus;
+      ftmp2 = alpha[N5-2]*f_minus;
+      chi[N5-1][rb[cb]] = ftmp2*D_psi[N5-2] + ftmp*(GammaConst<Ns,Ns*Ns-1>()*D_psi[N5-1]);
+
+
+
+
+      if( !isLastZeroP ) { 
+	LatticeFermion tmp; moveToFastMemoryHint(tmp);
+	tmp[rb[cb]] = beta_tilde[N5-1]*(GammaConst<Ns,Ns*Ns-1>()*D_psi[N5-1]);
+	chi[N5-1][rb[cb]] += tmp;
+      }
+
+
+
+    }
+    break;
     default:
-      {
-	QDPIO::cerr << "Should never reach here. Isign is only 2 valued" << endl;
-	QDP_abort(1);
-      }
-      break;
+    {
+      QDPIO::cerr << "Should never reach here. Isign is only 2 valued" << endl;
+      QDP_abort(1);
+    }
+    break;
     }
 	  
     END_CODE();
@@ -453,10 +450,10 @@ namespace Chroma
    */
   void 
   EvenOddPrecHtContFrac5DLinOpArray::applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u,
-							  const multi1d<LatticeFermion>& chi, 
-							  const multi1d<LatticeFermion>& psi, 
-							  enum PlusMinus isign,
-							  int cb) const 
+						       const multi1d<LatticeFermion>& chi, 
+						       const multi1d<LatticeFermion>& psi, 
+						       enum PlusMinus isign,
+						       int cb) const 
   {
     START_CODE();
 
@@ -489,7 +486,7 @@ namespace Chroma
 	tmp[rb[cb]] *= coeff;
 
 	// Apply g5 Dslash
-	Dslash->deriv(ds_tmp, tmp, psi[i], PLUS, cb);
+	Dslash.deriv(ds_tmp, tmp, psi[i], PLUS, cb);
 	ds_u += ds_tmp;
       }
       break;
@@ -511,7 +508,7 @@ namespace Chroma
 	tmp[rb[1-cb]] *= coeff;
 
 	// Apply g5 Dslash
-	Dslash->deriv(ds_tmp, chi[i], tmp, MINUS, cb);
+	Dslash.deriv(ds_tmp, chi[i], tmp, MINUS, cb);
 	ds_u += ds_tmp;
       }
       break;
@@ -525,8 +522,11 @@ namespace Chroma
     QDP_abort(1);
 #endif
 
+    getFermBC().zero(ds_u);
+
     END_CODE();
   }
-}; // End Namespace Chroma
+
+} // End Namespace Chroma
 
 

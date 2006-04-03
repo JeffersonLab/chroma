@@ -1,4 +1,4 @@
-/* $Id: ovdsduf_w.cc,v 2.0 2005-09-25 21:04:42 edwards Exp $ ($Date: 2005-09-25 21:04:42 $) */
+/* $Id: ovdsduf_w.cc,v 3.0 2006-04-03 04:59:10 edwards Exp $ ($Date: 2006-04-03 04:59:10 $) */
 
 /* This routine is specific to Wilson fermions! */
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_glue_aggregate.h,v 2.0 2005-09-25 21:04:37 edwards Exp $
+// $Id: inline_glue_aggregate.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  *  \brief Inline glue measurement aggregator
  */

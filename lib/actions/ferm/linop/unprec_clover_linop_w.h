@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_clover_linop_w.h,v 2.2 2005-12-18 23:53:26 edwards Exp $
+// $Id: unprec_clover_linop_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion linear operator
  */
@@ -21,21 +21,31 @@ namespace Chroma
    * This routine is specific to Wilson fermions!
    */
   
-  class UnprecCloverLinOp : public UnprecLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecCloverLinOp : public UnprecLinearOperator<LatticeFermion, 
+			    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     UnprecCloverLinOp() {}
 
     //! Full constructor
-    UnprecCloverLinOp(const multi1d<LatticeColorMatrix>& u_, const CloverFermActParams& param_)
-      {create(u_,param_);}
+    UnprecCloverLinOp(Handle< FermState<T,P,Q> > fs,
+		      const CloverFermActParams& param_)
+      {create(fs,param_);}
     
     //! Destructor is automatic
     ~UnprecCloverLinOp() {}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 	
+    void create(Handle< FermState<T,P,Q> > fs,
 		const CloverFermActParams& param_);
 
     //! Apply the operator onto a source vector
@@ -55,7 +65,7 @@ namespace Chroma
     CloverTerm          A;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

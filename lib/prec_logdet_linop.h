@@ -1,6 +1,5 @@
-
 // -*- C++ -*-
-// $Id: prec_logdet_linop.h,v 2.2 2006-02-16 02:29:44 bjoo Exp $
+// $Id: prec_logdet_linop.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 
 /*! @file
  * @brief Preconditioned  Linear Operators  where the Even Even part depends on the Gauge Field and we can evaluate Log Det E, where E is the Even Even part. Essentially this is for things like clover.
@@ -12,9 +11,10 @@
 
 using namespace QDP::Hints;
 
-namespace Chroma {
+namespace Chroma 
+{
 
-
+  //-------------------------------------------------------------------------
   //! Even-odd preconditioned linear operator
   /*! @ingroup linop
    *
@@ -97,8 +97,8 @@ namespace Chroma {
    *
    */
 
-  template<typename T, typename P>
-  class EvenOddPrecLogDetLinearOperator : public EvenOddPrecLinearOperator<T,P>
+  template<typename T, typename P, typename Q>
+  class EvenOddPrecLogDetLinearOperator : public EvenOddPrecLinearOperator<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;
@@ -106,6 +106,9 @@ namespace Chroma {
 
     //! Only defined on the odd lattice
     const OrderedSubset& subset() const {return rb[1];}
+
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
     //! Apply the derivative of the operator onto a source vector
     /*! User should make sure deriv routines do a resize  */
@@ -151,6 +154,8 @@ namespace Chroma {
       evenEvenInvLinOp(tmp3, tmp1, msign);
       derivEvenOddLinOp(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
+
+      getFermBC().zero(ds_u);
     }
 
 
@@ -198,6 +203,7 @@ namespace Chroma {
   };
 
 
+  //-------------------------------------------------------------------------
   //! Even-odd preconditioned 5D linear operator
   /*! @ingroup linop
    *
@@ -280,18 +286,21 @@ namespace Chroma {
    *
    */
 
-
-  template<typename T, typename P>
-  class EvenOddPrecLogDetLinearOperator< multi1d<T>, P > : public EvenOddPrecLinearOperator< multi1d<T>, P >
+  template<typename T, typename P, typename Q>
+  class EvenOddPrecLogDetLinearOperatorArray : public EvenOddPrecLinearOperatorArray<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecLogDetLinearOperator() {}
+    virtual ~EvenOddPrecLogDetLinearOperatorArray() {}
 
     //! Only defined on the odd lattice
     const OrderedSubset& subset() const {return rb[1];}
 
+    //! Get the szie expected of arrays
     virtual int size() const = 0;
+
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
     //! Apply the operator onto a source vector
     /*! User should make sure deriv routines do a resize  */
@@ -337,6 +346,8 @@ namespace Chroma {
       evenEvenInvLinOp(tmp3, tmp1, msign);
       derivEvenOddLinOp(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
+
+      getFermBC().zero(ds_u);
     }
 
     //! Apply the even-even block onto a source vector

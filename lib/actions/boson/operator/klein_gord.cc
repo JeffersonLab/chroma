@@ -1,4 +1,4 @@
-// $Id: klein_gord.cc,v 2.1 2005-11-07 21:26:37 edwards Exp $
+// $Id: klein_gord.cc,v 3.0 2006-04-03 04:58:44 edwards Exp $
 /*! \file
  *  \brief Apply Klein-Gordon operator
  */

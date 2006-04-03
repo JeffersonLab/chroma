@@ -1,4 +1,4 @@
-/* $Id: unprec_ovext_linop_array_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+/* $Id: unprec_ovext_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
 *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -16,7 +16,7 @@ namespace Chroma
    * \param m_q_          quark mass    (Read)
    */
   void 
-  UnprecOvExtLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  UnprecOvExtLinOpArray::create(Handle< FermState<T,P,Q> > state,
 				const int Npoles_,
 				const Real& coeffP_,
 				const multi1d<Real>& resP_,
@@ -33,8 +33,8 @@ namespace Chroma
     alpha = b5_ + c5_;
     a5 = b5_ - c5_;
 
-
-    Dw = new UnprecWilsonLinOp(u_, -OverMass_);
+    Dw.create(state, -OverMass_);
+    fbc = state->getFermBC();
     coeffP = coeffP_;
 
     p_by_beta_sqrt.resize(Npoles);
@@ -82,7 +82,7 @@ namespace Chroma
 	
 	// Get a vector of wilson dirac op applications
 	for(int i=0; i < N5; i++) { 
-	  (*Dw)(tmp5[i], psi[i], PLUS);
+	  Dw(tmp5[i], psi[i], PLUS);
 	}
 
 	// Start off Chi[N5-1] 
@@ -257,7 +257,7 @@ namespace Chroma
 	
 	// Vector Dirac op on tmp5_2
 	for(int i=0; i < N5; i++) { 
-	  (*Dw)(chi[i], tmp5_2[i], MINUS);
+	  Dw(chi[i], tmp5_2[i], MINUS);
 	  chi[i]+=tmp5_1[i];
 	}
 	
@@ -267,6 +267,8 @@ namespace Chroma
       QDPIO::cerr << "Unknown value for PLUS /MINUS: " << isign << endl;
       QDP_abort(1);
     };
+
+    getFermBC().modifyF(chi);
 
     END_CODE();
   }
@@ -281,6 +283,9 @@ namespace Chroma
     START_CODE();
     QDPIO::cout << "Not yet implemented " << endl;
     QDP_abort(1);
+
+    getFermBC().zero(ds_u);
+
     END_CODE();
   }
 }; // End Namespace Chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: handle.h,v 2.0 2005-09-25 21:04:25 edwards Exp $
+// $Id: handle.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 /*! @file
  * @brief  Class for counted reference semantics
  *
@@ -51,6 +51,20 @@ namespace Chroma
 	}
 	return *this;
       }
+
+    //! RGE's addition. A cast function to morph the actual type
+    template<typename Q>
+    Handle<Q> cast()
+      {
+	Handle<Q> q;
+	q.ptr = dynamic_cast<Q*>(ptr);
+	q.count = count;
+	++*count;
+	return q;
+      }
+
+    //! The cast function requires all Handles<Q> to be friends of Handle<T>
+    template<typename Q> friend class Handle;
 
     //! Access the value to which the pointer refers
     T& operator*() const {return *ptr;}

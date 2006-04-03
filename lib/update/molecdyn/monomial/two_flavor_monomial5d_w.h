@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 2.5 2006-03-17 02:05:56 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -66,16 +66,16 @@ namespace Chroma
       //    X = (M^dag*M)^(-1)*V^dag*chi   Y = M*X = (M^dag)^(-1)*V^dag*chi
       // In Robert's notation,  X -> psi .
       //
-      const WilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
       
       // Create a state for linop
-      Handle< const ConnectState> state(FA.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
       // Get linear operator
-      Handle< const DiffLinearOperator<multi1d<Phi>, P> > M(FA.linOp(state));
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(state));
 	
       // Get Pauli-Villars linear operator
-      Handle< const DiffLinearOperator<multi1d<Phi>, P> > PV(FA.linOpPV(state));
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(state));
 	
       // Get/construct the pseudofermion solution
       multi1d<Phi> X(FA.size()), Y(FA.size());
@@ -133,16 +133,16 @@ namespace Chroma
       // Heatbath all the fields
       
       // Get at the ferion action for piece i
-      const WilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
       
       // Create a Connect State, apply fermionic boundaries
-      Handle< const ConnectState > f_state(FA.createState(field_state.getQ()));
+      Handle< FermState<Phi,P,Q> > f_state(FA.createState(field_state.getQ()));
       
       // Create a linear operator
-      Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(f_state));
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(f_state));
       
       // Get Pauli-Villars linear operator
-      Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(f_state));
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(f_state));
 	
       const int N5 = FA.size();
       multi1d<Phi> eta(N5);
@@ -203,7 +203,7 @@ namespace Chroma
     virtual multi1d<Phi>& getPhi(void) = 0;    
 
     //! Get at fermion action
-    virtual const WilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
+    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -216,16 +216,16 @@ namespace Chroma
     {
       const InvertParam_t& inv_param = getInvParams();
 
-      // Upcast the fermact
-      const FermAct5D<Phi>& FA = getFermAct();
+      // Grab the fermact
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
 
       // Make the state
-      Handle< const ConnectState > state(FA.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 
       // Get linop
-      Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOp(state));
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(state));
       // Get PV
-      Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(state));
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(state));
 
       multi1d<Phi> VdagPhi(FA.size());
     
@@ -238,7 +238,7 @@ namespace Chroma
       case CG_INVERTER:
       {
 	// CG Chrono predictor needs MdagM
-	Handle< const LinearOperator< multi1d<Phi> > > MdagM(FA.lMdagM(state));
+	Handle< DiffLinearOperatorArray<Phi,P,Q> > MdagM(FA.lMdagM(state));
 	(getMDSolutionPredictor())(X, *MdagM, VdagPhi);
 
 	// Do the inversion
@@ -263,14 +263,14 @@ namespace Chroma
     //! Get X = (PV^dag*PV)^{-1} eta
     virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const
     {
-      // Upcast the fermact
-      const FermAct5D<Phi>& FA = getFermAct();
+      // Grab the fermact
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
 
       // Make the state
-      Handle< const ConnectState > state(FA.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
    
       // Get linop
-      Handle< const LinearOperator< multi1d<Phi> > > M(FA.linOpPV(state));
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOpPV(state));
 
       // Do the inversion...
       int n_count = invert(X, *M, eta);
@@ -279,7 +279,7 @@ namespace Chroma
 
 
     // Get X = (A^dag*A)^{-1} eta
-    virtual int invert(multi1d<Phi>& X, const LinearOperator< multi1d<Phi> >& M,
+    virtual int invert(multi1d<Phi>& X, const DiffLinearOperatorArray<Phi,P,Q>& M,
 		       const multi1d<Phi>& eta) const
     {
       const InvertParam_t& inv_param = getInvParams();
@@ -333,11 +333,11 @@ namespace Chroma
       push(xml_out, "TwoFlavorExactUnprecWilsonTypeFermMonomial5D");
 
            // Get at the ferion action for piece i
-      const WilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
 
       // Create a Connect State, apply fermionic boundaries
-      Handle< const ConnectState > f_state(FA.createState(s.getQ()));
-      Handle< const LinearOperator< multi1d<Phi> > > PV(FA.linOpPV(f_state));
+      Handle< FermState<Phi,P,Q> > f_state(FA.createState(s.getQ()));
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(f_state));
  
       multi1d<Phi> X(FA.size());
       multi1d<Phi> tmp(FA.size());
@@ -379,7 +379,7 @@ namespace Chroma
     virtual multi1d<Phi>& getPhi(void) = 0;    
 
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct5D<Phi,P>& getFermAct(void) const = 0;
+    virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -412,14 +412,14 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_odd_odd");
 
-      const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& FA = getFermAct();
+      const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
 
-      Handle<const ConnectState> bc_g_state(FA.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > bc_g_state(FA.createState(s.getQ()));
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const EvenOddPrecLinearOperator<multi1d<Phi>,P> > lin(FA.linOp(bc_g_state));
+      Handle< EvenOddPrecLinearOperatorArray<Phi,P,Q> > lin(FA.linOp(bc_g_state));
 
-      Handle< const EvenOddPrecLinearOperator<multi1d<Phi>,P> > PV(FA.linOpPV(bc_g_state));
+      Handle< EvenOddPrecLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(bc_g_state));
       // Get the X fields
       multi1d<Phi> X(FA.size());
 
@@ -463,7 +463,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P>& getFermAct() const = 0;
+    virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -499,7 +499,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const EvenOddPrecConstDetWilsonTypeFermAct5D<Phi,P>& getFermAct() const = 0;
+    virtual const EvenOddPrecConstDetWilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
   };
 
 

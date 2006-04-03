@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 2.2 2006-02-16 02:59:03 edwards Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -72,9 +72,9 @@ namespace Chroma
       QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string << endl;
       
       
-      const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+      WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
-      const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+      EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >*>(tmp_act);
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {
@@ -101,9 +101,9 @@ namespace Chroma
       
       QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string << endl;
       
-      const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionActionPrec");
+      WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionActionPrec");
 
-      const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+      EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rbc_gaugeact.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: rbc_gaugeact.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief RG style plaquette + rectangle gauge action following RBC conventions
  */
@@ -46,26 +46,18 @@ namespace Chroma
    * S = -(beta/Nc)*[(1-8*c_1)*Plaq + c_1 * Rect]
    */
 
-  class RBCGaugeAct : public GaugeAction
+  class RBCGaugeAct : public LinearGaugeAction
   {
   public:
-    //! General GaugeBC
-    RBCGaugeAct(Handle< GaugeBC > gbc_, 
+    //! General CreateGaugeState<P,Q>
+    RBCGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 	       const Real& beta_, const Real& c1_) : 
-      beta(beta_), c1(c1_) {init(gbc_);}
+      beta(beta_), c1(c1_) {init(cgs_);}
 
     //! Read beta from a param struct
-    RBCGaugeAct(Handle< GaugeBC > gbc_, 
+    RBCGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 	       const RBCGaugeActParams& p) :
-      beta(p.beta), c1(p.c1) {init(gbc_);}
-
-    //! Copy constructor
-    RBCGaugeAct(const RBCGaugeAct& a) : 
-      beta(a.beta), c1(a.c1), plaq(a.plaq), rect(a.rect) {}
-
-    //! Assignment
-    RBCGaugeAct& operator=(const RBCGaugeAct& a)
-    {beta=a.beta; c1=a.c1; plaq=a.plaq; rect=a.rect; return *this;}
+      beta(p.beta), c1(p.c1) {init(cgs_);}
 
     //! Is anisotropy used?
     bool anisoP() const {return false;}
@@ -80,13 +72,10 @@ namespace Chroma
     /*! Defined on the even-off (red/black) set */
     const OrderedSet& getSet() const {return rb;}
 
-    //! Produce a gauge boundary condition object
-    const GaugeBC& getGaugeBC() const {return plaq->getGaugeBC();}
-
     //! Compute staple
     /*! Default version. Derived class should override this if needed. */
     void staple(LatticeColorMatrix& result,
-		Handle<const ConnectState> state,
+		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const
     {
       plaq->staple(result,state,mu,cb);
@@ -97,21 +86,24 @@ namespace Chroma
     }
 
     //! Compute dS/dU
-    void dsdu(multi1d<LatticeColorMatrix>& result,
-	      const Handle<const ConnectState> state) const
+    void deriv(multi1d<LatticeColorMatrix>& result,
+	       const Handle< GaugeState<P,Q> >& state) const
     {
-      plaq->dsdu(result,state);
+      plaq->deriv(result,state);
 
       multi1d<LatticeColorMatrix> tmp;
-      rect->dsdu(tmp,state);
+      rect->deriv(tmp,state);
       result += tmp;
     }
 
     //! Compute the actions
-    Double S(const Handle<const ConnectState> state) const
+    Double S(const Handle< GaugeState<P,Q> >& state) const
     {
       return plaq->S(state) + rect->S(state);
     }
+
+    //! Produce a gauge create state object
+    const CreateGaugeState<P,Q>& getCreateState() const {return plaq->getCreateState();}
 
     //! Destructor is automatic
     ~RBCGaugeAct() {}
@@ -121,7 +113,12 @@ namespace Chroma
 
   protected:
     //! Private initializer
-    void init(Handle< GaugeBC > gbc);
+    void init(Handle< CreateGaugeState<P,Q> > cgs);
+
+    //! Partial constructor
+    RBCGaugeAct() {}
+    //! Hide assignment
+    void operator=(const RBCGaugeAct& a) {}
 
   private:
     Real   beta;               // The coupling Beta

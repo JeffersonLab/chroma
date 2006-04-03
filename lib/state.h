@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: state.h,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: state.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 
 /*! @file
  * @brief Support class for fermion actions and linear operators
@@ -11,8 +11,10 @@
 #ifndef __state_h__
 #define __state_h__
 
+#include "chromabase.h"
+#include "gaugebc.h"
+#include "fermbc.h"
 #include "handle.h"
-
 
 namespace Chroma
 {
@@ -22,14 +24,15 @@ namespace Chroma
    * Holds things like color link fields and other info needed for linear
    * operators. 
    */
+  template<typename P, typename Q>
   class ConnectState
   {
   public:
-    //! Return the link fields needed in constructing linear operators
-    virtual const multi1d<LatticeColorMatrix>& getLinks() const = 0;
-
     //! Virtual destructor to help with cleanup;
     virtual ~ConnectState() {}
+   
+    //! Return the coordinates (link fields) needed in constructing linear operators
+    virtual const Q& getLinks() const = 0;
 
     /*! A virtual function to get the derivative of the state.
      *  This is useful for things like fat link states, where
@@ -41,99 +44,66 @@ namespace Chroma
      * and the pi momenta get factored out 
      * this function modifies the force term 
      */
-    virtual void deriv(multi1d<LatticeColorMatrix>& F) const {
+    virtual void deriv(P& F) const
+    {
       if( F.size() != Nd ) {
 	throw "F has wrong size";
       }
 
+      P F_tmp = F;
+
       for(int mu=0; mu < Nd; mu++) { 
-	F[mu] = getLinks()[mu]*F[mu];
+	F[mu] = getLinks()[mu]*F_tmp[mu];
       }
     }
    
+    //! Return the amorphous BC object for this state
+    /*! The user will supply the BC in a derived class */
+    virtual const BoundCond<P,Q>& getBC() const = 0;
   };
 
 
-  //! Proxy for support class for fermion actions and linear operators
+
+  //! Support class for fermion actions and linear operators
   /*! @ingroup state
    *
    * Holds things like color link fields and other info needed for linear
    * operators. 
- */
-  class ConnectStateProxy : public ConnectState
+   */
+  template<typename P, typename Q>
+  class GaugeState : public ConnectState<P,Q>
   {
   public:
-    //! Initialize pointer with existing pointer
-    /*! Requires that the pointer p is a return value of new */
-    explicit ConnectStateProxy(const ConnectState* p=0) : state(p) {}
-
-    //! Copy pointer (one more owner)
-    ConnectStateProxy(const ConnectStateProxy& p) : state(p.state) {}
-
-    //! Access the value to which the pointer refers
-    const ConnectState& operator*() const {return state.operator*();}
-    const ConnectState* operator->() const {return state.operator->();}
-
-    //! Return the link fields needed in constructing linear operators
-    const multi1d<LatticeColorMatrix>& getLinks() const 
-      {return state->getLinks();}
-
-    /*! A function to get the derivative of the state.
-     *  This is useful for things like fat link states, where
-     *  the derivative of the state with respect to the thin 
-     *  links is complicated. 
-     *  The default implementation just multiplies the accumulated
-     *  force by the (thin) links, which works because
-     *  \dot{U} = \pi U
-     * and the pi momenta get factored out 
-     * this function modifies the force term  -- This is an override
-     * of a function defined in the base class
-     */
-    void deriv(multi1d<LatticeColorMatrix>& F) const
-    {
-      // Be a good little proxy and call the deriv of your encapsulated
-      // state
-      state->deriv(F);
-    }
-    
-  protected:
-    //! Assignment
-    /*! Could easily be supported, but not sure why to do so... */
-    ConnectStateProxy& operator=(const ConnectStateProxy& p) {state = p.state; return *this;}
-
-  private:
-    Handle<const ConnectState>  state;
+    //! Virtual destructor to help with cleanup;
+    virtual ~GaugeState() {}
+   
+    //! Return the gauge BC object for this state
+    /*! The user will supply the BC in a derived class */
+    virtual const GaugeBC<P,Q>& getBC() const = 0;
   };
 
 
-  //! Simple version of Connection-State 
+
+  //! Support class for fermion actions and linear operators
   /*! @ingroup state
    *
-   * Only needs to handle a gauge field
+   * Holds things like color link fields and other info needed for linear
+   * operators. 
    */
-  class SimpleConnectState : public ConnectState
+  template<typename T, typename P, typename Q>
+  class FermState : public ConnectState<P,Q>
   {
   public:
-    //! Full constructor
-    SimpleConnectState(const multi1d<LatticeColorMatrix>& u_) {u = u_;}
-
-    //! Copy constructor
-    SimpleConnectState(const SimpleConnectState& a) {u = a.u;}
-
-    //! Destructor
-    ~SimpleConnectState() {}
-
-    //! Return the link fields needed in constructing linear operators
-    const multi1d<LatticeColorMatrix>& getLinks() const {return u;}
-
-    // Deriv function inherited...
-
-  private:
-    SimpleConnectState() {}  // hide default constructur
-    void operator=(const SimpleConnectState&) {} // hide =
-
-  private:
-    multi1d<LatticeColorMatrix> u;
+    //! Virtual destructor to help with cleanup;
+    virtual ~FermState() {}
+   
+    //! Return the ferm BC object for this state
+    /*! The user will supply the BC in a derived class */
+    virtual const FermBC<T,P,Q>& getBC() const = 0;
+   
+    //! Return the ferm BC object for this state
+    /*! This is to help the optimized linops */
+    virtual Handle< FermBC<T,P,Q> > getFermBC() const = 0;
   };
 
 }

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 2.3 2006-03-20 04:21:07 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -9,7 +9,7 @@
 #include "actions/ferm/linop/prec_dwf_linop_array_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/qprop/quarkprop4_w.h"
 #include "actions/ferm/qprop/dwf_quarkprop4_w.h"
@@ -24,17 +24,21 @@ namespace Chroma
   namespace EvenOddPrecDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
-											const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion, 
+			multi1d<LatticeColorMatrix>,
+			multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+								       const std::string& path)
     {
-      return new EvenOddPrecDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+      return new EvenOddPrecDWFermActArray(CreateFermStateEnv::reader(xml_in, path), 
 					   EvenOddPrecDWFermActArrayParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct5D(xml_in, path);
     }
@@ -45,8 +49,10 @@ namespace Chroma
     //! Register all the factories
     bool registerAll()
     {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	& Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      bool foo = true;
+      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+      foo &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      return foo;
     }
 
     //! Register the fermact
@@ -169,26 +175,30 @@ namespace Chroma
 
 
   //! Produce a preconditioned linear operator for this action with arbitrary quark mass
-  const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  EvenOddPrecDWFermActArray::precLinOp(Handle<const ConnectState> state,
+  EvenOddPrecDWLikeLinOpBaseArray<LatticeFermion, 
+				  multi1d<LatticeColorMatrix>,
+				  multi1d<LatticeColorMatrix> >*
+  EvenOddPrecDWFermActArray::precLinOp(Handle< FermState<T,P,Q> > state,
 				       const Real& m_q) const
   {
-    return new EvenOddPrecDWLinOpArray(state->getLinks(),param.OverMass,m_q,param.N5,param.anisoParam);
+    return new EvenOddPrecDWLinOpArray(state,param.OverMass,m_q,param.N5,param.anisoParam);
   }
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  EvenOddPrecDWFermActArray::unprecLinOp(Handle<const ConnectState> state,
+  UnprecDWLikeLinOpBaseArray<LatticeFermion, 
+			     multi1d<LatticeColorMatrix>,
+			     multi1d<LatticeColorMatrix> >*
+  EvenOddPrecDWFermActArray::unprecLinOp(Handle< FermState<T,P,Q> > state,
 					 const Real& m_q) const
   {
-    return new UnprecDWLinOpArray(state->getLinks(),param.OverMass,m_q,param.N5,param.anisoParam);
+    return new UnprecDWLinOpArray(state,param.OverMass,m_q,param.N5,param.anisoParam);
   }
   
 
   // Return possibly optimized quark prop solver, solution of preconditioned system
-  const SystemSolver< multi1d<LatticeFermion> >* EvenOddPrecDWFermActArray::qpropT(
-    Handle<const ConnectState> state,
-    const InvertParam_t& invParam) const
+  SystemSolverArray<LatticeFermion>* 
+  EvenOddPrecDWFermActArray::qpropT(Handle< FermState<T,P,Q> > state, 
+				    const InvertParam_t& invParam) const
   {
     return new DWFQpropT(linOp(state), state, 
 			 param.OverMass, param.Mass, param.anisoParam, invParam);
@@ -201,7 +211,7 @@ namespace Chroma
 				       XMLWriter& xml_out,
 				       const LatticePropagator& q_src,
 				       int t_src, int j_decay,
-				       Handle<const ConnectState> state,
+				       Handle< FermState<T,P,Q> > state,
 				       const InvertParam_t& invParam,
 				       QuarkSpinType quarkSpinType,
 				       bool obsvP,
@@ -209,13 +219,13 @@ namespace Chroma
   {
     if (obsvP)
     {
-      Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(this->qpropT(state,invParam));
+      Handle< SystemSolverArray<LatticeFermion> > qpropT(this->qpropT(state, invParam));
       dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, 
 		     qpropT, state, getQuarkMass(), ncg_had);
     }
     else
     {
-      Handle< const SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
+      Handle< SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
       quarkProp4(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
     }
   }

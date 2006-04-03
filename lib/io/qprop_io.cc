@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 2.5 2006-02-09 04:50:10 edwards Exp $
+// $Id: qprop_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */

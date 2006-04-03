@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eesu3.cc,v 2.1 2005-09-27 21:16:19 bjoo Exp $
+// $Id: eesu3.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(3) lie algebra element
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 2.2 2006-02-22 23:48:04 bjoo Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -19,6 +19,7 @@
 namespace Chroma
 {
   //! Name and registration
+  /*! \ingroup fermacts */
   namespace OvlapPartFrac4DFermActEnv
   {
     extern const std::string name;
@@ -27,6 +28,7 @@ namespace Chroma
 
 
   //! Params for overlap ferm acts
+  /*! \ingroup fermacts */
   struct OvlapPartFrac4DFermActParams
   {
     OvlapPartFrac4DFermActParams() : ReorthFreqInner(10), inner_solver_type(OVERLAP_INNER_CG_SINGLE_PASS) {};
@@ -53,7 +55,9 @@ namespace Chroma
 
 
   // Reader/writers
+  /*! \ingroup fermacts */
   void read(XMLReader& xml, const string& path, OvlapPartFrac4DFermActParams& param);
+  /*! \ingroup fermacts */
   void write(XMLWriter& xml, const string& path, const OvlapPartFrac4DFermActParams& param);
 
 
@@ -69,81 +73,18 @@ namespace Chroma
   class OvlapPartFrac4DFermAct : public OverlapFermActBase
   {
   public:
-    //! Full constructor
-    /*
-    OvlapPartFrac4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 		       const Real& Mass_,
-		       const int RatPolyDeg_,
-		       const Real& RsdCGinner_,
-		       int MaxCGinner_,
-		       XMLWriter& writer_,
-		       const int ReorthFreqInner_=10,
-		       const OverlapInnerSolverType inner_solver_type_=OVERLAP_INNER_CG_SINGLE_PASS
-      ) : writer(writer_)
-      {
-	fbc = fbc_;
-	Mact = Mact_;
-	params.Mass = Mass_;
-	params.RatPolyDeg = RatPolyDeg_; 
-	params.invParamInner.RsdCG = RsdCGinner_; 
-	params.invParamInner.MaxCG = MaxCGinner_;
-	params.ReorthFreqInner = ReorthFreqInner_; 
-	params.inner_solver_type = inner_solver_type_;
-
-	// Default Preconditioner degree is RatPolyDeg
-	params.RatPolyDegPrecond = RatPolyDeg_;
-      }
-    */
-
-    /*
-    OvlapPartFrac4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-		       Handle<UnprecWilsonTypeFermAct<LatticeFermion> > Mact_, 
-		       const Real& Mass_,
-		       const int RatPolyDeg_,
-		       const int RatPolyDegPrecond_,
-		       const Real& RsdCGinner_,
-		       int MaxCGinner_,
-		       XMLWriter& writer_,
-		       const int ReorthFreqInner_=10,
-		       const OverlapInnerSolverType inner_solver_type_=OVERLAP_INNER_CG_SINGLE_PASS
-      ) : writer(writer_)
-      {
-	fbc = fbc_; Mact = Mact_; params.Mass = Mass_; params.RatPolyDeg = RatPolyDeg_; 
-	params.RatPolyDegPrecond = RatPolyDegPrecond_;
-	params.invParamInner.RsdCG = RsdCGinner_; 
-	params.invParamInner.MaxCG = MaxCGinner_;
-	params.ReorthFreqInner = ReorthFreqInner_; params.inner_solver_type = inner_solver_type_;
-      }
-    */
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Construct from param struct
-    OvlapPartFrac4DFermAct(Handle<FermBC<LatticeFermion> > fbc_,
-		       const OvlapPartFrac4DFermActParams& params);
+    OvlapPartFrac4DFermAct(Handle< FermBC<T,P,Q> > fbc_,
+			   const OvlapPartFrac4DFermActParams& params);
 
-
-    //! Copy Constructor
-    OvlapPartFrac4DFermAct(const OvlapPartFrac4DFermAct& a) : 
-      fbc(a.fbc), params(a.params)
-      {
-	Mact = a.Mact;
-      }
-  
 
     //! Virtual copy constructor
     OvlapPartFrac4DFermAct* clone() const {return new OvlapPartFrac4DFermAct(*this);}
-
-    // Assignment
-    OvlapPartFrac4DFermAct& operator=(const OvlapPartFrac4DFermAct& a) 
-    {
-      fbc = a.fbc;
-      Mact = a.Mact;
-      params = a.params;
-      return *this;
-    }
-   
-
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
 
     //! Return the quark mass
     Real getQuarkMass() const {return params.Mass;}
@@ -160,8 +101,8 @@ namespace Chroma
     
     // Create state functions
     
-    //! Create OverlapConnectState from XML
-    const EigenConnectState* 
+    //! Create OverlapFermState<T,P,Q> from XML
+    EigenConnectState* 
     createState(const multi1d<LatticeColorMatrix>& u, 
 		XMLReader& state_info_xml,
 		const string& state_info_path) const;
@@ -170,8 +111,7 @@ namespace Chroma
     /*! Override the parent */
     
     //! Create a ConnectState with just the gauge fields
-    const EigenConnectState*
-    createState(const multi1d<LatticeColorMatrix>& u_) const ;
+    EigenConnectState* createState(const multi1d<LatticeColorMatrix>& u_) const;
 
 
     //! Produce a linear operator for this action
@@ -179,11 +119,10 @@ namespace Chroma
      * NOTE: the arg MUST be the original base because C++ requires it for a virtual func!
      * The function will have to downcast to get the correct state
      */
-    const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
-    unprecLinOp(Handle<const ConnectState> state, const Real& m_q) const;
+    UnprecLinearOperator<T,P,Q>* unprecLinOp(Handle< FermState<T,P,Q> > state, 
+					     const Real& m_q) const;
 
-    const LinearOperator<LatticeFermion>* 
-    linOpPrecondition(Handle<const ConnectState > state) const;
+    LinearOperator<T>* linOpPrecondition(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator M^dag.M for this action
     /*! 
@@ -191,13 +130,12 @@ namespace Chroma
      * virtual func!
      * The function will have to downcast to get the correct state
      */
-    const DiffLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >* 
-    lMdagM(Handle<const ConnectState> state) const;
+    DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator M^dag.M for this action to be applied
     //  to a vector of known chirality. Chirality is passed in
-    const DiffLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >* 
-    lMdagM(Handle<const ConnectState> state, const Chirality& chirality) const;
+    DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state, 
+				      const Chirality& chirality) const;
 
     //! Produce a linear operator M^dag.M for this action
     /*! 
@@ -205,28 +143,27 @@ namespace Chroma
      * it for a virtual func!
      * The function will have to downcast to get the correct state
      */
-    const LinearOperator<LatticeFermion>* 
-    lMdagMPrecondition(Handle<const ConnectState> state) const;
+    LinearOperator<T>* lMdagMPrecondition(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator M^dag.M for this action to be applied
     //  to a vector of known chirality. Chirality is passed in
-    const LinearOperator<LatticeFermion>* 
-    lMdagMPrecondition(Handle<const ConnectState> state, 
-		       const Chirality& chirality) const;
+    LinearOperator<T>* lMdagMPrecondition(Handle< FermState<T,P,Q> > state, 
+					  const Chirality& chirality) const;
 
 
     //! Produce a linear operator that gives back gamma_5 eps(H)
-    const LinearOperator<LatticeFermion>* 
-    lgamma5epsH(Handle<const ConnectState> state) const;
+    LinearOperator<T>* lgamma5epsH(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator that gives back gamma_5 eps(H)
-    const LinearOperator<LatticeFermion>* 
-    lgamma5epsHPrecondition(Handle<const ConnectState> state) const;
+    LinearOperator<T>* lgamma5epsHPrecondition(Handle< FermState<T,P,Q> > state) const;
     
     //! Destructor is automatic
     ~OvlapPartFrac4DFermAct() {}
 
   protected:
+    //! Return the factory object that produces a state
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
     //! Helper in construction
     void init(int& numroot, 
 	      Real& coeffP, 
@@ -249,11 +186,14 @@ namespace Chroma
   private:
     //!  Partial constructor not allowed
     OvlapPartFrac4DFermAct();
+    // Assignment
+    void operator=(const OvlapPartFrac4DFermAct& a) {}
 
   private:
-    Handle<FermBC<LatticeFermion> >  fbc;   // fermion BC
+    Handle< FermBC<T,P,Q> >           fbc;   // fermion bc
+    Handle< CreateFermState<T,P,Q> >  cfs;   // fermion state creator
     // Auxilliary action used for kernel of operator
-    Handle<UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > Mact;   
+    Handle< UnprecWilsonTypeFermAct<T,P,Q> > Mact;   
     OvlapPartFrac4DFermActParams params;
   };
 

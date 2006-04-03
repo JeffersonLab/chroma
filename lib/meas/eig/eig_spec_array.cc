@@ -1,4 +1,4 @@
-// $Id: eig_spec_array.cc,v 2.0 2005-09-25 21:04:33 edwards Exp $
+// $Id: eig_spec_array.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -39,7 +39,7 @@ namespace Chroma {
  */
 
 
-void EigSpecRitzCG(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm pos def operator
+void EigSpecRitzCG(const LinearOperatorArray<LatticeFermion>& M, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
 		   multi2d<LatticeFermion>& psi,     // E-vectors
 		   int n_eig,                        // No of e-values to find
@@ -129,7 +129,7 @@ void EigSpecRitzCG(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
 }
 
 
-void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm pos def operator
+void EigSpecRitzKS(const LinearOperatorArray<LatticeFermion>& M, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
 		   multi2d<LatticeFermion>& psi,     // E-vectors
 		   int n_eig,                       // no of eig wanted
@@ -335,7 +335,7 @@ void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& M, // Herm po
 }
 
 
-void fixMMev2Mev(const LinearOperator< multi1d<LatticeFermion> >& M,  // The Op to fix to
+void fixMMev2Mev(const LinearOperatorArray<LatticeFermion>& M,  // The Op to fix to
 		 multi1d<Real>& lambda,       // The Evals of M^{dag}M on input
 		                             // The Evals of M on output 
 		 multi2d<LatticeFermion>& ev_psi,  // The Evecs 

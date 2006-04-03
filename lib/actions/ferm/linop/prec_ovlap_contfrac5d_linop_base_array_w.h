@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_base_array_w.h,v 2.2 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_base_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Base class for Even-odd prec. 5D continued fraction linop
  */
@@ -26,16 +26,21 @@ namespace Chroma
    * by Joo,Kennedy,Wenger
    */
 
-  class EvenOddPrecOvlapContFrac5DLinOpBaseArray : public EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecOvlapContFrac5DLinOpBaseArray : public EvenOddPrecConstDetLinearOperatorArray<
+    LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
     /*! Pretty darn the same as for the unprec case
       except that the auxiliary linop M is no longer supplied, 
       but is created here 
     */
-    EvenOddPrecOvlapContFrac5DLinOpBaseArray(Handle<const ConnectState> state,
+    EvenOddPrecOvlapContFrac5DLinOpBaseArray(Handle< FermState<T,P,Q> > state,
 					     const Real& _m_q,
 					     const Real& _OverMass,
 					     int _N5,
@@ -50,6 +55,9 @@ namespace Chroma
 
     //! Destructor is automatic
     ~EvenOddPrecOvlapContFrac5DLinOpBaseArray() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return Dslash.getFermBC();}
 
     //! Only defined on the entire lattice
     // INHERIT THIS?
@@ -265,7 +273,7 @@ namespace Chroma
 
 
   protected:
-    Handle< const WilsonDslashArray > Dslash; //Dslash Op
+    WilsonDslashArray  Dslash; //Dslash Op
     const Real m_q;
     const Real OverMass;
     const int  N5;    // Size of the 5th dimension
@@ -280,7 +288,7 @@ namespace Chroma
     multi1d<Real> off_diag_coeff; // -0.5*beta_tilde[i]
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

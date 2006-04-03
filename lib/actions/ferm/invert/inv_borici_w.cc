@@ -7,8 +7,8 @@ namespace Chroma {
 
 template<typename T>
 void InvBorici_a( const LinearOperator<T>& D_4,
-		  const LinearOperator< multi1d<T> >& D_5,
-		  const LinearOperator< multi1d<T> >& D_dag_D_5,
+		  const LinearOperatorArray<T>& D_5,
+		  const LinearOperatorArray<T>& D_dag_D_5,
 		  const T& b,
 		  T& x,
 		  const Real& tol,
@@ -107,8 +107,8 @@ void InvBorici_a( const LinearOperator<T>& D_4,
 
 template<>
 void InvBorici( const LinearOperator<LatticeFermion>& D_4,
-		const LinearOperator< multi1d<LatticeFermion> >& D_5,
-		const LinearOperator< multi1d<LatticeFermion> >& D_dag_D_5,
+		const LinearOperatorArray<LatticeFermion>& D_5,
+		const LinearOperatorArray<LatticeFermion>& D_dag_D_5,
 		const LatticeFermion& b,
 		LatticeFermion& x,
 		const Real& tol,

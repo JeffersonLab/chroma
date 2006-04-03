@@ -2,20 +2,23 @@
 
 #include "actions/ferm/qprop/asqtad_cps_wrapper_qprop.h"
 
-namespace Chroma {
+namespace Chroma 
+{
 
-
-    //! Constructor
-    /*!
-      // Keeping the same interface as for the ordinary staggered 
-      // qprop...
-      //
-      // But the M_ and A_ linop handles are no longer kept
-      // (are ignored) -- is there a nice way around this ? 
-      // Perhaps not
-      */
-  AsqtadCPSWrapperQprop::AsqtadCPSWrapperQprop(const EvenOddStaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >& S_,
-					       Handle< const ConnectState > state_, 
+  //! Constructor
+  /*!
+  // Keeping the same interface as for the ordinary staggered 
+  // qprop...
+  //
+  // But the M_ and A_ linop handles are no longer kept
+  // (are ignored) -- is there a nice way around this ? 
+  // Perhaps not
+  */
+  AsqtadCPSWrapperQprop::AsqtadCPSWrapperQprop(EvenOddStaggeredTypeFermAct<LatticeStaggeredFermion, 
+					       multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& S_,
+					       Handle< FermState<LatticeStaggeredFermion,
+					       multi1d<LatticeColorMatrix>,
+					       multi1d<LatticeColorMatrix> > state_, 
 					       const InvertParam_t& invParam_) :
     Mass(S_.getQuarkMass()), invParam(invParam_), state(state_)
   {
@@ -56,4 +59,5 @@ namespace Chroma {
     
     return n_count;
   }
-};
+
+}

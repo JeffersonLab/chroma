@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_linop_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_parwilson_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator with parity breaking term
  */
@@ -16,13 +16,13 @@ namespace Chroma
    * \param Mass_    fermion kappa   	       (Read)
    * \param H__      parity breaking term	       (Read)
    */
-  void UnprecParWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void UnprecParWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
 				    const Real& Mass_, const Real& H_)
   {
     Mass = Mass_;
     H = H_;
-    u = u_;
-    D.create(u);
+//    u = u_;
+    D.create(fs);
 
 //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
   }
@@ -66,6 +66,8 @@ namespace Chroma
       chi -= Gamma(Ns*Ns-1)*(H*timesI(psi));
       break;
     }
+
+    getFermBC().modifyF(chi);
 
     END_CODE();
   }

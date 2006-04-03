@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 2.3 2006-03-20 04:22:02 edwards Exp $
+// $Id: inline_mres_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -348,39 +348,43 @@ namespace Chroma
     LatticePropagator delta_prop;
     LatticePropagator deltaSq_prop;
 
+
     try 
     { 
       QDPIO::cout << "Try generic WilsonTypeFermAct actions" << endl;
 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Generic Wilson-Type Array stuff
-      FermionAction<LatticeFermion>* S_f =
+      FermionAction<T,P,Q>* S_f =
 	TheFermionActionFactory::Instance().createObject(fermact,
 							 fermacttop,
 							 fermact_path);
     
-      Handle<const ConnectState> state(S_f->createState(u,
+      Handle< FermState<T,P,Q> > state(S_f->createState(u,
 							state_info_xml,
 							state_info_path)); 
-    
-      LinearOperator<LatticeFermion>* DelLs;
+      
+      LinearOperator<T>* DelLs;
 
       // Possible actions
-      const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* S_dwf = 
-	dynamic_cast<const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(S_f);
-
-      const OverlapFermActBase* S_ov = dynamic_cast<const OverlapFermActBase*>(S_f);
+      WilsonTypeFermAct5D<T,P,Q>* S_dwf = dynamic_cast< WilsonTypeFermAct5D<T,P,Q>*>(S_f);
+      OverlapFermActBase* S_ov = dynamic_cast< OverlapFermActBase*>(S_f);
 
       if (S_dwf != 0)
       {
-	DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_dwf->DeltaLs(state,prop_header.invParam));
+	DelLs = S_dwf->DeltaLs(state,prop_header.invParam);
       }
       else if (S_ov != 0)
       {
-	DelLs = const_cast<LinearOperator<LatticeFermion>*>(S_ov->DeltaLs(state));
+	DelLs = S_ov->DeltaLs(state);
       }
       else
       {
-	throw string("no suitable cast found");
+	throw string("No suitable cast found");
       }
 	
       for(int col = 0; col < Nc; col++) 
@@ -403,10 +407,12 @@ namespace Chroma
       delete S_f;
     }
     catch(const string& e) { 
-      QDPIO::cout << "Error: " << e << endl;
+      QDPIO::cerr << InlineMresEnv::name << ": Error:" << e << endl;
+      QDP_abort(1);
     }
     catch(bad_cast) { 
-      QDPIO::cout << "Action entered is not suitable to be cast to DWF " << endl;
+      QDPIO::cout << InlineMresEnv::name << ": Action entered is not suitable to be cast to DWF " << endl;
+      QDP_abort(1);
     }
 
 
@@ -424,7 +430,8 @@ namespace Chroma
     multi1d<Real> shifted_delta(length);
     multi1d<Real> shifted_deltaSq(length);
   
-    for(int t=0; t<length; t++){
+    for(int t=0; t<length; t++)
+    {
       int t_eff( (t - t0 + length) % length ) ;
       shifted_pseudo[t_eff] = real(pseudo_prop_corr[t]);
       shifted_delta[t_eff]  = real(delta_prop_corr[t]);

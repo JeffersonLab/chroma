@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pg_gaugeact.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: pg_gaugeact.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Parallelgram gauge action
  */
@@ -41,27 +41,18 @@ namespace Chroma
    * The standard parallelogram gauge action
    */
 
-  class PgGaugeAct : public GaugeAction
+  class PgGaugeAct : public LinearGaugeAction
   {
   public:
-    //! General GaugeBC
-    PgGaugeAct(Handle< GaugeBC > gbc_, 
+    //! General CreateGaugeState
+    PgGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 	       const Real& coeff_) : 
-      gbc(gbc_), coeff(coeff_) {}
+      cgs(cgs_), coeff(coeff_) {}
 
     //! Read coeff from a param struct
-    PgGaugeAct(Handle< GaugeBC > gbc_, 
+    PgGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 	       const PgGaugeActParams& p) :
-      gbc(gbc_), coeff(p.coeff) {}
-
-    //! Copy constructor
-    PgGaugeAct(const PgGaugeAct& a) : 
-      gbc(a.gbc), coeff(a.coeff) {}
-
-
-    //! Assignment
-    PgGaugeAct& operator=(const PgGaugeAct& a)
-    {gbc=a.gbc; coeff=a.coeff; return *this;}
+      cgs(cgs_), coeff(p.coeff) {}
 
     //! Is anisotropy used?
     bool anisoP() const {return false;}
@@ -76,21 +67,21 @@ namespace Chroma
     /*! Defined on the even-off (red/black) set */
     const OrderedSet& getSet() const {return rb;}
 
-    //! Produce a gauge boundary condition object
-    const GaugeBC& getGaugeBC() const {return *gbc;}
-
     //! Compute staple
     /*! Default version. Derived class should override this if needed. */
     void staple(LatticeColorMatrix& result,
-		Handle<const ConnectState> state,
+		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const;
 
     //! Compute dS/dU
-    void dsdu(multi1d<LatticeColorMatrix>& result,
-	      const Handle<const ConnectState> state) const;
+    void deriv(multi1d<LatticeColorMatrix>& result,
+	       const Handle< GaugeState<P,Q> >& state) const;
 
     //! Compute the actions
-    Double S(const Handle<const ConnectState> state) const;
+    Double S(const Handle< GaugeState<P,Q> >& state) const;
+
+    //! Produce a gauge create state object
+    const CreateGaugeState<P,Q>& getCreateState() const {return *cgs;}
 
     //! Destructor is automatic
     ~PgGaugeAct() {}
@@ -98,8 +89,14 @@ namespace Chroma
     // Accessors -- non mutable members.
     const Real getCoeff(void) const { return coeff; }
 
+  protected:
+    //! Partial constructor
+    PgGaugeAct() {}
+    //! Hide assignment
+    void operator=(const PgGaugeAct& a) {}
+
   private:
-    Handle< GaugeBC >  gbc;  // Gauge Boundary Condition
+    Handle< CreateGaugeState<P,Q> >  cgs;  // create gauge state
     Real coeff;              // The coupling coefficient
 
   };

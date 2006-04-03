@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 2.2 2006-02-26 03:47:51 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -16,7 +16,7 @@
 #include "zolotarev.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 #include "io/enum_io/enum_io.h"
 
@@ -27,17 +27,21 @@ namespace Chroma
   namespace UnprecHTContFrac5DFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
-										      const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion,
+			multi1d<LatticeColorMatrix>,
+			multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+								       const std::string& path)
     {
-      return new UnprecHTContFrac5DFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+      return new UnprecHTContFrac5DFermActArray(CreateFermStateEnv::reader(xml_in, path), 
 						UnprecHTContFrac5DFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct5D(xml_in, path);
     }
@@ -48,8 +52,10 @@ namespace Chroma
     //! Register all the factories
     bool registerAll()
     {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	& Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      bool foo = true;
+      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+      foo &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      return foo;
     }
 
     //! Register the fermact
@@ -145,24 +151,23 @@ namespace Chroma
   
   // Construct the action out of a parameter structure
   UnprecHTContFrac5DFermActArray::UnprecHTContFrac5DFermActArray(
-    Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
+    Handle< CreateFermState<T,P,Q> > cfs_a_, 
     const UnprecHTContFrac5DFermActParams& params_) :
-    fbc(fbc_a_), params(params_) 
+    cfs(cfs_a_), params(params_) 
   {
-
     // WHAT IS BELOW ONLY WORKS FOR TYPE=0 approximations
     // which is what we use. Forget TYPE=1
     // the Tanh approximation (Higham) is of type TYPE=0
     // We have two cases.
     bool isEvenRatPolyDeg = ( params.RatPolyDeg % 2 == 0);
 
-    if( isEvenRatPolyDeg ) { 
-
+    if( isEvenRatPolyDeg ) 
+    {
       N5 = params.RatPolyDeg+1;
       isLastZeroP = true;     
     }
-    else { 
-
+    else 
+    {
       N5 = params.RatPolyDeg;
       isLastZeroP = false;
     }
@@ -301,10 +306,11 @@ namespace Chroma
       break;
     }
 
-    
     // free the arrays allocated by Tony's Zolo
     zolotarev_free(rdata);
   }
+
+
 
   //! Produce a linear operator for this action
   /*!
@@ -312,8 +318,10 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
-  UnprecHTContFrac5DFermActArray::linOp(Handle<const ConnectState> state) const
+  UnprecLinearOperatorArray<LatticeFermion,
+			    multi1d<LatticeColorMatrix>,
+			    multi1d<LatticeColorMatrix> >* 
+  UnprecHTContFrac5DFermActArray::linOp(Handle< FermState<T,P,Q> > state) const
   {
     START_CODE();
 
@@ -322,7 +330,7 @@ namespace Chroma
       
     init(alpha, beta);
       
-    return new UnprecHTContFrac5DLinOpArray(state->getLinks(),
+    return new UnprecHTContFrac5DLinOpArray(state,
 					    params.OverMass,
 					    params.Mass,
 					    N5,
@@ -348,8 +356,8 @@ namespace Chroma
      * \param A_        Linear operator ( Read )
      * \param Mass_      quark mass ( Read )
      */
-    OvHTCFZ5DQprop(Handle< const LinearOperator< multi1d<T> > > A_,
-		   Handle< LinearOperator<LatticeFermion> > D_denum_,
+    OvHTCFZ5DQprop(Handle< LinearOperatorArray<T> > A_,
+		   Handle< LinearOperator<T> > D_denum_,
 		   const Real& Mass_,
 		   const InvertParam_t& invParam_) : 
       A(A_), D_denum(D_denum_), Mass(Mass_), invParam(invParam_) {}
@@ -447,29 +455,28 @@ namespace Chroma
     // Hide default constructor
     OvHTCFZ5DQprop() {}
 
-    Handle< const LinearOperator< multi1d<T> > > A;
-    Handle< LinearOperator<LatticeFermion> > D_denum;  
+    Handle< LinearOperatorArray<T> > A;
+    Handle< LinearOperator<T> > D_denum;  
     const Real Mass;
     const InvertParam_t invParam;
   };
 
   
   //! Propagator of unpreconditioned H_T kernel continued fraction (5D) operator
-  const SystemSolver<LatticeFermion>* 
-  UnprecHTContFrac5DFermActArray::qprop(Handle<const ConnectState> state,
+  SystemSolver<LatticeFermion>* 
+  UnprecHTContFrac5DFermActArray::qprop(Handle< FermState<T,P,Q> > state,
 					const InvertParam_t& invParam) const
   {
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
     Real a5 = params.b5 - params.c5;
     Real WilsonMass = -params.OverMass;
 
-    Handle< LinearOperator<LatticeFermion> > D_w(new UnprecWilsonLinOp(u, WilsonMass));
-    Handle< LinearOperator<LatticeFermion> > D_denum(new UnprecDWFTransfDenLinOp(u, a5, D_w));
+    Handle< LinearOperator<T> > D_w(new UnprecWilsonLinOp(state, WilsonMass));
+    Handle< LinearOperator<T> > D_denum(new UnprecDWFTransfDenLinOp(a5, D_w));
 
-    return new OvHTCFZ5DQprop<LatticeFermion>(Handle< const LinearOperator< multi1d<LatticeFermion> > >(linOp(state)),
-					      D_denum,
-					      getQuarkMass(),
-					      invParam);
+    return new OvHTCFZ5DQprop<T>(Handle< LinearOperatorArray<T> >(linOp(state)),
+				 D_denum,
+				 getQuarkMass(),
+				 invParam);
   }
 
 

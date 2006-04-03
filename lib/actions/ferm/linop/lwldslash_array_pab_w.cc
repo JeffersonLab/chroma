@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_array_pab_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -48,6 +48,14 @@ namespace Chroma
     START_CODE();
 
     anisoParam = aniso;
+    fbc = state->getFermBC();
+
+    // Sanity check
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << "PABWilsonDslashArray: error: fbc is null" << endl;
+      QDP_abort(1);
+    }
 
     // For now, keep an extra copy
     multi1d<LatticeColorMatrix> u = u_;

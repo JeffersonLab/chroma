@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hyp_smear3d.h,v 2.0 2005-09-25 21:04:40 edwards Exp $
+// $Id: hyp_smear3d.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
 
 #ifndef __hyp_smear3d_h__
 #define __hyp_smear3d_h__

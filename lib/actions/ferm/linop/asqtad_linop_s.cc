@@ -1,4 +1,4 @@
-// $Id: asqtad_linop_s.cc,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: asqtad_linop_s.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Asqtad linear operator
  */
@@ -23,5 +23,5 @@ namespace Chroma
     D.apply(chi, psi, isign, 1);
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

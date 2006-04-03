@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ppdwf4d_linop_w.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: unprec_ppdwf4d_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D using prec 5D bits
  */
@@ -20,20 +20,20 @@ namespace Chroma
   /*!
    * \ingroup linop
    */
-  template<typename T, typename P>
+  template<typename T, typename P, typename Q>
   class UnprecPPDWF4DLinOp : public LinearOperator<T>
   {
   public:
     //! Initialize pointer with existing pointer
     /*! Requires that the pointer p is a return value of new */
-    UnprecPPDWF4DLinOp(const EvenOddPrecLinearOperator< multi1d<T>, P >* D_, 
-		       const EvenOddPrecLinearOperator< multi1d<T>, P >* PV_,
+    UnprecPPDWF4DLinOp(EvenOddPrecLinearOperatorArray<T,P,Q>* D_, 
+		       EvenOddPrecLinearOperatorArray<T,P,Q>* PV_,
 		       const InvertParam_t& invParam_) : 
       D(D_), PV(PV_), invParam(invParam_) {}
 
     //! Copy pointer (one more owner)
-    UnprecPPDWF4DLinOp(Handle<const EvenOddPrecLinearOperator< multi1d<T>, P > > D_, 
-		       Handle<const EvenOddPrecLinearOperator< multi1d<T>, P > > PV_,
+    UnprecPPDWF4DLinOp(Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > D_, 
+		       Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > PV_,
 		       const InvertParam_t& invParam_) : 
       D(D_), PV(PV_), invParam(invParam_) {}
 
@@ -51,9 +51,9 @@ namespace Chroma
     void operator() (T& chi, const T& psi, enum PlusMinus isign) const;
 
   private:
-    const Handle< const EvenOddPrecLinearOperator< multi1d<T>, P > > D;
-    const Handle< const EvenOddPrecLinearOperator< multi1d<T>, P > > PV;
-    const InvertParam_t& invParam;
+    Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > D;
+    Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > PV;
+    const InvertParam_t invParam;
   };
 
 }

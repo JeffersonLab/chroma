@@ -1,4 +1,4 @@
-// $Id: inline_gfix_aggregate.cc,v 1.1 2006-02-23 20:58:00 edwards Exp $
+// $Id: inline_gfix_aggregate.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  *  \brief Inline gauge fixing measurement aggregator
  */

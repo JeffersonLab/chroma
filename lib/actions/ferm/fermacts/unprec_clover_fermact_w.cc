@@ -1,4 +1,4 @@
-// $Id: unprec_clover_fermact_w.cc,v 2.3 2006-02-26 03:47:51 edwards Exp $
+// $Id: unprec_clover_fermact_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 namespace Chroma
 {
@@ -17,17 +17,21 @@ namespace Chroma
   namespace UnprecCloverFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
-										    const std::string& path)
+    WilsonTypeFermAct<LatticeFermion,
+		      multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+								     const std::string& path)
     {
-      return new UnprecCloverFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+      return new UnprecCloverFermAct(CreateFermStateEnv::reader(xml_in, path), 
 				     CloverFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct4D(xml_in, path);
     }
@@ -53,10 +57,12 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
-  UnprecCloverFermAct::linOp(Handle<const ConnectState> state) const
+  UnprecLinearOperator<LatticeFermion,
+		       multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix> >* 
+  UnprecCloverFermAct::linOp(Handle< FermState<T,P,Q> > state) const
   {
-    return new UnprecCloverLinOp(state->getLinks(),param);
+    return new UnprecCloverLinOp(state,param);
   }
 
 }

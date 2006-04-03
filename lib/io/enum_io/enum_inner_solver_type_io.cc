@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_inner_solver_type_io.cc,v 2.1 2006-02-04 16:48:24 edwards Exp $
+// $Id: enum_inner_solver_type_io.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
 /*! \file
  * \brief Inner solver enum
  */

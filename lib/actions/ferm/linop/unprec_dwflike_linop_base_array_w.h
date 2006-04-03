@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwflike_linop_base_array_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_dwflike_linop_base_array_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion linear operator
  */
@@ -18,8 +18,8 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  template<typename T, typename P>
-  class UnprecDWLikeLinOpBaseArray : public UnprecLinearOperator< multi1d<T>, P >
+  template<typename T, typename P, typename Q>
+  class UnprecDWLikeLinOpBaseArray : public UnprecLinearOperatorArray<T,P,Q>
   {
   public:
     //! Length of DW flavor index/space

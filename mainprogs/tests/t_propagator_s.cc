@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
+// $Id: t_propagator_s.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -341,7 +341,11 @@ int main(int argc, char **argv)
   xml_out.flush();
 
   // Create a fermion BC. Note, the handle is on an ABSTRACT type.
-  Handle< FermBC<LatticeStaggeredFermion> >  fbc(new SimpleFermBC<LatticeStaggeredFermion>(input.param.boundary));
+  Handle< FermBC<LatticeStaggeredFermion, 
+    multi1d<LatticeColorMatrix>, 
+    multi1d<LatticeColorMatrix>  > >  fbc(new SimpleFermBC<LatticeStaggeredFermion,
+					  multi1d<LatticeColorMatrix>, 
+					  multi1d<LatticeColorMatrix>  >(input.param.boundary));
 
   //
   // Initialize fermion action
@@ -352,9 +356,11 @@ int main(int argc, char **argv)
   // (compute fat & triple links)
   // Use S_f.createState so that S_f can pass in u0
 
-  Handle<const ConnectState > state(S_f.createState(u));
-//  Handle<const EvenOddLinearOperatorBase<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
-//  Handle<const LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
+  Handle< FermState<LatticeStaggeredFermion,
+    multi1d<LatticeColorMatrix>,
+    multi1d<LatticeColorMatrix> > > state(S_f.createState(u));
+//  Handle< EvenOddLinearOperatorBase<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
+//  Handle< LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
   //
   // Loop over the source color, creating the source
@@ -377,7 +383,7 @@ int main(int argc, char **argv)
   write(xml_out, "RsdCG", input.param.invParam.RsdCG);
   pop(xml_out);
 
-  Handle<const SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
+  Handle< SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
   for(int t_source = 0; t_source < 3; t_source += 2) {
     QDPIO::cout << "Source time slice = " << t_source << endl;

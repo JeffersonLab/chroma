@@ -1,6 +1,15 @@
-// $Id: dwf_quarkprop4_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 2.0  2005-09-25 21:04:30  edwards
+// Revision 3.0  2006-04-03 04:58:52  edwards
+// Major overhaul of fermion and gauge action interface. Basically,
+// all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
+// the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
+// in the sense of Hamilton's equations. The fermbc's have been rationalized to never
+// be over multi1d<T>. The "createState" within the FermionAction is now fixed meaning
+// the "u" fields are now from the coordinate type. There are now "ConnectState" that
+// derive into FermState<T,P,Q> and GaugeState<P,Q>.
+//
+// Revision 2.0  2005/09/25 21:04:30  edwards
 // Moved to version 2.0
 //
 // Revision 1.25  2005/02/21 19:28:59  edwards
@@ -196,8 +205,9 @@ namespace Chroma
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
 		      int t_src, int j_decay,
-		      Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT,
-		      Handle<const ConnectState> state,
+		      Handle< SystemSolverArray<LatticeFermion> > qpropT,
+		      Handle< FermState<LatticeFermion,
+		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		      const Real& m_q,
 		      int& ncg_had)
   {

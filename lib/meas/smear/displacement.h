@@ -1,4 +1,4 @@
-//  $Id: displacement.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
+//  $Id: displacement.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  */

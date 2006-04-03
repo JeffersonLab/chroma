@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_sink_smearing.h,v 1.8 2006-02-22 04:34:05 edwards Exp $
+// $Id: pt_sink_smearing.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
 /*! \file
  *  \brief Point sink smearing
  */

@@ -1,18 +1,30 @@
+// -*- C++ -*-
+// $Id: ovext_const_div_by_resp_strategy.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+/*! \file
+ *  \brief Ovext rescale strategy
+ */
+
 #ifndef ovext_const_div_by_resp_h
 #define ovext_const_div_by_resp_h
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/ovext_tuning_strategy.h"
 
-namespace Chroma {
+namespace Chroma 
+{
     
-  namespace OvExtConstDivByResPStrategyEnv { 
+  /*! @ingroup fermacts */
+  namespace OvExtConstDivByResPStrategyEnv 
+  { 
     extern const std::string name;
     extern const bool registered;
-  };
+  }
   
   
-  class OvExtConstDivByResPStrategy : public AbsOvExtTuningStrategy {
+  //! Ovext rescale strategy
+  /*! @ingroup fermacts */
+  class OvExtConstDivByResPStrategy : public AbsOvExtTuningStrategy 
+  {
   public: 
     // Destructor is automatic
     ~OvExtConstDivByResPStrategy(void) {}

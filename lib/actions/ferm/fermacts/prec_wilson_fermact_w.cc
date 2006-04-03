@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 2.4 2006-02-26 03:47:51 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/prec_wilson_linop_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 namespace Chroma
 {
@@ -16,17 +16,21 @@ namespace Chroma
   namespace EvenOddPrecWilsonFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
-										    const std::string& path)
+    WilsonTypeFermAct<LatticeFermion, 
+		      multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+								     const std::string& path)
     {
-      return new EvenOddPrecWilsonFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+      return new EvenOddPrecWilsonFermAct(CreateFermStateEnv::reader(xml_in, path), 
 					  WilsonFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct4D(xml_in, path);
     }
@@ -37,8 +41,9 @@ namespace Chroma
     //! Register all the factories
     bool registerAll()
     {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+      bool foo = true;
+      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+      foo &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
     }
 
     //! Register the fermact
@@ -52,10 +57,12 @@ namespace Chroma
    *
    * \param state 	    gauge field     	       (Read)
    */
-  const EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* 
-  EvenOddPrecWilsonFermAct::linOp(Handle<const ConnectState> state) const
+  EvenOddPrecConstDetLinearOperator<LatticeFermion,
+				    multi1d<LatticeColorMatrix>,
+				    multi1d<LatticeColorMatrix> >* 
+  EvenOddPrecWilsonFermAct::linOp(Handle< FermState<T,P,Q> > state) const
   {
-    return new EvenOddPrecWilsonLinOp(state->getLinks(),param.Mass,param.anisoParam);
+    return new EvenOddPrecWilsonLinOp(state,param.Mass,param.anisoParam);
   }
 
 }

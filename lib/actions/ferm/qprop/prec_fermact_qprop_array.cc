@@ -1,6 +1,15 @@
-// $Id: prec_fermact_qprop_array.cc,v 2.1 2005-10-06 18:09:23 flemingg Exp $
+// $Id: prec_fermact_qprop_array.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 2.1  2005-10-06 18:09:23  flemingg
+// Revision 3.0  2006-04-03 04:58:53  edwards
+// Major overhaul of fermion and gauge action interface. Basically,
+// all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
+// the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
+// in the sense of Hamilton's equations. The fermbc's have been rationalized to never
+// be over multi1d<T>. The "createState" within the FermionAction is now fixed meaning
+// the "u" fields are now from the coordinate type. There are now "ConnectState" that
+// derive into FermState<T,P,Q> and GaugeState<P,Q>.
+//
+// Revision 2.1  2005/10/06 18:09:23  flemingg
 // Fixed a malfeature exposed by GCC 4.0.
 //
 // Revision 2.0  2005/09/25 21:04:30  edwards
@@ -106,9 +115,13 @@ namespace Chroma
    * \param chi      source ( Read )
    * \return number of CG iterations
    */
-  template <> int PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >::operator() (
-    multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
+  template <> 
+  int PrecFermAct5DQprop<LatticeFermion, 
+			 multi1d<LatticeColorMatrix>,
+			 multi1d<LatticeColorMatrix> >::operator()(multi1d<LatticeFermion>& psi, 
+								   const multi1d<LatticeFermion>& chi) const
   {
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     START_CODE();
 
     int n_count;
@@ -117,6 +130,7 @@ namespace Chroma
     if (psi.size() != size() && chi.size() != size())
       QDP_error_exit("PrecFA5DQprop: sizes wrong");
 
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     /* Step (i) */
     /* chi_tmp_o =  chi_o - D_oe * A_ee^-1 * chi_e */
     multi1d<LatticeFermion> chi_tmp(N5);
@@ -124,21 +138,29 @@ namespace Chroma
       multi1d<LatticeFermion> tmp1(N5);
       multi1d<LatticeFermion> tmp2(N5);
 
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       A->evenEvenInvLinOp(tmp1, chi, PLUS);
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       A->oddEvenLinOp(tmp2, tmp1, PLUS);
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       for(int n=0; n < N5; ++n)
 	chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     }
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
 
     QDPIO::cout << "InvType is " << invParam.invType << endl << flush;
     switch(invParam.invType)
     {
     case CG_INVERTER: 
     {
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       /* tmp = M_dag(u) * chi_tmp */
       multi1d<LatticeFermion> tmp(N5);
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
 
       (*A)(tmp, chi_tmp, MINUS);
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
 
       
       /* psi = (M^dag * M)^(-1) chi_tmp */
@@ -183,21 +205,26 @@ namespace Chroma
       
     }
     
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     END_CODE();
 
     return n_count;
   }
 
 
+  typedef LatticeFermion LF;
+  typedef multi1d<LatticeColorMatrix> LCM;
+
   //! Propagator of a generic even-odd preconditioned fermion linear operator
   template<>
-  const SystemSolver< multi1d<LatticeFermion> >* 
-  EvenOddPrecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >::qpropT(
-    Handle<const ConnectState> state,
-    const InvertParam_t& invParam) const
+  SystemSolverArray<LF>* 
+  EvenOddPrecWilsonTypeFermAct5D<LF,LCM,LCM>::qpropT(Handle< FermState<LF,LCM,LCM> > state,
+						     const InvertParam_t& invParam) const
   {
-    return new PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >(Handle< const EvenOddPrecLinearOperator<multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(linOp(state)), invParam);
+QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
+    return new PrecFermAct5DQprop<LF,LCM,LCM>(
+      Handle< EvenOddPrecLinearOperatorArray<LF,LCM,LCM> >(linOp(state)), invParam);
   }
   
 
-}; // namespace Chroma
+} // namespace Chroma

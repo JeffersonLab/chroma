@@ -1,4 +1,4 @@
-/* ! $Id: eig_spec_array.h,v 2.0 2005-09-25 21:04:33 edwards Exp $ */
+/* ! $Id: eig_spec_array.h,v 3.0 2006-04-03 04:58:57 edwards Exp $ */
 
 #ifndef __eig_spec_bj_array_w_h__
 #define __eig_spec_bj_array_w_h__
@@ -8,7 +8,7 @@
 
 namespace Chroma {
 
-void EigSpecRitzCG(const LinearOperator< multi1d<LatticeFermion> >& H, // Herm pos def operator
+void EigSpecRitzCG(const LinearOperatorArray<LatticeFermion>& H, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
 		   multi2d<LatticeFermion>& psi,     // E-vectors
 		   int n_eig,                       // no of eig wanted
@@ -27,7 +27,7 @@ void EigSpecRitzCG(const LinearOperator< multi1d<LatticeFermion> >& H, // Herm p
 		   XMLWriter& xml_out         // Diagnostics
 	      );
 
-void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& H, // Herm pos def operator
+void EigSpecRitzKS(const LinearOperatorArray<LatticeFermion>& H, // Herm pos def operator
 		   multi1d<Real>& lambda_H,          // E-values
 		   multi2d<LatticeFermion>& psi,     // E-vectors
 		   int n_eig,                       // no of eig wanted
@@ -54,7 +54,7 @@ void EigSpecRitzKS(const LinearOperator<multi1d<LatticeFermion> >& H, // Herm po
 	      );
 
 
-void fixMMev2Mev(const LinearOperator<multi1d<LatticeFermion> >& M,  // The Op to fix to
+void fixMMev2Mev(const LinearOperatorArray<LatticeFermion>& M,  // The Op to fix to
 		 multi1d<Real>& lambda,                    // The Evals of M^{dag}M on input
 		                                           // The Evals of M on output        
 		 multi2d<LatticeFermion>& ev_psi,          // The Evecs corresponding to lambda

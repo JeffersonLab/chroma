@@ -1,4 +1,4 @@
-// $Id: seqsource_aggregate_w.cc,v 2.2 2006-02-14 01:52:30 edwards Exp $
+// $Id: seqsource_aggregate_w.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
 /*! \file
  *  \brief All sequential source constructors
  */

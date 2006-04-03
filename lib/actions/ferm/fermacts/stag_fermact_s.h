@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stag_fermact_s.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: stag_fermact_s.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -16,11 +16,17 @@ namespace Chroma
   /*! \ingroup fermacts
    *
    */
-  class StagFermAct : public EvenOddStaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >
+  class StagFermAct : public EvenOddStaggeredTypeFermAct<LatticeStaggeredFermion, 
+		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeStaggeredFermion      T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! General FermBC
-    StagFermAct(Handle< FermBC<LatticeStaggeredFermion> > fbc_, 
+    StagFermAct(Handle< FermBC<T,P,Q> > fbc_, 
 		const Real& Mass_) : 
       fbc(fbc_), Mass(Mass_) {}
 
@@ -35,23 +41,24 @@ namespace Chroma
     //! Return the quark mass
     const Real getQuarkMass() const {return Mass;}
 
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeStaggeredFermion>& getFermBC() const {return *fbc;}
-
     //! Produce a linear operator for this action
-    const EvenOddLinearOperator< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    EvenOddLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator M^dag.M for this action
-    const DiffLinearOperator<LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* lMdagM(Handle<const ConnectState> state) const;
+    DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state) const;
 
     //! Destructor is automatic
     ~StagFermAct() {}
+
+  protected:
+    //! Return the fermion BC object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
 
   private:
     StagFermAct() {} //hide default constructor
   
   private:
-    Handle< FermBC<LatticeStaggeredFermion> >  fbc;
+    Handle< FermBC<T,P,Q> >  fbc;
     Real Mass;
   };
 

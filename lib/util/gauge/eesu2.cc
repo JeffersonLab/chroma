@@ -1,4 +1,4 @@
-// $Id: eesu2.cc,v 2.0 2005-09-25 21:04:44 edwards Exp $
+// $Id: eesu2.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(2) lie algebra element
  */

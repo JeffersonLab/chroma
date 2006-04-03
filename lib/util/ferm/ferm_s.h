@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ferm_s.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
+// $Id: ferm_s.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
 
 #ifndef __ferm_s_h__
 #define __ferm_s_h__

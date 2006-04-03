@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 2.2 2005-12-18 03:51:10 edwards Exp $
+// $Id: gauge_startup.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */

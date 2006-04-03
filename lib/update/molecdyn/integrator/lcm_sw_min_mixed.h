@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_sw_min_mixed.h,v 2.2 2006-02-02 18:39:54 edwards Exp $
+// $Id: lcm_sw_min_mixed.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
 
 /*! @file
  * @brief Sexton Weingarten integrator

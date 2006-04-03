@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial_w.h,v 2.4 2006-02-16 02:59:03 edwards Exp $
+// $Id: unprec_two_flavor_monomial_w.h,v 3.0 2006-04-03 04:59:10 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -34,6 +34,11 @@ namespace Chroma
     LatticeFermion>
     {
     public: 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Construct out of a parameter struct. Check against the desired FermAct name
       UnprecTwoFlavorWilsonTypeFermMonomial(const TwoFlavorWilsonTypeFermMonomialParams& param_);
 
@@ -41,34 +46,18 @@ namespace Chroma
       // Copy Constructor
       UnprecTwoFlavorWilsonTypeFermMonomial(const UnprecTwoFlavorWilsonTypeFermMonomial& m) : phi(m.phi), fermact((m.fermact)), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
-#if 0
-      const LatticeFermion& debugGetPhi(void) const {
-	return getPhi();
-      }
-
-
-      void debugGetX(LatticeFermion& X, const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) {
-	getX(X,s);
-      }
-#endif
-
-      const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& debugGetFermAct(void) const { 
-	return getFermAct();
-      }
-      
-
     protected:
 
-      LatticeFermion& getPhi(void) {
+      T& getPhi(void) {
 	// If phi are changed we must reset the chrono predictor
 	return phi;
       }
 
-      const LatticeFermion& getPhi(void) const {
+      const T& getPhi(void) const {
 	return phi;
       }
 
-      const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >& getFermAct(void) const { 
+      const UnprecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -90,7 +79,7 @@ namespace Chroma
       LatticeFermion phi;
 
       // A handle for the UnprecWilsonFermAct
-      Handle<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > fermact;
 
       // The parameters for the inversion
       InvertParam_t inv_param;

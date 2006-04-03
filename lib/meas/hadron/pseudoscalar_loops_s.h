@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_loops_s.h,v 2.1 2006-02-06 20:24:58 egregory Exp $
+// $Id: pseudoscalar_loops_s.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
 #ifndef PSEUDOSCALAR_LOOPS_S_H
 #define PSEUDOSCALAR_LOOPS_S_H
 

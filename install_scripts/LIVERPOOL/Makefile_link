@@ -1,4 +1,4 @@
-# $Id: Makefile_link,v 1.1 2005-11-12 13:13:10 mcneile Exp $
+# $Id: Makefile_link,v 3.0 2006-04-03 04:58:41 edwards Exp $
 #
 # Makefile to link in chroma/qdp++ library
 # functions to a main program.

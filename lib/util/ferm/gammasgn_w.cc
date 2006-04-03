@@ -1,4 +1,4 @@
-// $Id: gammasgn_w.cc,v 2.1 2006-01-29 05:20:34 edwards Exp $
+// $Id: gammasgn_w.cc,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */

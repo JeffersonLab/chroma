@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_type_map.h,v 2.1 2006-02-04 16:25:58 edwards Exp $
+// $Id: enum_type_map.h,v 3.0 2006-04-03 04:58:56 edwards Exp $
 /*! \file
  * \brief Enum map
  *

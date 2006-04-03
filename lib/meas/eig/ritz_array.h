@@ -1,4 +1,4 @@
-// $Id: ritz_array.h,v 2.0 2005-09-25 21:04:33 edwards Exp $
+// $Id: ritz_array.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
 #ifndef __ritz_array_h__
 #define __ritz_array_h__
 
@@ -99,7 +99,7 @@ namespace Chroma {
  */
 
 template < typename T >
-void Ritz_t(const LinearOperator<multi1d<T> >& A, // Herm Pos Def
+void Ritz_t(const LinearOperatorArray<T>& A, // Herm Pos Def
 	    Real& lambda,               // Current E-value
 	    multi2d<T>& psi_all,        // E-vector array
 	    int N_eig,                  // Current evec index
@@ -118,7 +118,7 @@ void Ritz_t(const LinearOperator<multi1d<T> >& A, // Herm Pos Def
 	    const Real& gamma_factor) ;  // Convergence factor Gamma
 
 
-void Ritz(const LinearOperator<multi1d<LatticeFermion> >& A,   // Herm Pos Def
+void Ritz(const LinearOperatorArray<LatticeFermion>& A,   // Herm Pos Def
 	  Real& lambda,                            // Current E-value
 	  multi2d<LatticeFermion>& psi_all,        // E-vector array
 	  int N_eig,                  // Current evec index

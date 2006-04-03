@@ -1,4 +1,4 @@
-// $Id: t_bicgstab.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: t_bicgstab.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 
 #include <iostream>
 #include <sstream>
@@ -76,12 +76,15 @@ int main(int argc, char **argv)
   // Measure the plaquette on the gauge
   MesPlq(xml_out, "Observables", u);
   xml_out.flush();
+  
+  // Typedefs to save typing
+  typedef LatticeFermion               T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
 
   // Create a FermBC
-  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
+  Handle<FermBC<T,P,Q> >  fbc(new SimpleFermBC<T,P,Q>(input.param.boundary));
 
-  Handle< FermBC<multi1d<LatticeFermion> > >  fbc_a(new SimpleFermBC<multi1d<LatticeFermion> >(input.param.boundary));
- 
   // Initialize fermion action
   //
   FermionAction<LatticeFermion>* S_f_ptr = 0;
@@ -125,7 +128,7 @@ int main(int argc, char **argv)
     
       // Construct Fermact -- now uses constructor from the zolo4d params
       // struct
-      S_f_a_ptr = new Zolotarev5DFermActArray(fbc_a, fbc, zolo5d, xml_out);
+      S_f_a_ptr = new Zolotarev5DFermActArray(fbc, fbc, zolo5d, xml_out);
     }
     break;
 
@@ -134,7 +137,7 @@ int main(int argc, char **argv)
       const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(input.param.FermActHandle));
       
       QDPIO::cout << "FERM_ACT_DWF" << endl;
-      S_f_a_ptr = new EvenOddPrecDWFermActArray(fbc_a,
+      S_f_a_ptr = new EvenOddPrecDWFermActArray(fbc,
 						dwf.chiralParam.OverMass, 
 						dwf.Mass, 
 						dwf.chiralParam.N5);
@@ -146,7 +149,7 @@ int main(int argc, char **argv)
       const DWFFermActParams& dwf = dynamic_cast<const DWFFermActParams&>(*(input.param.FermActHandle));
       
       QDPIO::cout << "FERM_ACT_UNPRECONDITONED_DWF" << endl;
-      S_f_a_ptr = new UnprecDWFermActArray(fbc_a,
+      S_f_a_ptr = new UnprecDWFermActArray(fbc,
 					   dwf.chiralParam.OverMass, 
 					   dwf.Mass, 
 					   dwf.chiralParam.N5);
@@ -161,11 +164,11 @@ int main(int argc, char **argv)
 
   // Create a useable handle on the action
   // The handle now owns the pointer
-  Handle< FermionAction<LatticeFermion> > S_f(S_f_ptr);
-  Handle< FermionAction< multi1d<LatticeFermion> > > S_f_a(S_f_a_ptr);
+  Handle< FermionAction<T,P,Q> > S_f(S_f_ptr);
+  Handle< FermionAction<T,P,Q> > S_f_a(S_f_a_ptr);
   
   // FIrst we have to set up the state -- this is fermact dependent
-  const ConnectState *state_ptr;
+  const FermState< *state_ptr;
 
   switch(input.param.FermActHandle->getFermActType()) {
   case FERM_ACT_WILSON:

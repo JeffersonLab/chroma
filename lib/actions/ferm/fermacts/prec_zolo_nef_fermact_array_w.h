@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_zolo_nef_fermact_array_w.h,v 2.2 2006-03-21 04:42:49 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -51,28 +51,23 @@ namespace Chroma
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    * See also Brower et.al. LATTICE04
    */
-  class EvenOddPrecZoloNEFFermActArray : public EvenOddPrecDWFermActBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecZoloNEFFermActArray : public EvenOddPrecDWFermActBaseArray<LatticeFermion, 
+				   multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! General FermBC
-    EvenOddPrecZoloNEFFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+    EvenOddPrecZoloNEFFermActArray(Handle< CreateFermState<T,P,Q> > cfs_, 
 				   const EvenOddPrecZoloNEFFermActArrayParams& param_) : 
-      fbc(fbc_), params(param_) {}
+      cfs(cfs_), params(param_) {}
 
     //! Copy constructor
     EvenOddPrecZoloNEFFermActArray(const EvenOddPrecZoloNEFFermActArray& a) : 
-      fbc(a.fbc), params(a.params) {}
-
-    //! Assignment
-    EvenOddPrecZoloNEFFermActArray& operator=(const EvenOddPrecZoloNEFFermActArray& a)
-    {
-      fbc = a.fbc; 
-      params = a.params;
-      return *this;
-    }
-
-    //! Return the fermion BC object for this action
-    const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+      cfs(a.cfs), params(a.params) {}
 
     //! Length of DW flavor index/space
     int size() const {return params.N5;}
@@ -81,12 +76,12 @@ namespace Chroma
     Real getQuarkMass() const {return params.Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
-											     const Real& m_q) const;
+    UnprecDWLikeLinOpBaseArray<T,P,Q>* unprecLinOp(Handle< FermState<T,P,Q> > state, 
+						   const Real& m_q) const;
 
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-    const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
-												const Real& m_q) const;
+    EvenOddPrecDWLikeLinOpBaseArray<T,P,Q>* precLinOp(Handle< FermState<T,P,Q> > state, 
+						      const Real& m_q) const;
 
     //! Destructor is automatic
     ~EvenOddPrecZoloNEFFermActArray() {}
@@ -108,18 +103,27 @@ namespace Chroma
 		   XMLWriter& xml_out,
 		   const LatticePropagator& q_src,
 		   int t_src, int j_decay,
-		   Handle<const ConnectState> state,
+		   Handle< FermState<T,P,Q> > state,
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
 		   bool obsvP,
 		   int& ncg_had);
+
+  protected:
+    //! Return the fermion BC object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
+    //! Partial constructor
+    EvenOddPrecZoloNEFFermActArray() {}
+    //! Assignment
+    void operator=(const EvenOddPrecZoloNEFFermActArray& a) {}
 
   private:
     void initCoeffs(multi1d<Real>& b5_arr,
 		    multi1d<Real>& c5_arr) const;
 
   private:
-    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     EvenOddPrecZoloNEFFermActArrayParams params;
   };
 

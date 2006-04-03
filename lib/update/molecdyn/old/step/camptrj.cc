@@ -1,4 +1,4 @@
-// $Id: camptrj.cc,v 2.0 2005-09-25 21:04:42 edwards Exp $
+// $Id: camptrj.cc,v 3.0 2006-04-03 04:59:10 edwards Exp $
 
 #error "NOT FULLY CONVERTED - NEED TO MOVE AlgETrj into params of Integ. functor"
 

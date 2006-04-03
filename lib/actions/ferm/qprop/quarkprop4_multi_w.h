@@ -15,11 +15,13 @@ namespace Chroma
   OverlapFermActBase::multiQuarkProp4(multi1d<LatticePropagator>& q_sol, 
 				      XMLWriter& xml_out,
 				      const LatticePropagator& q_src,
-				      Handle<const ConnectState> state,
+				      Handle< FermState<LatticeFermion,
+				      multi1d<LatticeColorMatrix>,
+				      multi1d<LatticeColorMatrix> > state,
 				      const multi1d<Real>& masses,
 				      const Multi1InvertParam_t& invParam,
 				      const int n_soln,
 				      int& ncg_had);
 
-};
+}
 #endif

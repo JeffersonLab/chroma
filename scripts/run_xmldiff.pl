@@ -1,5 +1,5 @@
 #
-#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 2.0 2005-09-25 21:04:54 edwards Exp $
+#  $Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/scripts/run_xmldiff.pl,v 3.0 2006-04-03 04:59:22 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile

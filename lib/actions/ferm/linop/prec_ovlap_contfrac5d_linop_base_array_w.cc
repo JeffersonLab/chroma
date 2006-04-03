@@ -1,4 +1,4 @@
-// $Id: prec_ovlap_contfrac5d_linop_base_array_w.cc,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_ovlap_contfrac5d_linop_base_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Base class for even-odd prec. 5D continued fraction linop
  */
@@ -12,7 +12,7 @@ using namespace QDP::Hints;
 namespace Chroma 
 { 
   EvenOddPrecOvlapContFrac5DLinOpBaseArray::EvenOddPrecOvlapContFrac5DLinOpBaseArray(
-    Handle<const ConnectState> state,
+    Handle< FermState<T,P,Q> > state,
     const Real& _m_q,
     const Real& _OverMass,
     int _N5,
@@ -33,8 +33,7 @@ namespace Chroma
       dslash_length = N5;
     }
 
-    Handle< const WilsonDslashArray > Ds(new WilsonDslashArray(state->getLinks(),dslash_length));
-    Dslash  = Ds;  // Copy Handle -- M now owns dslash
+    Dslash.create(state,dslash_length);
 
     // The mass ratio
     Real mass = ( Real(1) + m_q ) / (Real(1) - m_q);
@@ -299,7 +298,7 @@ namespace Chroma
     // Optimisation... do up to the penultimate block...
 
     // (N5-1)( Dslash + 2NcNs) flops/site
-    Dslash->apply(tmp, psi, PLUS, cb);
+    Dslash.apply(tmp, psi, PLUS, cb);
 
     for(int i=0; i < N5-1; i++) { 
       /*
@@ -307,7 +306,7 @@ namespace Chroma
       // gamma_5 Dslash is hermitian so I can ignore isign
 
       // Apply g5 Dslash
-      Dslash->apply(tmp, psi[i], PLUS, cb);
+      Dslash.apply(tmp, psi[i], PLUS, cb);
   
       // chi[i][rb[cb]] = Gamma(G5)*tmp;
       */
@@ -321,7 +320,7 @@ namespace Chroma
     if( !isLastZeroP ) {
 
       // Vector Dslash gets this appropriately
-      //Dslash->apply(tmp, psi[N5-1], PLUS, cb);
+      //Dslash.apply(tmp, psi[N5-1], PLUS, cb);
       // chi[N5-1][rb[cb]] = Gamma(G5)*tmp;
 
       // Chi_i is now -(1/2) beta_tilde_i Dslash 
@@ -379,7 +378,7 @@ namespace Chroma
 	tmp[rb[cb]] *= coeff;
 
 	// Apply g5 Dslash
-	Dslash->deriv(ds_tmp, tmp, psi[i], PLUS, cb);
+	Dslash.deriv(ds_tmp, tmp, psi[i], PLUS, cb);
 	ds_u += ds_tmp;
       }
       break;
@@ -401,7 +400,7 @@ namespace Chroma
 	tmp[rb[1-cb]] *= coeff;
 
 	// Apply g5 Dslash
-	Dslash->deriv(ds_tmp, chi[i], tmp, MINUS, cb);
+	Dslash.deriv(ds_tmp, chi[i], tmp, MINUS, cb);
 	ds_u += ds_tmp;
       }
       break;

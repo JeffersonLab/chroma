@@ -1,4 +1,4 @@
-// $Id: fermbcs_reader_w.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: fermbcs_reader_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Fermionic BC reader
  */
@@ -19,7 +19,10 @@ namespace Chroma
      * backwards compatibility with the FermionAction readers by looking for
      * either the "boundary" tag or the FermionBC group
      */
-    Handle< FermBC<LatticeFermion> > reader(XMLReader& xml_in, const std::string& path)
+    Handle< FermBC<LatticeFermion,
+		   multi1d<LatticeColorMatrix>, 
+		   multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 
+							  const std::string& path)
     {
       XMLReader top(xml_in, path);
 
@@ -41,56 +44,12 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      Handle< FermBC<LatticeFermion> > 
+      Handle< FermBC<LatticeFermion,
+	             multi1d<LatticeColorMatrix>,
+	             multi1d<LatticeColorMatrix> > > 
 	fbc(TheWilsonTypeFermBCFactory::Instance().createObject(fermbc,
 								top,
 								fermbc_path));
-
-      return fbc;
-    }
-  }
-
-
-  //! Name and registration
-  namespace WilsonTypeFermBCArrayEnv
-  {
-    // Helper function for the FermionAction readers
-    /*
-     * This structure should not be replicated. This routine helps maintain
-     * backwards compatibility with the FermionAction readers by looking for
-     * either the "boundary" tag or the FermionBC group
-     */
-    Handle< FermBC< multi1d<LatticeFermion> > > reader(XMLReader& xml_in, const std::string& path)
-    {
-      XMLReader top(xml_in, path);
-
-      std::string fermbc;
-      std::string fermbc_path;
-      if (top.count("FermionBC") != 0)
-      {
-	fermbc_path = "FermionBC";
-	read(top, fermbc_path + "/FermBC", fermbc);
-      }
-      else if (top.count("boundary") != 0)
-      {
-	fermbc_path = ".";
-	fermbc = WilsonTypeSimpleFermBCEnv::name;
-      }
-      else
-      {
-	XMLFileWriter xml_tmp("xml_tmp");
-	push(xml_tmp,"XmlOut");
-	xml_tmp << top;
-	pop(xml_tmp);
-	QDPIO::cerr << "path = " << path << endl;
-	QDPIO::cerr << "Error: neither FermionBC group nor boundary found" << endl;
-	QDP_abort(1);
-      }
-
-      Handle< FermBC< multi1d<LatticeFermion> > > 
-	fbc(TheWilsonTypeFermBCArrayFactory::Instance().createObject(fermbc,
-								     top,
-								     fermbc_path));
 
       return fbc;
     }

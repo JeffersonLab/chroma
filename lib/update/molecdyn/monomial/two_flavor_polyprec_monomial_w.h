@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_polyprec_monomial_w.h,v 2.3 2006-03-17 02:05:56 edwards Exp $
+// $Id: two_flavor_polyprec_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials
@@ -59,13 +59,13 @@ namespace Chroma
       //    X = (M^dag*M)^(-1)*chi   Y = M*X = (M^dag)^(-1)*chi
       // In Robert's notation,  X -> psi .
       //
-      const PolyWilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      const PolyWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
       
       // Create a state for linop
-      Handle< const ConnectState> state(FA.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const DiffLinearOperator<Phi,P> > lin(FA.polyPrecLinOp(state));
+      Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.polyPrecLinOp(state));
 	
       Phi X;
 
@@ -94,14 +94,14 @@ namespace Chroma
       // Heatbath all the fields
       
       // Get at the ferion action for piece i
-      const PolyWilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      const PolyWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
       
       // Create a Connect State, apply fermionic boundaries
-      Handle< const ConnectState > f_state(FA.createState(field_state.getQ()));
+      Handle< FermState<Phi,P,Q> > f_state(FA.createState(field_state.getQ()));
       
       // Create a linear operator
-      Handle< const LinearOperator<Phi> > H(FA.hermitianLinOp(f_state));
-      Handle< const PolyLinearOperator<Phi,P> > Poly(FA.polyLinOp(f_state));
+      Handle< LinearOperator<Phi> > H(FA.hermitianLinOp(f_state));
+      Handle< PolyLinearOperator<Phi,P,Q> > Poly(FA.polyLinOp(f_state));
       
       Phi eta=zero;
       
@@ -144,7 +144,7 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     //! Get at fermion action
-    virtual const PolyWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
+    virtual const PolyWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -153,7 +153,7 @@ namespace Chroma
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
 
     // Get X = (Q*P(Q^2)*Q)^{-1} eta
-    virtual int invert(Phi& X, const LinearOperator<Phi>& M, const Phi& eta) const
+    virtual int invert(Phi& X, const DiffLinearOperator<Phi,P,Q>& M, const Phi& eta) const
     {
       const InvertParam_t& inv_param = getInvParams();
 
@@ -186,15 +186,15 @@ namespace Chroma
       const InvertParam_t& inv_param = getInvParams();
 
       // Grab the fermact
-      const PolyWilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      const PolyWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
       // Make the state
-      Handle< const ConnectState > state(FA.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 
       // Guess is passed in
    
       // Get linop
-      Handle< const LinearOperator<Phi> > M(FA.polyPrecLinOp(state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.polyPrecLinOp(state));
       int n_count;
 
       // Do the inversion...
@@ -272,7 +272,7 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     //! Get at fermion action
-    virtual const PolyWilsonTypeFermAct<Phi,P>& getFermAct(void) const = 0;
+    virtual const PolyWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -305,12 +305,12 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_odd_odd");
 
-      const PolyWilsonTypeFermAct<Phi,P>& FA = getFermAct();
+      const PolyWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
-      Handle<const ConnectState> bc_g_state = FA.createState(s.getQ());
+      Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< const LinearOperator<Phi> > lin(FA.linOp(bc_g_state));
+      Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
       // Get the X fields
       Phi X;
 
@@ -344,7 +344,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const PolyWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+    virtual const PolyWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
     virtual const InvertParam_t getInvParams(void) const = 0;
@@ -381,7 +381,7 @@ namespace Chroma
     // Inherit everything from Base Class
   protected:
     //! Get at fermion action
-    virtual const PolyWilsonTypeFermAct<Phi,P>& getFermAct() const = 0;
+    virtual const PolyWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
   };
 
 }

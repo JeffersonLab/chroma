@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
+// $Id: t_ritz_KS.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
 
 #include "chroma.h"
 
@@ -12,16 +12,16 @@ bool linkage_hack()
   return foo;
 }
 
-void RitzCode5D(Handle< const LinearOperator<multi1d<LatticeFermion> > >& MM,
+void RitzCode5D(Handle< LinearOperatorArray<LatticeFermion> >& MM,
 		const ChromaWilsonRitz_t& input,
 		XMLWriter& xml_out);
 
-void RitzCode4D(Handle< const LinearOperator<LatticeFermion> >& MM,
+void RitzCode4D(Handle< LinearOperator<LatticeFermion> >& MM,
 		const ChromaWilsonRitz_t& input,
 		XMLWriter& xml_out);
 
-void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
-		  Handle< const LinearOperator<LatticeFermion> >& H,
+void RitzCode4DHw(Handle< LinearOperator<LatticeFermion> >& MM,
+		  Handle< LinearOperator<LatticeFermion> >& H,
 		  const ChromaWilsonRitz_t& input,
 		  XMLWriter& xml_out);
 
@@ -95,22 +95,27 @@ int main(int argc, char **argv)
 
   bool success = false;
 
+  // Typedefs to save typing
+  typedef LatticeFermion               T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
+
 #if 1
   if( ! success ) { 
     try { 
       QDPIO::cout << "Trying 5D actions" << endl;
 
       // DWF-like 5D Wilson-Type stuff
-      Handle< WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> > >
+      Handle< WilsonTypeFermAct5D<T,P,Q> >
 	S_f(TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact,
 								   fermacttop,
 								   fermact_path));
 
-      Handle<const ConnectState> state(S_f->createState(u,
+      Handle< FermState<T,P,Q> > state(S_f->createState(u,
 							state_info_xml,
 							state_info_path));
 
-      Handle< const LinearOperator<multi1d<LatticeFermion> > > MM(S_f->lMdagM(state));
+      Handle< LinearOperatorArray<LatticeFermion> > MM(S_f->lMdagM(state));
 
 
       QDPIO::cout << "Call 5D ritz code" << endl;
@@ -136,18 +141,18 @@ int main(int argc, char **argv)
 
 	QDPIO::cout << "Special case. Computing Hw e-values and evecs too" << endl;
 	// DWF-like 5D Wilson-Type stuff
-	Handle< WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
+	Handle< WilsonTypeFermAct<T,P,Q> >
 	  S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
 								   fermacttop,
 								   fermact_path));
 	
-	Handle<const ConnectState> state(S_f->createState(u,
+	Handle< FermState<T,P,Q> > state(S_f->createState(u,
 							  state_info_xml,
 							  state_info_path));
 
-	Handle< const LinearOperator<LatticeFermion> > MM(S_f->lMdagM(state));
+	Handle< LinearOperator<T> > MM(S_f->lMdagM(state));
 
-	Handle< const LinearOperator<LatticeFermion> > H(S_f->hermitianLinOp(state));
+	Handle< LinearOperator<T> > H(S_f->hermitianLinOp(state));
 
 	RitzCode4DHw(MM, H, input, xml_out);
 
@@ -155,16 +160,16 @@ int main(int argc, char **argv)
       }
       else {
 
-	Handle< WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
+	Handle< WilsonTypeFermAct<T,P,Q> >
 	  S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
 								   fermacttop,
 								   fermact_path));
 	
-	Handle<const ConnectState> state(S_f->createState(u,
+	Handle< FermState<T,P,Q> > state(S_f->createState(u,
 							  state_info_xml,
 							  state_info_path));
 
-	Handle< const LinearOperator<LatticeFermion> > MM(S_f->lMdagM(state));
+	Handle< LinearOperator<T> > MM(S_f->lMdagM(state));
 
 	RitzCode4D(MM, input, xml_out);
 
@@ -177,10 +182,6 @@ int main(int argc, char **argv)
   }
 
 
-
-
-
-
   pop(xml_out);
   xml_out.flush();
   xml_out.close();
@@ -190,7 +191,7 @@ int main(int argc, char **argv)
 }
 
 
-void RitzCode4D(Handle< const LinearOperator<LatticeFermion> >& MM,
+void RitzCode4D(Handle< LinearOperator<LatticeFermion> >& MM,
 		const ChromaWilsonRitz_t& input,
 		XMLWriter& xml_out)
 {
@@ -267,7 +268,7 @@ void RitzCode4D(Handle< const LinearOperator<LatticeFermion> >& MM,
   Real hi_RsdR = 1.0e-4;
   Real hi_RsdA = 1.0e-4;
 
-  Handle<const LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
+  Handle< LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
   
   multi1d<Real> lambda_high_aux(1);
   multi1d<LatticeFermion> lambda_high_vec(1);
@@ -311,8 +312,8 @@ void RitzCode4D(Handle< const LinearOperator<LatticeFermion> >& MM,
   pop(xml_out);
 }
 
-void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
-		  Handle< const LinearOperator<LatticeFermion> >& H,
+void RitzCode4DHw(Handle< LinearOperator<LatticeFermion> >& MM,
+		  Handle< LinearOperator<LatticeFermion> >& H,
 		  const ChromaWilsonRitz_t& input,
 		  XMLWriter& xml_out)
 {
@@ -453,7 +454,7 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
   int n_cg_high;
   XMLBufferWriter high_xml;
   
-  Handle<const LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
+  Handle< LinearOperator<LatticeFermion> > MinusMM = new lopscl<LatticeFermion, Real>(MM, Real(-1.0));
   // Initial guess -- upper bound on spectrum
   lambda_high_aux[0] = Real(8);
   
@@ -492,7 +493,7 @@ void RitzCode4DHw(Handle< const LinearOperator<LatticeFermion> >& MM,
 
 }
 
-void RitzCode5D(Handle< const LinearOperator<multi1d<LatticeFermion> > >& MM,
+void RitzCode5D(Handle< LinearOperatorArray<LatticeFermion> >& MM,
 		const ChromaWilsonRitz_t& input,
 		XMLWriter& xml_out)
 {
@@ -600,7 +601,7 @@ void RitzCode5D(Handle< const LinearOperator<multi1d<LatticeFermion> > >& MM,
   
   Real hi_RsdR = 1.0e-4;
   Real hi_RsdA = 1.0e-4;
-  Handle<const LinearOperator<multi1d<LatticeFermion> > > MinusMM = new lopscl<multi1d<LatticeFermion>, Real>(MM, Real(-1.0));
+  Handle< LinearOperatorArray<LatticeFermion> > MinusMM = new lopsclArray<LatticeFermion, Real>(MM, Real(-1.0));
   
   multi1d<Real> lambda_high_aux(1);
   multi2d<LatticeFermion> lambda_high_vec(1,N5);

@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 2.3 2006-01-17 22:03:48 edwards Exp $ 
+// $Id: baryon_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */

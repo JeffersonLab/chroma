@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermact_params.cc,v 2.4 2005-10-13 18:38:23 bjoo Exp $
+// $Id: stout_fermact_params.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
 
 #include "actions/ferm/fermacts/stout_fermact_params.h"
 #include <sstream>

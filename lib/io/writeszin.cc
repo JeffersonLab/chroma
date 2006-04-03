@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 2.2 2005-12-29 03:46:16 kostas Exp $
+// $Id: writeszin.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 2.1 2005-12-07 03:51:47 edwards Exp $
+// $Id: abs_integrator.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
 
 /*! @file
  * @brief Integrators

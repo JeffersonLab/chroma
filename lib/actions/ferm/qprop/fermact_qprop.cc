@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: fermact_qprop.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -30,7 +30,7 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    FermActQprop(Handle< const LinearOperator<T> > A_,
+    FermActQprop(Handle< LinearOperator<T> > A_,
 		 const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
     {}
 
@@ -93,28 +93,48 @@ namespace Chroma
     // Hide default constructor
     FermActQprop() {}
 
-    Handle< const LinearOperator<T> > A;
+    Handle< LinearOperator<T> > A;
     const InvertParam_t invParam;
   };
 
 
+  /*! \ingroup qprop */
   template<>
-  const SystemSolver<LatticeFermion>* 
-  FermAct4D<LatticeFermion>::qprop(Handle<const ConnectState> state,
-				   const InvertParam_t& invParam) const
+  SystemSolver<LatticeFermion>*
+  FermAct4D<LatticeFermion,
+	    multi1d<LatticeColorMatrix>,
+	    multi1d<LatticeColorMatrix> >::qprop(Handle< FermState<LatticeFermion, 
+						 multi1d<LatticeColorMatrix>,
+						 multi1d<LatticeColorMatrix> > > state,
+						 const InvertParam_t& invParam) const
   {
-    return new FermActQprop<LatticeFermion>(Handle< const LinearOperator<LatticeFermion> >(linOp(state)), 
-					    invParam);
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    return new FermActQprop<T>(Handle< LinearOperator<T> >(linOp(state)),
+			       invParam);
   }
 
 
+  /*! \ingroup qprop */
   template<>
-  const SystemSolver<LatticeStaggeredFermion>* 
-  FermAct4D<LatticeStaggeredFermion>::qprop(Handle<const ConnectState> state,
-					    const InvertParam_t& invParam) const
+  SystemSolver<LatticeStaggeredFermion>* 
+  FermAct4D<LatticeStaggeredFermion,
+	    multi1d<LatticeColorMatrix>,
+	    multi1d<LatticeColorMatrix> >::qprop(Handle< FermState< LatticeStaggeredFermion,
+						 multi1d<LatticeColorMatrix>,
+						 multi1d<LatticeColorMatrix> > > state,
+						 const InvertParam_t& invParam) const
   {
-    return new FermActQprop<LatticeStaggeredFermion>(Handle< const LinearOperator<LatticeStaggeredFermion> >(linOp(state)), 
-					    invParam);
+    // Typedefs to save typing
+    typedef LatticeStaggeredFermion      T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    return new FermActQprop<T>(Handle< LinearOperator<T> >(linOp(state)),
+			       invParam);
   }
 
 } // namespace Chroma

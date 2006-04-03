@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: p_src_w.h,v 2.1 2005-11-07 06:27:47 edwards Exp $
+// $Id: p_src_w.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief P-wave sources
  */

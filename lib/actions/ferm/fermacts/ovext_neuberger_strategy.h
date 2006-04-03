@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: ovext_neuberger_strategy.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+/*! \file
+ *  \brief Ovext Neuberger rescale strategy
+ */
+
 #ifndef ovext_neuberger_strategy_h
 #define ovext_neuberger_strategy_h
 
@@ -6,17 +12,21 @@
 
 namespace Chroma {
     
-  namespace OvExtNeubergerStrategyEnv { 
+  /*! @ingroup fermacts */
+  namespace OvExtNeubergerStrategyEnv 
+  { 
     extern const std::string name;
     extern const bool registered;
-  };
+  }
   
   
-  class OvExtNeubergerStrategy : public AbsOvExtTuningStrategy {
+  //! Ovext Neuberger rescale strategy
+  /*! @ingroup fermacts */
+  class OvExtNeubergerStrategy : public AbsOvExtTuningStrategy 
+  {
   public: 
     // Destructor is automatic
     ~OvExtNeubergerStrategy(void) {}
-    
 
     OvExtNeubergerStrategy(void) {}
     
@@ -43,6 +53,6 @@ namespace Chroma {
   private:
   };
   
-};
+}
 
 #endif

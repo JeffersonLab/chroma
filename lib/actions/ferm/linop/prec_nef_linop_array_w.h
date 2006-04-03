@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_linop_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_nef_linop_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  */
@@ -20,20 +20,21 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class EvenOddPrecNEFDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecNEFDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray<LatticeFermion, 
+				     multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! Partial constructor
-    EvenOddPrecNEFDWLinOpArray() {}
-
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     // ***** HACK *****
-    EvenOddPrecNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    EvenOddPrecNEFDWLinOpArray(Handle< FermState<T,P,Q> > fs,
 			       const Real& WilsonMass_, const multi1d<Real>& b5_, 
 			       const multi1d<Real>& c5_, const Real& m_q, int N5_)
     {QDP_error_exit("not supported");}
     // ***** HACK *****
-
 
 
     /*!
@@ -41,23 +42,24 @@ namespace Chroma
       Set b5 = 1.0 and c5=0.0 to get Shamir DWF with a5=1.
       Set b5 = 1.0 and c5=1.0 to get Borichi DWF.
     */
-    EvenOddPrecNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    EvenOddPrecNEFDWLinOpArray(Handle< FermState<T,P,Q> > fs,
 			       const Real& WilsonMass_, const Real &b5_, 
 			       const Real &c5_, const Real& m_q, int N5_)
-    {create(u_,WilsonMass_,b5_,c5_,m_q,N5_);}
+    {create(fs,WilsonMass_,b5_,c5_,m_q,N5_);}
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& WilsonMass_, const Real &b5_, 
 		const Real &c5_, const Real& m_q_, int N5_);
-
 
     //! set b5 and c5 given kappa and a5
     //void set_b5_c5(const Real &kappa_, const Real &a5_);
 
-
     //! Destructor is automatic
     ~EvenOddPrecNEFDWLinOpArray() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
 
     //! Length of DW flavor index/space
     int size() const {return N5;}
@@ -162,6 +164,12 @@ namespace Chroma
 		       enum PlusMinus isign,
 		       const int cb) const ;
 
+  protected:
+    //! Partial constructor
+    EvenOddPrecNEFDWLinOpArray() {}
+    //! Partial constructor
+    void operator=(const EvenOddPrecNEFDWLinOpArray&) {}
+
   private:
     Real WilsonMass;
     Real c5;
@@ -182,7 +190,7 @@ namespace Chroma
     WilsonDslashArray  D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 

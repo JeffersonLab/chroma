@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_array_w.cc,v 2.3 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_base_array_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -66,7 +66,8 @@ namespace Chroma
   /*! \return Computes   chi^dag * \dot(D} * psi  */
   void 
   WilsonDslashBaseArray::deriv(multi1d<LatticeColorMatrix>& ds_u,
-			       const LatticeFermion& chi, const LatticeFermion& psi, 
+			       const LatticeFermion& chi, 
+			       const LatticeFermion& psi, 
 			       enum PlusMinus isign, int cb) const
   {
     START_CODE();
@@ -147,6 +148,8 @@ namespace Chroma
       QDP_error_exit("unknown case");
     }
     
+    getFermBC().zero(ds_u);
+
     END_CODE();
   }
 

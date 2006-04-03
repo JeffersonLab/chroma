@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 2.2 2006-03-21 19:14:36 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -8,7 +8,6 @@
 #define __unprec_ht_contfrac5d_fermact_array_w_h__
 
 #include "fermact.h"
-#include "actions/ferm/fermacts/overlap_state.h"
 #include "io/enum_io/enum_coeffs_io.h"
 
 
@@ -59,22 +58,22 @@ namespace Chroma
    *   Chi  =   ((1+Mass)/(1-Mass)*gamma_5 + B) . Psi
    *  where  B  is the continued fraction of the zolotarev approx. to eps(H_T(m))
    */
-  class UnprecHTContFrac5DFermActArray : public UnprecWilsonTypeFermAct5D<LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecHTContFrac5DFermActArray : public UnprecWilsonTypeFermAct5D<LatticeFermion, 
+					 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     // Construct the action out of a parameter structure
-    UnprecHTContFrac5DFermActArray(
-			     Handle< FermBC< multi1d< LatticeFermion> > > fbc_,
-			     const UnprecHTContFrac5DFermActParams& param);
+    UnprecHTContFrac5DFermActArray(Handle< CreateFermState<T,P,Q> > cfs_,
+				   const UnprecHTContFrac5DFermActParams& param);
   
-
     //! Copy constructor
     UnprecHTContFrac5DFermActArray(const UnprecHTContFrac5DFermActArray& a) : 
-      fbc(a.fbc), params(a.params), N5(a.N5), isLastZeroP(a.isLastZeroP)  {};
-
-    //! Return the fermion BC object for this action
-    const FermBC< multi1d< LatticeFermion> >& getFermBC() const {return *fbc;}
+      cfs(a.cfs), params(a.params), N5(a.N5), isLastZeroP(a.isLastZeroP)  {};
 
     int size(void) const { return N5; }
 
@@ -82,10 +81,10 @@ namespace Chroma
     Real getQuarkMass() const {return params.Mass;}
 
     //! Produce a linear operator for this action
-    const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    UnprecLinearOperatorArray<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a Pauli-Villars linear operator for this action
-    const UnprecLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* linOpPV(Handle<const ConnectState> state) const
+    UnprecLinearOperatorArray<T,P,Q>* linOpPV(Handle< FermState<T,P,Q> > state) const
     {
       QDPIO::cerr << "UnprecHTCFZ::linOpPV not implemented" << endl;
       QDP_abort(1);
@@ -93,39 +92,42 @@ namespace Chroma
     }
 
     //! produce gamma_5 times M 
-    const LinearOperator< multi1d<LatticeFermion> >* hermitianLinOp(Handle<const ConnectState> state) const
+    LinearOperatorArray<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const
     {
       // The matrix itself is apparently hermitian
       return linOp(state);
     }
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
-    const LinearOperator<LatticeFermion>* linOp4D(Handle<const ConnectState> state,
-						  const Real& m_q,
-						  const InvertParam_t& invParam) const
-    {
-      QDPIO::cerr << "linOp4D not implemented" << endl;
-      QDP_abort(1);
-      return 0;
-    }
+    LinearOperator<T>* linOp4D(Handle< FermState<T,P,Q> > state,
+			       const Real& m_q,
+			       const InvertParam_t& invParam) const
+      {
+	QDPIO::cerr << "linOp4D not implemented" << endl;
+	QDP_abort(1);
+	return 0;
+      }
     
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
-    const LinearOperator<LatticeFermion>* DeltaLs(Handle< const ConnectState> state,
-						  const InvertParam_t& invParam) const 
-    {
-      QDPIO::cerr << "DeltaLs not implemented" << endl;
-      QDP_abort(1);
-      return 0;
-    }
+    LinearOperator<T>* DeltaLs(Handle< FermState<T,P,Q> > state,
+			       const InvertParam_t& invParam) const 
+      {
+	QDPIO::cerr << "DeltaLs not implemented" << endl;
+	QDP_abort(1);
+	return 0;
+      }
 
     //! Compute quark propagator over base type
-    const SystemSolver<LatticeFermion>* qprop(Handle<const ConnectState> state,
-					      const InvertParam_t& invParam) const;
+    SystemSolver<LatticeFermion>* qprop(Handle< FermState<T,P,Q> > state,
+					const InvertParam_t& invParam) const;
 
     //! Destructor is automatic
     ~UnprecHTContFrac5DFermActArray() {}
 
   protected:
+    //! Return the fermion BC object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
     //! Helper in construction
     void init(multi1d<Real>& alpha,
 	      multi1d<Real>& beta) const;
@@ -136,7 +138,7 @@ namespace Chroma
     void operator=(const UnprecHTContFrac5DFermActArray& a) {}
 
   private:
-    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     UnprecHTContFrac5DFermActParams params;
     int  N5;
     bool isLastZeroP;

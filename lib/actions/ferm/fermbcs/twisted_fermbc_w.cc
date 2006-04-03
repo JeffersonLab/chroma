@@ -1,4 +1,4 @@
-// $Id: twisted_fermbc_w.cc,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: twisted_fermbc_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -70,19 +70,12 @@ namespace Chroma
   namespace WilsonTypeTwistedFermBCEnv
   {
     //! Callback function
-    FermBC<LatticeFermion>* createFermBC(XMLReader& xml_in, const std::string& path)
+    FermBC<LatticeFermion,
+	   multi1d<LatticeColorMatrix>, 
+	   multi1d<LatticeColorMatrix> >* createFermBC(XMLReader& xml_in, const std::string& path)
     {
       TwistedFermBCParams bc(xml_in, path);
       return new TwistedFermBC<LatticeFermion>(bc.boundary,
-					       bc.phases_by_pi,
-					       bc.phases_dir);
-    }
-
-    //! Callback function
-    FermBC< multi1d<LatticeFermion> >* createFermBCArray(XMLReader& xml_in, const std::string& path)
-    {
-      TwistedFermBCParams bc(xml_in, path);
-      return new TwistedFermBC< multi1d<LatticeFermion> >(bc.boundary,
 					       bc.phases_by_pi,
 					       bc.phases_dir);
     }
@@ -95,7 +88,6 @@ namespace Chroma
     {
       bool foo = true;
       foo &= Chroma::TheWilsonTypeFermBCFactory::Instance().registerObject(name, createFermBC);
-      foo &= Chroma::TheWilsonTypeFermBCArrayFactory::Instance().registerObject(name, createFermBCArray);
       return foo;
     }
 

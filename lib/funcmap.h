@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: funcmap.h,v 2.1 2006-03-24 22:16:40 edwards Exp $
+// $Id: funcmap.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 /*! @file
  * @brief Map of function calls
  */

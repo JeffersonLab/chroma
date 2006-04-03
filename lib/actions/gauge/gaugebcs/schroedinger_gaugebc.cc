@@ -1,4 +1,4 @@
-// $Id: schroedinger_gaugebc.cc,v 2.2 2006-03-16 02:59:02 edwards Exp $
+// $Id: schroedinger_gaugebc.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional base class
  */

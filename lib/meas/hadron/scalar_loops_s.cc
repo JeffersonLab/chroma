@@ -1,4 +1,4 @@
-// $Id: scalar_loops_s.cc,v 2.1 2006-02-26 21:18:34 edwards Exp $
+// $Id: scalar_loops_s.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
 
 #include "chromabase.h"
 #include"scalar_loops_s.h"

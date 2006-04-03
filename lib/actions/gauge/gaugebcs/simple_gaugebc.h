@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_gaugebc.h,v 2.1 2006-02-26 03:47:52 edwards Exp $
+// $Id: simple_gaugebc.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
@@ -31,15 +31,20 @@ namespace Chroma
   /*! @ingroup gaugebcs */
   void write(XMLWriter& xml, const std::string& path, const SimpleGaugeBCParams& p);
 
+
   //! Concrete class for gauge actions with simple boundary conditions
   /*! @ingroup gaugebcs
    *
    *  Simple BC, where boundary array is multiplied on the links on the
    *  edge of the lattice
    */
-  class SimpleGaugeBC : public GaugeBC
+  class SimpleGaugeBC : public GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Only full constructor
     /*!
      * \param boundary  multiply links on edge of lattice by boundary
@@ -51,18 +56,11 @@ namespace Chroma
     //! From param struct 
     SimpleGaugeBC(const SimpleGaugeBCParams& p) : boundary(p.boundary) {}
 
-    //! Copy constructor
-    SimpleGaugeBC(const SimpleGaugeBC& a) : boundary(a.boundary) {}
-
     //! Destructor is automatic
     ~SimpleGaugeBC() {}
 
-    //! Assignment
-    SimpleGaugeBC& operator=(const SimpleGaugeBC& a)
-      {boundary = a.boundary; return *this;}
-
     //! Modify U fields in place
-    void modify(multi1d<LatticeColorMatrix>& u) const
+    void modify(Q& u) const
       {
 	// phases for all the directions
 	for(int m = 0; m < Nd; ++m)
@@ -74,7 +72,7 @@ namespace Chroma
       }
 
     //! Zero the U fields in place on the masked links
-    void zero(multi1d<LatticeColorMatrix>& u) const {}
+    void zero(P& u) const {}
 
     //! Says if there are non-trivial BC links
     /*! 
@@ -86,6 +84,9 @@ namespace Chroma
   private:
     // Hide empty constructor
     SimpleGaugeBC() {}
+
+    //! Hide assignment
+    void operator=(const SimpleGaugeBC& a) {}
 
   private:
     multi1d<Complex> boundary;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_quarkspintype_io.h,v 2.2 2006-02-04 16:42:25 edwards Exp $
+// $Id: enum_quarkspintype_io.h,v 3.0 2006-04-03 04:58:56 edwards Exp $
 
 /*! \file
  * \brief Enum for what spin components of a quark prop to compute

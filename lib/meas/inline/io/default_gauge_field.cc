@@ -1,4 +1,4 @@
-// $Id: default_gauge_field.cc,v 2.3 2006-03-28 05:12:01 edwards Exp $
+// $Id: default_gauge_field.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */
@@ -38,8 +38,6 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << __func__ << ": entering" << endl;
-
       // If initialized, then destroy and reset
       if (initP)
       {
@@ -69,8 +67,6 @@ namespace Chroma
 
       initP = false;
 
-      QDPIO::cout << __func__ << ": exiting" << endl;
-
       END_CODE();
     }
   
@@ -83,8 +79,6 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << __func__ << ": entering" << endl;
-
       // This might be too restrictive - might prefer automatic resetting
       if (initP)
       {
@@ -95,10 +89,7 @@ namespace Chroma
       // Generate a private file name suitable for a buffer name
 //      private_id = tmpnam(NULL);
 
-      QDPIO::cout << __func__ << ": set default gauge field id = " << private_id << endl;
-
       // Set the default gauge field
-      QDPIO::cout << "Set the default gauge field" << endl;
       try
       {
 	XMLBufferWriter file_xml, record_xml;
@@ -128,8 +119,6 @@ namespace Chroma
     
       initP = true;
 
-      QDPIO::cout << __func__ << ": exiting" << endl;
-
       END_CODE();
     }
 
@@ -142,8 +131,6 @@ namespace Chroma
 	     XMLBufferWriter& record_xml)
     {
       START_CODE();
-
-      QDPIO::cout << __func__ << ": entering" << endl;
 
       if (! initP)
       {
@@ -171,24 +158,18 @@ namespace Chroma
 	QDP_abort(1);
       }
     
-      QDPIO::cout << __func__ << ": exiting" << endl;
-
       END_CODE();
     }
   
     // Helper function to read the Id from an XML input
     std::string readGaugeId(XMLReader& xml_in, const std::string path)
     {
-      QDPIO::cout << __func__ << ": entering" << endl;
-
       std::string gauge_id;
 
       if (xml_in.count(path) != 0)
 	read(xml_in, path, gauge_id);
       else
 	gauge_id = getId();
-
-      QDPIO::cout << __func__ << ": exiting" << endl;
 
       return gauge_id;
     }

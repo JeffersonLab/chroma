@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: ovext_const_div_by_resp_strategy.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+/*! \file
+ *  \brief Ovext rescale strategy
+ */
+
 #include "chromabase.h"
 #include "actions/ferm/fermacts/ovext_const_div_by_resp_strategy.h"
 

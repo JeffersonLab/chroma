@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_sse_w.cc,v 2.1 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_array_sse_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -39,42 +39,45 @@ namespace Chroma
   }
 
   //! Full constructor
-  SSEWilsonDslashArray::SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+  SSEWilsonDslashArray::SSEWilsonDslashArray(Handle< FermState<T,P,Q> > state,
 					     int N5_,
 					     const AnisoParam_t& aniso_)
   {
     init(); 
-    create(u_,N5_,aniso_);
+    create(state,N5_,aniso_);
   }
 
 
   //! Full constructor
-  SSEWilsonDslashArray::SSEWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+  SSEWilsonDslashArray::SSEWilsonDslashArray(Handle< FermState<T,P,Q> > state,
 					     int N5_)
   {
     init(); 
-    create(u_,N5_);
+    create(state,N5_);
   }
 
 
   //! Creation routine
-  void SSEWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
 				    int N5_)
   {
     AnisoParam_t aniso;
-    create(u_, N5_, aniso);
+    create(state, N5_, aniso);
   }
 
 
   //! Creation routine
-  void SSEWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
 				    int N5_, const AnisoParam_t& aniso)
   {
     N5 = N5_;
     anisoParam = aniso;
 
-    // For now, keep an extra copy
-    multi1d<LatticeColorMatrix> u = u_;
+    // Save a copy of the fermbc
+    fbc = state->getFermBC();
+
+    // Temporary copy - not kept
+    multi1d<LatticeColorMatrix> u = state->getLinks();
 
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
   
@@ -105,7 +108,7 @@ namespace Chroma
   }
 
 
-  SSEWilsonDslashArray::~SSEWilsonDslashArray(void) 
+  SSEWilsonDslashArray::~SSEWilsonDslashArray() 
   {
 #if 0
     QDPIO::cout << "Calling free_sse_su3dslash()... " << endl;
@@ -180,9 +183,10 @@ namespace Chroma
 			 (SSEREAL *)&(chi.elem(0).elem(0).elem(0).real()),
 			 (int)isign, (1-cb));
   
+    getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

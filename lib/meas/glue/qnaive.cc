@@ -1,4 +1,4 @@
-// $Id: qnaive.cc,v 2.0 2005-09-25 21:04:34 edwards Exp $
+// $Id: qnaive.cc,v 3.0 2006-04-03 04:58:58 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 

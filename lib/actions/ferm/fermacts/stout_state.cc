@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_state.cc,v 2.5 2005-10-13 22:07:06 bjoo Exp $
+// $Id: stout_state.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */

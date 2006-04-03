@@ -1,4 +1,4 @@
-// $Id: unprec_nef_linop_array_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_nef_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall linear operator
  */
@@ -19,7 +19,7 @@ namespace Chroma
    * \param c5_           NEF parameter (Read)
    * \param m_q_          quark mass    (Read)
    */
-  void UnprecNEFDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  void UnprecNEFDWLinOpArray::create(Handle< FermState<T,P,Q> > state,
 				     const Real& WilsonMass_, 
 				     const multi1d<Real>& b5_, const multi1d<Real>& c5_, 
 				     const Real& m_q_, int N5_)
@@ -39,7 +39,8 @@ namespace Chroma
       fc5[s] = c5[s]*ff - 1;
     }
 
-    D.create(u_);
+    D.create(state);
+    fbc = state->getFermBC();
   }
 
 
@@ -109,7 +110,7 @@ namespace Chroma
 
       for(int n=0; n < N5; ++n)
       {
-	if (n == 0){
+ 	if (n == 0){
 	  c_tmp = chiralProjectPlus(c5Dpsi[1]) - m_q*chiralProjectMinus(c5Dpsi[N5-1]);
 	}
 	else if (n == N5-1)
@@ -124,6 +125,8 @@ namespace Chroma
     }
     break;
     }
+
+    getFermBC().modifyF(chi);
 
     END_CODE();
   }
@@ -277,6 +280,8 @@ namespace Chroma
 
     for(int m=0; m < Nd; ++m)
       ds_u[m] *= Real(-0.5);
+
+    getFermBC().zero(ds_u);
 
     END_CODE();
   }

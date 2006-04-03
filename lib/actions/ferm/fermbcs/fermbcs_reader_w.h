@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs_reader_w.h,v 2.2 2006-03-16 03:00:12 edwards Exp $
+// $Id: fermbcs_reader_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Fermionic boundary condition reader
  */
@@ -12,7 +12,7 @@
 
 namespace Chroma
 {
-  //! Registration aggregator
+  //! FermBC reader
   /*! \ingroup fermbcs */
   namespace WilsonTypeFermBCEnv
   {
@@ -24,24 +24,12 @@ namespace Chroma
      * backwards compatibility with the FermionAction readers by looking for
      * either the "boundary" tag or the FermionBC group
      */
-    Handle< FermBC<LatticeFermion> > reader(XMLReader& xml_in, const std::string& path);
+    Handle< FermBC<LatticeFermion,
+		   multi1d<LatticeColorMatrix>, 
+		   multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 
+							  const std::string& path);
   }
 
-
-  //! Registration aggregator
-  /*! \ingroup fermbcs */
-  namespace WilsonTypeFermBCArrayEnv
-  {
-    //! Helper function for the FermionAction readers
-    /*! 
-     * \ingroup fermbcs
-     *
-     * This structure should not be replicated. This routine helps maintain
-     * backwards compatibility with the FermionAction readers by looking for
-     * either the "boundary" tag or the FermionBC group
-     */
-    Handle< FermBC< multi1d<LatticeFermion> > > reader(XMLReader& xml_in, const std::string& path);
-  }
 }
 
 #endif

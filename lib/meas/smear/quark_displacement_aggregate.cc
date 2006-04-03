@@ -1,4 +1,4 @@
-// $Id: quark_displacement_aggregate.cc,v 1.2 2006-02-22 03:27:22 edwards Exp $
+// $Id: quark_displacement_aggregate.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief All quark displacements
  */

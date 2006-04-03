@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sinks.h,v 1.2 2005-11-21 21:07:06 edwards Exp $
+// $Id: sinks.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
 
 /*! \file
  * \brief Quark sinks

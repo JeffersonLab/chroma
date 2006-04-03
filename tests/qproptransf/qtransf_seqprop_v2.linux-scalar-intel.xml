@@ -13,7 +13,7 @@
   </ProgramInfo>
   <input><qproptransf>
 <annotation>
-; $Id: qtransf_seqprop_v2.linux-scalar-intel.xml,v 2.0 2005-09-25 21:05:05 edwards Exp $
+; $Id: qtransf_seqprop_v2.linux-scalar-intel.xml,v 3.0 2006-04-03 04:59:33 edwards Exp $
 ;
 ; QPROPTRANSF input file.
 ;

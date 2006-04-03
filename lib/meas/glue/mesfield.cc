@@ -1,4 +1,4 @@
-// $Id: mesfield.cc,v 2.1 2005-12-11 16:40:38 edwards Exp $
+// $Id: mesfield.cc,v 3.0 2006-04-03 04:58:58 edwards Exp $
 /*! \file
  *  \brief Calculates the antihermitian field strength tensor  iF(mu,nu)
  */

@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 2.8 2006-03-20 04:22:02 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *

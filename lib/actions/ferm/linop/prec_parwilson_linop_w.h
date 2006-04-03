@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_parwilson_linop_w.h,v 2.3 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_parwilson_linop_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -24,22 +24,31 @@ namespace Chroma
    *      M  =  (d+M) + i*H*gamma_5  - (1/2) D'
    */
 
-  class EvenOddPrecParWilsonLinOp : public EvenOddPrecConstDetLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecParWilsonLinOp : public EvenOddPrecConstDetLinearOperator<LatticeFermion, 
+				    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     EvenOddPrecParWilsonLinOp() {}
 
     //! Full constructor
-    EvenOddPrecParWilsonLinOp(const multi1d<LatticeColorMatrix>& u_, 
+    EvenOddPrecParWilsonLinOp(Handle< FermState<T,P,Q> > fs,
 			      const Real& Mass_, const Real& H_)
-    {create(u_,Mass_,H_);}
+    {create(fs,Mass_,H_);}
 
     //! Destructor is automatic
     ~EvenOddPrecParWilsonLinOp() {}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& Mass_, const Real& H_);
 
     //! Apply the the even-even block onto a source vector
@@ -106,11 +115,11 @@ namespace Chroma
 
     Real Mass;
     Real H;
-    multi1d<LatticeColorMatrix> u;
+//    multi1d<LatticeColorMatrix> u;
     WilsonDslash D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

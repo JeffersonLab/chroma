@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_array_w.h,v 2.2 2005-12-18 23:53:26 edwards Exp $
+// $Id: lwldslash_base_array_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -43,9 +43,15 @@ namespace Chroma
    *
    */
 
-  class WilsonDslashBaseArray : public DslashLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >
+  class WilsonDslashBaseArray : public DslashLinearOperatorArray<LatticeFermion, 
+            multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! No real need for cleanup here
     virtual ~WilsonDslashBaseArray() {}
 
@@ -125,6 +131,9 @@ namespace Chroma
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+
   protected:
     //! Get the anisotropy parameters
     virtual const AnisoParam_t& getAnisoParam() const = 0;
@@ -132,7 +141,7 @@ namespace Chroma
   };
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

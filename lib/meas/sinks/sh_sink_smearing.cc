@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 1.9 2006-03-08 22:45:34 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */

@@ -1,4 +1,4 @@
-// $Id: t_fermion_loop_w.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: t_fermion_loop_w.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 /*! \file
  *  \brief Main code for  generation of disconnected 
  *         loops
@@ -355,18 +355,23 @@ int main(int argc, char **argv)
 
   
   // set up the calculation of quark propagators 
+  // Typedefs to save typing
+  typedef LatticeFermion               T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
+
 
   // Create a fermion BC. Note, the handle is on an ABSTRACT type.
-  Handle< FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(input.param.boundary));
+  Handle< CreateFermState<T,P,Q> >  cfs(new SimpleFermBC<T,P,Q>(input.param.boundary));
 
   //
   // Initialize fermion action
   //
-  UnprecWilsonFermAct S_f(fbc,input.param.Mass);
+  UnprecWilsonFermAct S_f(cfs,input.param.Mass);
 
   // Set up a state for the current u,
-  Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,input.param.invParam));
+  Handle< FermState<T,P,Q> > state(S_f.createState(u));
+  Handle< SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,input.param.invParam));
 
   //
   // Loop over the source color and spin , creating the source

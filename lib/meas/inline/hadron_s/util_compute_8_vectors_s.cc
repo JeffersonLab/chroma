@@ -1,4 +1,4 @@
-// $Id: util_compute_8_vectors_s.cc,v 1.3 2006-02-26 21:40:46 edwards Exp $
+// $Id: util_compute_8_vectors_s.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *

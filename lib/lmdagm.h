@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: lmdagm.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 
 #ifndef __lmdagm_h__
 #define __lmdagm_h__
@@ -18,18 +18,18 @@ namespace Chroma
    * Linear operator forming M^dag.M from an operator M
    */
   template<typename T>
-  class lmdagm : public LinearOperator<T>
+  class MdagMLinOp : public LinearOperator<T>
   {
   public:
     //! Initialize pointer with existing pointer
     /*! Requires that the pointer p is a return value of new */
-    lmdagm(const LinearOperator<T>* p) : A(p) {}
+    MdagMLinOp(LinearOperator<T>* p) : A(p) {}
 
     //! Copy pointer (one more owner)
-    lmdagm(Handle<const LinearOperator<T> > p) : A(p) {}
+    MdagMLinOp(Handle< LinearOperator<T> > p) : A(p) {}
 
     //! Destructor
-    ~lmdagm() {}
+    ~MdagMLinOp() {}
 
     //! Subset comes from underlying operator
     inline const OrderedSubset& subset() const {return A->subset();}
@@ -50,31 +50,31 @@ namespace Chroma
     }
 
   private:
-    const Handle< const LinearOperator<T> > A;
+    Handle< LinearOperator<T> > A;
   };
 
 
 
 
-  //! Partial specialization of M^dag.M linear operator over arrays
+  //! M^dag.M linear operator over arrays
   /*!
    * \ingroup linop
    *
    * Linear operator forming M^dag.M from an operator M
    */
   template<typename T>
-  class lmdagm< multi1d<T> > : public LinearOperator< multi1d<T> >
+  class MdagMLinOpArray : public LinearOperatorArray<T>
   {
   public:
     //! Initialize pointer with existing pointer
     /*! Requires that the pointer p is a return value of new */
-    lmdagm(const LinearOperator< multi1d<T> >* p) : A(p) {}
+    MdagMLinOpArray(LinearOperatorArray<T>* p) : A(p) {}
 
     //! Copy pointer (one more owner)
-    lmdagm(Handle<const LinearOperator< multi1d<T> > > p) : A(p) {}
+    MdagMLinOpArray(Handle< LinearOperatorArray<T> > p) : A(p) {}
 
     //! Destructor
-    ~lmdagm() {}
+    ~MdagMLinOpArray() {}
 
     //! Length of array index
     int size() const {return A->size();}
@@ -97,8 +97,9 @@ namespace Chroma
     }
 
   private:
-    const Handle< const LinearOperator< multi1d<T> > > A;
+    Handle< LinearOperatorArray<T> > A;
   };
+
 
   //! M^dag.M linear operator
   /*!
@@ -112,10 +113,10 @@ namespace Chroma
   public:
     //! Initialize pointer with existing pointer
     /*! Requires that the pointer p is a return value of new */
-    approx_lmdagm(const LinearOperator<T>* p) : A(p) {}
+    approx_lmdagm(LinearOperator<T>* p) : A(p) {}
 
     //! Copy pointer (one more owner)
-    approx_lmdagm(Handle<const LinearOperator<T> > p) : A(p) {}
+    approx_lmdagm(Handle< LinearOperator<T> > p) : A(p) {}
 
     //! Destructor
     ~approx_lmdagm() {}
@@ -144,7 +145,7 @@ namespace Chroma
       }
 
   private:
-    const Handle< const LinearOperator<T> > A;
+    Handle< LinearOperator<T> > A;
   };
 
 
@@ -154,19 +155,22 @@ namespace Chroma
    *
    * Diff. Linear operator forming M^dag.M from an operator M
    */
-  template<typename T, typename P>
-  class DiffMdagMLinOp : public DiffLinearOperator<T,P>
+  template<typename T, typename P, typename Q>
+  class DiffMdagMLinOp : public DiffLinearOperator<T,P,Q>
   {
   public:
     //! Initialize pointer with existing pointer
     /*! Requires that the pointer p is a return value of new */
-    DiffMdagMLinOp(const DiffLinearOperator<T,P>* p) : A(p) {}
+    DiffMdagMLinOp(DiffLinearOperator<T,P,Q>* p) : A(p) {}
 
     //! Copy pointer (one more owner)
-    DiffMdagMLinOp(Handle<const DiffLinearOperator<T,P> > p) : A(p) {}
+    DiffMdagMLinOp(Handle< DiffLinearOperator<T,P,Q> > p) : A(p) {}
 
     //! Destructor
     ~DiffMdagMLinOp() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return A->getFermBC();}
 
     //! Subset comes from underlying operator
     inline const OrderedSubset& subset() const {return A->subset();}
@@ -226,31 +230,34 @@ namespace Chroma
     unsigned long nFlops(void) const {return 2*A->nFlops();}
 
   private:
-    const Handle< const DiffLinearOperator<T,P> > A;
+    Handle< DiffLinearOperator<T,P,Q> > A;
   };
 
 
 
 
-  //! Partial specialization of M^dag.M linear operator over arrays
+  //! M^dag.M linear operator over arrays
   /*!
    * \ingroup linop
    *
    * Linear operator forming M^dag.M from an operator M
    */
-  template<typename T, typename P>
-  class DiffMdagMLinOp< multi1d<T>, P > : public DiffLinearOperator< multi1d<T>, P >
+  template<typename T, typename P, typename Q>
+  class DiffMdagMLinOpArray : public DiffLinearOperatorArray<T,P,Q>
   {
   public:
     //! Initialize pointer with existing pointer
     /*! Requires that the pointer p is a return value of new */
-    DiffMdagMLinOp(const DiffLinearOperator< multi1d<T>, P >* p) : A(p) {}
+    DiffMdagMLinOpArray(DiffLinearOperatorArray<T,P,Q>* p) : A(p) {}
 
     //! Copy pointer (one more owner)
-    DiffMdagMLinOp(Handle<const DiffLinearOperator< multi1d<T>, P > > p) : A(p) {}
+    DiffMdagMLinOpArray(Handle< DiffLinearOperatorArray<T,P,Q> > p) : A(p) {}
 
     //! Destructor
-    ~DiffMdagMLinOp() {}
+    ~DiffMdagMLinOpArray() {}
+
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return A->getFermBC();}
 
     //! Length of array index
     int size() const {return A->size();}
@@ -312,7 +319,7 @@ namespace Chroma
     unsigned long nFlops(void) const {return 2*A->nFlops();}
 
   private:
-    const Handle< const DiffLinearOperator< multi1d<T>, P > > A;
+    Handle< DiffLinearOperatorArray<T,P,Q> > A;
   };
 
 

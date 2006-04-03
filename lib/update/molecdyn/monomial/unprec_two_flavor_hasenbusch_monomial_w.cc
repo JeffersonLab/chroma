@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_hasenbusch_monomial_w.cc,v 2.4 2006-02-16 02:59:03 edwards Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -68,9 +68,9 @@ namespace Chroma
     QDPIO::cout << "UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string << endl;
 
    
-    const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
-    const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+    UnprecWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
 
     // Check success of the downcast 
@@ -98,9 +98,13 @@ namespace Chroma
 
     QDPIO::cout << "UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_prec_string << endl;
 
-    const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act_prec = TheWilsonTypeFermActFactory::Instance().createObject(fermact_prec_string, fermact_prec_reader, "/FermionActionPrec");
+    WilsonTypeFermAct<T,P,Q>* tmp_act_prec = 
+      TheWilsonTypeFermActFactory::Instance().createObject(fermact_prec_string, 
+							   fermact_prec_reader, 
+							   "/FermionActionPrec");
 
-    const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast_prec=dynamic_cast<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act_prec);
+    UnprecWilsonTypeFermAct<T,P,Q>* downcast_prec = 
+      dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(tmp_act_prec);
 
 
     // Check success of the downcast 

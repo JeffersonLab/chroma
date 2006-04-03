@@ -1,4 +1,4 @@
-# $Id: makemake_qmp.sh,v 1.1 2006-01-04 20:24:53 mcneile Exp $
+# $Id: makemake_qmp.sh,v 3.0 2006-04-03 04:59:22 edwards Exp $
 
 # Write a simple makefile using the module's config script.
 

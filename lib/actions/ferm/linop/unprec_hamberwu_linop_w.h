@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_hamberwu_linop_w.h,v 1.1 2005-12-03 04:20:20 edwards Exp $
+// $Id: unprec_hamberwu_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu fermion linear operator
  */
@@ -18,22 +18,31 @@ namespace Chroma
    * \ingroup linop
    */
   
-  class UnprecHamberWuLinOp : public UnprecLinearOperator<LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecHamberWuLinOp : public UnprecLinearOperator<LatticeFermion, 
+			      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor
     UnprecHamberWuLinOp() {}
 
     //! Full constructor
-    UnprecHamberWuLinOp(const multi1d<LatticeColorMatrix>& u_, 
+    UnprecHamberWuLinOp(Handle< FermState<T,P,Q> > fs,
 			const Real& Mass_, const Real& u0_)
-      {create(u_,Mass_,u0_);}
+      {create(fs,Mass_,u0_);}
 
     //! Destructor is automatic
     ~UnprecHamberWuLinOp() {}
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, const Real& Mass_, const Real& u0_);
+    void create(Handle< FermState<T,P,Q> > fs, const Real& Mass_, const Real& u0_);
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
@@ -57,7 +66,7 @@ namespace Chroma
     WilsonDslash D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

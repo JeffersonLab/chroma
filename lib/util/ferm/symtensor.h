@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: symtensor.h,v 1.1 2006-01-29 05:21:55 edwards Exp $
+// $Id: symtensor.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  *  \brief Compute symmetric tensors
  */

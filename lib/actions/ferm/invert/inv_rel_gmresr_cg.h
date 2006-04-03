@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_rel_gmresr_cg.h,v 2.0 2005-09-25 21:04:27 edwards Exp $
+// $Id: inv_rel_gmresr_cg.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Relaxed GMRESR algorithm of the Wuppertal Group
  */

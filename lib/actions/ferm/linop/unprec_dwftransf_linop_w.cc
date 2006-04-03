@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -12,7 +12,7 @@ using namespace QDP::Hints;
 
 namespace Chroma 
 { 
-  void UnprecDWFTransfLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void UnprecDWFTransfLinOp::create(Handle< FermState<T,P,Q> > fs,
 				    const Real& Mass_,
 				    const Real& b5_,
 				    const Real& c5_,
@@ -30,8 +30,9 @@ namespace Chroma
 
 
     Real b5_minus_c5 = b5 - c5;
-    D_w = new UnprecWilsonLinOp(u_, Mass_);
-    D_denum = new UnprecDWFTransfDenLinOp(u_, b5_minus_c5, D_w);
+    D_w = new UnprecWilsonLinOp(fs, Mass_);
+    D_denum = new UnprecDWFTransfDenLinOp(b5_minus_c5, D_w);
+    fbc = fs->getFermBC();
   }
 
 
@@ -99,7 +100,7 @@ namespace Chroma
 
   //------------------------------------------------------------------------
 
-  void UnprecDWFTransfMdagMLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void UnprecDWFTransfMdagMLinOp::create(Handle< FermState<T,P,Q> > fs,
 					 const Real& Mass_,
 					 const Real& b5_,
 					 const Real& c5_,
@@ -116,8 +117,9 @@ namespace Chroma
     QDPIO::cout << " RsdCG=" << invParam.RsdCG << endl;
 
     Real b5_minus_c5 = b5 - c5;
-    D_w = new UnprecWilsonLinOp(u_, Mass_);
-    D_denum = new UnprecDWFTransfDenLinOp(u_, b5_minus_c5, D_w);
+    D_w = new UnprecWilsonLinOp(fs, Mass_);
+    D_denum = new UnprecDWFTransfDenLinOp(b5_minus_c5, D_w);
+    fbc = fs->getFermBC();
   }
 
 
@@ -150,5 +152,5 @@ namespace Chroma
     END_CODE();
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: constgauge.h,v 2.1 2005-11-09 16:13:32 dgr Exp $
+// $Id: constgauge.h,v 3.0 2006-04-03 04:59:12 edwards Exp $
 /*! \file
  *  \brief Take the complex conjugate of a gauge field
  */

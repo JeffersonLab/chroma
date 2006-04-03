@@ -1,4 +1,4 @@
-// $Id: dwf_qpropt_w.h,v 2.2 2006-02-16 21:02:58 edwards Exp $
+// $Id: dwf_qpropt_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -38,7 +38,7 @@ typedef ALTIVECDWFQpropT DWFQpropT;
 // Bottom line, if no optimised DWF qpropT-s exist then the naive QDP qpropT
 // becomes the DWFQpropT
 namespace Chroma {
-typedef PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> > DWFQpropT;
+typedef PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > DWFQpropT;
 }  // end namespace Chroma
 #endif
 

@@ -1,4 +1,4 @@
-// $Id: wupp_smear.cc,v 2.1 2005-11-07 18:05:18 edwards Exp $
+// $Id: wupp_smear.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 
 #error "NOT FULLY CONVERTED"
 

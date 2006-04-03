@@ -1,4 +1,4 @@
-// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 2.4 2006-02-25 22:48:58 bjoo Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -73,9 +73,9 @@ namespace Chroma
     }
 
 
-    const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    const WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
-    const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+    const EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {

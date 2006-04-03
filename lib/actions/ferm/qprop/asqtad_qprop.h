@@ -14,7 +14,7 @@
 
 namespace Chroma { 
   typedef AsqtadCPSWrapperQprop  AsqtadQprop;
-};
+}
 
 #else 
 
@@ -22,9 +22,9 @@ namespace Chroma {
 
 namespace Chroma {
   typedef EvenOddFermActQprop<LatticeStaggeredFermion,
-    multi1d<LatticeColorMatrix> > AsqtadQprop;
+    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > AsqtadQprop;
 
-};
+}
 
 #endif 
 // #endif

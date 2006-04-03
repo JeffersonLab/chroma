@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schroedinger_gaugebc.h,v 2.3 2006-03-16 02:59:02 edwards Exp $
+// $Id: schroedinger_gaugebc.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! @file
  * @brief Schroedinger Gauge boundary conditions
  */
@@ -18,7 +18,7 @@ namespace Chroma
    *  Schroedinger BC implies periodic in dirs orthog to decay dir, and some
    *  kind of fixed BC in the decay dir.
    */
-  class SchrGaugeBC : public GaugeBC
+  class SchrGaugeBC : public GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
     //! Virtual destructor

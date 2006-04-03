@@ -1,4 +1,4 @@
-// $Id: walldeltapff_w.cc,v 2.1 2005-11-08 05:39:44 edwards Exp $
+// $Id: walldeltapff_w.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+proton form-factors 
  *

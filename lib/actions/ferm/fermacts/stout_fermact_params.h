@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermact_params.h,v 2.2 2005-10-13 18:38:23 bjoo Exp $
+// $Id: stout_fermact_params.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /* \file
  * \brief Shared things between all stout fermion actions 
  */

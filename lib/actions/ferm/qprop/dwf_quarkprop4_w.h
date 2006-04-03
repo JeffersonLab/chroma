@@ -1,4 +1,4 @@
-// $Id: dwf_quarkprop4_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: dwf_quarkprop4_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -29,8 +29,10 @@ namespace Chroma
 		 XMLWriter& xml_out,
 		 const LatticePropagator& q_src,
 		 int t_src, int j_decay,
-		 Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT,
-		 Handle<const ConnectState> state,
+		 Handle< SystemSolverArray<LatticeFermion> > qpropT,
+		 Handle< FermState<LatticeFermion, 
+		         multi1d<LatticeColorMatrix>, 
+                         multi1d<LatticeColorMatrix> > > state,
 		 const Real& m_q,
 		 int& ncg_had);
 

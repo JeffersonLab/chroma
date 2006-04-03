@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd prec. 5D continued fraction linop
  */
@@ -28,13 +28,17 @@ namespace Chroma
   class QDPEvenOddPrecOvlapContFrac5DLinOpArray : public EvenOddPrecOvlapContFrac5DLinOpBaseArray
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Full constructor
     /*! Pretty darn the same as for the unprec case
       except that the auxiliary linop M is no longer supplied, 
       but is created here 
     */
-    QDPEvenOddPrecOvlapContFrac5DLinOpArray(Handle<const ConnectState> state,
+    QDPEvenOddPrecOvlapContFrac5DLinOpArray(Handle< FermState<T,P,Q> > state,
 					    const Real& _m_q,
 					    const Real& _OverMass,
 					    int _N5,
@@ -56,7 +60,7 @@ namespace Chroma
     ~QDPEvenOddPrecOvlapContFrac5DLinOpArray() {}
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

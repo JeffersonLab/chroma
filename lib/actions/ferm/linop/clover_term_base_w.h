@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 2.8 2006-02-16 02:24:46 bjoo Exp $
+// $Id: clover_term_base_w.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -17,7 +17,8 @@ namespace Chroma
    * \ingroup linop
    *
    */
-  class CloverTermBase : public DslashLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class CloverTermBase : public DslashLinearOperator<LatticeFermion, 
+			 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
     //! No real need for cleanup here

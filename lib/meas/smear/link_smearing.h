@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: link_smearing.h,v 1.2 2005-11-07 06:40:55 edwards Exp $
+// $Id: link_smearing.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! @file
  * @brief Link smearing
  */

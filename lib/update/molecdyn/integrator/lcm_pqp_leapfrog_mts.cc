@@ -1,4 +1,4 @@
-// $Id: lcm_pqp_leapfrog_mts.cc,v 2.2 2006-02-27 17:09:21 bjoo Exp $
+// $Id: lcm_pqp_leapfrog_mts.cc,v 3.0 2006-04-03 04:59:07 edwards Exp $
 
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"

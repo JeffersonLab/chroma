@@ -1,7 +1,7 @@
 namespace Chroma {
 
 
-/* $Id: mespbp_s.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $ ($Date: 2005-09-25 21:04:39 $) */
+/* $Id: mespbp_s.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $ ($Date: 2006-04-03 04:59:04 $) */
 
 /* This routine is specific to staggered fermions! */
 

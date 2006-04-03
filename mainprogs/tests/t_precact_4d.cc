@@ -1,4 +1,4 @@
-// $Id: t_precact_4d.cc,v 1.1 2005-12-29 05:40:47 edwards Exp $
+// $Id: t_precact_4d.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -61,8 +61,8 @@ void check_qprop(XMLWriter& xml_out, const string& prefix,
 
 //! Check linops
 void check_linops(XMLWriter& xml_out, const string& prefix,
-  const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >& AP,
-  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >& AU)
+  const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>  >& AP,
+  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>  >& AU)
 {
   QDPIO::cout << "Check linops" << endl;
 
@@ -139,7 +139,9 @@ void check_linops(XMLWriter& xml_out, const string& prefix,
 //! Apply the operator onto a source vector
 /*! User should make sure deriv routines do a resize  */
 multi1d<LatticeColorMatrix>
-deriv(const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >& AP,
+deriv(const EvenOddPrecLinearOperator<LatticeFermion, 
+                                      multi1d<LatticeColorMatrix>, 
+                                      multi1d<LatticeColorMatrix>  >& AP,
       const LatticeFermion& chi, const LatticeFermion& psi, 
       enum PlusMinus isign)
 {
@@ -186,8 +188,8 @@ deriv(const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatri
 
 //! Check linops
 void check_derivs(XMLWriter& xml_out, const string& prefix,
-  const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >& AP,
-  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >& AU)
+  const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>  >& AP,
+  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix>  >& AU)
 {
   QDPIO::cout << "Check derivs" << endl;
 
@@ -427,51 +429,55 @@ int main(int argc, char **argv)
     XMLReader state_info_xml_eo(fermacttop_eo,state_info_path_eo);
     XMLReader state_info_xml_un(fermacttop_un,state_info_path_un);
 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     // Preconditioned operator
     bool success = false; 
 
     QDPIO::cerr << "create prec = " << fermact_eo << endl;
-    typedef EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >  EO4D;
+    typedef EvenOddPrecWilsonTypeFermAct<T,P,Q>  EO4D;
 
     Handle<EO4D>
       S_f_eo(dynamic_cast<EO4D*>(TheWilsonTypeFermActFactory::Instance().createObject(fermact_eo,
-											fermacttop_eo,
-											fermact_path_eo)));
+										      fermacttop_eo,
+										      fermact_path_eo)));
   
-    Handle<const ConnectState> state_eo(S_f_eo->createState(u,
+    Handle< FermState<T,P,Q> > state_eo(S_f_eo->createState(u,
 							    state_info_xml_eo,
 							    state_info_path_eo));
   
     // Unpreconditioned operator
     QDPIO::cerr << "create unprec = " << fermact_un << endl;
-    typedef UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >  U4D;
+    typedef UnprecWilsonTypeFermAct<T,P,Q>  U4D;
     Handle<U4D>
       S_f_un(dynamic_cast<U4D*>(TheWilsonTypeFermActFactory::Instance().createObject(fermact_un,
-										       fermacttop_un,
-										       fermact_path_un)));
+										     fermacttop_un,
+										     fermact_path_un)));
   
-    Handle<const ConnectState> state_un(S_f_un->createState(u,
+    Handle< FermState<T,P,Q> > state_un(S_f_un->createState(u,
 							    state_info_xml_un,
 							    state_info_path_un));
   
 
     //-------------------------------------------------------------------------------
     {
-      Handle<const EvenOddPrecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > AP(S_f_eo->linOp(state_eo));
-      Handle<const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > AU(S_f_un->linOp(state_un));
+      Handle< EvenOddPrecLinearOperator<T,P,Q> > AP(S_f_eo->linOp(state_eo));
+      Handle< UnprecLinearOperator<T,P,Q> > AU(S_f_un->linOp(state_un));
       
       QDPIO::cout << "Check bulk linops" << endl;
       check_linops(xml_out, "Bulk", *AP, *AU);
       xml_out.flush();
 
-      Handle< const SystemSolver<LatticeFermion> > PP = S_f_eo->qprop(state_eo,
-								      input.param.invParam);
+      Handle< SystemSolver<T> > PP = S_f_eo->qprop(state_eo,
+						   input.param.invParam);
 
       QDPIO::cout << "Got Preconditioned System Solver" << endl;
      
-      Handle< const SystemSolver<LatticeFermion> > UP = S_f_un->qprop(state_un,
-								      input.param.invParam);
+      Handle< SystemSolver<T> > UP = S_f_un->qprop(state_un,
+						   input.param.invParam);
       QDPIO::cout << "Got Unprec System Solver " << endl;
 
       QDPIO::cout << "Check qprop" << endl;

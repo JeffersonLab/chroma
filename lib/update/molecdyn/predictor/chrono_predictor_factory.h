@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chrono_predictor_factory.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
+// $Id: chrono_predictor_factory.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  *  \brief Monomial factories
  */

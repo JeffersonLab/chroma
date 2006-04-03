@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 2.2 2005-12-21 14:50:39 kostas Exp $
+// $Id: lwldslash_w_pab.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -19,32 +19,40 @@ namespace Chroma
   PABWilsonDslash::PABWilsonDslash() {}
   
   //! Full constructor
-  PABWilsonDslash::PABWilsonDslash(const multi1d<LatticeColorMatrix>& u_) 
+  PABWilsonDslash::PABWilsonDslash(Handle< FermState<T,P,Q> > state)
   {
-    create(u_);
+    create(state);
   }
   
   //! Full constructor with anisotropy
-  PABWilsonDslash::PABWilsonDslash(const multi1d<LatticeColorMatrix>& u_, 
+  PABWilsonDslash::PABWilsonDslash(Handle< FermState<T,P,Q> > state,
 				   const AnisoParam_t& aniso_) 
   {
-    create(u_, aniso_);
+    create(state, aniso_);
   }
 
   //! Creation routine
-  void PABWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_)
+  void PABWilsonDslash::create(Handle< FermState<T,P,Q> > state)
   {
     AnisoParam_t foo;
-    create(u_, foo);
+    create(state, foo);
   }
 
   //! Creation routine with anisotropy
-  void PABWilsonDslash::create(const multi1d<LatticeColorMatrix>& u_,
+  void PABWilsonDslash::create(Handle< FermState<T,P,Q> > state,
 			       const AnisoParam_t& aniso_) 
   {
     START_CODE();
 
     anisoParam = aniso_;
+    fbc = state->getFermBC();
+
+    // Sanity check
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << "PABWilsonDslash: error: fbc is null" << endl;
+      QDP_abort(1);
+    }
 
     // Fold in anisotropy
     multi1d<LatticeColorMatrix> u = u_;
@@ -126,15 +134,15 @@ namespace Chroma
   }
 
 
-  PABWilsonDslash::~PABWilsonDslash(void) 
+  PABWilsonDslash::~PABWilsonDslash() 
   {
-    if( PABDslashEnv::refcount > 0 ) {
-	PABDslashEnv::refcount--;
-     
-
-        if( PABDslashEnv::refcount == 0 ) {
-	  wfm_vec_end(&wil);
-        }
+    if( PABDslashEnv::refcount > 0 ) 
+    {
+      PABDslashEnv::refcount--;
+    
+      if( PABDslashEnv::refcount == 0 ) {
+	wfm_vec_end(&wil);
+      }
     }
 
     QDP::Allocator::theQDPAllocator::Instance().free(packed_gauge);
@@ -185,7 +193,8 @@ namespace Chroma
 	       		  1-cb,
 	       		  (isign == (enum PlusMinus)PLUS ? 0 : 1));
 	     
-  
+    getFermBC().modifyF(chi, rb[cb]);
+
     END_CODE();
   }
 

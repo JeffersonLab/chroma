@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: plaq_gaugeact.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -45,27 +45,19 @@ namespace Chroma
    * The standard Plaquette gauge action
    */
 
-  class PlaqGaugeAct : public GaugeAction
+  class PlaqGaugeAct : public LinearGaugeAction
   {
   public:
-    //! General GaugeBC
-    PlaqGaugeAct(Handle< GaugeBC > gbc_, 
+    //! General CreateGaugeState<P,Q>
+    PlaqGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		 const Real& coeff,
 		 const AnisoParam_t& aniso) : 
-      gbc(gbc_) {param.coeff = coeff; param.aniso = aniso;}
+      cgs(cgs_) {param.coeff = coeff; param.aniso = aniso;}
 
     //! Read coeff from a param struct
-    PlaqGaugeAct(Handle< GaugeBC > gbc_, 
+    PlaqGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		 const PlaqGaugeActParams& p) :
-      gbc(gbc_), param(p) {}
-
-    //! Copy constructor
-    PlaqGaugeAct(const PlaqGaugeAct& a) : 
-      gbc(a.gbc), param(a.param) {}
-
-    //! Assignment
-    PlaqGaugeAct& operator=(const PlaqGaugeAct& a)
-    {gbc=a.gbc; param=a.param; return *this;}
+      cgs(cgs_), param(p) {}
 
     //! Is anisotropy used?
     bool anisoP() const {return param.aniso.anisoP;}
@@ -80,21 +72,21 @@ namespace Chroma
     /*! Defined on the even-off (red/black) set */
     const OrderedSet& getSet() const {return rb;}
 
-    //! Produce a gauge boundary condition object
-    const GaugeBC& getGaugeBC() const {return *gbc;}
-
     //! Compute staple
     /*! Default version. Derived class should override this if needed. */
     void staple(LatticeColorMatrix& result,
-		Handle<const ConnectState> state,
+		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const;
 
     //! Compute dS/dU
-    void dsdu(multi1d<LatticeColorMatrix>& result,
-	      const Handle<const ConnectState> state) const;
+    void deriv(multi1d<LatticeColorMatrix>& result,
+	       const Handle< GaugeState<P,Q> >& state) const;
+
+    //! Produce a gauge create state object
+    const CreateGaugeState<P,Q>& getCreateState() const {return *cgs;}
 
     //! Compute the actions
-    Double S(const Handle<const ConnectState> state) const;
+    Double S(const Handle< GaugeState<P,Q> >& state) const;
 
     //! Destructor is automatic
     ~PlaqGaugeAct() {}
@@ -102,8 +94,12 @@ namespace Chroma
     // Accessors -- non mutable members.
     const Real getCoeff(void) const {return param.coeff;}
 
+  protected:
+    PlaqGaugeAct() {}
+    void operator=(const PlaqGaugeAct& a) {}       //! Hide assignment
+
   private:
-    Handle< GaugeBC >  gbc;  // Gauge Boundary Condition
+    Handle< CreateGaugeState<P,Q> >  cgs;  // Create Gauge State
     PlaqGaugeActParams  param; // The parameters
 
   };

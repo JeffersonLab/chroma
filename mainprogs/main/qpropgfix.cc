@@ -1,4 +1,4 @@
-// $Id: qpropgfix.cc,v 2.2 2005-11-30 04:47:27 edwards Exp $
+// $Id: qpropgfix.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
 /*! \file
  *  \brief Applies gauge transformation matrices on a propagator
  */

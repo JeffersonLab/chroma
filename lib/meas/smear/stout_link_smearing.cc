@@ -1,4 +1,4 @@
-// $Id: stout_link_smearing.cc,v 1.6 2005-11-22 18:55:35 edwards Exp $
+// $Id: stout_link_smearing.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */

@@ -3,12 +3,13 @@
 #include "actions/ferm/invert/inv_gmresr_cg_array.h"
 
 
-namespace Chroma {
+namespace Chroma 
+{
     
 template<typename T>
-void InvGMRESR_CG_a(const LinearOperator<multi1d<T> >& PrecMM,
-		    const LinearOperator<multi1d<T> >& PrecM,
-		    const LinearOperator<multi1d<T> >& UnprecM,
+void InvGMRESR_CG_a(const LinearOperatorArray<T>& PrecMM,
+		    const LinearOperatorArray<T>& PrecM,
+		    const LinearOperatorArray<T>& UnprecM,
 		    const multi1d<T>& b,
 		    multi1d<T>& x,
 		    const Real& epsilon, 
@@ -143,9 +144,9 @@ void InvGMRESR_CG_a(const LinearOperator<multi1d<T> >& PrecMM,
 }
 
 template<>
-void InvGMRESR_CG(const LinearOperator<multi1d<LatticeFermion> >& PrecMM,
-		  const LinearOperator<multi1d<LatticeFermion> >& PrecM,
-		  const LinearOperator<multi1d<LatticeFermion> >& UnprecM,
+void InvGMRESR_CG(const LinearOperatorArray<LatticeFermion>& PrecMM,
+		  const LinearOperatorArray<LatticeFermion>& PrecM,
+		  const LinearOperatorArray<LatticeFermion>& UnprecM,
 		  const multi1d<LatticeFermion>& b,
 		  multi1d<LatticeFermion>& x,
 		  const Real& epsilon, 

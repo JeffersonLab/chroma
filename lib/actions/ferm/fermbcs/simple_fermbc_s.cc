@@ -1,4 +1,4 @@
-// $Id: simple_fermbc_s.cc,v 2.1 2005-10-24 05:53:55 edwards Exp $
+// $Id: simple_fermbc_s.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -13,10 +13,14 @@ namespace Chroma
   namespace StaggeredTypeSimpleFermBCEnv
   {
     //! Callback function
-    FermBC<LatticeStaggeredFermion>* createFermBC(XMLReader& xml_in, const std::string& path)
+    FermBC<LatticeStaggeredFermion,
+	   multi1d<LatticeColorMatrix>, 
+	   multi1d<LatticeColorMatrix> >* createFermBC(XMLReader& xml_in, const std::string& path)
     {
       SimpleFermBCParams bc(xml_in, path);
-      return new SimpleFermBC<LatticeStaggeredFermion>(bc.boundary);
+      return new SimpleFermBC<LatticeStaggeredFermion,
+	                      multi1d<LatticeColorMatrix>,
+	                      multi1d<LatticeColorMatrix> >(bc.boundary);
     }
 
     //! Name to be used 

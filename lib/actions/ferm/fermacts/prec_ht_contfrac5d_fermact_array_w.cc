@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 2.4 2006-03-21 04:42:49 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -15,9 +15,7 @@
 #include "zolotarev.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
-#include "actions/ferm/fermbcs/simple_fermbc_w.h"
-#include "actions/ferm/fermbcs/periodic_fermbc_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 namespace Chroma
 {
@@ -26,17 +24,21 @@ namespace Chroma
   namespace EvenOddPrecHtContFrac5DFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
-											const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion, 
+			multi1d<LatticeColorMatrix>,
+			multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+								       const std::string& path)
     {
-      return new EvenOddPrecHtContFrac5DFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
-							EvenOddPrecHtContFrac5DFermActParams(xml_in, path));
+      return new EvenOddPrecHtContFrac5DFermActArray(CreateFermStateEnv::reader(xml_in, path), 
+						     EvenOddPrecHtContFrac5DFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct5D(xml_in, path);
     }
@@ -47,8 +49,10 @@ namespace Chroma
     //! Register all the factories
     bool registerAll()
     {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	& Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      bool foo = true;
+      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+      foo &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+      return foo;
     }
 
     //! Register the fermact
@@ -57,7 +61,8 @@ namespace Chroma
 
   
   //! Read XML
-  EvenOddPrecHtContFrac5DFermActParams::EvenOddPrecHtContFrac5DFermActParams(XMLReader& xml, const std::string& path)
+  EvenOddPrecHtContFrac5DFermActParams::EvenOddPrecHtContFrac5DFermActParams(XMLReader& xml, 
+									     const std::string& path)
   {
     XMLReader in(xml, path);
     
@@ -141,11 +146,11 @@ namespace Chroma
   
   
   // Construct the action out of a parameter structure
-  EvenOddPrecHtContFrac5DFermActArray::EvenOddPrecHtContFrac5DFermActArray(Handle< FermBC< multi1d< LatticeFermion> > > fbc_a_, 
-										 const EvenOddPrecHtContFrac5DFermActParams& params_) :
-    fbc(fbc_a_), params(params_) 
+  EvenOddPrecHtContFrac5DFermActArray::EvenOddPrecHtContFrac5DFermActArray(
+    Handle< CreateFermState<T,P,Q> > fs_a_, 
+    const EvenOddPrecHtContFrac5DFermActParams& params_) :
+    fs(fs_a_), params(params_) 
   {
-
     
     // WHAT IS BELOW ONLY WORKS FOR TYPE=0 approximations
     // which is what we use. Forget TYPE=1
@@ -302,8 +307,10 @@ namespace Chroma
   /*!
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
-  EvenOddPrecHtContFrac5DFermActArray::linOp(Handle<const ConnectState> state_) const
+  EvenOddPrecConstDetLinearOperatorArray<LatticeFermion, 
+					 multi1d<LatticeColorMatrix>,
+					 multi1d<LatticeColorMatrix> >* 
+  EvenOddPrecHtContFrac5DFermActArray::linOp(Handle< FermState<T,P,Q> > state_) const
   {
     START_CODE();
 
@@ -330,8 +337,10 @@ namespace Chroma
   /*!
    * \param state	    gauge field     	       (Read)
    */
-  const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> >* 
-  EvenOddPrecHtContFrac5DFermActArray::linOpPV(Handle<const ConnectState> state_) const
+  EvenOddPrecConstDetLinearOperatorArray<LatticeFermion, 
+					 multi1d<LatticeColorMatrix>,
+					 multi1d<LatticeColorMatrix> >* 
+  EvenOddPrecHtContFrac5DFermActArray::linOpPV(Handle< FermState<T,P,Q> > state_) const
   {
 #if 0
     multi1d<Real> alpha;
@@ -365,7 +374,7 @@ namespace Chroma
    *
    * Propagator solver for DWF-like fermions
    */
-  template<typename T, typename P>
+  template<typename T, typename P, typename Q>
   class HtContFrac5DQprop : public SystemSolver<T>
   {
   public:
@@ -374,8 +383,8 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param Mass_      quark mass ( Read )
      */
-    HtContFrac5DQprop(Handle< const EvenOddPrecConstDetLinearOperator<multi1d<T>, P> > A_,
-		      Handle< const LinearOperator<T> > D_denum_,
+    HtContFrac5DQprop(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A_,
+		      Handle< LinearOperator<T> > D_denum_,
 		      const Real& Mass_,
 		      const InvertParam_t& invParam_) : 
       A(A_), D_denum(D_denum_), Mass(Mass_),  invParam(invParam_) {}
@@ -513,28 +522,27 @@ namespace Chroma
     // Hide default constructor
     HtContFrac5DQprop() {}
 
-    Handle< const EvenOddPrecConstDetLinearOperator<multi1d<T>,P> > A;
-    Handle< const LinearOperator<T> > D_denum;
+    Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
+    Handle< LinearOperator<T> > D_denum;
     const Real Mass;
     const InvertParam_t invParam;
   };
 
  
   //! Propagator of an un-preconditioned Extended-Overlap linear operator
-  const SystemSolver<LatticeFermion>* 
-  EvenOddPrecHtContFrac5DFermActArray::qprop(Handle<const ConnectState> state,
+  SystemSolver<LatticeFermion>* 
+  EvenOddPrecHtContFrac5DFermActArray::qprop(Handle< FermState<T,P,Q> > state,
 					     const InvertParam_t& invParam) const
   {
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
     Real a5 = params.b5- params.c5;
     Real WilsonMass = -params.OverMass ;
-    Handle<LinearOperator<LatticeFermion> > D_w(new UnprecWilsonLinOp(u, WilsonMass));
-    Handle< const LinearOperator<LatticeFermion> > D_denum(new UnprecDWFTransfDenLinOp(u, a5, D_w));
+    Handle< LinearOperator<T> > D_w(new UnprecWilsonLinOp(state, WilsonMass));
+    Handle< LinearOperator<T> > D_denum(new UnprecDWFTransfDenLinOp(a5, D_w));
 
-    return new HtContFrac5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >(Handle< const EvenOddPrecConstDetLinearOperator< multi1d<LatticeFermion> , multi1d<LatticeColorMatrix> > >(linOp(state)),
-									       D_denum, 
-									       getQuarkMass(),
-									       invParam);
+    return new HtContFrac5DQprop<T,P,Q>(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> >(linOp(state)),
+					D_denum, 
+					getQuarkMass(),
+					invParam);
   }
   
 } // End namespace Chroma

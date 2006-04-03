@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 2.1 2005-12-15 04:03:27 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -50,13 +50,19 @@ namespace Chroma
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    */
   
-  class EvenOddPrecDWFermActArray : public EvenOddPrecDWFermActBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecDWFermActArray : public EvenOddPrecDWFermActBaseArray<LatticeFermion, 
+				   multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! General FermBC
-    EvenOddPrecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+    EvenOddPrecDWFermActArray(Handle< CreateFermState<T,P,Q> > cfs_, 
 			      const Real& OverMass_, const Real& Mass_, int N5_) : 
-      fbc(fbc_)
+      cfs(cfs_)
       {
 	param.a5=1;
 	param.OverMass = OverMass_;
@@ -70,20 +76,13 @@ namespace Chroma
       }
 
     //! General FermBC
-    EvenOddPrecDWFermActArray(Handle< FermBC< multi1d<LatticeFermion> > > fbc_, 
+    EvenOddPrecDWFermActArray(Handle< CreateFermState<T,P,Q> > cfs_, 
 			      const EvenOddPrecDWFermActArrayParams& p) :
-      fbc(fbc_), param(p) {}
+      cfs(cfs_), param(p) {}
 
     //! Copy constructor
     EvenOddPrecDWFermActArray(const EvenOddPrecDWFermActArray& a) : 
-      fbc(a.fbc), param(a.param) {}
-
-    //! Assignment
-    EvenOddPrecDWFermActArray& operator=(const EvenOddPrecDWFermActArray& a)
-      {fbc=a.fbc; param=a.param; return *this;}
-
-    //! Return the fermion BC object for this action
-    const FermBC< multi1d<LatticeFermion> >& getFermBC() const {return *fbc;}
+      cfs(a.cfs), param(a.param) {}
 
     //! Length of DW flavor index/space
     int size() const {return param.N5;}
@@ -92,16 +91,16 @@ namespace Chroma
     Real getQuarkMass() const {return param.Mass;}
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* unprecLinOp(Handle<const ConnectState> state, 
-												 const Real& m_q) const;
+    UnprecDWLikeLinOpBaseArray<T,P,Q>* unprecLinOp(Handle< FermState<T,P,Q> > state, 
+						   const Real& m_q) const;
 
     //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-    const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >* precLinOp(Handle<const ConnectState> state, 
-												    const Real& m_q) const;
+    EvenOddPrecDWLikeLinOpBaseArray<T,P,Q>* precLinOp(Handle< FermState<T,P,Q> > state, 
+						      const Real& m_q) const;
 
     //! Return possibly optimized quark prop solver, solution of preconditioned system
-    const SystemSolver< multi1d<LatticeFermion> >* qpropT(Handle<const ConnectState> state,
-							  const InvertParam_t& invParam) const;
+    SystemSolverArray<T>* qpropT(Handle< FermState<T,P,Q> > state,
+				 const InvertParam_t& invParam) const;
 
     //! Destructor is automatic
     ~EvenOddPrecDWFermActArray() {}
@@ -123,15 +122,22 @@ namespace Chroma
 		   XMLWriter& xml_out,
 		   const LatticePropagator& q_src,
 		   int t_src, int j_decay,
-		   Handle<const ConnectState> state,
+		   Handle< FermState<T,P,Q> > state,
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
 		   bool obsvP,
 		   int& ncg_had);
 
+  protected:
+    //! Return the fermion create state for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
   private:
-    Handle< FermBC< multi1d<LatticeFermion> > >  fbc;
-    
+    EvenOddPrecDWFermActArray() {} // Partial constructor
+    EvenOddPrecDWFermActArray& operator=(const EvenOddPrecDWFermActArray& a) {} // Hide =
+
+  private:
+    Handle< CreateFermState<T,P,Q> >  cfs;
     EvenOddPrecDWFermActArrayParams param;
   };
 

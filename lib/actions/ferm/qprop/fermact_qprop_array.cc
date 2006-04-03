@@ -1,4 +1,4 @@
-// $Id: fermact_qprop_array.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: fermact_qprop_array.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -20,7 +20,7 @@ namespace Chroma
    * contains an initial guess for the solution.
    */
   template<typename T>
-  class FermAct5DQprop : public SystemSolver< multi1d<T> >
+  class FermAct5DQprop : public SystemSolverArray<T>
   {
   public:
     //! Constructor
@@ -28,7 +28,7 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    FermAct5DQprop(Handle< const LinearOperator< multi1d<T> > > A_,
+    FermAct5DQprop(Handle< LinearOperatorArray<T> > A_,
 		   const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
     {}
 
@@ -98,19 +98,22 @@ namespace Chroma
     // Hide default constructor
     FermAct5DQprop() {}
 
-    Handle< const LinearOperator< multi1d<T> > > A;
+    Handle< LinearOperatorArray<T> > A;
     const InvertParam_t invParam;
   };
 
 
   template<>
-  const SystemSolver< multi1d<LatticeFermion> >* 
-  FermAct5D<LatticeFermion>::qpropT(Handle<const ConnectState> state,
-				    const InvertParam_t& invParam) const
+  SystemSolverArray<LatticeFermion>* 
+  FermAct5D<LatticeFermion, 
+	    multi1d<LatticeColorMatrix>,
+	    multi1d<LatticeColorMatrix> >::qpropT(Handle< FermState< LatticeFermion,
+						  multi1d<LatticeColorMatrix>,
+						  multi1d<LatticeColorMatrix> > > state,
+						  const InvertParam_t& invParam) const
   {
-    Handle< const LinearOperator< multi1d<LatticeFermion> > > A(linOp(state));
-
-    return new FermAct5DQprop<LatticeFermion>(A, invParam);
+    return new FermAct5DQprop<LatticeFermion>(Handle< LinearOperatorArray<LatticeFermion> >(linOp(state)),
+					      invParam);
   }
 
-}; // Namespace Chroma
+} // Namespace Chroma

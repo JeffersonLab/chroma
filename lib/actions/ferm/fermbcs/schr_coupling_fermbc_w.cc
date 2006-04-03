@@ -1,4 +1,4 @@
-// $Id: schr_coupling_fermbc_w.cc,v 2.1 2006-03-16 03:00:12 edwards Exp $
+// $Id: schr_coupling_fermbc_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - use for coupling determinations
  */
@@ -12,10 +12,12 @@ namespace Chroma
   namespace SchrCouplingFermBCEnv 
   { 
     //! Callback function to register with the factory
-    FermBC<LatticeFermion>* createFermBC(XMLReader& xml, const string& path)
+    FermBC<LatticeFermion,
+	   multi1d<LatticeColorMatrix>, 
+	   multi1d<LatticeColorMatrix> >* createFermBC(XMLReader& xml, const string& path)
     {
-      return new SchrCouplingFermBC<LatticeFermion>(SchrCouplingGaugeBC(SchrGaugeBCParams(xml, path)),
-						    SchrFermBCParams(xml, path));
+      return new SchrCouplingFermBC(SchrCouplingGaugeBC(SchrGaugeBCParams(xml, path)),
+				    SchrFermBCParams(xml, path));
     }
 
     const std::string name = "SCHROEDINGER_COUPLING_FERMBC";

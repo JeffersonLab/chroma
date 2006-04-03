@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: link_smearing_factory.h,v 1.3 2005-11-22 22:00:27 edwards Exp $
+// $Id: link_smearing_factory.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief Factory for producing link smearing objects
  */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: periodic_fermbc_w.h,v 2.2 2006-03-16 03:00:12 edwards Exp $
+// $Id: periodic_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Periodic fermionic BC
  */

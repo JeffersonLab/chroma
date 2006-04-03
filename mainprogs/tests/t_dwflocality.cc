@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 2.0 2005-09-25 21:04:46 edwards Exp $
+// $Id: t_dwflocality.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -8,8 +8,6 @@
 
 #include "chroma.h"
 
-
-typedef multi1d<LatticeFermion>  MLF;
 
 using namespace Chroma;
 
@@ -85,16 +83,21 @@ int main(int argc, char **argv)
   pop(xml);
 
 
+  // Typedefs to save typing
+  typedef LatticeFermion               T;
+  typedef multi1d<LatticeFermion>      MLF;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
 
   MLF psi(N5), chi(N5);
 
   // Create a FermBC with only periodic BC. Note the handle is on an abstract type.
-  Handle<FermBC<MLF> >  fbc(new SimpleFermBC<MLF>(boundary));
+  Handle< CreateFermState<T,P,Q> >  cfs(new CreateSimpleFermState<T,P,Q>(boundary));
 
   // DWDslash class can be optimised
 
-  EvenOddPrecDWFermActArray S_pdwf(fbc, WilsonMass, m_q,N5);
-  Handle<const ConnectState> state(S_pdwf.createState(u));
+  EvenOddPrecDWFermActArray S_pdwf(cfs, WilsonMass, m_q,N5);
+  Handle< FermState<T,P,Q> > state(S_pdwf.createState(u));
 
   LatticeFermion chi4;
   LatticeFermion res4;
@@ -120,7 +123,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
 
   {
-    Handle< const SystemSolver< multi1d<LatticeFermion> > > PQ(S_pdwf.qpropT(state, invParam));
+    Handle< SystemSolver< multi1d<LatticeFermion> > > PQ(S_pdwf.qpropT(state, invParam));
     int n_count = (*PQ)(psi, chi);
   }
   

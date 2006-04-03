@@ -1,4 +1,5 @@
-// $Id: prec_fermact_qprop_array.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// -*- C++ -*-
+// $Id: prec_fermact_qprop_array.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -19,8 +20,8 @@ namespace Chroma
    *
    * This routine is actually generic to all even-odd 5D preconditioned fermions
    */
-  template<typename T, typename P>
-  class PrecFermAct5DQprop : public SystemSolver< multi1d<T> >
+  template<typename T, typename P, typename Q>
+  class PrecFermAct5DQprop : public SystemSolverArray<T>
   {
   public:
     //! Constructor
@@ -28,7 +29,7 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    PrecFermAct5DQprop(Handle< const EvenOddPrecLinearOperator< multi1d<T>, P > > A_,
+    PrecFermAct5DQprop(Handle< EvenOddPrecLinearOperatorArray<T,P,Q > > A_,
 		       const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
       {}
 
@@ -40,8 +41,8 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    PrecFermAct5DQprop(Handle< const EvenOddPrecLinearOperator< multi1d<T>, P > > A_,
-		       Handle<const ConnectState> state_,  // throw away
+    PrecFermAct5DQprop(Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > A_,
+		       Handle< FermState<T,P,Q> > state_,  // throw away
 		       const Real& OverMass_,    // throw away
 		       const Real& Mass_,        // throw away
 		       const AnisoParam_t& anisoParam_, // throw away
@@ -66,7 +67,7 @@ namespace Chroma
     int operator() (multi1d<T>& psi, const multi1d<T>& chi) const;
 
   private:
-    Handle< const EvenOddPrecLinearOperator< multi1d<T>, P > > A;
+    Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > A;
     const InvertParam_t invParam;
   };
 

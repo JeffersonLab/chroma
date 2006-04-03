@@ -1,4 +1,4 @@
-// $Id: unprec_ovdwf_linop_array_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -18,7 +18,7 @@ namespace Chroma
    * \param m_q_          quark mass    (Read)
    */
   void 
-  UnprecOvDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  UnprecOvDWLinOpArray::create(Handle< FermState<T,P,Q> > state,
 			       const Real& WilsonMass_, const Real& m_q_, int N5_)
   {
     WilsonMass = WilsonMass_;
@@ -26,7 +26,7 @@ namespace Chroma
     a5  = 1.0;
     N5  = N5_;
 
-    D.create(u_);
+    D.create(state);
 //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
   }
 
@@ -117,6 +117,8 @@ namespace Chroma
       }          
     }
 
+    getFermBC().modifyF(chi);
+
     END_CODE();
   }
 
@@ -134,5 +136,5 @@ namespace Chroma
   }
   
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

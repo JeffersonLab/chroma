@@ -1,4 +1,4 @@
-// $Id: unprec_w12_fermact_w.cc,v 2.2 2006-02-26 03:47:51 edwards Exp $
+// $Id: unprec_w12_fermact_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned W12 fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/unprec_w12_linop_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 namespace Chroma
 {
@@ -17,17 +17,21 @@ namespace Chroma
   namespace UnprecW12FermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
-										    const std::string& path)
+    WilsonTypeFermAct<LatticeFermion,
+		      multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+								     const std::string& path)
     {
-      return new UnprecW12FermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+      return new UnprecW12FermAct(CreateFermStateEnv::reader(xml_in, path), 
 				  CloverFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct4D(xml_in, path);
     }
@@ -55,8 +59,10 @@ namespace Chroma
    *
    * \param state	    gauge field     	       (Read)
    */
-  const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  UnprecW12FermAct::linOp(Handle<const ConnectState> state) const
+  UnprecLinearOperator<LatticeFermion,
+		       multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix> >*
+  UnprecW12FermAct::linOp(Handle< FermState<T,P,Q> > state) const
   {
     if (param.anisoParam.anisoP)
     {
@@ -64,7 +70,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    return new UnprecW12LinOp(state->getLinks(), param); 
+    return new UnprecW12LinOp(state, param); 
   }
 
 }

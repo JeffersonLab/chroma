@@ -1,4 +1,4 @@
-// $Id: source_const_aggregate.cc,v 2.8 2006-03-02 22:26:18 edwards Exp $
+// $Id: source_const_aggregate.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief All make source constructors
  */

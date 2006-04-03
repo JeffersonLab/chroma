@@ -1,4 +1,4 @@
-/* $Id: prec_ovext_linop_array_w.cc,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+/* $Id: prec_ovext_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
 *  \brief EvenOddPreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -11,21 +11,21 @@ namespace Chroma
   //! Creation routine
   /*! \ingroup fermact
    *
-   * \param u_            gauge field   (Read)
+   * \param fs            gauge field   (Read)
    * \param WilsonMass_   DWF height    (Read)
    * \param m_q_          quark mass    (Read)
    */
   void 
-  EvenOddPrecOvExtLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
-				const int Npoles_,
-				const Real& coeffP_,
-				const multi1d<Real>& resP_,
-				const multi1d<Real>& rootQ_,
-				const multi1d<Real>& beta_,
-				const Real& OverMass_,
-				const Real& Mass_,
-				const Real& b5_,
-				const Real& c5_)
+  EvenOddPrecOvExtLinOpArray::create(Handle< FermState<T,P,Q> > fs,
+				     const int Npoles_,
+				     const Real& coeffP_,
+				     const multi1d<Real>& resP_,
+				     const multi1d<Real>& rootQ_,
+				     const multi1d<Real>& beta_,
+				     const Real& OverMass_,
+				     const Real& Mass_,
+				     const Real& b5_,
+				     const Real& c5_)
   {
 
     START_CODE();
@@ -33,17 +33,16 @@ namespace Chroma
 
     Npoles = Npoles_;
     N5 = 2*Npoles_ + 1;
-    Handle< const WilsonDslashArray > Ds(new WilsonDslashArray(u_,N5));
 
-    Dslash  = Ds;  // Copy Handle -- M now owns dslash
+    Dslash.create(fs,N5);
 
     Real R = (Real(1) + Mass_)/(Real(1)-Mass_);
     Real alpha = b5_ + c5_;
     Real a5 = b5_ - c5_;
 
-    Q = Nd - OverMass_;
-    A = -alpha*Q;
-    E = Real(2)*R  + (R*a5 + alpha*coeffP_)*Q;
+    Real QQ = Nd - OverMass_;
+    A = -alpha*QQ;
+    E = Real(2)*R  + (R*a5 + alpha*coeffP_)*QQ;
 
     Aprime = Real(0.5)*alpha;
     Eprime = -Real(0.5)*(R *a5 + coeffP_*alpha);
@@ -56,9 +55,9 @@ namespace Chroma
     Dprime.resize(Npoles);
 
     for(int p=0; p < Npoles; p++) { 
-      B[p] = sqrt( rootQ_[p] * beta_[p] )* ( Real(2) + a5*Q );
-      D[p] = sqrt( resP_[p] * beta_[p] ) * ( Real(2) + a5*Q );
-      C[p] = alpha*beta_[p]*Q;
+      B[p] = sqrt( rootQ_[p] * beta_[p] )* ( Real(2) + a5*QQ );
+      D[p] = sqrt( resP_[p] * beta_[p] ) * ( Real(2) + a5*QQ );
+      C[p] = alpha*beta_[p]*QQ;
 
       Bprime[p] = -Real(0.5)*a5*sqrt( rootQ_[p] * beta_[p] );
       Dprime[p] = -Real(0.5)*a5*sqrt( resP_[p] * beta_[p] );
@@ -190,7 +189,7 @@ namespace Chroma
 	multi1d<LatticeFermion> Dpsi(N5); moveToFastMemoryHint(Dpsi);
 
 	// N5 * Dslash flops = N5 * 1320 cbsite flops
-	Dslash->apply(Dpsi,psi,PLUS,cb);
+	Dslash.apply(Dpsi,psi,PLUS,cb);
 
      
 	// Lowest corner
@@ -242,7 +241,7 @@ namespace Chroma
 	}
 
 	// N5 *1320 cbsite flops
-	Dslash->apply(chi,tmp,MINUS,cb);
+	Dslash.apply(chi,tmp,MINUS,cb);
       }
       break;
           default: 

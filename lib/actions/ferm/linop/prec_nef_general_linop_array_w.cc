@@ -1,4 +1,4 @@
-// $Id: prec_nef_general_linop_array_w.cc,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -22,7 +22,7 @@ namespace Chroma
    * \param N5_           extent of 5D  (Read)
    */
   void 
-  EvenOddPrecGenNEFDWLinOpArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  EvenOddPrecGenNEFDWLinOpArray::create(Handle< FermState<T,P,Q> > fs,
 					const Real& WilsonMass_, 
 					const Real& m_q_,
 					const multi1d<Real>& b5_, 
@@ -42,7 +42,7 @@ namespace Chroma
       QDP_abort(1);
     }
     N5  = N5_;
-    D.create(u_, N5);
+    D.create(fs, N5);
 
     b5.resize(N5);
     c5.resize(N5);

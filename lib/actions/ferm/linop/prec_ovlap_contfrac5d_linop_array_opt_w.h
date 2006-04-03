@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovlap_contfrac5d_linop_array_opt_w.h,v 2.0 2005-09-25 21:04:29 edwards Exp $
+// $Id: prec_ovlap_contfrac5d_linop_array_opt_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Optimized Even-odd prec. 5D continued fraction linop
  */
@@ -32,7 +32,7 @@ namespace Chroma
       except that the auxiliary linop M is no longer supplied, 
       but is created here 
     */
-    OptEvenOddPrecOvlapContFrac5DLinOpArray(Handle<const ConnectState> state,
+    OptEvenOddPrecOvlapContFrac5DLinOpArray(Handle< FermState<T,P,Q> > state,
 					    const Real& _m_q,
 					    const Real& _OverMass,
 					    int _N5,
@@ -87,7 +87,7 @@ namespace Chroma
 		      const int cb) const;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 #endif

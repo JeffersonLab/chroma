@@ -1,4 +1,4 @@
-// $Id: qpropadd.cc,v 2.1 2005-11-30 04:47:27 edwards Exp $
+// $Id: qpropadd.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
 /*! \file
  * \brief Add two quark propagators
  *

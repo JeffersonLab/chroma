@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_fermact_params_w.h,v 2.3 2006-03-08 22:45:14 edwards Exp $
+// $Id: clover_fermact_params_w.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 /*! \file
  *  \brief Parameters for Clover fermion action
  */

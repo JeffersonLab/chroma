@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 1.12 2006-03-17 02:05:22 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 3.0 2006-04-03 04:59:22 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile

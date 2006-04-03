@@ -1,4 +1,4 @@
-// $Id: deriv_quark_displacement_w.cc,v 1.3 2006-03-21 18:28:33 edwards Exp $
+// $Id: deriv_quark_displacement_w.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  */

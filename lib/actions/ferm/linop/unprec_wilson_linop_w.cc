@@ -1,4 +1,4 @@
-// $Id: unprec_wilson_linop_w.cc,v 2.3 2006-03-03 02:37:39 edwards Exp $
+// $Id: unprec_wilson_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -16,11 +16,11 @@ namespace Chroma
    * \param u_ 	  gauge field     	       (Read)
    * \param Mass_   fermion kappa   	       (Read)
    */
-  void UnprecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void UnprecWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
 				 const Real& Mass_)
   {
     AnisoParam_t anisoParam;
-    create(u_, Mass_, anisoParam);
+    create(fs, Mass_, anisoParam);
   }
 
 
@@ -30,11 +30,11 @@ namespace Chroma
    * \param Mass_   fermion kappa   	       (Read)
    * \param aniso   anisotropy struct   	       (Read)
    */
-  void UnprecWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void UnprecWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
 				 const Real& Mass_,
 				 const AnisoParam_t& anisoParam)
   {
-    D.create(u_,anisoParam);
+    D.create(fs,anisoParam);
 
     Mass = Mass_;
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
@@ -67,6 +67,8 @@ namespace Chroma
     D(tmp, psi, isign);
 
     chi = fact*psi + mhalf*tmp;
+
+    getFermBC().modifyF(chi);
   
     END_CODE();
   }
@@ -107,4 +109,4 @@ namespace Chroma
     return site_flops*Layout::sitesOnNode();
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma

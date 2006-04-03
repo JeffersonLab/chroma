@@ -1,4 +1,4 @@
-// $Id: simple_quark_displacement.cc,v 1.1 2006-02-21 06:45:40 edwards Exp $
+// $Id: simple_quark_displacement.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief Simple quark displacement
  */

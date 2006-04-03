@@ -1,4 +1,4 @@
-// $Id: qproptrev.cc,v 2.2 2005-11-30 04:47:27 edwards Exp $
+// $Id: qproptrev.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 /*! \file
  *  \brief Time-reverse a propagator
  */

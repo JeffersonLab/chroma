@@ -1,6 +1,15 @@
-// $Id: nef_quarkprop4_w.cc,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 2.0  2005-09-25 21:04:30  edwards
+// Revision 3.0  2006-04-03 04:58:52  edwards
+// Major overhaul of fermion and gauge action interface. Basically,
+// all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
+// the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
+// in the sense of Hamilton's equations. The fermbc's have been rationalized to never
+// be over multi1d<T>. The "createState" within the FermionAction is now fixed meaning
+// the "u" fields are now from the coordinate type. There are now "ConnectState" that
+// derive into FermState<T,P,Q> and GaugeState<P,Q>.
+//
+// Revision 2.0  2005/09/25 21:04:30  edwards
 // Moved to version 2.0
 //
 // Revision 1.14  2005/01/14 20:13:06  edwards
@@ -84,13 +93,13 @@ namespace Chroma
    * \param MaxCG    maximum number of CG iterations ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    */
-  template<typename T, typename P, template<class,class> class C>
+  template<typename T, typename P, typename Q, template<class,class,class> class C>
   void nef_quarkProp_a(LatticePropagator& q_sol, 
 		       XMLWriter& xml_out,
 		       const LatticePropagator& q_src,
 		       int t_src, int j_decay,
-		       const C<T,P>& S_f,
-		       Handle<const ConnectState> state,
+		       const C<T,P,Q>& S_f,
+		       Handle< FermState<T,P,Q> > state,
 		       const InvertParam_t& invParam,
 		       int& ncg_had)
   {
@@ -101,7 +110,7 @@ namespace Chroma
     ncg_had = 0;
 
     // Setup solver
-    Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(S_f.qpropT(state,invParam));
+    Handle< SystemSolverArray<LatticeFermion> > qpropT(S_f.qpropT(state,invParam));
 
     multi1d<LatticePropagator> prop5d(S_f.size()) ;
     LatticePropagator q_mp  ;
@@ -281,21 +290,24 @@ namespace Chroma
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
 		      int t_src, int j_decay,
-		      const UnprecDWFermActBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >& S_f,
-		      Handle<const ConnectState> state,
+		      const UnprecDWFermActBaseArray<LatticeFermion,
+		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& S_f,
+		      Handle< FermState<LatticeFermion, 
+		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		      const InvertParam_t& invParam,
 		      int& ncg_had)
   {
-    nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,UnprecDWFermActBaseArray>(
-      q_sol, 
-      xml_out, 
-      q_src, 
-      t_src, 
-      j_decay, 
-      S_f, 
-      state, 
-      invParam,
-      ncg_had);
+    nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,
+      UnprecDWFermActBaseArray>(
+	q_sol, 
+	xml_out, 
+	q_src, 
+	t_src, 
+	j_decay, 
+	S_f, 
+	state,
+	invParam,
+	ncg_had);
   }
 
   //! Given a complete propagator as a source, this does all the inversions needed
@@ -317,21 +329,24 @@ namespace Chroma
 		      XMLWriter& xml_out,
 		      const LatticePropagator& q_src,
 		      int t_src, int j_decay,
-		      const EvenOddPrecDWFermActBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >& S_f,
-		      Handle<const ConnectState> state,
+		      const EvenOddPrecDWFermActBaseArray<LatticeFermion,
+		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& S_f,
+		      Handle< FermState<LatticeFermion,
+		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		      const InvertParam_t& invParam,
 		      int& ncg_had)
   {
-    nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,EvenOddPrecDWFermActBaseArray>(
-      q_sol, 
-      xml_out, 
-      q_src, 
-      t_src, 
-      j_decay, 
-      S_f, 
-      state, 
-      invParam,
-      ncg_had);
+    nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,
+      EvenOddPrecDWFermActBaseArray>(
+	q_sol, 
+	xml_out, 
+	q_src, 
+	t_src, 
+	j_decay, 
+	S_f, 
+	state,
+	invParam,
+	ncg_had);
   }
 
 }

@@ -1,4 +1,4 @@
-//  $Id: ape_smear.h,v 2.0 2005-09-25 21:04:39 edwards Exp $
+//  $Id: ape_smear.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
 
 #ifndef __ape_smear__
 #define __ape_smear__

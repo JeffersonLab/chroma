@@ -5,7 +5,7 @@ namespace Chroma {
 include(types.mh)
 
 /* + */
-/* $Id: mespbg5p_w.cc,v 2.0 2005-09-25 21:04:39 edwards Exp $ ($Date: 2005-09-25 21:04:39 $) */
+/* $Id: mespbg5p_w.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $ ($Date: 2006-04-03 04:59:04 $) */
 
 /* MESPBG5P - Calculates noise estimator for psi_bar_psi, psi_bar gamma_5 psi, */
 /*            <psi_bar gamma_5 psi psi_bar gamma_5 psi>,  */

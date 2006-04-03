@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilutezN_source_const.h,v 2.1 2005-11-20 18:28:38 edwards Exp $
+// $Id: dilutezN_source_const.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Random Z(N) source construction using dilution
  *

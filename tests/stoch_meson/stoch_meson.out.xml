@@ -19,7 +19,7 @@
   <Input><stoch_meson>
 <annotation>
 ;
-; $Id: stoch_meson.out.xml,v 1.5 2005-11-30 04:48:16 edwards Exp $ test input for stoch_meson code
+; $Id: stoch_meson.out.xml,v 3.0 2006-04-03 04:59:34 edwards Exp $ test input for stoch_meson code
 ;
 </annotation>
 <Param> 

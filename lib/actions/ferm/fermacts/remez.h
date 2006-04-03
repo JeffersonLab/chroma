@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez.h,v 2.1 2006-02-16 21:02:58 edwards Exp $
+// $Id: remez.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief Redirector for Remez algorithm for finding nth roots
  */

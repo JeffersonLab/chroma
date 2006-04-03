@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 2.1 2006-03-13 05:13:43 edwards Exp $
+// $Id: rect_gaugeact.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
+#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
 
 namespace Chroma
 {
@@ -14,9 +14,10 @@ namespace Chroma
   namespace RectGaugeActEnv 
   {
     //! Callback
-    GaugeAction* createGaugeAct(XMLReader& xml, const std::string& path) 
+    GaugeAction< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
+											    const std::string& path) 
     {
-      return new RectGaugeAct(GaugeTypeGaugeBCEnv::reader(xml, path), 
+      return new RectGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
 			      RectGaugeActParams(xml, path));
     }
 
@@ -56,7 +57,7 @@ namespace Chroma
    */
   void
   RectGaugeAct::staple(LatticeColorMatrix& u_staple,
-		       Handle<const ConnectState> state,
+		       const Handle< GaugeState<P,Q> >& state,
 		       int mu, int cb) const
   {
     QDPIO::cerr << "RectGaugeAct::staple() - not converted from szin" << endl;
@@ -77,8 +78,8 @@ namespace Chroma
    * \param state      gauge field ( Read )
    */
   void
-  RectGaugeAct::dsdu(multi1d<LatticeColorMatrix>& ds_u,
-		     const Handle< const ConnectState> state) const
+  RectGaugeAct::deriv(multi1d<LatticeColorMatrix>& ds_u,
+		      const Handle< GaugeState<P,Q> >& state) const
   {
     START_CODE();
 
@@ -176,7 +177,7 @@ namespace Chroma
   //   = -coeff * (1/(Nc)) * Sum Re Tr Rect
 
   Double
-  RectGaugeAct::S(const Handle<const ConnectState> state) const
+  RectGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
     START_CODE();
 

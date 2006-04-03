@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chrono_predictor.h,v 2.0 2005-09-25 21:04:43 edwards Exp $
+// $Id: chrono_predictor.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
 /*! \file
  * \brief Chronological predictor for HMC
  *
@@ -73,7 +73,7 @@ namespace Chroma
     // and we are trying to get a guess for phi which 
     // minimises the initial residual.
     virtual void operator()(multi1d<T>& psi,
-			    const LinearOperator<multi1d<T> >& A, 
+			    const LinearOperatorArray<T>& A, 
 			    const multi1d<T>& chi) = 0;
 			    
 

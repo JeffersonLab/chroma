@@ -1,4 +1,4 @@
-// $Id: rbc_gaugeact.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: rbc_gaugeact.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
 /*! \file
  *  \brief RG style plaquette + rectangle gauge action following RBC conventions
  */
@@ -6,16 +6,17 @@
 #include "chromabase.h"
 #include "actions/gauge/gaugeacts/rbc_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
+#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
 
 namespace Chroma
 {
  
   namespace RBCGaugeActEnv 
   { 
-    GaugeAction* createGaugeAct(XMLReader& xml, const std::string& path) 
+    GaugeAction< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
+											    const std::string& path) 
     {
-      return new RBCGaugeAct(GaugeTypeGaugeBCEnv::reader(xml, path), 
+      return new RBCGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
 			     RBCGaugeActParams(xml, path));
     }
 
@@ -46,16 +47,16 @@ namespace Chroma
 
   // Private initializer
   void
-  RBCGaugeAct::init(Handle< GaugeBC > gbc)
+  RBCGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
   {
     // Fold in normalizations and create action
     // Here, the rectangle weight is relative to the plaquette
     AnisoParam_t aniso;  // empty aniso
     Real coeff0 = beta*(1 - 8*c1);
-    plaq = new PlaqGaugeAct(gbc,coeff0,aniso);
+    plaq = new PlaqGaugeAct(cgs,coeff0,aniso);
 
     Real coeff1 = beta*c1;
-    rect = new RectGaugeAct(gbc,coeff1);
+    rect = new RectGaugeAct(cgs,coeff1);
   } 
 
 }

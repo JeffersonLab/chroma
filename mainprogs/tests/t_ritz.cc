@@ -1,4 +1,4 @@
-// $Id: t_ritz.cc,v 2.0 2005-09-25 21:04:48 edwards Exp $
+// $Id: t_ritz.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
 
 #include "chroma.h"
 
@@ -107,9 +107,13 @@ int main(int argc, char **argv)
 
   dumpParams(xml_out, params);
 
+  // Typedefs to save typing
+  typedef LatticeFermion               T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
 
   // Create a FermBC
-  Handle<FermBC<LatticeFermion> >  fbc(new SimpleFermBC<LatticeFermion>(params.boundary));
+  Handle< CreateFermState<T,P,Q> >  cfs(new CreateSimpleFermState<T,P,Q>(params.boundary));
   
   // The Gauge Field
   multi1d<LatticeColorMatrix> u(Nd);
@@ -124,11 +128,11 @@ int main(int argc, char **argv)
   // Put this puppy into a handle to allow Zolo to copy it around as a **BASE** class
   // WARNING: the handle now owns the data. The use of a bare S_w below is legal,
   // but just don't delete it.
-  UnprecWilsonFermAct  S_w(fbc, params.quark_mass);
+  UnprecWilsonFermAct  S_w(cfs, params.quark_mass);
 
-  Handle< const ConnectState > connect_state(S_w.createState(u));
+  Handle< FermState<T,P,Q> > connect_state(S_w.createState(u));
 
-  Handle< const LinearOperator<LatticeFermion> > MM(S_w.lMdagM(connect_state));
+  Handle< LinearOperator<T> > MM(S_w.lMdagM(connect_state));
 
   // Try and get lowest eigenvalue of MM
   multi1d<Real> lambda(params.n_eig);
@@ -164,7 +168,7 @@ int main(int argc, char **argv)
   {
     QDPIO::cout << "Look for highest ev" << endl;
 
-    Handle<const LinearOperator<LatticeFermion> > MinusMM(new lopscl<LatticeFermion, Real>(MM, Real(-1.0)));
+    Handle< LinearOperator<T> > MinusMM(new lopscl<LatticeFermion, Real>(MM, Real(-1.0)));
   
     // Look for highest ev
     for(int i =0; i < params.n_eig; i++)

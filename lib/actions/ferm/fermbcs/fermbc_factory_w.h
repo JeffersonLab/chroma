@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc_factory_w.h,v 2.2 2006-03-16 03:00:11 edwards Exp $
+// $Id: fermbc_factory_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Fermion Boundary Condition factories
  */
@@ -18,23 +18,17 @@ namespace Chroma
   //! FermBC factory
   /*! \ingroup fermbcs */
   typedef SingletonHolder< 
-    ObjectFactory<FermBC<LatticeFermion>, 
+    ObjectFactory<FermBC<LatticeFermion, 
+			 multi1d<LatticeColorMatrix>, 
+			 multi1d<LatticeColorMatrix> >, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),
-		  FermBC<LatticeFermion>* (*)(XMLReader&, const std::string&), 
+		  FermBC<LatticeFermion,
+			 multi1d<LatticeColorMatrix>, 
+			 multi1d<LatticeColorMatrix> >* (*)(XMLReader&, 
+							    const std::string&), 
 		  StringFactoryError> >
   TheWilsonTypeFermBCFactory;
-
-
-  //! FermBC array factory
-  /*! \ingroup fermbcs */
-  typedef SingletonHolder< 
-    ObjectFactory<FermBC< multi1d<LatticeFermion> >, 
-		  std::string,
-		  TYPELIST_2(XMLReader&, const std::string&),
-		  FermBC< multi1d<LatticeFermion> >* (*)(XMLReader&, const std::string&), 
-		  StringFactoryError> >
-  TheWilsonTypeFermBCArrayFactory;
 
 }
 

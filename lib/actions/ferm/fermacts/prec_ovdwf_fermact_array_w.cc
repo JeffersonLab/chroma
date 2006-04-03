@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 2.1 2006-02-26 03:47:51 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -9,7 +9,7 @@
 #include "actions/ferm/linop/prec_ovdwf_linop_array_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 namespace Chroma
 {
@@ -17,17 +17,21 @@ namespace Chroma
   namespace EvenOddPrecOvDWFermActArrayEnv
   {
     //! Callback function
-    WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
-											const std::string& path)
+    WilsonTypeFermAct5D<LatticeFermion, 
+			multi1d<LatticeColorMatrix>,
+			multi1d<LatticeColorMatrix> >* createFermAct5D(XMLReader& xml_in,
+								       const std::string& path)
     {
-      return new EvenOddPrecOvDWFermActArray(WilsonTypeFermBCArrayEnv::reader(xml_in, path), 
+      return new EvenOddPrecOvDWFermActArray(CreateFermStateEnv::reader(xml_in, path), 
 					     EvenOddPrecOvDWFermActArrayParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct5D(xml_in, path);
     }
@@ -74,19 +78,23 @@ namespace Chroma
 
 
   //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-  const EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  EvenOddPrecOvDWFermActArray::precLinOp(Handle<const ConnectState> state,
+  EvenOddPrecDWLikeLinOpBaseArray<LatticeFermion, 
+				  multi1d<LatticeColorMatrix>,
+				  multi1d<LatticeColorMatrix> >*
+  EvenOddPrecOvDWFermActArray::precLinOp(Handle< FermState<T,P,Q> > state,
 					 const Real& m_q) const
   {
-    return new EvenOddPrecOvDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
+    return new EvenOddPrecOvDWLinOpArray(state,OverMass,m_q,N5);
   }
 
   //! Produce an even-odd preconditioned linear operator for this action with arbitrary quark mass
-  const UnprecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  EvenOddPrecOvDWFermActArray::unprecLinOp(Handle<const ConnectState> state,
+  UnprecDWLikeLinOpBaseArray<LatticeFermion, 
+			     multi1d<LatticeColorMatrix>,
+			     multi1d<LatticeColorMatrix> >*
+  EvenOddPrecOvDWFermActArray::unprecLinOp(Handle< FermState<T,P,Q> > state,
 					   const Real& m_q) const
   {
-    return new UnprecOvDWLinOpArray(state->getLinks(),OverMass,m_q,N5);
+    return new UnprecOvDWLinOpArray(state,OverMass,m_q,N5);
   }
 
 }

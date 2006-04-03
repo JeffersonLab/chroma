@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -22,34 +22,34 @@ namespace Chroma
    * Unprecondition domain-wall fermion action. The conventions used here
    * are specified in Phys.Rev.D63:094505,2001 (hep-lat/0005002).
    */
-  template<typename T, typename P>
-  class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermAct5D<T,P>
+  template<typename T, typename P, typename Q>
+  class UnprecDWFermActBaseArray : public UnprecWilsonTypeFermAct5D<T,P,Q>
   {
   public:
     //! Return the quark mass
     virtual Real getQuarkMass() const = 0;
 
     //! Produce an unpreconditioned linear operator for this action with arbitrary quark mass
-    virtual const UnprecDWLikeLinOpBaseArray<T,P>* unprecLinOp(Handle<const ConnectState> state, 
-							       const Real& m_q) const = 0;
+    virtual UnprecDWLikeLinOpBaseArray<T,P,Q>* unprecLinOp(Handle< FermState<T,P,Q> > state, 
+							   const Real& m_q) const = 0;
 
     //! Override to produce a DWF-link unprec. linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const UnprecDWLikeLinOpBaseArray<T,P>* linOp(Handle<const ConnectState> state) const
+    virtual UnprecDWLikeLinOpBaseArray<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const
     {
       return unprecLinOp(state,getQuarkMass());
     }
 
     //! Override to produce a DWF-link unprec. Pauli-Villars linear operator for this action
     /*! Covariant return rule - override base class function */
-    virtual const UnprecDWLikeLinOpBaseArray<T,P>* linOpPV(Handle<const ConnectState> state) const
+    virtual UnprecDWLikeLinOpBaseArray<T,P,Q>* linOpPV(Handle< FermState<T,P,Q> > state) const
     {
       return unprecLinOp(state,Real(1));
     }
 
     //! Produce a hermitian version of the linear operator
     /*! This code is generic */
-    virtual const LinearOperator< multi1d<T> >* hermitianLinOp(Handle<const ConnectState> state) const
+    virtual LinearOperatorArray<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const
     {
       // Have not implemented this yet, but it is generic
       QDPIO::cerr << "UnprecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;
@@ -59,9 +59,9 @@ namespace Chroma
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
     /*! Use the fact that  linOp4D(m_q) = [P^{-1} (D^{(5)}(1))^{-1} D^{(5)}(m_q) P]_{11} */
-    virtual const LinearOperator<T>* linOp4D(Handle<const ConnectState> state,
-					     const Real& m_q,
-					     const InvertParam_t& invParam) const
+    virtual LinearOperator<T>* linOp4D(Handle< FermState<T,P,Q> > state,
+				       const Real& m_q,
+				       const InvertParam_t& invParam) const
     {
       return new UnprecDWF4DLinOp<T>(unprecLinOp(state,m_q),
 				     unprecLinOp(state,Real(1)),
@@ -69,17 +69,17 @@ namespace Chroma
     }
 
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
-    virtual const LinearOperator<T>* DeltaLs(Handle< const ConnectState> state,
-					     const InvertParam_t& invParam) const 
+    virtual LinearOperator<T>* DeltaLs(Handle< FermState<T,P,Q> > state,
+				       const InvertParam_t& invParam) const 
     {
-      Handle< const LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
+      Handle< LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
       return new lDeltaLs(lin);
     }
 
     //! Define quark propagator routine for 4D fermions
     /*! Default implementation provided */
-    const SystemSolver<T>* qprop(Handle<const ConnectState> state,
-				 const InvertParam_t& invParam) const;
+    SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
+			   const InvertParam_t& invParam) const;
 
     //! Apply the Dminus operator on a fermion.
     /*! 
@@ -89,11 +89,11 @@ namespace Chroma
      */
     void Dminus(T& chi,
 		const T& psi,
-		Handle<const ConnectState> state,
+		Handle< FermState<T,P,Q> > state,
 		enum PlusMinus isign,
 		int s5) const
       {
-	Handle< const UnprecDWLikeLinOpBaseArray<T,P> > A(linOp(state));
+	Handle< UnprecDWLikeLinOpBaseArray<T,P,Q> > A(linOp(state));
 	A->Dminus(chi,psi,isign,s5);
       }
 

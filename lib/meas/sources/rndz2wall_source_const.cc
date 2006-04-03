@@ -1,4 +1,4 @@
-// $Id: rndz2wall_source_const.cc,v 2.4 2005-12-06 20:44:57 osborn Exp $
+// $Id: rndz2wall_source_const.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
 /*! \file
  *  \brief Random Z2 wall source construction
  */

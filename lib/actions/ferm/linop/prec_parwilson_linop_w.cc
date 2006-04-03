@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_linop_w.cc,v 2.4 2005-11-02 20:42:47 edwards Exp $
+// $Id: prec_parwilson_linop_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -14,13 +14,13 @@ namespace Chroma
    * \param Mass_    fermion mass   	       (Read)
    * \param H_       parity breaking term	       (Read)
    */
-  void EvenOddPrecParWilsonLinOp::create(const multi1d<LatticeColorMatrix>& u_, 
+  void EvenOddPrecParWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
 					 const Real& Mass_, const Real& H_)
   {
     Mass = Mass_;
     H = H_;
-    u = u_;
-    D.create(u);
+//    u = u_;
+    D.create(fs);
 
     fact = Nd + Mass;
     Real tmp = 1.0 / (fact*fact + H*H);
@@ -184,6 +184,8 @@ namespace Chroma
       chi[rb[1]] -= H*(GammaConst<Ns,Ns*Ns-1>()*timesI(psi));
       break;
     }
+
+    getFermBC().modifyF(chi, rb[1]);
   }
 
 
@@ -334,6 +336,8 @@ namespace Chroma
       
     }
         
+    getFermBC().zero(ds_u);
+
     END_CODE();
   }
 #endif

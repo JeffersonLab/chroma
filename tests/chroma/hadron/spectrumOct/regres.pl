@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.2 2005-12-25 06:51:32 edwards Exp $
+#  $Id: regres.pl,v 3.0 2006-04-03 04:59:28 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #

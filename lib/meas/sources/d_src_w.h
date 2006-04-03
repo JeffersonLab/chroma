@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: d_src_w.h,v 2.1 2005-11-07 06:27:47 edwards Exp $
+// $Id: d_src_w.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief D-wave sources
  */

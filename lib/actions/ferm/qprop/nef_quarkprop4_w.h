@@ -1,4 +1,4 @@
-// $Id: nef_quarkprop4_w.h,v 2.0 2005-09-25 21:04:30 edwards Exp $
+// $Id: nef_quarkprop4_w.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -31,8 +31,10 @@ namespace Chroma
 		 XMLWriter& xml_out,
 		 const LatticePropagator& q_src,
 		 int t_src, int j_decay,
-		 const UnprecDWFermActBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >& S_f,
-		 Handle<const ConnectState> state,
+		 const UnprecDWFermActBaseArray<LatticeFermion,
+		 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& S_f,
+		 Handle< FermState<LatticeFermion,
+		 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		 const InvertParam_t& invParam,
 		 int& ncg_had);
 
@@ -53,8 +55,10 @@ namespace Chroma
 		 XMLWriter& xml_out,
 		 const LatticePropagator& q_src,
 		 int t_src, int j_decay,
-		 const EvenOddPrecDWFermActBaseArray<LatticeFermion,multi1d<LatticeColorMatrix> >& S_f,
-		 Handle<const ConnectState> state,
+		 const EvenOddPrecDWFermActBaseArray<LatticeFermion,
+		 multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> >& S_f,
+		 Handle< FermState<LatticeFermion, 
+		 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		 const InvertParam_t& invParam,
 		 int& ncg_had);
 

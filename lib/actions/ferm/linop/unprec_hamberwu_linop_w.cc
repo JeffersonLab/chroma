@@ -1,4 +1,4 @@
-// $Id: unprec_hamberwu_linop_w.cc,v 1.2 2006-02-09 02:22:40 edwards Exp $
+// $Id: unprec_hamberwu_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu linear operator
  */
@@ -17,13 +17,15 @@ namespace Chroma
    * \param u_ 	    gauge field     	       (Read)
    * \param Mass_   fermion kappa   	       (Read)
    */
-  void UnprecHamberWuLinOp::create(const multi1d<LatticeColorMatrix>& u, 
+  void UnprecHamberWuLinOp::create(Handle< FermState<T,P,Q> > fs,
 				   const Real& Mass_, const Real& u0_)
   {
     Mass = Mass_;
     u0   = u0_;
 
-    D.create(u);
+    D.create(fs);
+
+    const multi1d<LatticeColorMatrix>& u = fs->getLinks();
 
     //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
 
@@ -81,6 +83,8 @@ namespace Chroma
     else
       chi -= fact4 * tmp_v;
 
+    getFermBC().modifyF(chi);
+
     END_CODE();
   }
 
@@ -120,6 +124,8 @@ namespace Chroma
       ds_u[mu] *= fact2;
 
     // NOTE: missing derivative of 2 link piece
+
+    getFermBC().zero(ds_u);
 
     END_CODE();
   }

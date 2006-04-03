@@ -1,4 +1,4 @@
-// $Id: stoch_meson.cc,v 1.7 2005-11-30 04:47:27 edwards Exp $
+// $Id: stoch_meson.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
 /*! \file
  * \brief Stochastically estimate a meson operator
  *

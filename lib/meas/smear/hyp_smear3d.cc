@@ -1,4 +1,4 @@
-//  $Id: hyp_smear3d.cc,v 2.1 2005-11-22 21:59:30 edwards Exp $
+//  $Id: hyp_smear3d.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
 /*! \file
  *  \brief Hyp-smearing of the gauge configuration
  */

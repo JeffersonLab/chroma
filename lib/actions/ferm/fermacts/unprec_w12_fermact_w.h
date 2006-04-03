@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_w12_fermact_w.h,v 2.1 2006-02-09 02:23:29 edwards Exp $
+// $Id: unprec_w12_fermact_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned W12 fermion action
  */
@@ -28,41 +28,46 @@ namespace Chroma
    *
    * Supports creation and application for fermion actions
    */
-  class UnprecW12FermAct : public UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class UnprecW12FermAct : public UnprecWilsonTypeFermAct<LatticeFermion, 
+			   multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! General FermBC
-    UnprecW12FermAct(Handle< FermBC<LatticeFermion> > fbc_, 
+    UnprecW12FermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
 		     const CloverFermActParams& param_) : 
-      fbc(fbc_), param(param_) {}
+      cfs(cfs_), param(param_) {}
 
     //! Copy constructor
     UnprecW12FermAct(const UnprecW12FermAct& a) : 
-      fbc(a.fbc), param(a.param) {}
-
-    //! Assignment
-    UnprecW12FermAct& operator=(const UnprecW12FermAct& a)
-      {fbc=a.fbc; param=a.param; return *this;}
-
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeFermion>& getFermBC() const {return *fbc;}
+      cfs(a.cfs), param(a.param) {}
 
     //! Produce a linear operator for this action
-    const UnprecLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >* linOp(Handle<const ConnectState> state) const;
+    UnprecLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce the gamma_5 hermitian operator H_w
-    const LinearOperator<LatticeFermion>* hermitianLinOp(Handle< const ConnectState> state) const { 
-      return new lgherm<LatticeFermion>(linOp(state));
-    }
+    LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const 
+      { 
+	return new lgherm<T>(linOp(state));
+      }
 
     //! Destructor is automatic
     ~UnprecW12FermAct() {}
 
+  protected:
+    //! Return the fermion create state for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
   private:
     UnprecW12FermAct() {} //hide default constructor
-   
+    void operator=(const UnprecW12FermAct& a) {} // Hide =
+  
   private:
-    Handle< FermBC<LatticeFermion> >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     CloverFermActParams param;
   };
 

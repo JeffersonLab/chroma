@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 2.1 2006-01-12 05:45:16 edwards Exp $
+// $Id: asqtad_fermact_s.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -7,8 +7,10 @@
 #ifndef __asqtad_fermact_s_h__
 #define __asqtad_fermact_s_h__
 
-#include <fermact.h>
+#include "fermact.h"
+#include "state.h"
 #include "actions/ferm/fermacts/asqtad_state.h"
+#include "actions/ferm/fermacts/simple_fermstate.h"
 
 
 namespace Chroma 
@@ -17,62 +19,57 @@ namespace Chroma
   /*! \ingroup fermacts
    *
    */
-  class AsqtadFermAct : public EvenOddStaggeredTypeFermAct< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >
+  class AsqtadFermAct : public EvenOddStaggeredTypeFermAct<
+    LatticeStaggeredFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! General FermBC
-    AsqtadFermAct(Handle< FermBC<LatticeStaggeredFermion> > fbc_, 
+    // Typedefs to save typing
+    typedef LatticeStaggeredFermion      T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    //! General CreateFermState
+    AsqtadFermAct(Handle< FermBC<T,P,Q> > fbc_, 
 		  const Real Mass_, const Real u0_) : 
-      fbc(fbc_), Mass(Mass_), u0(u0_) {}
+      cfs(new CreateSimpleFermState<T,P,Q>(fbc_)), Mass(Mass_), u0(u0_) {}
   
     //! Copy constructor
     AsqtadFermAct(const AsqtadFermAct& a) : 
-      fbc(a.fbc), Mass(a.Mass), u0(a.u0) {}
-
-    //! Assignment
-    AsqtadFermAct& operator=(const AsqtadFermAct& a)
-      {fbc=a.fbc; Mass=a.Mass, u0=a.u0; return *this;}
-
-
-    //! Return the fermion BC object for this action
-    const FermBC<LatticeStaggeredFermion>& getFermBC() const {return *fbc;}
+      cfs(a.cfs), Mass(a.Mass), u0(a.u0) {}
 
     //! Create state should apply the BC
-    const AsqtadConnectStateBase<LatticeStaggeredFermion>* createState(const multi1d<LatticeColorMatrix>& u_) const;
+    AsqtadConnectStateBase* createState(const Q& u_) const;
+
+    //! Return the fermion BC object for this action
+    const FermBC<T,P,Q>& getFermBC() const {return cfs->getBC();}
 
     //! Produce a linear operator for this action
-    const EvenOddLinearOperator< LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* linOp( Handle< const ConnectState> state_) const;
+    EvenOddLinearOperator<T,P,Q>* linOp(Handle< FermState<T,P,Q> > state_) const;
 
     //! Produce a linear operator M^dag.M for this action
-  
-    const DiffLinearOperator<LatticeStaggeredFermion, multi1d<LatticeColorMatrix> >* lMdagM(Handle< const ConnectState >  state_) 
-      const;
+    DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state_) const;
 
     //! Return quark prop solver, solution of unpreconditioned system
-    /*! Default implementation provided */
-    virtual const SystemSolver<LatticeStaggeredFermion>* qprop(Handle<const ConnectState> state,
-					 const InvertParam_t& invParam) const;
+    SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
+			   const InvertParam_t& invParam) const;
 
     //! accessors 
-    const Real getQuarkMass() const { 
-      return Mass;
-    }
-
-  
-    Real getU0() { 
-      return u0;
-    }
-
-    //! Compute dS_f/dU      DO I NEED THIS?? -- No, a default version is supplied in fermact.h
+    const Real getQuarkMass() const {return Mass;}
+    Real getU0() {return u0;}
 
     //! Destructor is automatic
     ~AsqtadFermAct() {}
 
+  protected:
+    //! Return the fermion BC object for this action
+    const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
+
   private:
     AsqtadFermAct() {} //hide default constructor
+    void operator=(const AsqtadFermAct& a) {} // Assignment
   
   private:
-    Handle< FermBC<LatticeStaggeredFermion> >  fbc;
+    Handle< CreateFermState<T,P,Q> >  cfs;
     Real Mass;
     Real u0;
   };

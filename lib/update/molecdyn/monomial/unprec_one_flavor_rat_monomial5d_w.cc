@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 2.6 2006-02-16 02:59:03 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -66,9 +66,9 @@ namespace Chroma
 
     QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial5D: construct " << fermact_string << endl;
 
-    const WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    WilsonTypeFermAct5D<T,P,Q>* tmp_act = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
 
-    const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<const UnprecWilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix> >*>(tmp_act);
+    UnprecWilsonTypeFermAct5D<T,P,Q>* downcast=dynamic_cast<UnprecWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {

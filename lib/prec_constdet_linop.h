@@ -1,6 +1,5 @@
-
 // -*- C++ -*-
-// $Id: prec_constdet_linop.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_constdet_linop.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
 
 /*! @file
  * @brief Preconditioned 4D Linop with Gauge Independent Even-Even part
@@ -13,9 +12,10 @@
 
 using namespace QDP::Hints;
 
-namespace Chroma {
+namespace Chroma 
+{
 
-
+  //----------------------------------------------------------------
   //! Even-odd preconditioned linear operator
   /*! @ingroup linop
    *
@@ -88,14 +88,16 @@ namespace Chroma {
    *
    */
 
-  template<typename T, typename P>
-  class EvenOddPrecConstDetLinearOperator : public EvenOddPrecLinearOperator<T,P>  {
+  template<typename T, typename P, typename Q>
+  class EvenOddPrecConstDetLinearOperator : public EvenOddPrecLinearOperator<T,P,Q>  
+  {
   public:
-
     //! Virtual destructor to help with cleanup;
     virtual ~EvenOddPrecConstDetLinearOperator() {}
 
-  
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+
     //! Apply the derivative of the operator onto a source vector
     /*! User should make sure deriv routines do a resize  */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
@@ -136,6 +138,8 @@ namespace Chroma {
       for(int mu=0; mu < Nd; mu++) { 
 	ds_u[mu] *= Real(-1);
       }
+
+      getFermBC().zero(ds_u);
     }
 
     //! Apply the even-even block onto a source vector
@@ -174,7 +178,8 @@ namespace Chroma {
   };
 
 
-  //! Partial specialization of even-odd preconditioned linear operator including derivatives
+  //----------------------------------------------------------------
+  //! Even-odd preconditioned linear operator including derivatives for arrays
   /*! @ingroup linop
    *
    * Support for even-odd preconditioned linear operators with derivatives
@@ -241,18 +246,21 @@ namespace Chroma {
    *
    */
 
-  template<typename T, typename P>
-  class EvenOddPrecConstDetLinearOperator< multi1d<T>, P > : public EvenOddPrecLinearOperator< multi1d<T>, P >
+  template<typename T, typename P, typename Q>
+  class EvenOddPrecConstDetLinearOperatorArray : public EvenOddPrecLinearOperatorArray<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;
-    virtual ~EvenOddPrecConstDetLinearOperator() {}
+    virtual ~EvenOddPrecConstDetLinearOperatorArray() {}
 
     //! Only defined on the odd lattice
     const OrderedSubset& subset() const {return rb[1];}
 
     //! Expected length of array index
     virtual int size(void) const = 0;
+
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
     //! Apply the operator onto a source vector
     /*! User should make sure deriv routines do a resize  */
@@ -299,6 +307,8 @@ namespace Chroma {
       for(int mu=0; mu < Nd; mu++) { 
 	ds_u[mu] *= Real(-1);
       }
+
+      getFermBC().zero(ds_u);
     }
 
     //! Apply the even-even block onto a source vector

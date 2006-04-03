@@ -1,6 +1,6 @@
 
 // -*- C++ -*-
-// $Id: prec_nef_general_linop_array_w.h,v 2.1 2006-01-09 22:37:44 bjoo Exp $
+// $Id: prec_nef_general_linop_array_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned NEF domain-wall fermion linear operator
  *            generalised to take array of b_5 and c_5
@@ -21,21 +21,23 @@ namespace Chroma
    *
    * This routine is specific to Wilson fermions!
    */
-  class EvenOddPrecGenNEFDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray< LatticeFermion, multi1d<LatticeColorMatrix> >
+  class EvenOddPrecGenNEFDWLinOpArray : public EvenOddPrecDWLikeLinOpBaseArray<LatticeFermion, 
+					multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
-    //! Partial constructor
-    EvenOddPrecGenNEFDWLinOpArray() {}
-
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
     // ***** HACK *****
-    EvenOddPrecGenNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    EvenOddPrecGenNEFDWLinOpArray(Handle< FermState<T,P,Q> > fs,
 				  const Real& WilsonMass_, 
 				  const multi1d<Real>& b5_, 
 				  const multi1d<Real>& c5_, 
 				  const Real& m_q_, 
 				  int N5_) 
-    {create(u_, WilsonMass_, m_q_, b5_, c5_, N5_);}
+    {create(fs, WilsonMass_, m_q_, b5_, c5_, N5_);}
     // ***** HACK *****
 
 
@@ -45,7 +47,7 @@ namespace Chroma
       Set b5 = 1.0 and c5=0.0 to get Shamir DWF with a5=1.
       Set b5 = 1.0 and c5=1.0 to get Borichi DWF.
     */
-    EvenOddPrecGenNEFDWLinOpArray(const multi1d<LatticeColorMatrix>& u_, 
+    EvenOddPrecGenNEFDWLinOpArray(Handle< FermState<T,P,Q> > fs,
 				  const Real& WilsonMass_, 
 				  const Real &b5_, 
 				  const Real &c5_, 
@@ -59,11 +61,11 @@ namespace Chroma
 	c5_arr[i] = c5_;
       }
 
-      create(u_,WilsonMass_,m_q_, b5_arr, c5_arr, N5_);
+      create(fs,WilsonMass_,m_q_, b5_arr, c5_arr, N5_);
     }
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > fs,
 		const Real& WilsonMass_,
 		const Real& m_q_, 
 		const multi1d<Real>& b5_, 
@@ -74,6 +76,8 @@ namespace Chroma
     //! set b5 and c5 given kappa and a5
     //void set_b5_c5(const Real &kappa_, const Real &a5_);
 
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
 
     //! Destructor is automatic
     ~EvenOddPrecGenNEFDWLinOpArray() {}
@@ -233,6 +237,11 @@ namespace Chroma
 			   enum PlusMinus isign,
 			   int cb) const ;
 
+  protected:
+    //! Partial constructor
+    EvenOddPrecGenNEFDWLinOpArray() {}
+    //! Partial constructor
+    void operator=(const EvenOddPrecGenNEFDWLinOpArray&) {}
 
   private:
     Real WilsonMass;
@@ -263,7 +272,7 @@ namespace Chroma
     WilsonDslashArray  D;
   };
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 
 

@@ -1,4 +1,4 @@
-// $Id: aniso_io.cc,v 2.0 2005-09-25 21:04:31 edwards Exp $
+// $Id: aniso_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
 /*! \file
  *  \brief Anisotropy parameters
  */

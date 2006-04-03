@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lDeltaLs_w.h,v 2.0 2005-09-25 21:04:28 edwards Exp $
+// $Id: lDeltaLs_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
 /*! \file
  *   Apply DeltaLs = (1/4)(1-eps^2) to a fermion field.
 
@@ -13,31 +13,30 @@
 
 
 
-namespace Chroma {
-
-class lDeltaLs: public LinearOperator<LatticeFermion>
+namespace Chroma 
 {
-public:
-  //! Creation routine
-  /*!
-   * \ingroup linop
-   *
-   */
-  lDeltaLs(Handle< const LinearOperator<LatticeFermion> > D_ ) :
-    D(D_) {}
 
-  //! Destructor is automatic
-  ~lDeltaLs() {}
+  //! GW Defect operator
+  /*! \ingroup linop */
+  class lDeltaLs: public LinearOperator<LatticeFermion>
+  {
+  public:
+    //! Creation routine
+    lDeltaLs(Handle< LinearOperator<LatticeFermion> > D_ ) :
+      D(D_) {}
+
+    //! Destructor is automatic
+    ~lDeltaLs() {}
  
-  //! Only defined on the entire lattice
-  const OrderedSubset& subset() const {return all;}
+    //! Only defined on the entire lattice
+    const OrderedSubset& subset() const {return all;}
 
-  //! Apply the operator onto a source vector
-  void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
+    //! Apply the operator onto a source vector
+    void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
-private:
-  Handle<const LinearOperator<LatticeFermion> > D;
-};
+  private:
+    Handle< LinearOperator<LatticeFermion> > D;
+  };
 
 }
 

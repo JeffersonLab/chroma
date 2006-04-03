@@ -1,4 +1,4 @@
-// $Id: enum_quarkspintype_io.cc,v 2.1 2005-12-15 04:03:28 edwards Exp $
+// $Id: enum_quarkspintype_io.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
 /*! \file
  * \brief Enum for what spin components of a quark prop to compute
  */

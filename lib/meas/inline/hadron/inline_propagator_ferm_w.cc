@@ -1,4 +1,4 @@
-// $Id: inline_propagator_ferm_w.cc,v 2.2 2006-03-20 04:22:03 edwards Exp $
+// $Id: inline_propagator_ferm_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator returning only a single lattice fermion
  *
@@ -327,19 +327,26 @@ namespace Chroma
       swatch.reset();
       QDPIO::cout << "Try the various factories" << endl;
 
+      // Typedefs to save typing
+      typedef LatticeFermion               T;
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
+
       // Generic Wilson-Type stuff
-      Handle< FermionAction<LatticeFermion> >
+      Handle< FermionAction<T,P,Q> >
 	S_f(TheFermionActionFactory::Instance().createObject(fermact,
 							     fermacttop,
 							     fermact_path));
 
       
-      Handle<const ConnectState> state(S_f->createState(u,
-							state_info_xml,
-							state_info_path));  // uses phase-multiplied u-fields
+//      Handle< FermState<T,P,Q> > state(S_f->createState(u,
+//							state_info_xml,
+//							state_info_path));  // uses phase-multiplied u-fields
 
-      Handle< const SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
-								   params.param.invParam);
+      Handle< FermState<T,P,Q> > state(S_f->createState(u));
+
+      Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
+							     params.param.invParam);
       
       QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
       swatch.start();

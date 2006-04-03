@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gfix.h,v 1.1 2006-02-23 20:58:00 edwards Exp $
+// $Id: gfix.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
 /*! \file
  * \brief Inline gauge fixing measurements
  *

@@ -1,4 +1,4 @@
-// $Id: schr_sf_fermbc_w.cc,v 2.1 2006-03-16 03:00:12 edwards Exp $
+// $Id: schr_sf_fermbc_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional base class
  */
@@ -9,12 +9,11 @@ namespace Chroma
 {
 
   //! Construct the mask and boundary fields
-  template<>
-  void SchrSFFermBC<LatticeFermion>::initBnd(multi1d<LatticeColorMatrix>& SFBndFld,
-					     multi1d<LatticeBoolean>& lSFmask,
-					     LatticeBoolean& lSFmaskF,
-					     const multi1d<LatticeColorMatrix>& SFBndFldG,
-					     const multi1d<LatticeBoolean>& lSFmaskG) const
+  void SchrSFFermBC::initBnd(multi1d<LatticeColorMatrix>& SFBndFld,
+			     multi1d<LatticeBoolean>& lSFmask,
+			     LatticeBoolean& lSFmaskF,
+			     const multi1d<LatticeColorMatrix>& SFBndFldG,
+			     const multi1d<LatticeBoolean>& lSFmaskG) const
   {
     START_CODE();
 

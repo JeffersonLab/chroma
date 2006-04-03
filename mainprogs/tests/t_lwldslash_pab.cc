@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_pab.cc,v 2.0 2005-09-25 21:04:47 edwards Exp $
+// $Id: t_lwldslash_pab.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
 
 
 #include "chroma.h"
@@ -48,8 +48,14 @@ int main(int argc, char **argv)
   //! Create a linear operator
   QDPIO::cout << "Constructing naive QDPWilsonDslash" << endl;
 
+  Handle< FermState<LatticeFermion,
+    multi1d<LatticeColorMatrix>,
+    multi1d<LatticeColorMatrix> > > state(new PeriodicFermState<LatticeFermion,
+					  multi1d<LatticeColorMatrix>,
+					  multi1d<LatticeColorMatrix> >(u));
+
   // Naive Dslash
-  QDPWilsonDslash D(u);
+  QDPWilsonDslash D(state);
 
   QDPIO::cout << "Done" << endl;
 
@@ -110,7 +116,7 @@ int main(int argc, char **argv)
   //! Create a linear operator
   QDPIO::cout << "Constructing (possibly optimized) WilsonDslash" << endl;
 
-  WilsonDslash D_opt(u);
+  WilsonDslash D_opt(state);
 
   QDPIO::cout << "Done" << endl;
 

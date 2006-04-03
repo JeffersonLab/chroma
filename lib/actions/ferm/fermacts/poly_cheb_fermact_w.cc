@@ -1,4 +1,4 @@
-// $Id: poly_cheb_fermact_w.cc,v 2.3 2006-02-26 03:47:51 edwards Exp $
+// $Id: poly_cheb_fermact_w.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -9,7 +9,7 @@
 #include "actions/ferm/linop/polynomial_op.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 namespace Chroma
 {
@@ -17,17 +17,21 @@ namespace Chroma
   namespace PolyChebFermActEnv
   {
     //! Callback function
-    WilsonTypeFermAct<LatticeFermion,multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
-										    const std::string& path)
+    WilsonTypeFermAct<LatticeFermion,
+		      multi1d<LatticeColorMatrix>,
+		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+								     const std::string& path)
     {
-      return new PolyChebFermAct(WilsonTypeFermBCEnv::reader(xml_in, path), 
+      return new PolyChebFermAct(CreateFermStateEnv::reader(xml_in, path), 
 				 PolyChebFermActParams(xml_in, path));
     }
 
     //! Callback function
     /*! Differs in return type */
-    FermionAction<LatticeFermion>* createFermAct(XMLReader& xml_in,
-						 const std::string& path)
+    FermionAction<LatticeFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
     {
       return createFermAct4D(xml_in, path);
     }
@@ -38,8 +42,10 @@ namespace Chroma
     //! Register all the factories
     bool registerAll()
     {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+      bool foo = true;
+      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+      foo &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+      return foo;
     }
 
     //! Register the fermact
@@ -92,8 +98,9 @@ namespace Chroma
 
 
   //! General FermBC
-  PolyChebFermAct::PolyChebFermAct(Handle< FermBC<LatticeFermion> > fbc_, 
-				   const PolyChebFermActParams& param_) : fbc(fbc_), param(param_)
+  PolyChebFermAct::PolyChebFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
+				   const PolyChebFermActParams& param_) : 
+    cfs(cfs_), param(param_)
   {
     QDPIO::cout << "Constructing PolyChebFermAct from params" << endl;
     std::istringstream  xml_s(param.AuxFermAct);
@@ -107,14 +114,15 @@ namespace Chroma
       QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
 
       // Generic Wilson-Type stuff
-      Handle< const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix> > >
+      Handle< WilsonTypeFermAct<T,P,Q> >
 	S_f(TheWilsonTypeFermActFactory::Instance().createObject(auxfermact,
 								 fermacttop,
 								 fermact_path));
 
       fermact = S_f;
     }
-    catch (const std::string& e) {
+    catch (const std::string& e) 
+    {
       // General breakage Scenario
       QDPIO::cerr << "Error reading data: " << e << endl;
       throw;
@@ -122,52 +130,32 @@ namespace Chroma
 
   }
 
-    //! Produce a linear operator for this action
-  const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  PolyChebFermAct::linOp(Handle<const ConnectState> state) const
-  {
-    return fermact->linOp(state);
-  }
-
-  //! Produce a linear operator M^dag.M for this action
-  const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  PolyChebFermAct::lMdagM(Handle<const ConnectState> state) const
-  {
-    return fermact->lMdagM(state);
-  }
-
-  //! Produce the gamma_5 hermitian operator H_w
-  const LinearOperator<LatticeFermion>*
-  PolyChebFermAct::hermitianLinOp(Handle< const ConnectState> state) const
-  {
-    return fermact->hermitianLinOp(state);
-  }
-
   //! Produce a linear operator for this action
-  const PolyLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  PolyChebFermAct::polyLinOp(Handle<const ConnectState> state) const
+  PolyLinearOperator<LatticeFermion,
+		     multi1d<LatticeColorMatrix>,
+		     multi1d<LatticeColorMatrix> >* 
+  PolyChebFermAct::polyLinOp(Handle< FermState<T,P,Q> > state) const
   {
-    Handle< const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > 
+    Handle< DiffLinearOperator<T,P,Q> > 
       MdagM(fermact->lMdagM(state));
 
-    return new lpoly< LatticeFermion, multi1d<LatticeColorMatrix> >(MdagM,
-								    param.polyParams.degree, 
-								    param.polyParams.LowerBound, 
-								    param.polyParams.UpperBound, 
-								    param.polyParams.order);
+    return new lpoly<T,P,Q>(MdagM,
+			    param.polyParams.degree, 
+			    param.polyParams.LowerBound, 
+			    param.polyParams.UpperBound, 
+			    param.polyParams.order);
   }
 
   //! Produce a linear operator for this action
-  const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> >*
-  PolyChebFermAct::polyPrecLinOp(Handle<const ConnectState> state) const
+  DiffLinearOperator<LatticeFermion,
+		     multi1d<LatticeColorMatrix>,
+		     multi1d<LatticeColorMatrix> >* 
+  PolyChebFermAct::polyPrecLinOp(Handle< FermState<T,P,Q> > state) const
   {
-    Handle< const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > 
-      M(fermact->linOp(state));
+    Handle< DiffLinearOperator<T,P,Q> > M(fermact->linOp(state));
+    Handle< DiffLinearOperator<T,P,Q> > Pol(polyLinOp(state));
 
-    Handle< const DiffLinearOperator< LatticeFermion, multi1d<LatticeColorMatrix> > > 
-      Pol(polyLinOp(state));
-
-    return new PolyPrec< LatticeFermion, multi1d<LatticeColorMatrix> >(M, Pol);
+    return new PolyPrec<T,P,Q>(M, Pol);
   }
 
 }
