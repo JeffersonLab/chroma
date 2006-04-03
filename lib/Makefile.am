@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 2.62 2006-03-21 19:13:33 edwards Exp $
+# $Id: Makefile.am,v 3.0 2006-04-03 04:51:16 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -29,6 +29,8 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/remez_coeff.h \
 	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
+	actions/ferm/fermacts/periodic_fermstate.h \
+	actions/ferm/fermacts/simple_fermstate.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermacts/eigen_state.h \
 	actions/ferm/fermbcs/fermbcs.h \
@@ -59,6 +61,8 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/gaugeacts.h \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
+	actions/gauge/gaugeacts/gauge_createstate_aggregate.h \
+	actions/gauge/gaugeacts/gauge_createstate_factory.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
 	actions/gauge/gaugeacts/pg_gaugeact.h \
@@ -67,6 +71,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
+	actions/gauge/gaugeacts/simple_gaugestate.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -241,6 +246,11 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
+        actions/ferm/fermacts/periodic_fermstate_w.h \
+        actions/ferm/fermacts/simple_fermstate_w.h \
+        actions/ferm/fermacts/ferm_createstate_aggregate_w.h \
+        actions/ferm/fermacts/ferm_createstate_factory_w.h \
+        actions/ferm/fermacts/ferm_createstate_reader_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
@@ -258,6 +268,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_nef_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h \
+	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovext_fermact_array_w.h \
@@ -266,7 +277,6 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
-	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h \
@@ -280,9 +290,9 @@ nobase_include_HEADERS += \
 	actions/ferm/fermbcs/fermbcs_aggregate_w.h \
 	actions/ferm/fermbcs/fermbcs_reader_w.h \
 	actions/ferm/fermbcs/fermbc_factory_w.h \
+	actions/ferm/fermbcs/periodic_fermbc_w.h \
 	actions/ferm/fermbcs/simple_fermbc_w.h \
 	actions/ferm/fermbcs/twisted_fermbc_w.h \
-	actions/ferm/fermbcs/periodic_fermbc_w.h \
 	actions/ferm/fermbcs/schroedinger_fermbc_w.h \
 	actions/ferm/fermbcs/schr_fermbc_params_w.h \
 	actions/ferm/fermbcs/schr_sf_fermbc_w.h \
@@ -416,13 +426,17 @@ nobase_include_HEADERS += \
         util/ferm/antisymtensor.h \
         util/ferm/etensor.h \
         util/ferm/symtensor.h
-#	actions/ferm/fermbcs/schr1link_fermbc_w.h
-#	actions/ferm/fermbcs/schr2link_fermbc_w.h
+
 
 # Staggered specific headers
 nobase_include_HEADERS += \
-	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
+        actions/ferm/fermacts/ferm_createstate_aggregate_s.h \
+        actions/ferm/fermacts/ferm_createstate_factory_s.h \
+        actions/ferm/fermacts/ferm_createstate_reader_s.h \
+        actions/ferm/fermacts/periodic_fermstate_s.h \
+        actions/ferm/fermacts/simple_fermstate_s.h \
+	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
 	actions/ferm/fermbcs/fermbcs_reader_s.h \
@@ -620,6 +634,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugebcs/schr_chromomag_gaugebc.cc \
 	actions/gauge/gaugebcs/schr_dirich_gaugebc.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
+	actions/gauge/gaugeacts/gauge_createstate_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
 	actions/gauge/gaugeacts/pg_gaugeact.cc \
@@ -628,6 +643,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
+	actions/gauge/gaugeacts/simple_gaugestate.cc \
 	io/eigen_io.cc \
         io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
@@ -755,6 +771,10 @@ endif
 # Wilson specific sources
 libchroma_a_SOURCES += \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
+        actions/ferm/fermacts/ferm_createstate_aggregate_w.cc \
+        actions/ferm/fermacts/ferm_createstate_reader_w.cc \
+        actions/ferm/fermacts/periodic_fermstate_w.cc \
+        actions/ferm/fermacts/simple_fermstate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -774,10 +794,10 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.cc \
+	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.cc \
-	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc \
 	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
@@ -890,9 +910,6 @@ libchroma_a_SOURCES += \
         util/ferm/antisymtensor.cc \
         util/ferm/etensor.cc \
         util/ferm/symtensor.cc
-#	actions/ferm/fermbcs/schr1link_fermbc_w.cc
-#	actions/ferm/fermbcs/schr2link_fermbc_w.cc
-
 
 # Taken out for now
 #        meas/hadron/multipole_w.cc
@@ -1019,6 +1036,10 @@ endif
 #
 # Staggered specific sources
 libchroma_a_SOURCES += \
+        actions/ferm/fermacts/ferm_createstate_aggregate_s.cc \
+        actions/ferm/fermacts/ferm_createstate_reader_s.cc \
+        actions/ferm/fermacts/periodic_fermstate_s.cc \
+        actions/ferm/fermacts/simple_fermstate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
