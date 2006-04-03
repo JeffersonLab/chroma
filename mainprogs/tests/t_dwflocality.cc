@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: t_dwflocality.cc,v 3.1 2006-04-03 06:07:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
 
   {
-    Handle< SystemSolver< multi1d<LatticeFermion> > > PQ(S_pdwf.qpropT(state, invParam));
+    Handle< SystemSolverArray<LatticeFermion> > PQ(S_pdwf.qpropT(state, invParam));
     int n_count = (*PQ)(psi, chi);
   }
   
