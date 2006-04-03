@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_array_w.cc,v 3.1 2006-04-03 16:58:08 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -52,10 +52,11 @@ namespace Chroma
   {
     START_CODE();
 
-    u = state->getLinks();
-    fbc = state->getFermBC();
     N5 = N5_;
     anisoParam = aniso_;
+
+    // Save a copy of the fermbc
+    fbc = state->getFermBC();
 
     // Sanity check
     if (fbc.operator->() == 0)
@@ -63,6 +64,9 @@ namespace Chroma
       QDPIO::cerr << "WilsonDslashArray: error: fbc is null" << endl;
       QDP_abort(1);
     }
+
+    // Get links
+    u = state->getLinks();
 
     // Fold in anisotropy
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));

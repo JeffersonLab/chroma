@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_array_pab_w.cc,v 3.1 2006-04-03 16:58:08 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -15,39 +15,42 @@ namespace Chroma
 { 
 
   //! Full constructor
-  PABWilsonDslashArray::PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+  PABWilsonDslashArray::PABWilsonDslashArray(Handle< FermState<T,P,Q> > state,
 					     int N5_)
   {
-    create(u_,N5_);
+    create(state,N5_);
   }
 
 
   //! Full constructor
-  PABWilsonDslashArray::PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+  PABWilsonDslashArray::PABWilsonDslashArray(Handle< FermState<T,P,Q> > state,
 					     int N5_,
 					     const AnisoParam_t& aniso_)
   {
-    create(u_,N5_,aniso_);
+    create(state,N5_,aniso_);
   }
 
 
   //! Creation routine
-  void PABWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  void PABWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
 				    int N5_)
   {
     AnisoParam_t aniso;
-    create(u_, N5_, aniso);
+    create(state, N5_, aniso);
   }
 
 
   //! Creation routine
-  void PABWilsonDslashArray::create(const multi1d<LatticeColorMatrix>& u_, 
+  void PABWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
 				    int N5_, 
 				    const AnisoParam_t& aniso)
   {
     START_CODE();
 
+    N5 = N5_;
     anisoParam = aniso;
+
+    // Save a copy of the fermbc
     fbc = state->getFermBC();
 
     // Sanity check
@@ -57,8 +60,8 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    // For now, keep an extra copy
-    multi1d<LatticeColorMatrix> u = u_;
+    // Temporary copy - not kept
+    multi1d<LatticeColorMatrix> u = state->getLinks();
 
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
   
@@ -138,7 +141,6 @@ namespace Chroma
          wfm_vec_init(&wil);
     }
     PABDslashEnv::refcount++;
-    N5 = N5_;
 
     END_CODE();
   }

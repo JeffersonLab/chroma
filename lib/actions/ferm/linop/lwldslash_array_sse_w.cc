@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_sse_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_array_sse_w.cc,v 3.1 2006-04-03 16:58:08 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -75,6 +75,12 @@ namespace Chroma
 
     // Save a copy of the fermbc
     fbc = state->getFermBC();
+
+    if (fbc.operator->() == 0)
+    {
+      QDPIO::cerr << "SSEWilsonDslashArray: error: fbc is null" << endl;
+      QDP_abort(1);
+    }
 
     // Temporary copy - not kept
     multi1d<LatticeColorMatrix> u = state->getLinks();

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_pab_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_array_pab_w.h,v 3.1 2006-04-03 16:58:08 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -49,23 +49,23 @@ namespace Chroma
   {
   public:
     //! Empty constructor. Must use create later
-    PABWilsonDslashArray() {}
+    PABWilsonDslashArray();
 
     //! Full constructor
-    PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+    PABWilsonDslashArray(Handle< FermState<T,P,Q> > state,
 			 int N5_);
 
     //! Full constructor
-    PABWilsonDslashArray(const multi1d<LatticeColorMatrix>& u_, 
+    PABWilsonDslashArray(Handle< FermState<T,P,Q> > state,
 			 int N5_,
 			 const AnisoParam_t& aniso_);
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > state,
 		int N5_);
 
     //! Creation routine
-    void create(const multi1d<LatticeColorMatrix>& u_, 
+    void create(Handle< FermState<T,P,Q> > state,
 		int N5_,
 		const AnisoParam_t& aniso_);
 
