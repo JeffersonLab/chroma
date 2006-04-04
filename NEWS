@@ -1,3 +1,6 @@
+04/04/2006 -- Robert Edwards
+	Version 3.0.1. Minor compilation fixes.
+
 04/03/2006 -- Robert Edwards
 	Version 3.0.0. Major overhaul of fermion and gauge action interface. Basically,
         all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
