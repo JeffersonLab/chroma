@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_pab_w.h,v 3.1 2006-04-03 16:58:08 edwards Exp $
+// $Id: lwldslash_array_pab_w.h,v 3.2 2006-04-04 15:29:18 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -103,6 +103,9 @@ namespace Chroma
 		const LatticeFermion& psi, 
 		enum PlusMinus isign, int cb) const;
     
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
+
   protected:
     //! Get the anisotropy parameters
     const AnisoParam_t& getAnisoParam() const {return anisoParam;}
@@ -113,6 +116,7 @@ namespace Chroma
     WilsonArg wil;
     unsigned long wil_cbsize;
     int N5;
+    Handle< FermBC<T,P,Q> > fbc;
   };
 
 
