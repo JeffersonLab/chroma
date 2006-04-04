@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_w_pab.cc,v 3.1 2006-04-04 20:25:06 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -55,7 +55,7 @@ namespace Chroma
     }
 
     // Fold in anisotropy
-    multi1d<LatticeColorMatrix> u = u_;
+    multi1d<LatticeColorMatrix> u = state->getLinks();
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
   
     if (anisoParam.anisoP)
