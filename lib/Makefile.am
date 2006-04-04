@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.1 2006-04-03 17:06:28 edwards Exp $
+# $Id: Makefile.am,v 3.2 2006-04-04 15:24:19 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -13,8 +13,8 @@ VPATH = $(TOPDIR)/lib
 #     chroma/scripts/build_include_headers.pl
 #
 nobase_include_HEADERS = \
-	chroma_config.h chroma.h \
-	chromabase.h chromainc.h common_declarations.h boundcond.h fermact.h \
+	chroma_config.h chroma.h chromabase.h chromainc.h common_declarations.h \
+        boundcond.h create_state.h fermact.h \
 	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
 	linearop.h eo_prec_linop.h prec_constdet_linop.h prec_logdet_linop.h \
 	lmdagm.h objfactory.h objfunctor.h primitives.h \
