@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 3.1 2006-04-03 16:58:08 edwards Exp $
+// $Id: lwldslash_array_pab_w.cc,v 3.2 2006-04-05 15:30:24 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -13,6 +13,12 @@
 
 namespace Chroma 
 { 
+
+  //! Empty constructor. Must use create later
+  PABWilsonDslashArray::PABWilsonDslashArray()
+  {
+  }
+
 
   //! Full constructor
   PABWilsonDslashArray::PABWilsonDslashArray(Handle< FermState<T,P,Q> > state,
