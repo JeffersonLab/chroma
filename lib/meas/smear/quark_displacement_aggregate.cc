@@ -1,4 +1,4 @@
-// $Id: quark_displacement_aggregate.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: quark_displacement_aggregate.cc,v 3.1 2006-04-06 20:14:15 edwards Exp $
 /*! \file
  *  \brief All quark displacements
  */
@@ -8,6 +8,7 @@
 #include "meas/smear/no_quark_displacement.h"
 #include "meas/smear/simple_quark_displacement.h"
 #include "meas/smear/deriv_quark_displacement_w.h"
+#include "meas/smear/gamma_displacement_w.h"
 
 namespace Chroma
 {
@@ -22,6 +23,7 @@ namespace Chroma
       success &= NoQuarkDisplacementEnv::registered;
       success &= SimpleQuarkDisplacementEnv::registered;
       success &= DerivQuarkDisplacementEnv::registered;
+      success &= GammaDisplacementEnv::registered;
 
       return success;
     }
