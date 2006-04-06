@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.3 2006-04-04 20:30:03 edwards Exp $
+# $Id: Makefile.in,v 3.4 2006-04-06 20:14:46 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -371,8 +371,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
 	meas/hadron/wall_qprop_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
-	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
-	meas/sources/walfil_w.cc \
+	meas/smear/gamma_displacement_w.cc meas/sources/d_src_w.cc \
+	meas/sources/p_src_w.cc meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
@@ -690,7 +690,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	wallnuclff_w.$(OBJEXT) wallpionff_w.$(OBJEXT) \
 	wallrhoff_w.$(OBJEXT) wallrhopiff_w.$(OBJEXT) \
 	wall_qprop_w.$(OBJEXT) deriv_quark_displacement_w.$(OBJEXT) \
-	d_src_w.$(OBJEXT) p_src_w.$(OBJEXT) walfil_w.$(OBJEXT) \
+	gamma_displacement_w.$(OBJEXT) d_src_w.$(OBJEXT) \
+	p_src_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 	monomial_aggregate_w.$(OBJEXT) \
 	one_flavor_rat_monomial_params_w.$(OBJEXT) \
 	unprec_one_flavor_rat_monomial_w.$(OBJEXT) \
@@ -1109,9 +1110,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
-	meas/sources/sources_w.h meas/sources/d_src_w.h \
-	meas/sources/p_src_w.h meas/sources/walfil_w.h \
-	update/molecdyn/monomial/monomial_w.h \
+	meas/smear/gamma_displacement_w.h meas/sources/sources_w.h \
+	meas/sources/d_src_w.h meas/sources/p_src_w.h \
+	meas/sources/walfil_w.h update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
@@ -1719,9 +1720,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
-	meas/sources/sources_w.h meas/sources/d_src_w.h \
-	meas/sources/p_src_w.h meas/sources/walfil_w.h \
-	update/molecdyn/monomial/monomial_w.h \
+	meas/smear/gamma_displacement_w.h meas/sources/sources_w.h \
+	meas/sources/d_src_w.h meas/sources/p_src_w.h \
+	meas/sources/walfil_w.h update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
@@ -2164,8 +2165,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
 	meas/hadron/wall_qprop_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
-	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
-	meas/sources/walfil_w.cc \
+	meas/smear/gamma_displacement_w.cc meas/sources/d_src_w.cc \
+	meas/sources/p_src_w.cc meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
@@ -2451,6 +2452,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzz_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamma_displacement_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gammasgn_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_createstate_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gauge_io.Po@am__quote@
@@ -7418,6 +7420,20 @@ deriv_quark_displacement_w.obj: meas/smear/deriv_quark_displacement_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/deriv_quark_displacement_w.cc' object='deriv_quark_displacement_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deriv_quark_displacement_w.obj `if test -f 'meas/smear/deriv_quark_displacement_w.cc'; then $(CYGPATH_W) 'meas/smear/deriv_quark_displacement_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/deriv_quark_displacement_w.cc'; fi`
+
+gamma_displacement_w.o: meas/smear/gamma_displacement_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gamma_displacement_w.o -MD -MP -MF "$(DEPDIR)/gamma_displacement_w.Tpo" -c -o gamma_displacement_w.o `test -f 'meas/smear/gamma_displacement_w.cc' || echo '$(srcdir)/'`meas/smear/gamma_displacement_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gamma_displacement_w.Tpo" "$(DEPDIR)/gamma_displacement_w.Po"; else rm -f "$(DEPDIR)/gamma_displacement_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/gamma_displacement_w.cc' object='gamma_displacement_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gamma_displacement_w.o `test -f 'meas/smear/gamma_displacement_w.cc' || echo '$(srcdir)/'`meas/smear/gamma_displacement_w.cc
+
+gamma_displacement_w.obj: meas/smear/gamma_displacement_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gamma_displacement_w.obj -MD -MP -MF "$(DEPDIR)/gamma_displacement_w.Tpo" -c -o gamma_displacement_w.obj `if test -f 'meas/smear/gamma_displacement_w.cc'; then $(CYGPATH_W) 'meas/smear/gamma_displacement_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/gamma_displacement_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gamma_displacement_w.Tpo" "$(DEPDIR)/gamma_displacement_w.Po"; else rm -f "$(DEPDIR)/gamma_displacement_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/gamma_displacement_w.cc' object='gamma_displacement_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gamma_displacement_w.obj `if test -f 'meas/smear/gamma_displacement_w.cc'; then $(CYGPATH_W) 'meas/smear/gamma_displacement_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/gamma_displacement_w.cc'; fi`
 
 d_src_w.o: meas/sources/d_src_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT d_src_w.o -MD -MP -MF "$(DEPDIR)/d_src_w.Tpo" -c -o d_src_w.o `test -f 'meas/sources/d_src_w.cc' || echo '$(srcdir)/'`meas/sources/d_src_w.cc; \
