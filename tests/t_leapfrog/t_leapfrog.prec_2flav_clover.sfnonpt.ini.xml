@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+   <Hamiltonian>
+    <Monomials>
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_LOGDET_FERM_MONOMIAL</Name>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-7</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+	  <Kappa>0.12</Kappa>
+	  <clovCoeff>1.0</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+	  <FermionBC>
+	    <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+	    <SchrPhiMult>2.0</SchrPhiMult>
+	    <loop_extent>1</loop_extent>
+	    <decay_dir>3</decay_dir>
+	    <theta>0 0 0</theta>
+          </FermionBC>
+	  <ChronologicalPredictor>
+	    <Name>ZERO_SOLUTION_4D_PREDICTOR</Name>
+	  </ChronologicalPredictor>
+        </FermionAction>
+      </elem>
+
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+	  <Name>WILSON_GAUGEACT</Name>
+	  <beta>8.0</beta>
+	  <u0>0.9</u0>
+	  <GaugeBC>
+	    <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+	    <SchrPhiMult>2.0</SchrPhiMult>
+	    <loop_extent>1</loop_extent>
+	    <decay_dir>3</decay_dir>
+          </GaugeBC>
+        </GaugeAction>
+      </elem>
+
+    </Monomials>
+   </Hamiltonian>
+   <MDIntegrator>
+	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
+	<n_steps>100</n_steps>
+	<tau0>1.0</tau0>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>WEAK_FIELD</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>4 4 4 8</nrow>
+</LeapfrogTest>
