@@ -1,4 +1,4 @@
-// $Id: schr_sf_gaugebc.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: schr_sf_gaugebc.cc,v 3.1 2006-04-10 21:21:57 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional base class
  */
@@ -55,7 +55,7 @@ namespace Chroma
     {
     case 2:
       /*  if (coord(j_decay) == 1) then */
-      lbtest |= (litmp ==1);
+      lbtest |= (litmp == 1);
       /*  endif */
       break;
 
@@ -109,102 +109,6 @@ namespace Chroma
     Phases_t phases = getPhases();
     multi1d<Real> phi0 = phases.lower;
     multi1d<Real> phi1 = phases.upper;
-
-#if 0
-    //
-    // zap from here
-    //
-    Real ftmp = Chroma::twopi * 0.5 * SchrPhiMult();
-    switch (Nc)
-    {
-    case 2:
-      switch (SchrFun)
-      {
-      case 1:
-	/* lower and upper boundary are trivial */
-	phi0 = 0;
-	phi1 = 0;
-	break;
-
-      case 2:                     /*  SF nonperturbative improvement bc's */
-	ftmp /= TO_REAL(4);
-
-	/* lower boundary */
-	phi0[0] = -ftmp;
-	phi0[1] =  ftmp;
-
-	/* upper boundary */
-	phi1[0] = -TO_REAL(3) * ftmp;
-	phi1[1] =  TO_REAL(3) * ftmp;
-	break;
-
-      case 3:                     /*  SF coupling boundary conditions:  */
-	ftmp /= TO_REAL(4);
-
-	/* lower boundary */
-	phi0[0] = -ftmp;
-	phi0[1] =  ftmp;
-
-	/* upper boundary */
-	phi1[0] = -TO_REAL(3) * ftmp;
-	phi1[1] =  TO_REAL(3) * ftmp;
-	break;
-
-      default:
-	QDP_error_exit("Unsupported value", SchrFun);
-      }
-      break;
-
-    case 3:
-      switch (SchrFun)
-      {
-      case 1:
-	/* lower and upper boundary are trivial */
-	phi0 = 0;
-	phi1 = 0;
-	break;
-
-      case 2:                     /*  SF nonperturbative improvement bc's */
-	ftmp /= TO_REAL(6);
-
-	/* lower boundary */
-	phi0[0] = -ftmp;
-	phi0[1] = 0;
-	phi0[2] = ftmp;
-
-	/* upper boundary */
-	phi1[0] = -TO_REAL(5) * ftmp;
-	phi1[1] = TO_REAL(2) * ftmp;
-	phi1[2] = TO_REAL(3) * ftmp;
-	break;
-
-      case 3:                     /*  SF coupling boundary conditions:  */
-	ftmp /= TO_REAL(3);
-
-	/* lower boundary */
-	phi0[0] = -ftmp;
-	phi0[1] = 0;
-	phi0[2] =  ftmp;
-
-	/* upper boundary */
-	phi1[0] = -TO_REAL(3) * ftmp;
-	phi1[1] =               ftmp;
-	phi1[2] =  TO_REAL(2) * ftmp;
-	break;
-
-      default:
-	QDP_error_exit("Unsupported value", SchrFun);
-      }
-      break;
-
-    default:
-      QDP_error_exit("Unsupport number of colors", Nc);
-    }
-    //
-    // zap to here
-    //
-#endif
-
 
     /* Normalize. This is generic */
     multi3d<Real> phi(Nd, Nc, 2);
