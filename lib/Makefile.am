@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.3 2006-04-06 20:14:32 edwards Exp $
+# $Id: Makefile.am,v 3.4 2006-04-10 21:22:19 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -127,7 +127,8 @@ nobase_include_HEADERS = \
         meas/hadron/hadron.h \
 	meas/hadron/hadron_seqsource.h \
 	meas/hadron/stoch_var.h \
-	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
+	meas/meas.h meas/pbp/pbp.h \
+        meas/schrfun/schrfun.h \
 	meas/sinks/sinks.h \
         meas/sinks/pt_sink_smearing.h \
         meas/sinks/sh_sink_smearing.h \
@@ -390,6 +391,8 @@ nobase_include_HEADERS += \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h \
+        meas/schrfun/sfpcac_w.h \
+        meas/schrfun/sfcurcor_w.h \
         meas/sources/sources_w.h \
 	meas/sources/d_src_w.h \
 	meas/sources/p_src_w.h \
@@ -511,7 +514,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_spectrum_w.h \
 	meas/inline/hadron/inline_spectrumOct_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
-	meas/inline/hadron/inline_qqq_w.h \
+        meas/inline/hadron/inline_qqq_w.h \
 	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
@@ -543,6 +546,9 @@ nobase_include_HEADERS += \
         meas/inline/io/szin_read_obj_funcmap.h \
         meas/inline/io/szin_write_obj_funcmap.h \
         meas/inline/io/xml_write_obj_funcmap.h \
+	meas/inline/schrfun/schrfun.h \
+	meas/inline/schrfun/inline_schrfun_aggregate.h \
+	meas/inline/schrfun/inline_sfpcac_w.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
@@ -885,6 +891,8 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
+        meas/schrfun/sfpcac_w.cc \
+        meas/schrfun/sfcurcor_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc \
 	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
@@ -987,6 +995,8 @@ libchroma_a_SOURCES += \
         meas/inline/io/szin_read_obj_funcmap.cc \
         meas/inline/io/szin_write_obj_funcmap.cc \
         meas/inline/io/xml_write_obj_funcmap.cc \
+	meas/inline/schrfun/inline_schrfun_aggregate.cc \
+	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
 	meas/inline/smear/inline_link_smear.cc \
 	meas/inline/smear/inline_ape_smear.cc \
