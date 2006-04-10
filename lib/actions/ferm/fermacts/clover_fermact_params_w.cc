@@ -1,4 +1,4 @@
-// $Id: clover_fermact_params_w.cc,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: clover_fermact_params_w.cc,v 3.1 2006-04-10 21:20:47 edwards Exp $
 /*! \file
  *  \brief Clover fermion action parameters
  */
@@ -39,7 +39,7 @@ namespace Chroma
       Real Kappa;
       read(paramtop, "Kappa", Kappa);
       Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-      QDPIO::cout << "Kappa is " << Kappa << "Mass is " << Mass << endl << flush;
+      QDPIO::cout << "Kappa is " << Kappa << "  Mass is " << Mass << endl << flush;
     }
     else
     {
