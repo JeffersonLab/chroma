@@ -1,4 +1,4 @@
-// $Id: schr_sf_fermbc_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: schr_sf_fermbc_w.cc,v 3.1 2006-04-10 21:21:21 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional base class
  */
@@ -7,6 +7,56 @@
 
 namespace Chroma 
 {
+
+  //! Starting slice in decay direction
+  int SchrSFFermBC::getDecayMin() const
+  {
+    int tmin;
+    int j_decay = getDir();
+
+    switch (getMaxExtent())
+    {
+    case 1:
+      tmin = 0;
+      break;
+
+    case 2:
+      tmin = 1;
+      break;
+
+    default:
+      QDPIO::cerr << __func__ << ": unsupport max extent" << endl;
+      QDP_abort(1);
+    }
+
+    return tmin;
+  }
+
+
+  //! Ending slice in decay direction
+  int SchrSFFermBC::getDecayMax() const
+  {
+    int tmax;
+    int j_decay = getDir();
+
+    switch (getMaxExtent())
+    {
+    case 1:
+      tmax = QDP::Layout::lattSize()[j_decay] - 2;
+      break;
+
+    case 2:
+      tmax = QDP::Layout::lattSize()[j_decay] - 3;
+      break;
+
+    default:
+      QDPIO::cerr << __func__ << ": unsupport max extent" << endl;
+      QDP_abort(1);
+    }
+
+    return tmax;
+  }
+
 
   //! Construct the mask and boundary fields
   void SchrSFFermBC::initBnd(multi1d<LatticeColorMatrix>& SFBndFld,

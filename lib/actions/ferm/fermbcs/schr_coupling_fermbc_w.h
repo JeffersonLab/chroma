@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_coupling_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: schr_coupling_fermbc_w.h,v 3.1 2006-04-10 21:21:21 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - use for coupling determinations
  */
@@ -58,7 +58,10 @@ namespace Chroma
     //! Fixed gauge links on only the lSFmask() sites
     const multi1d<LatticeColorMatrix>& SFBndFld() const {return fld;}
 
-  protected:
+    //! Maximum plaquette size. This is what knows about 1x1 plaq or 1x2 rect.
+    /*! \return 1 for 1x1 plaq or 2 for 1x2 rect in decay_dir */
+    int getMaxExtent() const {return param.loop_extent;}
+
     //! Get the angles on the boundaries
     const multi1d<Real>& getTheta() const {return param.theta;}
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_sf_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: schr_sf_fermbc_w.h,v 3.1 2006-04-10 21:21:21 edwards Exp $
 /*! @file
  * @brief Schroedinger ferm boundary conditions
  */
@@ -27,6 +27,12 @@ namespace Chroma
     //! Decay direction
     virtual int getDir() const = 0;
 
+    //! Starting slice in decay direction
+    virtual int getDecayMin() const;
+
+    //! Ending slice in decay direction
+    virtual int getDecayMax() const;
+
   protected:
     //! Construct the mask and boundary fields
     virtual void initBnd(multi1d<LatticeColorMatrix>& SFBndFld,
@@ -37,6 +43,10 @@ namespace Chroma
 
     //! Get the angles on the boundaries
     virtual const multi1d<Real>& getTheta() const = 0;
+
+    //! Maximum plaquette size. This is what knows about 1x1 plaq or 1x2 rect.
+    /*! \return 1 for 1x1 plaq or 2 for 1x2 rect in decay_dir */
+    virtual int getMaxExtent() const = 0;
   };
 
 }

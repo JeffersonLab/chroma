@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_dirich_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: schr_dirich_fermbc_w.h,v 3.1 2006-04-10 21:21:21 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - dirichlet ferm BC
  */
@@ -75,6 +75,10 @@ namespace Chroma
 
       END_CODE();
     }
+
+    //! Maximum plaquette size. This is what knows about 1x1 plaq or 1x2 rect.
+    /*! \return 1 for 1x1 plaq or 2 for 1x2 rect in decay_dir */
+    int getMaxExtent() const {return param.loop_extent;}
 
   protected:
     //! Mask which lattice sites have fixed ferm sites

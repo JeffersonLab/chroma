@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schroedinger_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: schroedinger_fermbc_w.h,v 3.1 2006-04-10 21:21:21 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -73,6 +73,15 @@ namespace Chroma
     //! Says if there are fermion non-trivial 
     bool nontrivialP() const {return true;}
 
+    //! Decay direction
+    virtual int getDir() const = 0;
+
+    //! Starting slice in decay direction
+    virtual int getDecayMin() const = 0;
+
+    //! Ending slice in decay direction
+    virtual int getDecayMax() const = 0;
+
   protected:
     //! Mask which lattice sites have fixed fermion fields
     virtual const LatticeBoolean& lSFmaskF() const = 0;
@@ -82,6 +91,10 @@ namespace Chroma
 
     //! Fixed gauge links on only the lSFmask() sites
     virtual const multi1d<LatticeColorMatrix>& SFBndFld() const = 0;
+
+    //! Maximum plaquette size. This is what knows about 1x1 plaq or 1x2 rect.
+    /*! \return 1 for 1x1 plaq or 2 for 1x2 rect in decay_dir */
+    virtual int getMaxExtent() const = 0;
   };
 
 }
