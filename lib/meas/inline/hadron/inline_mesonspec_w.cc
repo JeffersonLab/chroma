@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.1 2006-04-10 21:14:49 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -363,33 +363,6 @@ namespace Chroma
 	QDPIO::cout << "Mass = " << Mass[loop] << endl;
       }
 
- 
-      //
-      // Sanity checks
-      // For now, force the type of source and sink smearings to agree.
-      // This could/should be relaxed to say point/smeared for BNDST
-      // type constructions in which case the BNDST type will be used
-      // in place of point or shell.
-      //
-      // NOTE: the only real requirement is that in BARHQLQ that the
-      // width of sink smearing is the same since no antisymmetrization
-      // is done.
-      //
-      for (int loop(1); loop < Nprops; ++loop)
-      {
-	if (source_type[loop] != source_type[loop])
-	{
-	  QDPIO::cerr << InlineMesonSpecEnv::name << ": prop source smearing types do not agree" << endl;
-	  QDP_abort(1);
-	}
-
-	if (sink_type[loop] != sink_type[0])
-	{
-	  QDPIO::cerr << InlineMesonSpecEnv::name << ": prop sink smearing types do not agree" << endl;
-	  QDP_abort(1);
-	}
-      }
-
 
       // Derived from input prop
       int j_decay = prop_header[0].source_header.j_decay;
@@ -444,40 +417,12 @@ namespace Chroma
       }
 
 
-      // Construct group name for output
-      string src_type;
-      if (source_type[0] == "POINT_SOURCE")
-	src_type = "Point";
-      else if (source_type[0] == "SHELL_SOURCE")
-	src_type = "Shell";
-      else if (source_type[0] == "WALL_SOURCE")
-	src_type = "Wall";
-      else
-      {
-	QDPIO::cerr << "Unsupported source type" << endl;
-	QDP_abort(1);
-      }
-
-      string snk_type;
-      if (sink_type[0] == "POINT_SINK")
-	snk_type = "Point";
-      else if (sink_type[0] == "SHELL_SINK")
-	snk_type = "Shell";
-      else if (sink_type[0] == "WALL_SINK")
-	snk_type = "Wall";
-      else
-      {
-	QDPIO::cerr << "Unsupported sink type" << endl;
-	QDP_abort(1);
-      }
-
-      string source_sink_type = src_type + "_" + snk_type;
-      QDPIO::cout << "Source type = " << src_type << endl;
-      QDPIO::cout << "Sink type = "   << snk_type << endl;
-
       push(xml_out, "SourceSinkType");
       for (int loop=0; loop < Nprops; ++loop)
       {
+	QDPIO::cout << "Source type[" << loop << "]= "<< source_type[loop] << endl;
+	QDPIO::cout << "Sink type["   << loop << "]= "<< sink_type[loop] << endl;
+
 	push(xml_out, "elem");
 	write(xml_out, "quark_number", loop);
 	write(xml_out, "source_type", source_type[loop]);
