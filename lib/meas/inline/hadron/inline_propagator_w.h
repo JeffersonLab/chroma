@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_propagator_w.h,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_propagator_w.h,v 3.1 2006-04-10 21:16:23 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -69,6 +69,6 @@ namespace Chroma
     InlinePropagatorParams params;
   };
 
-};
+}
 
 #endif

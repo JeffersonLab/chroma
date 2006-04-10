@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_propagator_w.cc,v 3.1 2006-04-10 21:16:23 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -38,7 +38,7 @@ namespace Chroma
 
     const std::string name = "PROPAGATOR";
     const bool registered = registerAll();
-  };
+  } // end namespace
 
 
   //! Propagator input
@@ -493,4 +493,4 @@ namespace Chroma
     END_CODE();
   } 
 
-};
+}
