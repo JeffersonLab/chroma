@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schrfun.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: schrfun.h,v 3.1 2006-04-10 21:18:23 edwards Exp $
 
 /*! \file
  * \brief Schroedinger functional
@@ -18,5 +18,7 @@
 #ifndef __schrfun_h__
 #define __schrfun_h__
 
+#include "sfpcac_w.h"
+#include "sfcurcor_w.h"
 
 #endif
