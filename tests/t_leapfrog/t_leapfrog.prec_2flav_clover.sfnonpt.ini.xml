@@ -51,7 +51,7 @@
    </Hamiltonian>
    <MDIntegrator>
 	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<n_steps>50</n_steps>
+	<n_steps>25</n_steps>
 	<tau0>1.0</tau0>
    </MDIntegrator>
    <GaugeStartup>
