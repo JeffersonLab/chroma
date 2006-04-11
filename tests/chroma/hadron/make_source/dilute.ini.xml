@@ -44,6 +44,7 @@ Make a dilute source
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>z2_source_0</source_id>
       </NamedObject>
     </elem>

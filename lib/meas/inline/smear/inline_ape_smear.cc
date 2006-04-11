@@ -1,4 +1,4 @@
-// $Id: inline_ape_smear.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: inline_ape_smear.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -10,7 +10,6 @@
 #include "util/info/proginfo.h"
 #include "util/gauge/unit_check.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 
 namespace Chroma 
@@ -72,7 +71,7 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, InlineAPESmearParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
-    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+    read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "ape_id", input.ape_id);
   }
 
@@ -92,7 +91,6 @@ namespace Chroma
   InlineAPESmearParams::InlineAPESmearParams()
   { 
     frequency = 0; 
-    named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
   InlineAPESmearParams::InlineAPESmearParams(XMLReader& xml_in, const std::string& path) 

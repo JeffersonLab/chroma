@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: wilslp.out.xml,v 3.0 2006-04-03 04:59:24 edwards Exp $
+; $Id: wilslp.out.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -14,14 +14,22 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
     <elem>
       <!-- Wilson loops -->
       <Name>WILSLP</Name>
       <Frequency>1</Frequency>
-      <kind>6</kind>
-      <j_decay>3</j_decay>
+      <Param>
+        <kind>6</kind>
+        <j_decay>3</j_decay>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
   </InlineMeasurements>
@@ -36,10 +44,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.10.1</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>3.1.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>20 Feb 06 12:28:59 EST</run_date>
+    <run_date>10 Apr 06 23:08:26 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>

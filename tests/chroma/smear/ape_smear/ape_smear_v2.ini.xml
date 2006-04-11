@@ -17,6 +17,7 @@ APE smear task
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <ape_id>nowhere</ape_id>
       </NamedObject>
     </elem>

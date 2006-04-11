@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_fuzwilp.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_fuzwilp.h,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  * \brief Inline fuzzed Wilson loops
  */
@@ -27,12 +27,16 @@ namespace Chroma
     InlineFuzzedWilsonLoopParams(XMLReader& xml_in, const std::string& path);
 
     unsigned long frequency;
-    int j_decay;
-    int tmax;
-    int n_smear;
-    int BlkMax;
-    Real sm_fact;
-    Real BlkAccu; 
+
+    struct Param_t
+    {
+      int j_decay;
+      int tmax;
+      int n_smear;
+      int BlkMax;
+      Real sm_fact;
+      Real BlkAccu; 
+    } param;
 
     struct NamedObject_t
     {

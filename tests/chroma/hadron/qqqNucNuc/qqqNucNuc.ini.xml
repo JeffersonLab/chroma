@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: qqqNucNuc.ini.xml,v 3.0 2006-04-03 04:59:27 edwards Exp $
+; $Id: qqqNucNuc.ini.xml,v 3.1 2006-04-11 04:18:25 edwards Exp $
 ;
 ; Test input for the qqqNucNuc program
 ;
@@ -35,9 +35,11 @@
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>source_0</source_id>
       </NamedObject>
     </elem>
+
     <elem>
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
@@ -70,10 +72,12 @@
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>source_0</source_id>
         <prop_id>propagator_0</prop_id>
       </NamedObject>
     </elem>
+
     <elem>
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
@@ -106,10 +110,12 @@
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>source_0</source_id>
         <prop_id>propagator_1</prop_id>
       </NamedObject>
     </elem>
+
     <elem>
       <Name>QQQ_NUCNUC</Name>
       <Frequency>1</Frequency>
@@ -123,6 +129,7 @@
  	<max_p2>1</max_p2>	
        </Param>
        <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
     	  <elem>propagator_0</elem>
     	  <elem>propagator_1</elem>
@@ -131,6 +138,7 @@
       <qqq_file>qqq.dat</qqq_file>
       <qqbar_file>qqbar.dat</qqbar_file>
     </elem>
+
    </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>

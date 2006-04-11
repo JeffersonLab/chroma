@@ -2,7 +2,6 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/polylp.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 
 namespace Chroma { 
@@ -20,12 +19,30 @@ namespace Chroma {
     const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
   };
 
+ 
+  //! PolyakovLoop input
+  void read(XMLReader& xml, const string& path, InlinePolyakovLoopParams::NamedObject_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "gauge_id", input.gauge_id);
+  }
+
+  //! PolyakovLoop output
+  void write(XMLWriter& xml, const string& path, const InlinePolyakovLoopParams::NamedObject_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "gauge_id", input.gauge_id);
+
+    pop(xml);
+  }
+
 
   // Params
   InlinePolyakovLoopParams::InlinePolyakovLoopParams()
   { 
     frequency = 0; 
-    named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
   InlinePolyakovLoopParams::InlinePolyakovLoopParams(XMLReader& xml_in, const std::string& path) 
@@ -40,7 +57,7 @@ namespace Chroma {
 	frequency = 1;
 
       // Ids
-      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {

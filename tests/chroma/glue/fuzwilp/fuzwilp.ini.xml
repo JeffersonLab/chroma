@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: fuzwilp.ini.xml,v 3.0 2006-04-03 04:59:24 edwards Exp $
+; $Id: fuzwilp.ini.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -11,18 +11,26 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
     <elem>
       <!-- Fuzzed Wilson loops -->
       <Name>FUZZED_WILSON_LOOP</Name>
       <Frequency>1</Frequency>
-      <tmax>6</tmax>
-      <j_decay>3</j_decay>
-      <n_smear>2</n_smear>
-      <sm_fact>2.5</sm_fact>
-      <BlkMax>20</BlkMax>
-      <BlkAccu>1.0e-5</BlkAccu>
+      <Param>
+        <tmax>6</tmax>
+        <j_decay>3</j_decay>
+        <n_smear>2</n_smear>
+        <sm_fact>2.5</sm_fact>
+        <BlkMax>20</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
+      </Param> 
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
   </InlineMeasurements>

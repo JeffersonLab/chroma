@@ -1,3 +1,8 @@
+04/11/2006 -- Robert Edwards
+	Version 3.1.0. Big change on chroma,hmc,purgaug input - one must now always
+        specify the input gauge field on tasks that need it. The default reader
+        has been removed. Added more Schroedinger functional measurements.
+
 04/04/2006 -- Robert Edwards
 	Version 3.0.1. Minor compilation fixes.
 

@@ -44,6 +44,7 @@ Make a propagator source
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -82,6 +83,7 @@ Make a propagator source
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_1</source_id>
       </NamedObject>
     </elem>
@@ -108,10 +110,10 @@ Make a propagator source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.15.0</chroma>
+      <chroma>3.1.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>20 Mar 06 00:20:04 EST</run_date>
+    <run_date>10 Apr 06 23:09:08 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -169,10 +171,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:20:04 EST</run_date>
+          <run_date>10 Apr 06 23:09:08 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -265,10 +267,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:20:04 EST</run_date>
+          <run_date>10 Apr 06 23:09:09 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

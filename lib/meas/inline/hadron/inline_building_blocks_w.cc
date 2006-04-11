@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -14,7 +14,6 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -114,7 +113,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "OutFileName", input.OutFileName);
-    input.GaugeId = InlineDefaultGaugeField::readGaugeId(inputtop, "GaugeId");
+    read(inputtop, "GaugeId", input.GaugeId);
     read(inputtop, "FrwdPropId", input.FrwdPropId);
     read(inputtop, "BkwdProps", input.BkwdProps);
   }

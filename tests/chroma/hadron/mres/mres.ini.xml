@@ -24,6 +24,7 @@ Mres calculation
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>pt_source_0</source_id>
       </NamedObject>
     </elem>
@@ -56,6 +57,7 @@ Mres calculation
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>pt_source_0</source_id>
         <prop_id>pt_prop_0</prop_id>
       </NamedObject>
@@ -88,6 +90,7 @@ Mres calculation
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>pt_source_0</source_id>
         <prop_id>pt_prop_0</prop_id>
       </NamedObject>

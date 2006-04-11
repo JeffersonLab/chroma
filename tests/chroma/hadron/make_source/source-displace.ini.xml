@@ -42,6 +42,7 @@ Make a propagator source
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -80,6 +81,7 @@ Make a propagator source
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_1</source_id>
       </NamedObject>
     </elem>

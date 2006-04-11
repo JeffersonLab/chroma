@@ -1,4 +1,4 @@
-// $Id: inline_fuzwilp.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_fuzwilp.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  * \brief Inline fuzzed Wilson loops
  */
@@ -8,7 +8,6 @@
 #include "meas/glue/fuzwilp.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 
 using namespace QDP;
@@ -26,11 +25,58 @@ namespace Chroma
     const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
   };
 
+  //! FuzzedWilsonLoop input
+  void read(XMLReader& xml, const string& path, InlineFuzzedWilsonLoopParams::Param_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "j_decay", input.j_decay);
+    read(inputtop, "tmax", input.tmax);
+    read(inputtop, "n_smear", input.n_smear);
+    read(inputtop, "sm_fact", input.sm_fact);
+    read(inputtop, "BlkMax",  input.BlkMax);
+    read(inputtop, "BlkAccu", input.BlkAccu);
+   }
+
+  //! FuzzedWilsonLoop output
+  void write(XMLWriter& xml, const string& path, const InlineFuzzedWilsonLoopParams::Param_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "j_decay", input.j_decay);
+    write(xml, "tmax", input.tmax);
+    write(xml, "n_smear", input.n_smear);
+    write(xml, "sm_fact", input.sm_fact);
+    write(xml, "BlkMax",  input.BlkMax);
+    write(xml, "BlkAccu", input.BlkAccu);
+
+    pop(xml);
+  }
+
+
+  //! FuzzedWilsonLoop input
+  void read(XMLReader& xml, const string& path, InlineFuzzedWilsonLoopParams::NamedObject_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "gauge_id", input.gauge_id);
+  }
+
+  //! FuzzedWilsonLoop output
+  void write(XMLWriter& xml, const string& path, const InlineFuzzedWilsonLoopParams::NamedObject_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "gauge_id", input.gauge_id);
+
+    pop(xml);
+  }
+
+
   // Params
   InlineFuzzedWilsonLoopParams::InlineFuzzedWilsonLoopParams()
   { 
     frequency = 0; 
-    named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
   InlineFuzzedWilsonLoopParams::InlineFuzzedWilsonLoopParams(XMLReader& xml_in, const std::string& path) 
@@ -44,15 +90,11 @@ namespace Chroma
       else
 	frequency = 1;
 
-      read(paramtop, "j_decay", j_decay);
-      read(paramtop, "tmax", tmax);
-      read(paramtop, "n_smear", n_smear);
-      read(paramtop, "sm_fact", sm_fact);
-      read(paramtop, "BlkMax",  BlkMax);
-      read(paramtop, "BlkAccu", BlkAccu);
- 
+      // params
+      read(paramtop, "Param", param);
+
       // Ids
-      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
@@ -83,12 +125,12 @@ namespace Chroma
     QDPIO::cout << "APE_Smeared_Wilsonloop" << endl;
 
     fuzwilp(u, 
-	    params.j_decay, 
-            params.tmax,
-	    params.n_smear,
-	    params.sm_fact,
-	    params.BlkAccu,
-	    params.BlkMax,
+	    params.param.j_decay, 
+            params.param.tmax,
+	    params.param.n_smear,
+	    params.param.sm_fact,
+	    params.param.BlkAccu,
+	    params.param.BlkMax,
 	    xml_out, 
 	    "fuzwilp");
 

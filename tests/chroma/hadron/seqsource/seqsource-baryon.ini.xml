@@ -37,6 +37,7 @@ Sequential source
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -69,6 +70,7 @@ Sequential source
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -96,6 +98,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -137,6 +140,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -177,6 +181,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -218,6 +223,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -258,6 +264,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -299,6 +306,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -339,6 +347,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -380,6 +389,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -420,6 +430,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -461,6 +472,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -501,6 +513,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -542,6 +555,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -582,6 +596,7 @@ Sequential source
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>

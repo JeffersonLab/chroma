@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -14,7 +14,6 @@
 #include "meas/hadron/formfac_w.h"
 
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -36,7 +35,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
-    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+    read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "prop_id", input.prop_id);
     read(inputtop, "seqprop_ids", input.seqprop_ids);
     read(inputtop, "bar3ptfn_file", input.bar3ptfn_file);
@@ -101,7 +100,6 @@ namespace Chroma
   InlineBar3ptfnParams::InlineBar3ptfnParams()
   { 
     frequency = 0; 
-    named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
   InlineBar3ptfnParams::InlineBar3ptfnParams(XMLReader& xml_in, const std::string& path) 

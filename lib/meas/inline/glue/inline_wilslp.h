@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_wilslp.h,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -27,8 +27,12 @@ namespace Chroma
     InlineWilsonLoopParams(XMLReader& xml_in, const std::string& path);
 
     unsigned long frequency;
-    int kind;
-    int j_decay;
+
+    struct Param_t
+    {
+      int kind;
+      int j_decay;
+    } param;
 
     struct NamedObject_t
     {

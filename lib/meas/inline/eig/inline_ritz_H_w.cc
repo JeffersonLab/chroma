@@ -1,4 +1,4 @@
-// $Id: inline_ritz_H_w.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_ritz_H_w.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -20,7 +20,6 @@
 #include "actions/ferm/linop/lopscl.h"
 #include "io/eigen_io.h"
 
-#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -50,7 +49,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
-    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+    read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "eigen_id", input.eigen_id);
   }
 
@@ -70,7 +69,6 @@ namespace Chroma
   InlineRitzParams::InlineRitzParams()
   { 
     frequency = 0; 
-    named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
   InlineRitzParams::InlineRitzParams(XMLReader& xml_in, const std::string& path) 

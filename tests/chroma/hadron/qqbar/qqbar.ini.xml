@@ -39,6 +39,7 @@ QQbar on props
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -71,6 +72,7 @@ QQbar on props
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -93,6 +95,7 @@ QQbar on props
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sh_pt_prop_0</smeared_prop_id>
       </NamedObject>
@@ -129,6 +132,7 @@ QQbar on props
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sh_sh_prop_0</smeared_prop_id>
       </NamedObject>
@@ -143,6 +147,7 @@ QQbar on props
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_pt_prop_0</elem>
           <elem>sh_pt_prop_0</elem>
@@ -160,6 +165,7 @@ QQbar on props
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_sh_prop_0</elem>
           <elem>sh_sh_prop_0</elem>

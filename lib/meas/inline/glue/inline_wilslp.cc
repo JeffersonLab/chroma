@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -7,7 +7,6 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/wilslp.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -25,11 +24,50 @@ namespace Chroma
 
 
 
+  //! WilsonLoop input
+  void read(XMLReader& xml, const string& path, InlineWilsonLoopParams::Param_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "kind", input.kind);
+    read(inputtop, "j_decay", input.j_decay);
+  }
+
+  //! WilsonLoop output
+  void write(XMLWriter& xml, const string& path, const InlineWilsonLoopParams::Param_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "kind", input.kind);
+    write(xml, "j_decay", input.j_decay);
+
+    pop(xml);
+  }
+
+
+  //! WilsonLoop input
+  void read(XMLReader& xml, const string& path, InlineWilsonLoopParams::NamedObject_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "gauge_id", input.gauge_id);
+  }
+
+  //! WilsonLoop output
+  void write(XMLWriter& xml, const string& path, const InlineWilsonLoopParams::NamedObject_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "gauge_id", input.gauge_id);
+
+    pop(xml);
+  }
+
+
   // Param stuff
   InlineWilsonLoopParams::InlineWilsonLoopParams()
   { 
     frequency = 0; 
-    named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
   InlineWilsonLoopParams::InlineWilsonLoopParams(XMLReader& xml_in, const std::string& path) 
@@ -39,11 +77,12 @@ namespace Chroma
       XMLReader paramtop(xml_in, path);
 
       read(paramtop, "Frequency", frequency);
-      read(paramtop, "kind", kind);
-      read(paramtop, "j_decay", j_decay);
+
+      // Params
+      read(paramtop, "Param", param);
 
       // Ids
-      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {
@@ -71,7 +110,7 @@ namespace Chroma
     write(xml_out, "update_no", update_no);
 
     Double w_plaq, s_plaq, t_plaq, link;
-    wilslp(u, params.j_decay, Nd-1, params.kind,
+    wilslp(u, params.param.j_decay, Nd-1, params.param.kind,
 	   xml_out, "wilslp");
     
     pop(xml_out); // pop("WilsonLoop");

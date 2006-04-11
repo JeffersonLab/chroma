@@ -39,6 +39,7 @@ Meson Spectrum input
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -71,6 +72,7 @@ Meson Spectrum input
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -100,6 +102,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sh_pt_sink_0</smeared_prop_id>
       </NamedObject>
@@ -136,6 +139,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sh_sh_sink_0</smeared_prop_id>
       </NamedObject>
@@ -176,6 +180,7 @@ Meson Spectrum input
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>deriv_source_0</source_id>
       </NamedObject>
     </elem>
@@ -208,6 +213,7 @@ Meson Spectrum input
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>deriv_source_0</source_id>
         <prop_id>deriv_prop_0</prop_id>
       </NamedObject>
@@ -239,6 +245,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>deriv_prop_0</prop_id>
         <smeared_prop_id>deriv_pt_sink_0</smeared_prop_id>
       </NamedObject>
@@ -277,6 +284,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>deriv_prop_0</prop_id>
         <smeared_prop_id>deriv_sh_sink_0</smeared_prop_id>
       </NamedObject>
@@ -309,6 +317,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>deriv_prop_0</prop_id>
         <smeared_prop_id>deriv_pt_sink_1</smeared_prop_id>
       </NamedObject>
@@ -347,6 +356,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>deriv_prop_0</prop_id>
         <smeared_prop_id>deriv_sh_sink_1</smeared_prop_id>
       </NamedObject>
@@ -367,6 +377,7 @@ Meson Spectrum input
         <avg_equiv_mom>true</avg_equiv_mom>
        </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>
             <sink_ids>
@@ -417,6 +428,7 @@ regression test spectrum output is kept within the chroma xml output
         <avg_equiv_mom>true</avg_equiv_mom>
        </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>
             <sink_ids>

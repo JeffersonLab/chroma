@@ -27,6 +27,7 @@ Mres calculation
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>pt_source_0</source_id>
       </NamedObject>
     </elem>
@@ -59,6 +60,7 @@ Mres calculation
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>pt_source_0</source_id>
         <prop_id>pt_prop_0</prop_id>
       </NamedObject>
@@ -91,6 +93,7 @@ Mres calculation
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>pt_source_0</source_id>
         <prop_id>pt_prop_0</prop_id>
       </NamedObject>
@@ -108,10 +111,10 @@ Mres calculation
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.15.0</chroma>
+      <chroma>3.1.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>20 Mar 06 00:23:19 EST</run_date>
+    <run_date>10 Apr 06 23:09:14 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -169,10 +172,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:23:19 EST</run_date>
+          <run_date>10 Apr 06 23:09:14 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -251,10 +254,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:23:20 EST</run_date>
+          <run_date>10 Apr 06 23:09:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -423,10 +426,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:23:21 EST</run_date>
+          <run_date>10 Apr 06 23:09:16 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

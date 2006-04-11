@@ -17,6 +17,7 @@ Stout smear task
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <stout_id>nowhere</stout_id>
       </NamedObject>
     </elem>

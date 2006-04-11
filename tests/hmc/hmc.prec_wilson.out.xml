@@ -29,8 +29,11 @@
 
     <InlineMeasurements>
       <elem>
-          <Name>POLYAKOV_LOOP</Name>
-	  <Frequency>1</Frequency>
+        <Name>POLYAKOV_LOOP</Name>
+        <Frequency>1</Frequency>
+        <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
+        </NamedObject>
       </elem>
     </InlineMeasurements>
   </MCControl>
@@ -105,10 +108,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.9.0</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>3.1.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>15 Feb 06 22:00:28 EST</run_date>
+    <run_date>10 Apr 06 23:58:43 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>

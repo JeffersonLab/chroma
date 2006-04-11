@@ -23,7 +23,6 @@
 #include "actions/ferm/fermacts/fermacts_s.h"
 
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 #include "util/ferm/transf.h"
 #include "meas/hadron/ks_local_loops.h"
@@ -264,7 +263,7 @@ namespace Chroma {
   {
     XMLReader inputtop(xml, path);
 
-    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+    read(inputtop, "gauge_id", input.gauge_id);
   }
 
 /***************************************************************************/
@@ -285,7 +284,6 @@ namespace Chroma {
   InlineStaggeredSpectrumParams::InlineStaggeredSpectrumParams()
   { 
     frequency = 0; 
-    named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
 /***************************************************************************/
@@ -308,9 +306,7 @@ namespace Chroma {
       read(paramtop, "Inversion", prop_param);
 
       // Read in the gauge field id
-      // If this were changed to a read of NamedObject, then the
-      // IO routines above would pick up gauge_id
-      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
+      read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
       if (paramtop.count("xml_file") != 0) {

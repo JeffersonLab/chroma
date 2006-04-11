@@ -37,6 +37,7 @@ Spectrum octet input
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -69,6 +70,7 @@ Spectrum octet input
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -103,6 +105,7 @@ Spectrum octet input
         <link_smear_num>0</link_smear_num>
        </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -143,6 +146,7 @@ Spectrum octet input
         <nrow>4 4 4 8</nrow>
        </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>

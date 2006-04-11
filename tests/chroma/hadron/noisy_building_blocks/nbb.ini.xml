@@ -19,6 +19,7 @@ Calculate noisy building blocks - insertions in traces
           </Source>
         </Param>
         <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
           <source_id>nsrc_0</source_id>
         </NamedObject>
       </elem>
@@ -51,6 +52,7 @@ Calculate noisy building blocks - insertions in traces
           </InvertParam>
         </Param>
         <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
           <source_id>nsrc_0</source_id>
           <prop_id>nprop_0</prop_id>
         </NamedObject>
@@ -112,6 +114,7 @@ Calculate noisy building blocks - insertions in traces
           </Source>
         </Param>
         <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
           <source_id>nsrc_1</source_id>
         </NamedObject>
       </elem>
@@ -144,6 +147,7 @@ Calculate noisy building blocks - insertions in traces
           </InvertParam>
         </Param>
         <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
           <source_id>nsrc_1</source_id>
           <prop_id>nprop_1</prop_id>
         </NamedObject>

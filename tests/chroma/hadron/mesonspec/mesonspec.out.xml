@@ -42,6 +42,7 @@ Meson Spectrum input
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -74,6 +75,7 @@ Meson Spectrum input
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -103,6 +105,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sh_pt_sink_0</smeared_prop_id>
       </NamedObject>
@@ -139,6 +142,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sh_sh_sink_0</smeared_prop_id>
       </NamedObject>
@@ -179,6 +183,7 @@ Meson Spectrum input
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>deriv_source_0</source_id>
       </NamedObject>
     </elem>
@@ -211,6 +216,7 @@ Meson Spectrum input
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>deriv_source_0</source_id>
         <prop_id>deriv_prop_0</prop_id>
       </NamedObject>
@@ -242,6 +248,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>deriv_prop_0</prop_id>
         <smeared_prop_id>deriv_pt_sink_0</smeared_prop_id>
       </NamedObject>
@@ -280,6 +287,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>deriv_prop_0</prop_id>
         <smeared_prop_id>deriv_sh_sink_0</smeared_prop_id>
       </NamedObject>
@@ -312,6 +320,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>deriv_prop_0</prop_id>
         <smeared_prop_id>deriv_pt_sink_1</smeared_prop_id>
       </NamedObject>
@@ -350,6 +359,7 @@ Meson Spectrum input
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>deriv_prop_0</prop_id>
         <smeared_prop_id>deriv_sh_sink_1</smeared_prop_id>
       </NamedObject>
@@ -370,6 +380,7 @@ Meson Spectrum input
         <avg_equiv_mom>true</avg_equiv_mom>
        </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>
             <sink_ids>
@@ -420,6 +431,7 @@ regression test spectrum output is kept within the chroma xml output
         <avg_equiv_mom>true</avg_equiv_mom>
        </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>
             <sink_ids>
@@ -460,10 +472,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.15.0</chroma>
+      <chroma>3.1.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>20 Mar 06 00:22:10 EST</run_date>
+    <run_date>10 Apr 06 23:09:09 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -521,10 +533,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:22:10 EST</run_date>
+          <run_date>10 Apr 06 23:09:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -615,10 +627,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:22:11 EST</run_date>
+          <run_date>10 Apr 06 23:09:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1097,10 +1109,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:22:12 EST</run_date>
+          <run_date>10 Apr 06 23:09:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1193,10 +1205,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:22:13 EST</run_date>
+          <run_date>10 Apr 06 23:09:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1999,10 +2011,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
+            <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>20 Mar 06 00:22:15 EST</run_date>
+          <run_date>10 Apr 06 23:09:13 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

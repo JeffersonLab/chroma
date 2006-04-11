@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: fuzwilp.out.xml,v 3.0 2006-04-03 04:59:24 edwards Exp $
+; $Id: fuzwilp.out.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -14,18 +14,26 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
     <elem>
       <!-- Fuzzed Wilson loops -->
       <Name>FUZZED_WILSON_LOOP</Name>
       <Frequency>1</Frequency>
-      <tmax>6</tmax>
-      <j_decay>3</j_decay>
-      <n_smear>2</n_smear>
-      <sm_fact>2.5</sm_fact>
-      <BlkMax>20</BlkMax>
-      <BlkAccu>1.0e-5</BlkAccu>
+      <Param>
+        <tmax>6</tmax>
+        <j_decay>3</j_decay>
+        <n_smear>2</n_smear>
+        <sm_fact>2.5</sm_fact>
+        <BlkMax>20</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
+      </Param> 
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
   </InlineMeasurements>
@@ -40,10 +48,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.13.1</chroma>
+      <chroma>3.1.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>27 Feb 06 00:44:00 EST</run_date>
+    <run_date>10 Apr 06 23:08:25 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>

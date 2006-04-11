@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: default_gauge_field.h,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: default_gauge_field.h,v 3.1 2006-04-11 04:18:24 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */
@@ -30,14 +30,6 @@ namespace Chroma
     /*! \ingroup inlineio */
     std::string getId();
  
-    //! Helper function to read the Id from an XML input
-    /*! 
-     * \ingroup inlineio 
-     *
-     * \return either the input id or if missing then the default gauge id
-     */
-    std::string readGaugeId(XMLReader& xml_in, const std::string path);
-  
     //! Reset the default gauge field state
     /*! \ingroup inlineio */
     void reset();

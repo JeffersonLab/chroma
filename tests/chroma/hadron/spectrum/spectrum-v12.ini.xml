@@ -37,6 +37,7 @@ Spectrum input
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -69,6 +70,7 @@ Spectrum input
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -104,6 +106,7 @@ Spectrum input
         <nrow>4 4 4 8</nrow>
        </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -143,6 +146,7 @@ Spectrum input
         <nrow>4 4 4 8</nrow>
        </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>

@@ -29,15 +29,23 @@
 
   <InlineMeasurements>
     <elem>
-        <Name>POLYAKOV_LOOP</Name>
-        <Frequency>1</Frequency>
+      <Name>POLYAKOV_LOOP</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
     <elem>
-        <Name>WILSLP</Name>
-        <Frequency>10</Frequency>
+      <Name>WILSLP</Name>
+      <Frequency>10</Frequency>
+      <Param>
         <kind>3</kind>
         <j_decay>3</j_decay>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
   </InlineMeasurements>
 
@@ -58,10 +66,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>3.1.0</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:38:56 EST</run_date>
+    <run_date>10 Apr 06 23:58:22 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>

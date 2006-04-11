@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s_reg.xml,v 3.0 2006-04-03 04:59:34 edwards Exp $
+; $Id: spectrum_s_reg.xml,v 3.1 2006-04-11 04:18:26 edwards Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -49,6 +49,10 @@
  <boundary>1 1 1 1</boundary>
 <t_srce> 0 0 0 0 </t_srce>
 </Param>
+
+<NamedObject>
+ <gauge_id>default_gauge_field</gauge_id>
+</NamedObject>
 
 <Cfg>
  <cfg_type>DISORDERED</cfg_type>

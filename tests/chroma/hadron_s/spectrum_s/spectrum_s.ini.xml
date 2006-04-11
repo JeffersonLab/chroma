@@ -2,7 +2,7 @@
 
 <chroma>
 <annotation>
-; $Id: spectrum_s.ini.xml,v 3.0 2006-04-03 04:59:28 edwards Exp $
+; $Id: spectrum_s.ini.xml,v 3.1 2006-04-11 04:18:26 edwards Exp $
 ;
 ; Chroma input file for staggered Spectrum_s measurement.
 ;
@@ -12,6 +12,9 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
 <annotation>
@@ -28,6 +31,7 @@
         <j_decay>3</j_decay>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <gfix_id>coul_cfg</gfix_id>
       </NamedObject>
     </elem>
@@ -82,6 +86,7 @@
       </Inversion>
 
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>some_name_here</prop_id>
       </NamedObject>
     </elem>

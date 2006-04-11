@@ -26,8 +26,11 @@
 
     <InlineMeasurements>
       <elem>
-          <Name>POLYAKOV_LOOP</Name>
-	  <Frequency>1</Frequency>
+        <Name>POLYAKOV_LOOP</Name>
+        <Frequency>1</Frequency>
+        <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
+        </NamedObject>
       </elem>
     </InlineMeasurements>
   </MCControl>

@@ -1,4 +1,4 @@
-// $Id: inline_coulgauge.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_coulgauge.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */
@@ -10,7 +10,6 @@
 #include "util/info/proginfo.h"
 #include "util/gauge/unit_check.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -61,7 +60,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
-    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+    read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "gfix_id", input.gfix_id);
   }
 
@@ -98,7 +97,6 @@ namespace Chroma
     Params::Params()
     { 
       frequency = 0; 
-      named_obj.gauge_id = InlineDefaultGaugeField::getId();
     }
 
     Params::Params(XMLReader& xml_in, const std::string& path) 

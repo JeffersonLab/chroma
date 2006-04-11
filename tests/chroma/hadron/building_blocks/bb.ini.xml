@@ -39,6 +39,7 @@ Calculate building blocks - insertions in 3-pt functions
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -71,6 +72,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -117,6 +119,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -152,6 +155,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_PION</source_id>
         <prop_id>seqprop_PION</prop_id>
       </NamedObject>
@@ -179,6 +183,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -215,6 +220,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_U_UNPOL</source_id>
         <prop_id>seqprop_NUCL_U_UNPOL</prop_id>
       </NamedObject>
@@ -242,6 +248,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -277,6 +284,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_D_UNPOL</source_id>
         <prop_id>seqprop_NUCL_D_UNPOL</prop_id>
       </NamedObject>
@@ -304,6 +312,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -340,6 +349,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_U_POL</source_id>
         <prop_id>seqprop_NUCL_U_POL</prop_id>
       </NamedObject>
@@ -367,6 +377,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -402,6 +413,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_D_POL</source_id>
         <prop_id>seqprop_NUCL_D_POL</prop_id>
       </NamedObject>
@@ -429,6 +441,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -465,6 +478,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_DELTA_U_UNPOL</source_id>
         <prop_id>seqprop_DELTA_U_UNPOL</prop_id>
       </NamedObject>
@@ -492,6 +506,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -527,6 +542,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_DELTA_D_UNPOL</source_id>
         <prop_id>seqprop_DELTA_D_UNPOL</prop_id>
       </NamedObject>
@@ -554,6 +570,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -590,6 +607,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_U_UNPOL_NONREL</source_id>
         <prop_id>seqprop_NUCL_U_UNPOL_NONREL</prop_id>
       </NamedObject>
@@ -617,6 +635,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -652,6 +671,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_D_UNPOL_NONREL</source_id>
         <prop_id>seqprop_NUCL_D_UNPOL_NONREL</prop_id>
       </NamedObject>
@@ -679,6 +699,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -715,6 +736,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_U_POL_NONREL</source_id>
         <prop_id>seqprop_NUCL_U_POL_NONREL</prop_id>
       </NamedObject>
@@ -742,6 +764,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -777,6 +800,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_D_POL_NONREL</source_id>
         <prop_id>seqprop_NUCL_D_POL_NONREL</prop_id>
       </NamedObject>
@@ -804,6 +828,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -840,6 +865,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
         <prop_id>seqprop_NUCL_U_MIXED_NONREL</prop_id>
       </NamedObject>
@@ -867,6 +893,7 @@ Calculate building blocks - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -902,6 +929,7 @@ Calculate building blocks - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
         <prop_id>seqprop_NUCL_D_MIXED_NONREL</prop_id>
       </NamedObject>
@@ -924,6 +952,7 @@ Calculate building blocks - insertions in 3-pt functions
       </Param>
       <BuildingBlocks>
        <OutFileName>./examplebb_v1.out</OutFileName>
+       <GaugeId>default_gauge_field</GaugeId>
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>

@@ -2,8 +2,8 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
+#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma { 
 
@@ -21,6 +21,25 @@ namespace Chroma {
     const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 
   };
+
+
+  //! Plaquette input
+  void read(XMLReader& xml, const string& path, InlinePlaquetteParams::NamedObject_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "gauge_id", input.gauge_id);
+  }
+
+  //! Plaquette output
+  void write(XMLWriter& xml, const string& path, const InlinePlaquetteParams::NamedObject_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "gauge_id", input.gauge_id);
+
+    pop(xml);
+  }
 
 
   // Params
@@ -42,7 +61,7 @@ namespace Chroma {
 	frequency = 1;
 
       // Ids
-      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {

@@ -19,6 +19,7 @@ Hyp smear task
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <hyp_id>hyp_cfg</hyp_id>
       </NamedObject>
     </elem>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: eigbnds-v1.ini.xml,v 3.0 2006-04-03 04:59:23 edwards Exp $
+; $Id: eigbnds-v1.ini.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -11,7 +11,11 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. Wilson -->
       <Name>EIGBNDSMDAGM</Name>
@@ -30,7 +34,11 @@
         <Kappa>0.11</Kappa>
         <boundary>1 1 1 -1</boundary>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. DWF -->
       <Name>EIGBNDSMDAGM</Name>
@@ -52,7 +60,11 @@
         <N5>6</N5>
         <boundary>1 1 1 -1</boundary>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. DWF -->
       <Name>EIGBNDSMDAGM</Name>
@@ -74,7 +86,11 @@
         <N5>6</N5>
         <boundary>1 1 1 -1</boundary>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. DWF -->
       <Name>EIGBNDSMDAGM</Name>
@@ -96,7 +112,11 @@
         <N5>6</N5>
         <boundary>1 1 1 -1</boundary>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. CFZ -->
       <Name>EIGBNDSMDAGM</Name>
@@ -122,7 +142,11 @@
         <ApproxMin>0.66</ApproxMin>
         <ApproxMax>6.46357</ApproxMax>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. CFZ -->
       <Name>EIGBNDSMDAGM</Name>
@@ -148,7 +172,11 @@
         <ApproxMin>0.66</ApproxMin>
         <ApproxMax>6.46357</ApproxMax>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>

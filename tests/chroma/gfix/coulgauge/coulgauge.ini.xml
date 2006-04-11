@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: coulgauge.ini.xml,v 3.0 2006-04-03 04:59:24 edwards Exp $
+; $Id: coulgauge.ini.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
 ;
 ; Coulomb gauge fixing
 ;
@@ -11,6 +11,9 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
 
     <elem>
@@ -26,6 +29,7 @@
         <j_decay>3</j_decay>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <gfix_id>coul_cfg</gfix_id>
       </NamedObject>
     </elem>

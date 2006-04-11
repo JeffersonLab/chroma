@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_mres_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -18,7 +18,6 @@
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -83,7 +82,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
-    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+    read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "prop_id", input.prop_id);
   }
 

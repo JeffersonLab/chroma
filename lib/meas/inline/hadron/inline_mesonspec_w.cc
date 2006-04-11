@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.1 2006-04-10 21:14:49 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.2 2006-04-11 04:18:24 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -14,7 +14,6 @@
 #include "io/qprop_io.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 namespace Chroma 
 { 
@@ -94,7 +93,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
-    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+    read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "prop_ids", input.prop_ids);
   }
 

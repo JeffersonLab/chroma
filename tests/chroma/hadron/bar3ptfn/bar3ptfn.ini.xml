@@ -38,6 +38,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -70,6 +71,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -116,6 +118,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -164,6 +167,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
           <elem>sh_prop_0</elem>
@@ -213,6 +217,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Sink>
       </PropSink>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
@@ -252,8 +257,9 @@ Calculate bar3ptfn - insertions in 3-pt functions
        </InvertParam>
       </Param>
       <NamedObject>
-       <source_id>seqsource_PION</source_id>
-       <prop_id>seqprop_PION</prop_id>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>seqsource_PION</source_id>
+        <prop_id>seqprop_PION</prop_id>
       </NamedObject>
     </elem>
 
@@ -289,8 +295,9 @@ Calculate bar3ptfn - insertions in 3-pt functions
        </InvertParam>
       </Param>
       <NamedObject>
-       <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
-       <prop_id>seqprop_NUCL_U_MIXED_NONREL</prop_id>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
+        <prop_id>seqprop_NUCL_U_MIXED_NONREL</prop_id>
       </NamedObject>
     </elem>
 
@@ -326,8 +333,9 @@ Calculate bar3ptfn - insertions in 3-pt functions
        </InvertParam>
       </Param>
       <NamedObject>
-       <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
-       <prop_id>seqprop_NUCL_D_MIXED_NONREL</prop_id>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
+        <prop_id>seqprop_NUCL_D_MIXED_NONREL</prop_id>
       </NamedObject>
     </elem>
 
@@ -344,18 +352,19 @@ Calculate bar3ptfn - insertions in 3-pt functions
        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-       <prop_id>sh_prop_0</prop_id>
-       <bar3ptfn_file>bar3ptfn.dat</bar3ptfn_file>
-       <seqprop_ids>
-         <elem>seqprop_PION</elem>
-         <elem>seqprop_NUCL_U_MIXED_NONREL</elem>
-         <elem>seqprop_NUCL_D_MIXED_NONREL</elem>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>sh_prop_0</prop_id>
+        <bar3ptfn_file>bar3ptfn.dat</bar3ptfn_file>
+        <seqprop_ids>
+          <elem>seqprop_PION</elem>
+          <elem>seqprop_NUCL_U_MIXED_NONREL</elem>
+          <elem>seqprop_NUCL_D_MIXED_NONREL</elem>
 
 <annotation>
-         <elem>seqprop_NUCL_U_UNPOL</elem>
-         <elem>seqprop_NUCL_D_UNPOL</elem>
-         <elem>seqprop_NUCL_U_POL</elem>
-         <elem>seqprop_NUCL_D_POL</elem>
+          <elem>seqprop_NUCL_U_UNPOL</elem>
+          <elem>seqprop_NUCL_D_UNPOL</elem>
+          <elem>seqprop_NUCL_U_POL</elem>
+          <elem>seqprop_NUCL_D_POL</elem>
 </annotation>
 
        </seqprop_ids>

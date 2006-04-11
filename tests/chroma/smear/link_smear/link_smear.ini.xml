@@ -16,6 +16,7 @@ Stout smear task
         <no_smear_dir>3</no_smear_dir>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <linksmear_id>ape</linksmear_id>
       </NamedObject>
     </elem>
@@ -33,6 +34,7 @@ Stout smear task
         <no_smear_dir>3</no_smear_dir>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <linksmear_id>hyp_3</linksmear_id>
       </NamedObject>
     </elem>
@@ -50,6 +52,7 @@ Stout smear task
         <no_smear_dir>-1</no_smear_dir>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <linksmear_id>hyp_4</linksmear_id>
       </NamedObject>
     </elem>
@@ -64,6 +67,7 @@ Stout smear task
         <no_smear_dir>3</no_smear_dir>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <linksmear_id>stout</linksmear_id>
       </NamedObject>
     </elem>

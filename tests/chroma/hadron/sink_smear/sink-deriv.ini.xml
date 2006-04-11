@@ -41,6 +41,7 @@ Sink smear a prop
 
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
       </NamedObject>
     </elem>
@@ -73,6 +74,7 @@ Sink smear a prop
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
@@ -101,6 +103,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -154,6 +157,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -193,6 +197,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -232,6 +237,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -271,6 +277,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -310,6 +317,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -349,6 +357,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -388,6 +397,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -427,6 +437,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -466,6 +477,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -505,6 +517,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -544,6 +557,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -583,6 +597,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -622,6 +637,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -661,6 +677,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -700,6 +717,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -739,6 +757,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -778,6 +797,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -817,6 +837,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -856,6 +877,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -895,6 +917,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -934,6 +957,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -973,6 +997,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -1012,6 +1037,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -1051,6 +1077,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -1090,6 +1117,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -1129,6 +1157,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -1168,6 +1197,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>
@@ -1207,6 +1237,7 @@ Sink smear a prop
         </Sink>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <smeared_prop_id>sink_tmp</smeared_prop_id>
       </NamedObject>

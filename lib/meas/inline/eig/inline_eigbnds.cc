@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -11,7 +11,6 @@
 #include "meas/eig/eig_spec.h"
 #include "meas/eig/eig_spec_array.h"
 #include "meas/inline/io/named_objmap.h"
-#include "meas/inline/io/default_gauge_field.h"
 
 #include "actions/ferm/linop/lopscl.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -81,7 +80,7 @@ namespace Chroma {
   {
     XMLReader inputtop(xml, path);
 
-    input.gauge_id = InlineDefaultGaugeField::readGaugeId(inputtop, "gauge_id");
+    read(inputtop, "gauge_id", input.gauge_id);
   }
 
 
@@ -89,7 +88,6 @@ namespace Chroma {
   InlineEigBndsMdagMParams::InlineEigBndsMdagMParams()
   { 
     frequency = 0; 
-    named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
   InlineEigBndsMdagMParams::InlineEigBndsMdagMParams(XMLReader& xml_in, const std::string& path) 
@@ -112,7 +110,7 @@ namespace Chroma {
       ferm_act = os.str();
  
       // Ids
-      named_obj.gauge_id = InlineDefaultGaugeField::readGaugeId(paramtop, "NamedObject/gauge_id");
+      read(paramtop, "NamedObject", named_obj);
     }
     catch(const std::string& e) 
     {

@@ -1,4 +1,4 @@
-// $Id: default_gauge_field.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: default_gauge_field.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */
@@ -159,19 +159,6 @@ namespace Chroma
       }
     
       END_CODE();
-    }
-  
-    // Helper function to read the Id from an XML input
-    std::string readGaugeId(XMLReader& xml_in, const std::string path)
-    {
-      std::string gauge_id;
-
-      if (xml_in.count(path) != 0)
-	read(xml_in, path, gauge_id);
-      else
-	gauge_id = getId();
-
-      return gauge_id;
     }
   
   }
