@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.1 2006-04-10 21:18:23 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.2 2006-04-11 04:16:29 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -126,6 +126,7 @@ namespace Chroma
     LatticePropagator quark_prop_f = zero;
     LatticePropagator quark_prop_b = zero;
 
+    push(xml_out, "PCAC_measurements");
     for(int direction = -1; direction <= 1; direction+=2)
     {
       int t0;
@@ -247,13 +248,14 @@ namespace Chroma
 
 
       // Write out results
-      push(xml_out, "PCAC_measurements");
+      push(xml_out, "elem");
       write(xml_out, "direction", direction);
       write(xml_out, "pseudo_prop", pseudo_prop);
       write(xml_out, "axial_prop", axial_prop);
       pop(xml_out);
 
     }  // end for direction
+    pop(xml_out);  // PCAC_measurements
 
     
     if (ZVfactP || ZAfactP)
