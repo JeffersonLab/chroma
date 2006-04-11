@@ -1,6 +1,9 @@
-// $Id: prec_fermact_qprop_array.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 3.1 2006-04-11 03:02:59 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 3.0  2006-04-03 04:58:53  edwards
+// Revision 3.1  2006-04-11 03:02:59  edwards
+// Removed debugging.
+//
+// Revision 3.0  2006/04/03 04:58:53  edwards
 // Major overhaul of fermion and gauge action interface. Basically,
 // all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
 // the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
@@ -121,7 +124,6 @@ namespace Chroma
 			 multi1d<LatticeColorMatrix> >::operator()(multi1d<LatticeFermion>& psi, 
 								   const multi1d<LatticeFermion>& chi) const
   {
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     START_CODE();
 
     int n_count;
@@ -130,7 +132,6 @@ QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     if (psi.size() != size() && chi.size() != size())
       QDP_error_exit("PrecFA5DQprop: sizes wrong");
 
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     /* Step (i) */
     /* chi_tmp_o =  chi_o - D_oe * A_ee^-1 * chi_e */
     multi1d<LatticeFermion> chi_tmp(N5);
@@ -138,29 +139,21 @@ QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       multi1d<LatticeFermion> tmp1(N5);
       multi1d<LatticeFermion> tmp2(N5);
 
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       A->evenEvenInvLinOp(tmp1, chi, PLUS);
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       A->oddEvenLinOp(tmp2, tmp1, PLUS);
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       for(int n=0; n < N5; ++n)
 	chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     }
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
 
     QDPIO::cout << "InvType is " << invParam.invType << endl << flush;
     switch(invParam.invType)
     {
     case CG_INVERTER: 
     {
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       /* tmp = M_dag(u) * chi_tmp */
       multi1d<LatticeFermion> tmp(N5);
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
 
       (*A)(tmp, chi_tmp, MINUS);
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
 
       
       /* psi = (M^dag * M)^(-1) chi_tmp */
@@ -205,7 +198,6 @@ QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
       
     }
     
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     END_CODE();
 
     return n_count;
@@ -221,7 +213,6 @@ QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
   EvenOddPrecWilsonTypeFermAct5D<LF,LCM,LCM>::qpropT(Handle< FermState<LF,LCM,LCM> > state,
 						     const InvertParam_t& invParam) const
   {
-QDPIO::cerr << __PRETTY_FUNCTION__ << ": line = " << __LINE__ << endl;
     return new PrecFermAct5DQprop<LF,LCM,LCM>(
       Handle< EvenOddPrecLinearOperatorArray<LF,LCM,LCM> >(linOp(state)), invParam);
   }
