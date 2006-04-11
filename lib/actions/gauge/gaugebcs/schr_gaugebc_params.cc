@@ -1,4 +1,4 @@
-// $Id: schr_gaugebc_params.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: schr_gaugebc_params.cc,v 3.1 2006-04-11 17:24:59 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional gauge boundary conditions
  */
@@ -7,6 +7,13 @@
 
 namespace Chroma 
 {
+
+  SchrGaugeBCParams::SchrGaugeBCParams()
+  {
+    SchrPhiMult = 1;
+    decay_dir = Nd-1;
+    loop_extent = 1;
+  }
 
   SchrGaugeBCParams::SchrGaugeBCParams(XMLReader& xml, const std::string& path)
   {
