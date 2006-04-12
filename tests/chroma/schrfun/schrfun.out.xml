@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun.out.xml,v 1.1 2006-04-11 00:42:23 edwards Exp $
+; $Id: schrfun.out.xml,v 1.2 2006-04-12 16:50:38 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
@@ -47,16 +47,29 @@
         <decay_dir>3</decay_dir>
         <ZVfactP>true</ZVfactP>
         <ZAfactP>true</ZAfactP>
-        <x0>10</x0>
-        <y0>4</y0>
+        <x0>5</x0>
+        <y0>3</y0>
       </SFpcac>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
       </NamedObject>
     </elem>
 
+    <elem>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>default_gauge_field</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin.cfg</file_name>
+        <trunc>false</trunc>
+      </File>
+    </elem>
+
   </InlineMeasurements>
-   <nrow>4 4 4 16</nrow>
+   <nrow>4 4 4 8</nrow>
 </Param>
 
 <RNG>
@@ -69,7 +82,7 @@
 </RNG>
 
 <Cfg>
- <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_type>CLASSICAL_SF</cfg_type>
  <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
@@ -80,13 +93,13 @@
       <chroma>3.1.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>10 Apr 06 15:33:14 EDT</run_date>
+    <run_date>11 Apr 06 21:28:26 EDT</run_date>
     <Setgeom>
-      <latt_size>4 4 4 16</latt_size>
+      <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
-      <subgrid_size>4 4 4 16</subgrid_size>
-      <total_volume>1024</total_volume>
-      <subgrid_volume>1024</subgrid_volume>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
   <RNG>
@@ -103,32 +116,35 @@
     </gauge>
 
     </file_xml>
-    <gauge_xml><weak_field>
-</weak_field>
+    <gauge_xml><SF_classical>
+      <SchrPhiMult>1</SchrPhiMult>
+      <decay_dir>3</decay_dir>
+      <loop_extent>1</loop_extent>
+    </SF_classical>
 
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994692</w_plaq>
-    <s_plaq>0.994656</s_plaq>
-    <t_plaq>0.994729</t_plaq>
-    <link>0.379336</link>
+    <w_plaq>0.995177</w_plaq>
+    <s_plaq>1</s_plaq>
+    <t_plaq>0.990355</t_plaq>
+    <link>0.96514</link>
     <pollp>
       <elem>
-        <re>0.96702</re>
-        <im>-0.00125447</im>
+        <re>0.429049</re>
+        <im>0.168812</im>
       </elem>
       <elem>
-        <re>0.966751</re>
-        <im>-0.00118624</im>
+        <re>0.429049</re>
+        <im>0.168812</im>
       </elem>
       <elem>
-        <re>0.966477</re>
-        <im>-0.00128317</im>
+        <re>0.429049</re>
+        <im>0.168812</im>
       </elem>
       <elem>
-        <re>0.585677</re>
-        <im>-0.0676214</im>
+        <re>1</re>
+        <im>0</im>
       </elem>
     </pollp>
   </Observables>
@@ -141,13 +157,13 @@
             <chroma>3.1.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>10 Apr 06 15:33:14 EDT</run_date>
+          <run_date>11 Apr 06 21:28:26 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 16</latt_size>
+            <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 16</subgrid_size>
-            <total_volume>1024</total_volume>
-            <subgrid_volume>1024</subgrid_volume>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -186,15 +202,18 @@
             <decay_dir>3</decay_dir>
             <ZVfactP>true</ZVfactP>
             <ZAfactP>true</ZAfactP>
-            <x0>10</x0>
-            <y0>4</y0>
+            <x0>5</x0>
+            <y0>3</y0>
           </SFpcac>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
           </NamedObject>
         </Input>
-        <Config_info><weak_field>
-</weak_field>
+        <Config_info><SF_classical>
+      <SchrPhiMult>1</SchrPhiMult>
+      <decay_dir>3</decay_dir>
+      <loop_extent>1</loop_extent>
+    </SF_classical>
 
 
 
@@ -204,58 +223,66 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994692</w_plaq>
-          <s_plaq>0.994656</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379336</link>
+          <w_plaq>0.995177</w_plaq>
+          <s_plaq>1</s_plaq>
+          <t_plaq>0.990355</t_plaq>
+          <link>0.96514</link>
           <pollp>
             <elem>
-              <re>0.96702</re>
-              <im>-0.00125447</im>
+              <re>0.429049</re>
+              <im>0.168812</im>
             </elem>
             <elem>
-              <re>0.966751</re>
-              <im>-0.00118624</im>
+              <re>0.429049</re>
+              <im>0.168812</im>
             </elem>
             <elem>
-              <re>0.966477</re>
-              <im>-0.00128317</im>
+              <re>0.429049</re>
+              <im>0.168812</im>
             </elem>
             <elem>
-              <re>0.585677</re>
-              <im>-0.0676214</im>
+              <re>1</re>
+              <im>0</im>
             </elem>
           </pollp>
         </Observables>
         <sfpcac>
           <PCAC_measurements>
-            <direction>-1</direction>
-            <pseudo_prop>47.8672 48.0899 48.0421 47.8679 48.09 48.0427 47.867 Inf 48 48 48 48 48 48 48 48</pseudo_prop>
-            <axial_prop>-0.206411 -0.0437343 0.169667 -0.177972 -0.0456232 0.209589 -0.198473 0.0730559 0.00504905 -0.0215808 -0.0167126 -0.0128248 -0.00875726 -0.020082 0.000174245 -0.000613605</axial_prop>
-          </PCAC_measurements>
-          <PCAC_measurements>
-            <direction>1</direction>
-            <pseudo_prop>48 48 48 48 48 48 48 48 Inf 47.867 48.0427 48.09 47.8679 48.0421 48.0899 47.8672</pseudo_prop>
-            <axial_prop>0.000613605 -0.000174245 0.020082 0.00875726 0.0128248 0.0167126 0.0215808 -0.00504905 -0.0730559 0.198473 -0.209589 0.0456232 0.177972 -0.169667 0.0437343 0.206411</axial_prop>
+            <elem>
+              <direction>-1</direction>
+              <pseudo_prop>0 2.09865 0.685896 0.264556 0.116519 0.0567869 0.0296464 0</pseudo_prop>
+              <axial_prop>0 -1.25753 -0.475669 -0.210072 -0.103048 -0.0539641 -0.0292743 0</axial_prop>
+            </elem>
+            <elem>
+              <direction>1</direction>
+              <pseudo_prop>0 3.29478 1.45411 0.600351 0.236181 0.0891635 0.032609 0</pseudo_prop>
+              <axial_prop>-0 -2.26571 -0.943617 -0.377911 -0.148705 -0.0596716 -0.0263118 -0</axial_prop>
+            </elem>
           </PCAC_measurements>
           <ZV_measurements>
-            <f_1>3.26636e-29</f_1>
-            <vector_corr>0.0272801 0.00235117 -0.0811846 -0.0216567 0.0153311 -0.0945303 0.0359655 -0.0198277 0.0703748 0.0571735 0.0212505 0.0256381 -0.0627541 -0.0109527 0.059316 0.0283912</vector_corr>
+            <f_1>0.117841</f_1>
+            <vector_corr>0 0.043408 0.0431089 0.0426802 0.0421314 0.0414738 0.0407197 0</vector_corr>
           </ZV_measurements>
           <ZA_measurements>
-            <f_1>3.26636e-29</f_1>
-            <f_AA>0.0079437</f_AA>
-            <f_AP_PA>-0.00429652</f_AP_PA>
-            <f_PP>-0.00558484</f_PP>
-            <fd_AA>3.80711e-11</fd_AA>
-            <fd_AP_PA>0</fd_AP_PA>
-            <fd_PP>-1.53856e-05</fd_PP>
+            <f_1>0.117841</f_1>
+            <f_AA>0.01521</f_AA>
+            <f_AP_PA>0.0096207</f_AP_PA>
+            <f_PP>-0.00347402</f_PP>
+            <fd_AA>0.173612</fd_AA>
+            <fd_AP_PA>0.619541</fd_AP_PA>
+            <fd_PP>0.547876</fd_PP>
           </ZA_measurements>
           <Relaxation_Iterations>
-            <ncg_had>1626</ncg_had>
+            <ncg_had>377</ncg_had>
           </Relaxation_Iterations>
         </sfpcac>
       </SFpcac>
+    </elem>
+    <elem>
+      <szin_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>default_gauge_field</object_id>
+      </szin_write_named_obj>
     </elem>
   </InlineObservables>
 </chroma>
