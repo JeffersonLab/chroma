@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.2 2006-04-11 04:16:29 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.3 2006-04-12 01:28:58 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -82,14 +82,6 @@ namespace Chroma
     multi1d<Real> axial_prop(length);
     multi1d<Real> pseudo_prop_b(length);
     multi1d<Real> axial_prop_b(length);
-
-    Real f_1;
-    Real f_AA;
-    Real f_AP_PA;
-    Real f_PP;
-    Real fd_AA;
-    Real fd_AP_PA;
-    Real fd_PP;
 #endif
 
        
@@ -163,7 +155,7 @@ namespace Chroma
 	    }
   	  
 	    // Solve for the propagator
-	    LatticeFermion psi = zero;
+	    psi = zero;
 	    ncg_had += (*qprop)(psi, chi);
 	  }
 
@@ -257,7 +249,9 @@ namespace Chroma
     }  // end for direction
     pop(xml_out);  // PCAC_measurements
 
-    
+
+    Real f_1;
+
     if (ZVfactP || ZAfactP)
     {
       // Sum the forward propagator over time slices to get Kprop
@@ -268,7 +262,7 @@ namespace Chroma
       // quark_prop_f is no longer needed, and can be re-used below
 
       /* Construct f_1 */
-      Real f_1 = real(trace(adj(kprop) * kprop));
+      f_1 = real(trace(adj(kprop) * kprop));
       
       /* Construct H'' = H' gamma_5 K, where H' is the propagator */
       /* from the upper boundary. The gamma_5 multiplication was done. */
@@ -441,13 +435,11 @@ namespace Chroma
       r_tmp1 = -real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_f)));
       fap_tmp += where(t_coord == x0, r_tmp1, LatticeReal(zero));
 
-      multi1d<Double> hrsum;
-                                         
-      hrsum = sumMulti(faa_tmp, phases.getSet());
-      f_AA = (real(hrsum[x0]) + real(hrsum[y0])) * norm;
+      multi1d<Double> hrsum = sumMulti(faa_tmp, phases.getSet());
+      Real f_AA = (real(hrsum[x0]) + real(hrsum[y0])) * norm;
 
       hrsum = sumMulti(fap_tmp, phases.getSet());
-      f_AP_PA  = real(hrsum[x0]);
+      Real f_AP_PA  = real(hrsum[x0]);
       f_AP_PA += real(hrsum[y0]);
       f_AP_PA += real(hrsum[x0+1]);
       f_AP_PA += real(hrsum[x0-1]);
@@ -456,15 +448,17 @@ namespace Chroma
       f_AP_PA *= 0.5 * norm;
 
       hrsum = sumMulti(fpp_tmp, phases.getSet());
-      f_PP  = real(hrsum[x0+1]);
+      Real f_PP  = real(hrsum[x0+1]);
       f_PP += real(hrsum[x0-1]);
       f_PP += real(hrsum[y0+1]);
       f_PP += real(hrsum[y0-1]);
       f_PP *= 0.25 * norm;
 
+      Real fd_AA;
       fd_AA  = axial_prop_b[y0] * axial_prop[x0];
       fd_AA -= axial_prop_b[x0] * axial_prop[y0];
 
+      Real fd_AP_PA;
       fd_AP_PA  = pseudo_prop_b[y0+1] * axial_prop[x0];
       fd_AP_PA -= pseudo_prop_b[y0-1] * axial_prop[x0];
       fd_AP_PA += axial_prop_b[y0] * pseudo_prop[x0+1];
@@ -475,6 +469,7 @@ namespace Chroma
       fd_AP_PA += pseudo_prop_b[x0-1] * axial_prop[y0];
       fd_AP_PA *= 0.5;
 
+      Real fd_PP;
       fd_PP  = pseudo_prop_b[y0+1] * pseudo_prop[x0+1];
       fd_PP -= pseudo_prop_b[y0+1] * pseudo_prop[x0-1];
       fd_PP -= pseudo_prop_b[y0-1] * pseudo_prop[x0+1];
