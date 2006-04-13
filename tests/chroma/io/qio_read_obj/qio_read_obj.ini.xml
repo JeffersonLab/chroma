@@ -44,9 +44,26 @@ Write some QIO objects
         <object_type>Multi1dLatticeColorMatrix</object_type>
       </NamedObject>
       <File>
+        <file_name>./qio.cfg</file_name>
+      </File>
+    </elem>
+
+<annotation>
+    <elem>
+      <annotation>
+        Read the config back again
+      </annotation>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>redo_cfg</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
         <file_name>qio.cfg</file_name>
       </File>
     </elem>
+</annotation>
 
     <elem>
       <annotation>
