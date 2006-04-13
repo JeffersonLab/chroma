@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: schrfun.ini.xml,v 1.2 2006-04-12 16:50:38 edwards Exp $
+; $Id: schrfun.ini.xml,v 1.3 2006-04-13 15:07:20 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
@@ -52,6 +52,7 @@
       </NamedObject>
     </elem>
 
+<annotation>
     <elem>
       <Name>SZIN_WRITE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
@@ -64,6 +65,7 @@
         <trunc>false</trunc>
       </File>
     </elem>
+</annotation>
 
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
