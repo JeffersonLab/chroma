@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 3.0 2006-04-03 04:59:22 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 3.1 2006-04-15 03:54:58 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -15,21 +15,14 @@
 #   Perhaps, this should be incorporated in the autoconf
 #   tool chain.
 
-die "Usage: run_chroma_xmldiff.pl  top_srcdir  top_builddir xmldiff_location\n" unless scalar(@ARGV) == 3;
+die "Usage: run_chroma_xmldiff.pl  top_srcdir  top_builddir xmldiff_location  run_command\n" unless scalar(@ARGV) == 4;
 
-$top_srcdir = &abs_path($ARGV[0]);
-$top_builddir = &abs_path($ARGV[1]);
-$xmldiff=$ARGV[2];
-die "$top_srcdir does not exist" unless -d $top_srcdir;
-die "$top_builddir does not exist" unless -d $top_builddir;
+use File::Basename;
 
-printf "Source directory = %s\n", $top_srcdir;
-printf "Build directory = %s\n", $top_builddir;
-
-
-# location of xmldiff is now passed in
-#$xmldiff = "/usr/local/bin/xmldiff" ;
-#$xmldiff = "$top_srcdir/scripts/xmldiff" ;
+die "$top_srcdir does not exist" unless -d $ARGV[0];
+die "$top_builddir does not exist" unless -d $ARGV[1];
+die "$run does not exist" unless -x $ARGV[3];
+$xmldiff = $ARGV[2];
 
 if( ! -x $xmldiff)
 {
@@ -37,6 +30,14 @@ if( ! -x $xmldiff)
     print "Download it from http://forge.nesc.ac.uk/projects/xmldiff/ \n" ; 
     exit(1) ;
 }
+
+$top_srcdir = &abs_path($ARGV[0]);
+$top_builddir = &abs_path($ARGV[1]);
+$run = &abs_path(dirname($ARGV[3])) . "/" . basename($ARGV[3]);
+
+printf "Source directory = %s\n", $top_srcdir;
+printf "Build directory  = %s\n", $top_builddir;
+printf "Run command      = %s\n", $run;
 
 $test_dir = "$top_srcdir/tests";
 $regres_dir = "$top_builddir/regres";
@@ -112,7 +113,7 @@ for $file (&regresDirs())
 	    
 
 	    my($log) = "$canddir/$execute"  ; 
-	    my($exe) = "$exec_path/$execute ".$in_arg." -o $candidate 2>${log}.err > ${log}.out"; 
+	    my($exe) = "$run $exec_path/$execute ".$in_arg." -o $candidate 2>${log}.err > ${log}.out"; 
 #	print $exe;
 	    my($status_tmp) = system("$exe") / 256 ; 
 	    if( $status_tmp != 0  ) 
