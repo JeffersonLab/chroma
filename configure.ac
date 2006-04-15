@@ -1,4 +1,4 @@
-AC_INIT(chroma,3.1.0,edwards@jlab.org)
+AC_INIT(chroma,3.1.1,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AM_INIT_AUTOMAKE
@@ -377,6 +377,14 @@ fi
 # Produce output
 #######################
 
+# On a scalar platform, make a RUN script that is empty for the 
+# regression tests - convenience
+if test "X${QDPXX_PARALLEL_ARCH}X" = "XscalarX";
+then 
+     /bin/rm -f RUN
+     cat < /dev/null > RUN
+     chmod +x RUN
+fi
 
 
 #
