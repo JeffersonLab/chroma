@@ -637,7 +637,7 @@ uninstall-info: uninstall-info-recursive
 # xmldiff targets
 .PHONY: xcheck
 xcheck:
-	perl $(top_srcdir)/scripts/run_chroma_xmldiff.pl $(top_srcdir) $(top_builddir) @XMLDIFF@
+	perl $(top_srcdir)/scripts/run_chroma_xmldiff.pl $(top_srcdir) $(top_builddir) @XMLDIFF@ $(top_builddir)/RUN
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
