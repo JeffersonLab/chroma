@@ -19,6 +19,5 @@ EXTRA_DIST = install_scripts tests docs
 # xmldiff targets
 .PHONY: xcheck
 xcheck:
-	perl $(top_srcdir)/scripts/run_chroma_xmldiff.pl $(top_srcdir) $(top_builddir) @XMLDIFF@
-
+	perl $(top_srcdir)/scripts/run_chroma_xmldiff.pl $(top_srcdir) $(top_builddir) @XMLDIFF@ $(top_builddir)/RUN
 
