@@ -4369,7 +4369,8 @@ fi
 if test "X${QDPXX_PARALLEL_ARCH}X" = "XscalarX";
 then
      /bin/rm -f RUN
-     cat < /dev/null > RUN
+     echo '#!/bin/sh' > RUN
+     echo '$*' >> RUN
      chmod +x RUN
 fi
 
