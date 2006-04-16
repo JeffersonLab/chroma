@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_cfgtype_io.h,v 3.0 2006-04-03 04:58:56 edwards Exp $
+// $Id: enum_cfgtype_io.h,v 3.1 2006-04-16 03:06:49 edwards Exp $
 /*! \file
  * \brief CfgType enum
  */
@@ -33,7 +33,8 @@ namespace Chroma {
       CFG_TYPE_DISORDERED,
       CFG_TYPE_UNIT,
       CFG_TYPE_CPPACS,
-      CFG_TYPE_WEAK_FIELD
+      CFG_TYPE_WEAK_FIELD,
+      CFG_TYPE_CLASSICAL_SF,
   };
 
 

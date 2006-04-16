@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_cfgtype_io.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
+// $Id: enum_cfgtype_io.cc,v 3.1 2006-04-16 03:06:49 edwards Exp $
 /*! \file
  * \brief CfgType enum
  */
@@ -26,6 +26,7 @@ namespace Chroma {
       success &= theCfgTypeMap::Instance().registerPair( string("UNIT"), CFG_TYPE_UNIT );
       success &= theCfgTypeMap::Instance().registerPair( string("CPPACS"), CFG_TYPE_CPPACS );
       success &= theCfgTypeMap::Instance().registerPair( string("WEAK_FIELD"), CFG_TYPE_WEAK_FIELD);
+      success &= theCfgTypeMap::Instance().registerPair( string("CLASSICAL_SF"), CFG_TYPE_CLASSICAL_SF);
       
       return success;
     }

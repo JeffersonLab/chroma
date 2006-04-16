@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: gauge_startup.cc,v 3.1 2006-04-16 03:07:14 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -17,8 +17,10 @@
 #include "util/gauge/hotst.h"
 #include "util/gauge/weak_field.h"
 
+#include "actions/gauge/gaugebcs/schr_nonpert_gaugebc.h"
 
-namespace Chroma {
+namespace Chroma 
+{
 
   //! Initialize the gauge fields
   /*!
@@ -120,6 +122,28 @@ namespace Chroma {
       pop(file_xml);
       push(record_xml, "weak_field");
       pop(record_xml);
+
+      gauge_file_xml.open(file_xml);
+      gauge_xml.open(record_xml);
+    }
+    break; 
+
+    case CFG_TYPE_CLASSICAL_SF:
+    {
+      QDPIO::cout << "Starting up a classical Schroedinger functional config" << endl;
+      SchrGaugeBCParams params;
+      params.loop_extent = 1;
+      params.SchrPhiMult = 1;
+      params.decay_dir   = Nd-1;
+      SchrNonPertGaugeBC gaugebc(params);
+      
+      u = gaugebc.SFBndFld();
+
+      XMLBufferWriter file_xml, record_xml;
+      push(file_xml, "gauge");
+      write(file_xml, "id", int(0));
+      pop(file_xml);
+      write(record_xml, "SF_classical", params);
 
       gauge_file_xml.open(file_xml);
       gauge_xml.open(record_xml);
