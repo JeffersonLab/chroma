@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.3 2006-04-12 01:28:58 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.4 2006-04-16 03:07:53 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -95,7 +95,8 @@ namespace Chroma
     // Sanity checks
     if ( ZAfactP && x0 < y0 )
     {
-      QDPIO::cerr << "sfpcac: Z_A computation requires x0 > y0: x0,y0=" << x0 << " " << y0 << endl;
+      QDPIO::cerr << "sfpcac: Z_A computation requires x0 > y0: x0,y0=" 
+		  << x0 << " " << y0 << endl;
       QDP_abort(1);
     }
 
@@ -262,7 +263,7 @@ namespace Chroma
       // quark_prop_f is no longer needed, and can be re-used below
 
       /* Construct f_1 */
-      f_1 = real(trace(adj(kprop) * kprop));
+      f_1 = 0.5 * real(trace(adj(kprop) * kprop));
       
       /* Construct H'' = H' gamma_5 K, where H' is the propagator */
       /* from the upper boundary. The gamma_5 multiplication was done. */
