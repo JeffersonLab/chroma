@@ -8,7 +8,7 @@ with cvs tags labelled as
 
     major-minor-maintenance 
 
-Chroma version 2.12 requires QDP++ 1.20 or higher and
+Chroma version 2.12 or higher requires QDP++ 1.20 or higher and
 QMP 2.X or higher . The latter follows the version 2.X specification
 of the API. QDP++ and Chroma no longer support the 1.X QMP API
 
