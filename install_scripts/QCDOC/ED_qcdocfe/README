@@ -1,0 +1,129 @@
+QCDOC Install Scripts.
+======================
+
+These scripts can be used to make a QCDOC installation of libxml, qdp++ and chroma on the QCDOC. They come in 2 parts:
+
+i) The actual functions to do the building are in the script make_functions.sh
+
+ii) The options (source directories, target directories, usage of EDRAM 
+etc) are in the make_all.sh script
+
+To function correctly you need a source directory in which 
+you have unpacked  the following packages.
+
+bagel
+bagel_qdp
+bagel_wilson_dslash
+libxml
+qdp++
+chroma
+
+The unpacked packages must end in version numbers so they should 
+really be directories named as:
+
+bagel-BAGEL_VERSION
+bagel_qdp-BAGEL_QDP_VERSION
+bagel_wilson_dslash-BAGEL_DSLASH_VERSION
+libxml-LIBXML_VERSION
+qdp-QDP_VERSION
+chroma-CHROMA_VERSION
+
+where BAGEL_VERSION, BAGEL_QDP_VERSION etc match up with the definitions
+of the variables BAGEL_VERSION, BAGEL_QDP_VERSION etc in the make_all.sh file.
+In other words if  in make_all.sh you have
+
+BAGEL_VERSION="1.1.3"
+
+then the directory to unpack BAGEL into is bagel-1.1.3
+
+if you are using chroma version 2.15.3 and you define CHROMA_VERSION="2.15.3"
+then you must have chroma unpacked in 
+
+chroma-2.15.3
+
+and so forth.
+
+The code is then build package by package below the lines:
+
+##
+## The actual building is done here
+##
+##
+
+by invocations of the various make functions (from make_functions.sh) eg:
+
+build_bagel ${SRCDIR}/bagel-${BAGEL_VERSION} ${BAGEL_INSTALL_DIR}
+
+If you find that something didn't build, or you need to tweak your
+options etc., you can comment out the building of individual packages
+that have all built successfully. Eg if you have built bagel, 
+but are having trouble building bagel_wilson_dslash
+then you can comment out the build_bagel line with a usual shell comment '#'
+
+This script was last run on the QCDOC in Edinburgh some time ago.
+Since then versions of QDP++ and Chroma etc may have changed. Consult
+the relevant web pages (www.usqcd.org) or the CVS (cvs.jlab.org)
+for the latest and greatest.
+
+KNOWN PROBLEMS and WORKAROUNDS (as of April 17)
+===============================================
+
+PICKING UP The Right version of AR:
+===================================
+
+In a cross compile environment one has to be careful to run the 
+actual cross-archiver (powerpc-gnu-elf-ar) rather than the native
+archiver (ar). Recent versions of the software actively look for the
+right ar using autoconf magic. For older versions, you can create
+a symbolic link to the powerpc-gnu-elf-ar called ar and place it in your
+path before any other ar. 
+
+In my case, the symlink lived in /home/bj/bin/ar
+and in older versions of this script you may find the program
+putting /home/bj/bin in the front of the PATH for cross compile 
+builds.
+
+LIBXML
+======
+
+Please use libxml-2.6.6 for the QCDOC. You can get it from the SciDAC web
+page. Thanks to the magic of autoconf and automake we managed to cut it
+right down (but its' own 'mimimal' flag doesn't work correctly). The
+patched version deals with some QCDOC specific issues regarding 
+filenames (no getcwd() syscall at the last check) and the implementation
+of realloc() in newlib.
+
+Libxml also tries to use itself to build its own documentation. This
+is doomed to failure when cross compiling. Usually this manifests itself
+by libxml trying to make an example (reader1) and failing. By this time
+the library is already built so a make install will successfully install
+it (and then break again when trying to build reader1) This is known and
+expected behaviour.
+
+
+BAGEL_QDP:
+=========
+
+There have been reported difficulties building the bagel_qdp library in single
+precision mode. They are to do with loading single precision literals and 
+zero rather than with the loading of the streams (which work fine in 
+single prec). Currently there is no fix. If you need a single precision
+build, turn off bagel_qdp by:
+
+i) setting the QDP_DO_BLAS variable to 'no' in make_all.sh
+ii) commenting out the invocation of the  build_bagel_qdp  function
+in make_all.sh
+
+CHROMA
+======
+
+It has been reported that the hmc application does not link
+because it overruns the text segment. We believe we have put 
+it at the end of the build list so other applications should
+build fine. We have also recently removed a space hogging 
+file and the code may actually build and link fine now. 
+We don't know for sure, not having done a QCDOC build for some
+time.
+
+A workaround is to comment out some unneeded or unused inline 
+measurements in chroma to reduce code size.
