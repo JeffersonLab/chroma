@@ -1,3 +1,8 @@
+04/18/2006 -- Robert Edwards
+	Version 3.2.0. Switched purgaug to using the gauge action construction.
+        Still somewhat limited, though. Putting legit aniso support in more of the
+        gauge actions - still more is needed.
+
 04/14/2006 -- Robert Edwards
 	Version 3.1.1. Small changes. configure.ac now writes an empty run command for
         make xcheck.
