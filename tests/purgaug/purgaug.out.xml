@@ -50,13 +50,22 @@
   </InlineMeasurements>
 
   <HBItr>
+    <GaugeAction>
+       <Name>WILSON_GAUGEACT</Name>
+       <beta>6.0</beta>
+       <AnisoParam>
+         <anisoP>true</anisoP>
+         <t_dir>3</t_dir>
+         <xi_0>2.464</xi_0>
+         <nu>1.0</nu>
+       </AnisoParam>
+       <GaugeBC>
+         <Name>PERIODIC_GAUGEBC</Name>
+       </GaugeBC>
+    </GaugeAction>
     <HBParams>
-      <BetaMC>6.0</BetaMC>
       <nOver>3</nOver>
       <NmaxHB>1</NmaxHB>
-      <t_dir>3</t_dir>
-      <xi_0>2.4643</xi_0>
-      <anisoP>true</anisoP>
     </HBParams>
     <nrow>4 4 4 8</nrow>
   </HBItr>
@@ -66,10 +75,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
+      <chroma>3.2.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:58:22 EDT</run_date>
+    <run_date>18 Apr 06 13:40:17 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -99,9 +108,9 @@
             <elem>
               <Plaquette>
                 <update_no>1</update_no>
-                <w_plaq>0.910305</w_plaq>
-                <s_plaq>0.887053</s_plaq>
-                <t_plaq>0.933556</t_plaq>
+                <w_plaq>0.9103</w_plaq>
+                <s_plaq>0.887048</s_plaq>
+                <t_plaq>0.933551</t_plaq>
                 <link>0.358795</link>
               </Plaquette>
             </elem>
@@ -116,10 +125,10 @@
             <elem>
               <Plaquette>
                 <update_no>2</update_no>
-                <w_plaq>0.840931</w_plaq>
-                <s_plaq>0.785869</s_plaq>
-                <t_plaq>0.895994</t_plaq>
-                <link>0.225867</link>
+                <w_plaq>0.840927</w_plaq>
+                <s_plaq>0.785868</s_plaq>
+                <t_plaq>0.895985</t_plaq>
+                <link>0.225859</link>
               </Plaquette>
             </elem>
             <elem>
@@ -127,20 +136,20 @@
                 <update_no>2</update_no>
                 <poly_loop>
                   <elem>
-                    <re>0.691468</re>
-                    <im>-0.00388598</im>
+                    <re>0.691465</re>
+                    <im>-0.00388409</im>
                   </elem>
                   <elem>
-                    <re>0.724371</re>
-                    <im>-0.00045754</im>
+                    <re>0.724364</re>
+                    <im>-0.000458746</im>
                   </elem>
                   <elem>
-                    <re>0.613335</re>
-                    <im>-0.00807442</im>
+                    <re>0.613326</re>
+                    <im>-0.00807492</im>
                   </elem>
                   <elem>
-                    <re>0.704985</re>
-                    <im>-0.0165359</im>
+                    <re>0.704968</re>
+                    <im>-0.0165339</im>
                   </elem>
                 </poly_loop>
               </PolyakovLoop>

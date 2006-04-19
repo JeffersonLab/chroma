@@ -47,13 +47,22 @@
   </InlineMeasurements>
 
   <HBItr>
+    <GaugeAction>
+       <Name>WILSON_GAUGEACT</Name>
+       <beta>6.0</beta>
+       <AnisoParam>
+         <anisoP>true</anisoP>
+         <t_dir>3</t_dir>
+         <xi_0>2.464</xi_0>
+         <nu>1.0</nu>
+       </AnisoParam>
+       <GaugeBC>
+         <Name>PERIODIC_GAUGEBC</Name>
+       </GaugeBC>
+    </GaugeAction>
     <HBParams>
-      <BetaMC>6.0</BetaMC>
       <nOver>3</nOver>
       <NmaxHB>1</NmaxHB>
-      <t_dir>3</t_dir>
-      <xi_0>2.4643</xi_0>
-      <anisoP>true</anisoP>
     </HBParams>
     <nrow>4 4 4 8</nrow>
   </HBItr>
