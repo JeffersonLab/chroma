@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mciter.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: mciter.h,v 3.1 2006-04-19 02:28:04 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -7,6 +7,7 @@
 #ifndef __mciter_h__
 #define __mciter_h__
 
+#include "actions/gauge/gaugeacts/wilson_gaugeact.h"
 #include "update/heatbath/hb_params.h"
 
 namespace Chroma 
@@ -24,13 +25,12 @@ namespace Chroma
    * Warning: this works only for Nc = 2 and 3 !
 
    * \param u        gauge field ( Modify )
-   * \param n_over   number of overrelaxation sweeps ( Read )
-   * \param nheat    number of heatbath trials ( Read )
-   * \param ntrials  total number of individual heatbath trials ( Modify )
-   * \param nfails   total number of individual heatbath failures ( Modify ) 
+   * \param S_g      gauge action ( Read )
+   * \param hbp      heatbath parameters ( Read )
    */
 
   void mciter(multi1d<LatticeColorMatrix>& u, 
+	      const WilsonGaugeAct& S_g,
 	      const HBParams& hbp);
 
 }  // end namespace Chroma

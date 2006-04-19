@@ -1,4 +1,4 @@
-// $Id: mciter.cc,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: mciter.cc,v 3.1 2006-04-19 02:28:04 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -8,7 +8,6 @@
 #include "update/heatbath/mciter.h"
 #include "update/heatbath/su3over.h"
 #include "update/heatbath/su2_hb_update.h"
-#include "update/heatbath/u_staple.h"
 
 namespace Chroma 
 {
@@ -25,13 +24,12 @@ namespace Chroma
    * Warning: this works only for Nc = 2 and 3 !
 
    * \param u        gauge field ( Modify )
-   * \param n_over   number of overrelaxation sweeps ( Read )
-   * \param nheat    number of heatbath trials ( Read )
-   * \param ntrials  total number of individual heatbath trials ( Modify )
-   * \param nfails   total number of individual heatbath failures ( Modify ) 
+   * \param S_g      gauge action ( Read )
+   * \param hbp      heatbath parameters ( Read )
    */
 
   void mciter(multi1d<LatticeColorMatrix>& u, 
+	      const WilsonGaugeAct& S_g,
 	      const HBParams& hbp)
   {
     START_CODE();
@@ -43,10 +41,19 @@ namespace Chroma
     for(int iter = 0; iter <= hbp.nOver; ++iter)
     {
       for(int cb = 0; cb < 2; ++cb)
+      {
 	for(int mu = 0; mu < Nd; ++mu)
 	{
-	  //staple 
-	  u_staple(u_mu_staple, u, mu, rb[cb], hbp);
+	  // Calculate the staple
+	  {
+	    typedef multi1d<LatticeColorMatrix>  P;
+	    typedef multi1d<LatticeColorMatrix>  Q;
+
+	    Handle< GaugeState<P,Q> > state(S_g.createState(u));
+
+	    //staple 
+	    S_g.staple(u_mu_staple, state, mu, cb);
+	  }
 
 	  if ( iter < hbp.nOver )
 	  {
@@ -65,7 +72,7 @@ namespace Chroma
 	      int nfail = 0;
 
 	      su2_hb_update(u[mu], u_mu_staple,
-			    (2.0/Nc*hbp.beta())/hbp.xi(),
+			    Real((2.0/Nc*S_g.getBeta())/S_g.anisoFactor()),
 			    su2_index, rb[cb],
 			    hbp.nmax());
 
@@ -79,14 +86,12 @@ namespace Chroma
 
 	  }
 
-#if 0
-	  /* If using Schroedinger functional, reset the boundaries */
-	  if ( SchrFun > 0 )
-	  {
-	    copymask(u[mu][cb], lSFmask[mu][cb], SFBndFld[mu][cb], REPLACE);
-	  }
-#endif
-	}        /* closes mu loop */
+	  // If using Schroedinger functional, reset the boundaries
+	  // NOTE: this routine resets all links and not just those under mu,cb
+	  S_g.getGaugeBC().modify(u);
+
+	}    // closes mu loop
+      }      // closes cb loop
     }
 
   
