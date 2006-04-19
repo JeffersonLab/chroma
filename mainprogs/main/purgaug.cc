@@ -1,30 +1,61 @@
-// $Id: purgaug.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
+// $Id: purgaug.cc,v 3.1 2006-04-19 02:30:43 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
 
 #include "chroma.h"
+#include "actions/gauge/gaugeacts/gaugeacts_aggregate.h"
 
 using namespace Chroma;
 
 namespace Chroma 
 {
+
+  //! Holds gauge action
+  struct HBGauge
+  {
+    string  gauge_act;     /*!<  Holds gauge action xml */
+  };
+
+
+  //! Read the parameters
+  void read(XMLReader& xml_in, const std::string& path, HBGauge& p)
+  {
+    try {
+      // Read the inverter Parameters
+      XMLReader xml_tmp(xml_in, "./GaugeAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      p.gauge_act = os.str();
+    }
+    catch(const string& s) {
+      QDPIO::cerr << "Caught Exception while reading gauge action: " << s <<endl;
+      QDP_abort(1);
+    }
+
+    QDPIO::cout << "Gauge action: read \n" << p.gauge_act << endl;
+  }
+
+
+  //! Writer
+  void write(XMLWriter& xml, const std::string& path, const HBGauge& p)
+  {
+    xml << p.gauge_act;
+  }
+
+
   //! Reader
   void read(XMLReader& xml, const std::string& path, HBParams& p)
   {
     try { 
       XMLReader paramtop(xml, path);
       read(paramtop, "NmaxHB", p.NmaxHB);
-      read(paramtop, "BetaMC", p.BetaMC);
-      read(paramtop, "t_dir", p.t_dir);
-      read(paramtop, "xi_0", p.xi_0);
       read(paramtop, "nOver", p.nOver);
-      read(paramtop, "anisoP", p.anisoP);
     }
     catch(const std::string& e ) { 
       QDPIO::cerr << "Caught Exception reading HBParams: " << e << endl;
       QDP_abort(1);
-    }
+     }
   }
 
   //! Writer
@@ -33,11 +64,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "NmaxHB", p.NmaxHB);
-    write(xml, "BetaMC", p.BetaMC);
-    write(xml, "t_dir", p.t_dir);
-    write(xml, "xi_0", p.xi_0);
     write(xml, "nOver", p.nOver);
-    write(xml, "anisoP", p.anisoP);
 
     pop(xml);
   }
@@ -97,14 +124,15 @@ namespace Chroma
   { 
     multi1d<int> nrow;
 
-    // This should be polymorphic, but hardwired for now...
-    HBParams  hb_params;
+    HBGauge   hb_gaugeact;    /*!< This is polymorphic */
+    HBParams  hb_params;      /*!< Solely the HB bit */
   };
 
   void write(XMLWriter& xml, const std::string& path, const HBItrParams& p)
   {
     push(xml, path);
     write(xml, "nrow", p.nrow);
+    write(xml, "GaugeAction", p.hb_gaugeact);
     write(xml, "HBParams", p.hb_params);
     pop(xml);
   }
@@ -116,6 +144,7 @@ namespace Chroma
       XMLReader paramtop(xml, path);
       
       read(paramtop, "nrow", p.nrow);
+      read(paramtop, "GaugeAction", p.hb_gaugeact);
       read(paramtop, "HBParams", p.hb_params);
     }
     catch( const std::string& e ) { 
@@ -278,6 +307,7 @@ namespace Chroma
 
 
   void doHB(multi1d<LatticeColorMatrix>& u,
+	    const WilsonGaugeAct& S_g,
 	    HBControl& hb_control, 
 	    multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
   {
@@ -333,7 +363,7 @@ namespace Chroma
 
 	// Do the trajectory without accepting 
 //	theHBItr( u, warm_up_p );
-	mciter(u, hb_control.hbitr_params.hb_params); //one hb sweep
+	mciter(u, S_g, hb_control.hbitr_params.hb_params); //one hb sweep
 
 
 	// Create a gauge header for inline measurements.
@@ -419,6 +449,9 @@ namespace Chroma
   {
     bool foo = true;
     
+    // Gauge actions
+    foo &= GaugeActsEnv::registered;
+
     // Inline Measurements
     foo &= InlineAggregateEnv::registered;
 
@@ -483,6 +516,52 @@ int main(int argc, char *argv[])
   }
   
 
+  // Create the gauge action
+  // This code is limited to solely the Wilson gauge action for the moment
+  // It should not take much to make it more general. The main point is
+  // The number of subsets within the staples, etc. and to get the subsets
+  // straight
+  Handle< WilsonGaugeAct > S_g;
+  try
+  {
+    std::istringstream is(hb_control.hbitr_params.hb_gaugeact.gauge_act);
+    XMLReader gaugeact_reader(is);
+
+    // Get the name of the gauge act
+    std::string gaugeact_string;
+    try { 
+      read(gaugeact_reader, "/GaugeAction/Name", gaugeact_string);
+    }
+    catch( const std::string& e) 
+    {
+      QDPIO::cerr << "Error grepping the gaugeact name: " << e<<  endl;
+      QDP_abort(1);
+    }
+
+    // Throw an exception if not found
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    GaugeAction<P,Q>* gaugeact = 
+      TheGaugeActFactory::Instance().createObject(gaugeact_string, 
+						  gaugeact_reader, 
+						  "/GaugeAction");
+
+    S_g = dynamic_cast<WilsonGaugeAct*>(gaugeact);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Caught dynamic cast error: this action must not be a WilsonGaugeAct" << endl;
+    QDP_abort(1);
+  }
+  catch(const std::string& e) 
+  { 
+    QDPIO::cerr << "Caught exception while constructing action: " << e << endl;
+    QDP_abort(1);
+  }
+
+
+
   // Get the measurements
   multi1d < Handle< AbsInlineMeasurement > > the_measurements;
 
@@ -508,8 +587,9 @@ int main(int argc, char *argv[])
 
   
   // Run
-  try { 
-    doHB(u, hb_control, the_measurements);
+  try 
+  {
+    doHB(u, *S_g, hb_control, the_measurements);
   } 
   catch( const std::string& e ) { 
     QDPIO::cerr << "Caught string exception: " << e << endl;
