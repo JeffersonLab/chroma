@@ -77,10 +77,6 @@ namespace Chroma {
   {
     START_CODE();
     
-    QDPIO::cout << InlinePlaquetteEnv::name << ": gauge_id = XX" 
-		<< params.named_obj.gauge_id
-		<< "XX" << endl;
-
     // Test and grab a reference to the gauge field
     XMLBufferWriter gauge_xml;
     try
