@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.4 2006-04-10 21:22:19 edwards Exp $
+# $Id: Makefile.am,v 3.5 2006-04-19 02:27:23 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -192,9 +192,8 @@ nobase_include_HEADERS = \
 	update/update.h \
 	update/heatbath/heatbath.h \
         update/heatbath/su3over.h update/heatbath/su3hb.h \
-	update/heatbath/u_staple.h update/heatbath/hb_params.h \
+	update/heatbath/hb_params.h \
 	update/heatbath/su2_hb_update.h \
-	update/heatbath/su3_hb_sweep.h \
 	update/heatbath/mciter.h \
 	update/molecdyn/molecdyn.h \
 	update/molecdyn/field_state.h \
@@ -730,9 +729,7 @@ libchroma_a_SOURCES = \
 	util/gauge/weak_field.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
         update/heatbath/su3over.cc \
-	update/heatbath/u_staple.cc \
 	update/heatbath/su2_hb_update.cc \
-	update/heatbath/su3_hb_sweep.cc \
 	update/heatbath/mciter.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
