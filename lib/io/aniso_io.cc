@@ -1,4 +1,4 @@
-// $Id: aniso_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: aniso_io.cc,v 3.1 2006-04-19 02:26:34 edwards Exp $
 /*! \file
  *  \brief Anisotropy parameters
  */
@@ -25,13 +25,24 @@ namespace Chroma
     XMLReader paramtop(xml, path);
 
     read(paramtop, "anisoP", param.anisoP);
-    read(paramtop, "t_dir", param.t_dir);
-    read(paramtop, "xi_0", param.xi_0);
 
-    if (paramtop.count("nu") != 0) 
-      read(paramtop, "nu", param.nu);
+    // To avoid confusion later, if the anisoP is false, then set the
+    // struct to its default state.
+    if (param.anisoP)
+    {
+      read(paramtop, "t_dir", param.t_dir);
+      read(paramtop, "xi_0", param.xi_0);
+
+      if (paramtop.count("nu") != 0) 
+	read(paramtop, "nu", param.nu);
+      else
+	param.nu = 1.0;
+    }
     else
-      param.nu = 1.0;
+    {
+      AnisoParam_t foo;
+      param = foo;
+    }
   }
 
 
