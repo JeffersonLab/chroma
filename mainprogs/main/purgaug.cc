@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.1 2006-04-19 02:30:43 edwards Exp $
+// $Id: purgaug.cc,v 3.2 2006-04-19 03:32:23 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -490,8 +490,16 @@ int main(int argc, char *argv[])
     // Write out the input
     write(xml_out, "Input", xml_in);
   }
-  catch(const std::string& e) {
+  catch( const std::string& e ) {
     QDPIO::cerr << "Caught Exception reading input XML: " << e << endl;
+    QDP_abort(1);
+  }
+  catch( std::exception& e ) {
+    QDPIO::cerr << "Caught standard library exception: " << e.what() << endl;
+    QDP_abort(1);
+  }
+  catch(...) {
+    QDPIO::cerr << "Caught unknown exception " << endl;
     QDP_abort(1);
   }
 
