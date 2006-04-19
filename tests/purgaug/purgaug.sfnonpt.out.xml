@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+
+
+<purgaug>
+  <Input><purgaug> 
+  <Cfg>
+    <cfg_type>WEAK_FIELD</cfg_type>
+    <cfg_file>dummy</cfg_file>
+  </Cfg>
+
+  <MCControl>
+    <RNG>
+      <Seed>	
+        <elem>11</elem>
+        <elem>0 </elem>
+        <elem>0 </elem>
+        <elem>0 </elem>
+      </Seed>
+    </RNG>
+
+    <StartUpdateNum>0</StartUpdateNum>
+    <NWarmUpUpdates>1</NWarmUpUpdates>  
+    <NProductionUpdates>1000</NProductionUpdates>
+    <NUpdatesThisRun>2</NUpdatesThisRun>
+    <SaveInterval>2</SaveInterval>
+    <SavePrefix>dummy_run</SavePrefix>
+    <SaveVolfmt>SINGLEFILE</SaveVolfmt>
+  </MCControl>
+
+  <InlineMeasurements>
+    <elem>
+      <Name>POLYAKOV_LOOP</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>WILSLP</Name>
+      <Frequency>10</Frequency>
+      <Param>
+        <kind>3</kind>
+        <j_decay>3</j_decay>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+  </InlineMeasurements>
+
+  <HBItr>
+    <GaugeAction>
+       <Name>WILSON_GAUGEACT</Name>
+       <beta>6.0</beta>
+       <AnisoParam>
+         <anisoP>true</anisoP>
+         <t_dir>3</t_dir>
+         <xi_0>2.464</xi_0>
+         <nu>1.0</nu>
+       </AnisoParam>
+       <GaugeBC>
+         <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+         <SchrPhiMult>2.0</SchrPhiMult>
+         <loop_extent>1</loop_extent>
+         <decay_dir>3</decay_dir>
+       </GaugeBC>
+    </GaugeAction>
+    <HBParams>
+      <nOver>3</nOver>
+      <NmaxHB>1</NmaxHB>
+    </HBParams>
+    <nrow>4 4 4 8</nrow>
+  </HBItr>
+
+</purgaug>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.2.0</chroma>
+      <qdp>1.20.1</qdp>
+    </code_version>
+    <run_date>18 Apr 06 22:33:37 EDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <Config_info>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
+
+    </file_xml>
+    <config_xml><weak_field>
+</weak_field>
+
+    </config_xml>
+  </Config_info>
+  <doHB>
+    <MCUpdates>
+      <elem>
+        <Update>
+          <update_no>1</update_no>
+          <WarmUpP>true</WarmUpP>
+          <InlineObservables>
+            <elem>
+              <Plaquette>
+                <update_no>1</update_no>
+                <w_plaq>0.808067</w_plaq>
+                <s_plaq>0.816189</s_plaq>
+                <t_plaq>0.799944</t_plaq>
+                <link>0.375684</link>
+              </Plaquette>
+            </elem>
+          </InlineObservables>
+        </Update>
+      </elem>
+      <elem>
+        <Update>
+          <update_no>2</update_no>
+          <WarmUpP>false</WarmUpP>
+          <InlineObservables>
+            <elem>
+              <Plaquette>
+                <update_no>2</update_no>
+                <w_plaq>0.761151</w_plaq>
+                <s_plaq>0.716131</s_plaq>
+                <t_plaq>0.806171</t_plaq>
+                <link>0.275218</link>
+              </Plaquette>
+            </elem>
+            <elem>
+              <PolyakovLoop>
+                <update_no>2</update_no>
+                <poly_loop>
+                  <elem>
+                    <re>0.291655</re>
+                    <im>0.0908566</im>
+                  </elem>
+                  <elem>
+                    <re>0.325097</re>
+                    <im>0.0821443</im>
+                  </elem>
+                  <elem>
+                    <re>0.195371</re>
+                    <im>0.105264</im>
+                  </elem>
+                  <elem>
+                    <re>-0.0388252</re>
+                    <im>-0.0225306</im>
+                  </elem>
+                </poly_loop>
+              </PolyakovLoop>
+            </elem>
+          </InlineObservables>
+        </Update>
+      </elem>
+    </MCUpdates>
+  </doHB>
+</purgaug>
