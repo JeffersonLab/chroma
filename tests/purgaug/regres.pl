@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.0 2006-04-03 04:59:33 edwards Exp $
+#  $Id: regres.pl,v 3.1 2006-04-19 02:36:15 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -17,5 +17,13 @@
 	 output      => "purgaug.candidate.xml",
 	 metric      => "$test_dir/purgaug/purgaug.metric.xml" ,
 	 controlfile => "$test_dir/purgaug/purgaug.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "purgaug" , 
+	 input       => "$test_dir/purgaug/purgaug.sfnonpt.ini.xml" , 
+	 output      => "purgaug.sfnonpt.candidate.xml",
+	 metric      => "$test_dir/purgaug/purgaug.sfnonpt.metric.xml" ,
+	 controlfile => "$test_dir/purgaug/purgaug.sfnonpt.out.xml" ,
      }
      );
