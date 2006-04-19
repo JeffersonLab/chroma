@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.cc,v 3.0 2006-04-03 04:59:08 edwards Exp $
+// $Id: gauge_monomial.cc,v 3.1 2006-04-19 02:28:38 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -69,15 +69,19 @@ namespace Chroma
 
   //! Read Parameters
   void read(XMLReader& xml, const std::string& path,
-	    GaugeMonomialParams& params) {
+	    GaugeMonomialParams& params) 
+  {
     GaugeMonomialParams tmp(xml, path);
     params = tmp;
   }
 
   //! Write Parameters
   void write(XMLWriter& xml, const std::string& path,
-	     const GaugeMonomialParams& params) {
+	     const GaugeMonomialParams& params) 
+  {
     // Not implemented
+    QDPIO::cerr << GaugeMonomialEnv::name << ": write not implemented" << endl;
+    QDP_abort(1);
   }
 
 
@@ -98,9 +102,11 @@ namespace Chroma
     }
 
     // Throw an exception if not found
-    gaugeact = TheGaugeActFactory::Instance().createObject(gaugeact_string, gaugeact_reader, "/GaugeAction");
+    gaugeact = TheGaugeActFactory::Instance().createObject(gaugeact_string, 
+							   gaugeact_reader, 
+							   "/GaugeAction");
   }
 
-}; //end namespace Chroma
+} //end namespace Chroma
 
 
