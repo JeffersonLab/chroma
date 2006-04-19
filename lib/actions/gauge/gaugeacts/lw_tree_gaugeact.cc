@@ -1,4 +1,4 @@
-// $Id: lw_tree_gaugeact.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: lw_tree_gaugeact.cc,v 3.1 2006-04-19 02:29:45 edwards Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */
@@ -13,8 +13,9 @@ namespace Chroma
  
   namespace LWTreeGaugeActEnv 
   { 
-    GaugeAction< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
-											    const std::string& path) 
+    GaugeAction< multi1d<LatticeColorMatrix>, 
+		 multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
+							       const std::string& path) 
     {
       return new LWTreeGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
 				LWTreeGaugeActParams(xml, path));
@@ -32,6 +33,10 @@ namespace Chroma
     try {
       read(paramtop, "./beta", beta);
       read(paramtop, "./u0", u0);
+
+      //  Read optional anisoParam.
+      if (paramtop.count("AnisoParam") != 0) 
+	read(paramtop, "AnisoParam", aniso);
     }
     catch( const std::string& e ) { 
       QDPIO::cerr << "Error reading XML: " <<  e << endl;
@@ -51,11 +56,10 @@ namespace Chroma
   {
     // Fold in normalizations and create action
     // NOTE: the 5/3 is folded into beta, hence divided out of c1
-    AnisoParam_t aniso;  // empty aniso
-    Real c0 = beta;
-    plaq = new PlaqGaugeAct(cgs,c0,aniso);
+    Real c0 = param.beta;
+    plaq = new PlaqGaugeAct(cgs,c0,param.aniso);
 
-    Real c1 = -c0 * (1/(20*u0*u0));
+    Real c1 = -c0 * (1/(20*param.u0*param.u0));
     rect = new RectGaugeAct(cgs,c1);
   } 
 

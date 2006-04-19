@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 3.1 2006-04-19 02:29:45 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -16,8 +16,9 @@ namespace Chroma
  
   namespace PlaqGaugeActEnv 
   { 
-    GaugeAction< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
-											    const std::string& path) 
+    GaugeAction< multi1d<LatticeColorMatrix>, 
+		 multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
+							       const std::string& path) 
     {
       return new PlaqGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
 			      PlaqGaugeActParams(xml, path));
@@ -54,71 +55,83 @@ namespace Chroma
   }
 
 
+  // Internal initializer
+  void
+  PlaqGaugeAct::init()
+  {
+    coeffs.resize(Nd,Nd);
+    coeffs = zero;
+
+    for(int mu = 0; mu < Nd; ++mu)
+    {
+      for(int nu = mu+1; nu < Nd; ++nu) 
+      { 
+	coeffs[mu][nu] = param.coeff;
+
+	if( anisoP() && (mu == tDir() || nu == tDir()) )
+	{
+	  coeffs[mu][nu] *= param.aniso.xi_0;
+	}
+	else
+	{
+	  coeffs[mu][nu] /= param.aniso.xi_0;
+	}
+
+	coeffs[nu][mu] = coeffs[mu][nu];
+      }
+    }
+  }
+
+
   //! Compute staple
   /*!
-   * \param u_staple   result      ( Write )
-   * \param state      gauge field ( Read )
-   * \param mu         direction for staple ( Read )
-   * \param cb         subset on which to compute ( Read )
+   * \param u_mu_staple   result      ( Write )
+   * \param state         gauge field ( Read )
+   * \param mu            direction for staple ( Read )
+   * \param cb            subset on which to compute ( Read )
    */
   void
-  PlaqGaugeAct::staple(LatticeColorMatrix& u_staple,
+  PlaqGaugeAct::staple(LatticeColorMatrix& u_mu_staple,
 		       const Handle< GaugeState<P,Q> >& state,
 		       int mu, int cb) const
   {
-    QDPIO::cout << "PlaqGaugeAct::staple() --- Is this tested ? BJ" << endl;
-    QDPIO::cout << "Use at own risk" << endl;
+    // This bit of code was taken from  chroma/lib/update/heatbath/u_staple.cc
+    // Supposedly it works.
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 				 
-    LatticeColorMatrix tmp_1;
+    int t_dir   = tDir();
+    bool AnisoP = anisoP();
+    Double xi02 = anisoFactor() * anisoFactor();
 
-    // Get the set
-    const OrderedSet& actionSet = getSet();
-
-    // Need to have Even/Odd checkerboarding of 2 subsets
-    if (actionSet.numSubsets() != 2)
+    u_mu_staple = zero;
+    for(int nu=0; nu<Nd; nu++) 
     {
-      QDPIO::cerr << "PlaqGaugeAct::staple  implemented only for even/odd" << endl;
-      QDP_abort(1);
+      if( nu == mu ) continue;
+
+      Real xi02_tmp;
+      if( AnisoP && (mu == t_dir || nu == t_dir) )
+      {
+	xi02_tmp = xi02;
+      }
+      else
+      {
+	xi02_tmp = 1.0;
+      }
+
+      // anisotropic lattice, time-like staple
+      // +forward staple
+      u_mu_staple[rb[cb]]+=
+	shift(u[nu],FORWARD,mu)*
+	shift(adj(u[mu]),FORWARD,nu)*adj(u[nu])*
+	xi02_tmp;
+      // +backward staple
+      u_mu_staple[rb[cb]]+=
+	shift(shift(adj(u[nu]),FORWARD,mu),BACKWARD,nu)*
+	shift(adj(u[mu]),BACKWARD,nu)*
+	shift(u[nu],BACKWARD,nu)*
+	xi02_tmp;
     }
-
-    // Aniso^2
-    const Real xi02 = anisoFactor() * anisoFactor();  
-    const int t_dir = tDir();
-  
-    // Initialise the staple to zero
-    u_staple = zero;
-
-    for(int nu = 0; nu < Nd; ++nu)
-    {
-      if (nu == mu) continue;
-
-      // Forward staple  
-      // tmp_1(x) = u(x+mu,nu)*u_dag(x+nu,mu)  
-      tmp_1[actionSet[cb]] = shift(u[nu], FORWARD, mu) * shift(adj(u[mu]), FORWARD, nu);
-
-      if( anisoP() )  	
-	if( mu == t_dir || nu == t_dir )
-	  tmp_1[actionSet[cb]] *= xi02;
-
-      // u_staple(x) +=  tmp_1 * u_dag(x,nu)
-      //   += u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)  
-      u_staple[actionSet[cb]] += tmp_1 * adj(u[nu]);
-          
-
-      // Backward staple  
-      // tmp_1(x) = u(x,mu)*u(x+mu,nu)  
-      tmp_1[actionSet[1-cb]] = u[mu] * shift(u[nu], FORWARD, mu);
-
-      if( anisoP() )  	
-	if( mu == t_dir || nu == t_dir )
-	  tmp_1[actionSet[1-cb]] = xi02 * tmp_1;
-
-      // u_staple(x) += tmp_1_dag(x-nu) * u(x-nu,nu)
-      //  += u_dag(x+mu-nu,nu)*u_dag(x-nu,mu)*u(x-nu,nu)  
-      u_staple[actionSet[cb]] += shift(adj(tmp_1), BACKWARD, nu) * shift(u[nu], BACKWARD, nu);
-    }  // closes nu loop */
 
     END_CODE();
   }
@@ -150,13 +163,14 @@ namespace Chroma
 
     ds_u = zero;
 
-    for(int mu = 0; mu < Nd; ++mu)
+    for(int mu = 0; mu < Nd; mu++)
     {
-      for(int nu=mu+1; nu<Nd; nu++) 
+      for(int nu=mu+1; nu < Nd; nu++) 
       {
 	for(int cb=0; cb < 2; cb++) 
 	{ 
 	  tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
+	  tmp_0[rb[cb]] *= coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
 	  tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
 	  tmp_2[rb[cb]] = u[nu]*tmp_1;
 	  ds_u[nu][rb[cb]] += tmp_2;
@@ -170,7 +184,7 @@ namespace Chroma
       // It is 1/(4Nc) to account for normalisation relevant to fermions
       // in the taproj, which is a factor of 2 different from the 
       // one used here.
-      ds_u[mu] *= Real(-1)*Real(param.coeff)/(Real(2*Nc));
+      ds_u[mu] *= Real(-1)/(Real(2*Nc));
     }
 
 
@@ -180,12 +194,13 @@ namespace Chroma
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
-    for(int mu=0; mu < Nd; mu++) { 
+    for(int mu=0; mu < Nd; mu++) 
+    {
       LatticeColorMatrix G;
       G = zero;
       
-      for(int nu = mu+1; nu < Nd; nu++) { 
-	
+      for(int nu = mu+1; nu < Nd; nu++) 
+      { 
 	LatticeColorMatrix up_staple;
 	LatticeColorMatrix down_staple;
 	
@@ -250,12 +265,12 @@ namespace Chroma
 	Double tmp = 
 	  sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
 
-	S_pg += tmp;
+	S_pg += tmp * Double(coeffs[mu][nu]);
       }
     }
 
     // Normalize
-    S_pg *= Double(-1)*Double(param.coeff)/Double(Nc);
+    S_pg *= Double(-1)/Double(Nc);
 
     return S_pg;
   } 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lw_tree_gaugeact.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: lw_tree_gaugeact.h,v 3.1 2006-04-19 02:29:45 edwards Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */
@@ -32,6 +32,7 @@ namespace Chroma
 
     Real beta;  
     Real u0;  
+    AnisoParam_t aniso;
   };
   
   /*! @ingroup gaugeacts */
@@ -51,15 +52,10 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
 
-    //! General CreateGaugeState
-    LWTreeGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
-		   const Real& beta_, const Real& u0_) : 
-      beta(beta_), u0(u0_) {init(cgs_);}
-
     //! Read beta from a param struct
     LWTreeGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		   const LWTreeGaugeActParams& p) :
-      beta(p.beta), u0(p.u0) {init(cgs_);}
+      param(p) {init(cgs_);}
 
     //! Is anisotropy used?
     bool anisoP() const {return false;}
@@ -68,7 +64,7 @@ namespace Chroma
     const Real anisoFactor() const {return Real(1);}
 
     //! Anisotropic direction
-    int tDir() const {return Nd-1;}
+    int tDir() const {return param.aniso.t_dir;}
 
     //! Return the set on which the gauge action is defined
     /*! Defined on the even-off (red/black) set */
@@ -111,7 +107,7 @@ namespace Chroma
     ~LWTreeGaugeAct() {}
 
     // Accessors -- non mutable members.
-    const Real getBeta(void) const { return beta; }
+    const Real getBeta(void) const { return param.beta; }
 
   protected:
     //! Private initializer
@@ -121,11 +117,9 @@ namespace Chroma
     void operator=(const LWTreeGaugeAct& a) {}
 
   private:
-    Real   beta;               // The coupling Beta
-    Real   u0;                 // Tadpole factor
-    Handle<PlaqGaugeAct> plaq; // Hold a plaquette gaugeact
-    Handle<RectGaugeAct> rect; // Hold a rectangle gaugeact
-
+    Handle<PlaqGaugeAct> plaq;    /*!< Hold a plaquette gaugeact */
+    Handle<RectGaugeAct> rect;    /*!< Hold a rectangle gaugeact */
+    LWTreeGaugeActParams param;   /*!< The coupling Beta */
   };
 
 };

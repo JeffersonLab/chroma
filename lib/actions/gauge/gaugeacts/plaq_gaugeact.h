@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: plaq_gaugeact.h,v 3.1 2006-04-19 02:29:45 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -52,12 +52,12 @@ namespace Chroma
     PlaqGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		 const Real& coeff,
 		 const AnisoParam_t& aniso) : 
-      cgs(cgs_) {param.coeff = coeff; param.aniso = aniso;}
+      cgs(cgs_) {param.coeff = coeff; param.aniso = aniso; init();}
 
     //! Read coeff from a param struct
     PlaqGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		 const PlaqGaugeActParams& p) :
-      cgs(cgs_), param(p) {}
+      cgs(cgs_), param(p) {init();}
 
     //! Is anisotropy used?
     bool anisoP() const {return param.aniso.anisoP;}
@@ -73,7 +73,6 @@ namespace Chroma
     const OrderedSet& getSet() const {return rb;}
 
     //! Compute staple
-    /*! Default version. Derived class should override this if needed. */
     void staple(LatticeColorMatrix& result,
 		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const;
@@ -98,10 +97,13 @@ namespace Chroma
     PlaqGaugeAct() {}
     void operator=(const PlaqGaugeAct& a) {}       //! Hide assignment
 
+    //! Internal initializer
+    void init();
+
   private:
     Handle< CreateGaugeState<P,Q> >  cgs;  // Create Gauge State
-    PlaqGaugeActParams  param; // The parameters
-
+    PlaqGaugeActParams  param;   // The parameters
+    multi2d<Real>       coeffs;  // Array of coefficients for aniso
   };
 
 };

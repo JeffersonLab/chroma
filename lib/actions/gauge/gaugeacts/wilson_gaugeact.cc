@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: wilson_gaugeact.cc,v 3.1 2006-04-19 02:29:45 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -31,6 +31,10 @@ namespace Chroma
 
     try {
       read(paramtop, "./beta", beta);
+
+      //  Read optional anisoParam.
+      if (paramtop.count("AnisoParam") != 0) 
+	read(paramtop, "AnisoParam", aniso);
     }
     catch( const std::string& e ) { 
       QDPIO::cerr << "Error reading XML: " <<  e << endl;
