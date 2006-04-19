@@ -27,19 +27,24 @@
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
-	   <Name>WILSON_GAUGEACT</Name>
-	   <beta>5.2</beta>
-	   <GaugeBC>
-		<Name>PERIODIC_GAUGEBC</Name>
-           </GaugeBC>
+          <Name>WILSON_GAUGEACT</Name>
+	  <beta>5.2</beta>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+          </AnisoParam>
+	  <GaugeBC>
+	    <Name>PERIODIC_GAUGEBC</Name>
+          </GaugeBC>
         </GaugeAction>
       </elem>
     </Monomials>
    </Hamiltonian>
    <MDIntegrator>
 	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<n_steps>100</n_steps>
-	<tau0>0.05</tau0>
+	<n_steps>50</n_steps>
+	<tau0>1.0</tau0>
    </MDIntegrator>
    <GaugeStartup>
 	<cfg_type>UNIT</cfg_type>

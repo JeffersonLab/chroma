@@ -44,8 +44,8 @@
    </Hamiltonian>
    <MDIntegrator>
         <Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-        <n_steps>25</n_steps>
-        <tau0>0.1</tau0>
+        <n_steps>5</n_steps>
+        <tau0>1.0</tau0>
    </MDIntegrator>
    <GaugeStartup>
         <cfg_type>WEAK_FIELD</cfg_type>

@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.2 2006-04-10 23:48:16 edwards Exp $
+#  $Id: regres.pl,v 3.3 2006-04-19 02:24:42 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -35,6 +35,14 @@
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_2flav_clover.sfnonpt.out.xml" ,
      },
 
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.lw.sfnonpt.ini.xml" , 
+	 output      => "t_leapfrog.lw.sfnonpt.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.lw.sfnonpt.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.lw.sfnonpt.out.xml" ,
+     },
 
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 

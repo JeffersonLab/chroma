@@ -12,9 +12,10 @@
         <FermionAction>
           <FermAct>CLOVER</FermAct>
 	  <Kappa>0.12</Kappa>
-	  <clovCoeff>1.0</clovCoeff>
+	  <clovCoeffR>0.9</clovCoeffR>
+	  <clovCoeffT>1.3</clovCoeffT>
           <AnisoParam>
-            <anisoP>false</anisoP>
+            <anisoP>true</anisoP>
             <t_dir>3</t_dir>
             <xi_0>2.464</xi_0>
             <nu>0.95</nu>
@@ -36,8 +37,12 @@
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
 	  <Name>WILSON_GAUGEACT</Name>
-	  <beta>8.0</beta>
-	  <u0>0.9</u0>
+	  <beta>5.5</beta>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+          </AnisoParam>
 	  <GaugeBC>
 	    <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
 	    <SchrPhiMult>2.0</SchrPhiMult>
@@ -51,7 +56,7 @@
    </Hamiltonian>
    <MDIntegrator>
 	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<n_steps>25</n_steps>
+	<n_steps>5</n_steps>
 	<tau0>1.0</tau0>
    </MDIntegrator>
    <GaugeStartup>
