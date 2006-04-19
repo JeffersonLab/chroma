@@ -1,4 +1,4 @@
-// $Id: default_gauge_field.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: default_gauge_field.cc,v 3.2 2006-04-19 03:35:33 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */
@@ -48,7 +48,6 @@ namespace Chroma
 	  {
 	    // Now erase the object
 	    TheNamedObjMap::Instance().erase(private_id);
-	    QDPIO::cout << "Default gauge field erased" << endl;
 	  }
 	  catch( std::bad_cast ) 
 	  {
