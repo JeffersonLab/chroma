@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.3 2006-04-14 18:44:39 edwards Exp $
+#  $Id: regres.pl,v 3.4 2006-04-19 03:00:18 edwards Exp $
 #
 #  This is the top-level script used by chroma/scripts/run_chroma_xmldiff.pl
 #
@@ -15,9 +15,7 @@ sub regresDirs
     # So, spell out all the many regression dirs and source them individually.
     #
 #    return (
-#	    "$test_dir/chroma/hadron/bar3ptfn/regres.pl",
-#	    "$test_dir/chroma/io/qio_read_obj/regres.pl",
-#	    "$test_dir/chroma/io/szin_read_obj/regres.pl"
+#	    "$test_dir/chroma/schrfun/regres.pl",
 #    );
 
      return ( 
@@ -38,6 +36,7 @@ sub regresDirs
 	    "$test_dir/chroma/hadron/mesonspec/regres.pl",
 	    "$test_dir/chroma/hadron/mres/regres.pl",
 	    "$test_dir/chroma/hadron_s/spectrum_s/regres.pl",
+	    "$test_dir/chroma/schrfun/regres.pl",
 	    "$test_dir/chroma/smear/link_smear/regres.pl",
 	    "$test_dir/t_leapfrog/regres.pl",
 	    "$test_dir/spectrum_s/regres.pl",
