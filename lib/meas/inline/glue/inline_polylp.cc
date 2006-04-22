@@ -73,10 +73,6 @@ namespace Chroma {
   {
     START_CODE();
 
-    QDPIO::cout << InlinePolyakovLoopEnv::name << ": gauge_id = XX" 
-		<< params.named_obj.gauge_id
-		<< "XX" << endl;
-
     // Grab the object
     multi1d<LatticeColorMatrix> u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
