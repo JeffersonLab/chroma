@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.2 2006-04-19 03:32:23 edwards Exp $
+// $Id: purgaug.cc,v 3.3 2006-04-22 21:35:14 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -247,6 +247,7 @@ namespace Chroma
   void saveState(const HBItrParams& update_params, 
 		 MCControl& mc_control,
 		 unsigned long update_no,
+		 bool  checkpoint,
 		 const string& inline_measurement_xml,
 		 const multi1d<LatticeColorMatrix>& u)
   {
@@ -254,11 +255,19 @@ namespace Chroma
 
     // Files
     std::ostringstream restart_data_filename;
-    restart_data_filename << mc_control.save_prefix << ".ini.xml" << update_no;
-    
     std::ostringstream restart_config_filename;
-    restart_config_filename << mc_control.save_prefix << ".lime" << update_no;
-       
+
+    if (checkpoint)
+    {
+      restart_data_filename << mc_control.save_prefix << "_restart_" << update_no << ".xml";
+      restart_config_filename << mc_control.save_prefix << "_restart_" << update_no << ".lime";
+    }
+    else
+    {
+      restart_data_filename << mc_control.save_prefix << ".ini.xml" << update_no;
+      restart_config_filename << mc_control.save_prefix << ".lime" << update_no;
+    }
+    
     {
       HBControl hb;
       hb.hbitr_params = update_params;
@@ -423,17 +432,34 @@ namespace Chroma
 
 	if( cur_update % hb_control.mc_control.save_interval == 0 ) 
 	{
+	  bool checkpoint;
+	  unsigned long save_num;
+	  
+	  if (warm_up_p)
+	  {
+	    checkpoint = true;
+	    save_num = cur_update;
+	  }
+	  else
+	  {
+	    checkpoint = false;
+	    save_num = cur_update / hb_control.mc_control.save_interval;
+	  }
+
 	  // Save state
-	  unsigned long save_num = cur_update / hb_control.mc_control.save_interval;
-	  saveState(hb_control.hbitr_params, hb_control.mc_control, save_num, hb_control.inline_measurement_xml, u);
+	  saveState(hb_control.hbitr_params, hb_control.mc_control, 
+		    save_num, checkpoint, 
+		    hb_control.inline_measurement_xml, u);
 	}
 
 	pop(xml_out); // pop("Update");
 	pop(xml_out); // pop("elem");
-      }   
+      }
       
       // Save state
-      saveState(hb_control.hbitr_params, hb_control.mc_control, cur_update, hb_control.inline_measurement_xml, u);
+      saveState(hb_control.hbitr_params, hb_control.mc_control, 
+		cur_update, true, 
+		hb_control.inline_measurement_xml, u);
       
       pop(xml_out); // pop("MCUpdates")
     }
