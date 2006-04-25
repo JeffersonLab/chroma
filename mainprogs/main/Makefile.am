@@ -51,7 +51,7 @@ HDRS =
 bin_PROGRAMS = chroma collect_propcomp \
         purgaug \
         cfgtransf qpropgfix \
-        qproptrev hmc spectrum_s
+        qproptrev hmc spectrum_s stoch_meson
 
 # Wilson specific programs
 bin_PROGRAMS += qpropqio qproptransf wallformfac
@@ -65,7 +65,7 @@ bin_PROGRAMS += qpropqio qproptransf wallformfac
 ## These are programs still under development. They won't compile in
 ## the check_PROGRAMS line, so we put them here to keep from breaking
 ## make check
-EXTRA_PROGRAMS = qpropadd stoch_meson
+EXTRA_PROGRAMS = qpropadd
 
 
 # Wilson specific programs
