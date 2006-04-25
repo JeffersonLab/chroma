@@ -1,8 +1,8 @@
 #!/bin/tcsh
 
-#set gauge_type = SZIN
-set gauge_type = UNIT
-set gauge_cfg = ../test_purgaug.cfg1
+set gauge_type = SZIN
+#set gauge_type = UNIT
+set gauge_cfg = /home/edwards/qcd/chroma/tests/test_purgaug.cfg1
 
 set anisoP = "false"
 set Kappa = 0.11
@@ -85,6 +85,7 @@ cat << **EOF**
         </Source>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>zN_source</source_id>
       </NamedObject>
     </elem>
@@ -117,6 +118,7 @@ cat << **EOF**
         </InvertParam>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>zN_source</source_id>
         <prop_id>zN_prop</prop_id>
       </NamedObject>
