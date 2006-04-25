@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_smearing.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: pt_source_smearing.h,v 3.1 2006-04-25 20:24:12 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -33,6 +33,8 @@ namespace Chroma
 
       std::string      quark_displacement;      /*!< displacement xml */
       std::string      quark_displacement_type; /*!< displacement type name */
+
+      int              j_decay;              /*!< decay direction */
     };
 
 

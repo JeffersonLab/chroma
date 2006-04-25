@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: sh_source_const.cc,v 3.1 2006-04-25 20:24:12 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -150,7 +150,11 @@ namespace Chroma
       }
 
       read(paramtop, "t_srce", t_srce);
-      read(paramtop, "j_decay",  j_decay);
+
+      if (paramtop.count("j_decay") != 0)
+	read(paramtop, "j_decay",  j_decay);
+      else
+	j_decay = -1;
     }
 
 
@@ -159,7 +163,7 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 1;
+      int version = 2;
       QDP::write(xml, "version", version);
 
       write(xml, "SourceType", source_type);

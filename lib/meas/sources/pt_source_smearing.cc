@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: pt_source_smearing.cc,v 3.1 2006-04-25 20:24:12 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -12,6 +12,8 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/quark_displacement_aggregate.h"
 #include "meas/smear/quark_displacement_factory.h"
+
+#include "meas/smear/simple_quark_displacement.h"
 
 namespace Chroma
 {
@@ -69,6 +71,7 @@ namespace Chroma
     //! Read parameters
     Params::Params()
     {
+      j_decay = -1;
     }
 
     //! Read parameters
@@ -82,7 +85,42 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	break;
+      {
+	quark_displacement_type = SimpleQuarkDisplacementEnv::name;
+	int disp_length = 0;
+	int disp_dir = 0;
+
+	XMLBufferWriter xml_tmp;
+	push(xml_tmp, "Displacement");
+	write(xml_tmp, "DisplacementType", quark_displacement_type);
+
+	if (paramtop.count("disp_length") != 0)
+	  read(paramtop, "disp_length", disp_length);
+
+	if (paramtop.count("disp_dir") != 0)
+	  read(paramtop, "disp_dir", disp_dir);
+
+	write(xml_tmp, "disp_length", disp_length);
+	write(xml_tmp, "disp_dir",  disp_dir);
+
+	pop(xml_tmp);  // Displacement
+
+	quark_displacement = xml_tmp.printCurrentContext();
+      }
+      break;
+
+      case 2:
+      {
+	if (paramtop.count("Displacement") != 0)
+	{
+	  XMLReader xml_tmp(paramtop, "Displacement");
+	  std::ostringstream os;
+	  xml_tmp.print(os);
+	  read(xml_tmp, "DisplacementType", quark_displacement_type);
+	  quark_displacement = os.str();
+	}
+      }
+      break;
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
@@ -90,14 +128,10 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      if (paramtop.count("Displacement") != 0)
-      {
-	XMLReader xml_tmp(paramtop, "Displacement");
-	std::ostringstream os;
-	xml_tmp.print(os);
-	read(xml_tmp, "DisplacementType", quark_displacement_type);
-	quark_displacement = os.str();
-      }
+      if (paramtop.count("j_decay") != 0)
+	read(paramtop, "j_decay", j_decay);
+      else
+	j_decay = -1;
 
       if (paramtop.count("LinkSmearing") != 0)
       {
@@ -114,9 +148,11 @@ namespace Chroma
     void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
-      int version = 1;
+
+      int version = 2;
       write(xml, "version", version);
 
+      write(xml, "j_decay", j_decay);
       xml << link_smearing;
       xml << quark_displacement;
       pop(xml);
