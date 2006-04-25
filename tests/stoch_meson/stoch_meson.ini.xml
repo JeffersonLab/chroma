@@ -2,7 +2,7 @@
 <stoch_meson>
 <annotation>
 ;
-; $Id: stoch_meson.ini.xml,v 3.0 2006-04-03 04:59:34 edwards Exp $ test input for stoch_meson code
+; $Id: stoch_meson.ini.xml,v 3.1 2006-04-25 20:26:10 edwards Exp $ test input for stoch_meson code
 ;
 </annotation>
 <Param> 
@@ -12,18 +12,28 @@
 <SourceSmearing>
   <version>6</version>
   <Source>
-    <version>1</version>
+    <version>2</version>
     <SourceType>POINT_SOURCE</SourceType>
     <j_decay>3</j_decay>
+
+    <Displacement>
+      <version>1</version>
+      <DisplacementType>NONE</DisplacementType>
+    </Displacement>
   </Source>
 </SourceSmearing>
 
 <SinkSmearing>
   <version>5</version>
   <Sink>
-    <version>1</version>
+    <version>2</version>
     <SinkType>POINT_SINK</SinkType>
     <j_decay>3</j_decay>
+
+    <Displacement>
+      <version>1</version>
+      <DisplacementType>NONE</DisplacementType>
+    </Displacement>
   </Sink>
 </SinkSmearing>
 
@@ -31,7 +41,7 @@
 <SinkSmearing>
   <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
 
@@ -42,8 +52,10 @@
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -276,7 +288,7 @@
 </Prop>
 <Cfg>
   <cfg_type>SZIN</cfg_type>
-  <cfg_file>../test_purgaug.cfg1</cfg_file>
+  <cfg_file>/home/edwards/qcd/chroma/tests/test_purgaug.cfg1</cfg_file>
 </Cfg>
 <nrow>4 4 4 8</nrow>
 </stoch_meson>
