@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.6 2006-04-26 02:55:01 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.7 2006-04-26 03:36:22 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -123,7 +123,6 @@ namespace Chroma
     // Total number of inversions
     int ncg_had = 0;
 
-    LatticePropagator quark_propagator = zero;
     LatticePropagator quark_prop_f = zero;
     LatticePropagator quark_prop_b = zero;
 
@@ -136,8 +135,6 @@ namespace Chroma
       else
 	t0 = tmin;
 
-
-      quark_propagator = zero;
 
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
@@ -167,44 +164,32 @@ namespace Chroma
 	  }
 
 
-	  /* Store in quark_prpagator and in quark_prop_f/b */
+	  /* Store in quark_prop_f/b */
 	  if (direction == -1)
 	  {
 	    chi = -psi;
 	    /* top spin contribution */
-	    FermToProp(psi, quark_propagator, color_source, spin_source);
+	    FermToProp(psi, quark_prop_b, color_source, spin_source);
 	    /* bottom spin contribution */
-	    FermToProp(chi, quark_propagator, color_source, spin_source2);
-
-	    if (ZVfactP || ZAfactP)
-	    {
-	      FermToProp(psi, quark_prop_b, color_source, spin_source);
-	      FermToProp(chi, quark_prop_b, color_source, spin_source2);
-	    }
+	    FermToProp(chi, quark_prop_b, color_source, spin_source2);
 	  }
 	  else
 	  {
 	    /* top spin contribution */
-	    FermToProp(psi, quark_propagator, color_source, spin_source);
+	    FermToProp(psi, quark_prop_f, color_source, spin_source);
 	    /* bottom spin contribution */
-	    FermToProp(psi, quark_propagator, color_source, spin_source2);
-
-	    if (ZVfactP || ZAfactP)
-	    {
-	      FermToProp(psi, quark_prop_f, color_source, spin_source);
-	      FermToProp(psi, quark_prop_f, color_source, spin_source2);
-	    }
+	    FermToProp(psi, quark_prop_f, color_source, spin_source2);
 	  }
 
 	}
       }
 
-      /* Construct the pion axial current divergence and the pion correlator */
-      SFcurcor(quark_propagator, pseudo_prop, axial_prop, phases);
-
       /* Time reverse backwards source */
       if (direction == -1)
       {
+	/* Construct the pion axial current divergence and the pion correlator */
+	SFcurcor(quark_prop_b, pseudo_prop, axial_prop, phases);
+
 	if ( ZAfactP )
 	{
 	  pseudo_prop_b.resize(length);
@@ -229,6 +214,11 @@ namespace Chroma
 	  axial_prop[t] = -axial_prop[t_eff];
 	  axial_prop[t_eff] = -ftmp;
 	}
+      }
+      else
+      {
+	/* Construct the pion axial current divergence and the pion correlator */
+	SFcurcor(quark_prop_f, pseudo_prop, axial_prop, phases);
       }
 
       /* Normalize to compare to everybody else */
@@ -258,8 +248,6 @@ namespace Chroma
       Propagator kprop = sum(P_plus * (adj(u[j_decay]) * quark_prop_f), phases.getSet()[tmax]);
       kprop *= Real(2)*norm;
       
-      // quark_prop_f is no longer needed, and can be re-used below
-
       /* Construct f_1 */
       f_1 = 0.5 * real(trace(adj(kprop) * kprop));
       
@@ -275,7 +263,7 @@ namespace Chroma
     {
       // Construct f_V
       int n = G5 ^ jd;
-      LatticeReal r_tmp1 = real(trace(adj(quark_prop_b) * (Gamma(n) * quark_propagator)));
+      LatticeReal r_tmp1 = real(trace(adj(quark_prop_b) * (Gamma(n) * quark_prop_f)));
       multi1d<Double> hrsum = sumMulti(r_tmp1, phases.getSet());
 
       multi1d<Real> vector_corr(length);
@@ -300,7 +288,7 @@ namespace Chroma
 
       /* "right" A_0 insertion at x */
       LatticeBoolean tmask = (t_coord == x0);
-      quark_prop_f = zero;
+      LatticePropagator quark_prop_s = zero;    // sequential propagator
 
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
@@ -309,7 +297,7 @@ namespace Chroma
 	  int spin_source2 = spin_source + 2;
 
 	  LatticeFermion chi;
-	  PropToFerm(quark_propagator, chi, color_source, spin_source);
+	  PropToFerm(quark_prop_f, chi, color_source, spin_source);
 
 	  int n = jd ^ G5;
 	  LatticeFermion psi = Gamma(n) * chi;
@@ -321,25 +309,25 @@ namespace Chroma
 	  psi = zero;
 	  ncg_had += (*qprop)(psi, chi);
 
-	  FermToProp(psi, quark_prop_f, color_source, spin_source);
-	  FermToProp(psi, quark_prop_f, color_source, spin_source2);
+	  FermToProp(psi, quark_prop_s, color_source, spin_source);
+	  FermToProp(psi, quark_prop_s, color_source, spin_source2);
 	}
       }
 
       // "left" P insertion at y
-      LatticeReal r_tmp1 = -real(trace(adj(quark_prop_b) * quark_prop_f));
+      LatticeReal r_tmp1 = -real(trace(adj(quark_prop_b) * quark_prop_s));
 
       fap_tmp += where(t_coord == (y0+1), r_tmp1, LatticeReal(zero));
       fap_tmp -= where(t_coord == (y0-1), r_tmp1, LatticeReal(zero));
 
       /* "left" A_0 insertion at y */
-      r_tmp1 = real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_f)));
+      r_tmp1 = real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_s)));
       faa_tmp += where(t_coord == y0, r_tmp1, LatticeReal(zero));
 
       /* "right" A_0 insertion at y */
       tmask = (t_coord == y0);
       int n = jd ^ G5;
-      quark_prop_f = zero;
+      quark_prop_s = zero;
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
 	for(int spin_source = 0; spin_source < Ns/2; ++spin_source)
@@ -347,7 +335,7 @@ namespace Chroma
 	  int spin_source2 = spin_source + 2;
 
 	  LatticeFermion psi, chi;
-	  PropToFerm(quark_propagator, chi, color_source, spin_source);
+	  PropToFerm(quark_prop_f, chi, color_source, spin_source);
 	  psi = Gamma(n) * chi;
 	  /* This gives multiplication with gamma_5 * gamma_0. */
 	  /* Include the minus sign for multiplication with */
@@ -357,22 +345,22 @@ namespace Chroma
 	  psi = zero;
 	  (*qprop)(psi, chi);
 
-	  FermToProp(psi, quark_prop_f, color_source, spin_source);
-	  FermToProp(psi, quark_prop_f, color_source, spin_source2);
+	  FermToProp(psi, quark_prop_s, color_source, spin_source);
+	  FermToProp(psi, quark_prop_s, color_source, spin_source2);
 	}
       }
 
       /* "left" P insertion at x */
-      r_tmp1 = real(trace(adj(quark_prop_b) * quark_prop_f));
+      r_tmp1 = real(trace(adj(quark_prop_b) * quark_prop_s));
       fap_tmp += where(t_coord == (x0+1), r_tmp1, LatticeReal(zero));
       fap_tmp -= where(t_coord == (x0-1), r_tmp1, LatticeReal(zero));
 
       /* "left" A_0 insertion at x */
-      r_tmp1 = -real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_f)));
+      r_tmp1 = -real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_s)));
       faa_tmp += where(t_coord == x0, r_tmp1, LatticeReal(zero));
 
       /* "right" P insertion at x */
-      quark_prop_f = zero;
+      quark_prop_s = zero;
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
 	for(int spin_source = 0; spin_source < Ns/2; ++spin_source)
@@ -380,7 +368,7 @@ namespace Chroma
 	  int spin_source2 = spin_source + 2;
 
 	  LatticeFermion psi, chi;
-	  PropToFerm(quark_propagator, chi, color_source, spin_source);
+	  PropToFerm(quark_prop_f, chi, color_source, spin_source);
 	  psi = Gamma(G5) * chi;
 
 	  chi  = where(t_coord == (x0+1), psi, LatticeFermion(zero));
@@ -389,22 +377,22 @@ namespace Chroma
 	  psi = zero;
 	  ncg_had += (*qprop)(psi, chi);
 
-	  FermToProp(psi, quark_prop_f, color_source, spin_source);
-	  FermToProp(psi, quark_prop_f, color_source, spin_source2);
+	  FermToProp(psi, quark_prop_s, color_source, spin_source);
+	  FermToProp(psi, quark_prop_s, color_source, spin_source2);
 	}
       }
 
       /* "left" P insertion at y */
-      r_tmp1 = -real(trace(adj(quark_prop_b) * quark_prop_f));
+      r_tmp1 = -real(trace(adj(quark_prop_b) * quark_prop_s));
       fpp_tmp += where(t_coord == (y0+1), r_tmp1, LatticeReal(zero));
       fpp_tmp -= where(t_coord == (y0-1), r_tmp1, LatticeReal(zero));
 
       /* "left" A_0 insertion at y */
-      r_tmp1 = real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_f)));
+      r_tmp1 = real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_s)));
       fap_tmp += where(t_coord == y0, r_tmp1, LatticeReal(zero));
 
       /* "right" P insertion at y */
-      quark_prop_f = zero;
+      quark_prop_s = zero;
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
 	for(int spin_source = 0; spin_source < Ns/2; ++spin_source)
@@ -412,7 +400,7 @@ namespace Chroma
 	  int spin_source2 = spin_source + 2;
 
 	  LatticeFermion psi, chi;
-	  PropToFerm(quark_propagator, chi, color_source, spin_source);
+	  PropToFerm(quark_prop_f, chi, color_source, spin_source);
 	  psi = Gamma(G5) * chi;
 
 	  chi  = where(t_coord == (y0+1), psi, LatticeFermion(zero));
@@ -420,18 +408,18 @@ namespace Chroma
 	  psi = zero;
 	  ncg_had += (*qprop)(psi, chi);
 
-	  FermToProp(psi, quark_prop_f, color_source, spin_source);
-	  FermToProp(psi, quark_prop_f, color_source, spin_source2);
+	  FermToProp(psi, quark_prop_s, color_source, spin_source);
+	  FermToProp(psi, quark_prop_s, color_source, spin_source2);
 	}
       }
 
       /* "left" P insertion at x */
-      r_tmp1 = real(trace(adj(quark_prop_b) * quark_prop_f));
+      r_tmp1 = real(trace(adj(quark_prop_b) * quark_prop_s));
       fpp_tmp += where(t_coord == (x0+1), r_tmp1, LatticeReal(zero));
       fpp_tmp -= where(t_coord == (x0-1), r_tmp1, LatticeReal(zero));
 
       /* "left" A_0 insertion at x */
-      r_tmp1 = -real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_f)));
+      r_tmp1 = -real(trace(adj(quark_prop_b) * (Gamma(jd) * quark_prop_s)));
       fap_tmp += where(t_coord == x0, r_tmp1, LatticeReal(zero));
 
       multi1d<Double> hrsum = sumMulti(faa_tmp, phases.getSet());
