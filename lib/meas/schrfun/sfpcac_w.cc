@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.5 2006-04-26 02:06:06 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.6 2006-04-26 02:55:01 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -158,7 +158,7 @@ namespace Chroma
 	    }
 	    else
 	    {
-	      chi  = shift(P_plus * (adj(u[j_decay]) * tmp1), BACKWARD, j_decay);
+	      chi = shift(P_plus * (adj(u[j_decay]) * tmp1), BACKWARD, j_decay);
 	    }
   	  
 	    // Solve for the propagator
@@ -176,14 +176,10 @@ namespace Chroma
 	    /* bottom spin contribution */
 	    FermToProp(chi, quark_propagator, color_source, spin_source2);
 
-	    /* Store the first two source spin components, also in slots */
-	    /* of the last LAST two! (Recall that in the chiral basis used */
-	    /* the last two components are minus the first two, so we
-	       actually store q_prop * gamma_5!) */
 	    if (ZVfactP || ZAfactP)
 	    {
 	      FermToProp(psi, quark_prop_b, color_source, spin_source);
-	      FermToProp(psi, quark_prop_b, color_source, spin_source2);
+	      FermToProp(chi, quark_prop_b, color_source, spin_source2);
 	    }
 	  }
 	  else
@@ -195,10 +191,8 @@ namespace Chroma
 
 	    if (ZVfactP || ZAfactP)
 	    {
-	      LatticeFermion tmp3 = P_plus * (adj(u[j_decay]) * psi);
-
-	      FermToProp(tmp3, quark_prop_f, color_source, spin_source);
-	      FermToProp(tmp3, quark_prop_f, color_source, spin_source2);
+	      FermToProp(psi, quark_prop_f, color_source, spin_source);
+	      FermToProp(psi, quark_prop_f, color_source, spin_source2);
 	    }
 	  }
 
@@ -261,7 +255,7 @@ namespace Chroma
     if (ZVfactP || ZAfactP)
     {
       // Sum the forward propagator over time slices to get Kprop
-      Propagator kprop = sum(quark_prop_f, phases.getSet()[tmax]);
+      Propagator kprop = sum(P_plus * (adj(u[j_decay]) * quark_prop_f), phases.getSet()[tmax]);
       kprop *= Real(2)*norm;
       
       // quark_prop_f is no longer needed, and can be re-used below
@@ -269,10 +263,10 @@ namespace Chroma
       /* Construct f_1 */
       f_1 = 0.5 * real(trace(adj(kprop) * kprop));
       
-      /* Construct H'' = H' gamma_5 K, where H' is the propagator */
-      /* from the upper boundary. The gamma_5 multiplication was done. */
-      /* H' is no longer needed: quark_prop_b can be overwritten. */
-      LatticePropagator tmp_prop = quark_prop_b * kprop;
+      // Construct H'' = H' gamma_5 K, where H' is the propagator
+      // from the upper boundary. 
+      // H' is no longer needed: quark_prop_b can be overwritten.
+      LatticePropagator tmp_prop = quark_prop_b * Gamma(G5) * kprop;
       quark_prop_b = tmp_prop;
     }
 
