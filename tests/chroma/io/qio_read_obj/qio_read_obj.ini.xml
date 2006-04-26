@@ -8,23 +8,12 @@ Write some QIO objects
 
     <elem>
       <annotation>
-        Snarf/grab gauge arg and stuff into a named object
-      </annotation>
-      <Name>SNARF_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>snarf_cfg</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
         Write the config
       </annotation>
       <Name>QIO_WRITE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>snarf_cfg</object_id>
+        <object_id>default_gauge_field</object_id>
         <object_type>Multi1dLatticeColorMatrix</object_type>
       </NamedObject>
       <File>
