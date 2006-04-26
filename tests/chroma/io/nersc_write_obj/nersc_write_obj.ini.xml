@@ -7,21 +7,10 @@ Write a nersc config
   <InlineMeasurements>
 
     <elem>
-      <annotation>
-        Snarf/grab gauge arg and stuff into a named object
-      </annotation>
-      <Name>SNARF_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>snarf_cfg</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
       <Name>NERSC_WRITE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>snarf_cfg</object_id>
+        <object_id>default_gauge_field</object_id>
       </NamedObject>
       <File>
         <file_name>nersc.cfg</file_name>
