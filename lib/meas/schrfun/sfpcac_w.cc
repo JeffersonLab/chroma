@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.7 2006-04-26 03:36:22 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.8 2006-04-26 03:41:36 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -16,9 +16,12 @@ namespace Chroma
   
   //! Schroedinger functional stuff
   /*!
-   * NOTE: this routine assumes the chiral basis for the gamma matrices,
+   * NOTE: this routine DOES *NOT* assume the chiral basis for the gamma matrices,
    * in particular the specific forms of gamma_0 (or gamma_4, which here is
-   * actually Gamma(8)) and of gamma_5!
+   * actually Gamma(8)) and of gamma_5. Thus, the code is general for any
+   * j_decay. However, to simplify the code and fiddling onto bases, I do
+   * twice the needed work by inverting on all spin components. This is what
+   * enables the code to work easily for arbitrary directions.
    *
    * Compute correlation functions between axial current or pseudescalar
    * density and boundary fields using Schroedinger BC.
@@ -27,11 +30,10 @@ namespace Chroma
    * boundaries with zero, one (vector current) and two (axial current or
    * pseudoscalar density) insertions in the bulk.
    *
-   * Compute quark propagators by inverting the Wilson operator using
-   * the kappa's in the array "Kappa". 
+   * Compute quark solutions by using the supplied SystemSolver.
    * The initial guess for the inverter is zero.
    *
-   * The results are written to the namelist file.
+   * The results are written to the xml output.
    *
    * For further details see the comments in the dependent subroutines.
    *
@@ -85,13 +87,6 @@ namespace Chroma
 #endif
 
        
-    // Because of implied structure of (1 +/- gamma_0) in the chiral basis:
-    if ( j_decay != 3 )
-    {
-      QDPIO::cerr << "SFpcac requires j_decay=3" << endl;
-      QDP_abort(1);
-    }
-
     // Sanity checks
     if ( ZAfactP && x0 < y0 )
     {
@@ -129,19 +124,12 @@ namespace Chroma
     push(xml_out, "PCAC_measurements");
     for(int direction = -1; direction <= 1; direction+=2)
     {
-      int t0;
-      if (direction == -1)
-	t0 = tmax;
-      else
-	t0 = tmin;
-
+      int t0 = (direction == -1) ? tmax : tmin;
 
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
-	for(int spin_source = 0; spin_source < Ns/2; ++spin_source)
+	for(int spin_source = 0; spin_source < Ns; ++spin_source)
 	{
-	  int spin_source2 = spin_source + 2;
-
 	  /* Compute quark propagator "psi" using source "chi" with type specified */
 	  /* by WALL_SOURCE, and color and spin equal to color_source and spin_source. */
 	  LatticeFermion psi, chi;
@@ -167,18 +155,11 @@ namespace Chroma
 	  /* Store in quark_prop_f/b */
 	  if (direction == -1)
 	  {
-	    chi = -psi;
-	    /* top spin contribution */
 	    FermToProp(psi, quark_prop_b, color_source, spin_source);
-	    /* bottom spin contribution */
-	    FermToProp(chi, quark_prop_b, color_source, spin_source2);
 	  }
 	  else
 	  {
-	    /* top spin contribution */
 	    FermToProp(psi, quark_prop_f, color_source, spin_source);
-	    /* bottom spin contribution */
-	    FermToProp(psi, quark_prop_f, color_source, spin_source2);
 	  }
 
 	}
@@ -292,10 +273,8 @@ namespace Chroma
 
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
-	for(int spin_source = 0; spin_source < Ns/2; ++spin_source)
+	for(int spin_source = 0; spin_source < Ns; ++spin_source)
 	{
-	  int spin_source2 = spin_source + 2;
-
 	  LatticeFermion chi;
 	  PropToFerm(quark_prop_f, chi, color_source, spin_source);
 
@@ -310,7 +289,6 @@ namespace Chroma
 	  ncg_had += (*qprop)(psi, chi);
 
 	  FermToProp(psi, quark_prop_s, color_source, spin_source);
-	  FermToProp(psi, quark_prop_s, color_source, spin_source2);
 	}
       }
 
@@ -330,10 +308,8 @@ namespace Chroma
       quark_prop_s = zero;
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
-	for(int spin_source = 0; spin_source < Ns/2; ++spin_source)
+	for(int spin_source = 0; spin_source < Ns; ++spin_source)
 	{
-	  int spin_source2 = spin_source + 2;
-
 	  LatticeFermion psi, chi;
 	  PropToFerm(quark_prop_f, chi, color_source, spin_source);
 	  psi = Gamma(n) * chi;
@@ -346,7 +322,6 @@ namespace Chroma
 	  (*qprop)(psi, chi);
 
 	  FermToProp(psi, quark_prop_s, color_source, spin_source);
-	  FermToProp(psi, quark_prop_s, color_source, spin_source2);
 	}
       }
 
@@ -363,10 +338,8 @@ namespace Chroma
       quark_prop_s = zero;
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
-	for(int spin_source = 0; spin_source < Ns/2; ++spin_source)
+	for(int spin_source = 0; spin_source < Ns; ++spin_source)
 	{
-	  int spin_source2 = spin_source + 2;
-
 	  LatticeFermion psi, chi;
 	  PropToFerm(quark_prop_f, chi, color_source, spin_source);
 	  psi = Gamma(G5) * chi;
@@ -378,7 +351,6 @@ namespace Chroma
 	  ncg_had += (*qprop)(psi, chi);
 
 	  FermToProp(psi, quark_prop_s, color_source, spin_source);
-	  FermToProp(psi, quark_prop_s, color_source, spin_source2);
 	}
       }
 
@@ -395,10 +367,8 @@ namespace Chroma
       quark_prop_s = zero;
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
-	for(int spin_source = 0; spin_source < Ns/2; ++spin_source)
+	for(int spin_source = 0; spin_source < Ns; ++spin_source)
 	{
-	  int spin_source2 = spin_source + 2;
-
 	  LatticeFermion psi, chi;
 	  PropToFerm(quark_prop_f, chi, color_source, spin_source);
 	  psi = Gamma(G5) * chi;
@@ -409,7 +379,6 @@ namespace Chroma
 	  ncg_had += (*qprop)(psi, chi);
 
 	  FermToProp(psi, quark_prop_s, color_source, spin_source);
-	  FermToProp(psi, quark_prop_s, color_source, spin_source2);
 	}
       }
 
