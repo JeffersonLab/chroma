@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.4 2006-04-16 03:07:53 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.5 2006-04-26 02:06:06 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -104,6 +104,14 @@ namespace Chroma
     Real norm = 1.0 / Real(QDP::Layout::vol());
     norm *= Real(QDP::Layout::lattSize()[j_decay]);
 
+    // Spin projectors
+    SpinMatrix P_plus, P_minus;
+    {
+      SpinMatrix g_one = 1.0;
+
+      P_plus  = 0.5*(g_one + (Gamma(jd) * g_one));
+      P_minus = 0.5*(g_one - (Gamma(jd) * g_one));
+    }
 
     /* Location of upper wall source */
     int tmin = fermbc.getDecayMin();
@@ -146,13 +154,11 @@ namespace Chroma
 
 	    if (direction == -1)
 	    {
-	      LatticeFermion tmp2 = u[j_decay] * tmp1;
-	      chi = 0.5*(tmp2 - (Gamma(jd) * tmp2));
+	      chi = P_minus * (u[j_decay] * tmp1);
 	    }
 	    else
 	    {
-	      LatticeFermion tmp2 = adj(u[j_decay]) * tmp1;
-	      chi  = shift(0.5*(tmp2 + (Gamma(jd) * tmp2)), BACKWARD, j_decay);
+	      chi  = shift(P_plus * (adj(u[j_decay]) * tmp1), BACKWARD, j_decay);
 	    }
   	  
 	    // Solve for the propagator
@@ -189,8 +195,7 @@ namespace Chroma
 
 	    if (ZVfactP || ZAfactP)
 	    {
-	      LatticeFermion tmp2 = adj(u[j_decay]) * psi;
-	      LatticeFermion tmp3 = 0.5*(tmp2 + (Gamma(jd) * tmp2));
+	      LatticeFermion tmp3 = P_plus * (adj(u[j_decay]) * psi);
 
 	      FermToProp(tmp3, quark_prop_f, color_source, spin_source);
 	      FermToProp(tmp3, quark_prop_f, color_source, spin_source2);
@@ -256,8 +261,7 @@ namespace Chroma
     if (ZVfactP || ZAfactP)
     {
       // Sum the forward propagator over time slices to get Kprop
-      multi1d<DPropagator> slice_prop = sumMulti(quark_prop_f, phases.getSet());
-      Propagator kprop = slice_prop[tmax];
+      Propagator kprop = sum(quark_prop_f, phases.getSet()[tmax]);
       kprop *= Real(2)*norm;
       
       // quark_prop_f is no longer needed, and can be re-used below
