@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun.out.xml,v 1.4 2006-04-19 02:59:34 edwards Exp $
+; $Id: schrfun.out.xml,v 1.5 2006-04-26 03:45:15 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
@@ -95,7 +95,7 @@
       <chroma>3.2.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>18 Apr 06 22:49:36 EDT</run_date>
+    <run_date>25 Apr 06 23:44:30 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -159,7 +159,7 @@
             <chroma>3.2.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>18 Apr 06 22:49:36 EDT</run_date>
+          <run_date>25 Apr 06 23:44:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -275,7 +275,7 @@
             <fd_PP>0.547876</fd_PP>
           </ZA_measurements>
           <Relaxation_Iterations>
-            <ncg_had>377</ncg_had>
+            <ncg_had>754</ncg_had>
           </Relaxation_Iterations>
         </sfpcac>
       </SFpcac>
