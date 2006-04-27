@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: io.h,v 3.1 2006-04-27 02:35:38 edwards Exp $
 
 /*! \file
  * \brief Inline reader and writers for memory buffers
@@ -21,7 +21,6 @@
 
 #include "inline_erase_obj.h"
 #include "inline_list_obj.h"
-#include "inline_snarf_obj.h"
 #include "inline_gaussian_obj.h"
 
 #endif
