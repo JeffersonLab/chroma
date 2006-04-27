@@ -1,4 +1,4 @@
-// $Id: stoch_meson.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: stoch_meson.cc,v 3.1 2006-04-27 02:36:00 edwards Exp $
 /*! \file
  * \brief Stochastically estimate a meson operator
  *
@@ -159,10 +159,10 @@ struct MesonOperator_t
     //! Meson operator element
     struct MesonOperatorElement_t
     {
-      multi2d<DComplex> elem;
+      multi2d<DComplex> elem;              /*!< time slice and momenta number */
     };
     
-    multi2d<MesonOperatorElement_t> op;
+    multi2d<MesonOperatorElement_t> op;    /*!< hybrid list indices */
   };
 
   std::string   smearing_l;        /*!< string holding smearing xml */
