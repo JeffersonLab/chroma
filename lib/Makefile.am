@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.5 2006-04-19 02:27:23 edwards Exp $
+# $Id: Makefile.am,v 3.6 2006-04-27 02:34:43 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -534,11 +534,11 @@ nobase_include_HEADERS += \
 	meas/inline/io/inline_qio_write_erase_obj.h \
 	meas/inline/io/inline_szin_read_obj.h \
 	meas/inline/io/inline_szin_write_obj.h \
+	meas/inline/io/inline_nersc_read_obj.h \
 	meas/inline/io/inline_nersc_write_obj.h \
 	meas/inline/io/inline_xml_write_obj.h \
 	meas/inline/io/inline_erase_obj.h \
 	meas/inline/io/inline_list_obj.h \
-	meas/inline/io/inline_snarf_obj.h \
 	meas/inline/io/inline_gaussian_obj.h \
         meas/inline/io/qio_read_obj_funcmap.h \
         meas/inline/io/qio_write_obj_funcmap.h \
@@ -981,11 +981,11 @@ libchroma_a_SOURCES += \
 	meas/inline/io/inline_qio_write_erase_obj.cc \
 	meas/inline/io/inline_szin_read_obj.cc \
 	meas/inline/io/inline_szin_write_obj.cc \
+	meas/inline/io/inline_nersc_read_obj.cc \
 	meas/inline/io/inline_nersc_write_obj.cc \
 	meas/inline/io/inline_xml_write_obj.cc \
 	meas/inline/io/inline_erase_obj.cc \
 	meas/inline/io/inline_list_obj.cc \
-	meas/inline/io/inline_snarf_obj.cc \
 	meas/inline/io/inline_gaussian_obj.cc \
         meas/inline/io/qio_read_obj_funcmap.cc \
         meas/inline/io/qio_write_obj_funcmap.cc \
