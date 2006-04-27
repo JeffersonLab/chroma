@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Write a nersc config
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>NERSC_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>default_gauge_field</object_id>
+      </NamedObject>
+      <File>
+        <file_name>nersc.cfg</file_name>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>NERSC_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>foo</object_id>
+      </NamedObject>
+      <File>
+        <file_name>nersc.cfg</file_name>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+

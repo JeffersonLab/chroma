@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+Write a nersc config
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>NERSC_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>default_gauge_field</object_id>
+      </NamedObject>
+      <File>
+        <file_name>nersc.cfg</file_name>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>NERSC_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>foo</object_id>
+      </NamedObject>
+      <File>
+        <file_name>nersc.cfg</file_name>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.2.0</chroma>
+      <qdp>1.20.1</qdp>
+    </code_version>
+    <run_date>26 Apr 06 22:27:16 EDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
+
+    </file_xml>
+    <gauge_xml><weak_field>
+</weak_field>
+
+    </gauge_xml>
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994765</w_plaq>
+    <s_plaq>0.994801</s_plaq>
+    <t_plaq>0.994729</t_plaq>
+    <link>0.379318</link>
+    <pollp>
+      <elem>
+        <re>0.967223</re>
+        <im>-0.00121316</im>
+      </elem>
+      <elem>
+        <re>0.967032</re>
+        <im>-0.00129617</im>
+      </elem>
+      <elem>
+        <re>0.967468</re>
+        <im>-0.00114548</im>
+      </elem>
+      <elem>
+        <re>0.879539</re>
+        <im>-0.0104403</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <nersc_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>default_gauge_field</object_id>
+      </nersc_write_named_obj>
+    </elem>
+    <elem>
+      <nersc_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>foo</object_id>
+      </nersc_read_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>
