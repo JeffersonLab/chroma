@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.1 2006-05-01 16:06:55 kostas Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.2 2006-05-01 20:19:26 kostas Exp $
 /*! \file
  *  \brief ALTIVEC 5D DWF specific quark propagator solver
  */
@@ -294,7 +294,7 @@ namespace Chroma
   //! Private internal initializer
   void ALTIVECDWFQpropT::init(Handle< FermState<LatticeFermion,
 			      multi1d<LatticeColorMatrix>,
-			      multi1d<LatticeColorMatrix> > state)
+			      multi1d<LatticeColorMatrix> > > state)
   {
     QDPIO::cout << "entering ALTIVECDWFQpropT::init" << endl;
 
