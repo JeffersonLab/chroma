@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.1 2006-05-01 16:06:55 kostas Exp $
 /*! \file
  *  \brief ALTIVEC 5D DWF specific quark propagator solver
  */
@@ -250,9 +250,33 @@ namespace Chroma
 		  << ", resulting epsilon = " << out_eps
                   << endl;
 
-      QDPIO::cout << "Time= " 
-                  << swatch.getTimeInSeconds() 
-                  << " secs" << endl;
+      if (status != 0)
+      {
+	QDPIO::cerr << "Error in ALTIVEC DWF solver: status = " << status
+		    << ", iterations = " << out_iter
+		    << ", resulting epsilon = " << out_eps
+		    << endl;
+	QDP_abort(1);
+      }
+
+      // Flop counting
+      {
+	unsigned long Ls = x0.size();
+	unsigned long Ndiag  = (4*Ls+2)*Nc*Ns; /* This is my count with the blas / chiral proj ops */
+	unsigned long NdiagInv = (10*Ls-8)*Nc*Ns;
+	unsigned long Neo    = Ls*(1320+24);
+	unsigned long N_mpsi = 2*Ndiag + 2*Neo + Ls*24;
+	unsigned long Nflops_c = (24*Ls + 2*N_mpsi) + (48*Ls);  /* constant term */
+	unsigned long Nflops_s = (2*N_mpsi + Ls*(2*48+2*24));   /* slope */
+	unsigned long long Nflops_per_cbsite = Nflops_c + out_iter*Nflops_s;
+	unsigned long long Nflops_total = Nflops_per_cbsite*(Layout::sitesOnNode()/2);
+
+	/* Flop count for inverter */
+	FlopCounter flopcount;
+	flopcount.reset();
+	flopcount.addFlops(Nflops_total);
+	flopcount.report("ALTIVECDWFQpropT", swatch.getTimeInSeconds());
+      }
 
       ALTIVEC_DWF_save_fermion(&solution, NULL, &ALTIVECDWF::fermion_writer_solver, res);
 
