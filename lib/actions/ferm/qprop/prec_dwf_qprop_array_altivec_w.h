@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_altivec_w.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.h,v 3.1 2006-05-01 15:27:20 kostas Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -38,7 +38,7 @@ namespace Chroma
      *
      * \param m_q_       quark mass ( Read )
      */
-    ALTIVECDWFQpropT(Handle< FermState<T,P,Q>> state_, 
+    ALTIVECDWFQpropT(Handle< FermState<T,P,Q> > state_, 
 		     const Real& OverMass_,
 		     const Real& Mass_,
 		     int N5_,
@@ -52,7 +52,7 @@ namespace Chroma
     /*!
      * \param m_q_       quark mass ( Read )
      */
-    ALTIVECDWFQpropT(Handle< EvenOddPrecConstDetLinearOperator<T,P,Q> > A,  // throw away
+    ALTIVECDWFQpropT(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A,  // throw away
 		 Handle< FermState<T,P,Q> > state_, 
 		 const Real& OverMass_,
 		 const Real& Mass_,
