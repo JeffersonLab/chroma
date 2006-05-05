@@ -347,27 +347,48 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>BAR3PTFN</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>6</version>
-       <mom2_max>3</mom2_max>
-       <nrow>4 4 4 8</nrow>
+        <version>7</version>
+        <j_decay>3</j_decay>
+        <mom2_max>3</mom2_max>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <bar3ptfn_file>bar3ptfn.dat</bar3ptfn_file>
-        <seqprop_ids>
-          <elem>seqprop_PION</elem>
-          <elem>seqprop_NUCL_U_MIXED_NONREL</elem>
-          <elem>seqprop_NUCL_D_MIXED_NONREL</elem>
+        <seqprops>
+          <elem>
+            <seqprop_id>seqprop_PION</seqprop_id>
+            <gamma_insertion>14</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_U_MIXED_NONREL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_D_MIXED_NONREL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
 
 <annotation>
-          <elem>seqprop_NUCL_U_UNPOL</elem>
-          <elem>seqprop_NUCL_D_UNPOL</elem>
-          <elem>seqprop_NUCL_U_POL</elem>
-          <elem>seqprop_NUCL_D_POL</elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_U_UNPOL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_D_UNPOL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_U_POL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_D_POL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
 </annotation>
 
-       </seqprop_ids>
+       </seqprops>
       </NamedObject>
     </elem>
 

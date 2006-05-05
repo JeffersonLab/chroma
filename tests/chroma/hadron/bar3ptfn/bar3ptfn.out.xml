@@ -350,27 +350,48 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>BAR3PTFN</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>6</version>
-       <mom2_max>3</mom2_max>
-       <nrow>4 4 4 8</nrow>
+        <version>7</version>
+        <j_decay>3</j_decay>
+        <mom2_max>3</mom2_max>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <prop_id>sh_prop_0</prop_id>
         <bar3ptfn_file>bar3ptfn.dat</bar3ptfn_file>
-        <seqprop_ids>
-          <elem>seqprop_PION</elem>
-          <elem>seqprop_NUCL_U_MIXED_NONREL</elem>
-          <elem>seqprop_NUCL_D_MIXED_NONREL</elem>
+        <seqprops>
+          <elem>
+            <seqprop_id>seqprop_PION</seqprop_id>
+            <gamma_insertion>14</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_U_MIXED_NONREL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_D_MIXED_NONREL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
 
 <annotation>
-          <elem>seqprop_NUCL_U_UNPOL</elem>
-          <elem>seqprop_NUCL_D_UNPOL</elem>
-          <elem>seqprop_NUCL_U_POL</elem>
-          <elem>seqprop_NUCL_D_POL</elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_U_UNPOL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_D_UNPOL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_U_POL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
+          <elem>
+            <seqprop_id>seqprop_NUCL_D_POL</seqprop_id>
+            <gamma_insertion>0</gamma_insertion>
+          </elem>
 </annotation>
 
-       </seqprop_ids>
+       </seqprops>
       </NamedObject>
     </elem>
 
@@ -396,10 +417,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
-      <qdp>1.20.2</qdp>
+      <chroma>3.2.1</chroma>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>14 Apr 06 14:42:23 EDT</run_date>
+    <run_date>04 May 06 23:02:19 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -457,10 +478,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:23 EDT</run_date>
+          <run_date>04 May 06 23:02:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -551,10 +572,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:23 EDT</run_date>
+          <run_date>04 May 06 23:02:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -735,10 +756,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:23 EDT</run_date>
+          <run_date>04 May 06 23:02:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -916,10 +937,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:23 EDT</run_date>
+          <run_date>04 May 06 23:02:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1175,10 +1196,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:24 EDT</run_date>
+          <run_date>04 May 06 23:02:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1356,10 +1377,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:24 EDT</run_date>
+          <run_date>04 May 06 23:02:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1627,10 +1648,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:24 EDT</run_date>
+          <run_date>04 May 06 23:02:24 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1981,10 +2002,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:24 EDT</run_date>
+          <run_date>04 May 06 23:02:26 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2252,10 +2273,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.2</qdp>
+            <chroma>3.2.1</chroma>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>14 Apr 06 14:42:25 EDT</run_date>
+          <run_date>04 May 06 23:02:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2268,16 +2289,24 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <Param>
             <version>6</version>
             <mom2_max>3</mom2_max>
-            <nrow>4 4 4 8</nrow>
           </Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <prop_id>sh_prop_0</prop_id>
-            <seqprop_ids>
-              <elem>seqprop_PION</elem>
-              <elem>seqprop_NUCL_U_MIXED_NONREL</elem>
-              <elem>seqprop_NUCL_D_MIXED_NONREL</elem>
-            </seqprop_ids>
+            <seqprops>
+              <elem>
+                <seqprop_id>seqprop_PION</seqprop_id>
+                <gamma_insertion>14</gamma_insertion>
+              </elem>
+              <elem>
+                <seqprop_id>seqprop_NUCL_U_MIXED_NONREL</seqprop_id>
+                <gamma_insertion>0</gamma_insertion>
+              </elem>
+              <elem>
+                <seqprop_id>seqprop_NUCL_D_MIXED_NONREL</seqprop_id>
+                <gamma_insertion>0</gamma_insertion>
+              </elem>
+            </seqprops>
             <bar3ptfn_file>bar3ptfn.dat</bar3ptfn_file>
           </NamedObject>
         </Input>
@@ -2289,7 +2318,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Config_info>
         <Output_version>
-          <out_version>10</out_version>
+          <out_version>11</out_version>
         </Output_version>
         <Observables>
           <w_plaq>0.994804</w_plaq>
@@ -2566,9 +2595,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
               <seqsrc_type>PION</seqsrc_type>
-              <t_source>0 0 0 0</t_source>
+              <t_source>0</t_source>
               <t_sink>7</t_sink>
               <sink_mom>0 0 0</sink_mom>
+              <gamma_insertion>14</gamma_insertion>
             </elem>
             <elem>
               <seq_src_ctr>1</seq_src_ctr>
@@ -2822,9 +2852,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
               <seqsrc_type>NUCL_U_MIXED_NONREL</seqsrc_type>
-              <t_source>0 0 0 0</t_source>
+              <t_source>0</t_source>
               <t_sink>7</t_sink>
               <sink_mom>0 0 0</sink_mom>
+              <gamma_insertion>0</gamma_insertion>
             </elem>
             <elem>
               <seq_src_ctr>2</seq_src_ctr>
@@ -2995,9 +3026,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
               <seqsrc_type>NUCL_D_MIXED_NONREL</seqsrc_type>
-              <t_source>0 0 0 0</t_source>
+              <t_source>0</t_source>
               <t_sink>7</t_sink>
               <sink_mom>0 0 0</sink_mom>
+              <gamma_insertion>0</gamma_insertion>
             </elem>
           </Sequential_source>
         </Wilson_3Pt_fn_measurements>
