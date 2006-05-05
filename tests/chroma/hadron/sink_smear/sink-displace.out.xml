@@ -15,10 +15,11 @@ Sink smear a prop
       <Param>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>3</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+          <quark_smear_lastP>true</quark_smear_lastP>
 
           <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
@@ -27,8 +28,10 @@ Sink smear a prop
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -106,9 +109,10 @@ Sink smear a prop
       <Param>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>3</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
+          <quark_smear_firstP>true</quark_smear_firstP>
 
           <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
@@ -117,8 +121,12 @@ Sink smear a prop
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>-2</disp_length>
-          <disp_dir>3</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+            <disp_length>-2</disp_length>
+            <disp_dir>3</disp_dir>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -160,10 +168,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.3.0</chroma>
+      <qdp>1.20.2</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:15:20 EDT</run_date>
+    <run_date>05 May 06 11:57:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -194,7 +202,7 @@ Sink smear a prop
   <Observables>
     <w_plaq>-0.00355243</w_plaq>
     <s_plaq>-0.00700866</s_plaq>
-    <t_plaq>-9.62032e-05</t_plaq>
+    <t_plaq>-9.6203e-05</t_plaq>
     <link>0.114362</link>
     <pollp>
       <elem>
@@ -221,10 +229,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.3.0</chroma>
+            <qdp>1.20.2</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:20 EDT</run_date>
+          <run_date>05 May 06 11:57:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -244,18 +252,21 @@ Sink smear a prop
         <Input>
           <Param>
             <version>6</version><Source>
-      <version>1</version>
+      <version>3</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
+      <quark_smear_lastP>true</quark_smear_lastP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -282,7 +293,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.62032e-05</t_plaq>
+          <t_plaq>-9.6203e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -313,10 +324,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.3.0</chroma>
+            <qdp>1.20.2</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:20 EDT</run_date>
+          <run_date>05 May 06 11:57:48 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -374,7 +385,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.62032e-05</t_plaq>
+          <t_plaq>-9.6203e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -404,18 +415,21 @@ Sink smear a prop
       <PropSource>
         <version>6</version>
         <Source>
-          <version>1</version>
+          <version>3</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
+          <quark_smear_lastP>true</quark_smear_lastP>
           <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
             <wvf_param>2.0</wvf_param>
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -522,7 +536,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.62032e-05</t_plaq>
+          <t_plaq>-9.6203e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -548,18 +562,21 @@ Sink smear a prop
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
-      <version>1</version>
+      <version>3</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
+      <quark_smear_lastP>true</quark_smear_lastP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -611,7 +628,7 @@ Sink smear a prop
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.0303537 0.000909184 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870807</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.0303537 0.000909183 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870806</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -622,17 +639,22 @@ Sink smear a prop
           <Param>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>3</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
+      <quark_smear_firstP>true</quark_smear_firstP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>-2</disp_length>
-      <disp_dir>3</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>-2</disp_length>
+        <disp_dir>3</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -659,7 +681,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.62032e-05</t_plaq>
+          <t_plaq>-9.6203e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -685,18 +707,21 @@ Sink smear a prop
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
-      <version>1</version>
+      <version>3</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
+      <quark_smear_lastP>true</quark_smear_lastP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -738,17 +763,22 @@ Sink smear a prop
         <PropSink>
           <version>5</version>
           <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>3</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
+      <quark_smear_firstP>true</quark_smear_firstP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>-2</disp_length>
-      <disp_dir>3</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>-2</disp_length>
+        <disp_dir>3</disp_dir>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
