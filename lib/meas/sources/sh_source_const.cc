@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 3.2 2006-05-05 04:19:44 edwards Exp $
+// $Id: sh_source_const.cc,v 3.3 2006-05-05 05:22:22 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -128,8 +128,6 @@ namespace Chroma
 
       case 3:
       {
-	read(paramtop, "quark_smear_lastP", quark_smear_lastP);
-
 	if (paramtop.count("Displacement") != 0)
 	{
 	  XMLReader xml_tmp(paramtop, "Displacement");
@@ -180,6 +178,11 @@ namespace Chroma
 	read(paramtop, "j_decay",  j_decay);
       else
 	j_decay = -1;
+
+      if (paramtop.count("quark_smear_lastP") != 0)
+	read(paramtop, "quark_smear_lastP", quark_smear_lastP);
+      else
+	quark_smear_lastP = true;
     }
 
 
@@ -280,6 +283,7 @@ namespace Chroma
 	}
 
 
+	// Smear and displace
 	if (params.quark_smear_lastP)
 	{
 	  // Smear the colour source

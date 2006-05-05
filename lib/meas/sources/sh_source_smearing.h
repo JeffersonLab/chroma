@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_smearing.h,v 3.1 2006-04-25 20:24:12 edwards Exp $
+// $Id: sh_source_smearing.h,v 3.2 2006-05-05 05:22:22 edwards Exp $
 /*! \file
  *  \brief Shell source smearing
  */
@@ -29,6 +29,8 @@ namespace Chroma
       void writeXML(XMLWriter& in, const std::string& path) const;
     
       std::string      source_type;          /*!< source smearing type */
+
+      bool             quark_smear_lastP;    /*!< Flag controlling order of smearing */
 
       std::string      quark_smearing;       /*!< xml string holding smearing params */
       std::string      quark_smearing_type;  /*!< quark smearing type name */

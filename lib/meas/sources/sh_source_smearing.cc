@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 3.1 2006-04-25 20:24:12 edwards Exp $
+// $Id: sh_source_smearing.cc,v 3.2 2006-05-05 05:22:22 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -20,6 +20,7 @@
 #include "meas/smear/quark_displacement_factory.h"
 
 #include "meas/smear/simple_quark_displacement.h"
+#include "meas/smear/no_quark_displacement.h"
 
 namespace Chroma
 {
@@ -71,6 +72,7 @@ namespace Chroma
     Params::Params()
     {
       j_decay = -1;
+      quark_smear_lastP = true;
     }
 
     //! Read parameters
@@ -80,6 +82,8 @@ namespace Chroma
 
       int version;
       read(paramtop, "version", version);
+
+      quark_smear_lastP = true;
 
       switch (version) 
       {
@@ -110,6 +114,17 @@ namespace Chroma
 
       case 2:
       {
+	// Unfortunately, old behavior required a displacement
+	XMLReader xml_tmp(paramtop, "Displacement");
+	std::ostringstream os;
+	xml_tmp.print(os);
+	read(xml_tmp, "DisplacementType", quark_displacement_type);
+	quark_displacement = os.str();
+      }
+      break;
+
+      case 3:
+      {
 	if (paramtop.count("Displacement") != 0)
 	{
 	  XMLReader xml_tmp(paramtop, "Displacement");
@@ -117,6 +132,14 @@ namespace Chroma
 	  xml_tmp.print(os);
 	  read(xml_tmp, "DisplacementType", quark_displacement_type);
 	  quark_displacement = os.str();
+	}
+	else
+	{
+	  XMLBufferWriter xml_tmp;
+	  NoQuarkDisplacementEnv::Params  non;
+	  write(xml_tmp, "Displacement", non);
+	  quark_displacement = xml_tmp.str();
+	  quark_displacement_type = NoQuarkDisplacementEnv::name;
 	}
       }
       break;
@@ -150,6 +173,11 @@ namespace Chroma
 	read(paramtop, "j_decay",  j_decay);
       else
 	j_decay = -1;
+
+      if (paramtop.count("quark_smear_lastP") != 0)
+	read(paramtop, "quark_smear_lastP", quark_smear_lastP);
+      else
+	quark_smear_lastP = true;
     }
 
 
@@ -205,13 +233,27 @@ namespace Chroma
 										displacetop,
 										displace_path));
 
-	//
-	// Displace and then smear quark source
-	//
-	(*quarkDisplacement)(quark_source, u_smr, MINUS);
+	// Smear and displace
+	if (params.quark_smear_lastP)
+	{
+	  // Smear the colour source
+	  // displace the point source first, then smear
+	  // displacement has to be taken along negative direction.
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
 
-	(*quarkSmearing)(quark_source, u_smr);
+	  // do the smearing
+	  (*quarkSmearing)(quark_source, u_smr);
+	}
+	else
+	{
+	  // do the smearing
+	  (*quarkSmearing)(quark_source, u_smr);
 
+	  // Smear the colour source
+	  // smear the point source first, then displace
+	  // displacement has to be taken along negative direction.
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
+	}
       }
       catch(const std::string& e) 
       {
