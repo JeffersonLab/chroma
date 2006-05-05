@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: formfac_w.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: formfac_w.h,v 3.1 2006-05-05 03:07:20 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -65,6 +65,7 @@ namespace Chroma
    * \param u                  gauge fields (used for non-local currents) ( Read )
    * \param quark_propagator   quark propagator ( Read )
    * \param seq_quark_prop     sequential quark propagator ( Read )
+   * \param gamma_insertion    extra gamma insertion at source ( Read )
    * \param phases             fourier transform phase factors ( Read )
    * \param t0                 cartesian coordinates of the source ( Read )
    */
@@ -73,6 +74,7 @@ namespace Chroma
 	       const multi1d<LatticeColorMatrix>& u,
 	       const LatticePropagator& quark_propagator,
 	       const LatticePropagator& seq_quark_prop, 
+	       int gamma_insertion,
 	       const SftMom& phases,
 	       int t0);
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_bar3ptfn_w.h,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_bar3ptfn_w.h,v 3.1 2006-05-05 03:07:20 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -33,15 +33,21 @@ namespace Chroma
 
     struct Param_t
     {
-      int              mom2_max;          // (mom)^2 <= mom2_max. mom2_max=7 in szin.
-      multi1d<int>     nrow;
+      int              mom2_max;           /*!< (mom)^2 <= mom2_max */
+      int              j_decay;
     } param;
+
+    struct SeqProp_t
+    {
+      std::string      seqprop_id;
+      int              gamma_insertion;    /*!< second gamma insertion */
+    };
 
     struct NamedObject_t
     {
       std::string           gauge_id;
       std::string           prop_id;
-      multi1d<std::string>  seqprop_ids;
+      multi1d<SeqProp_t>    seqprops;
       std::string           bar3ptfn_file;
     } named_obj;
   };

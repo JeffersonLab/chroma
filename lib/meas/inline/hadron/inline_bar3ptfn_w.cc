@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 3.2 2006-05-05 03:07:20 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -31,13 +31,34 @@ namespace Chroma
 
 
   //! Propagator parameters
+  void read(XMLReader& xml, const string& path, InlineBar3ptfnParams::SeqProp_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "seqprop_id", input.seqprop_id);
+    read(inputtop, "gamma_insertion", input.gamma_insertion);
+  }
+
+  //! Propagator parameters
+  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParams::SeqProp_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "seqprop_id", input.seqprop_id);
+    write(xml, "gamma_insertion", input.gamma_insertion);
+
+    pop(xml);
+  }
+
+
+  //! Propagator parameters
   void read(XMLReader& xml, const string& path, InlineBar3ptfnParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "prop_id", input.prop_id);
-    read(inputtop, "seqprop_ids", input.seqprop_ids);
+    read(inputtop, "seqprops", input.seqprops);
     read(inputtop, "bar3ptfn_file", input.bar3ptfn_file);
   }
 
@@ -48,7 +69,7 @@ namespace Chroma
 
     write(xml, "gauge_id", input.gauge_id);
     write(xml, "prop_id", input.prop_id);
-    write(xml, "seqprop_ids", input.seqprop_ids);
+    write(xml, "seqprops", input.seqprops);
     write(xml, "bar3ptfn_file", input.bar3ptfn_file);
 
     pop(xml);
@@ -66,7 +87,12 @@ namespace Chroma
     switch (version) 
     {
     case 6:
-      /**************************************************************************/
+      // Uggh, assume j_decay = Nd-1 here. This could come from source.
+      param.j_decay = Nd-1;
+      break;
+
+    case 7:
+      read(paramtop, "j_decay", param.j_decay);
       break;
 
     default :
@@ -77,7 +103,6 @@ namespace Chroma
     }
 
     read(paramtop, "mom2_max", param.mom2_max);
-    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -90,7 +115,6 @@ namespace Chroma
 
     write(xml, "version", version);
     write(xml, "mom2_max", param.mom2_max);
-    write(xml, "nrow", param.nrow);
 
     pop(xml);
   }
@@ -152,10 +176,10 @@ namespace Chroma
   struct FormFac_sequential_source_t
   {
     string            seqsrc_type;
-    multi1d<int>      t_source;
+    int               t_source;
     int               t_sink;
     multi1d<int>      sink_mom;
-    Complex           seq_hadron_0;
+    int               gamma_insertion;
     FormFac_insertions_t  formFacs;
   };
 
@@ -183,7 +207,8 @@ namespace Chroma
   void write(BinaryWriter& bin, const InlineBar3ptfnParams::Param_t& param)
   {
     write(bin, param.mom2_max);
-    write(bin, param.nrow);
+    write(bin, param.j_decay);
+    write(bin, Layout::lattSize());
   }
 
 
@@ -194,7 +219,7 @@ namespace Chroma
     write(bin, src.t_source);
     write(bin, src.t_sink);
     write(bin, src.sink_mom);
-    write(bin, src.seq_hadron_0);
+    write(bin, src.gamma_insertion);
     write(bin, src.formFacs);
   }
 
@@ -263,7 +288,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 10);
+    write(xml_out, "out_version", 11);
     pop(xml_out);
 
     // First calculate some gauge invariant observables just for info.
@@ -314,8 +339,8 @@ namespace Chroma
     QDPIO::cout << "Forward propagator successfully parsed" << endl;
 
     // Derived from input prop
-    int  j_decay = source_header.j_decay;
-    multi1d<int> t_source = source_header.getTSrce();  // do not really need whole source - t0 sufficient
+    int j_decay  = params.param.j_decay;
+    int t_source = source_header.t_source;
 
     // Sanity check - write out the norm2 of the forward prop in the j_decay direction
     // Use this for any possible verification
@@ -336,20 +361,20 @@ namespace Chroma
     // Big nested structure that is image of entire file
     //
     Bar3ptfn_t  bar3pt;
-    bar3pt.output_version.out_version = 10;  // bump this up everytime something changes
+    bar3pt.output_version.out_version = 11;  // bump this up everytime something changes
     bar3pt.param = params.param; // copy entire structure
 
     push(xml_out, "Wilson_3Pt_fn_measurements");
 
     // Big nested structure that is image of all form-factors
 //    FormFac_Wilson_3Pt_fn_measurements_t  formfacs;
-    bar3pt.bar.output_version = 3;  // bump this up everytime something changes
-    bar3pt.bar.seqsrc.resize(params.named_obj.seqprop_ids.size());
+    bar3pt.bar.output_version = 4;  // bump this up everytime something changes
+    bar3pt.bar.seqsrc.resize(params.named_obj.seqprops.size());
 
-    XMLArrayWriter  xml_seq_src(xml_out, params.named_obj.seqprop_ids.size());
+    XMLArrayWriter  xml_seq_src(xml_out, params.named_obj.seqprops.size());
     push(xml_seq_src, "Sequential_source");
 
-    for (int seq_src_ctr = 0; seq_src_ctr < params.named_obj.seqprop_ids.size(); ++seq_src_ctr) 
+    for (int seq_src_ctr = 0; seq_src_ctr < params.named_obj.seqprops.size(); ++seq_src_ctr) 
     {
       push(xml_seq_src);
       write(xml_seq_src, "seq_src_ctr", seq_src_ctr);
@@ -361,14 +386,16 @@ namespace Chroma
       QDPIO::cout << "Attempt to parse sequential propagator" << endl;
       try
       {
+	std::string seqprop_id = params.named_obj.seqprops[seq_src_ctr].seqprop_id;
+
 	// Snarf the backward prop
 	seq_quark_prop =
-	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.seqprop_ids[seq_src_ctr]);
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(seqprop_id);
 	
 	// Snarf the source info. This is will throw if the source_id is not there
 	XMLReader seqprop_file_xml, seqprop_record_xml;
-	TheNamedObjMap::Instance().get(params.named_obj.seqprop_ids[seq_src_ctr]).getFileXML(seqprop_file_xml);
-	TheNamedObjMap::Instance().get(params.named_obj.seqprop_ids[seq_src_ctr]).getRecordXML(seqprop_record_xml);
+	TheNamedObjMap::Instance().get(seqprop_id).getFileXML(seqprop_file_xml);
+	TheNamedObjMap::Instance().get(seqprop_id).getRecordXML(seqprop_record_xml);
    
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
@@ -409,6 +436,9 @@ namespace Chroma
 	pop(xml_seq_src);
       }
 
+      // Use extra gamma insertion
+      int gamma_insertion = params.named_obj.seqprops[seq_src_ctr].gamma_insertion;
+
       // Derived from input seqprop
       std::string   seqsrc_type = seqsource_header.seqsrc_type;
       QDPIO::cout << "Seqsource name = " << seqsrc_type  << endl;
@@ -420,19 +450,20 @@ namespace Chroma
       write(xml_seq_src, "t_source", t_source);
       write(xml_seq_src, "t_sink", t_sink);
       write(xml_seq_src, "sink_mom", sink_mom);
+      write(xml_seq_src, "gamma_insertion", gamma_insertion);
 	
       bar3pt.bar.seqsrc[seq_src_ctr].seqsrc_type   = seqsrc_type;
       bar3pt.bar.seqsrc[seq_src_ctr].t_source      = t_source;
       bar3pt.bar.seqsrc[seq_src_ctr].t_sink        = t_sink;
       bar3pt.bar.seqsrc[seq_src_ctr].sink_mom      = sink_mom;
-      // This is no longer computed (or needed), but keep here to make binary happy
-      bar3pt.bar.seqsrc[seq_src_ctr].seq_hadron_0  = zero;
+      bar3pt.bar.seqsrc[seq_src_ctr].gamma_insertion = gamma_insertion;
 	
 
       // Now the 3pt contractions
       SftMom phases(params.param.mom2_max, sink_mom, false, j_decay);
       FormFac(bar3pt.bar.seqsrc[seq_src_ctr].formFacs, 
-	      u, quark_propagator, seq_quark_prop, phases, t_source[j_decay]);
+	      u, quark_propagator, seq_quark_prop, gamma_insertion,
+	      phases, t_source);
 
       pop(xml_seq_src);   // elem
     } // end loop over sequential sources
