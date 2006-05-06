@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 3.2 2006-05-05 05:22:22 edwards Exp $
+// $Id: sh_source_smearing.cc,v 3.3 2006-05-06 03:09:43 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -125,6 +125,8 @@ namespace Chroma
 
       case 3:
       {
+	read(paramtop, "quark_smear_lastP", quark_smear_lastP);
+
 	if (paramtop.count("Displacement") != 0)
 	{
 	  XMLReader xml_tmp(paramtop, "Displacement");
@@ -173,11 +175,6 @@ namespace Chroma
 	read(paramtop, "j_decay",  j_decay);
       else
 	j_decay = -1;
-
-      if (paramtop.count("quark_smear_lastP") != 0)
-	read(paramtop, "quark_smear_lastP", quark_smear_lastP);
-      else
-	quark_smear_lastP = true;
     }
 
 
@@ -186,7 +183,7 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 2;
+      int version = 3;
       QDP::write(xml, "version", version);
 
       write(xml, "SourceType", source_type);
@@ -195,6 +192,7 @@ namespace Chroma
       xml << link_smearing;
 
       write(xml, "j_decay",  j_decay);
+      write(xml, "quark_smear_lastP",  quark_smear_lastP);
 
       pop(xml);
     }

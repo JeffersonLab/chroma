@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 3.1 2006-05-05 04:19:44 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 3.2 2006-05-06 03:09:43 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -189,13 +189,14 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 1;
+      int version = 3;
       write(xml, "version", version);
 
       write(xml, "SinkType", sink_type);
       xml << quark_smearing;
       xml << quark_displacement;
       xml << link_smearing;
+      write(xml, "quark_smear_firstP", quark_smear_firstP);
       pop(xml);
 
       pop(xml);
