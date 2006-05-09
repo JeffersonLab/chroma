@@ -88,12 +88,16 @@ Sink smear a prop
       <Param>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
 
-          <disp_length>1</disp_length>
-          <disp_dir>1</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+            <disp_length>1</disp_length>
+            <disp_dir>1</disp_dir>
+          </Displacement>
         </Sink>
       </Param>
       <NamedObject>
@@ -169,9 +173,9 @@ Sink smear a prop
   <ProgramInfo>
     <code_version>
       <chroma>3.3.0</chroma>
-      <qdp>1.20.2</qdp>
+      <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>05 May 06 11:57:47 EDT</run_date>
+    <run_date>09 May 06 10:18:35 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -202,7 +206,7 @@ Sink smear a prop
   <Observables>
     <w_plaq>-0.00355243</w_plaq>
     <s_plaq>-0.00700866</s_plaq>
-    <t_plaq>-9.6203e-05</t_plaq>
+    <t_plaq>-9.62032e-05</t_plaq>
     <link>0.114362</link>
     <pollp>
       <elem>
@@ -230,9 +234,9 @@ Sink smear a prop
         <ProgramInfo>
           <code_version>
             <chroma>3.3.0</chroma>
-            <qdp>1.20.2</qdp>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>05 May 06 11:57:47 EDT</run_date>
+          <run_date>09 May 06 10:18:36 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -293,7 +297,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.6203e-05</t_plaq>
+          <t_plaq>-9.62032e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -325,9 +329,9 @@ Sink smear a prop
         <ProgramInfo>
           <code_version>
             <chroma>3.3.0</chroma>
-            <qdp>1.20.2</qdp>
+            <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>05 May 06 11:57:48 EDT</run_date>
+          <run_date>09 May 06 10:18:36 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -385,7 +389,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.6203e-05</t_plaq>
+          <t_plaq>-9.62032e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -511,11 +515,15 @@ Sink smear a prop
           <Param>
             <version>5</version>
             <SinkType>POINT_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
-      <disp_length>1</disp_length>
-      <disp_dir>1</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>1</disp_length>
+        <disp_dir>1</disp_dir>
+      </Displacement>
     </Sink>
 
             <j_decay>3</j_decay>
@@ -536,7 +544,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.6203e-05</t_plaq>
+          <t_plaq>-9.62032e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -618,17 +626,21 @@ Sink smear a prop
         <PropSink>
           <version>5</version>
           <SinkType>POINT_SINK</SinkType><Sink>
-      <version>1</version>
+      <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
-      <disp_length>1</disp_length>
-      <disp_dir>1</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+        <disp_length>1</disp_length>
+        <disp_dir>1</disp_dir>
+      </Displacement>
     </Sink>
 
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.0303537 0.000909183 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870806</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.0303537 0.000909184 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870807</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -681,7 +693,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.6203e-05</t_plaq>
+          <t_plaq>-9.62032e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>

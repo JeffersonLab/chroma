@@ -85,12 +85,16 @@ Sink smear a prop
       <Param>
         <version>5</version>
         <Sink>
-          <version>1</version>
+          <version>2</version>
           <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
 
-          <disp_length>1</disp_length>
-          <disp_dir>1</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+            <disp_length>1</disp_length>
+            <disp_dir>1</disp_dir>
+          </Displacement>
         </Sink>
       </Param>
       <NamedObject>
