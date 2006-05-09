@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.1 2006-05-09 20:32:24 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.2 2006-05-09 21:47:52 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -297,17 +297,19 @@ namespace Chroma
     QDPIO::cout << "elem_size1=" << elem_size1 << endl;
 
     // dreadful hack - use a complex to hold an int
-    Complex op_sizes1, op_sizes2, elem_sizes;
+    Complex ord_sizes, op_sizes1, op_sizes2, elem_sizes;
+    ord_sizes   = cmplx(Real(orderings_size), Real(zero));
     op_sizes1   = cmplx(Real(op_size2), Real(op_size1));
     op_sizes2   = cmplx(Real(op_size3), Real(ind_size));
     elem_sizes  = cmplx(Real(elem_size2), Real(elem_size1));
 
-    multi1d<Complex> mesprop_1d(3 + orderings_size*op_size3*op_size2*op_size1*ind_size*elem_size2*elem_size1);
+    multi1d<Complex> mesprop_1d(4 + orderings_size*op_size3*op_size2*op_size1*ind_size*elem_size2*elem_size1);
 
     QDPIO::cout << "mesprop_size=" << mesprop_1d.size() << endl;
 
     int cnt = 0;
 
+    mesprop_1d[cnt++] = ord_sizes;
     mesprop_1d[cnt++] = op_sizes1;
     mesprop_1d[cnt++] = op_sizes2;
     mesprop_1d[cnt++] = elem_sizes;
