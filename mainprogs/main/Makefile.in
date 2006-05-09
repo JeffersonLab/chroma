@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) multi_propagator.c $(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) $(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(spectrum_s_SOURCES) $(stoch_meson_SOURCES) $(wallformfac_SOURCES)
+SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) $(hmc_SOURCES) multi_propagator.c $(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) $(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) $(qproptransf_SOURCES) $(qproptrev_SOURCES) $(spectrum_s_SOURCES) $(wallformfac_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -48,8 +48,7 @@ POST_UNINSTALL = :
 bin_PROGRAMS = chroma$(EXEEXT) collect_propcomp$(EXEEXT) \
 	purgaug$(EXEEXT) cfgtransf$(EXEEXT) qpropgfix$(EXEEXT) \
 	qproptrev$(EXEEXT) hmc$(EXEEXT) spectrum_s$(EXEEXT) \
-	stoch_meson$(EXEEXT) qpropqio$(EXEEXT) qproptransf$(EXEEXT) \
-	wallformfac$(EXEEXT)
+	qpropqio$(EXEEXT) qproptransf$(EXEEXT) wallformfac$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
 	collect_multi_propcomp$(EXEEXT) spectrum_s$(EXEEXT)
@@ -142,11 +141,6 @@ spectrum_s_OBJECTS = $(am_spectrum_s_OBJECTS)
 spectrum_s_LDADD = $(LDADD)
 spectrum_s_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_stoch_meson_OBJECTS = stoch_meson.$(OBJEXT)
-stoch_meson_OBJECTS = $(am_stoch_meson_OBJECTS)
-stoch_meson_LDADD = $(LDADD)
-stoch_meson_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
 am_wallformfac_OBJECTS = wallformfac.$(OBJEXT)
 wallformfac_OBJECTS = $(am_wallformfac_OBJECTS)
 wallformfac_LDADD = $(LDADD)
@@ -171,7 +165,7 @@ SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) \
 	$(qpropqio_SOURCES) $(qproptransf_SOURCES) \
 	$(qproptrev_SOURCES) $(spectrum_s_SOURCES) \
-	$(stoch_meson_SOURCES) $(wallformfac_SOURCES)
+	$(wallformfac_SOURCES)
 DIST_SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
 	$(hmc_SOURCES) multi_propagator.c \
@@ -179,7 +173,7 @@ DIST_SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) \
 	$(qpropqio_SOURCES) $(qproptransf_SOURCES) \
 	$(qproptrev_SOURCES) $(spectrum_s_SOURCES) \
-	$(stoch_meson_SOURCES) $(wallformfac_SOURCES)
+	$(wallformfac_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -348,7 +342,6 @@ qpropqio_SOURCES = qpropqio.cc
 qpropadd_SOURCES = qpropadd.cc
 qpropgfix_SOURCES = qpropgfix.cc
 qproptrev_SOURCES = qproptrev.cc
-stoch_meson_SOURCES = stoch_meson.cc
 cfgtransf_SOURCES = cfgtransf.cc
 
 #mainparam_io_SOURCES= mainparam_io.cc
@@ -462,9 +455,6 @@ qproptrev$(EXEEXT): $(qproptrev_OBJECTS) $(qproptrev_DEPENDENCIES)
 spectrum_s$(EXEEXT): $(spectrum_s_OBJECTS) $(spectrum_s_DEPENDENCIES) 
 	@rm -f spectrum_s$(EXEEXT)
 	$(CXXLINK) $(spectrum_s_LDFLAGS) $(spectrum_s_OBJECTS) $(spectrum_s_LDADD) $(LIBS)
-stoch_meson$(EXEEXT): $(stoch_meson_OBJECTS) $(stoch_meson_DEPENDENCIES) 
-	@rm -f stoch_meson$(EXEEXT)
-	$(CXXLINK) $(stoch_meson_LDFLAGS) $(stoch_meson_OBJECTS) $(stoch_meson_LDADD) $(LIBS)
 wallformfac$(EXEEXT): $(wallformfac_OBJECTS) $(wallformfac_DEPENDENCIES) 
 	@rm -f wallformfac$(EXEEXT)
 	$(CXXLINK) $(wallformfac_LDFLAGS) $(wallformfac_OBJECTS) $(wallformfac_LDADD) $(LIBS)
@@ -490,7 +480,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptransf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qproptrev.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spectrum_s.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoch_meson.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wallformfac.Po@am__quote@
 
 .c.o:
