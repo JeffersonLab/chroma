@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_dwf.ini.xml,v 3.1 2006-04-11 04:18:25 edwards Exp $
+; $Id: prec_dwf.ini.xml,v 3.2 2006-05-10 04:49:06 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -52,7 +52,7 @@
       <Param>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
+        <obsvP>true</obsvP>
         <FermionAction>
          <FermAct>DWF</FermAct>
          <OverMass>1.2</OverMass>

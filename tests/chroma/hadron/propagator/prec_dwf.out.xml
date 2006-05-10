@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_dwf.out.xml,v 3.1 2006-04-11 04:18:25 edwards Exp $
+; $Id: prec_dwf.out.xml,v 3.2 2006-05-10 04:49:06 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -55,7 +55,7 @@
       <Param>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
+        <obsvP>true</obsvP>
         <FermionAction>
          <FermAct>DWF</FermAct>
          <OverMass>1.2</OverMass>
@@ -107,10 +107,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
+      <chroma>3.4.0</chroma>
       <qdp>1.20.1</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:09:26 EDT</run_date>
+    <run_date>10 May 06 00:48:37 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -168,10 +168,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
+            <chroma>3.4.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:09:26 EDT</run_date>
+          <run_date>10 May 06 00:48:37 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -262,10 +262,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
+            <chroma>3.4.0</chroma>
             <qdp>1.20.1</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:09:26 EDT</run_date>
+          <run_date>10 May 06 00:48:37 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -278,7 +278,7 @@
           <Param>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>true</obsvP><FermionAction>
       <FermAct>DWF</FermAct>
       <OverMass>1.2</OverMass>
       <Mass>0.4</Mass>
@@ -397,7 +397,7 @@
         <Source_correlator>
           <source_corr>6.634 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
-        <QuarkProp4>
+        <DWF_QuarkProp4>
           <Qprop>
             <n_count>32</n_count>
           </Qprop>
@@ -434,7 +434,22 @@
           <Qprop>
             <n_count>32</n_count>
           </Qprop>
-        </QuarkProp4>
+          <time_direction>
+            <t_dir>3</t_dir>
+          </time_direction>
+          <DWF_ConservedAxial>
+            <mesprop>-0.0831783 -0.0239744 -0.00894987 -0.00239816 0.0023937 0.00894478 0.0239759 0.0831877</mesprop>
+          </DWF_ConservedAxial>
+          <DWF_LocalAxial>
+            <mesprop>-1.22296e-08 -0.0502869 -0.0151099 -0.00500486 -2.4873e-06 0.00500036 0.0151114 0.0502719</mesprop>
+          </DWF_LocalAxial>
+          <DWF_MidPoint_Pseudo>
+            <mesprop>0.0429238 0.00403022 0.000396128 4.9711e-05 7.07732e-06 4.97449e-05 0.000396857 0.00403441</mesprop>
+          </DWF_MidPoint_Pseudo>
+          <DWF_Psuedo_Pseudo>
+            <mesprop>0.0463349 0.0639294 0.0177903 0.00806536 0.00597212 0.00806449 0.0177968 0.0639287</mesprop>
+          </DWF_Psuedo_Pseudo>
+        </DWF_QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>384</ncg_had>
         </Relaxation_Iterations>
