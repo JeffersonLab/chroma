@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.2 2006-05-09 21:47:52 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.3 2006-05-10 21:59:39 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -13,6 +13,7 @@
 #include "meas/sinks/sink_smearing_factory.h"
 #include "meas/sources/dilutezN_source_const.h"
 #include "meas/sources/zN_src.h"
+#include "meas/hadron/barspinmat_w.h"
 #include "meas/smear/quark_source_sink.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
@@ -379,9 +380,28 @@ namespace Chroma
     multi1d<LatticeComplex> d(Ns);
     d = zero;
 
-    LatticeFermion conj0 = conj(q0);
-    LatticeComplex di_quark = localInnerProduct(conj0, Gamma(5) * q1);
-    LatticeFermion bar = di_quark * q2;
+    // C gamma_5 = Gamma(5)
+    SpinMatrix Cg5 = BaryonSpinMats::Cg5();
+
+    for(int k=0; k < Ns; ++k)
+    {
+      LatticeSpinMatrix di_quark = zero;
+
+      for(int j=0; j < Ns; ++j)
+      {
+	for(int i=0; i < Ns; ++i)
+	{
+	  // Contract over color indices with antisym tensors
+	  LatticeComplex b_oper = colorContract(peekSpin(q0, i),
+						peekSpin(q1, j),
+						peekSpin(q2, k));
+
+	  pokeSpin(di_quark, b_oper, j, i);
+	}
+      }
+
+      d[k] += traceSpin(Cg5 * di_quark);
+    }
 
     return d;
   }
@@ -856,19 +876,19 @@ namespace Chroma
 	multi1d<LatticeFermion> smeared_solns2(quarks[perms[ord][2]].dilutions.size());
 	for(int i=0; i < smeared_solns0.size(); ++i)
 	{
-	  smeared_solns0[i] = quarks[perms[ord][0]].dilutions[i].source;
+	  smeared_solns0[i] = quarks[perms[ord][0]].dilutions[i].soln;
 	  (*sinkSmearing)(smeared_solns0[i]);
 	}
 
 	for(int i=0; i < smeared_solns1.size(); ++i)
 	{
-	  smeared_solns1[i] = quarks[perms[ord][1]].dilutions[i].source;
+	  smeared_solns1[i] = quarks[perms[ord][1]].dilutions[i].soln;
 	  (*sinkSmearing)(smeared_solns1[i]);
 	}
 
 	for(int i=0; i < smeared_solns2.size(); ++i)
 	{
-	  smeared_solns2[i] = quarks[perms[ord][2]].dilutions[i].source;
+	  smeared_solns2[i] = quarks[perms[ord][2]].dilutions[i].soln;
 	  (*sinkSmearing)(smeared_solns2[i]);
 	}
 
