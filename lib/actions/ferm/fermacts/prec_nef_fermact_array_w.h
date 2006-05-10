@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: prec_nef_fermact_array_w.h,v 3.1 2006-05-10 04:48:29 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -114,7 +114,7 @@ namespace Chroma
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
 		   bool obsvP,
-		   int& ncg_had);
+		   int& ncg_had) const;
 
   protected:
     //! Return the fermion BC object for this action

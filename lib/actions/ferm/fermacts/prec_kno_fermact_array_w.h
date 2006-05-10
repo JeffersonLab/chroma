@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_kno_fermact_array_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: prec_kno_fermact_array_w.h,v 3.1 2006-05-10 04:48:29 edwards Exp $
 /*! \file
  *  \brief preconditioned KNO domain-wall fermion action
  */
@@ -112,7 +112,7 @@ namespace Chroma
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
 		   bool obsvP,
-		   int& ncg_had);
+		   int& ncg_had) const;
 
   protected:
     //! Return the fermion create state object for this action

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 3.1 2006-05-10 04:48:29 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -215,7 +215,7 @@ namespace Chroma
 				       const InvertParam_t& invParam,
 				       QuarkSpinType quarkSpinType,
 				       bool obsvP,
-				       int& ncg_had)
+				       int& ncg_had) const
   {
     if (obsvP)
     {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 3.1 2006-05-10 04:48:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -112,7 +112,7 @@ namespace Chroma
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
 		   bool obsvP,
-		   int& ncg_had);
+		   int& ncg_had) const;
 
 
     //! Produce a hermitian version of the linear operator

@@ -1,4 +1,4 @@
-// $Id: unprec_zolo_nef_fermact_array_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.cc,v 3.1 2006-05-10 04:48:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -211,7 +211,7 @@ namespace Chroma
 				       const InvertParam_t& invParam,
 				       QuarkSpinType quarkSpinType,
 				       bool obsvP,
-				       int& ncg_had)
+				       int& ncg_had) const
   {
     if (obsvP)
       nef_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, *this, state, invParam, ncg_had);
