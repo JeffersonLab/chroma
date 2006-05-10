@@ -1,3 +1,10 @@
+05/10/2006 -- Robert Edwards
+	Version 3.4.0. Moved stoch_meson to an inline measurement. Removed stoch_meson.cc
+        mainprog. Made a new stoch_baryon inline measurement - not functional yet.
+        Fixed 5D fermacts to actually call their desired quarkProp routines. They
+        were missing the "const" qualifier at the end of the decl (thus new funcs
+        not seen by virtual funcs).
+
 05/09/2006 -- Robert Edwards
 	Version 3.3.0. Upgraded SHELL_SOURCE,SHELL_SMEARING and SHELL_SINK
         inline tasks to now take an order of the smearing versus displacements.
