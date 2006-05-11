@@ -1,3 +1,6 @@
+05/11/2006 -- Robert Edwards
+	Version 3.4.1. First possibly working version of stoch_baryon task.
+
 05/10/2006 -- Robert Edwards
 	Version 3.4.0. Moved stoch_meson to an inline measurement. Removed stoch_meson.cc
         mainprog. Made a new stoch_baryon inline measurement - not functional yet.
