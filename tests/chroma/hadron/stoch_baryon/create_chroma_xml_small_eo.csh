@@ -163,8 +163,22 @@ cat << **EOF**
       <Name>STOCH_BARYON</Name>
       <Frequency>1</Frequency>
       <Param> 
-        <version>1</version>
+        <version>2</version>
         <mom2_max>0</mom2_max>
+
+        <BaryonOperator>
+          <version>1</version>
+          <BaryonOperatorType>NUCLEON</BaryonOperatorType>
+        </BaryonOperator>
+
+<annotation>
+        <BaryonOperator>
+          <version>1</version>
+          <BaryonOperatorType>GROUP_BARYON</BaryonOperatorType>
+          <operator_coeff_file>./Single_Site</operator_coeff_file>
+          <displacement_length>2</displacement_length>
+        </BaryonOperator>
+</annotation>
       </Param>
       <SourceSmearing>
         <version>6</version>
