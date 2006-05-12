@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_baryon_w.h,v 3.1 2006-05-09 20:32:24 edwards Exp $
+// $Id: inline_stoch_baryon_w.h,v 3.2 2006-05-12 03:38:01 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -35,6 +35,10 @@ namespace Chroma
     struct Param_t
     {
       int              mom2_max;           /*!< (mom)^2 <= mom2_max */
+
+      std::string      baryon_operator;        /*!< baryon operator xml */
+      std::string      baryon_operator_type;   /*!< baryon operator name */
+
     } param;
 
     PropSourceSmear_t  source_smearing;

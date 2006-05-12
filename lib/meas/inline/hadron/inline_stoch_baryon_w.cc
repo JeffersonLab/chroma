@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.3 2006-05-10 21:59:39 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.4 2006-05-12 03:38:01 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -14,6 +14,8 @@
 #include "meas/sources/dilutezN_source_const.h"
 #include "meas/sources/zN_src.h"
 #include "meas/hadron/barspinmat_w.h"
+#include "meas/hadron/baryon_operator_aggregate_w.h"
+#include "meas/hadron/baryon_operator_factory_w.h"
 #include "meas/smear/quark_source_sink.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
@@ -36,6 +38,7 @@ namespace Chroma
     bool registerAll()
     {
       bool foo = true;
+      foo &= BaryonOperatorEnv::registered;
       foo &= QuarkSourceSmearingEnv::registered;
       foo &= QuarkSinkSmearingEnv::registered;
       foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
@@ -97,7 +100,7 @@ namespace Chroma
 
     switch (version) 
     {
-    case 1:
+    case 2:
       /**************************************************************************/
       break;
 
@@ -109,6 +112,15 @@ namespace Chroma
     }
 
     read(paramtop, "mom2_max", param.mom2_max);
+    
+    {
+      XMLReader xml_tmp(paramtop, "BaryonOperator");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      read(xml_tmp, "BaryonOperatorType", param.baryon_operator_type);
+      param.baryon_operator = os.str();
+    }
+
   }
 
 
@@ -370,42 +382,6 @@ namespace Chroma
       pop(xml);
   }
 
-
-  //--------------------------------------------------------------
-  // A prototype for a baryon contraction function
-  multi1d<LatticeComplex> baryon_contract(const LatticeFermion& q0, 
-					  const LatticeFermion& q1, 
-					  const LatticeFermion& q2)
-  {
-    multi1d<LatticeComplex> d(Ns);
-    d = zero;
-
-    // C gamma_5 = Gamma(5)
-    SpinMatrix Cg5 = BaryonSpinMats::Cg5();
-
-    for(int k=0; k < Ns; ++k)
-    {
-      LatticeSpinMatrix di_quark = zero;
-
-      for(int j=0; j < Ns; ++j)
-      {
-	for(int i=0; i < Ns; ++i)
-	{
-	  // Contract over color indices with antisym tensors
-	  LatticeComplex b_oper = colorContract(peekSpin(q0, i),
-						peekSpin(q1, j),
-						peekSpin(q2, k));
-
-	  pokeSpin(di_quark, b_oper, j, i);
-	}
-      }
-
-      d[k] += traceSpin(Cg5 * di_quark);
-    }
-
-    return d;
-  }
-  //
 
 
   //--------------------------------------------------------------
@@ -669,6 +645,22 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    //
+    // Create the baryon operator object
+    //
+    std::istringstream  xml_op(params.param.baryon_operator);
+    XMLReader  optop(xml_op);
+    const string operator_path = "/BaryonOperator";
+	
+    Handle< BaryonOperator<LatticeFermion> >
+      baryonOperator(TheWilsonBaryonOperatorFactory::Instance().createObject(params.param.baryon_operator_type,
+									     optop,
+									     operator_path,
+									     u));
+
+    //
+    // Permutations of quarks within an operator
+    //
     int num_orderings = 6;   // number of permutations of the numbers  0,1,2
     multi1d< multi1d<int> >  perms(num_orderings);
     {
@@ -709,20 +701,10 @@ namespace Chroma
     // Construct operator A
     try
     {
-      std::istringstream  xml_s(params.source_smearing.source);
-      XMLReader  sourcetop(xml_s);
-      const string source_path = "/Source";
-      QDPIO::cout << "Source = " << params.source_smearing.source_type << endl;
-
-      Handle< QuarkSourceSink<LatticeFermion> >
-	sourceSmearing(TheFermSourceSmearingFactory::Instance().createObject(
-			 params.source_smearing.source_type,
-			 sourcetop,
-			 source_path,
-			 u));
-
       for(int ord=0; ord < baryon_opA.orderings.size(); ++ord)
       {
+	QDPIO::cout << "Operator A: ordering = " << ord << endl;
+
 	baryon_opA.seeds[ord].seed_l = quarks[perms[ord][0]].seed;
 	baryon_opA.seeds[ord].seed_m = quarks[perms[ord][1]].seed;
 	baryon_opA.seeds[ord].seed_r = quarks[perms[ord][2]].seed;
@@ -748,26 +730,23 @@ namespace Chroma
 	QDP_abort(1);
 	}
 
-	// Source smear all the sources up front
+	// Make a copy of the sources
 	multi1d<LatticeFermion> smeared_sources0(quarks[perms[ord][0]].dilutions.size());
 	multi1d<LatticeFermion> smeared_sources1(quarks[perms[ord][1]].dilutions.size());
 	multi1d<LatticeFermion> smeared_sources2(quarks[perms[ord][2]].dilutions.size());
 	for(int i=0; i < smeared_sources0.size(); ++i)
 	{
 	  smeared_sources0[i] = quarks[perms[ord][0]].dilutions[i].source;
-	  (*sourceSmearing)(smeared_sources0[i]);
 	}
 
 	for(int i=0; i < smeared_sources1.size(); ++i)
 	{
 	  smeared_sources1[i] = quarks[perms[ord][1]].dilutions[i].source;
-	  (*sourceSmearing)(smeared_sources1[i]);
 	}
 
 	for(int i=0; i < smeared_sources2.size(); ++i)
 	{
 	  smeared_sources2[i] = quarks[perms[ord][2]].dilutions[i].source;
-	  (*sourceSmearing)(smeared_sources2[i]);
 	}
 
 	QDPIO::cout << "source smearings done" << endl;
@@ -782,9 +761,10 @@ namespace Chroma
 	  {
 	    for(int k=0; k < smeared_sources2.size(); ++k)
 	    {
-	      multi1d<LatticeComplex> bar = baryon_contract(smeared_sources0[i],
-							    smeared_sources1[j],
-							    smeared_sources2[k]);
+	      multi1d<LatticeComplex> bar = (*baryonOperator)(smeared_sources0[i],
+							      smeared_sources1[j],
+							      smeared_sources2[k],
+							      MINUS);
 
 	      baryon_opA.orderings[ord].op(i,j,k).ind.resize(bar.size());
 	      for(int l=0; l < bar.size(); ++l)
@@ -831,20 +811,10 @@ namespace Chroma
     // Construct operator B
     try
     {
-      std::istringstream  xml_s(params.sink_smearing.sink);
-      XMLReader  sinktop(xml_s);
-      const string sink_path = "/Sink";
-      QDPIO::cout << "Sink = " << params.sink_smearing.sink_type << endl;
-
-      Handle< QuarkSourceSink<LatticeFermion> >
-	sinkSmearing(TheFermSinkSmearingFactory::Instance().createObject(
-		       params.sink_smearing.sink_type,
-		       sinktop,
-		       sink_path,
-		       u));
-
       for(int ord=0; ord < baryon_opB.orderings.size(); ++ord)
       {
+	QDPIO::cout << "Operator B: ordering = " << ord << endl;
+
 	baryon_opB.seeds[ord].seed_l = quarks[perms[ord][0]].seed;
 	baryon_opB.seeds[ord].seed_m = quarks[perms[ord][1]].seed;
 	baryon_opB.seeds[ord].seed_r = quarks[perms[ord][2]].seed;
@@ -870,26 +840,23 @@ namespace Chroma
 	QDP_abort(1);
 	}
 
-	// Sink smear all the solutions up front
+	// Make a copy of the solutions
 	multi1d<LatticeFermion> smeared_solns0(quarks[perms[ord][0]].dilutions.size());
 	multi1d<LatticeFermion> smeared_solns1(quarks[perms[ord][1]].dilutions.size());
 	multi1d<LatticeFermion> smeared_solns2(quarks[perms[ord][2]].dilutions.size());
 	for(int i=0; i < smeared_solns0.size(); ++i)
 	{
 	  smeared_solns0[i] = quarks[perms[ord][0]].dilutions[i].soln;
-	  (*sinkSmearing)(smeared_solns0[i]);
 	}
 
 	for(int i=0; i < smeared_solns1.size(); ++i)
 	{
 	  smeared_solns1[i] = quarks[perms[ord][1]].dilutions[i].soln;
-	  (*sinkSmearing)(smeared_solns1[i]);
 	}
 
 	for(int i=0; i < smeared_solns2.size(); ++i)
 	{
 	  smeared_solns2[i] = quarks[perms[ord][2]].dilutions[i].soln;
-	  (*sinkSmearing)(smeared_solns2[i]);
 	}
 
 	QDPIO::cout << "sink smearings done" << endl;
@@ -904,9 +871,10 @@ namespace Chroma
 	  {
 	    for(int k=0; k < smeared_solns2.size(); ++k)
 	    {
-	      multi1d<LatticeComplex> bar = baryon_contract(smeared_solns0[i],
-							    smeared_solns1[j],
-							    smeared_solns2[k]);
+	      multi1d<LatticeComplex> bar = (*baryonOperator)(smeared_solns0[i],
+							      smeared_solns1[j],
+							      smeared_solns2[k],
+							      PLUS);
 
 	      baryon_opB.orderings[ord].op(i,j,k).ind.resize(bar.size());
 	      for(int l=0; l < bar.size(); ++l)
