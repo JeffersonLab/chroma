@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.7 2006-05-09 20:32:56 edwards Exp $
+# $Id: Makefile.am,v 3.8 2006-05-12 03:36:30 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -125,6 +125,7 @@ nobase_include_HEADERS = \
         meas/glue/mesplq.h meas/glue/polylp.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
         meas/hadron/hadron.h \
+	meas/hadron/baryon_operator.h \
 	meas/hadron/hadron_seqsource.h \
 	meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h \
@@ -371,6 +372,8 @@ nobase_include_HEADERS += \
 	meas/hadron/mescomp_w.h \
 	meas/hadron/barseqsrc_w.h \
 	meas/hadron/barspinmat_w.h \
+	meas/hadron/simple_baryon_operator_w.h \
+	meas/hadron/group_baryon_operator_w.h \
 	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
 	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
@@ -379,6 +382,8 @@ nobase_include_HEADERS += \
 	meas/hadron/derivmesonseqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h \
 	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+        meas/hadron/baryon_operator_aggregate_w.h \
+        meas/hadron/baryon_operator_factory_w.h \
         meas/hadron/seqsource_aggregate_w.h \
 	meas/hadron/seqsource_factory_w.h \
         meas/hadron/qqq_w.h meas/hadron/qqbar_w.h \
@@ -873,8 +878,11 @@ libchroma_a_SOURCES += \
 	io/writeszinqprop_w.cc \
 	meas/eig/ischiral_w.cc meas/hadron/barcomp_w.cc \
         meas/hadron/mescomp_w.cc \
-	meas/hadron/barhqlq_w.cc meas/hadron/barseqsrc_w.cc \
+	meas/hadron/barhqlq_w.cc \
+        meas/hadron/barseqsrc_w.cc \
 	meas/hadron/barspinmat_w.cc \
+        meas/hadron/simple_baryon_operator_w.cc \
+        meas/hadron/group_baryon_operator_w.cc \
 	meas/hadron/baryon_w.cc meas/hadron/BuildingBlocks_w.cc \
 	meas/hadron/curcor2_w.cc meas/hadron/DjDk_w.cc \
 	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
@@ -884,6 +892,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/photon_seqsrc_w.cc \
         meas/hadron/mesons_w.cc \
 	meas/hadron/qqq_w.cc meas/hadron/qqbar_w.cc \
+        meas/hadron/baryon_operator_aggregate_w.cc \
         meas/hadron/seqsource_aggregate_w.cc \
 	meas/hadron/seqpiontest_w.cc \
 	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
