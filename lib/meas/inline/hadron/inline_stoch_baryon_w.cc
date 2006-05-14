@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.6 2006-05-14 19:34:26 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.7 2006-05-14 19:38:21 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -471,7 +471,10 @@ namespace Chroma
     //
     // Read the source and solutions
     //
-    snoop.start();
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
+
     multi1d<QuarkSourceSolutions_t>  quarks(params.named_obj.prop.op.size());
     QDPIO::cout << "num_quarks= " << params.named_obj.prop.op.size() << endl;
 
@@ -503,10 +506,10 @@ namespace Chroma
       QDPIO::cerr << "Error extracting headers: " << e << endl;
       QDP_abort(1);
     }
-    snoop.stop();
+    swatch.stop();
 
     QDPIO::cout << "Sources and solutions successfully read: time= "
-		<< snoop.getTimeInSeconds() 
+		<< swatch.getTimeInSeconds() 
 		<< " secs" << endl;
 
 
@@ -515,7 +518,7 @@ namespace Chroma
     // Check for each quark source that the solutions have their diluted
     // on every site only once
     //
-    snoop.start();
+    swatch.start();
 
     try
     {
@@ -621,10 +624,10 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    snoop.stop();
+    swatch.stop();
 
     QDPIO::cout << "Sources saturated: time= "
-		<< snoop.getTimeInSeconds() 
+		<< swatch.getTimeInSeconds() 
 		<< " secs" << endl;
 
 
@@ -704,7 +707,7 @@ namespace Chroma
     }
 
     // Operator A
-    snoop.start();
+    swatch.start();
     BaryonOperator_t  baryon_opA;
     baryon_opA.mom2_max    = params.param.mom2_max;
     baryon_opA.j_decay     = j_decay;
@@ -792,15 +795,15 @@ namespace Chroma
 
     pop(xml_out); // OperatorA
 
-    snoop.stop();
+    swatch.stop();
 
     QDPIO::cout << "Operator A computed: time= "
-		<< snoop.getTimeInSeconds() 
+		<< swatch.getTimeInSeconds() 
 		<< " secs" << endl;
 
 
     // Operator B
-    snoop.start();
+    swatch.start();
     BaryonOperator_t  baryon_opB;
     baryon_opB.mom2_max    = params.param.mom2_max;
     baryon_opB.j_decay     = j_decay;
@@ -886,16 +889,16 @@ namespace Chroma
 
     pop(xml_out); // OperatorB
 
-    snoop.stop();
+    swatch.stop();
 
     QDPIO::cout << "Operator B computed: time= "
-		<< snoop.getTimeInSeconds() 
+		<< swatch.getTimeInSeconds() 
 		<< " secs" << endl;
 
 
     // Save the operators
     // ONLY SciDAC output format is supported!
-    snoop.start();
+    swatch.start();
     {
       XMLBufferWriter file_xml;
       push(file_xml, "baryon_operator");
@@ -922,10 +925,10 @@ namespace Chroma
       close(to);
     }
 
-    snoop.stop();
+    swatch.stop();
 
     QDPIO::cout << "Operators written: time= "
-		<< snoop.getTimeInSeconds() 
+		<< swatch.getTimeInSeconds() 
 		<< " secs" << endl;
 
     // Close the namelist output file XMLDAT
