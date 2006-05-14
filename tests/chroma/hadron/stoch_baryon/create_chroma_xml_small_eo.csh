@@ -38,15 +38,15 @@ cat << **EOF**
 foreach n (1 2 3)
 
 if ($n == 1) then
-  set rnd = (201 213 215 217)
+  set rnd = (471 1694 3965 563)
 endif
 
 if ($n == 2) then
-  set rnd = (113 115 117 119)
+  set rnd = (714 1573 3042 517)
 endif
 
 if ($n == 3) then
-  set rnd = (501 515 517 519)
+  set rnd = (2781 1884 3019 716)
 endif
 
 set t = 0
@@ -166,19 +166,19 @@ cat << **EOF**
         <version>2</version>
         <mom2_max>0</mom2_max>
 
+<annotation>
         <BaryonOperator>
           <version>1</version>
           <BaryonOperatorType>NUCLEON</BaryonOperatorType>
         </BaryonOperator>
+</annotation>
 
-<annotation>
         <BaryonOperator>
           <version>1</version>
           <BaryonOperatorType>GROUP_BARYON</BaryonOperatorType>
           <operator_coeff_file>./Single_Site</operator_coeff_file>
-          <displacement_length>2</displacement_length>
+          <displacement_length>1</displacement_length>
         </BaryonOperator>
-</annotation>
       </Param>
       <SourceSmearing>
         <version>6</version>
