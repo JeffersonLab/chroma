@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.1 2006-05-12 03:38:01 edwards Exp $
+// $Id: group_baryon_operator_w.h,v 1.2 2006-05-14 19:17:42 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -28,7 +28,7 @@ namespace Chroma
       void writeXML(XMLWriter& in, const std::string& path) const;
 
       std::string operator_coeff_file;      /*!< File holding group coefficients */
-      int displacement_length;
+      int   displacement_length;
     };
 
 
