@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.5 2006-05-14 19:26:56 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.6 2006-05-14 19:34:26 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -661,7 +661,7 @@ namespace Chroma
     //
     // Permutations of quarks within an operator
     //
-    int num_orderings = 1;   // number of permutations of the numbers  0,1,2
+    int num_orderings = 6;   // number of permutations of the numbers  0,1,2
     multi1d< multi1d<int> >  perms(num_orderings);
     {
       multi1d<int> p(3);
@@ -770,40 +770,9 @@ namespace Chroma
 							      q2.dilutions[k].source,
 							      MINUS);
 
-#if 0
-	      {
-		push(xml_out, "source_check");
-		write(xml_out, "i", i);
-		write(xml_out, "j", j);
-		write(xml_out, "k", k);
-		write(xml_out, "source0", sumMulti(localNorm2(q0.dilutions[i].source), phases.getSet()));
-		write(xml_out, "source1", sumMulti(localNorm2(q1.dilutions[j].source), phases.getSet()));
-		write(xml_out, "source2", sumMulti(localNorm2(q2.dilutions[k].source), phases.getSet()));
-		pop(xml_out);
-
-
-		push(xml_out, "bars");
-		write(xml_out, "bar0", bar[0]);
-		write(xml_out, "bar1", bar[1]);
-		write(xml_out, "bar2", bar[2]);
-		pop(xml_out);
-	      }
-
-	      baryon_opA.orderings[ord].op(i,j,k).ind.resize(bar.size());
-	      for(int l=0; l < bar.size(); ++l)
-	      {
-		baryon_opA.orderings[ord].op(i,j,k).ind[l].elem = phases.sft(bar[l]);
-
-		write(xml_out, "orderingggA", baryon_opA.orderings[ord].op(i,j,k).ind[l].elem[0]);
-	      }
-
-#else
 	      baryon_opA.orderings[ord].op(i,j,k).ind.resize(bar.size());
 	      for(int l=0; l < bar.size(); ++l)
 		baryon_opA.orderings[ord].op(i,j,k).ind[l].elem = phases.sft(bar[l]);
-#endif
-
-
 	      
 	    } // end for k
 	  } // end for j
@@ -895,41 +864,9 @@ namespace Chroma
 							      q2.dilutions[k].soln,
 							      PLUS);
 
-
-#if 0
-	      {
-		push(xml_out, "soln_check");
-		write(xml_out, "i", i);
-		write(xml_out, "j", j);
-		write(xml_out, "k", k);
-		write(xml_out, "soln0", sumMulti(localNorm2(q0.dilutions[i].soln), phases.getSet()));
-		write(xml_out, "soln1", sumMulti(localNorm2(q1.dilutions[j].soln), phases.getSet()));
-		write(xml_out, "soln2", sumMulti(localNorm2(q2.dilutions[k].soln), phases.getSet()));
-		pop(xml_out);
-
-
-		push(xml_out, "bars");
-		write(xml_out, "bar0", bar[0]);
-		write(xml_out, "bar1", bar[1]);
-		write(xml_out, "bar2", bar[2]);
-		pop(xml_out);
-	      }
-
-
-	      baryon_opB.orderings[ord].op(i,j,k).ind.resize(bar.size());
-	      for(int l=0; l < bar.size(); ++l)
-	      {
-		baryon_opB.orderings[ord].op(i,j,k).ind[l].elem = phases.sft(bar[l]);
-
-		write(xml_out, "orderingggB", baryon_opB.orderings[ord].op(i,j,k).ind[l].elem[0]);
-	      }
-
-//	      exit(0);
-#else
 	      baryon_opB.orderings[ord].op(i,j,k).ind.resize(bar.size());
 	      for(int l=0; l < bar.size(); ++l)
 		baryon_opB.orderings[ord].op(i,j,k).ind[l].elem = phases.sft(bar[l]);
-#endif
 
 	    } // end for k
 	  } // end for j
@@ -973,8 +910,6 @@ namespace Chroma
 	XMLBufferWriter record_xml;
 	write(record_xml, "SourceBaryonOperator", baryon_opA);
 	write(to, record_xml, baryon_opA.serialize());
-
-//	write(xml_out, "baryon_opA", baryon_opA.serialize());
       }
 
       // Write the scalar data
@@ -982,8 +917,6 @@ namespace Chroma
 	XMLBufferWriter record_xml;
 	write(record_xml, "SinkBaryonOperator", baryon_opB);
 	write(to, record_xml, baryon_opB.serialize());
-
-//	write(xml_out, "baryon_opB", baryon_opB.serialize());
       }
 
       close(to);
