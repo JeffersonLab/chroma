@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.4 2006-05-12 03:38:01 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.5 2006-05-14 19:26:56 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -661,28 +661,46 @@ namespace Chroma
     //
     // Permutations of quarks within an operator
     //
-    int num_orderings = 6;   // number of permutations of the numbers  0,1,2
+    int num_orderings = 1;   // number of permutations of the numbers  0,1,2
     multi1d< multi1d<int> >  perms(num_orderings);
     {
       multi1d<int> p(3);
 
-      p[0] = 0; p[1] = 1; p[2] = 2;
-      perms[0] = p;
+      if (num_orderings >= 1)
+      {
+	p[0] = 0; p[1] = 1; p[2] = 2;
+	perms[0] = p;
+      }
 
-      p[0] = 0; p[1] = 2; p[2] = 1;
-      perms[1] = p;
+      if (num_orderings >= 2)
+      {
+	p[0] = 0; p[1] = 2; p[2] = 1;
+	perms[1] = p;
+      }
 
-      p[0] = 1; p[1] = 0; p[2] = 2;
-      perms[2] = p;
+      if (num_orderings >= 3)
+      {
+	p[0] = 1; p[1] = 0; p[2] = 2;
+	perms[2] = p;
+      }
 
-      p[0] = 1; p[1] = 2; p[2] = 0;
-      perms[3] = p;
+      if (num_orderings >= 4)
+      {
+	p[0] = 1; p[1] = 2; p[2] = 0;
+	perms[3] = p;
+      }
 
-      p[0] = 2; p[1] = 1; p[2] = 0;
-      perms[4] = p;
-
-      p[0] = 2; p[1] = 0; p[2] = 1;
-      perms[5] = p;
+      if (num_orderings >= 5)
+      {
+	p[0] = 2; p[1] = 1; p[2] = 0;
+	perms[4] = p;
+      }
+ 
+      if (num_orderings >= 6)
+      {
+	p[0] = 2; p[1] = 0; p[2] = 1;
+	perms[5] = p;
+      }
     }
 
     // Operator A
@@ -730,46 +748,63 @@ namespace Chroma
 	QDP_abort(1);
 	}
 
-	// Make a copy of the sources
-	multi1d<LatticeFermion> smeared_sources0(quarks[perms[ord][0]].dilutions.size());
-	multi1d<LatticeFermion> smeared_sources1(quarks[perms[ord][1]].dilutions.size());
-	multi1d<LatticeFermion> smeared_sources2(quarks[perms[ord][2]].dilutions.size());
-	for(int i=0; i < smeared_sources0.size(); ++i)
-	{
-	  smeared_sources0[i] = quarks[perms[ord][0]].dilutions[i].source;
-	}
 
-	for(int i=0; i < smeared_sources1.size(); ++i)
-	{
-	  smeared_sources1[i] = quarks[perms[ord][1]].dilutions[i].source;
-	}
+	// Operator construction
+	const QuarkSourceSolutions_t& q0 = quarks[perms[ord][0]];
+	const QuarkSourceSolutions_t& q1 = quarks[perms[ord][1]];
+	const QuarkSourceSolutions_t& q2 = quarks[perms[ord][2]];
 
-	for(int i=0; i < smeared_sources2.size(); ++i)
-	{
-	  smeared_sources2[i] = quarks[perms[ord][2]].dilutions[i].source;
-	}
+	baryon_opA.orderings[ord].op.resize(q0.dilutions.size(),
+					    q1.dilutions.size(),
+					    q2.dilutions.size());
 
-	QDPIO::cout << "source smearings done" << endl;
-
-	baryon_opA.orderings[ord].op.resize(smeared_sources0.size(), 
-					    smeared_sources1.size(), 
-					    smeared_sources2.size());
 	
-	for(int i=0; i < smeared_sources0.size(); ++i)
+	for(int i=0; i < q0.dilutions.size(); ++i)
 	{
-	  for(int j=0; j < smeared_sources1.size(); ++j)
+	  for(int j=0; j < q1.dilutions.size(); ++j)
 	  {
-	    for(int k=0; k < smeared_sources2.size(); ++k)
+	    for(int k=0; k < q2.dilutions.size(); ++k)
 	    {
-	      multi1d<LatticeComplex> bar = (*baryonOperator)(smeared_sources0[i],
-							      smeared_sources1[j],
-							      smeared_sources2[k],
+	      multi1d<LatticeComplex> bar = (*baryonOperator)(q0.dilutions[i].source,
+							      q1.dilutions[j].source,
+							      q2.dilutions[k].source,
 							      MINUS);
+
+#if 0
+	      {
+		push(xml_out, "source_check");
+		write(xml_out, "i", i);
+		write(xml_out, "j", j);
+		write(xml_out, "k", k);
+		write(xml_out, "source0", sumMulti(localNorm2(q0.dilutions[i].source), phases.getSet()));
+		write(xml_out, "source1", sumMulti(localNorm2(q1.dilutions[j].source), phases.getSet()));
+		write(xml_out, "source2", sumMulti(localNorm2(q2.dilutions[k].source), phases.getSet()));
+		pop(xml_out);
+
+
+		push(xml_out, "bars");
+		write(xml_out, "bar0", bar[0]);
+		write(xml_out, "bar1", bar[1]);
+		write(xml_out, "bar2", bar[2]);
+		pop(xml_out);
+	      }
 
 	      baryon_opA.orderings[ord].op(i,j,k).ind.resize(bar.size());
 	      for(int l=0; l < bar.size(); ++l)
+	      {
 		baryon_opA.orderings[ord].op(i,j,k).ind[l].elem = phases.sft(bar[l]);
 
+		write(xml_out, "orderingggA", baryon_opA.orderings[ord].op(i,j,k).ind[l].elem[0]);
+	      }
+
+#else
+	      baryon_opA.orderings[ord].op(i,j,k).ind.resize(bar.size());
+	      for(int l=0; l < bar.size(); ++l)
+		baryon_opA.orderings[ord].op(i,j,k).ind[l].elem = phases.sft(bar[l]);
+#endif
+
+
+	      
 	    } // end for k
 	  } // end for j
 	} // end for i
@@ -840,45 +875,61 @@ namespace Chroma
 	QDP_abort(1);
 	}
 
-	// Make a copy of the solutions
-	multi1d<LatticeFermion> smeared_solns0(quarks[perms[ord][0]].dilutions.size());
-	multi1d<LatticeFermion> smeared_solns1(quarks[perms[ord][1]].dilutions.size());
-	multi1d<LatticeFermion> smeared_solns2(quarks[perms[ord][2]].dilutions.size());
-	for(int i=0; i < smeared_solns0.size(); ++i)
-	{
-	  smeared_solns0[i] = quarks[perms[ord][0]].dilutions[i].soln;
-	}
+	// Operator construction
+	const QuarkSourceSolutions_t& q0 = quarks[perms[ord][0]];
+	const QuarkSourceSolutions_t& q1 = quarks[perms[ord][1]];
+	const QuarkSourceSolutions_t& q2 = quarks[perms[ord][2]];
 
-	for(int i=0; i < smeared_solns1.size(); ++i)
-	{
-	  smeared_solns1[i] = quarks[perms[ord][1]].dilutions[i].soln;
-	}
-
-	for(int i=0; i < smeared_solns2.size(); ++i)
-	{
-	  smeared_solns2[i] = quarks[perms[ord][2]].dilutions[i].soln;
-	}
-
-	QDPIO::cout << "sink smearings done" << endl;
-
-	baryon_opB.orderings[ord].op.resize(smeared_solns0.size(), 
-					    smeared_solns1.size(), 
-					    smeared_solns2.size());
+	baryon_opB.orderings[ord].op.resize(q0.dilutions.size(),
+					    q1.dilutions.size(),
+					    q2.dilutions.size());
 	
-	for(int i=0; i < smeared_solns0.size(); ++i)
+	for(int i=0; i < q0.dilutions.size(); ++i)
 	{
-	  for(int j=0; j < smeared_solns1.size(); ++j)
+	  for(int j=0; j < q1.dilutions.size(); ++j)
 	  {
-	    for(int k=0; k < smeared_solns2.size(); ++k)
+	    for(int k=0; k < q2.dilutions.size(); ++k)
 	    {
-	      multi1d<LatticeComplex> bar = (*baryonOperator)(smeared_solns0[i],
-							      smeared_solns1[j],
-							      smeared_solns2[k],
+	      multi1d<LatticeComplex> bar = (*baryonOperator)(q0.dilutions[i].soln,
+							      q1.dilutions[j].soln,
+							      q2.dilutions[k].soln,
 							      PLUS);
+
+
+#if 0
+	      {
+		push(xml_out, "soln_check");
+		write(xml_out, "i", i);
+		write(xml_out, "j", j);
+		write(xml_out, "k", k);
+		write(xml_out, "soln0", sumMulti(localNorm2(q0.dilutions[i].soln), phases.getSet()));
+		write(xml_out, "soln1", sumMulti(localNorm2(q1.dilutions[j].soln), phases.getSet()));
+		write(xml_out, "soln2", sumMulti(localNorm2(q2.dilutions[k].soln), phases.getSet()));
+		pop(xml_out);
+
+
+		push(xml_out, "bars");
+		write(xml_out, "bar0", bar[0]);
+		write(xml_out, "bar1", bar[1]);
+		write(xml_out, "bar2", bar[2]);
+		pop(xml_out);
+	      }
+
 
 	      baryon_opB.orderings[ord].op(i,j,k).ind.resize(bar.size());
 	      for(int l=0; l < bar.size(); ++l)
+	      {
 		baryon_opB.orderings[ord].op(i,j,k).ind[l].elem = phases.sft(bar[l]);
+
+		write(xml_out, "orderingggB", baryon_opB.orderings[ord].op(i,j,k).ind[l].elem[0]);
+	      }
+
+//	      exit(0);
+#else
+	      baryon_opB.orderings[ord].op(i,j,k).ind.resize(bar.size());
+	      for(int l=0; l < bar.size(); ++l)
+		baryon_opB.orderings[ord].op(i,j,k).ind[l].elem = phases.sft(bar[l]);
+#endif
 
 	    } // end for k
 	  } // end for j
@@ -922,6 +973,8 @@ namespace Chroma
 	XMLBufferWriter record_xml;
 	write(record_xml, "SourceBaryonOperator", baryon_opA);
 	write(to, record_xml, baryon_opA.serialize());
+
+//	write(xml_out, "baryon_opA", baryon_opA.serialize());
       }
 
       // Write the scalar data
@@ -929,6 +982,8 @@ namespace Chroma
 	XMLBufferWriter record_xml;
 	write(record_xml, "SinkBaryonOperator", baryon_opB);
 	write(to, record_xml, baryon_opB.serialize());
+
+//	write(xml_out, "baryon_opB", baryon_opB.serialize());
       }
 
       close(to);
