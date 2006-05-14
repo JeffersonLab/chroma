@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.1 2006-05-12 03:38:01 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.2 2006-05-14 19:17:17 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -7,6 +7,7 @@
 #include "meas/hadron/baryon_operator_factory_w.h"
 #include "meas/hadron/barspinmat_w.h"
 #include "meas/smear/displacement.h"
+#include "util/ferm/diractodr.h"
 
 namespace Chroma 
 {
@@ -100,7 +101,7 @@ namespace Chroma
 	    term.spin = spin;
 
 	    for(int i=0; i < spin.size(); ++i)
-	      term.spin -= 1;
+	      term.spin[i] -= 1;
 	  }
 
 	  // Convert displacements to  disp_dir, disp_len
@@ -160,6 +161,9 @@ namespace Chroma
 
       multi1d<LatticeComplex> d(coeffs.size());
 
+      // The spin basis matrix to goto Dirac
+      SpinMatrix Rot = adj(DiracToDRMat());
+
       for(int n=0; n < coeffs.size(); ++n)
       {
 	d[n] = zero;
@@ -169,24 +173,28 @@ namespace Chroma
 	  const CoeffTerm_t& term = coeffs[n][l];
 	    
 	  multi1d<LatticeFermion> q(3);
-	  q[0] = q1;
-	  q[1] = q2;
-	  q[2] = q3;
+
+	  q[0] = Rot * q1;
+	  q[1] = Rot * q2;
+	  q[2] = Rot * q3;
 
 	  for(int i=0; i < q.size(); ++i)
 	  {
-	    switch (isign)
+	    if (term.disp_len[i] != 0)
 	    {
-	    case PLUS:
-	      displacement(u, q[i], term.disp_len[i], term.disp_dir[i]);
-	      break;
+	      switch (isign)
+	      {
+	      case PLUS:
+		displacement(u, q[i], term.disp_len[i], term.disp_dir[i]);
+		break;
 
-	    case MINUS:
-	      displacement(u, q[i], -term.disp_len[i], term.disp_dir[i]);
-	      break;
+	      case MINUS:
+		displacement(u, q[i], -term.disp_len[i], term.disp_dir[i]);
+		break;
 
-	    default:
-	      QDP_error_exit("illegal isign in GroupBaryon");
+	      default:
+		QDP_error_exit("illegal isign in GroupBaryon");
+	      }
 	    }
 	  }
 
