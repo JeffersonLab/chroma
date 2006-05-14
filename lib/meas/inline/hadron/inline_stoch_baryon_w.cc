@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.7 2006-05-14 19:38:21 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.8 2006-05-14 19:39:18 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -291,8 +291,6 @@ namespace Chroma
   //! Serialize generalized operator object
   multi1d<Complex> BaryonOperator_t::serialize()
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-
     int orderings_size = orderings.size();
     int op_size3   = orderings[0].op.size3();
     int op_size2   = orderings[0].op.size2();
@@ -301,13 +299,13 @@ namespace Chroma
     int elem_size2 = orderings[0].op(0,0,0).ind[0].elem.size2();
     int elem_size1 = orderings[0].op(0,0,0).ind[0].elem.size1();
 
-    QDPIO::cout << "orderings=" << orderings_size << endl;
-    QDPIO::cout << "op_size3=" << op_size3 << endl;
-    QDPIO::cout << "op_size2=" << op_size2 << endl;
-    QDPIO::cout << "op_size1=" << op_size1 << endl;
-    QDPIO::cout << "ind_size=" << ind_size << endl;
-    QDPIO::cout << "elem_size2=" << elem_size2 << endl;
-    QDPIO::cout << "elem_size1=" << elem_size1 << endl;
+//    QDPIO::cout << "orderings=" << orderings_size << endl;
+//    QDPIO::cout << "op_size3=" << op_size3 << endl;
+//    QDPIO::cout << "op_size2=" << op_size2 << endl;
+//    QDPIO::cout << "op_size1=" << op_size1 << endl;
+//    QDPIO::cout << "ind_size=" << ind_size << endl;
+//    QDPIO::cout << "elem_size2=" << elem_size2 << endl;
+//    QDPIO::cout << "elem_size1=" << elem_size1 << endl;
 
     // dreadful hack - use a complex to hold an int
     Complex ord_sizes, op_sizes1, op_sizes2, elem_sizes;
@@ -318,7 +316,7 @@ namespace Chroma
 
     multi1d<Complex> mesprop_1d(4 + orderings_size*op_size3*op_size2*op_size1*ind_size*elem_size2*elem_size1);
 
-    QDPIO::cout << "mesprop_size=" << mesprop_1d.size() << endl;
+//    QDPIO::cout << "mesprop_size=" << mesprop_1d.size() << endl;
 
     int cnt = 0;
 
@@ -343,8 +341,6 @@ namespace Chroma
       QDPIO::cerr << InlineStochBaryonEnv::name << ": size mismatch in serialization" << endl;
       QDP_abort(1);
     }
-
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
 
     return mesprop_1d;
   }
