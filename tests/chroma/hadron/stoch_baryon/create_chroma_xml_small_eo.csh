@@ -166,19 +166,19 @@ cat << **EOF**
         <version>2</version>
         <mom2_max>0</mom2_max>
 
-<annotation>
         <BaryonOperator>
           <version>1</version>
           <BaryonOperatorType>NUCLEON</BaryonOperatorType>
         </BaryonOperator>
-</annotation>
 
+<annotation>
         <BaryonOperator>
           <version>1</version>
           <BaryonOperatorType>GROUP_BARYON</BaryonOperatorType>
           <operator_coeff_file>./Single_Site</operator_coeff_file>
           <displacement_length>1</displacement_length>
         </BaryonOperator>
+</annotation>
       </Param>
       <SourceSmearing>
         <version>6</version>
