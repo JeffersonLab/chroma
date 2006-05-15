@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: photon_seqsrc_w.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: photon_seqsrc_w.h,v 3.1 2006-05-15 19:54:27 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -51,6 +51,27 @@ namespace Chroma
     public:
       //! Full constructor
       PhotonRhoSeqSource(const Params& p) : params(p) {}
+
+      //! Construct the source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<LatticePropagator>& forward_props) const;
+
+    private:
+      Params  params;   /*!< Seqsource params */
+    };
+
+
+
+    //! Construct a photon sequential sources via LSZ reduction
+    /*! @ingroup hadron
+     *
+     *  Photon source via a point-split rho
+     */
+    class PointSplitPhotonRhoSeqSource : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Full constructor
+      PointSplitPhotonRhoSeqSource(const Params& p) : params(p) {}
 
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,

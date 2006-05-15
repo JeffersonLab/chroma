@@ -1,4 +1,4 @@
-// $Id: photon_seqsrc_w.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: photon_seqsrc_w.cc,v 3.1 2006-05-15 19:54:27 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -33,14 +33,24 @@ namespace Chroma
     //! Anonymous namespace
     namespace
     {
-      //! Construct a0-photon sequential source
+      //! Construct pion-photon sequential source
       /*!
        * \ingroup hadron
        */
-      HadronSeqSource<LatticePropagator>* mesA0PhotonSeqSrc(XMLReader& xml_in,
-							    const std::string& path)
+      HadronSeqSource<LatticePropagator>* mesPionPhotonSeqSrc(XMLReader& xml_in,
+							      const std::string& path)
       {
 	return new PhotonRhoSeqSource(Params(xml_in, path));
+      }
+
+      //! Construct pion-point_split_photon sequential source
+      /*!
+       * \ingroup hadron
+       */
+      HadronSeqSource<LatticePropagator>* mesPionPointSplitPhotonSeqSrc(XMLReader& xml_in,
+									const std::string& path)
+      {
+	return new PointSplitPhotonRhoSeqSource(Params(xml_in, path));
       }
 
     } // end anonymous namespace
@@ -209,6 +219,123 @@ namespace Chroma
     }
 
 
+    //! Construct the source
+    LatticePropagator
+    PointSplitPhotonRhoSeqSource::operator()(const multi1d<LatticeColorMatrix>& u,
+					     const multi1d<LatticePropagator>& quark_propagators) const
+    {
+      QDPIO::cout << "Point split photon sequential source " << endl;
+
+      START_CODE();
+
+      if (quark_propagators.size() != 1)
+      {
+	QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+	QDP_abort(1);
+      }
+
+      if (params.j_decay < 0 || params.j_decay >= Nd)
+      {
+	QDPIO::cerr << __func__ << ": j_decay out of bounds: j_decay = " << params.j_decay << endl;
+	QDP_abort(1);
+      }
+
+      if (params.pol_dir < 0 || params.pol_dir >= Nd)
+      {
+	QDPIO::cerr << __func__ << ": pol_dir out of bounds: pol_dir = " << params.pol_dir << endl;
+	QDP_abort(1);
+      }
+
+      // Initial sequential source
+      LatticePropagator seq_src_f, seq_src_b;
+      {
+	// Spin projectors
+	SpinMatrix P_plus, P_minus;
+	{
+	  SpinMatrix g_one = 1.0;
+	  int jd = 1 << params.pol_dir;
+
+	  P_plus  = 0.5*(g_one + (Gamma(jd) * g_one));
+	  P_minus = 0.5*(g_one - (Gamma(jd) * g_one));
+	}
+	int dir = params.pol_dir;
+
+	seq_src_f = P_minus * (u[dir] * shift(quark_propagators[0], FORWARD, dir));
+	seq_src_b = P_plus * shift(adj(u[dir]) * quark_propagators[0], BACKWARD, dir);
+      }
+        
+      // Compute 4-vector correction of sink phase and energy exp
+      LatticeComplex exp_p_dot_x_f, exp_p_dot_x_b;
+      {
+	LatticeReal p_dot_x = zero;
+	multi1d<Real> pp_f(Nd-1);
+	for(int mu=0, j=0; mu < Nd; mu++)
+	{
+	  if (mu != params.j_decay)
+	  {
+	    pp_f[j] = params.sink_mom[j] * twopi / Real(Layout::lattSize()[mu]);
+	    
+	    if (params.sink_mom[j] != 0)
+	      p_dot_x += Layout::latticeCoordinate(mu) * pp_f[j];
+
+	    j++;
+	  }
+	}
+	
+	// Spatial contribution is solely a phase
+	LatticeComplex exp_p_dot_x  = cmplx(cos(p_dot_x),sin(p_dot_x));
+
+	// Photon energy determined from virtuality, \f$Q_f^2 = c^2|\vec{p_f}|^2 - \omega_f^2\f$
+	Real omega;
+	{
+	  Real norm2_ppf = zero;
+	  for(int i=0; i < pp_f.size(); ++i)
+	    norm2_ppf += pp_f[i] * pp_f[i];
+
+	  Real c_sq      =  params.c_sq;
+	  Real xi        =  params.xi;
+	  Real xi_sq     =  xi * xi;
+
+	  omega = sqrt( Real(c_sq/xi_sq)*norm2_ppf - params.Q_sq );
+	}
+	QDPIO::cout << __func__ << ": omega= " << omega << endl;
+
+	// Multiply in exp from time dependence of 4-vector
+	// Note positive sign of omega
+	exp_p_dot_x *= exp(omega * Layout::latticeCoordinate(params.j_decay));
+	
+	// Zap any regions in time outside integration region
+	exp_p_dot_x_f = where((Layout::latticeCoordinate(params.j_decay) >= params.t_sink_start) &&
+			      (Layout::latticeCoordinate(params.j_decay) <= params.t_sink_end),
+			      exp_p_dot_x, LatticeComplex(zero));
+
+	exp_p_dot_x_b = exp_p_dot_x_f;
+
+	if (params.pol_dir != params.j_decay)
+	{
+	  if (params.sink_mom[params.pol_dir] != 0)
+	  {
+	    Real pp_f = - params.sink_mom[params.pol_dir] * twopi / Real(Layout::lattSize()[params.pol_dir]);
+	    exp_p_dot_x_b *= cmplx(cos(pp_f),sin(pp_f));
+	  }
+	}
+	else
+	{
+	  exp_p_dot_x_b *= exp(-omega);
+	}
+      }
+      
+      
+      // Multiply in by exp(4-vector)
+      int G5 = Ns*Ns-1;
+      LatticePropagator fin = (exp_p_dot_x_f * seq_src_f  -  exp_p_dot_x_b * seq_src_b) * Gamma(G5);
+
+      END_CODE();
+
+      return fin;
+    }
+
+
     // Register all the possible simple mesons
     bool registerAll(void) 
     {
@@ -216,7 +343,11 @@ namespace Chroma
 
       //! Register all the factories
       success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PHOTON"), 
-										    mesA0PhotonSeqSrc);
+										    mesPionPhotonSeqSrc);
+
+      //! Register all the factories
+      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-POINT_SPLIT_PHOTON"), 
+										    mesPionPointSplitPhotonSeqSrc);
 
       return success;
     }
