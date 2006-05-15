@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.2 2006-05-14 19:17:17 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.3 2006-05-15 03:20:51 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -77,6 +77,16 @@ namespace Chroma
     //! Full constructor
     GroupBaryon::GroupBaryon(const Params& p, const multi1d<LatticeColorMatrix>& u_) : params(p), u(u_)
     {
+      readCoeffs(coeffs);
+
+      // The spin basis matrix to goto Dirac
+      rotate_mat = adj(DiracToDRMat());
+    }
+
+
+    //! Reader
+    void GroupBaryon::readCoeffs(multi1d< multi1d< CoeffTerm_t > >& coef)
+    {
       TextReader reader(params.operator_coeff_file);
 
       int num_rows;
@@ -152,17 +162,14 @@ namespace Chroma
 
     //! Compute the operator
     multi1d<LatticeComplex> 
-    GroupBaryon::operator()(const LatticeFermion& q1, 
-			    const LatticeFermion& q2, 
-			    const LatticeFermion& q3,
-			    enum PlusMinus isign) const
+    GroupBaryon::contract(const LatticeFermion& q1, 
+			  const LatticeFermion& q2, 
+			  const LatticeFermion& q3,
+			  enum PlusMinus isign) const
     {
       START_CODE();
 
       multi1d<LatticeComplex> d(coeffs.size());
-
-      // The spin basis matrix to goto Dirac
-      SpinMatrix Rot = adj(DiracToDRMat());
 
       for(int n=0; n < coeffs.size(); ++n)
       {
@@ -174,9 +181,9 @@ namespace Chroma
 	    
 	  multi1d<LatticeFermion> q(3);
 
-	  q[0] = Rot * q1;
-	  q[1] = Rot * q2;
-	  q[2] = Rot * q3;
+	  q[0] = rotateMat() * q1;
+	  q[1] = rotateMat() * q2;
+	  q[2] = rotateMat() * q3;
 
 	  for(int i=0; i < q.size(); ++i)
 	  {
@@ -206,6 +213,23 @@ namespace Chroma
 	  d[n] += term.coeff * b_oper;
 	}
       }
+
+      END_CODE();
+
+      return d;
+    }
+
+
+    //! Compute the operator
+    multi1d<LatticeComplex> 
+    GroupBaryon::operator()(const LatticeFermion& q1, 
+			    const LatticeFermion& q2, 
+			    const LatticeFermion& q3,
+			    enum PlusMinus isign) const
+    {
+      START_CODE();
+
+      multi1d<LatticeComplex> d = contract(q1, q2, q3, isign);
 
       END_CODE();
 

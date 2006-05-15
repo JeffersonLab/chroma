@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.2 2006-05-14 19:17:42 edwards Exp $
+// $Id: group_baryon_operator_w.h,v 1.3 2006-05-15 03:20:51 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -56,6 +56,7 @@ namespace Chroma
     private:
       Params  params;   /*!< parameters */
       multi1d<LatticeColorMatrix> u;
+      SpinMatrix rotate_mat;
 
       struct CoeffTerm_t
       {
@@ -65,6 +66,19 @@ namespace Chroma
 	Complex       coeff;
       };
       multi1d< multi1d< CoeffTerm_t > >  coeffs;
+
+    protected:
+      //! Compute the operator
+      multi1d<LatticeComplex> contract(const LatticeFermion& q1, 
+				       const LatticeFermion& q2, 
+				       const LatticeFermion& q3,
+				       enum PlusMinus isign) const;
+
+      //! The spin basis matrix to goto Dirac
+      const SpinMatrix& rotateMat() const {return rotate_mat;}
+
+      //! Reader
+      virtual void readCoeffs(multi1d< multi1d< CoeffTerm_t > >& coef);
     };
 
   }  // end namespace
