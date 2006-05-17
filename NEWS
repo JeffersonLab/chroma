@@ -1,3 +1,19 @@
+05/17/2006 -- Balint Joo
+	Version 3.4.2  Added Support for configurable testcase runners.
+	Added mpirun_rsh runner. Currently this requires that the PBS_NODEFILE
+        be defined to point to a node file. This is for interfacing with PBS
+	queues, but can also be fudged by env vars. The current intended modus
+        operandus is:
+             qsub <qsub options> -I 
+	     Job Starts
+	     cd <wherever you built the darn thing>
+	     Job Ends.
+
+	One annoyance is that this needs the xmldiff prog and java
+	to be installed on the head node of the running job. This may 
+	be partially solved by having XMLDIFF and Java installed in your
+	homedirectory and on your path so that it is mounted for the job,
+
 05/11/2006 -- Robert Edwards
 	Version 3.4.1. First possibly working version of stoch_baryon task.
 

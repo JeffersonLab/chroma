@@ -1,4 +1,4 @@
-AC_INIT(chroma,3.4.1,edwards@jlab.org)
+AC_INIT(chroma,3.4.2,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AM_INIT_AUTOMAKE
@@ -74,6 +74,12 @@ AC_ARG_ENABLE(opt_cfz_linop,
   AC_HELP_STRING( 
     [--enable-opt-cfz-linop],
     [Build and use the generic optimized Continued Frac. Zolo. (CFZ) Linear Oper.])
+)
+
+AC_ARG_ENABLE(testcase-runner,
+	AC_HELP_STRING([--enable-testcase-runner=script],
+	[ Use <script> to run testcases: trivial_runner.sh|ibg2_mpi_runner.sh]),	[ chroma_testcase_runner=${enable_testcase_runner} ],
+	[ chroma_testcase_runner="trivial_runner.sh"]
 )
 
 AC_ARG_WITH(gmp,
@@ -354,6 +360,20 @@ AM_CONDITIONAL(BUILD_GMP_REMEZ,
   [test "x${gmp_enabled}x" = "xyesx" ])
 
 
+case "${chroma_testcase_runner}" in
+trivial)
+	AC_MSG_NOTICE([Using Trivial Testcase Runner: trivial_runner.sh])
+	chroma_testcase_runner_script="trivial_runner.sh"
+	;;
+mpirun_rsh)
+	AC_MSG_NOTICE([Using mpirun_rsh Testcase Runner: mpirun_rsh_runner.sh])
+	chroma_testcase_runner_script="mpirun_rsh_runner.sh"
+	;;
+*)
+	AC_MSG_WARN([Unknown value for chroma_testcase_runner. Will use trivial])
+	chroma_testcase_runner_script="trivial_runner.sh"
+	;;
+esac
 
 dnl This function is defined in acinclude.m4
 dnl it tries to try to compile the program 
@@ -373,20 +393,10 @@ then
      AC_MSG_WARN([xmldiff not found in your PATH. make xcheck may fail])
 fi
 
+
 #######################
 # Produce output
 #######################
-
-# On a scalar platform, make a RUN script that is empty for the 
-# regression tests - convenience
-if test "X${QDPXX_PARALLEL_ARCH}X" = "XscalarX";
-then 
-     /bin/rm -f RUN
-     echo '#!/bin/sh' > RUN
-     echo '$*' >> RUN
-     chmod +x RUN
-fi
-
 
 #
 # Set up the doxygen file
@@ -404,4 +414,16 @@ AC_CONFIG_FILES(mainprogs/tests/Makefile)
 AC_CONFIG_FILES(mainprogs/main/Makefile)
 AC_CONFIG_FILES(docs/Makefile)
 AC_CONFIG_FILES(other_libs/Makefile)
+
+dnl run all the scripts through AC CONFIG files to put
+dnl them in the build directory. We can even potentially install them
+dnl if we want later. Also this allows us to configure complicated runners 
+dnl later with extre --enable options etc
+AC_CONFIG_FILES(scripts/test_runners/trivial_runner.sh)
+AC_CONFIG_FILES(scripts/test_runners/mpirun_rsh_runner.sh)
+
+dnl Copy - dont symlink - the chosen testcase runner to the top builddir for
+dnl for the fixture runner script
+AC_CONFIG_COMMANDS([RUN],
+		   [ cp scripts/test_runners/${the_testcase_runner} ./RUN ; chmod u+x ./RUN ],[the_testcase_runner=${chroma_testcase_runner_script}])
 AC_OUTPUT
