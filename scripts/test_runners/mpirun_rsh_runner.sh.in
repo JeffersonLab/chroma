@@ -1,0 +1,35 @@
+#!/bin/bash
+
+##########################################################
+# Sanity Check - want to potentially run this from PBS
+# Interactive Queue: 
+#
+# Assumptions - I am in the working directory
+#               PBS_NODEFILE is defined
+##########################################################
+
+# Hardwire MPI for now
+MPI_HOME=/usr/local/mvapich-viapatch-0.9.7
+
+# Nex is the name of the program
+PROG=$1
+
+# Now get the args
+shift
+ARGS=$*
+
+echo Want to run program: $PROG with args $ARGS
+# -----------------------------------------------
+# Internal configuration
+# -----------------------------------------------
+
+# Count nodes
+NUMNODES=`wc -l $PBS_NODEFILE | cut -f1 -d' '`
+MPIRUN=${MPI_HOME}/bin/mpirun_rsh
+MPIRUN_ARGS="-rsh -np ${NUMNODES} -hostfile ${PBS_NODEFILE} ${PROG} ${ARGS}"
+
+# Run program
+${MPIRUN} ${MPIRUN_ARGS}
+
+
+
