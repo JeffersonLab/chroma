@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.1 2006-05-09 20:29:34 edwards Exp $
+#  $Id: regres.pl,v 1.2 2006-05-17 20:19:49 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -13,9 +13,9 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/stoch_meson/stoch_meson.ini.xml" , 
-	 output      => "stoch_meson.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/stoch_meson/stoch_meson.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/stoch_meson/stoch_meson.out.xml" ,
+	 input       => "$test_dir/chroma/hadron/stoch_baryon/stoch_baryon.ini.xml" , 
+	 output      => "stoch_baryon.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/stoch_baryon/stoch_baryon.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/stoch_baryon/stoch_baryon.out.xml" ,
      }
      );
