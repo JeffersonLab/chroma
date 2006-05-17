@@ -1,4 +1,4 @@
-#! bin/sh
+#! /bin/sh
 #####################################################
 # Trivial Runner Script 
 # Suitable for running on scalar machines or places
