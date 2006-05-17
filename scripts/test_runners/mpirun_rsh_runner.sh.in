@@ -10,7 +10,7 @@
 
 # Hardwire MPI for now
 MPI_HOME=/usr/local/mvapich-viapatch-0.9.7
-
+NODES="qcd6n277 qcd6n278"
 # Nex is the name of the program
 PROG=$1
 
@@ -18,15 +18,14 @@ PROG=$1
 shift
 ARGS=$*
 
-echo Want to run program: $PROG with args $ARGS
+echo Want to run program: $PROG with args $ARGS on nodes $NODES
 # -----------------------------------------------
 # Internal configuration
 # -----------------------------------------------
 
 # Count nodes
-NUMNODES=`wc -l $PBS_NODEFILE | cut -f1 -d' '`
 MPIRUN=${MPI_HOME}/bin/mpirun_rsh
-MPIRUN_ARGS="-rsh -np ${NUMNODES} -hostfile ${PBS_NODEFILE} ${PROG} ${ARGS}"
+MPIRUN_ARGS="-rsh -np 2 ${NODES} ${PROG} ${ARGS}"
 
 # Run program
 ${MPIRUN} ${MPIRUN_ARGS}
