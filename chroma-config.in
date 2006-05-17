@@ -47,7 +47,8 @@ chroma_libs="-lchroma "$extra_libs" @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @LIB
 
 precision="@QDPXX_PRECISION@"
 
-
+chroma_ranlib="@RANLIB@"
+chroma_ar="@AR@"
 
 usage()
 {
@@ -66,6 +67,8 @@ Options:
   [--cxxflags]
   [--ldflags]
   [--libs]
+  [--ranlib]
+  [--ar]
 
 EOF
   exit $1
@@ -143,6 +146,12 @@ while test $# -gt 0; do
       ;;
     --layout)
        echo ${layout}
+       ;;
+    --ranlib)
+       echo ${chroma_ranlib}
+       ;;
+    --ar)
+       echo ${chroma_ar}
        ;;
     *)
       usage 1 1>&2
