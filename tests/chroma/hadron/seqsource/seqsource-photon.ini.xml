@@ -127,6 +127,57 @@ Photon sequential source
       </NamedObject>
     </elem>
 
+    <elem>
+      <annotation>
+       Photon sequential source
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-POINT_SPLIT_PHOTON</SeqSourceType>
+          <pol_dir>0</pol_dir>
+          <Q_sq>0.0</Q_sq>
+          <c_sq>1.0</c_sq>
+          <xi>3.0</xi>
+          <j_decay>3</j_decay>
+          <t_sink_start>1</t_sink_start>
+          <t_sink_end>6</t_sink_end>
+          <sink_mom>0 0 0</sink_mom>
+          <t_sink>0</t_sink>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
