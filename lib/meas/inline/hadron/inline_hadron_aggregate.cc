@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.2 2006-05-18 18:03:10 kostas Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.3 2006-05-18 18:32:57 kostas Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -69,6 +69,7 @@ namespace Chroma
       success &= InlineQpropQIOEnv::registered;
       success &= InlineQpropAddEnv::registered;
       success &= InlineQQQNucNucEnv::registered;
+      success &= InlineSpectrumQllEnv::registered;
       success &= InlineStochMesonEnv::registered;
       success &= InlineStochBaryonEnv::registered;
 

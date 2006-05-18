@@ -1,4 +1,4 @@
-// $Id: inline_spectrumQll.cc,v 1.2 2006-05-18 18:03:10 kostas Exp $
+// $Id: inline_spectrumQll.cc,v 1.3 2006-05-18 18:32:57 kostas Exp $
 /*! \file
  * \brief Inline construction of heavy-light baryon spectrum  
  * (infinitely heavy)
@@ -246,7 +246,6 @@ namespace Chroma
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << InlineSpectrumQllEnv::name << ": Spectroscopy for Wilson-like fermions" << endl;
-    StopWatch swatch;
 
     /*
      * Sanity checks
@@ -274,7 +273,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 13);
+    write(xml_out, "out_version", 2);
     pop(xml_out);
 
 
@@ -485,16 +484,16 @@ namespace Chroma
 		      j_decay);
 	  {
 	    if (Pt_src){
-	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_QllBaryons");
-	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_Qlmeson");
+	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Point_Shell_Wilson_QllBaryons");
+	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Point_Shell_Wilson_Qlmeson");
 	    }
 	    if (Sl_src){
-	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_QllBaryons");
-	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_Qlmeson");
+	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Shell_Shell_Wilson_QllBaryons");
+	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Shell_Shell_Wilson_Qlmeson");
 	    }
 	    if (Wl_src){
-	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_QllBaryons");
-	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_Qlmeson");
+	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Wall_Shell_Wilson_QllBaryons");
+	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Wall_Shell_Wilson_Qlmeson");
 	    }
 	  } 
 	} // end if (Sl_snk)
@@ -505,23 +504,19 @@ namespace Chroma
 	  LatticePropagator wall_quark_prop;
 	  wall_qprop(wall_quark_prop, quark_propagator, phases);
 	  if (Pt_src){
-	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Point_Wall_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Point_Wall_Wilson_Qlmeson");
 	  }
 	  if (Sl_src){
-	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Shell_Wall_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Shell_Wall_Wilson_Qlmeson");
 	  }
 	  if (Wl_src){
-	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Wall_Wall_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Wall_Wall_Wilson_Qlmeson");
 	  }
 	} // end if (Wl_snk)
 
-      swatch.stop();
-      QDPIO::cout << InlineSpectrumQllEnv::name << ": Qll and Ql computed: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
 
       pop(xml_array);  // array element
 
