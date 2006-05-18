@@ -1,4 +1,4 @@
-// $Id: mesQl_w.cc,v 1.1 2006-05-10 04:02:25 kostas Exp $ 
+// $Id: mesQl_w.cc,v 1.2 2006-05-18 18:03:10 kostas Exp $ 
 /*! \file
  *  \brief Heavy Meson (Qlbar)  2-pt function : Orginos and Savage
  */
@@ -9,7 +9,8 @@
 #include "mesQl_w.h"
 
 using namespace QDP;
- 
+
+namespace Chroma {
 
 //! Heavy-light meson 2-pt function
 /*!
@@ -88,5 +89,4 @@ void Qlbar(const multi1d<LatticeColorMatrix>& u,
   END_CODE();
 }
 
-
-
+}

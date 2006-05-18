@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.8 2006-05-12 03:36:30 edwards Exp $
+# $Id: Makefile.am,v 3.9 2006-05-18 18:03:09 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -517,6 +517,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_mesonspec_w.h \
 	meas/inline/hadron/inline_spectrum_w.h \
 	meas/inline/hadron/inline_spectrumOct_w.h \
+        meas/inline/hadron/inline_spectrumQll.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
         meas/inline/hadron/inline_qqq_w.h \
 	meas/inline/hadron/inline_qqbar_w.h \
@@ -690,6 +691,8 @@ libchroma_a_SOURCES = \
         meas/glue/mesplq.cc meas/glue/polylp.cc \
 	meas/glue/wilslp.cc \
 	meas/hadron/hadron_seqsource.cc \
+	meas/hadron/mesQl_w.cc \
+	meas/hadron/barQll_w.cc \
 	meas/hadron/stoch_var.cc \
         meas/sinks/pt_sink_smearing.cc \
         meas/sinks/sh_sink_smearing.cc \
@@ -966,6 +969,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_spectrum_w.cc \
 	meas/inline/hadron/inline_spectrumOct_w.cc \
+	meas/inline/hadron/inline_spectrumQll.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
 	meas/inline/hadron/inline_qqbar_w.cc \

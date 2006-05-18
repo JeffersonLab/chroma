@@ -1,10 +1,13 @@
-//$Id: mesQl_w.h,v 1.1 2006-05-10 04:02:25 kostas Exp $
+//$Id: mesQl_w.h,v 1.2 2006-05-18 18:03:10 kostas Exp $
 /*! \file
  *  \brief Heavy light meson (Qlbar)  2-pt function : Orginos and Savage
  */
 
-#ifndef __mesQll_h__
-#define __mesQll_h__
+#ifndef __mesQl_h__
+#define __mesQl_h__
+
+
+namespace Chroma {
 
 //! Heavy-light meson 2-pt function
 /*!
@@ -33,4 +36,5 @@ void Qlbar(const multi1d<LatticeColorMatrix>& u,
 	   XMLWriter& xml,
 	   const string& xml_group);
 
+}
 #endif

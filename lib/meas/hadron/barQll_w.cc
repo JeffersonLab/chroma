@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.3 2006-05-10 03:59:08 kostas Exp $ 
+// $Id: barQll_w.cc,v 1.4 2006-05-18 18:03:10 kostas Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -8,7 +8,8 @@
 #include "barQll_w.h"
 
 using namespace QDP;
- 
+
+namespace Chroma { 
 
 //! Lambdaq and SigmaQ 2-pt functions
 /*!
@@ -159,3 +160,4 @@ void HeavyQuarkProp(LatticeColorMatrix& Qprop,
   Qprop = conj(transpose(Qprop));
 }
 
+}

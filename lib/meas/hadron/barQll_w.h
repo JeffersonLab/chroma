@@ -1,10 +1,15 @@
-//$Id: barQll_w.h,v 1.4 2006-05-10 03:59:08 kostas Exp $
+//$Id: barQll_w.h,v 1.5 2006-05-18 18:03:10 kostas Exp $
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
 
 #ifndef __barQll_h__
 #define __barQll_h__
+
+#include "chromabase.h"
+#include "util/ft/sftmom.h"
+
+namespace Chroma {
 
 //! Lambdaq and SigmaQ 2-pt functions
 /*!
@@ -86,5 +91,7 @@ private:
 
   int dir_decay;
 };
+
+}
 
 #endif

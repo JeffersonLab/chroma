@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_w.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: hadron_w.h,v 3.1 2006-05-18 18:03:10 kostas Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -44,5 +44,11 @@
 
 #include "qqq_w.h"
 #include "qqbar_w.h"
+
+#include "qqq_w.h"
+#include "qqbar_w.h"
+
+#include "mesQl_w.h"
+#include "barQll_w.h"
 
 #endif

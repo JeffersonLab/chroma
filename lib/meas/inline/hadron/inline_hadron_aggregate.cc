@@ -1,9 +1,10 @@
-// $Id: inline_hadron_aggregate.cc,v 3.1 2006-05-09 20:32:24 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.2 2006-05-18 18:03:10 kostas Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
 
 #include "meas/inline/hadron/inline_hadron_aggregate.h"
+#include "meas/inline/hadron/inline_spectrumQll.h"
 #include "meas/inline/hadron/inline_make_source_w.h"
 #include "meas/inline/hadron/inline_make_source_ferm_w.h"
 #include "meas/inline/hadron/inline_propagator_w.h"

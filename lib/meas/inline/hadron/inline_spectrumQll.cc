@@ -1,4 +1,4 @@
-// $Id: inline_spectrumQll.cc,v 1.1 2006-05-10 03:58:06 kostas Exp $
+// $Id: inline_spectrumQll.cc,v 1.2 2006-05-18 18:03:10 kostas Exp $
 /*! \file
  * \brief Inline construction of heavy-light baryon spectrum  
  * (infinitely heavy)
@@ -6,7 +6,7 @@
  * Spectrum (Qll) calculations
  */
 
-#include "meas/inline/hadron/inline_spectrumQll_w.h"
+#include "meas/inline/hadron/inline_spectrumQll.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "meas/smear/ape_smear.h"
@@ -16,6 +16,7 @@
 #include "io/param_io.h"
 #include "io/qprop_io.h"
 #include "meas/hadron/barQll_w.h"
+#include "meas/hadron/mesQl_w.h"
 #include "meas/hadron/wall_qprop_w.h"
 #include "meas/glue/mesfield.h"
 #include "util/gauge/taproj.h"
@@ -457,16 +458,16 @@ namespace Chroma
       if (params.param.Pt_snk) 
 	{
 	  if (Pt_src){
-	    Qll(u_link_smr,quark_propagator,input.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,quark_propagator,input.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,quark_propagator,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,quark_propagator,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_Qlmeson");
 	  }
 	  if (Sl_src){
-	    Qll(u_link_smr,quark_propagator,input.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,quark_propagator,input.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,quark_propagator,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,quark_propagator,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_Qlmeson");
 	  }
 	  if (Wl_src){
-	    Qll(u_link_smr,quark_propagator,input.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,quark_propagator,input.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,quark_propagator,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,quark_propagator,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_Qlmeson");
 	  }
 	} // end if (Pt_snk)
 
@@ -484,16 +485,16 @@ namespace Chroma
 		      j_decay);
 	  {
 	    if (Pt_src){
-	      Qll(u_link_smr,quark_prop_smr,input.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_QllBaryons");
-	      Qlbar(u_link_smr,quark_prop_smr,input.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_Qlmeson");
+	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_QllBaryons");
+	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_Qlmeson");
 	    }
 	    if (Sl_src){
-	      Qll(u_link_smr,quark_prop_smr,input.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_QllBaryons");
-	      Qlbar(u_link_smr,quark_prop_smr,input.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_Qlmeson");
+	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_QllBaryons");
+	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_Qlmeson");
 	    }
 	    if (Wl_src){
-	      Qll(u_link_smr,quark_prop_smr,input.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_QllBaryons");
-	      Qlbar(u_link_smr,quark_prop_smr,input.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_Qlmeson");
+	      Qll(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_QllBaryons");
+	      Qlbar(u_link_smr,quark_prop_smr,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_Qlmeson");
 	    }
 	  } 
 	} // end if (Sl_snk)
@@ -502,18 +503,18 @@ namespace Chroma
       if (params.param.Wl_snk) 
 	{
 	  LatticePropagator wall_quark_prop;
-	  wall_qprop(wall_quark_prop, quark_propagator, phases_nomom);
+	  wall_qprop(wall_quark_prop, quark_propagator, phases);
 	  if (Pt_src){
-	    Qll(u_link_smr,wall_quark_prop,input.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,wall_quark_prop,input.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Point_Point_Wilson_Qlmeson");
 	  }
 	  if (Sl_src){
-	    Qll(u_link_smr,wall_quark_prop,input.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,wall_quark_prop,input.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Shell_Point_Wilson_Qlmeson");
 	  }
 	  if (Wl_src){
-	    Qll(u_link_smr,wall_quark_prop,input.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_QllBaryons");
-	    Qlbar(u_link_smr,wall_quark_prop,input.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_Qlmeson");
+	    Qll(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_QllBaryons");
+	    Qlbar(u_link_smr,wall_quark_prop,params.param.Qsrc_coord, phases,xml_array, "Wall_Point_Wilson_Qlmeson");
 	  }
 	} // end if (Wl_snk)
 
