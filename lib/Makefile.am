@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.9 2006-05-18 18:03:09 kostas Exp $
+# $Id: Makefile.am,v 3.10 2006-05-19 14:56:33 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -127,6 +127,8 @@ nobase_include_HEADERS = \
         meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h \
 	meas/hadron/hadron_seqsource.h \
+	meas/hadron/mesQl_w.h \
+	meas/hadron/barQll_w.h \
 	meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h \
         meas/schrfun/schrfun.h \
@@ -155,6 +157,7 @@ nobase_include_HEADERS = \
 	meas/smear/quark_smearing.h \
 	meas/smear/quark_smearing_factory.h \
         meas/smear/quark_smearing_aggregate.h \
+	meas/smear/no_quark_smearing.h \
 	meas/smear/gaus_quark_smearing.h \
         meas/smear/quark_source_sink.h \
 	meas/sources/sources.h meas/sources/srcsnktype.h \
@@ -708,6 +711,7 @@ libchroma_a_SOURCES = \
 	meas/smear/hyp_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
 	meas/smear/quark_smearing_aggregate.cc \
+	meas/smear/no_quark_smearing.cc \
 	meas/smear/gaus_quark_smearing.cc \
 	meas/smear/quark_displacement_aggregate.cc \
 	meas/smear/no_quark_displacement.cc \
