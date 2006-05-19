@@ -1,5 +1,10 @@
+05/18/2006 -- Robert Edwards
+	Version 3.5.0. Tagged to updated intel_sse_wilson_dslash that now supports
+        even more wacky subgrid sizes. Now qdp++ version 1.20.5 fixes a bug that
+        caused multi_propagator to fail in the XMLReader manipulations.
+
 05/17/2006 -- Balint Joo
-	Version 3.4.2  Added Support for configurable testcase runners.
+	Version 3.4.2. Added Support for configurable testcase runners.
 	Added mpirun_rsh runner. This runner is currently hardwired to 
 	run the tests on qcd6n277 and qcd6n278
 
