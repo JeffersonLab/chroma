@@ -37,11 +37,10 @@ Make a propagator source
       <Param>
         <version>6</version>
         <Source>
-          <version>3</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
-          <quark_smear_lastP>false</quark_smear_lastP>
 
           <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
