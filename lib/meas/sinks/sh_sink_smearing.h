@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_sink_smearing.h,v 3.1 2006-05-05 04:19:44 edwards Exp $
+// $Id: sh_sink_smearing.h,v 3.2 2006-05-20 04:23:25 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -29,8 +29,6 @@ namespace Chroma
       void writeXML(XMLWriter& in, const std::string& path) const;
     
       std::string      sink_type;            /*!< sink smearing type */
-
-      bool             quark_smear_firstP;   /*!< Flag controlling order of smearing */
 
       std::string      quark_smearing;       /*!< xml string holding smearing params */
       std::string      quark_smearing_type;  /*!< quark smearing type name */
