@@ -15,11 +15,10 @@ Sink smear a prop
       <Param>
         <version>6</version>
         <Source>
-          <version>3</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
-          <quark_smear_lastP>true</quark_smear_lastP>
 
           <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
@@ -113,10 +112,9 @@ Sink smear a prop
       <Param>
         <version>5</version>
         <Sink>
-          <version>3</version>
+          <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
           <j_decay>3</j_decay>
-          <quark_smear_firstP>true</quark_smear_firstP>
 
           <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
@@ -172,10 +170,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.3.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.5.1</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>09 May 06 10:18:35 EDT</run_date>
+    <run_date>20 May 06 00:21:06 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -233,10 +231,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.3.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>09 May 06 10:18:36 EDT</run_date>
+          <run_date>20 May 06 00:21:06 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -256,11 +254,10 @@ Sink smear a prop
         <Input>
           <Param>
             <version>6</version><Source>
-      <version>3</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
-      <quark_smear_lastP>true</quark_smear_lastP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
@@ -328,10 +325,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.3.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>09 May 06 10:18:36 EDT</run_date>
+          <run_date>20 May 06 00:21:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -419,11 +416,10 @@ Sink smear a prop
       <PropSource>
         <version>6</version>
         <Source>
-          <version>3</version>
+          <version>2</version>
           <SourceType>SHELL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
-          <quark_smear_lastP>true</quark_smear_lastP>
           <SmearingParam>
             <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
             <wvf_param>2.0</wvf_param>
@@ -570,11 +566,10 @@ Sink smear a prop
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
-      <version>3</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
-      <quark_smear_lastP>true</quark_smear_lastP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
@@ -651,10 +646,9 @@ Sink smear a prop
           <Param>
             <version>5</version>
             <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>3</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
-      <quark_smear_firstP>true</quark_smear_firstP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
@@ -719,11 +713,10 @@ Sink smear a prop
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
-      <version>3</version>
+      <version>2</version>
       <SourceType>SHELL_SOURCE</SourceType>
       <j_decay>3</j_decay>
       <t_srce>0 0 0 0</t_srce>
-      <quark_smear_lastP>true</quark_smear_lastP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
@@ -775,10 +768,9 @@ Sink smear a prop
         <PropSink>
           <version>5</version>
           <SinkType>SHELL_SINK</SinkType><Sink>
-      <version>3</version>
+      <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
-      <quark_smear_firstP>true</quark_smear_firstP>
       <SmearingParam>
         <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
         <wvf_param>2.0</wvf_param>
