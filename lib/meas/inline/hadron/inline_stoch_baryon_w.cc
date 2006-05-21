@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.8 2006-05-14 19:39:18 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.9 2006-05-21 04:40:21 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -7,16 +7,11 @@
 #include "handle.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/sources/source_smearing_aggregate.h"
-#include "meas/sources/source_smearing_factory.h"
-#include "meas/sinks/sink_smearing_aggregate.h"
-#include "meas/sinks/sink_smearing_factory.h"
 #include "meas/sources/dilutezN_source_const.h"
 #include "meas/sources/zN_src.h"
 #include "meas/hadron/barspinmat_w.h"
 #include "meas/hadron/baryon_operator_aggregate_w.h"
 #include "meas/hadron/baryon_operator_factory_w.h"
-#include "meas/smear/quark_source_sink.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
@@ -39,8 +34,6 @@ namespace Chroma
     {
       bool foo = true;
       foo &= BaryonOperatorEnv::registered;
-      foo &= QuarkSourceSmearingEnv::registered;
-      foo &= QuarkSinkSmearingEnv::registered;
       foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
       return foo;
     }
@@ -179,12 +172,6 @@ namespace Chroma
       // Read program parameters
       read(paramtop, "Param", param);
 
-      // Source smearing
-      read(paramtop, "SourceSmearing", source_smearing);
-
-      // Sink smearing
-      read(paramtop, "SinkSmearing", sink_smearing);
-
       // Read in the output propagator/source configuration info
       read(paramtop, "NamedObject", named_obj);
 
@@ -209,12 +196,6 @@ namespace Chroma
     
     // Parameters for source construction
     Chroma::write(xml_out, "Param", param);
-
-    // Source smearing
-    Chroma::write(xml_out, "SourceSmearing", source_smearing);
-
-    // Sink smearing
-    Chroma::write(xml_out, "SinkSmearing", sink_smearing);
 
     // Write out the output propagator/source configuration info
     Chroma::write(xml_out, "NamedObject", named_obj);
@@ -266,21 +247,14 @@ namespace Chroma
       };
     
       multi3d<BaryonOperatorIndex_t> op;    /*!< hybrid list indices */
+
     };
 
-    //! Baryon operator
-    struct Seeds_t
-    {
-      Seed          seed_l;
-      Seed          seed_m;
-      Seed          seed_r;
-    };
+    multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
 
-    multi1d<Seeds_t> seeds;          /*!< Array is over quark orderings */
-
-    std::string   smearing_l;        /*!< string holding smearing xml */
-    std::string   smearing_m;        /*!< string holding smearing xml */
-    std::string   smearing_r;        /*!< string holding smearing xml */
+    Seed          seed_l;            /*!< Id of left quark */
+    Seed          seed_m;            /*!< Id of middle quark */
+    Seed          seed_r;            /*!< Id of right quark */
 
     int           mom2_max;
     int           j_decay;
@@ -347,19 +321,6 @@ namespace Chroma
 
 
   //! BaryonOperator header writer
-  void write(XMLWriter& xml, const string& path, const BaryonOperator_t::Seeds_t& param)
-  {
-    push(xml, path);
-
-    write(xml, "seed_l", param.seed_l);
-    write(xml, "seed_m", param.seed_m);
-    write(xml, "seed_r", param.seed_r);
-
-    pop(xml);
-  }
-
-
-  //! BaryonOperator header writer
   void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
   {
     if( path != "." )
@@ -369,10 +330,10 @@ namespace Chroma
     write(xml, "version", version);
     write(xml, "mom2_max", param.mom2_max);
     write(xml, "j_decay", param.j_decay);
-    write(xml, "Seeds", param.seeds);
-    write(xml, "smearing_l", param.smearing_l);
-    write(xml, "smearing_m", param.smearing_m);
-    write(xml, "smearing_r", param.smearing_r);
+    write(xml, "seed_l", param.seed_l);
+    write(xml, "seed_m", param.seed_m);
+    write(xml, "seed_r", param.seed_r);
+    write(xml, "perms", param.perms);
 
     if( path != "." )
       pop(xml);
@@ -707,13 +668,35 @@ namespace Chroma
     BaryonOperator_t  baryon_opA;
     baryon_opA.mom2_max    = params.param.mom2_max;
     baryon_opA.j_decay     = j_decay;
-    baryon_opA.smearing_l  = params.source_smearing.source;
-    baryon_opA.smearing_m  = params.source_smearing.source;
-    baryon_opA.smearing_r  = params.source_smearing.source;
+    baryon_opA.seed_l      = quarks[0].seed;
+    baryon_opA.seed_m      = quarks[1].seed;
+    baryon_opA.seed_r      = quarks[2].seed;
     baryon_opA.orderings.resize(num_orderings);
-    baryon_opA.seeds.resize(num_orderings);
+    baryon_opA.perms.resize(num_orderings);
 
     push(xml_out, "OperatorA");
+
+    // Sanity check
+    if ( toBool(baryon_opA.seed_l == baryon_opA.seed_m) )
+    {
+      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDP_abort(1);
+    }
+
+    // Sanity check
+    if ( toBool(baryon_opA.seed_l == baryon_opA.seed_r) )
+    {
+      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDP_abort(1);
+    }
+
+    // Sanity check
+    if ( toBool(baryon_opA.seed_m == baryon_opA.seed_r) )
+    {
+      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDP_abort(1);
+    }
+
 
     // Construct operator A
     try
@@ -722,32 +705,8 @@ namespace Chroma
       {
 	QDPIO::cout << "Operator A: ordering = " << ord << endl;
 
-	baryon_opA.seeds[ord].seed_l = quarks[perms[ord][0]].seed;
-	baryon_opA.seeds[ord].seed_m = quarks[perms[ord][1]].seed;
-	baryon_opA.seeds[ord].seed_r = quarks[perms[ord][2]].seed;
+	baryon_opA.perms[ord] = perms[ord];
       
-	// Sanity check
-	if ( toBool(baryon_opA.seeds[ord].seed_l == baryon_opA.seeds[ord].seed_m) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort(1);
-	}
-
-	// Sanity check
-	if ( toBool(baryon_opA.seeds[ord].seed_l == baryon_opA.seeds[ord].seed_r) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort(1);
-	}
-
-	// Sanity check
-	if ( toBool(baryon_opA.seeds[ord].seed_m == baryon_opA.seeds[ord].seed_r) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	QDP_abort(1);
-	}
-
-
 	// Operator construction
 	const QuarkSourceSolutions_t& q0 = quarks[perms[ord][0]];
 	const QuarkSourceSolutions_t& q1 = quarks[perms[ord][1]];
@@ -780,12 +739,12 @@ namespace Chroma
     } // end try
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ": Caught Exception creating source smearing: " << e << endl;
+      QDPIO::cerr << ": Caught Exception creating source operator: " << e << endl;
       QDP_abort(1);
     }
     catch(...)
     {
-      QDPIO::cerr << ": Caught generic exception creating source smearing" << endl;
+      QDPIO::cerr << ": Caught generic exception creating source operator" << endl;
       QDP_abort(1);
     }
 
@@ -803,11 +762,35 @@ namespace Chroma
     BaryonOperator_t  baryon_opB;
     baryon_opB.mom2_max    = params.param.mom2_max;
     baryon_opB.j_decay     = j_decay;
-    baryon_opB.smearing_l  = params.sink_smearing.sink;
-    baryon_opB.smearing_m  = params.sink_smearing.sink;
-    baryon_opB.smearing_r  = params.sink_smearing.sink;
+    baryon_opB.seed_l      = quarks[0].seed;
+    baryon_opB.seed_m      = quarks[1].seed;
+    baryon_opB.seed_r      = quarks[2].seed;
     baryon_opB.orderings.resize(num_orderings);
-    baryon_opB.seeds.resize(num_orderings);
+    baryon_opB.perms.resize(num_orderings);
+
+    push(xml_out, "OperatorA");
+
+    // Sanity check
+    if ( toBool(baryon_opB.seed_l == baryon_opB.seed_m) )
+    {
+      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDP_abort(1);
+    }
+
+    // Sanity check
+    if ( toBool(baryon_opB.seed_l == baryon_opB.seed_r) )
+    {
+      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDP_abort(1);
+    }
+
+    // Sanity check
+    if ( toBool(baryon_opB.seed_m == baryon_opB.seed_r) )
+    {
+      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDP_abort(1);
+    }
+
 
     push(xml_out, "OperatorB");
 
@@ -818,31 +801,8 @@ namespace Chroma
       {
 	QDPIO::cout << "Operator B: ordering = " << ord << endl;
 
-	baryon_opB.seeds[ord].seed_l = quarks[perms[ord][0]].seed;
-	baryon_opB.seeds[ord].seed_m = quarks[perms[ord][1]].seed;
-	baryon_opB.seeds[ord].seed_r = quarks[perms[ord][2]].seed;
+	baryon_opB.perms[ord] = perms[ord];
       
-	// Sanity check
-	if ( toBool(baryon_opB.seeds[ord].seed_l == baryon_opB.seeds[ord].seed_m) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort(1);
-	}
-
-	// Sanity check
-	if ( toBool(baryon_opB.seeds[ord].seed_l == baryon_opB.seeds[ord].seed_r) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort(1);
-	}
-
-	// Sanity check
-	if ( toBool(baryon_opB.seeds[ord].seed_m == baryon_opB.seeds[ord].seed_r) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	QDP_abort(1);
-	}
-
 	// Operator construction
 	const QuarkSourceSolutions_t& q0 = quarks[perms[ord][0]];
 	const QuarkSourceSolutions_t& q1 = quarks[perms[ord][1]];
@@ -874,12 +834,12 @@ namespace Chroma
     } // end try
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ": Caught Exception creating sink smearing: " << e << endl;
+      QDPIO::cerr << ": Caught Exception creating sink operator: " << e << endl;
       QDP_abort(1);
     }
     catch(...)
     {
-      QDPIO::cerr << ": Caught generic exception creating sink smearing" << endl;
+      QDPIO::cerr << ": Caught generic exception creating sink operator" << endl;
       QDP_abort(1);
     }
 
@@ -898,6 +858,7 @@ namespace Chroma
     {
       XMLBufferWriter file_xml;
       push(file_xml, "baryon_operator");
+      file_xml << params.param.baryon_operator;
       write(file_xml, "Config_info", gauge_xml);
       pop(file_xml);
 

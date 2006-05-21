@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_baryon_w.h,v 3.2 2006-05-12 03:38:01 edwards Exp $
+// $Id: inline_stoch_baryon_w.h,v 3.3 2006-05-21 04:40:21 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -40,9 +40,6 @@ namespace Chroma
       std::string      baryon_operator_type;   /*!< baryon operator name */
 
     } param;
-
-    PropSourceSmear_t  source_smearing;
-    PropSinkSmear_t    sink_smearing;
 
     struct Prop_t
     {
