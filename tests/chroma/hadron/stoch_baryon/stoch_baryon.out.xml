@@ -2232,77 +2232,36 @@
         <mom2_max>0</mom2_max>
 
         <BaryonOperator>
-          <version>1</version>
+          <version>2</version>
           <BaryonOperatorType>NUCLEON</BaryonOperatorType>
-        </BaryonOperator>
 
-<annotation>
-        <BaryonOperator>
-          <version>1</version>
-          <BaryonOperatorType>GROUP_BARYON</BaryonOperatorType>
-          <operator_coeff_file>./Single_Site</operator_coeff_file>
-          <displacement_length>1</displacement_length>
+          <!-- BaryonOperatorType>GROUP_BARYON</BaryonOperatorType -->
+          <!-- operator_coeff_file>./Single_Site</operator_coeff_file -->
+          <!-- displacement_length>1</displacement_length -->
+
+          <SourceQuarkSmearing>
+            <wvf_kind>NONE</wvf_kind>
+          </SourceQuarkSmearing>
+
+          <SinkQuarkSmearing>
+            <wvf_kind>NONE</wvf_kind>
+
+            <!-- wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind -->
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SinkQuarkSmearing>
+
+          <LinkSmearing>
+            <LinkSmearingType>NONE</LinkSmearingType>
+
+            <!-- LinkSmearingType>STOUT_SMEAR</LinkSmearingType -->
+            <link_smear_fact>0.1625</link_smear_fact>
+            <link_smear_num>4</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
         </BaryonOperator>
-</annotation>
       </Param>
-      <SourceSmearing>
-        <version>6</version>
-        <Source>
-          <version>2</version>
-          <SourceType>POINT_SOURCE</SourceType>
-          <j_decay>3</j_decay>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-        </Source>
-      </SourceSmearing>
-
-      <SinkSmearing>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>POINT_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-        </Sink>
-      </SinkSmearing>
-
-<annotation>
-      <SinkSmearing>
-        <version>5</version>
-              <Sink>
-                <version>2</version>
-                <SinkType>SHELL_SINK</SinkType>
-                <j_decay>3</j_decay>
-
-                <SmearingParam>
-                  <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-                  <wvf_param>2.0</wvf_param>
-                  <wvfIntPar>5</wvfIntPar>
-                  <no_smear_dir>3</no_smear_dir>
-                </SmearingParam>
-
-                <Displacement>
-                  <version>1</version>
-                  <DisplacementType>NONE</DisplacementType>
-                </Displacement>
-
-                <LinkSmearing>
-                  <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-                  <link_smear_fact>2.5</link_smear_fact>
-                  <link_smear_num>0</link_smear_num>
-                  <no_smear_dir>3</no_smear_dir>
-                </LinkSmearing>
-              </Sink>
-      </SinkSmearing>
-</annotation>
-
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <Prop>
@@ -2361,10 +2320,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.5.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.5.1</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>14 May 06 15:36:53 EDT</run_date>
+    <run_date>21 May 06 00:37:31 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -2422,10 +2381,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:54 EDT</run_date>
+          <run_date>21 May 06 00:37:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2515,10 +2474,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:54 EDT</run_date>
+          <run_date>21 May 06 00:37:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2672,10 +2631,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:54 EDT</run_date>
+          <run_date>21 May 06 00:37:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2765,10 +2724,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:54 EDT</run_date>
+          <run_date>21 May 06 00:37:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2922,10 +2881,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3015,10 +2974,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3172,10 +3131,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3265,10 +3224,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3422,10 +3381,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3515,10 +3474,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3672,10 +3631,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3765,10 +3724,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3922,10 +3881,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4015,10 +3974,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:55 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4172,10 +4131,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4265,10 +4224,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4422,10 +4381,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4515,10 +4474,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4672,10 +4631,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4765,10 +4724,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4922,10 +4881,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5015,10 +4974,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5172,10 +5131,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5265,10 +5224,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:56 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5422,10 +5381,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5515,10 +5474,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5672,10 +5631,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5765,10 +5724,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5922,10 +5881,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6015,10 +5974,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6172,10 +6131,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6265,10 +6224,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6422,10 +6381,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6515,10 +6474,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:57 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6672,10 +6631,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6765,10 +6724,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6922,10 +6881,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7015,10 +6974,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7172,10 +7131,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7265,10 +7224,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7422,10 +7381,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7515,10 +7474,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7672,10 +7631,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7765,10 +7724,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:58 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7922,10 +7881,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:59 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8015,10 +7974,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:59 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8172,10 +8131,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:59 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8265,10 +8224,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:59 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8422,10 +8381,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.5.1</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>14 May 06 15:36:59 EDT</run_date>
+          <run_date>21 May 06 00:37:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8439,33 +8398,6 @@
             <version>1</version>
             <mom2_max>0</mom2_max>
           </Param>
-          <SourceSmearing>
-            <version>6</version><Source>
-      <version>2</version>
-      <SourceType>POINT_SOURCE</SourceType>
-      <j_decay>3</j_decay>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-    </Source>
-
-            <j_decay>3</j_decay>
-          </SourceSmearing>
-          <SinkSmearing>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
-      <version>2</version>
-      <SinkType>POINT_SINK</SinkType>
-      <j_decay>3</j_decay>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-    </Sink>
-
-            <j_decay>3</j_decay>
-          </SinkSmearing>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <Prop>
@@ -8549,9 +8481,10 @@
         </Norms>
         <OperatorA>
         </OperatorA>
-        <OperatorB>
-        </OperatorB>
+        <OperatorA>
+          <OperatorB>
+          </OperatorB>
+        </OperatorA>
       </stoch_baryon>
     </elem>
   </InlineObservables>
-</chroma>
