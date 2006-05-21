@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.10 2006-05-19 14:56:33 edwards Exp $
+# $Id: Makefile.am,v 3.11 2006-05-21 04:39:16 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -148,6 +148,7 @@ nobase_include_HEADERS = \
 	meas/smear/link_smearing_factory.h \
 	meas/smear/ape_link_smearing.h \
 	meas/smear/hyp_link_smearing.h \
+	meas/smear/no_link_smearing.h \
 	meas/smear/stout_link_smearing.h \
 	meas/smear/quark_displacement.h \
 	meas/smear/quark_displacement_factory.h \
@@ -709,6 +710,7 @@ libchroma_a_SOURCES = \
 	meas/smear/link_smearing_factory.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc \
+	meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
