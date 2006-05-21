@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.4 2006-05-21 04:40:21 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.5 2006-05-21 04:49:51 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -222,15 +222,12 @@ namespace Chroma
 	    }
 	  }
 
-	  // Complex coeff;  /* Oh bleeping darn yuk */
-	  // std::string complex_coeff;
-
-	  // Complication - hack around the parentheses in the operator file
-	  // Assume it is been preprocessed to space separated floats
+	  // Read the garbage around a complex
 	  {
 	    Real re, im;
+	    char lparen, comma, rparen;
 
-	    reader >> re >> im;
+	    reader >> lparen >> re >> comma >> im >> rparen;
 	    term.coeff = cmplx(re,im);
 	  }
 	}
