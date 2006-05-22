@@ -1,4 +1,4 @@
 #!/bin/sh
 
-../configure --prefix=/usr/local/chroma/scalar --with-qdp=/usr/local/qdp++/scalar/qdp1-20-2 CXXFLAGS="" --enable-sse-wilson-dslash --enable-opt-cfz-linop --with-gmp=/usr
+../configure --prefix=$HOME/arch/chroma/scalar --with-qdp=/usr/local/qdp++/qdp1-20-5/scalar CXXFLAGS="" --enable-sse-wilson-dslash --enable-opt-cfz-linop --with-gmp=/usr  --enable-testcase-runner=trivial
 
