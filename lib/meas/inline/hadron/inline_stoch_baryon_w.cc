@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.9 2006-05-21 04:40:21 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.10 2006-05-23 15:54:36 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -573,7 +573,7 @@ namespace Chroma
 
       } // end for n
 
-      pop(xml_out);
+      pop(xml_out);  // norms
     } // end try
     catch(const std::string& e) 
     {
@@ -768,7 +768,7 @@ namespace Chroma
     baryon_opB.orderings.resize(num_orderings);
     baryon_opB.perms.resize(num_orderings);
 
-    push(xml_out, "OperatorA");
+    push(xml_out, "OperatorB");
 
     // Sanity check
     if ( toBool(baryon_opB.seed_l == baryon_opB.seed_m) )
@@ -791,8 +791,6 @@ namespace Chroma
       QDP_abort(1);
     }
 
-
-    push(xml_out, "OperatorB");
 
     // Construct operator B
     try
