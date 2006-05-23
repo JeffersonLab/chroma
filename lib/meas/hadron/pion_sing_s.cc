@@ -117,7 +117,7 @@ namespace Chroma {
     delta = 0;
     delta[0] = delta[1] = delta[2] = delta[3] = 1;
     corr_fn_s = beta(0)* beta(1) * beta(2) * beta(3)
-      *trace(adj(shiftDeltaProp(delta,local_quark_prop ))
+      *trace(adj(shift_deltaProp(delta, local_quark_prop ))
 	     *four_shift_quark_prop);
   
     corr_fn[ pion_index ] = sumMulti(corr_fn_s, timeslice);
