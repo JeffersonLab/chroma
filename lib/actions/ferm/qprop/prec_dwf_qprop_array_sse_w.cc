@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.1 2006-05-23 04:39:30 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -321,9 +321,19 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    if (SSE_DWF_init(lattice_size.slice(), SSE_DWF_FLOAT, NULL, NULL) != 0)
+#if BASE_PRECISION == 32
+    SSE_DWF_FP_SIZE dwf_prec = SSE_DWF_FLOAT;
+    std::string dwf_error_str = "single prec.";
+#elif BASE_PRECISION == 64
+    SSE_DWF_FP_SIZE dwf_prec = SSE_DWF_DOUBLE;
+    std::string dwf_error_str = "double prec.";
+#else
+#error "Unknown BASE_PRECISION"
+#endif
+
+    if (SSE_DWF_init(lattice_size.slice(), dwf_prec, NULL, NULL) != 0)
     {
-      QDPIO::cerr << __func__ << ": error in SSE_DWF_init" << endl;
+      QDPIO::cerr << __func__ << ": error in SSE_DWF_init: " << dwf_error_str << endl;
       QDP_abort(1);
     }
 
