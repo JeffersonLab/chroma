@@ -392,374 +392,6 @@
           <version>1</version>
           <N>4</N>
           <j_decay>3</j_decay>
-          <t_source>4</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>471</elem>
-              <elem>1694</elem>
-              <elem>3965</elem>
-              <elem>563</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q1_t4</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>5</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>471</elem>
-              <elem>1694</elem>
-              <elem>3965</elem>
-              <elem>563</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q1_t5</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>6</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>471</elem>
-              <elem>1694</elem>
-              <elem>3965</elem>
-              <elem>563</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q1_t6</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>7</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>471</elem>
-              <elem>1694</elem>
-              <elem>3965</elem>
-              <elem>563</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q1_t7</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
           <t_source>0</t_source>
           <ran_seed>
             <Seed>	
@@ -1112,374 +744,6 @@
       </NamedObject>
       <File>
         <file_name>./zN_prop_q2_t3</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>4</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>714</elem>
-              <elem>1573</elem>
-              <elem>3042</elem>
-              <elem>517</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q2_t4</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>5</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>714</elem>
-              <elem>1573</elem>
-              <elem>3042</elem>
-              <elem>517</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q2_t5</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>6</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>714</elem>
-              <elem>1573</elem>
-              <elem>3042</elem>
-              <elem>517</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q2_t6</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>7</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>714</elem>
-              <elem>1573</elem>
-              <elem>3042</elem>
-              <elem>517</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q2_t7</file_name>
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
     </elem>
@@ -1851,374 +1115,6 @@
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
     </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>4</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>2781</elem>
-              <elem>1884</elem>
-              <elem>3019</elem>
-              <elem>716</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q3_t4</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>5</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>2781</elem>
-              <elem>1884</elem>
-              <elem>3019</elem>
-              <elem>716</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q3_t5</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>6</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>2781</elem>
-              <elem>1884</elem>
-              <elem>3019</elem>
-              <elem>716</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q3_t6</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-    <elem>
-      <annotation>
-         Diluted complex Z(2) = Z(4) random source.
-      </annotation>
-      <Name>MAKE_SOURCE_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>7</t_source>
-          <ran_seed>
-            <Seed>	
-              <elem>2781</elem>
-              <elem>1884</elem>
-              <elem>3019</elem>
-              <elem>716</elem>
-            </Seed>
-          </ran_seed>
-
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-             <elem>0 0 0</elem>
-          </spatial_mask>
-
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR_FERM</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
-        <obsvP>false</obsvP>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1</xi_0>
-           <nu>1</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 1</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-10</RsdCG>
-          <MaxCG>2000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>zN_source</source_id>
-        <prop_id>zN_prop</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_source</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>zN_prop</object_id>
-        <object_type>LatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./zN_prop_q3_t7</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
 
     <elem>
       <annotation>
@@ -2273,10 +1169,6 @@
                 <elem>./zN_prop_q1_t1</elem>
                 <elem>./zN_prop_q1_t2</elem>
                 <elem>./zN_prop_q1_t3</elem>
-                <elem>./zN_prop_q1_t4</elem>
-                <elem>./zN_prop_q1_t5</elem>
-                <elem>./zN_prop_q1_t6</elem>
-                <elem>./zN_prop_q1_t7</elem>
               </soln_files>
             </elem>
             <elem>
@@ -2285,10 +1177,6 @@
                 <elem>./zN_prop_q2_t1</elem>
                 <elem>./zN_prop_q2_t2</elem>
                 <elem>./zN_prop_q2_t3</elem>
-                <elem>./zN_prop_q2_t4</elem>
-                <elem>./zN_prop_q2_t5</elem>
-                <elem>./zN_prop_q2_t6</elem>
-                <elem>./zN_prop_q2_t7</elem>
               </soln_files>
             </elem>
             <elem>
@@ -2297,10 +1185,6 @@
                 <elem>./zN_prop_q3_t1</elem>
                 <elem>./zN_prop_q3_t2</elem>
                 <elem>./zN_prop_q3_t3</elem>
-                <elem>./zN_prop_q3_t4</elem>
-                <elem>./zN_prop_q3_t5</elem>
-                <elem>./zN_prop_q3_t6</elem>
-                <elem>./zN_prop_q3_t7</elem>
               </soln_files>
             </elem>
           </operator>
@@ -2309,7 +1193,7 @@
     </elem>
 
   </InlineMeasurements>
-  <nrow>4 4 4 8</nrow>
+  <nrow>2 2 2 4</nrow>
 </Param>
 <Cfg>
   <cfg_type>WEAK_FIELD</cfg_type>
@@ -2321,15 +1205,15 @@
   <ProgramInfo>
     <code_version>
       <chroma>3.5.1</chroma>
-      <qdp>1.20.5</qdp>
+      <qdp>1.20.6</qdp>
     </code_version>
-    <run_date>21 May 06 00:37:31 EDT</run_date>
+    <run_date>23 May 06 11:45:49 EDT</run_date>
     <Setgeom>
-      <latt_size>4 4 4 8</latt_size>
+      <latt_size>2 2 2 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
-      <subgrid_size>4 4 4 8</subgrid_size>
-      <total_volume>512</total_volume>
-      <subgrid_volume>512</subgrid_volume>
+      <subgrid_size>2 2 2 4</subgrid_size>
+      <total_volume>32</total_volume>
+      <subgrid_volume>32</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
   <RNG>
@@ -2352,26 +1236,26 @@
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994765</w_plaq>
-    <s_plaq>0.994801</s_plaq>
-    <t_plaq>0.994729</t_plaq>
-    <link>0.379318</link>
+    <w_plaq>0.994775</w_plaq>
+    <s_plaq>0.99505</s_plaq>
+    <t_plaq>0.994501</t_plaq>
+    <link>0.37906</link>
     <pollp>
       <elem>
-        <re>0.967223</re>
-        <im>-0.00121316</im>
+        <re>-0.326031</re>
+        <im>-0.0298152</im>
       </elem>
       <elem>
-        <re>0.967032</re>
-        <im>-0.00129617</im>
+        <re>-0.325779</re>
+        <im>-0.0289704</im>
       </elem>
       <elem>
-        <re>0.967468</re>
-        <im>-0.00114548</im>
+        <re>-0.325954</re>
+        <im>-0.0229221</im>
       </elem>
       <elem>
-        <re>0.879539</re>
-        <im>-0.0104403</im>
+        <re>0.965822</re>
+        <im>-0.00148825</im>
       </elem>
     </pollp>
   </Observables>
@@ -2382,23 +1266,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:31 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -2441,31 +1325,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>768 0 0 0 0 0 0 0</source_corr>
+          <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -2475,15 +1359,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:31 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -2533,26 +1417,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -2590,10 +1474,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -2604,13 +1488,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>768 0 0 0 0 0 0 0</source_corr>
+          <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>43.3416 1.75019 0.25337 0.089721 0.0858161 0.169847 0.486672 2.37079</prop_corr>
+          <prop_corr>7.2911 0.925316 0.636831 1.0182</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2632,23 +1516,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:31 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -2691,31 +1575,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 768 0 0 0 0 0 0</source_corr>
+          <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -2725,15 +1609,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:31 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -2783,26 +1667,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -2840,10 +1724,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -2854,13 +1738,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 768 0 0 0 0 0 0</source_corr>
+          <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>2.33952 43.1712 2.21137 0.454056 0.175232 0.127999 0.204568 0.533362</prop_corr>
+          <prop_corr>1.45926 7.66926 0.517326 0.639872</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2882,23 +1766,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:31 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -2941,31 +1825,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 768 0 0 0 0 0</source_corr>
+          <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -2975,15 +1859,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -3033,26 +1917,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -3090,10 +1974,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -3104,13 +1988,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 768 0 0 0 0 0</source_corr>
+          <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.49373 2.29294 43.9698 2.21006 0.430472 0.160621 0.115028 0.184066</prop_corr>
+          <prop_corr>0.49306 0.785274 6.39054 0.737083</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3132,23 +2016,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -3191,31 +2075,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 768 0 0 0 0</source_corr>
+          <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -3225,15 +2109,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -3283,26 +2167,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -3340,10 +2224,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -3354,13 +2238,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 768 0 0 0 0</source_corr>
+          <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.314567 0.807961 3.11543 45.5818 2.16161 0.457992 0.193082 0.172766</prop_corr>
+          <prop_corr>0.769976 0.588673 1.0862 7.70984</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3382,1023 +2266,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>4</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>471</elem>
-          <elem>1694</elem>
-          <elem>3965</elem>
-          <elem>563</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>4</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 768 0 0 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>4</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>471</elem>
-              <elem>1694</elem>
-              <elem>3965</elem>
-              <elem>563</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>4</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 768 0 0 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.0839755 0.138377 0.4016 2.1989 43.001 1.88562 0.330667 0.117071</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>5</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>471</elem>
-          <elem>1694</elem>
-          <elem>3965</elem>
-          <elem>563</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>5</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 768 0 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>5</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>471</elem>
-              <elem>1694</elem>
-              <elem>3965</elem>
-              <elem>563</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>5</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 768 0 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.142238 0.0895711 0.129874 0.38972 2.28809 44.24 2.0368 0.393143</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>6</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>471</elem>
-          <elem>1694</elem>
-          <elem>3965</elem>
-          <elem>563</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>6</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 768 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>6</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>471</elem>
-              <elem>1694</elem>
-              <elem>3965</elem>
-              <elem>563</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>6</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 768 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.343251 0.117485 0.0814405 0.129593 0.365901 1.94851 42.9953 2.05128</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>7</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>471</elem>
-          <elem>1694</elem>
-          <elem>3965</elem>
-          <elem>563</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>7</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 768</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:32 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>7</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>471</elem>
-              <elem>1694</elem>
-              <elem>3965</elem>
-              <elem>563</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>7</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 768</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>2.7857 0.666213 0.248441 0.130969 0.139884 0.338661 1.82 43.8094</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -4441,31 +2325,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>768 0 0 0 0 0 0 0</source_corr>
+          <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -4475,15 +2359,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -4533,26 +2417,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -4590,10 +2474,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -4604,13 +2488,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>768 0 0 0 0 0 0 0</source_corr>
+          <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>45.5064 3.29574 0.917013 0.353204 0.17193 0.153437 0.350863 1.9722</prop_corr>
+          <prop_corr>6.5636 0.339244 0.424003 1.04395</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -4632,23 +2516,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -4691,31 +2575,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 768 0 0 0 0 0 0</source_corr>
+          <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -4725,15 +2609,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -4783,26 +2667,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -4840,10 +2724,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -4854,13 +2738,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 768 0 0 0 0 0 0</source_corr>
+          <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.12221 45.095 2.15703 0.428931 0.182235 0.176312 0.334905 0.855282</prop_corr>
+          <prop_corr>0.659385 7.00784 0.919203 0.491021</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -4882,23 +2766,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -4941,31 +2825,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 768 0 0 0 0 0</source_corr>
+          <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -4975,15 +2859,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -5033,26 +2917,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -5090,10 +2974,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -5104,13 +2988,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 768 0 0 0 0 0</source_corr>
+          <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.385452 2.12831 45.7405 2.94431 0.734383 0.277694 0.145443 0.153837</prop_corr>
+          <prop_corr>0.655657 1.19514 7.58991 0.808384</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -5132,23 +3016,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -5191,31 +3075,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 768 0 0 0 0</source_corr>
+          <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -5225,15 +3109,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -5283,26 +3167,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -5340,10 +3224,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -5354,13 +3238,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 768 0 0 0 0</source_corr>
+          <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.2171 0.58501 2.64453 45.108 2.18709 0.453942 0.176864 0.131746</prop_corr>
+          <prop_corr>0.851995 0.424777 0.51543 6.53808</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -5382,1023 +3266,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>4</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>714</elem>
-          <elem>1573</elem>
-          <elem>3042</elem>
-          <elem>517</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>4</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 768 0 0 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>4</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>714</elem>
-              <elem>1573</elem>
-              <elem>3042</elem>
-              <elem>517</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>4</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 768 0 0 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.092454 0.141651 0.390949 2.03795 43.1028 2.15985 0.392964 0.137523</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:33 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>5</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>714</elem>
-          <elem>1573</elem>
-          <elem>3042</elem>
-          <elem>517</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>5</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 768 0 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>5</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>714</elem>
-              <elem>1573</elem>
-              <elem>3042</elem>
-              <elem>517</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>5</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 768 0 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.219857 0.147207 0.217429 0.566724 2.59924 45.6878 2.4384 0.559868</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>6</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>714</elem>
-          <elem>1573</elem>
-          <elem>3042</elem>
-          <elem>517</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>6</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 768 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>6</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>714</elem>
-              <elem>1573</elem>
-              <elem>3042</elem>
-              <elem>517</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>6</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 768 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.736217 0.289491 0.16966 0.20742 0.497974 2.30383 45.7906 2.90312</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>7</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>714</elem>
-          <elem>1573</elem>
-          <elem>3042</elem>
-          <elem>517</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>7</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 768</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>7</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>714</elem>
-              <elem>1573</elem>
-              <elem>3042</elem>
-              <elem>517</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>7</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 768</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>2.01997 0.307902 0.0944945 0.0578619 0.0864207 0.258951 1.62926 42.0639</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -6441,31 +3325,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>768 0 0 0 0 0 0 0</source_corr>
+          <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -6475,15 +3359,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -6533,26 +3417,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -6590,10 +3474,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -6604,13 +3488,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>768 0 0 0 0 0 0 0</source_corr>
+          <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>45.2087 2.0033 0.363308 0.137776 0.113235 0.202873 0.567659 2.67122</prop_corr>
+          <prop_corr>8.09051 1.15921 0.7265 1.06612</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -6632,23 +3516,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -6691,31 +3575,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 768 0 0 0 0 0 0</source_corr>
+          <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -6725,15 +3609,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -6783,26 +3667,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -6840,10 +3724,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -6854,13 +3738,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 768 0 0 0 0 0 0</source_corr>
+          <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>2.20801 44.0006 2.45887 0.583505 0.224724 0.131407 0.16326 0.423782</prop_corr>
+          <prop_corr>1.05608 7.29033 0.620309 0.52639</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -6882,23 +3766,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -6941,31 +3825,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 768 0 0 0 0 0</source_corr>
+          <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -6975,15 +3859,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:34 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -7033,26 +3917,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -7090,10 +3974,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -7104,13 +3988,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 768 0 0 0 0 0</source_corr>
+          <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.768693 3.08355 46.3362 2.37229 0.508973 0.208248 0.169826 0.294411</prop_corr>
+          <prop_corr>0.0829304 0.167 4.56228 0.243476</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -7132,23 +4016,23 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
           <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
           </Seed>
         </RNG>
         <Input>
@@ -7191,31 +4075,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 768 0 0 0 0</source_corr>
+          <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -7225,15 +4109,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -7283,26 +4167,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>
@@ -7340,10 +4224,10 @@
       </PropSource>
       <RNG>
         <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
         </Seed>
       </RNG>
       <Config_info>
@@ -7354,1013 +4238,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 768 0 0 0 0</source_corr>
+          <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>0</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.179646 0.476395 2.33657 44.4591 2.37304 0.529081 0.200482 0.127218</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>4</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>2781</elem>
-          <elem>1884</elem>
-          <elem>3019</elem>
-          <elem>716</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>4</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 768 0 0 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>4</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>2781</elem>
-              <elem>1884</elem>
-              <elem>3019</elem>
-              <elem>716</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>4</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 768 0 0 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.205486 0.33231 0.833391 3.14406 47.0526 2.73668 0.658254 0.272017</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>5</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>2781</elem>
-          <elem>1884</elem>
-          <elem>3019</elem>
-          <elem>716</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>5</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 768 0 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>5</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>2781</elem>
-              <elem>1884</elem>
-              <elem>3019</elem>
-              <elem>716</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>5</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 768 0 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.138818 0.150404 0.307446 0.81348 3.11359 44.992 1.92303 0.332837</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>6</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>2781</elem>
-          <elem>1884</elem>
-          <elem>3019</elem>
-          <elem>716</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>6</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 768 0</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>6</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>2781</elem>
-              <elem>1884</elem>
-              <elem>3019</elem>
-              <elem>716</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>6</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 768 0</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>0.317556 0.110018 0.0813596 0.13616 0.390346 2.10119 43.5116 1.94265</prop_corr>
-        </Prop_correlator>
-      </propagator>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_source</object_id>
-      </erase_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>zN_prop</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <make_source>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <RNG>
-          <Seed>
-            <elem>1835</elem>
-            <elem>1656</elem>
-            <elem>1907</elem>
-            <elem>1774</elem>
-          </Seed>
-        </RNG>
-        <Input>
-          <Param>
-            <version>6</version><Source>
-      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-      <version>1</version>
-      <N>4</N>
-      <j_decay>3</j_decay>
-      <t_source>7</t_source>
-      <ran_seed>
-        <Seed>
-          <elem>2781</elem>
-          <elem>1884</elem>
-          <elem>3019</elem>
-          <elem>716</elem>
-        </Seed>
-      </ran_seed>
-      <spatial_mask_size>1 1 1</spatial_mask_size>
-      <spatial_mask>
-        <elem>0 0 0</elem>
-      </spatial_mask>
-      <color_mask>0 1 2</color_mask>
-      <spin_mask>0 1 2 3</spin_mask>
-    </Source>
-
-            <j_decay>3</j_decay>
-            <t_source>7</t_source>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 768</source_corr>
-        </Source_correlator>
-      </make_source>
-    </elem>
-    <elem>
-      <propagator>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
-          </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <version>9</version>
-            <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1</xi_0>
-        <nu>1</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 1</boundary>
-      </FermionBC>
-    </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
-</StateInfo>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <source_id>zN_source</source_id>
-            <prop_id>zN_prop</prop_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
-          <pollp>
-            <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
-            </elem>
-            <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
-            </elem>
-            <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
-            </elem>
-            <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_file_info><make_source>
-      <id>0</id>
-    </make_source>
-
-        </Source_file_info>
-        <Source_record_info><MakeSource>
-      <PropSource>
-        <version>6</version>
-        <Source>
-          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
-          <version>1</version>
-          <N>4</N>
-          <j_decay>3</j_decay>
-          <t_source>7</t_source>
-          <ran_seed>
-            <Seed>
-              <elem>2781</elem>
-              <elem>1884</elem>
-              <elem>3019</elem>
-              <elem>716</elem>
-            </Seed>
-          </ran_seed>
-          <spatial_mask_size>1 1 1</spatial_mask_size>
-          <spatial_mask>
-            <elem>0 0 0</elem>
-          </spatial_mask>
-          <color_mask>0 1 2</color_mask>
-          <spin_mask>0 1 2 3</spin_mask>
-        </Source>
-        <j_decay>3</j_decay>
-        <t_source>7</t_source>
-      </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>1656</elem>
-          <elem>1907</elem>
-          <elem>1774</elem>
-        </Seed>
-      </RNG>
-      <Config_info>
-        <weak_field>
-</weak_field>
-      </Config_info>
-    </MakeSource>
-
-        </Source_record_info>
-        <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 768</source_corr>
-        </Source_correlator>
-        <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
-        </Relaxation_Iterations>
-        <Prop_correlator>
-          <prop_corr>2.15951 0.466177 0.188793 0.146681 0.245123 0.635792 2.63197 43.7871</prop_corr>
+          <prop_corr>0.314937 0.161971 0.314345 5.03695</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -8382,15 +4266,15 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.5.1</chroma>
-            <qdp>1.20.5</qdp>
+            <qdp>1.20.6</qdp>
           </code_version>
-          <run_date>21 May 06 00:37:35 EDT</run_date>
+          <run_date>23 May 06 11:45:49 EDT</run_date>
           <Setgeom>
-            <latt_size>4 4 4 8</latt_size>
+            <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
-            <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -8409,10 +4293,6 @@
                     <elem>./zN_prop_q1_t1</elem>
                     <elem>./zN_prop_q1_t2</elem>
                     <elem>./zN_prop_q1_t3</elem>
-                    <elem>./zN_prop_q1_t4</elem>
-                    <elem>./zN_prop_q1_t5</elem>
-                    <elem>./zN_prop_q1_t6</elem>
-                    <elem>./zN_prop_q1_t7</elem>
                   </soln_files>
                 </elem>
                 <elem>
@@ -8421,10 +4301,6 @@
                     <elem>./zN_prop_q2_t1</elem>
                     <elem>./zN_prop_q2_t2</elem>
                     <elem>./zN_prop_q2_t3</elem>
-                    <elem>./zN_prop_q2_t4</elem>
-                    <elem>./zN_prop_q2_t5</elem>
-                    <elem>./zN_prop_q2_t6</elem>
-                    <elem>./zN_prop_q2_t7</elem>
                   </soln_files>
                 </elem>
                 <elem>
@@ -8433,10 +4309,6 @@
                     <elem>./zN_prop_q3_t1</elem>
                     <elem>./zN_prop_q3_t2</elem>
                     <elem>./zN_prop_q3_t3</elem>
-                    <elem>./zN_prop_q3_t4</elem>
-                    <elem>./zN_prop_q3_t5</elem>
-                    <elem>./zN_prop_q3_t6</elem>
-                    <elem>./zN_prop_q3_t7</elem>
                   </soln_files>
                 </elem>
               </operator>
@@ -8454,26 +4326,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994775</w_plaq>
+          <s_plaq>0.99505</s_plaq>
+          <t_plaq>0.994501</t_plaq>
+          <link>0.37906</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>-0.326031</re>
+              <im>-0.0298152</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>-0.325779</re>
+              <im>-0.0289704</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>-0.325954</re>
+              <im>-0.0229221</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.965822</re>
+              <im>-0.00148825</im>
             </elem>
           </pollp>
         </Observables>

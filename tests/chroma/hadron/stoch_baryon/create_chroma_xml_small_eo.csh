@@ -11,8 +11,8 @@ set bc = "1 1 1 1"
 
 set N = 4
 
-set nrow = (4 4 4 8)
-#set nrow = (2 2 2 2)
+set nrow = (2 2 2 4)
+#####set nrow = (4 4 4 8)
 
 set RsdCG = 1.0e-10
 #set RsdCG = 1.0e-1
