@@ -673,7 +673,8 @@ namespace Chroma {
     bool do_fuzzed_disc_loops    = params.param.disconnected_fuzz  ;
     bool do_local_disc_loops     = params.param.disconnected_local  ;
 
-    bool do_stoch_conn_corr      = true;
+    //change this to do stochastic connected loops
+    bool do_stoch_conn_corr      = false;
 
     bool do_fuzzing              = false;
     bool do_variational_spectra  = false;
