@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.25 2006-05-23 18:11:21 edwards Exp $
+# $Id: Makefile.in,v 3.26 2006-05-24 21:10:15 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -188,16 +188,19 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	io/cppacs_io.cc io/param_io.cc io/qprop_io.cc io/readmilc.cc \
 	io/readszin.cc io/smearing_io.cc io/szin_io.cc io/writemilc.cc \
 	io/writeszin.cc io/monomial_io.cc io/hamiltonian_io.cc \
-	meas/eig/eig_spec.cc meas/eig/eig_spec_array.cc \
-	meas/eig/gramschm.cc meas/eig/gramschm_array.cc \
-	meas/eig/ritz.cc meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
+	io/xml_group_reader.cc meas/eig/eig_spec.cc \
+	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
+	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
+	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
 	meas/glue/polylp.cc meas/glue/wilslp.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/mesQl_w.cc \
-	meas/hadron/barQll_w.cc meas/hadron/stoch_var.cc \
+	meas/hadron/barQll_w.cc \
+	meas/hadron/spin_insertion_aggregate.cc \
+	meas/hadron/no_spin_insertion.cc meas/hadron/stoch_var.cc \
 	meas/sinks/pt_sink_smearing.cc meas/sinks/sh_sink_smearing.cc \
 	meas/sinks/sink_smearing_aggregate.cc meas/smear/ape_smear.cc \
 	meas/smear/displacement.cc meas/smear/fuzz_smear.cc \
@@ -369,12 +372,13 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/qqbar_w.cc \
 	meas/hadron/baryon_operator_aggregate_w.cc \
 	meas/hadron/seqsource_aggregate_w.cc \
-	meas/hadron/seqpiontest_w.cc meas/hadron/walldeltaff_w.cc \
-	meas/hadron/walldeltapff_w.cc meas/hadron/wallff_w.cc \
-	meas/hadron/wallnuclff_w.cc meas/hadron/wallpionff_w.cc \
-	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
-	meas/hadron/wall_qprop_w.cc meas/schrfun/sfpcac_w.cc \
-	meas/schrfun/sfcurcor_w.cc \
+	meas/hadron/seqpiontest_w.cc \
+	meas/hadron/simple_spin_insertion_w.cc \
+	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
+	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
+	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
+	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
+	meas/schrfun/sfpcac_w.cc meas/schrfun/sfcurcor_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/d_src_w.cc \
 	meas/sources/p_src_w.cc meas/sources/walfil_w.cc \
@@ -560,14 +564,16 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	readmilc.$(OBJEXT) readszin.$(OBJEXT) smearing_io.$(OBJEXT) \
 	szin_io.$(OBJEXT) writemilc.$(OBJEXT) writeszin.$(OBJEXT) \
 	monomial_io.$(OBJEXT) hamiltonian_io.$(OBJEXT) \
-	eig_spec.$(OBJEXT) eig_spec_array.$(OBJEXT) gramschm.$(OBJEXT) \
+	xml_group_reader.$(OBJEXT) eig_spec.$(OBJEXT) \
+	eig_spec_array.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) axgauge.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
 	mesplq.$(OBJEXT) polylp.$(OBJEXT) wilslp.$(OBJEXT) \
 	hadron_seqsource.$(OBJEXT) mesQl_w.$(OBJEXT) \
-	barQll_w.$(OBJEXT) stoch_var.$(OBJEXT) \
+	barQll_w.$(OBJEXT) spin_insertion_aggregate.$(OBJEXT) \
+	no_spin_insertion.$(OBJEXT) stoch_var.$(OBJEXT) \
 	pt_sink_smearing.$(OBJEXT) sh_sink_smearing.$(OBJEXT) \
 	sink_smearing_aggregate.$(OBJEXT) ape_smear.$(OBJEXT) \
 	displacement.$(OBJEXT) fuzz_smear.$(OBJEXT) \
@@ -699,11 +705,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	photon_seqsrc_w.$(OBJEXT) mesons_w.$(OBJEXT) qqq_w.$(OBJEXT) \
 	qqbar_w.$(OBJEXT) baryon_operator_aggregate_w.$(OBJEXT) \
 	seqsource_aggregate_w.$(OBJEXT) seqpiontest_w.$(OBJEXT) \
-	walldeltaff_w.$(OBJEXT) walldeltapff_w.$(OBJEXT) \
-	wallff_w.$(OBJEXT) wallnuclff_w.$(OBJEXT) \
-	wallpionff_w.$(OBJEXT) wallrhoff_w.$(OBJEXT) \
-	wallrhopiff_w.$(OBJEXT) wall_qprop_w.$(OBJEXT) \
-	sfpcac_w.$(OBJEXT) sfcurcor_w.$(OBJEXT) \
+	simple_spin_insertion_w.$(OBJEXT) walldeltaff_w.$(OBJEXT) \
+	walldeltapff_w.$(OBJEXT) wallff_w.$(OBJEXT) \
+	wallnuclff_w.$(OBJEXT) wallpionff_w.$(OBJEXT) \
+	wallrhoff_w.$(OBJEXT) wallrhopiff_w.$(OBJEXT) \
+	wall_qprop_w.$(OBJEXT) sfpcac_w.$(OBJEXT) sfcurcor_w.$(OBJEXT) \
 	deriv_quark_displacement_w.$(OBJEXT) \
 	gamma_displacement_w.$(OBJEXT) d_src_w.$(OBJEXT) \
 	p_src_w.$(OBJEXT) walfil_w.$(OBJEXT) \
@@ -892,8 +898,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	io/param_io.h io/qprop_io.h io/readmilc.h io/readcppacs.h \
 	io/cppacs_io.h io/readszin.h io/smearing_io.h io/szin_io.h \
 	io/writemilc.h io/writeszin.h io/monomial_io.h \
-	io/hamiltonian_io.h meas/eig/eig.h meas/eig/gramschm.h \
-	meas/eig/gramschm_array.h meas/eig/ritz.h \
+	io/hamiltonian_io.h io/xml_group_reader.h meas/eig/eig.h \
+	meas/eig/gramschm.h meas/eig/gramschm_array.h meas/eig/ritz.h \
 	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
@@ -903,9 +909,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h meas/hadron/hadron_seqsource.h \
 	meas/hadron/mesQl_w.h meas/hadron/barQll_w.h \
-	meas/hadron/stoch_var.h meas/meas.h meas/pbp/pbp.h \
-	meas/schrfun/schrfun.h meas/sinks/sinks.h \
-	meas/sinks/pt_sink_smearing.h meas/sinks/sh_sink_smearing.h \
+	meas/hadron/spin_insertion.h \
+	meas/hadron/spin_insertion_factory.h \
+	meas/hadron/spin_insertion_aggregate.h \
+	meas/hadron/no_spin_insertion.h meas/hadron/stoch_var.h \
+	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
+	meas/sinks/sinks.h meas/sinks/pt_sink_smearing.h \
+	meas/sinks/sh_sink_smearing.h \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
@@ -1126,7 +1136,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/baryon_operator_aggregate_w.h \
 	meas/hadron/baryon_operator_factory_w.h \
 	meas/hadron/seqsource_aggregate_w.h \
-	meas/hadron/seqsource_factory_w.h meas/hadron/qqq_w.h \
+	meas/hadron/seqsource_factory_w.h \
+	meas/hadron/simple_spin_insertion_w.h meas/hadron/qqq_w.h \
 	meas/hadron/qqbar_w.h meas/hadron/loops_w.h \
 	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
@@ -1514,8 +1525,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	io/param_io.h io/qprop_io.h io/readmilc.h io/readcppacs.h \
 	io/cppacs_io.h io/readszin.h io/smearing_io.h io/szin_io.h \
 	io/writemilc.h io/writeszin.h io/monomial_io.h \
-	io/hamiltonian_io.h meas/eig/eig.h meas/eig/gramschm.h \
-	meas/eig/gramschm_array.h meas/eig/ritz.h \
+	io/hamiltonian_io.h io/xml_group_reader.h meas/eig/eig.h \
+	meas/eig/gramschm.h meas/eig/gramschm_array.h meas/eig/ritz.h \
 	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
@@ -1525,9 +1536,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h meas/hadron/hadron_seqsource.h \
 	meas/hadron/mesQl_w.h meas/hadron/barQll_w.h \
-	meas/hadron/stoch_var.h meas/meas.h meas/pbp/pbp.h \
-	meas/schrfun/schrfun.h meas/sinks/sinks.h \
-	meas/sinks/pt_sink_smearing.h meas/sinks/sh_sink_smearing.h \
+	meas/hadron/spin_insertion.h \
+	meas/hadron/spin_insertion_factory.h \
+	meas/hadron/spin_insertion_aggregate.h \
+	meas/hadron/no_spin_insertion.h meas/hadron/stoch_var.h \
+	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
+	meas/sinks/sinks.h meas/sinks/pt_sink_smearing.h \
+	meas/sinks/sh_sink_smearing.h \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h meas/smear/ape_smear.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
@@ -1748,7 +1763,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/baryon_operator_aggregate_w.h \
 	meas/hadron/baryon_operator_factory_w.h \
 	meas/hadron/seqsource_aggregate_w.h \
-	meas/hadron/seqsource_factory_w.h meas/hadron/qqq_w.h \
+	meas/hadron/seqsource_factory_w.h \
+	meas/hadron/simple_spin_insertion_w.h meas/hadron/qqq_w.h \
 	meas/hadron/qqbar_w.h meas/hadron/loops_w.h \
 	meas/hadron/wall_qprop_w.h meas/hadron/wallff_w.h \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
@@ -2024,16 +2040,19 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	io/cppacs_io.cc io/param_io.cc io/qprop_io.cc io/readmilc.cc \
 	io/readszin.cc io/smearing_io.cc io/szin_io.cc io/writemilc.cc \
 	io/writeszin.cc io/monomial_io.cc io/hamiltonian_io.cc \
-	meas/eig/eig_spec.cc meas/eig/eig_spec_array.cc \
-	meas/eig/gramschm.cc meas/eig/gramschm_array.cc \
-	meas/eig/ritz.cc meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
+	io/xml_group_reader.cc meas/eig/eig_spec.cc \
+	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
+	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
+	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
 	meas/glue/polylp.cc meas/glue/wilslp.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/mesQl_w.cc \
-	meas/hadron/barQll_w.cc meas/hadron/stoch_var.cc \
+	meas/hadron/barQll_w.cc \
+	meas/hadron/spin_insertion_aggregate.cc \
+	meas/hadron/no_spin_insertion.cc meas/hadron/stoch_var.cc \
 	meas/sinks/pt_sink_smearing.cc meas/sinks/sh_sink_smearing.cc \
 	meas/sinks/sink_smearing_aggregate.cc meas/smear/ape_smear.cc \
 	meas/smear/displacement.cc meas/smear/fuzz_smear.cc \
@@ -2205,12 +2224,13 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/qqbar_w.cc \
 	meas/hadron/baryon_operator_aggregate_w.cc \
 	meas/hadron/seqsource_aggregate_w.cc \
-	meas/hadron/seqpiontest_w.cc meas/hadron/walldeltaff_w.cc \
-	meas/hadron/walldeltapff_w.cc meas/hadron/wallff_w.cc \
-	meas/hadron/wallnuclff_w.cc meas/hadron/wallpionff_w.cc \
-	meas/hadron/wallrhoff_w.cc meas/hadron/wallrhopiff_w.cc \
-	meas/hadron/wall_qprop_w.cc meas/schrfun/sfpcac_w.cc \
-	meas/schrfun/sfcurcor_w.cc \
+	meas/hadron/seqpiontest_w.cc \
+	meas/hadron/simple_spin_insertion_w.cc \
+	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
+	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
+	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
+	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
+	meas/schrfun/sfpcac_w.cc meas/schrfun/sfcurcor_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/d_src_w.cc \
 	meas/sources/p_src_w.cc meas/sources/walfil_w.cc \
@@ -2665,6 +2685,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_link_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_quark_displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_quark_smearing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_spin_insertion.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial5d_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
@@ -2795,6 +2816,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_gaugebc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_gaugestate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_quark_displacement.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_spin_insertion_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smear2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sink_smearing_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smearing_io.Po@am__quote@
@@ -2802,6 +2824,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sn_jacob_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source_const_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/source_smearing_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spin_insertion_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_phases_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_propShift_s.Po@am__quote@
@@ -2888,6 +2911,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml_group_reader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml_write_obj_funcmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/z2_src.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zN_src.Po@am__quote@
@@ -4224,6 +4248,20 @@ hamiltonian_io.obj: io/hamiltonian_io.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hamiltonian_io.obj `if test -f 'io/hamiltonian_io.cc'; then $(CYGPATH_W) 'io/hamiltonian_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/hamiltonian_io.cc'; fi`
 
+xml_group_reader.o: io/xml_group_reader.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xml_group_reader.o -MD -MP -MF "$(DEPDIR)/xml_group_reader.Tpo" -c -o xml_group_reader.o `test -f 'io/xml_group_reader.cc' || echo '$(srcdir)/'`io/xml_group_reader.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/xml_group_reader.Tpo" "$(DEPDIR)/xml_group_reader.Po"; else rm -f "$(DEPDIR)/xml_group_reader.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/xml_group_reader.cc' object='xml_group_reader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xml_group_reader.o `test -f 'io/xml_group_reader.cc' || echo '$(srcdir)/'`io/xml_group_reader.cc
+
+xml_group_reader.obj: io/xml_group_reader.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xml_group_reader.obj -MD -MP -MF "$(DEPDIR)/xml_group_reader.Tpo" -c -o xml_group_reader.obj `if test -f 'io/xml_group_reader.cc'; then $(CYGPATH_W) 'io/xml_group_reader.cc'; else $(CYGPATH_W) '$(srcdir)/io/xml_group_reader.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/xml_group_reader.Tpo" "$(DEPDIR)/xml_group_reader.Po"; else rm -f "$(DEPDIR)/xml_group_reader.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/xml_group_reader.cc' object='xml_group_reader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o xml_group_reader.obj `if test -f 'io/xml_group_reader.cc'; then $(CYGPATH_W) 'io/xml_group_reader.cc'; else $(CYGPATH_W) '$(srcdir)/io/xml_group_reader.cc'; fi`
+
 eig_spec.o: meas/eig/eig_spec.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eig_spec.o -MD -MP -MF "$(DEPDIR)/eig_spec.Tpo" -c -o eig_spec.o `test -f 'meas/eig/eig_spec.cc' || echo '$(srcdir)/'`meas/eig/eig_spec.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/eig_spec.Tpo" "$(DEPDIR)/eig_spec.Po"; else rm -f "$(DEPDIR)/eig_spec.Tpo"; exit 1; fi
@@ -4517,6 +4555,34 @@ barQll_w.obj: meas/hadron/barQll_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/barQll_w.cc' object='barQll_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o barQll_w.obj `if test -f 'meas/hadron/barQll_w.cc'; then $(CYGPATH_W) 'meas/hadron/barQll_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/barQll_w.cc'; fi`
+
+spin_insertion_aggregate.o: meas/hadron/spin_insertion_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT spin_insertion_aggregate.o -MD -MP -MF "$(DEPDIR)/spin_insertion_aggregate.Tpo" -c -o spin_insertion_aggregate.o `test -f 'meas/hadron/spin_insertion_aggregate.cc' || echo '$(srcdir)/'`meas/hadron/spin_insertion_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/spin_insertion_aggregate.Tpo" "$(DEPDIR)/spin_insertion_aggregate.Po"; else rm -f "$(DEPDIR)/spin_insertion_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/spin_insertion_aggregate.cc' object='spin_insertion_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o spin_insertion_aggregate.o `test -f 'meas/hadron/spin_insertion_aggregate.cc' || echo '$(srcdir)/'`meas/hadron/spin_insertion_aggregate.cc
+
+spin_insertion_aggregate.obj: meas/hadron/spin_insertion_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT spin_insertion_aggregate.obj -MD -MP -MF "$(DEPDIR)/spin_insertion_aggregate.Tpo" -c -o spin_insertion_aggregate.obj `if test -f 'meas/hadron/spin_insertion_aggregate.cc'; then $(CYGPATH_W) 'meas/hadron/spin_insertion_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/spin_insertion_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/spin_insertion_aggregate.Tpo" "$(DEPDIR)/spin_insertion_aggregate.Po"; else rm -f "$(DEPDIR)/spin_insertion_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/spin_insertion_aggregate.cc' object='spin_insertion_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o spin_insertion_aggregate.obj `if test -f 'meas/hadron/spin_insertion_aggregate.cc'; then $(CYGPATH_W) 'meas/hadron/spin_insertion_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/spin_insertion_aggregate.cc'; fi`
+
+no_spin_insertion.o: meas/hadron/no_spin_insertion.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT no_spin_insertion.o -MD -MP -MF "$(DEPDIR)/no_spin_insertion.Tpo" -c -o no_spin_insertion.o `test -f 'meas/hadron/no_spin_insertion.cc' || echo '$(srcdir)/'`meas/hadron/no_spin_insertion.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/no_spin_insertion.Tpo" "$(DEPDIR)/no_spin_insertion.Po"; else rm -f "$(DEPDIR)/no_spin_insertion.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/no_spin_insertion.cc' object='no_spin_insertion.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o no_spin_insertion.o `test -f 'meas/hadron/no_spin_insertion.cc' || echo '$(srcdir)/'`meas/hadron/no_spin_insertion.cc
+
+no_spin_insertion.obj: meas/hadron/no_spin_insertion.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT no_spin_insertion.obj -MD -MP -MF "$(DEPDIR)/no_spin_insertion.Tpo" -c -o no_spin_insertion.obj `if test -f 'meas/hadron/no_spin_insertion.cc'; then $(CYGPATH_W) 'meas/hadron/no_spin_insertion.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/no_spin_insertion.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/no_spin_insertion.Tpo" "$(DEPDIR)/no_spin_insertion.Po"; else rm -f "$(DEPDIR)/no_spin_insertion.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/no_spin_insertion.cc' object='no_spin_insertion.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o no_spin_insertion.obj `if test -f 'meas/hadron/no_spin_insertion.cc'; then $(CYGPATH_W) 'meas/hadron/no_spin_insertion.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/no_spin_insertion.cc'; fi`
 
 stoch_var.o: meas/hadron/stoch_var.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stoch_var.o -MD -MP -MF "$(DEPDIR)/stoch_var.Tpo" -c -o stoch_var.o `test -f 'meas/hadron/stoch_var.cc' || echo '$(srcdir)/'`meas/hadron/stoch_var.cc; \
@@ -7443,6 +7509,20 @@ seqpiontest_w.obj: meas/hadron/seqpiontest_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/seqpiontest_w.cc' object='seqpiontest_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o seqpiontest_w.obj `if test -f 'meas/hadron/seqpiontest_w.cc'; then $(CYGPATH_W) 'meas/hadron/seqpiontest_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/seqpiontest_w.cc'; fi`
+
+simple_spin_insertion_w.o: meas/hadron/simple_spin_insertion_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_spin_insertion_w.o -MD -MP -MF "$(DEPDIR)/simple_spin_insertion_w.Tpo" -c -o simple_spin_insertion_w.o `test -f 'meas/hadron/simple_spin_insertion_w.cc' || echo '$(srcdir)/'`meas/hadron/simple_spin_insertion_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_spin_insertion_w.Tpo" "$(DEPDIR)/simple_spin_insertion_w.Po"; else rm -f "$(DEPDIR)/simple_spin_insertion_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/simple_spin_insertion_w.cc' object='simple_spin_insertion_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_spin_insertion_w.o `test -f 'meas/hadron/simple_spin_insertion_w.cc' || echo '$(srcdir)/'`meas/hadron/simple_spin_insertion_w.cc
+
+simple_spin_insertion_w.obj: meas/hadron/simple_spin_insertion_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_spin_insertion_w.obj -MD -MP -MF "$(DEPDIR)/simple_spin_insertion_w.Tpo" -c -o simple_spin_insertion_w.obj `if test -f 'meas/hadron/simple_spin_insertion_w.cc'; then $(CYGPATH_W) 'meas/hadron/simple_spin_insertion_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/simple_spin_insertion_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_spin_insertion_w.Tpo" "$(DEPDIR)/simple_spin_insertion_w.Po"; else rm -f "$(DEPDIR)/simple_spin_insertion_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/simple_spin_insertion_w.cc' object='simple_spin_insertion_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_spin_insertion_w.obj `if test -f 'meas/hadron/simple_spin_insertion_w.cc'; then $(CYGPATH_W) 'meas/hadron/simple_spin_insertion_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/simple_spin_insertion_w.cc'; fi`
 
 walldeltaff_w.o: meas/hadron/walldeltaff_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walldeltaff_w.o -MD -MP -MF "$(DEPDIR)/walldeltaff_w.Tpo" -c -o walldeltaff_w.o `test -f 'meas/hadron/walldeltaff_w.cc' || echo '$(srcdir)/'`meas/hadron/walldeltaff_w.cc; \
