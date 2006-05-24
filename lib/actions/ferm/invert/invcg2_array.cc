@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: invcg2_array.cc,v 3.1 2006-05-24 06:31:59 kostas Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -221,6 +221,22 @@ namespace Chroma
 	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 	flopcount.report("invcg2_array", swatch.getTimeInSeconds());
 	revertFromFastMemoryHint(psi,true);
+
+
+	//Check the true residual
+	{
+	  M(mp, psi, PLUS);
+	  M(mmp, mp, MINUS);
+	  Double true_res(0);
+	  for(int n=0; n < N; ++n){
+	    Double norm_r = norm2(chi[n] - mmp[n],s) ;
+	    QDPIO::cout<<"True residual "<<" r[" << n << "] = "<< sqrt(norm_r/chi_sq)<<endl;
+	    true_res += norm_r ;
+	  }
+	  
+	  QDPIO::cout << "True residual r = " << sqrt(true_res/chi_sq) << endl;
+	}
+
 	END_CODE();
 	return;
       }
@@ -242,6 +258,8 @@ namespace Chroma
     QDPIO::cerr << "Nonconvergence Warning" << endl;
     flopcount.report("invcg2_array", swatch.getTimeInSeconds());
     revertFromFastMemoryHint(psi,true);
+
+   
     END_CODE();
  
   }
