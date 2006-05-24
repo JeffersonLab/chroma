@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_quark_displacement_w.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: deriv_quark_displacement_w.h,v 3.1 2006-05-24 21:08:30 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  *
@@ -57,6 +57,80 @@ namespace Chroma
       int              deriv_dir;            /*!< Polarization direction */
       int              deriv_length;         /*!< Displacement length in derivative */
     };
+
+
+    //! Construct (right Nabla) source
+    /*!
+     * \ingroup sources
+     *
+     * Operator is  Nabla
+     * The sink interpolator structure is
+     * \f$\Gamma_f \equiv \nabla_i\f$
+     */
+    template<typename T>
+    class RightNablaDisplace : public QuarkDisplacement<T>
+    {
+    public:
+      //! Full constructor
+      RightNablaDisplace(const ParamsDir& p) : params(p) {}
+
+      //! Displace the quark
+      void operator()(T& quark, 
+		      const multi1d<LatticeColorMatrix>& u,
+		      enum PlusMinus isign) const;
+
+    private:
+      ParamsDir  params;   /*!< source params */
+    };
+
+    //! Construct (right D) source
+    /*!
+     * \ingroup sources
+     *
+     * Operator is  D
+     * The sink interpolator structure is
+     * \f$\Gamma_f \equiv D_i\f$
+     */
+    template<typename T>
+    class RightDDisplace : public QuarkDisplacement<T>
+    {
+    public:
+      //! Full constructor
+      RightDDisplace(const ParamsDir& p) : params(p) {}
+
+      //! Displace the quark
+      void operator()(T& quark, 
+		      const multi1d<LatticeColorMatrix>& u,
+		      enum PlusMinus isign) const;
+
+    private:
+      ParamsDir  params;   /*!< source params */
+    };
+
+    //! Construct (right B) source
+    /*!
+     * \ingroup sources
+     *
+     * Operator is  B
+     * The sink interpolator structure is
+     * \f$\Gamma_f \equiv B_i\f$
+     */
+    template<typename T>
+    class RightBDisplace : public QuarkDisplacement<T>
+    {
+    public:
+      //! Full constructor
+      RightBDisplace(const ParamsDir& p) : params(p) {}
+
+      //! Displace the quark
+      void operator()(T& quark, 
+		      const multi1d<LatticeColorMatrix>& u,
+		      enum PlusMinus isign) const;
+
+    private:
+      ParamsDir  params;   /*!< source params */
+    };
+
 
 
     //! Construct (PionxNabla_T1) source

@@ -1,4 +1,4 @@
-// $Id: deriv_quark_displacement_w.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: deriv_quark_displacement_w.cc,v 3.1 2006-05-24 21:08:30 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -181,6 +181,29 @@ namespace Chroma
 
 
       //-------------------- callback functions ---------------------------------------
+
+      //! Construct (right Nabla) source
+      QuarkDisplacement<LatticePropagator>* rightNablaDisplace(XMLReader& xml_in,
+							       const std::string& path)
+      {
+	return new RightNablaDisplace<LatticePropagator>(ParamsDir(xml_in, path));
+      }
+
+      //! Construct (right D) source
+      QuarkDisplacement<LatticePropagator>* rightDDisplace(XMLReader& xml_in,
+							   const std::string& path)
+      {
+	return new RightDDisplace<LatticePropagator>(ParamsDir(xml_in, path));
+      }
+
+      //! Construct (right B) source
+      QuarkDisplacement<LatticePropagator>* rightBDisplace(XMLReader& xml_in,
+							   const std::string& path)
+      {
+	return new RightBDisplace<LatticePropagator>(ParamsDir(xml_in, path));
+      }
+
+
 
       //! Construct (PionxNabla_T1) source
       QuarkDisplacement<LatticePropagator>* mesPionxNablaT1Displace(XMLReader& xml_in,
@@ -482,6 +505,72 @@ namespace Chroma
     }
 
 
+    // Construct (right Nabla) source
+    // See corresponding .h file for doxygen comments
+    template<>
+    void
+    RightNablaDisplace<LatticePropagator>::operator()(LatticePropagator& tmp,
+						      const multi1d<LatticeColorMatrix>& u,
+						      enum PlusMinus isign) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+      int length = plusMinus(isign) * params.deriv_length;
+
+      // \f$\Gamma_f \equiv \nabla_i\f$
+      fin = rightNabla(tmp,u,params.deriv_dir,length);
+      tmp = fin;
+
+      END_CODE();
+    }
+
+
+    // Construct (right D) source
+    // See corresponding .h file for doxygen comments
+    template<>
+    void
+    RightDDisplace<LatticePropagator>::operator()(LatticePropagator& tmp,
+						  const multi1d<LatticeColorMatrix>& u,
+						  enum PlusMinus isign) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+      int length = plusMinus(isign) * params.deriv_length;
+
+      // \f$\Gamma_f \equiv D_i\f$
+      fin = rightD(tmp,u,params.deriv_dir,length);
+      tmp = fin;
+
+      END_CODE();
+    }
+
+
+    // Construct (right B) source
+    // See corresponding .h file for doxygen comments
+    template<>
+    void
+    RightBDisplace<LatticePropagator>::operator()(LatticePropagator& tmp,
+						  const multi1d<LatticeColorMatrix>& u,
+						  enum PlusMinus isign) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+      int length = plusMinus(isign) * params.deriv_length;
+
+      // \f$\Gamma_f \equiv B_i\f$
+      fin = rightB(tmp,u,params.deriv_dir,length);
+      tmp = fin;
+
+      END_CODE();
+    }
+
+
+
+
+
     // Construct (PionxNabla_T1) source
     // See corresponding .h file for doxygen comments
     template<>
@@ -496,7 +585,7 @@ namespace Chroma
       const int G5 = Ns*Ns-1;
       int length = plusMinus(isign) * params.deriv_length;
 
-      // \f$\Gamma_f \equiv \nabla_i\f$
+      // \f$\Gamma_f \equiv \gamma_5\nabla_i\f$
       fin = Gamma(G5) * rightNabla(tmp,u,params.deriv_dir,length);
       tmp = fin;
 
@@ -1211,6 +1300,16 @@ namespace Chroma
       bool foo = true;
 
       //! Register all the factories
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("NABLA-DERIV"),
+									   rightNablaDisplace);
+
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("D-DERIV"),
+									   rightDDisplace);
+
+      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B-DERIV"),
+									   rightBDisplace);
+
+
       foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxNABLA_T1-DERIV"),
 									   mesPionxNablaT1Displace);
 
