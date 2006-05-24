@@ -8,7 +8,7 @@
       <chroma>3.5.1</chroma>
       <qdp>1.20.6</qdp>
     </code_version>
-    <run_date>23 May 06 17:32:38 BST</run_date>
+    <run_date>24 May 06 17:21:30 BST</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -822,21 +822,21 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.801827</time_in_sec>
+    <time_in_sec>0.816925</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>649</n_count>
-    <time_in_sec>0.810488</time_in_sec>
+    <time_in_sec>0.811066</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.803306</time_in_sec>
+    <time_in_sec>0.800075</time_in_sec>
   </Qprop>
   <Pseudoscalars>
     <Lsink_Lsrc>
@@ -946,42 +946,24 @@
       </Here_are_all_16_scalars>
     </Lsink_Lsrc>
   </Scalars>
-  <Vectors>
-    <Lsink_Lsrc>
-      <Vector_meson>
-        <gamma_x_CROSS_gamma_x>
-          <Vec>-0.00865718 0.00131036 -0.00450754 0.0123699</Vec>
-        </gamma_x_CROSS_gamma_x>
-        <gamma_y_CROSS_gamma_y>
-          <Vec>0.00823255 -0.0040631 0.00866118 0.00376067</Vec>
-        </gamma_y_CROSS_gamma_y>
-        <gamma_z_CROSS_gamma_z>
-          <Vec>0.0208692 0.0033262 0.00110376 -0.000616105</Vec>
-        </gamma_z_CROSS_gamma_z>
-        <M_VT>
-          <Vec>-0.0170136 0.00210079 0.0037226 0.000524698</Vec>
-        </M_VT>
-      </Vector_meson>
-    </Lsink_Lsrc>
-  </Vectors>
   <Computation_4link_pseudoscalar>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>644</n_count>
-      <time_in_sec>0.804775</time_in_sec>
+      <time_in_sec>0.806115</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>640</n_count>
-      <time_in_sec>0.799939</time_in_sec>
+      <time_in_sec>0.79934</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>618</n_count>
-      <time_in_sec>0.773402</time_in_sec>
+      <time_in_sec>0.772239</time_in_sec>
     </Qprop>
     <SingletPseudoscalar>
       <gamma5_CROSS_one>
@@ -1021,42 +1003,42 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.800035</time_in_sec>
+    <time_in_sec>0.79948</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.799893</time_in_sec>
+    <time_in_sec>0.798226</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>636</n_count>
-    <time_in_sec>0.794957</time_in_sec>
+    <time_in_sec>0.794182</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.799705</time_in_sec>
+    <time_in_sec>0.800067</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.799609</time_in_sec>
+    <time_in_sec>0.798866</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>636</n_count>
-    <time_in_sec>0.795721</time_in_sec>
+    <time_in_sec>0.793337</time_in_sec>
   </Qprop>
   <baryon_correlators>
     <source_time>0</source_time>
