@@ -1,3 +1,9 @@
+05/24/2006 -- Robert Edwards
+	Version 3.6.0. New format for inline_mesonspec. Added spin insertions. 
+        Overhauled inline_stoch_baryon. Removed quark_smear_first/last from
+        shell source/sink construction/smearing. Now print true residuals
+        in some inversion routines.
+
 05/19/2006 -- Robert Edwards
 	Version 3.5.1. Added no-quark-smearing.
 
