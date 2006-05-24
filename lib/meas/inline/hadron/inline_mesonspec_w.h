@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mesonspec_w.h,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_mesonspec_w.h,v 3.1 2006-05-24 21:09:41 edwards Exp $
 /*! \file
  * \brief Inline meson spectrum calculations
  *
@@ -11,6 +11,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -40,10 +41,22 @@ namespace Chroma
     struct NamedObject_t
     {
       std::string    gauge_id; 
+
       struct Props_t
       {
-	multi1d<std::string> sink_ids;
+	struct Sinks_t
+	{
+	  std::string   first_id;                    /*!< first quark */
+	  std::string   second_id;                   /*!< second quark (this one is adjointed) */
+
+	  GroupXML_t    source_spin_insertion;       /*!< xml string holding source spin insertion params */
+	  GroupXML_t    sink_spin_insertion;         /*!< xml string holding sink spin insertion params */
+
+	  PlusMinus     operation;
+	};
+	multi1d<Sinks_t> sink_ids;
       };
+
       multi1d<Props_t> prop_ids;
     } named_obj;
 

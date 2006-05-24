@@ -1,19 +1,24 @@
-// $Id: inline_mesonspec_w.cc,v 3.2 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.3 2006-05-24 21:09:41 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
  * Meson spectrum calculations
  */
 
+#include "handle.h"
 #include "meas/inline/hadron/inline_mesonspec_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "io/enum_io/enum_plusminus_io.h"
 #include "io/param_io.h"
 #include "io/qprop_io.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
+
+#include "meas/hadron/spin_insertion_factory.h"
+#include "meas/hadron/spin_insertion_aggregate.h"
 
 namespace Chroma 
 { 
@@ -26,7 +31,19 @@ namespace Chroma
     }
 
     const std::string name = "MESON_SPECTRUM";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+
+    //! Register all the factories
+    bool registerAll()
+    {
+      bool foo = true;
+      foo &= SpinInsertionEnv::registered;
+      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+      return foo;
+    }
+
+    //! Register the source construction
+    const bool registered = registerAll();
+
   };
 
 
@@ -64,6 +81,34 @@ namespace Chroma
 
     write(xml, "mom2_max", param.mom2_max);
     write(xml, "avg_equiv_mom", param.avg_equiv_mom);
+
+    pop(xml);
+  }
+
+
+  //! Propagator input
+  void read(XMLReader& xml, const string& path, InlineMesonSpecParams::NamedObject_t::Props_t::Sinks_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "first_id", input.first_id);
+    read(inputtop, "second_id", input.second_id);
+    read(inputtop, "operation", input.operation);
+
+    input.source_spin_insertion = readXMLGroup(inputtop, "SourceSpinInsertion", "SpinInsertionType");
+    input.sink_spin_insertion   = readXMLGroup(inputtop, "SinkSpinInsertion", "SpinInsertionType");
+  }
+
+  //! Propagator output
+  void write(XMLWriter& xml, const string& path, const InlineMesonSpecParams::NamedObject_t::Props_t::Sinks_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "first_id", input.first_id);
+    write(xml, "second_id", input.second_id);
+    xml << input.source_spin_insertion.xml;
+    xml << input.sink_spin_insertion.xml;
+    write(xml, "operation", input.operation);
 
     pop(xml);
   }
@@ -143,6 +188,7 @@ namespace Chroma
   }
 
 
+  // Writer
   void
   InlineMesonSpecParams::write(XMLWriter& xml_out, const std::string& path) 
   {
@@ -154,6 +200,147 @@ namespace Chroma
 
     pop(xml_out);
   }
+
+
+  // Anonymous namespace
+  namespace 
+  {
+    //! Useful structure holding sink props
+    struct SinkPropContainer_t
+    {
+      ForwardProp_t prop_header;
+      LatticePropagator quark_propagator;
+      Real Mass;
+    
+      multi1d<int> bc; 
+    
+      // Now loop over the various fermion masses
+      string source_type;
+      string source_disp_type;
+      string sink_type;
+      string sink_disp_type;
+    };
+
+
+    //! Useful structure holding sink props
+    struct AllSinks_t
+    {
+      SinkPropContainer_t  sink_prop_1;
+      SinkPropContainer_t  sink_prop_2;
+    };
+
+
+    //! Read a sink prop
+    void readSinkProp(SinkPropContainer_t& s, const std::string& id)
+    {
+      try
+      {
+	// Snarf the data into a copy
+	s.quark_propagator =
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(id);
+	
+	// Snarf the prop info. This is will throw if the prop_id is not there
+	XMLReader prop_file_xml, prop_record_xml;
+	TheNamedObjMap::Instance().get(id).getFileXML(prop_file_xml);
+	TheNamedObjMap::Instance().get(id).getRecordXML(prop_record_xml);
+   
+	// Try to invert this record XML into a ChromaProp struct
+	// Also pull out the id of this source
+	{
+	  read(prop_record_xml, "/SinkSmear", s.prop_header);
+	  
+	  read(prop_record_xml, "/SinkSmear/PropSource/Source/SourceType", s.source_type);
+	  read(prop_record_xml, "/SinkSmear/PropSource/Source/Displacement/DisplacementType", 
+	       s.source_disp_type);
+
+	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/SinkType", s.sink_type);
+	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/Displacement/DisplacementType", 
+	       s.sink_disp_type);
+	}
+      }
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << InlineMesonSpecEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineMesonSpecEnv::name << ": error message: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+
+
+      // Derived from input prop
+      // Hunt around to find the mass
+      // NOTE: this may be problematic in the future if actions are used with no
+      // clear def. of a Mass
+      std::istringstream  xml_s(s.prop_header.prop_header.fermact);
+      XMLReader  fermacttop(xml_s);
+      const string fermact_path = "/FermionAction";
+      string fermact;
+      
+      QDPIO::cout << "Try action and mass" << endl;
+      try
+      {
+	XMLReader top(fermacttop, fermact_path);
+
+	read(top, "FermAct", fermact);
+
+	// Yuk - need to hop some hoops. This should be isolated.
+	if (top.count("Mass") != 0) 
+	{
+	  read(top, "Mass", s.Mass);
+	}
+	else if (top.count("Kappa") != 0)
+	{
+	  Real Kappa;
+	  read(top, "Kappa", Kappa);
+	  s.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+	}
+	else if (top.count("m_q") != 0) 
+	{
+	  read(top, "m_q", s.Mass);
+	}
+	else
+	{
+	  QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
+	  throw std::string("Neither Mass nor Kappa found");
+	}
+	s.bc = getFermActBoundary(s.prop_header.prop_header.fermact);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << "Error reading fermact or mass: " << e << endl;
+	QDP_abort(1);
+      }
+    
+      QDPIO::cout << "FermAct = " << fermact << endl;
+      QDPIO::cout << "Mass = " << s.Mass << endl;
+    }
+
+
+    //! Read all sinks
+    void readAllSinks(multi1d<AllSinks_t>& s, 
+		      multi1d<InlineMesonSpecParams::NamedObject_t::Props_t::Sinks_t> sink_ids)
+    {
+      s.resize(sink_ids.size());
+
+      for(int i=0; i < sink_ids.size(); ++i)
+      {
+	QDPIO::cout << "Attempt to parse forward propagator = " << sink_ids[i].first_id << endl;
+	readSinkProp(s[i].sink_prop_1, sink_ids[i].first_id);
+	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+
+	QDPIO::cout << "Attempt to parse forward propagator = " << sink_ids[i].second_id << endl;
+	readSinkProp(s[i].sink_prop_2, sink_ids[i].second_id);
+	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+      }
+    }
+
+  } // namespace anonymous
+
 
 
   // Function call
@@ -179,6 +366,7 @@ namespace Chroma
       func(update_no, xml_out);
     }
   }
+
 
 
   // Real work done here
@@ -234,7 +422,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 1);
+    write(xml_out, "out_version", 2);
     pop(xml_out);
 
 
@@ -245,147 +433,41 @@ namespace Chroma
     push(xml_out, "Wilson_hadron_measurements");
 
     // Now loop over the various fermion masses
-    for (int lpair=0; lpair < params.named_obj.prop_ids.size(); ++lpair)
+    for(int lpair=0; lpair < params.named_obj.prop_ids.size(); ++lpair)
     {
       const InlineMesonSpecParams::NamedObject_t::Props_t named_obj = params.named_obj.prop_ids[lpair];
 
       push(xml_out, "elem");
 
-      // Require 2 props
-      const int Nprops = 2;
-      if (named_obj.sink_ids.size() != Nprops)
-      {
-	QDPIO::cerr << InlineMesonSpecEnv::name << ": needs a 2 element array of sink propagators" << endl;
-	QDP_abort(2);
-      }
-
-      multi1d<ForwardProp_t> prop_header(Nprops);
-      multi1d<LatticePropagator> quark_propagator(Nprops);
-      multi1d<Real> Mass(Nprops);
-    
-      multi2d<int> bc(Nprops, 4); 
-    
-      // Now loop over the various fermion masses
-      multi1d<string> source_type(Nprops);
-      multi1d<string> source_disp_type(Nprops);
-      multi1d<string> sink_type(Nprops);
-      multi1d<string> sink_disp_type(Nprops);
-
-      for(int loop=0; loop < Nprops; ++loop)
-      {
-	QDPIO::cout << "Attempt to parse forward propagator = " << named_obj.sink_ids[loop] << endl;
-	try
-	{
-	  // Snarf the data into a copy
-	  quark_propagator[loop] =
-	    TheNamedObjMap::Instance().getData<LatticePropagator>(named_obj.sink_ids[loop]);
-	
-	  // Snarf the prop info. This is will throw if the prop_id is not there
-	  XMLReader prop_file_xml, prop_record_xml;
-	  TheNamedObjMap::Instance().get(named_obj.sink_ids[loop]).getFileXML(prop_file_xml);
-	  TheNamedObjMap::Instance().get(named_obj.sink_ids[loop]).getRecordXML(prop_record_xml);
-   
-	  // Try to invert this record XML into a ChromaProp struct
-	  // Also pull out the id of this source
-	  {
-	    read(prop_record_xml, "/SinkSmear", prop_header[loop]);
-
-	    read(prop_record_xml, "/SinkSmear/PropSource/Source/SourceType", source_type[loop]);
-	    read(prop_record_xml, "/SinkSmear/PropSource/Source/Displacement/DisplacementType", 
-		 source_disp_type[loop]);
-
-	    read(prop_record_xml, "/SinkSmear/PropSink/Sink/SinkType", sink_type[loop]);
-	    read(prop_record_xml, "/SinkSmear/PropSink/Sink/Displacement/DisplacementType", 
-		 sink_disp_type[loop]);
-	  }
-	}
-	catch( std::bad_cast ) 
-	{
-	  QDPIO::cerr << InlineMesonSpecEnv::name << ": caught dynamic cast error" 
-		      << endl;
-	  QDP_abort(1);
-	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << InlineMesonSpecEnv::name << ": error message: " << e 
-		      << endl;
-	  QDP_abort(1);
-	}
-	QDPIO::cout << "Forward propagator successfully parsed" << endl;
-
-
-	// Derived from input prop
-	// Hunt around to find the mass
-	// NOTE: this may be problematic in the future if actions are used with no
-	// clear def. of a Mass
-	std::istringstream  xml_s(prop_header[loop].prop_header.fermact);
-	XMLReader  fermacttop(xml_s);
-	const string fermact_path = "/FermionAction";
-	string fermact;
-      
-	QDPIO::cout << "Try action and mass" << endl;
-	try
-	{
-	  XMLReader top(fermacttop, fermact_path);
-
-	  read(top, "FermAct", fermact);
-
-	  // Yuk - need to hop some hoops. This should be isolated.
-	  if (top.count("Mass") != 0) 
-	  {
-	    read(top, "Mass", Mass[loop]);
-	  }
-	  else if (top.count("Kappa") != 0)
-	  {
-	    Real Kappa;
-	    read(top, "Kappa", Kappa);
-	    Mass[loop] = kappaToMass(Kappa);    // Convert Kappa to Mass
-	  }
-	  else if (top.count("m_q") != 0) 
-	  {
-	    read(top, "m_q", Mass[loop]);
-	  }
-	  else
-	  {
-	    QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
-	    throw std::string("Neither Mass nor Kappa found");
-	  }
-	  bc[loop] = getFermActBoundary(prop_header[loop].prop_header.fermact);
-	}
-	catch (const string& e) 
-	{
-	  QDPIO::cerr << "Error reading fermact or mass: " << e << endl;
-	  QDP_abort(1);
-	}
-    
-	QDPIO::cout << "FermAct = " << fermact << endl;
-	QDPIO::cout << "Mass = " << Mass[loop] << endl;
-      }
-
+      multi1d<AllSinks_t> all_sinks;
+      readAllSinks(all_sinks, named_obj.sink_ids);
 
       // Derived from input prop
-      int j_decay = prop_header[0].source_header.j_decay;
-      int t0      = prop_header[0].source_header.t_source;
-      int bc_spec = bc[0][j_decay] ;
-      for (int loop(0); loop < Nprops; ++loop)
+      int j_decay = all_sinks[0].sink_prop_1.prop_header.source_header.j_decay;
+      int t0      = all_sinks[0].sink_prop_1.prop_header.source_header.t_source;
+      int bc_spec = all_sinks[0].sink_prop_1.bc[j_decay] ;
+
+      // Sanity checks
+      for(int loop=0; loop < all_sinks.size(); ++loop)
       {
-	if (prop_header[loop].source_header.j_decay != j_decay)
+	if (all_sinks[loop].sink_prop_2.prop_header.source_header.j_decay != j_decay)
 	{
 	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
 	  QDP_abort(1);
 	}
-	if (bc[loop][j_decay] != bc_spec)
+	if (all_sinks[loop].sink_prop_2.bc[j_decay] != bc_spec)
 	{
 	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
 	  QDP_abort(1);
 	}
-	if (prop_header[loop].source_header.t_source != prop_header[0].source_header.t_source)
+	if (all_sinks[loop].sink_prop_2.prop_header.source_header.t_source != 
+	    all_sinks[loop].sink_prop_1.prop_header.source_header.t_source)
 	{
 	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
 	  QDP_abort(1);
 	}
       }
-  
+	
 
       // Initialize the slow Fourier transform phases
       SftMom phases(params.param.mom2_max, params.param.avg_equiv_mom, j_decay);
@@ -393,44 +475,59 @@ namespace Chroma
       // Keep a copy of the phases with NO momenta
       SftMom phases_nomom(0, true, j_decay);
 
-      // Next array element - name auto-written
-      write(xml_out, "Masses", Mass);
+      // Masses
+      write(xml_out, "Mass_1", all_sinks[0].sink_prop_1.Mass);
+      write(xml_out, "Mass_2", all_sinks[0].sink_prop_2.Mass);
       write(xml_out, "t0", t0);
 
       // Save prop input
-      write(xml_out, "ForwardProp", prop_header);
-
-      // Sanity check - write out the norm2 of the forward prop in the j_decay direction
-      // Use this for any possible verification
+      push(xml_out, "Forward_prop_eaders");
+      for(int loop=0; loop < all_sinks.size(); ++loop)
       {
-	multi1d< multi1d<Double> > forward_prop_corr(Nprops);
-	for (int loop=0; loop < Nprops; ++loop)
-	{
-	  forward_prop_corr[loop] = sumMulti(localNorm2(quark_propagator[loop]), 
-					     phases.getSet());
-	}
-	  
-	push(xml_out, "Forward_prop_correlator");
-	write(xml_out, "forward_prop_corr", forward_prop_corr);
-	pop(xml_out);
-      }
-
-
-      push(xml_out, "SourceSinkType");
-      for (int loop=0; loop < Nprops; ++loop)
-      {
-	QDPIO::cout << "Source type[" << loop << "]= "<< source_type[loop] << endl;
-	QDPIO::cout << "Sink type["   << loop << "]= "<< sink_type[loop] << endl;
-
 	push(xml_out, "elem");
-	write(xml_out, "quark_number", loop);
-	write(xml_out, "source_type", source_type[loop]);
-	write(xml_out, "source_disp_type", source_disp_type[loop]);
-	write(xml_out, "sink_type", sink_type[loop]);
-	write(xml_out, "sink_disp_type", sink_disp_type[loop]);
+	write(xml_out, "First_forward_prop", all_sinks[loop].sink_prop_1.prop_header);
+	write(xml_out, "Second_forward_prop", all_sinks[loop].sink_prop_2.prop_header);
 	pop(xml_out);
       }
       pop(xml_out);
+
+      // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+      // Use this for any possible verification
+      push(xml_out, "Forward_prop_correlator");
+      for(int loop=0; loop < all_sinks.size(); ++loop)
+      {
+	push(xml_out, "elem");
+	write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(all_sinks[loop].sink_prop_1.quark_propagator), 
+						       phases.getSet()));
+	write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(all_sinks[loop].sink_prop_2.quark_propagator), 
+						       phases.getSet()));
+	pop(xml_out);
+      }
+      pop(xml_out);
+
+
+      push(xml_out, "SourceSinkType");
+      for(int loop=0; loop < all_sinks.size(); ++loop)
+      {
+	push(xml_out, "elem");
+	QDPIO::cout << "Source_type_1 = " << all_sinks[loop].sink_prop_1.source_type << endl;
+	QDPIO::cout << "Sink_type_1 = " << all_sinks[loop].sink_prop_1.sink_type << endl;
+	QDPIO::cout << "Source_type_2 = " << all_sinks[loop].sink_prop_2.source_type << endl;
+	QDPIO::cout << "Sink_type_2 = " << all_sinks[loop].sink_prop_2.sink_type << endl;
+
+	write(xml_out, "source_type_1", all_sinks[loop].sink_prop_1.source_type);
+	write(xml_out, "source_disp_type_1", all_sinks[loop].sink_prop_1.source_disp_type);
+	write(xml_out, "sink_type_1", all_sinks[loop].sink_prop_1.sink_type);
+	write(xml_out, "sink_disp_type_1", all_sinks[loop].sink_prop_1.sink_disp_type);
+
+	write(xml_out, "source_type_2", all_sinks[loop].sink_prop_1.source_type);
+	write(xml_out, "source_disp_type_2", all_sinks[loop].sink_prop_1.source_disp_type);
+	write(xml_out, "sink_type_2", all_sinks[loop].sink_prop_1.sink_type);
+	write(xml_out, "sink_disp_type_2", all_sinks[loop].sink_prop_1.sink_disp_type);
+	pop(xml_out);
+      }
+      pop(xml_out);
+
 
       // Do the mesons
       push(xml_out, "Mesons");
@@ -442,8 +539,71 @@ namespace Chroma
 	int G5 = Ns*Ns-1;
 
 	// Construct the meson correlation function
-	LatticeComplex corr_fn =
-	  trace((Gamma(G5) * adj(quark_propagator[1])  * Gamma(G5)) * quark_propagator[0]);
+	LatticeComplex corr_fn = zero;
+
+	for(int loop=0; loop < all_sinks.size(); ++loop)
+	{
+	  LatticePropagator prop_1, prop_2;
+
+	  // Factory constructions
+	  try
+	  {
+	    // Create the source spin insertion object
+	    {
+	      std::istringstream  xml_s(named_obj.sink_ids[loop].source_spin_insertion.xml);
+	      XMLReader  inserttop(xml_s);
+	      const string insert_path = "/SourceSpinInsertion";
+	
+	      Handle< SpinInsertion<LatticePropagator> > sourceSpinInsertion(
+		ThePropSpinInsertionFactory::Instance().createObject(
+		  named_obj.sink_ids[loop].source_spin_insertion.id,
+		  inserttop,
+		  insert_path));
+
+	      prop_1 = (*sourceSpinInsertion)(all_sinks[loop].sink_prop_1.quark_propagator);
+	    }
+
+	    // Create the sink spin insertion object
+	    {
+	      std::istringstream  xml_s(named_obj.sink_ids[loop].sink_spin_insertion.xml);
+	      XMLReader  inserttop(xml_s);
+	      const string insert_path = "/SinkSpinInsertion";
+	
+	      Handle< SpinInsertion<LatticePropagator> > sinkSpinInsertion(
+		ThePropSpinInsertionFactory::Instance().createObject(
+		  named_obj.sink_ids[loop].sink_spin_insertion.id,
+		  inserttop,
+		  insert_path));
+
+	      prop_2 = (*sinkSpinInsertion)(all_sinks[loop].sink_prop_2.quark_propagator);
+	    }
+	  }
+	  catch(const std::string& e) 
+	  {
+	    QDPIO::cerr << InlineMesonSpecEnv::name << ": Caught Exception inserting: " 
+			<< e << endl;
+	    QDP_abort(1);
+	  }
+
+
+	  LatticeComplex tmp = trace((Gamma(G5) * adj(prop_2) * Gamma(G5)) * prop_1);
+
+	  switch(named_obj.sink_ids[loop].operation)
+	  {
+	  case PLUS:
+	    corr_fn += tmp;
+	    break;
+
+	  case MINUS:
+	    corr_fn -= tmp;
+	    break;
+
+	  default:
+	    QDPIO::cerr << InlineMesonSpecEnv::name 
+			<< ": illegal value of operation" << endl;
+	    QDP_abort(1);
+	  }
+	}
 
 	multi2d<DComplex> hsum;
 	hsum = phases.sft(corr_fn);
@@ -458,11 +618,11 @@ namespace Chroma
 	  write(xml_sink_mom, "sink_mom_num", sink_mom_num);
 	  write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num));
 
-	  multi1d<Real> mesprop(length);
+	  multi1d<DComplex> mesprop(length);
 	  for (int t=0; t < length; ++t) 
 	  {
 	    int t_eff = (t - t0 + length) % length;
-	    mesprop[t_eff] = real(hsum[sink_mom_num][t]);
+	    mesprop[t_eff] = hsum[sink_mom_num][t];
 	  }
 
 	  write(xml_sink_mom, "mesprop", mesprop);
