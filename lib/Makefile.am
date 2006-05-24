@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.12 2006-05-23 18:11:12 edwards Exp $
+# $Id: Makefile.am,v 3.13 2006-05-24 21:10:04 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -116,6 +116,7 @@ nobase_include_HEADERS = \
         io/writemilc.h io/writeszin.h \
 	io/monomial_io.h \
 	io/hamiltonian_io.h \
+	io/xml_group_reader.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h \
@@ -130,6 +131,10 @@ nobase_include_HEADERS = \
 	meas/hadron/hadron_seqsource.h \
 	meas/hadron/mesQl_w.h \
 	meas/hadron/barQll_w.h \
+	meas/hadron/spin_insertion.h \
+	meas/hadron/spin_insertion_factory.h \
+        meas/hadron/spin_insertion_aggregate.h \
+	meas/hadron/no_spin_insertion.h \
 	meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h \
         meas/schrfun/schrfun.h \
@@ -391,6 +396,7 @@ nobase_include_HEADERS += \
         meas/hadron/baryon_operator_factory_w.h \
         meas/hadron/seqsource_aggregate_w.h \
 	meas/hadron/seqsource_factory_w.h \
+	meas/hadron/simple_spin_insertion_w.h \
         meas/hadron/qqq_w.h meas/hadron/qqbar_w.h \
 	meas/hadron/loops_w.h \
 	meas/hadron/wall_qprop_w.h \
@@ -687,6 +693,7 @@ libchroma_a_SOURCES = \
 	io/readszin.cc io/smearing_io.cc io/szin_io.cc \
 	io/writemilc.cc io/writeszin.cc \
 	io/monomial_io.cc io/hamiltonian_io.cc \
+	io/xml_group_reader.cc \
 	meas/eig/eig_spec.cc meas/eig/eig_spec_array.cc \
 	meas/eig/gramschm.cc meas/eig/gramschm_array.cc \
 	meas/eig/ritz.cc meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
@@ -699,6 +706,8 @@ libchroma_a_SOURCES = \
 	meas/hadron/hadron_seqsource.cc \
 	meas/hadron/mesQl_w.cc \
 	meas/hadron/barQll_w.cc \
+        meas/hadron/spin_insertion_aggregate.cc \
+        meas/hadron/no_spin_insertion.cc \
 	meas/hadron/stoch_var.cc \
         meas/sinks/pt_sink_smearing.cc \
         meas/sinks/sh_sink_smearing.cc \
@@ -906,6 +915,7 @@ libchroma_a_SOURCES += \
         meas/hadron/baryon_operator_aggregate_w.cc \
         meas/hadron/seqsource_aggregate_w.cc \
 	meas/hadron/seqpiontest_w.cc \
+	meas/hadron/simple_spin_insertion_w.cc \
 	meas/hadron/walldeltaff_w.cc meas/hadron/walldeltapff_w.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
