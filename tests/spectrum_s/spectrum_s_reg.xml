@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s_reg.xml,v 3.1 2006-04-11 04:18:26 edwards Exp $
+; $Id: spectrum_s_reg.xml,v 3.2 2006-05-24 16:26:03 egregory Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -23,7 +23,7 @@
  <singletPs_Conn_local>true</singletPs_Conn_local>
  <eight_pions>true</eight_pions>
  <eight_scalars>true</eight_scalars>
- <eight_rhos>true</eight_rhos>
+ <eight_rhos>false</eight_rhos>
 <LocalPion_vary>true</LocalPion_vary>
 
 <fuzz_width>2</fuzz_width>
