@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mesonspec_w.h,v 3.1 2006-05-24 21:09:41 edwards Exp $
+// $Id: inline_mesonspec_w.h,v 3.2 2006-05-26 04:59:44 edwards Exp $
 /*! \file
  * \brief Inline meson spectrum calculations
  *
@@ -42,22 +42,28 @@ namespace Chroma
     {
       std::string    gauge_id; 
 
-      struct Props_t
+      struct Correlators_t
       {
-	struct Sinks_t
-	{
-	  std::string   first_id;                    /*!< first quark */
-	  std::string   second_id;                   /*!< second quark (this one is adjointed) */
+	std::string     source_particle;         /*!< String to associate with the source */
+	std::string     source_wavetype;         /*!< String to associate with the source */
+	std::string     sink_particle;           /*!< String to associate with the sink */
+	std::string     sink_wavetype;           /*!< String to associate with the sink */
 
-	  GroupXML_t    source_spin_insertion;       /*!< xml string holding source spin insertion params */
-	  GroupXML_t    sink_spin_insertion;         /*!< xml string holding sink spin insertion params */
+	struct CorrelatorTerms_t
+	{
+	  std::string   first_id;                /*!< first quark */
+	  std::string   second_id;               /*!< second quark (this one is adjointed) */
+
+	  GroupXML_t    source_spin_insertion;   /*!< xml string holding source spin insertion params */
+	  GroupXML_t    sink_spin_insertion;     /*!< xml string holding sink spin insertion params */
 
 	  PlusMinus     operation;
 	};
-	multi1d<Sinks_t> sink_ids;
+
+	multi1d<CorrelatorTerms_t> correlator_terms;
       };
 
-      multi1d<Props_t> prop_ids;
+      multi1d<Correlators_t> correlators;
     } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern

@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.3 2006-05-24 21:09:41 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.4 2006-05-26 04:59:44 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -49,7 +49,8 @@ namespace Chroma
 
 
   //! Reader for parameters
-  void read(XMLReader& xml, const string& path, InlineMesonSpecParams::Param_t& param)
+  void read(XMLReader& xml, const string& path, 
+	    InlineMesonSpecParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -72,7 +73,8 @@ namespace Chroma
 
 
   //! Writer for parameters
-  void write(XMLWriter& xml, const string& path, const InlineMesonSpecParams::Param_t& param)
+  void write(XMLWriter& xml, const string& path, 
+	     const InlineMesonSpecParams::Param_t& param)
   {
     push(xml, path);
 
@@ -87,7 +89,8 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineMesonSpecParams::NamedObject_t::Props_t::Sinks_t& input)
+  void read(XMLReader& xml, const string& path, 
+	    InlineMesonSpecParams::NamedObject_t::Correlators_t::CorrelatorTerms_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -100,7 +103,8 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineMesonSpecParams::NamedObject_t::Props_t::Sinks_t& input)
+  void write(XMLWriter& xml, const string& path, 
+	     const InlineMesonSpecParams::NamedObject_t::Correlators_t::CorrelatorTerms_t& input)
   {
     push(xml, path);
 
@@ -115,40 +119,52 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineMesonSpecParams::NamedObject_t::Props_t& input)
+  void read(XMLReader& xml, const string& path, 
+	    InlineMesonSpecParams::NamedObject_t::Correlators_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "sink_ids", input.sink_ids);
+    read(inputtop, "source_particle", input.source_particle);
+    read(inputtop, "source_wavetype", input.source_wavetype);
+    read(inputtop, "sink_particle", input.sink_particle);
+    read(inputtop, "sink_wavetype", input.sink_wavetype);
+    read(inputtop, "correlator_terms", input.correlator_terms);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineMesonSpecParams::NamedObject_t::Props_t& input)
+  void write(XMLWriter& xml, const string& path, 
+	     const InlineMesonSpecParams::NamedObject_t::Correlators_t& input)
   {
     push(xml, path);
 
-    write(xml, "sink_ids", input.sink_ids);
+    write(xml, "source_particle", input.source_particle);
+    write(xml, "source_wavetype", input.source_wavetype);
+    write(xml, "sink_particle", input.sink_particle);
+    write(xml, "sink_wavetype", input.sink_wavetype);
+    write(xml, "correlator_terms", input.correlator_terms);
 
     pop(xml);
   }
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineMesonSpecParams::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, 
+	    InlineMesonSpecParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
-    read(inputtop, "prop_ids", input.prop_ids);
+    read(inputtop, "correlators", input.correlators);
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineMesonSpecParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const string& path, 
+	     const InlineMesonSpecParams::NamedObject_t& input)
   {
     push(xml, path);
 
     write(xml, "gauge_id", input.gauge_id);
-    write(xml, "prop_ids", input.prop_ids);
+    write(xml, "correlators", input.correlators);
 
     pop(xml);
   }
@@ -223,7 +239,7 @@ namespace Chroma
 
 
     //! Useful structure holding sink props
-    struct AllSinks_t
+    struct AllCorrelatorTerms_t
     {
       SinkPropContainer_t  sink_prop_1;
       SinkPropContainer_t  sink_prop_2;
@@ -322,19 +338,19 @@ namespace Chroma
 
 
     //! Read all sinks
-    void readAllSinks(multi1d<AllSinks_t>& s, 
-		      multi1d<InlineMesonSpecParams::NamedObject_t::Props_t::Sinks_t> sink_ids)
+    void readAllSinks(multi1d<AllCorrelatorTerms_t>& s, 
+		      multi1d<InlineMesonSpecParams::NamedObject_t::Correlators_t::CorrelatorTerms_t> correlator_terms)
     {
-      s.resize(sink_ids.size());
+      s.resize(correlator_terms.size());
 
-      for(int i=0; i < sink_ids.size(); ++i)
+      for(int i=0; i < correlator_terms.size(); ++i)
       {
-	QDPIO::cout << "Attempt to parse forward propagator = " << sink_ids[i].first_id << endl;
-	readSinkProp(s[i].sink_prop_1, sink_ids[i].first_id);
+	QDPIO::cout << "Attempt to parse forward propagator = " << correlator_terms[i].first_id << endl;
+	readSinkProp(s[i].sink_prop_1, correlator_terms[i].first_id);
 	QDPIO::cout << "Forward propagator successfully parsed" << endl;
 
-	QDPIO::cout << "Attempt to parse forward propagator = " << sink_ids[i].second_id << endl;
-	readSinkProp(s[i].sink_prop_2, sink_ids[i].second_id);
+	QDPIO::cout << "Attempt to parse forward propagator = " << correlator_terms[i].second_id << endl;
+	readSinkProp(s[i].sink_prop_2, correlator_terms[i].second_id);
 	QDPIO::cout << "Forward propagator successfully parsed" << endl;
       }
     }
@@ -433,14 +449,19 @@ namespace Chroma
     push(xml_out, "Wilson_hadron_measurements");
 
     // Now loop over the various fermion masses
-    for(int lpair=0; lpair < params.named_obj.prop_ids.size(); ++lpair)
+    for(int lpair=0; lpair < params.named_obj.correlators.size(); ++lpair)
     {
-      const InlineMesonSpecParams::NamedObject_t::Props_t named_obj = params.named_obj.prop_ids[lpair];
+      const InlineMesonSpecParams::NamedObject_t::Correlators_t named_obj = params.named_obj.correlators[lpair];
 
       push(xml_out, "elem");
 
-      multi1d<AllSinks_t> all_sinks;
-      readAllSinks(all_sinks, named_obj.sink_ids);
+      write(xml_out, "source_particle", named_obj.source_particle);
+      write(xml_out, "source_wavetype", named_obj.source_wavetype);
+      write(xml_out, "sink_particle", named_obj.sink_particle);
+      write(xml_out, "sink_wavetype", named_obj.sink_wavetype);
+
+      multi1d<AllCorrelatorTerms_t> all_sinks;
+      readAllSinks(all_sinks, named_obj.correlator_terms);
 
       // Derived from input prop
       int j_decay = all_sinks[0].sink_prop_1.prop_header.source_header.j_decay;
@@ -481,7 +502,7 @@ namespace Chroma
       write(xml_out, "t0", t0);
 
       // Save prop input
-      push(xml_out, "Forward_prop_eaders");
+      push(xml_out, "Forward_prop_headers");
       for(int loop=0; loop < all_sinks.size(); ++loop)
       {
 	push(xml_out, "elem");
@@ -550,13 +571,13 @@ namespace Chroma
 	  {
 	    // Create the source spin insertion object
 	    {
-	      std::istringstream  xml_s(named_obj.sink_ids[loop].source_spin_insertion.xml);
+	      std::istringstream  xml_s(named_obj.correlator_terms[loop].source_spin_insertion.xml);
 	      XMLReader  inserttop(xml_s);
 	      const string insert_path = "/SourceSpinInsertion";
 	
 	      Handle< SpinInsertion<LatticePropagator> > sourceSpinInsertion(
 		ThePropSpinInsertionFactory::Instance().createObject(
-		  named_obj.sink_ids[loop].source_spin_insertion.id,
+		  named_obj.correlator_terms[loop].source_spin_insertion.id,
 		  inserttop,
 		  insert_path));
 
@@ -565,17 +586,20 @@ namespace Chroma
 
 	    // Create the sink spin insertion object
 	    {
-	      std::istringstream  xml_s(named_obj.sink_ids[loop].sink_spin_insertion.xml);
+	      std::istringstream  xml_s(named_obj.correlator_terms[loop].sink_spin_insertion.xml);
 	      XMLReader  inserttop(xml_s);
 	      const string insert_path = "/SinkSpinInsertion";
 	
 	      Handle< SpinInsertion<LatticePropagator> > sinkSpinInsertion(
 		ThePropSpinInsertionFactory::Instance().createObject(
-		  named_obj.sink_ids[loop].sink_spin_insertion.id,
+		  named_obj.correlator_terms[loop].sink_spin_insertion.id,
 		  inserttop,
 		  insert_path));
 
-	      prop_2 = (*sinkSpinInsertion)(all_sinks[loop].sink_prop_2.quark_propagator);
+	      LatticePropagator prop_tmp = 
+		Gamma(G5) * adj(all_sinks[loop].sink_prop_2.quark_propagator) * Gamma(G5);
+
+	      prop_2 = (*sinkSpinInsertion)(prop_tmp);
 	    }
 	  }
 	  catch(const std::string& e) 
@@ -586,9 +610,9 @@ namespace Chroma
 	  }
 
 
-	  LatticeComplex tmp = trace((Gamma(G5) * adj(prop_2) * Gamma(G5)) * prop_1);
+	  LatticeComplex tmp = trace(prop_2 * prop_1);
 
-	  switch(named_obj.sink_ids[loop].operation)
+	  switch(named_obj.correlator_terms[loop].operation)
 	  {
 	  case PLUS:
 	    corr_fn += tmp;
