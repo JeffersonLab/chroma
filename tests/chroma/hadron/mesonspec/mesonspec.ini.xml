@@ -252,9 +252,13 @@ Meson Spectrum input
        </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
+        <correlators>
           <elem>
-            <sink_ids>
+            <source_particle>pion</source_particle>
+            <source_wavetype>1</source_wavetype>
+            <sink_particle>rho_x</sink_particle>
+            <sink_wavetype>1</sink_wavetype>
+            <correlator_terms>
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
@@ -289,10 +293,14 @@ Meson Spectrum input
                   <gamma>5</gamma>
                 </SinkSpinInsertion>
               </elem>
-            </sink_ids>
+            </correlator_terms>
           </elem>
           <elem>
-            <sink_ids>
+            <source_particle>pion</source_particle>
+            <source_wavetype>fred</source_wavetype>
+            <sink_particle>pion</sink_particle>
+            <sink_wavetype>fred</sink_wavetype>
+            <correlator_terms>
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
@@ -310,15 +318,103 @@ Meson Spectrum input
                   <gamma>7</gamma>
                 </SinkSpinInsertion>
               </elem>
-            </sink_ids>
+            </correlator_terms>
           </elem>
-        </prop_ids>
+        </correlators>
       </NamedObject>
       <!--  
 The USER should write to a separate file. However, for the
 regression test spectrum output is kept within the chroma xml output
          <xml_file>mesonspec.dat.xml</xml_file>
 	-->
+    </elem>
+
+    <elem>
+      <annotation>
+         Compute the meson spectrum. 
+         This version is a clone of the one below, however the xml output is
+         written within the same chroma output file
+      </annotation>
+      <Name>MESON_SPECTRUM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>3</mom2_max>
+        <avg_equiv_mom>true</avg_equiv_mom>
+       </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <correlators>
+          <elem>
+            <source_particle>pion</source_particle>
+            <source_wavetype>1</source_wavetype>
+            <sink_particle>rho_x</sink_particle>
+            <sink_wavetype>1</sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>sh_pt_sink_1</first_id>
+                <second_id>deriv_pt_sink_2</second_id>
+                <operation>PLUS</operation>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>3</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>3</gamma>
+                </SinkSpinInsertion>
+              </elem>
+              <elem>
+                <first_id>sh_pt_sink_1</first_id>
+                <second_id>deriv_deriv_sink_2</second_id>
+                <operation>PLUS</operation>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>5</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>5</gamma>
+                </SinkSpinInsertion>
+              </elem>
+            </correlator_terms>
+          </elem>
+          <elem>
+            <source_particle>pion</source_particle>
+            <source_wavetype>fred</source_wavetype>
+            <sink_particle>pion</sink_particle>
+            <sink_wavetype>fred</sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>sh_pt_sink_1</first_id>
+                <second_id>deriv_pt_sink_2</second_id>
+                <operation>MINUS</operation> 
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>7</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>7</gamma>
+                </SinkSpinInsertion>
+              </elem>
+            </correlator_terms>
+          </elem>
+        </correlators>
+      </NamedObject>
+        <xml_file>mesonspec.dat.xml</xml_file>
     </elem>
 
   </InlineMeasurements>

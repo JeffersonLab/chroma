@@ -255,9 +255,13 @@ Meson Spectrum input
        </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
+        <correlators>
           <elem>
-            <sink_ids>
+            <source_particle>pion</source_particle>
+            <source_wavetype>1</source_wavetype>
+            <sink_particle>rho_x</sink_particle>
+            <sink_wavetype>1</sink_wavetype>
+            <correlator_terms>
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
@@ -292,10 +296,14 @@ Meson Spectrum input
                   <gamma>5</gamma>
                 </SinkSpinInsertion>
               </elem>
-            </sink_ids>
+            </correlator_terms>
           </elem>
           <elem>
-            <sink_ids>
+            <source_particle>pion</source_particle>
+            <source_wavetype>fred</source_wavetype>
+            <sink_particle>pion</sink_particle>
+            <sink_wavetype>fred</sink_wavetype>
+            <correlator_terms>
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
@@ -313,15 +321,103 @@ Meson Spectrum input
                   <gamma>7</gamma>
                 </SinkSpinInsertion>
               </elem>
-            </sink_ids>
+            </correlator_terms>
           </elem>
-        </prop_ids>
+        </correlators>
       </NamedObject>
       <!--  
 The USER should write to a separate file. However, for the
 regression test spectrum output is kept within the chroma xml output
          <xml_file>mesonspec.dat.xml</xml_file>
 	-->
+    </elem>
+
+    <elem>
+      <annotation>
+         Compute the meson spectrum. 
+         This version is a clone of the one below, however the xml output is
+         written within the same chroma output file
+      </annotation>
+      <Name>MESON_SPECTRUM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>3</mom2_max>
+        <avg_equiv_mom>true</avg_equiv_mom>
+       </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <correlators>
+          <elem>
+            <source_particle>pion</source_particle>
+            <source_wavetype>1</source_wavetype>
+            <sink_particle>rho_x</sink_particle>
+            <sink_wavetype>1</sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>sh_pt_sink_1</first_id>
+                <second_id>deriv_pt_sink_2</second_id>
+                <operation>PLUS</operation>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>3</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>3</gamma>
+                </SinkSpinInsertion>
+              </elem>
+              <elem>
+                <first_id>sh_pt_sink_1</first_id>
+                <second_id>deriv_deriv_sink_2</second_id>
+                <operation>PLUS</operation>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>5</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>5</gamma>
+                </SinkSpinInsertion>
+              </elem>
+            </correlator_terms>
+          </elem>
+          <elem>
+            <source_particle>pion</source_particle>
+            <source_wavetype>fred</source_wavetype>
+            <sink_particle>pion</sink_particle>
+            <sink_wavetype>fred</sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>sh_pt_sink_1</first_id>
+                <second_id>deriv_pt_sink_2</second_id>
+                <operation>MINUS</operation> 
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>7</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>7</gamma>
+                </SinkSpinInsertion>
+              </elem>
+            </correlator_terms>
+          </elem>
+        </correlators>
+      </NamedObject>
+        <xml_file>mesonspec.dat.xml</xml_file>
     </elem>
 
   </InlineMeasurements>
@@ -346,10 +442,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.6.0</chroma>
+      <chroma>3.6.1</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>24 May 06 15:20:24 EDT</run_date>
+    <run_date>26 May 06 00:31:15 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -407,10 +503,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.0</chroma>
+            <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>24 May 06 15:20:25 EDT</run_date>
+          <run_date>26 May 06 00:31:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -501,10 +597,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.0</chroma>
+            <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>24 May 06 15:20:25 EDT</run_date>
+          <run_date>26 May 06 00:31:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -828,10 +924,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.0</chroma>
+            <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>24 May 06 15:20:26 EDT</run_date>
+          <run_date>26 May 06 00:31:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -924,10 +1020,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.0</chroma>
+            <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>24 May 06 15:20:26 EDT</run_date>
+          <run_date>26 May 06 00:31:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1392,10 +1488,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.0</chroma>
+            <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>24 May 06 15:20:28 EDT</run_date>
+          <run_date>26 May 06 00:31:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1412,9 +1508,13 @@ regression test spectrum output is kept within the chroma xml output
           </Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
-            <prop_ids>
+            <correlators>
               <elem>
-                <sink_ids>
+                <source_particle>pion</source_particle>
+                <source_wavetype>1</source_wavetype>
+                <sink_particle>rho_x</sink_particle>
+                <sink_wavetype>1</sink_wavetype>
+                <correlator_terms>
                   <elem>
                     <first_id>sh_pt_sink_1</first_id>
                     <second_id>deriv_pt_sink_2</second_id><SourceSpinInsertion>
@@ -1445,10 +1545,14 @@ regression test spectrum output is kept within the chroma xml output
 
                     <operation>PLUS</operation>
                   </elem>
-                </sink_ids>
+                </correlator_terms>
               </elem>
               <elem>
-                <sink_ids>
+                <source_particle>pion</source_particle>
+                <source_wavetype>fred</source_wavetype>
+                <sink_particle>pion</sink_particle>
+                <sink_wavetype>fred</sink_wavetype>
+                <correlator_terms>
                   <elem>
                     <first_id>sh_pt_sink_1</first_id>
                     <second_id>deriv_pt_sink_2</second_id><SourceSpinInsertion>
@@ -1464,9 +1568,9 @@ regression test spectrum output is kept within the chroma xml output
 
                     <operation>MINUS</operation>
                   </elem>
-                </sink_ids>
+                </correlator_terms>
               </elem>
-            </prop_ids>
+            </correlators>
           </NamedObject>
           <xml_file></xml_file>
         </Input>
@@ -1506,10 +1610,14 @@ regression test spectrum output is kept within the chroma xml output
         </Observables>
         <Wilson_hadron_measurements>
           <elem>
+            <source_particle>pion</source_particle>
+            <source_wavetype>1</source_wavetype>
+            <sink_particle>rho_x</sink_particle>
+            <sink_wavetype>1</sink_wavetype>
             <Mass_1>0.545455</Mass_1>
             <Mass_2>0.545455</Mass_2>
             <t0>0</t0>
-            <Forward_prop_eaders>
+            <Forward_prop_headers>
               <elem>
                 <First_forward_prop>
                   <version>1</version>
@@ -1822,7 +1930,7 @@ regression test spectrum output is kept within the chroma xml output
                   </PropSource>
                 </Second_forward_prop>
               </elem>
-            </Forward_prop_eaders>
+            </Forward_prop_headers>
             <Forward_prop_correlator>
               <elem>
                 <forward_prop_corr_1>0.192609 0.0159808 0.00618063 0.00284181 0.00198267 0.0028389 0.00617589 0.0159631</forward_prop_corr_1>
@@ -2013,10 +2121,14 @@ regression test spectrum output is kept within the chroma xml output
             </Mesons>
           </elem>
           <elem>
+            <source_particle>pion</source_particle>
+            <source_wavetype>fred</source_wavetype>
+            <sink_particle>pion</sink_particle>
+            <sink_wavetype>fred</sink_wavetype>
             <Mass_1>0.545455</Mass_1>
             <Mass_2>0.545455</Mass_2>
             <t0>0</t0>
-            <Forward_prop_eaders>
+            <Forward_prop_headers>
               <elem>
                 <First_forward_prop>
                   <version>1</version>
@@ -2169,7 +2281,7 @@ regression test spectrum output is kept within the chroma xml output
                   </PropSource>
                 </Second_forward_prop>
               </elem>
-            </Forward_prop_eaders>
+            </Forward_prop_headers>
             <Forward_prop_correlator>
               <elem>
                 <forward_prop_corr_1>0.192609 0.0159808 0.00618063 0.00284181 0.00198267 0.0028389 0.00617589 0.0159631</forward_prop_corr_1>
@@ -2346,6 +2458,12 @@ regression test spectrum output is kept within the chroma xml output
             </Mesons>
           </elem>
         </Wilson_hadron_measurements>
+      </MesonSpectrum>
+    </elem>
+    <elem>
+      <MesonSpectrum>
+        <update_no>0</update_no>
+        <xml_file>mesonspec.dat.xml</xml_file>
       </MesonSpectrum>
     </elem>
   </InlineObservables>
