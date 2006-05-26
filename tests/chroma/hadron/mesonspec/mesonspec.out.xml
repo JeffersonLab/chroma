@@ -445,7 +445,7 @@ regression test spectrum output is kept within the chroma xml output
       <chroma>3.6.1</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>26 May 06 00:31:15 EDT</run_date>
+    <run_date>26 May 06 00:58:40 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -506,7 +506,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>26 May 06 00:31:15 EDT</run_date>
+          <run_date>26 May 06 00:58:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -600,7 +600,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>26 May 06 00:31:15 EDT</run_date>
+          <run_date>26 May 06 00:58:41 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -927,7 +927,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>26 May 06 00:31:17 EDT</run_date>
+          <run_date>26 May 06 00:58:42 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1023,7 +1023,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>26 May 06 00:31:17 EDT</run_date>
+          <run_date>26 May 06 00:58:42 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1491,7 +1491,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.6.1</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>26 May 06 00:31:19 EDT</run_date>
+          <run_date>26 May 06 00:58:44 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1970,36 +1970,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>0 0 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>-0.0140307</re>
-                      <im>-2.25955e-05</im>
+                      <re>0.0141648</re>
+                      <im>2.1222e-05</im>
                     </elem>
                     <elem>
-                      <re>0.000237952</re>
-                      <im>1.962e-08</im>
+                      <re>-0.000181779</re>
+                      <im>-4.27999e-07</im>
                     </elem>
                     <elem>
-                      <re>0.000185267</re>
-                      <im>2.98596e-07</im>
+                      <re>-0.000166071</re>
+                      <im>-4.21702e-07</im>
                     </elem>
                     <elem>
-                      <re>0.000163396</re>
-                      <im>3.65246e-07</im>
+                      <re>-0.000158443</re>
+                      <im>-4.01111e-07</im>
                     </elem>
                     <elem>
-                      <re>0.00015882</re>
-                      <im>4.19475e-07</im>
+                      <re>-0.000157498</re>
+                      <im>-4.31861e-07</im>
                     </elem>
                     <elem>
-                      <re>0.000163293</re>
-                      <im>4.81875e-07</im>
+                      <re>-0.000158409</re>
+                      <im>-5.04382e-07</im>
                     </elem>
                     <elem>
-                      <re>0.000185891</re>
-                      <im>3.43632e-07</im>
+                      <re>-0.000166561</re>
+                      <im>-4.29159e-07</im>
                     </elem>
                     <elem>
-                      <re>0.000237032</re>
-                      <im>-2.53457e-08</im>
+                      <re>-0.000180929</re>
+                      <im>-2.92706e-07</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2008,36 +2008,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 0 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>-0.000679614</re>
-                      <im>-8.04092e-06</im>
+                      <re>0.000671569</re>
+                      <im>7.86735e-06</im>
                     </elem>
                     <elem>
-                      <re>3.45731e-06</re>
-                      <im>-7.37532e-07</im>
+                      <re>-3.86788e-06</re>
+                      <im>7.21062e-07</im>
                     </elem>
                     <elem>
-                      <re>1.01037e-06</re>
-                      <im>-3.7952e-07</im>
+                      <re>-1.04978e-06</re>
+                      <im>3.7777e-07</im>
                     </elem>
                     <elem>
-                      <re>4.15079e-07</re>
-                      <im>-1.5546e-07</im>
+                      <re>-4.24097e-07</re>
+                      <im>1.53763e-07</im>
                     </elem>
                     <elem>
-                      <re>3.75766e-07</re>
-                      <im>1.94594e-08</im>
+                      <re>-3.78867e-07</re>
+                      <im>-1.78151e-08</im>
                     </elem>
                     <elem>
-                      <re>4.15677e-07</re>
-                      <im>9.21243e-08</im>
+                      <re>-4.36639e-07</re>
+                      <im>-9.05742e-08</im>
                     </elem>
                     <elem>
-                      <re>9.17514e-07</re>
-                      <im>3.17173e-07</im>
+                      <re>-1.02484e-06</re>
+                      <im>-3.12549e-07</im>
                     </elem>
                     <elem>
-                      <re>2.84041e-06</re>
-                      <im>6.59772e-07</im>
+                      <re>-3.5001e-06</re>
+                      <im>-6.52948e-07</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2046,36 +2046,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 1 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>0.000443881</re>
-                      <im>-6.70623e-07</im>
+                      <re>-0.000443725</re>
+                      <im>5.99571e-07</im>
                     </elem>
                     <elem>
-                      <re>-5.53551e-07</re>
-                      <im>-2.152e-08</im>
+                      <re>6.00131e-07</re>
+                      <im>1.93102e-08</im>
                     </elem>
                     <elem>
-                      <re>-4.43822e-08</re>
-                      <im>-2.96266e-08</im>
+                      <re>6.57023e-08</re>
+                      <im>2.74245e-08</im>
                     </elem>
                     <elem>
-                      <re>-5.11449e-08</re>
-                      <im>-1.06355e-08</im>
+                      <re>5.84155e-08</re>
+                      <im>1.06146e-08</im>
                     </elem>
                     <elem>
-                      <re>-3.7427e-08</re>
-                      <im>2.82497e-09</im>
+                      <re>3.55329e-08</re>
+                      <im>-3.00278e-09</im>
                     </elem>
                     <elem>
-                      <re>-2.50166e-09</re>
-                      <im>2.80487e-08</im>
+                      <re>3.70369e-10</re>
+                      <im>-2.80163e-08</im>
                     </elem>
                     <elem>
-                      <re>1.16554e-09</re>
-                      <im>6.1334e-09</im>
+                      <re>9.84026e-09</re>
+                      <im>-6.07891e-09</im>
                     </elem>
                     <elem>
-                      <re>-5.78668e-07</re>
-                      <im>-5.89291e-09</im>
+                      <re>5.91886e-07</re>
+                      <im>-8.32763e-09</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2084,36 +2084,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 1 1</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>0.000110305</re>
-                      <im>-1.84498e-06</im>
+                      <re>-0.000110442</re>
+                      <im>1.84284e-06</im>
                     </elem>
                     <elem>
-                      <re>-8.88552e-08</re>
-                      <im>-1.03948e-08</im>
+                      <re>9.20942e-08</re>
+                      <im>1.44235e-08</im>
                     </elem>
                     <elem>
-                      <re>2.21047e-08</re>
-                      <im>2.88739e-10</im>
+                      <re>-1.7068e-08</re>
+                      <im>1.10334e-09</im>
                     </elem>
                     <elem>
-                      <re>2.39449e-08</re>
-                      <im>-2.49093e-09</im>
+                      <re>-1.92759e-08</re>
+                      <im>2.62212e-09</im>
                     </elem>
                     <elem>
-                      <re>2.49047e-09</re>
-                      <im>3.5101e-10</im>
+                      <re>-3.91604e-10</re>
+                      <im>-1.46777e-10</im>
                     </elem>
                     <elem>
-                      <re>2.02283e-08</re>
-                      <im>1.34276e-09</im>
+                      <re>-1.61668e-08</re>
+                      <im>-8.92098e-10</im>
                     </elem>
                     <elem>
-                      <re>8.81542e-09</re>
-                      <im>3.86719e-09</im>
+                      <re>-2.12959e-09</re>
+                      <im>-4.6065e-09</im>
                     </elem>
                     <elem>
-                      <re>8.76587e-09</re>
-                      <im>9.85665e-09</im>
+                      <re>-6.62043e-08</re>
+                      <im>-1.24488e-08</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2307,36 +2307,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>0 0 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>-0.0176863</re>
-                      <im>-3.19989e-06</im>
+                      <re>-0.0176893</re>
+                      <im>-3.19224e-06</im>
                     </elem>
                     <elem>
-                      <re>0.000287386</re>
-                      <im>-3.10384e-07</im>
+                      <re>-0.00165794</re>
+                      <im>1.20059e-06</im>
                     </elem>
                     <elem>
-                      <re>0.000221064</re>
-                      <im>1.60576e-07</im>
+                      <re>-0.000656006</re>
+                      <im>-3.55003e-08</im>
                     </elem>
                     <elem>
-                      <re>0.00019506</re>
-                      <im>3.01213e-07</im>
+                      <re>-0.000305172</re>
+                      <im>-1.35451e-07</im>
                     </elem>
                     <elem>
-                      <re>0.000188308</re>
-                      <im>3.4296e-07</im>
+                      <re>-0.00021521</re>
+                      <im>-2.76326e-07</im>
                     </elem>
                     <elem>
-                      <re>0.000195021</re>
-                      <im>3.31202e-07</im>
+                      <re>-0.000305029</re>
+                      <im>-6.44663e-07</im>
                     </elem>
                     <elem>
-                      <re>0.000220983</re>
-                      <im>2.2238e-07</im>
+                      <re>-0.000655855</re>
+                      <im>-1.47605e-06</im>
                     </elem>
                     <elem>
-                      <re>0.000287592</re>
-                      <im>-2.47213e-07</im>
+                      <re>-0.00165649</re>
+                      <im>-2.75307e-06</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2345,36 +2345,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 0 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>-0.00165632</re>
-                      <im>-3.06733e-06</im>
+                      <re>-0.00165633</re>
+                      <im>-3.06735e-06</im>
                     </elem>
                     <elem>
-                      <re>6.8261e-06</re>
-                      <im>-7.4745e-07</im>
+                      <re>-3.8546e-05</re>
+                      <im>4.63041e-07</im>
                     </elem>
                     <elem>
-                      <re>1.97356e-06</re>
-                      <im>-3.56781e-07</im>
+                      <re>-5.56295e-06</re>
+                      <im>1.1544e-07</im>
                     </elem>
                     <elem>
-                      <re>7.44291e-07</re>
-                      <im>-1.49551e-07</im>
+                      <re>-1.25382e-06</re>
+                      <im>4.16372e-08</im>
                     </elem>
                     <elem>
-                      <re>5.19352e-07</re>
-                      <im>-3.86007e-09</im>
+                      <re>-5.51597e-07</re>
+                      <im>-1.87721e-09</im>
                     </elem>
                     <elem>
-                      <re>7.57844e-07</re>
-                      <im>1.42976e-07</im>
+                      <re>-1.28157e-06</re>
+                      <im>-5.32444e-08</im>
                     </elem>
                     <elem>
-                      <re>1.85677e-06</re>
-                      <im>3.45337e-07</im>
+                      <re>-5.49251e-06</re>
+                      <im>-2.02652e-07</im>
                     </elem>
                     <elem>
-                      <re>6.5562e-06</re>
-                      <im>6.76783e-07</im>
+                      <re>-3.83447e-05</re>
+                      <im>-4.61971e-07</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2383,36 +2383,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 1 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>0.000190722</re>
-                      <im>1.26884e-06</im>
+                      <re>0.000190723</re>
+                      <im>1.26887e-06</im>
                     </elem>
                     <elem>
-                      <re>-3.11794e-07</re>
-                      <im>-1.16323e-08</im>
+                      <re>2.60655e-06</re>
+                      <im>4.32313e-07</im>
                     </elem>
                     <elem>
-                      <re>-3.64225e-08</re>
-                      <im>-3.84078e-09</im>
+                      <re>1.3453e-07</re>
+                      <im>5.05704e-08</im>
                     </elem>
                     <elem>
-                      <re>-4.49058e-08</re>
-                      <im>3.59701e-10</im>
+                      <re>1.9423e-08</re>
+                      <im>5.92282e-09</im>
                     </elem>
                     <elem>
-                      <re>-2.82679e-08</re>
-                      <im>6.96247e-10</im>
+                      <re>2.25723e-09</re>
+                      <im>1.0455e-09</im>
                     </elem>
                     <elem>
-                      <re>-4.51851e-09</re>
-                      <im>-5.95936e-10</im>
+                      <re>7.85194e-09</re>
+                      <im>4.03519e-10</im>
                     </elem>
                     <elem>
-                      <re>2.07114e-08</re>
-                      <im>-2.16992e-09</im>
+                      <re>1.02334e-07</re>
+                      <im>-5.11866e-09</im>
                     </elem>
                     <elem>
-                      <re>-2.54647e-07</re>
-                      <im>4.2828e-09</im>
+                      <re>2.46346e-06</re>
+                      <im>-5.71459e-08</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2421,36 +2421,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 1 1</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>7.12223e-05</re>
-                      <im>-1.91978e-06</im>
+                      <re>7.12234e-05</re>
+                      <im>-1.91949e-06</im>
                     </elem>
                     <elem>
-                      <re>-9.31839e-08</re>
-                      <im>-2.07283e-08</im>
+                      <re>8.17107e-07</re>
+                      <im>3.44625e-07</im>
                     </elem>
                     <elem>
-                      <re>7.49903e-11</re>
-                      <im>-1.55533e-09</im>
+                      <re>1.6506e-08</re>
+                      <im>1.42722e-08</im>
                     </elem>
                     <elem>
-                      <re>1.96386e-08</re>
-                      <im>-2.49327e-09</im>
+                      <re>-4.44583e-09</re>
+                      <im>1.11728e-09</im>
                     </elem>
                     <elem>
-                      <re>-9.44053e-10</re>
-                      <im>-6.06178e-10</im>
+                      <re>7.18041e-10</re>
+                      <im>-6.73487e-10</im>
                     </elem>
                     <elem>
-                      <re>5.10327e-09</re>
-                      <im>3.08398e-09</im>
+                      <re>1.32675e-08</re>
+                      <im>-7.80678e-09</im>
                     </elem>
                     <elem>
-                      <re>1.27267e-08</re>
-                      <im>4.73431e-09</im>
+                      <re>7.889e-08</re>
+                      <im>-2.97824e-08</im>
                     </elem>
                     <elem>
-                      <re>1.20348e-09</re>
-                      <im>2.42175e-09</im>
+                      <re>8.86993e-07</re>
+                      <im>2.65691e-09</im>
                     </elem>
                   </mesprop>
                 </elem>
