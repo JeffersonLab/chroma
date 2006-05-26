@@ -11,7 +11,7 @@ Write some QIO objects
 
     <elem>
       <annotation>
-        Write the config
+        Write the config in floating precision
       </annotation>
       <Name>QIO_WRITE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
@@ -22,6 +22,22 @@ Write some QIO objects
       <File>
         <file_name>qio.cfg</file_name>
         <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the config in double precision
+      </annotation>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>default_gauge_field</object_id>
+        <object_type>Multi1dLatticeColorMatrixD</object_type>
+      </NamedObject>
+      <File>
+        <file_name>qio_double.cfg</file_name>
+        <file_volfmt>SINGLEFILE</file_volfmt>
       </File>
     </elem>
 
@@ -86,10 +102,10 @@ Write some QIO objects
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.2.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.6.1</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>26 Apr 06 16:54:20 EDT</run_date>
+    <run_date>26 May 06 16:36:49 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -142,6 +158,12 @@ Write some QIO objects
     </pollp>
   </Observables>
   <InlineObservables>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>default_gauge_field</object_id>
+      </qio_write_named_obj>
+    </elem>
     <elem>
       <qio_write_named_obj>
         <update_no>0</update_no>
