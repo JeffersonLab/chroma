@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_w12_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_w12_linop_w.h,v 3.1 2006-05-30 19:57:22 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned W12 action
  */
@@ -55,7 +55,7 @@ namespace Chroma
 	       enum PlusMinus isign) const;
 
     //! Return flops performed by the operator()
-    unsigned long UnprecW12LinOp::nFlops() const;
+    unsigned long nFlops() const;
 
   protected:
     //! GAMWM

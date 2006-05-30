@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_hamberwu_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_hamberwu_linop_w.h,v 3.1 2006-05-30 19:56:58 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu fermion linear operator
  */
@@ -53,7 +53,7 @@ namespace Chroma
 	       enum PlusMinus isign) const;
 
     //! Return flops performed by the operator()
-    unsigned long UnprecHamberWuLinOp::nFlops() const;
+    unsigned long nFlops() const;
 
   private:
     Real Mass;
