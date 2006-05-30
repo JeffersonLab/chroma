@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.1 2006-05-30 20:05:57 edwards Exp $
+// $Id: clover_term_qdp_w.h,v 3.2 2006-05-30 22:09:59 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -105,7 +105,7 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& getU() const {return u;}
 
     //! Calculates Tr_D ( Gamma_mat L )
-    Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const;
+    Real getCloverCoeff(int mu, int nu) const;
 
   private:
     Handle< FermBC<T,P,Q> >      fbc;
