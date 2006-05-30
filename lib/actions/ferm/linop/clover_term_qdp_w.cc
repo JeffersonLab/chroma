@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.1 2006-05-30 20:05:57 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -996,7 +996,7 @@ namespace Chroma
   }
 
   //! Returns the appropriate clover coefficient for indices mu and nu
-  const Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const 
+  Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const 
   { 
     if( param.anisoParam.anisoP ) 
     { 

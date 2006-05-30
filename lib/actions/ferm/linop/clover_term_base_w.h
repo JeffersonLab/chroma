@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: clover_term_base_w.h,v 3.1 2006-05-30 20:05:57 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -87,7 +87,7 @@ namespace Chroma
     virtual const multi1d<LatticeColorMatrix>& getU() const = 0;
 
     //! get the clover coefficient 
-    virtual const Real getCloverCoeff(int mu, int nu) const = 0;
+    virtual Real getCloverCoeff(int mu, int nu) const = 0;
 
   };
 
