@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 3.1 2006-04-15 03:54:58 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 3.2 2006-06-01 15:10:23 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -113,7 +113,7 @@ for $file (&regresDirs())
 	    
 
 	    my($log) = "$canddir/$execute"  ; 
-	    my($exe) = "$run $exec_path/$execute ".$in_arg." -o $candidate 2>${log}.err > ${log}.out"; 
+	    my($exe) = "$run $exec_path/$execute ".$in_arg." -o $candidate < /dev/null 2>${log}.err > ${log}.out"; 
 #	print $exe;
 	    my($status_tmp) = system("$exe") / 256 ; 
 	    if( $status_tmp != 0  ) 
