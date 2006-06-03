@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.4 2006-05-26 04:59:44 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.5 2006-06-03 21:10:52 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -225,7 +225,7 @@ namespace Chroma
     struct SinkPropContainer_t
     {
       ForwardProp_t prop_header;
-      LatticePropagator quark_propagator;
+      string quark_propagator_id;
       Real Mass;
     
       multi1d<int> bc; 
@@ -251,9 +251,12 @@ namespace Chroma
     {
       try
       {
-	// Snarf the data into a copy
-	s.quark_propagator =
+	// Try a cast to see if it succeeds
+	const LatticePropagator& foo = 
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(id);
+
+	// Snarf the data into a copy
+	s.quark_propagator_id = id;
 	
 	// Snarf the prop info. This is will throw if the prop_id is not there
 	XMLReader prop_file_xml, prop_record_xml;
@@ -517,11 +520,14 @@ namespace Chroma
       push(xml_out, "Forward_prop_correlator");
       for(int loop=0; loop < all_sinks.size(); ++loop)
       {
+	const LatticePropagator& sink_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks[loop].sink_prop_1.quark_propagator_id);
+	const LatticePropagator& sink_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks[loop].sink_prop_2.quark_propagator_id);
+
 	push(xml_out, "elem");
-	write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(all_sinks[loop].sink_prop_1.quark_propagator), 
-						       phases.getSet()));
-	write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(all_sinks[loop].sink_prop_2.quark_propagator), 
-						       phases.getSet()));
+	write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
+	write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
 	pop(xml_out);
       }
       pop(xml_out);
@@ -564,6 +570,11 @@ namespace Chroma
 
 	for(int loop=0; loop < all_sinks.size(); ++loop)
 	{
+	  const LatticePropagator& sink_prop_1 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks[loop].sink_prop_1.quark_propagator_id);
+	  const LatticePropagator& sink_prop_2 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks[loop].sink_prop_2.quark_propagator_id);
+
 	  LatticePropagator prop_1, prop_2;
 
 	  // Factory constructions
@@ -581,7 +592,7 @@ namespace Chroma
 		  inserttop,
 		  insert_path));
 
-	      prop_1 = (*sourceSpinInsertion)(all_sinks[loop].sink_prop_1.quark_propagator);
+	      prop_1 = (*sourceSpinInsertion)(sink_prop_1);
 	    }
 
 	    // Create the sink spin insertion object
@@ -596,8 +607,7 @@ namespace Chroma
 		  inserttop,
 		  insert_path));
 
-	      LatticePropagator prop_tmp = 
-		Gamma(G5) * adj(all_sinks[loop].sink_prop_2.quark_propagator) * Gamma(G5);
+	      LatticePropagator prop_tmp = Gamma(G5) * adj(sink_prop_2) * Gamma(G5);
 
 	      prop_2 = (*sinkSpinInsertion)(prop_tmp);
 	    }
