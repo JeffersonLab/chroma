@@ -1,4 +1,4 @@
-// $Id: poly_cheb_fermact_w.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: poly_cheb_fermact_w.cc,v 3.1 2006-06-06 19:06:34 kostas Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -142,8 +142,9 @@ namespace Chroma
     return new lpoly<T,P,Q>(MdagM,
 			    param.polyParams.degree, 
 			    param.polyParams.LowerBound, 
-			    param.polyParams.UpperBound, 
-			    param.polyParams.order);
+			    param.polyParams.UpperBound); 
+    //			    param.polyParams.order); // comment this out to use
+    // bit reversal ordering
   }
 
   //! Produce a linear operator for this action
