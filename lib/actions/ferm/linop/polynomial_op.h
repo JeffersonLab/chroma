@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
+// $Id: polynomial_op.h,v 3.1 2006-06-06 19:02:33 kostas Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
  *    to 1/Q^2 in the range [\mu, Lambda_max] with Q = \gamma5 M
@@ -42,9 +42,43 @@ namespace Chroma
     Real c_Zero ; // the zeroth order approximation to the inverse  ie. a constant
 
 
+    int bitrevers(int n,int maxBits){
+      int bits[maxBits] ;
+      int br_bits[maxBits] ;
+      int br(0);
+      for(int i(0);i<maxBits;i++){
+	bits[i] = n % 2 ;
+	n /= 2;
+	int br_i = maxBits-i-1 ;
+	br_bits[br_i] = bits[i] ;
+	br = br + (br_bits[br_i]<<br_i) ;
+      }
+      return br ;
+    }
+
+    void  GetRoots(multi1d<DComplex>& r,     multi1d<DComplex>& ic){
+
+      Double eps = LowerBound/UpperBound ;
+      // 2PI/(N+1) ;
+      Double www = 6.28318530717958647696/(degree+1.0) ;
+      
+      // complex conjugate pairs are at i and N-1-i
+      for(int i(0);i<degree;i++){
+	//cout<<"i: "<<i<<endl ;
+	Real ii = i+1.0 ;
+	r[i] = UpperBound*cmplx(0.5*(1.0+eps)*(1.0-cos(www*ii)) , -sqrt(eps)*sin(www*ii));
+	ic[i] = 1.0/(UpperBound*0.5*(1.0+eps) - r[i]) ;
+      }
+      c_Zero = 2.0/(UpperBound+LowerBound) ;
+      // The c_Zero constant is computed here
+      // The polynomium is: c_Zero * Prod_i ( Q^2 - root[i])*inv_c[i] 
+    }
+
+
   public:
     // constructor
     // need to modify the contructor to pass down the roots
+    // this is doing my own stupid ordering...
     lpoly(Handle< DiffLinearOperator<T,P,Q> > m_,
 	  int degree_,
 	  const Real& lower_bound_,
@@ -66,31 +100,84 @@ namespace Chroma
 	//UpperBound = upper_bound_ ;
 	root.resize(degree_);
 	inv_c.resize(degree_);
-	// Arrange the roots in complex conjugate pairs
-     
-	Double eps = lower_bound_/upper_bound_ ;
-	// 2PI/(N+1) ;
-	Double www = 6.28318530717958647696/(degree_+1.0) ;
-     
+	
+	// get the natural order roots and constants
+	multi1d<DComplex> r(degree);
+	multi1d<DComplex> ic(degree);
+	GetRoots(r,ic);
+
+	// Arrange the roots in complex conjugate pairs     
 	int j(0) ;
 	// complex conjugate pairs are at i and N-1-i
 	for(int k(1);k<=ord;k++){
 	  //QDPIO::cout<<"k: "<<k<<endl ;
 	  for(int i(k-1);i<degree/2;i+=ord){
 	    //QDPIO::cout<<"i: "<<i<<endl ;
-	    Real ii = i+1.0 ;
-	    root[j] = upper_bound_*cmplx(0.5*(1.0+eps)*(1.0-cos(www*ii)) , -sqrt(eps)*sin(www*ii));
-	    inv_c[j] = 1.0/(upper_bound_*0.5*(1.0+eps) - root[j]) ;
+	    root[j] = r[i] ;
+	    inv_c[j] = ic[i] ;
 	    root [degree-1-j] = conj(root[j]    ) ;
 	    inv_c[degree-1-j] = conj(inv_c[j]) ;
 	    j++ ;
 	  }
 	}
-	c_Zero = 2.0/(UpperBound+LowerBound) ;
 	// The polynomium is: c_Zero * Prod_i ( Q^2 - root[i])*inv_c[i] 
      
       }
-   
+
+    // This is doing the Jensen bit reversal ordering
+    lpoly(Handle< DiffLinearOperator<T,P,Q> > m_,
+	  int degree_,
+	  const Real& lower_bound_,
+	  const Real& upper_bound_) : M(m_), LowerBound(lower_bound_),  UpperBound(upper_bound_), degree(degree_){
+      //This sets up Chebyshev Polynomials. But we should have a general
+      // class that allows us to use different types of polynomials
+      
+      //QDPIO::cout<<"tlpoly constructor\n" ;
+      //QDPIO::cout<<"tlpoly: degree: " << degree<<endl ;  
+
+      int maxBits = 0 ;
+      while(degree_%2==0)
+	{
+	  degree_/=2 ;
+	  maxBits ++ ;
+	}
+      
+      if(degree_ !=1 ){
+	QDPIO::cout<<"tlpoly: Polynomium degree must be power of two.\n" ;
+	while(degree_!=1){
+	  degree_ = degree + 1 ;
+	  degree = degree_ ;
+	  QDPIO::cout<<"tlpoly: Using degree: " << degree<<endl ;  
+	  maxBits=0 ;
+	  while(degree_%2==0){
+	    degree_/=2 ;
+	    maxBits++ ;
+	  }
+	}
+	
+	QDPIO::cout<<"tlpoly: Using degree: " << degree<<endl ;        
+      }
+      
+      //QDPIO::cout<<"tlpoly: maxBits: " << maxBits<<endl ;        
+      //UpperBound = upper_bound_ ;
+      root.resize(degree);
+      inv_c.resize(degree);
+      
+      // get the natural order roots and constants
+      multi1d<DComplex> r(degree);
+      multi1d<DComplex> ic(degree);
+      GetRoots(r,ic);
+      
+      // complex conjugate pairs are at i and N-1-i
+      for(int i(0);i<degree;i++){
+	//cout<<"i: "<<i<<endl ;
+	int ii = bitrevers(i,maxBits) ;
+	root[i] = r[ii] ;
+	inv_c[i] = ic[ii] ;
+      }
+      // The polynomium is: c_Zero * Prod_i ( Q^2 - root[i])*inv_c[i] 
+    }
+
     ~lpoly(){}
 
     //! Return the fermion BC object for this linear operator
