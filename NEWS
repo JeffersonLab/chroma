@@ -1,3 +1,7 @@
+06/08/2006 -- Robert Edwards
+	Version 3.6.2. Improved memory usage with inline_mesonspec. Some 
+        fixes/improvements in polynomial linops. New parallel regression runners.
+
 05/26/2006 -- Robert Edwards
 	Version 3.6.1. Improved inline_mesonspec. Small bug fix down in
         64bit SSE wilson dslash (intel_sse_wilson_dslash).
