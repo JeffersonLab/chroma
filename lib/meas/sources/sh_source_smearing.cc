@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 3.4 2006-05-20 04:23:51 edwards Exp $
+// $Id: sh_source_smearing.cc,v 3.5 2006-06-10 16:28:34 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -72,6 +72,7 @@ namespace Chroma
     Params::Params()
     {
       j_decay = -1;
+      quark_smear_lastP = true;
     }
 
     //! Read parameters
@@ -82,17 +83,19 @@ namespace Chroma
       int version;
       read(paramtop, "version", version);
 
+      quark_smear_lastP = true;
+
       switch (version) 
       {
       case 1:
       {
-	quark_displacement_type = SimpleQuarkDisplacementEnv::name;
+	quark_displacement.id = SimpleQuarkDisplacementEnv::name;
 	int disp_length = 0;
 	int disp_dir = 0;
 
 	XMLBufferWriter xml_tmp;
 	push(xml_tmp, "Displacement");
-	write(xml_tmp, "DisplacementType", quark_displacement_type);
+	write(xml_tmp, "DisplacementType", quark_displacement.id);
 
 	if (paramtop.count("disp_length") != 0)
 	  read(paramtop, "disp_length", disp_length);
@@ -105,28 +108,27 @@ namespace Chroma
 
 	pop(xml_tmp);  // Displacement
 
-	quark_displacement = xml_tmp.printCurrentContext();
+	quark_displacement.xml = xml_tmp.printCurrentContext();
       }
       break;
 
       case 2:
       {
 	if (paramtop.count("Displacement") != 0)
-	{
-	  XMLReader xml_tmp(paramtop, "Displacement");
-	  std::ostringstream os;
-	  xml_tmp.print(os);
-	  read(xml_tmp, "DisplacementType", quark_displacement_type);
-	  quark_displacement = os.str();
-	}
+	  quark_displacement = readXMLGroup(paramtop, "Displacement", "DisplacementType");
 	else
-	{
-	  XMLBufferWriter xml_tmp;
-	  NoQuarkDisplacementEnv::Params  non;
-	  write(xml_tmp, "Displacement", non);
-	  quark_displacement = xml_tmp.str();
-	  quark_displacement_type = NoQuarkDisplacementEnv::name;
-	}
+	  quark_displacement = QuarkDisplacementEnv::nullXMLGroup();
+      }
+      break;
+
+      case 3:
+      {
+	read(paramtop, "quark_smear_lastP", quark_smear_lastP);
+
+	if (paramtop.count("Displacement") != 0)
+	  quark_displacement = readXMLGroup(paramtop, "Displacement", "DisplacementType");
+	else
+	  quark_displacement = QuarkDisplacementEnv::nullXMLGroup();
       }
       break;
 
@@ -136,29 +138,14 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      read(paramtop, "SourceType",  source_type);
-
-      {
-	XMLReader xml_tmp(paramtop, "SmearingParam");
-	std::ostringstream os;
-	xml_tmp.print(os);
-	read(xml_tmp, "wvf_kind", quark_smearing_type);
-	quark_smearing = os.str();
-      }
+      quark_smearing = readXMLGroup(paramtop, "SmearingParam", "wvf_kind");
 
       if (paramtop.count("LinkSmearing") != 0)
-      {
-	XMLReader xml_tmp(paramtop, "LinkSmearing");
-	std::ostringstream os;
-	xml_tmp.print(os);
-	read(xml_tmp, "LinkSmearingType", link_smearing_type);
-	link_smearing = os.str();
-      }
-
-      if (paramtop.count("j_decay") != 0)
-	read(paramtop, "j_decay",  j_decay);
+	link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
       else
-	j_decay = -1;
+	link_smearing = LinkSmearingEnv::nullXMLGroup();
+
+      read(paramtop, "j_decay",  j_decay);
     }
 
 
@@ -167,15 +154,16 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 2;
+      int version = 3;
       QDP::write(xml, "version", version);
 
-      write(xml, "SourceType", source_type);
-      xml << quark_smearing;
-      xml << quark_displacement;
-      xml << link_smearing;
+      write(xml, "SourceType", ShellQuarkSourceSmearingEnv::name);
+      xml << quark_smearing.xml;
+      xml << quark_displacement.xml;
+      xml << link_smearing.xml;
 
       write(xml, "j_decay",  j_decay);
+      write(xml, "quark_smear_lastP",  quark_smear_lastP);
 
       pop(xml);
     }
@@ -193,35 +181,48 @@ namespace Chroma
 	//
 	// Create the quark smearing object
 	//
-	std::istringstream  xml_s(params.quark_smearing);
+	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
 	const string smear_path = "/SmearingParam";
 	
 	Handle< QuarkSmearing<LatticeFermion> >
-	  quarkSmearing(TheFermSmearingFactory::Instance().createObject(params.quark_smearing_type,
+	  quarkSmearing(TheFermSmearingFactory::Instance().createObject(params.quark_smearing.id,
 									smeartop,
 									smear_path));
 
 	//
 	// Create the quark displacement object
 	//
-	std::istringstream  xml_d(params.quark_displacement);
+	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
 	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeFermion> >
-	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement_type,
+	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
 										displace_path));
 
 	// Smear and displace
-	// Smear the colour source
-	// displace the point source first, then smear
-	// displacement has to be taken along negative direction.
-	(*quarkDisplacement)(quark_source, u_smr, MINUS);
+	if (params.quark_smear_lastP)
+	{
+	  // Smear the colour source
+	  // displace the point source first, then smear
+	  // displacement has to be taken along negative direction.
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
 
-	// do the smearing
-	(*quarkSmearing)(quark_source, u_smr);
+	  // do the smearing
+	  (*quarkSmearing)(quark_source, u_smr);
+	}
+	else
+	{
+	  // do the smearing
+	  (*quarkSmearing)(quark_source, u_smr);
+
+	  // Smear the colour source
+	  // smear the point source first, then displace
+	  // displacement has to be taken along negative direction.
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
+	}
       }
       catch(const std::string& e) 
       {

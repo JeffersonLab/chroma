@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_sink_smearing.h,v 3.2 2006-05-20 04:23:25 edwards Exp $
+// $Id: sh_sink_smearing.h,v 3.3 2006-06-10 16:28:52 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -8,6 +8,7 @@
 #define __sh_sink_smearing_h__
 
 #include "meas/smear/quark_source_sink.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma
 {
@@ -28,16 +29,11 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
     
-      std::string      sink_type;            /*!< sink smearing type */
+      bool             quark_smear_firstP;   /*!< Flag controlling order of smearing */
 
-      std::string      quark_smearing;       /*!< xml string holding smearing params */
-      std::string      quark_smearing_type;  /*!< quark smearing type name */
-
-      std::string      quark_displacement;      /*!< displacement xml */
-      std::string      quark_displacement_type; /*!< displacement type name */
-
-      std::string      link_smearing;        /*!< link smearing xml */
-      std::string      link_smearing_type;   /*!< link smearing type name */
+      GroupXML_t       quark_smearing;       /*!< xml string holding smearing params */
+      GroupXML_t       quark_displacement;   /*!< displacement xml */
+      GroupXML_t       link_smearing;        /*!< link smearing xml */
     };
 
 
@@ -55,7 +51,7 @@ namespace Chroma
       SinkSmear(const Params& p, const multi1d<LatticeColorMatrix>& u) :
 	params(p), u_smr(u) 
 	{
-	  this->create(u_smr, params.link_smearing, params.link_smearing_type);
+	  this->create(u_smr, params.link_smearing.xml, params.link_smearing.id);
 	}
 
       //! Smear the sink

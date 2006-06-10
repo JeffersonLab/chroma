@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_smearing.h,v 3.1 2006-04-25 20:24:12 edwards Exp $
+// $Id: pt_source_smearing.h,v 3.2 2006-06-10 16:28:34 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -8,6 +8,7 @@
 #define __pt_source_smearing_h__
 
 #include "meas/smear/quark_source_sink.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma
 {
@@ -28,11 +29,8 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
 
-      std::string      link_smearing;        /*!< link smearing xml */
-      std::string      link_smearing_type;   /*!< link smearing type name */
-
-      std::string      quark_displacement;      /*!< displacement xml */
-      std::string      quark_displacement_type; /*!< displacement type name */
+      GroupXML_t       quark_displacement;   /*!< displacement xml */
+      GroupXML_t       link_smearing;        /*!< link smearing xml */
 
       int              j_decay;              /*!< decay direction */
     };
@@ -52,7 +50,7 @@ namespace Chroma
       SourceSmear(const Params& p, const multi1d<LatticeColorMatrix>& u) :
 	params(p), u_smr(u) 
 	{
-	  this->create(u_smr, params.link_smearing, params.link_smearing_type);
+	  this->create(u_smr, params.link_smearing.xml, params.link_smearing.id);
 	}
 
       //! Construct the source

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_const.h,v 3.2 2006-05-20 04:23:51 edwards Exp $
+// $Id: sh_source_const.h,v 3.3 2006-06-10 16:28:34 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -8,6 +8,7 @@
 #define __sh_source_const_h__
 
 #include "meas/sources/source_construction.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma
 {
@@ -30,19 +31,14 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& out, const std::string& path) const;
     
-      std::string      source_type;          /*!< source smearing type */
+      bool             quark_smear_lastP;    /*!< Flag controlling order of smearing */
 
-      std::string      quark_smearing;       /*!< xml string holding smearing params */
-      std::string      quark_smearing_type;  /*!< quark smearing type name */
-
-      std::string      quark_displacement;      /*!< displacement xml */
-      std::string      quark_displacement_type; /*!< displacement type name */
+      GroupXML_t       quark_smearing;       /*!< xml string holding smearing params */
+      GroupXML_t       quark_displacement;   /*!< displacement xml */
+      GroupXML_t       link_smearing;        /*!< link smearing xml */
 
       int              j_decay;              /*!< Decay direction */
       multi1d<int>     t_srce;               /*!< source location */
-
-      std::string      link_smearing;        /*!< link smearing xml */
-      std::string      link_smearing_type;   /*!< link smearing type name */
     };
 
 
