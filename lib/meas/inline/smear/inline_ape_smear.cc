@@ -1,4 +1,4 @@
-// $Id: inline_ape_smear.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_ape_smear.cc,v 3.2 2006-06-10 16:29:34 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -38,6 +38,13 @@ namespace Chroma
     switch (version) 
     {
     case 2:
+      param.BlkMax = 100;
+      param.BlkAccu = 1.0e-5;
+      break;
+
+    case 3:
+      read(paramtop, "BlkMax", param.BlkMax);
+      read(paramtop, "BlkAccu", param.BlkAccu);
       break;
 
     default :
@@ -57,11 +64,13 @@ namespace Chroma
   {
     push(xml, path);
     
-    int version = 2;
+    int version = 3;
     write(xml, "version", version);
     write(xml, "link_smear_num", param.link_smear_num);
     write(xml, "link_smear_fact", param.link_smear_fact);
     write(xml, "j_decay", param.j_decay);
+    write(xml, "BlkAccu", param.BlkAccu);
+    write(xml, "BlkMax", param.BlkMax);
     write(xml, "nrow", param.nrow);
 
     pop(xml);
@@ -174,9 +183,6 @@ namespace Chroma
     {
       QDPIO::cout << "APE Smear gauge field" << endl;
 
-      int BlkMax = 100;
-      Real BlkAccu = 1.0e-5;
-
       for(int i=0; i < params.param.link_smear_num; ++i)
       {
 	multi1d<LatticeColorMatrix> u_tmp(Nd);
@@ -184,7 +190,9 @@ namespace Chroma
 	for(int mu = 0; mu < Nd; ++mu)
 	  if ( mu != params.param.j_decay )
 	    APE_Smear(u_ape, u_tmp[mu], mu, 0,
-		      params.param.link_smear_fact, BlkAccu, BlkMax,
+		      params.param.link_smear_fact, 
+		      params.param.BlkAccu, 
+		      params.param.BlkMax,
 		      params.param.j_decay);
 	  else
 	    u_tmp[mu] = u_ape[mu];

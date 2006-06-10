@@ -1,4 +1,4 @@
-// $Id: inline_hyp_smear.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_hyp_smear.cc,v 3.2 2006-06-10 16:29:34 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -58,6 +58,8 @@ namespace Chroma
     read(paramtop, "version", version);
     param.num_smear = 1;
     param.j_decay = -1;
+    param.BlkMax = 100;
+    param.BlkAccu = 1.0e-5;
 
     switch (version) 
     {
@@ -71,6 +73,13 @@ namespace Chroma
     case 4:
       read(paramtop, "num_smear", param.num_smear);
       read(paramtop, "j_decay", param.j_decay);
+      break;
+
+    case 5:
+      read(paramtop, "num_smear", param.num_smear);
+      read(paramtop, "j_decay", param.j_decay);
+      read(paramtop, "BlkMax", param.BlkMax);
+      read(paramtop, "BlkAccu", param.BlkAccu);
       break;
 
     default :
@@ -90,7 +99,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 4;
+    int version = 5;
     write(xml, "version", version);
 
     /* this version allows a variable num_smear */
@@ -99,6 +108,8 @@ namespace Chroma
     write(xml, "alpha2", param.alpha2);
     write(xml, "alpha3", param.alpha3);
     write(xml, "j_decay", param.num_smear);
+    write(xml, "BlkAccu", param.BlkAccu);
+    write(xml, "BlkMax", param.BlkMax);
 
     write(xml, "nrow", param.nrow);
 
@@ -201,9 +212,6 @@ namespace Chroma
     // Now hyp smear
     multi1d<LatticeColorMatrix> u_hyp(Nd);
 
-    Real BlkAccu = 1.0e-5;
-    int BlkMax = 100;
-
     t1 = clock();
     if (params.param.num_smear > 0)
     {
@@ -212,11 +220,11 @@ namespace Chroma
 	if (params.param.j_decay < 0 || params.param.j_decay >= Nd)
 	  Hyp_Smear(u, u_hyp, 
 		    params.param.alpha1, params.param.alpha2, params.param.alpha3, 
-		    BlkAccu, BlkMax);
+		    params.param.BlkAccu, params.param.BlkMax);
 	else
 	  Hyp_Smear3d(u, u_hyp, 
 		      params.param.alpha1, params.param.alpha2, params.param.alpha3, 
-		      BlkAccu, BlkMax, params.param.j_decay);
+		      params.param.BlkAccu, params.param.BlkMax, params.param.j_decay);
       }
     }
     else

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hyp_smear.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: inline_hyp_smear.h,v 3.1 2006-06-10 16:29:34 edwards Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -35,7 +35,9 @@ namespace Chroma
       Real alpha2;
       Real alpha3;
 
-      int num_smear;                    // Number of smearing iterations
+      int num_smear;                    /*!< Number of smearing iterations */
+      int BlkMax;                       /*!< Max number of iterations */
+      int BlkAccu;                      /*!< Relative error to maximize trace */
 
       multi1d<int> nrow;		// Lattice dimension
       int j_decay;			// Direction corresponding to time
