@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: wilslp.out.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
+; $Id: wilslp.out.xml,v 3.2 2006-06-10 16:38:09 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -26,6 +26,7 @@
       <Param>
         <kind>6</kind>
         <j_decay>3</j_decay>
+        <t_dir>3</t_dir>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -44,10 +45,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:08:26 EDT</run_date>
+    <run_date>10 Jun 06 12:35:08 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -126,26 +127,46 @@
     <elem>
       <WilsonLoop>
         <update_no>0</update_no>
+        <decay_dir>3</decay_dir>
+        <t_dir>3</t_dir>
         <wils_loop2>
           <lengthr>2</lengthr>
           <lengtht>4</lengtht>
-          <r>0</r>
-          <wloop2>0.994728 0.992132 0.989625 0.987211</wloop2>
-          <r>1</r>
-          <wloop2>0.992379 0.98961 0.986827 0.98444</wloop2>
+          <wloop2>
+            <elem>
+              <r>0</r>
+              <loop>0.994728 0.992132 0.989625 0.987211</loop>
+            </elem>
+            <elem>
+              <r>1</r>
+              <loop>0.992379 0.98961 0.986827 0.98444</loop>
+            </elem>
+          </wloop2>
         </wils_loop2>
         <wils_loop3>
           <lengthr>2</lengthr>
-          <r>0</r>
-          <wloop3>0.992207 0.989577 0.987096 0.984541</wloop3>
-          <r>1</r>
-          <wloop3>0.987283 0.984603 0.981839 0.979294</wloop3>
-          <r>2</r>
-          <wloop3>0.989762 0.987119 0.98442 0.982005</wloop3>
-          <r>3</r>
-          <wloop3>0.989615 0.987059 0.984631 0.982314</wloop3>
-          <r>4</r>
-          <wloop3>0.981976 0.979224 0.976711 0.97406</wloop3>
+          <wloop3>
+            <elem>
+              <r>0</r>
+              <loop>0.992207 0.989577 0.987096 0.984541</loop>
+            </elem>
+            <elem>
+              <r>1</r>
+              <loop>0.987283 0.984603 0.981839 0.979294</loop>
+            </elem>
+            <elem>
+              <r>2</r>
+              <loop>0.989762 0.987119 0.98442 0.982005</loop>
+            </elem>
+            <elem>
+              <r>3</r>
+              <loop>0.989615 0.987059 0.984631 0.982314</loop>
+            </elem>
+            <elem>
+              <r>4</r>
+              <loop>0.981976 0.979224 0.976711 0.97406</loop>
+            </elem>
+          </wloop3>
         </wils_loop3>
       </WilsonLoop>
     </elem>
