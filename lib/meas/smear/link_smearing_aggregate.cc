@@ -1,4 +1,4 @@
-// $Id: link_smearing_aggregate.cc,v 3.1 2006-05-19 21:34:05 edwards Exp $
+// $Id: link_smearing_aggregate.cc,v 3.2 2006-06-10 16:28:19 edwards Exp $
 /*! \file
  *  \brief All link smearing applicators
  */
@@ -30,6 +30,23 @@ namespace Chroma
     }
 
     const bool registered = registerAll();
+
+
+
+    // Returns a no-smearing group
+    GroupXML_t   nullXMLGroup()
+    {
+      GroupXML_t nope;
+
+      XMLBufferWriter xml_tmp;
+      NoLinkSmearingEnv::Params  non;
+      write(xml_tmp, "LinkSmearing", non);
+      nope.xml = xml_tmp.str();
+      nope.id = NoLinkSmearingEnv::name;
+
+      return nope;
+    }
+
   }
 
 }

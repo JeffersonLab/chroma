@@ -1,4 +1,4 @@
-// $Id: quark_displacement_aggregate.cc,v 3.1 2006-04-06 20:14:15 edwards Exp $
+// $Id: quark_displacement_aggregate.cc,v 3.2 2006-06-10 16:28:19 edwards Exp $
 /*! \file
  *  \brief All quark displacements
  */
@@ -29,6 +29,22 @@ namespace Chroma
     }
 
     const bool registered = registerAll();
+
+
+    // Returns a no-displacement group
+    GroupXML_t   nullXMLGroup()
+    {
+      GroupXML_t nope;
+
+      XMLBufferWriter xml_tmp;
+      NoQuarkDisplacementEnv::Params  non;
+      write(xml_tmp, "Displacement", non);
+      nope.xml = xml_tmp.str();
+      nope.id = NoQuarkDisplacementEnv::name;
+
+      return nope;
+    }
+
   }
 
 }

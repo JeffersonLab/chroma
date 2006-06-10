@@ -1,4 +1,4 @@
-// $Id: quark_smearing_aggregate.cc,v 3.1 2006-05-19 15:05:01 edwards Exp $
+// $Id: quark_smearing_aggregate.cc,v 3.2 2006-06-10 16:28:19 edwards Exp $
 /*! \file
  *  \brief All quark smearing
  */
@@ -25,6 +25,22 @@ namespace Chroma
     }
 
     const bool registered = registerAll();
+
+
+    // Returns a no-smearing group
+    GroupXML_t   nullXMLGroup()
+    {
+      GroupXML_t nope;
+
+      XMLBufferWriter xml_tmp;
+      NoQuarkSmearingEnv::Params  non;
+      write(xml_tmp, "SmearingParam", non);
+      nope.xml = xml_tmp.str();
+      nope.id = NoQuarkSmearingEnv::name;
+
+      return nope;
+    }
+
   }
 
 }
