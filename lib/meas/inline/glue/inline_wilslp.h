@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 3.1 2006-04-11 04:18:23 edwards Exp $
+// $Id: inline_wilslp.h,v 3.2 2006-06-10 16:30:18 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -32,6 +32,7 @@ namespace Chroma
     {
       int kind;
       int j_decay;
+      int t_dir;
     } param;
 
     struct NamedObject_t

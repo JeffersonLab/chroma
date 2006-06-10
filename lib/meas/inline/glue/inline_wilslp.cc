@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.2 2006-06-10 16:30:18 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -31,6 +31,7 @@ namespace Chroma
 
     read(inputtop, "kind", input.kind);
     read(inputtop, "j_decay", input.j_decay);
+    read(inputtop, "t_dir", input.t_dir);
   }
 
   //! WilsonLoop output
@@ -108,9 +109,11 @@ namespace Chroma
 
     push(xml_out, "WilsonLoop");
     write(xml_out, "update_no", update_no);
+    write(xml_out, "decay_dir", params.param.j_decay);
+    write(xml_out, "t_dir", params.param.t_dir);
 
     Double w_plaq, s_plaq, t_plaq, link;
-    wilslp(u, params.param.j_decay, Nd-1, params.param.kind,
+    wilslp(u, params.param.j_decay, params.param.t_dir, params.param.kind,
 	   xml_out, "wilslp");
     
     pop(xml_out); // pop("WilsonLoop");

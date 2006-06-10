@@ -1,4 +1,4 @@
-// $Id: wilslp.cc,v 3.0 2006-04-03 04:58:58 edwards Exp $
+// $Id: wilslp.cc,v 3.1 2006-06-10 16:30:18 edwards Exp $
 /*! \file
  *  \brief Calculate Wilson loops
  */
@@ -67,7 +67,6 @@ namespace Chroma
     int t;
     int tt;
     int nr;
-    int opt;
     int i;
     int j;
     int r_off;
@@ -132,8 +131,7 @@ namespace Chroma
     multi2d<Double> wils_loop3(lengtht,  length);  
 
     /* Compute "space-like" planar Wilson loops, if desired */
-//  if ( INTEGER_MOD_FUNCTION(kind,2) == 1 )
-    if ( kind > (2*(kind/2)) )
+    if ( (kind & 1) != 0 )
     {
       if( nspace < 2 )
 	for(mu = 0;mu  < ( Nd); ++mu )
@@ -206,20 +204,24 @@ namespace Chroma
 
       dummy = 2.0 / double (Layout::vol()*Nc*nspace*(nspace-1)) ;
 
-      push(xml,"wils_loop1"); // XML tag for wils_wloop1
+      push(xml, "wils_loop1"); // XML tag for wils_wloop1
       write(xml, "lengthr", lengthr);
+      push(xml, "wloop1");
                   
       for(r = 0; r < lengthr; ++r)
       {
 	for(t = 0; t < lengthr; ++t)
 	{
-
 	  wils_loop1[t][r] = wils_loop1[t][r] * dummy;
 	  wloop1[t]      = wils_loop1[t][r];
 	}
+	push(xml, "elem");
 	write(xml, "r", r);
-	write(xml, "wloop1", wloop1);   // write out wils_wloop1
+	write(xml, "loop", wloop1);   // write out wils_wloop1
+	pop(xml); // elem
       } // end for r
+
+      pop(xml);               // XML end tag for wloop1
       pop(xml);               // XML end tag for wils_wloop1
       QDPIO::cout << "wils_loop1 data written to .xml file " << endl;        
 
@@ -231,10 +233,8 @@ namespace Chroma
     t_coord = Layout::latticeCoordinate(j_decay);
 
     /* Compute "time-like" planar Wilson loops, if desired */
-    opt = kind/2;
-    if ( opt > (2*(opt/2)) )
+    if ( (kind & 2) != 0 )
     {
-                    
       wils_loop2 = 0;                       /* initialize the Wilson loops */
 
       QDPIO::cout << "computing time-like Wilson loops" << endl;
@@ -294,25 +294,28 @@ namespace Chroma
       push(xml,"wils_loop2"); // XML tag for wils_wloop2
       write(xml, "lengthr", lengthr);
       write(xml, "lengtht", lengtht);
+      push(xml, "wloop2");
 
       for(r = 0; r < lengthr; ++r)
       {
 	for(t = 0; t < lengtht; ++t)
 	{
-
 	  wils_loop2[t][r] = wils_loop2[t][r] * dummy;
 	  wloop2[t]      = wils_loop2[t][r];
 	}
+	push(xml, "elem");
 	write(xml, "r", r);
-	write(xml, "wloop2", wloop2);   // write out wils_loop2
+	write(xml, "loop", wloop2);   // write out wils_loop2
+	pop(xml); // elem
       } // end for r
+
+      pop(xml);               // XML end tag for loop2
       pop(xml);               // XML end tag for wils_loop2
       QDPIO::cout << "wils_loop2 data written to .xml file " << endl;  
     }          /* end on option "time-like planar Wilson loops" */
 
     /* Compute "time-like" off-axis Wilson loops, if desired */
-
-    if ( (opt/2) == 1 )
+    if ( (kind & 4) != 0 )
     {
       if( nspace < 2 )
       {
@@ -1143,6 +1146,7 @@ namespace Chroma
 
       push(xml,"wils_loop3"); // XML tag for wils_wloop3
       write(xml, "lengthr", lengthr);
+      push(xml, "wloop3");
 
       for(r = 0; r < r_off+lengthr; ++r)
       {
@@ -1150,11 +1154,14 @@ namespace Chroma
         {
           wloop3[t]      = wils_loop3[t][r];
         }
+	push(xml, "elem");
         write(xml, "r", r);
-        write(xml, "wloop3", wloop3);   // write out wils_wloop3
+        write(xml, "loop", wloop3);   // write out wils_wloop3
+	pop(xml); // elem
       } // end for r
-      pop(xml);        // XML end tag for wils_wloop3
 
+      pop(xml);        // XML end tag for wloop3
+      pop(xml);        // XML end tag for wils_wloop3
     }      /* end of option "off-axis Wilson loops" */
 
     QDPIO::cout << "wils_loop3 data written to .xml file " << endl;  
