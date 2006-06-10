@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: wilslp.ini.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
+; $Id: wilslp.ini.xml,v 3.2 2006-06-10 16:37:59 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -23,6 +23,7 @@
       <Param>
         <kind>6</kind>
         <j_decay>3</j_decay>
+        <t_dir>3</t_dir>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
