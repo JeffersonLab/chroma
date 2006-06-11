@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.3 2006-06-11 06:30:32 edwards Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.4 2006-06-11 19:11:05 edwards Exp $
 /*! \file
  *  \brief ALTIVEC 5D DWF specific quark propagator solver
  */
@@ -402,7 +402,7 @@ namespace Chroma
 
     END_CODE();
 
-    return n_count;
+    return res;
   }
 
 }
