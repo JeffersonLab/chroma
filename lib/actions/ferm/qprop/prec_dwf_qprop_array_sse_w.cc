@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.3 2006-06-11 18:45:35 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.4 2006-06-11 20:28:13 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -406,7 +406,13 @@ namespace Chroma
 
 //    fini();   // only needed because 2 qpropT might be active - SSE CG does not allow this
 
-    res.resid = out_eps;
+    // Compute residual
+    {
+      multi1d<LatticeFermion>  r(N5);
+      A->unprecLinOp(r, psi, PLUS);
+      r -= chi;
+      res.resid = sqrt(norm2(r));
+    }
 
     QDPIO::cout << "exiting SSEDWFQpropT::operator()" << endl;
 

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.4 2006-06-11 19:11:05 edwards Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.5 2006-06-11 20:28:13 edwards Exp $
 /*! \file
  *  \brief ALTIVEC 5D DWF specific quark propagator solver
  */
@@ -396,7 +396,13 @@ namespace Chroma
 
 //    fini();   // only needed because 2 qpropT might be active - ALTIVEC CG does not allow this
 
-    res.resid = out_eps;
+    // Compute residual
+    {
+      multi1d<LatticeFermion>  r(N5);
+      A->unprecLinOp(r, psi, PLUS);
+      r -= chi;
+      res.resid = sqrt(norm2(r));
+    }
 
     QDPIO::cout << "exiting ALTIVECDWFQpropT::operator()" << endl;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_sse_w.h,v 3.3 2006-06-11 15:23:38 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.h,v 3.4 2006-06-11 20:28:13 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -32,6 +32,7 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
 
+#if 0
     //! Constructor
     /*!
      * Preferred constructor
@@ -47,18 +48,19 @@ namespace Chroma
       OverMass(OverMass_), Mass(Mass_), 
       N5(N5_), anisoParam(anisoParam_), invParam(invParam_) 
       {init(state_);}
+#endif
 
     //! Alternative constructor for compatibility
     /*!
      * \param m_q_       quark mass ( Read )
      */
-    SSEDWFQpropT(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A,
+    SSEDWFQpropT(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A_,
 		 Handle< FermState<T,P,Q> > state_, 
 		 const Real& OverMass_,
 		 const Real& Mass_,
 		 const AnisoParam_t& anisoParam_,
 		 const InvertParam_t& invParam_) : 
-      OverMass(OverMass_), Mass(Mass_), 
+      A(A_), OverMass(OverMass_), Mass(Mass_), 
       N5(A->size()), anisoParam(anisoParam_), invParam(invParam_) 
       {init(state_);}
 
@@ -89,6 +91,7 @@ namespace Chroma
   private:
     SSE_DWF_Gauge *g;
 
+    Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
     const Real OverMass;
     const Real Mass;
     const int  N5;
