@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_dwf.out.xml,v 3.3 2006-06-11 06:30:36 edwards Exp $
+; $Id: prec_dwf.out.xml,v 3.4 2006-06-11 19:39:42 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -56,7 +56,7 @@
         <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>true</obsvP>
-        <numRetries>1</numRetries>
+        <numRetries>3</numRetries>
         <FermionAction>
          <FermAct>DWF</FermAct>
          <OverMass>1.2</OverMass>
@@ -111,7 +111,7 @@
       <chroma>3.7.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 02:06:53 EDT</run_date>
+    <run_date>11 Jun 06 15:35:28 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -172,7 +172,7 @@
             <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 02:06:53 EDT</run_date>
+          <run_date>11 Jun 06 15:35:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -266,7 +266,7 @@
             <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 02:06:53 EDT</run_date>
+          <run_date>11 Jun 06 15:35:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -280,7 +280,7 @@
             <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>true</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <numRetries>3</numRetries><FermionAction>
       <FermAct>DWF</FermAct>
       <OverMass>1.2</OverMass>
       <Mass>0.4</Mass>
@@ -409,10 +409,38 @@
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.07503e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>8.90587e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>32</n_count>
             <resid>1.40357e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.16469e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>8.72276e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
@@ -423,10 +451,38 @@
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.87589e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>1.0679e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>32</n_count>
             <resid>1.36512e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>1</ntry>
+            <n_count>5</n_count>
+            <resid>9.98491e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>9.77862e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
@@ -437,10 +493,38 @@
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.52343e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>8.79247e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>32</n_count>
             <resid>1.27685e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>1</ntry>
+            <n_count>5</n_count>
+            <resid>9.88941e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>8.86129e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
@@ -451,10 +535,38 @@
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.32095e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>8.79988e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>32</n_count>
             <resid>1.29942e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.59337e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>9.00882e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
@@ -465,10 +577,38 @@
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.5318e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>8.50893e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>32</n_count>
             <resid>1.40946e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.15553e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>9.56027e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
@@ -479,10 +619,38 @@
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.52531e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>9.09918e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>32</n_count>
             <resid>1.38642e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>1</ntry>
+            <n_count>4</n_count>
+            <resid>9.54788e-08</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>2</ntry>
+            <n_count>4</n_count>
+            <resid>9.77196e-08</resid>
           </Qprop>
           <time_direction>
             <t_dir>3</t_dir>
@@ -491,7 +659,7 @@
             <mesprop>-0.0831783 -0.0239744 -0.00894987 -0.00239816 0.0023937 0.00894478 0.0239759 0.0831877</mesprop>
           </DWF_ConservedAxial>
           <DWF_LocalAxial>
-            <mesprop>-1.22296e-08 -0.0502869 -0.0151099 -0.00500486 -2.4873e-06 0.00500036 0.0151114 0.0502719</mesprop>
+            <mesprop>-1.30395e-08 -0.0502869 -0.0151099 -0.00500486 -2.48731e-06 0.00500036 0.0151114 0.0502719</mesprop>
           </DWF_LocalAxial>
           <DWF_MidPoint_Pseudo>
             <mesprop>0.0429238 0.00403022 0.000396128 4.9711e-05 7.07732e-06 4.97449e-05 0.000396857 0.00403441</mesprop>
@@ -501,7 +669,7 @@
           </DWF_Psuedo_Pseudo>
         </DWF_QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>384</ncg_had>
+          <ncg_had>482</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.0463349 0.0639294 0.0177903 0.00806536 0.00597212 0.00806449 0.0177968 0.0639287</prop_corr>
