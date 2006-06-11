@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: unprec_zolo_nef.ini.xml,v 3.1 2006-04-11 04:18:25 edwards Exp $
+; $Id: unprec_zolo_nef.ini.xml,v 3.2 2006-06-11 06:30:37 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -50,9 +50,10 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>UNPRECONDITIONED_ZOLO_NEF</FermAct>
          <ApproximationType>ZOLOTAREV</ApproximationType>

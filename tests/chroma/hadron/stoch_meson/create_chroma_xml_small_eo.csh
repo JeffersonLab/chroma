@@ -93,9 +93,10 @@ cat << **EOF**
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -190,9 +191,10 @@ cat << **EOF**
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>

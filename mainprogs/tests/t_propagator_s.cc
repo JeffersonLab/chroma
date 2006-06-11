@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
+// $Id: t_propagator_s.cc,v 3.1 2006-06-11 06:30:34 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -404,13 +404,13 @@ int main(int argc, char **argv)
         // Use the last initial guess as the current guess
 
         // Compute the propagator for given source color/spin 
-	int n_count = (*qprop)(psi, q_source);
-        ncg_had += n_count;
+	SystemSolverResults_t res = (*qprop)(psi, q_source);
+        ncg_had += res.n_count;
       
 	push(xml_out,"Inverter_performance");
         write(xml_out, "color", color_source);
         write(xml_out, "staggered_src", src_ind);
-        write(xml_out, "iterations", n_count);
+        write(xml_out, "iterations", res.n_count);
         pop(xml_out);
 
         /*

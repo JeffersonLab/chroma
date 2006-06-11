@@ -49,9 +49,10 @@ Sequential source
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -640,10 +641,10 @@ Sequential source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:15:05 EDT</run_date>
+    <run_date>11 Jun 06 01:33:01 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -701,10 +702,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:05 EDT</run_date>
+          <run_date>11 Jun 06 01:33:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -793,10 +794,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:05 EDT</run_date>
+          <run_date>11 Jun 06 01:33:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -807,9 +808,10 @@ Sequential source
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -926,40 +928,88 @@ Sequential source
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.21385e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.28473e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.4602e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.13819e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.3071e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>9.81162e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.24071e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.32559e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.01553e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.21519e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.14209e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.2809e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -975,10 +1025,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:06 EDT</run_date>
+          <run_date>11 Jun 06 01:33:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1054,9 +1104,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1126,9 +1177,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1220,10 +1272,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:06 EDT</run_date>
+          <run_date>11 Jun 06 01:33:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1298,9 +1350,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1389,10 +1442,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:07 EDT</run_date>
+          <run_date>11 Jun 06 01:33:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1468,9 +1521,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1540,9 +1594,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1634,10 +1689,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:07 EDT</run_date>
+          <run_date>11 Jun 06 01:33:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1712,9 +1767,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1803,10 +1859,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:07 EDT</run_date>
+          <run_date>11 Jun 06 01:33:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1882,9 +1938,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1954,9 +2011,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2048,10 +2106,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:07 EDT</run_date>
+          <run_date>11 Jun 06 01:33:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2126,9 +2184,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2217,10 +2276,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:07 EDT</run_date>
+          <run_date>11 Jun 06 01:33:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2296,9 +2355,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2368,9 +2428,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2462,10 +2523,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:08 EDT</run_date>
+          <run_date>11 Jun 06 01:33:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2540,9 +2601,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2631,10 +2693,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:08 EDT</run_date>
+          <run_date>11 Jun 06 01:33:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2710,9 +2772,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2782,9 +2845,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2876,10 +2940,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:08 EDT</run_date>
+          <run_date>11 Jun 06 01:33:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2954,9 +3018,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -3045,10 +3110,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:08 EDT</run_date>
+          <run_date>11 Jun 06 01:33:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3124,9 +3189,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -3196,9 +3262,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -3290,10 +3357,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:08 EDT</run_date>
+          <run_date>11 Jun 06 01:33:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3368,9 +3435,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -3459,10 +3527,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:09 EDT</run_date>
+          <run_date>11 Jun 06 01:33:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3537,9 +3605,10 @@ Sequential source
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>

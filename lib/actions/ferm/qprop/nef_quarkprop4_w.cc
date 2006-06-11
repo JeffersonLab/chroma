@@ -1,6 +1,14 @@
-// $Id: nef_quarkprop4_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 3.0  2006-04-03 04:58:52  edwards
+// Revision 3.1  2006-06-11 06:30:32  edwards
+// Change in interface. The quarkProp routines now all take a "numRetries"
+// variable for the number of times to call the qprop routine. The propagator
+// regression tests have all been up to version 10 to read this new variable.
+// The SystemSolver routines now all return a  SystemSolverResults_t  struct
+// instead of an int of "n_count" . A residual of the unpreconditioned
+// system of equations for the qprop and qpropT is computed.
+//
+// Revision 3.0  2006/04/03 04:58:52  edwards
 // Major overhaul of fermion and gauge action interface. Basically,
 // all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
 // the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
@@ -101,6 +109,7 @@ namespace Chroma
 		       const C<T,P,Q>& S_f,
 		       Handle< FermState<T,P,Q> > state,
 		       const InvertParam_t& invParam,
+		       int numRetries,
 		       int& ncg_had)
   {
     START_CODE();
@@ -135,9 +144,13 @@ namespace Chroma
 	 * a trick to avoid overflows or underflows
 	 */
 
+	Real fact = 1.0;
+	Real nrm = sqrt(norm2(tmp));
+	if (toFloat(nrm) != 0.0)
+	  fact /= nrm;
 
-	Real fact = Real(1) / sqrt(norm2(tmp));
-	tmp *= fact ;
+	// Rescale
+	tmp *= fact;
 
 	QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
 
@@ -157,13 +170,19 @@ namespace Chroma
 
 	// now we are ready invert
 	// Compute the propagator for given source color/spin.	   
-	int n_count = (*qpropT)(psi,chi);
-	ncg_had += n_count;
+	for(int ntry=0; ntry < numRetries; ++ntry)
+	{
+	  SystemSolverResults_t result = (*qpropT)(psi,chi);
+	  ncg_had += result.n_count;
 
-	push(xml_out,"Qprop");
-	write(xml_out, "RsdCG", invParam.RsdCG);
-	write(xml_out, "n_count", n_count);
-	pop(xml_out);
+	  push(xml_out,"Qprop");
+	  write(xml_out, "color_source", color_source);
+	  write(xml_out, "spin_source", spin_source);
+	  write(xml_out, "ntry", ntry);
+	  write(xml_out, "n_count", result.n_count);
+	  write(xml_out, "resid", result.resid);
+	  pop(xml_out);
+	}
 
 	// Unnormalize the source following the inverse 
 	// of the normalization above
@@ -295,6 +314,7 @@ namespace Chroma
 		      Handle< FermState<LatticeFermion, 
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		      const InvertParam_t& invParam,
+		      int numRetries,
 		      int& ncg_had)
   {
     nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,
@@ -307,6 +327,7 @@ namespace Chroma
 	S_f, 
 	state,
 	invParam,
+	numRetries,
 	ncg_had);
   }
 
@@ -334,6 +355,7 @@ namespace Chroma
 		      Handle< FermState<LatticeFermion,
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		      const InvertParam_t& invParam,
+		      int numRetries,
 		      int& ncg_had)
   {
     nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,
@@ -346,6 +368,7 @@ namespace Chroma
 	S_f, 
 	state,
 	invParam,
+	numRetries,
 	ncg_had);
   }
 

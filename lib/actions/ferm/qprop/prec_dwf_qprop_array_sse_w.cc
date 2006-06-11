@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.1 2006-05-23 04:39:30 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.2 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -216,6 +216,7 @@ namespace Chroma
 	      const multi1d<LatticeFermion> &x0,    // input
 	      double rsd,                           // input
 	      int max_iter,                         // input
+	      double& out_eps,                      // output
 	      int &out_iter )                       // output
     {
       // Initialize internal structure of the solver
@@ -232,7 +233,6 @@ namespace Chroma
 		  << endl;
 
       double M_0 = -2*M5;
-      double out_eps;
       out_eps = 0.0;
       out_iter = 0;
 
@@ -380,11 +380,14 @@ namespace Chroma
    * \param chi      source ( Read )
    * \return number of CG iterations
    */
-  int SSEDWFQpropT::operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
+  SystemSolverResults_t 
+  SSEDWFQpropT::operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
   {
     QDPIO::cout << "entering SSEDWFQpropT::operator()" << endl;
 
     START_CODE();
+
+    SystemSolverResults_t res;
 
 //    init();   // only needed because 2 qpropT might be active - SSE CG does not allow this
 
@@ -397,11 +400,13 @@ namespace Chroma
     double rsd = toDouble(invParam.RsdCG);
     double rsd_sq = rsd * rsd;
     int    max_iter = invParam.MaxCG;
-    int    n_count;
+    double out_eps;
     SSEDWF::solve_cg5(psi, g, M5, m_f, 
-		      chi, psi, rsd_sq, max_iter, n_count);
+		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
 
 //    fini();   // only needed because 2 qpropT might be active - SSE CG does not allow this
+
+    res.resid = out_eps;
 
     QDPIO::cout << "exiting SSEDWFQpropT::operator()" << endl;
 

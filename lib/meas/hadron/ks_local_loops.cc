@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $ ($Date: 2006-04-03 04:58:59 $) */
+/* $Id: ks_local_loops.cc,v 3.1 2006-06-11 06:30:33 edwards Exp $ ($Date: 2006-06-11 06:30:33 $) */
 
 
 #include "fermact.h"
@@ -311,12 +311,12 @@ void ks_local_loops(
 
 
     // Compute the solution vector for the particular source
-    int n_count = (*qprop)(psi, q_source);
+    SystemSolverResults_t res = (*qprop)(psi, q_source);
       
     push(xml_out,"Qprop_noise");
     write(xml_out, "Noise_number" , i);
     write(xml_out, "RsdCG" , RsdCG);
-    write(xml_out, "n_count", n_count);
+    write(xml_out, "n_count", res.n_count);
     write(xml_out, "Seed" , seed);
     pop(xml_out);
 
@@ -474,12 +474,12 @@ void ks_local_loops(
 					   j_decay);
 
     // Compute the solution vector for the particular source
-    int n_count = (*qprop)(psi, q_source);
+    SystemSolverResults_t res = (*qprop)(psi, q_source);
       
     push(xml_out,"Qprop_noise");
     write(xml_out, "Noise_number" , i);
     write(xml_out, "RsdCG" , RsdCG);
-    write(xml_out, "n_count", n_count);
+    write(xml_out, "n_count", res.n_count);
     write(xml_out, "Seed" , seed);
     pop(xml_out);
 
@@ -617,12 +617,12 @@ void ks_fuzz_loops(
 					   j_decay);
 
     // Compute the solution vector for the particular source
-    int n_count = (*qprop)(psi, q_source);
+    SystemSolverResults_t res = (*qprop)(psi, q_source);
       
     push(xml_out,"Qprop_noise");
     write(xml_out, "Noise_number" , i);
     write(xml_out, "RsdCG" , RsdCG);
-    write(xml_out, "n_count", n_count);
+    write(xml_out, "n_count", res.n_count);
     write(xml_out, "Seed" , seed);
     pop(xml_out);
 
@@ -776,13 +776,14 @@ void ks_local_loops_and_stoch_conn(
 					   j_decay);
 
     // Compute the solution vector for the particular source
-    int n_count = (*qprop)(psi1, q_source1);
-    int n_count2 = (*qprop)(psi2, q_source2);
+    SystemSolverResults_t res1 = (*qprop)(psi1, q_source1);
+    SystemSolverResults_t res2 = (*qprop)(psi2, q_source2);
       
     push(xml_out,"Qprop_noise");
     write(xml_out, "Noise_number" , i);
     write(xml_out, "RsdCG" , RsdCG);
-    write(xml_out, "n_count", n_count);
+    write(xml_out, "n_count1", res1.n_count);
+    write(xml_out, "n_count2", res2.n_count);
     write(xml_out, "Seed" , seed);
     pop(xml_out);
 

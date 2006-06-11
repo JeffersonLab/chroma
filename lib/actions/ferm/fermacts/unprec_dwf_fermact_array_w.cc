@@ -1,4 +1,4 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 3.1 2006-05-10 04:48:29 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 3.2 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -107,18 +107,19 @@ namespace Chroma
 				  Handle< FermState<T,P,Q> > state,
 				  const InvertParam_t& invParam,
 				  QuarkSpinType quarkSpinType,
+				  int numRetries,
 				  bool obsvP,
 				  int& ncg_had) const
   {
     if (obsvP)
     {
       Handle< SystemSolverArray<T> > qpropT(this->qpropT(state,invParam));
-      dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, qpropT, state, getQuarkMass(), ncg_had);
+      dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, qpropT, state, getQuarkMass(), numRetries, ncg_had);
     }
     else
     {
       Handle< SystemSolver<T> > qprop(this->qprop(state,invParam));
-      quarkProp4(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
+      quarkProp4(q_sol, xml_out, q_src, qprop, quarkSpinType, numRetries, ncg_had);
     }
   }
 

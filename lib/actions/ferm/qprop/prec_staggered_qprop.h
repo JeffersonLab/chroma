@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_staggered_qprop.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: prec_staggered_qprop.h,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -54,11 +54,11 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (T& psi, const T& chi) const
+    SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
       START_CODE();
 
-      int n_count;
+      SystemSolverResults_t res;
   
       LatticeStaggeredFermion tmp, tmp1, tmp2;
       tmp = tmp1 = tmp2 = zero;
@@ -76,7 +76,7 @@ namespace Chroma
     
 
       /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
-      InvCG1(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+      InvCG1(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
       
       // psi[rb[0]] is returned, so reconstruct psi[rb[1]]
       invm = Real(1)/(2*Mass);
@@ -98,12 +98,20 @@ namespace Chroma
       // QDP_error_exit("Unknown inverter type", invType);
       //}
 
-      if ( n_count == invParam.MaxCG )
-	QDP_error_exit("no convergence in the inverter", n_count);
+      if ( res.n_count == invParam.MaxCG )
+	QDP_error_exit("no convergence in the inverter", res.n_count);
+
+      // Compute residual
+      {
+	T  r;
+	(*A)(r, psi, PLUS);
+	r -= chi;
+	res.resid = sqrt(norm2(r));
+      }
 
       END_CODE();
 
-      return n_count;
+      return res;
     }
 
 

@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>2.15.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>19 Mar 06 23:53:26 EST</run_date>
+    <run_date>10 Jun 06 20:41:40 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -61,9 +61,10 @@
     </FrwdPropXML>
     <FrwdPropRecordXML><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -115,7 +116,7 @@
     </Propagator>
 
     </FrwdPropRecordXML>
-    <FrwdPropCheck>43.4015 2.11953 0.420657 0.138717 0.0531566 0.0210718 0.00843051 0.00338872</FrwdPropCheck>
+    <FrwdPropCheck>0 0 0 0 0 0 0 0</FrwdPropCheck>
   </ForwardProp>
   <NoisySource>
     <NoisySrcId>nsrc_1</NoisySrcId>

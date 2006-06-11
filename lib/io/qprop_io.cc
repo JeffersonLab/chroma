@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: qprop_io.cc,v 3.1 2006-06-11 06:30:33 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -55,7 +55,6 @@ namespace Chroma
   {
     j_decay   = -1;
     t_source  = -1;
-//    nrow      = Layout::lattSize();
   }
 
   // Given a prop source xml in string form, return the t_srce
@@ -106,22 +105,20 @@ namespace Chroma
     t_sink    = -1;
     sink_mom.resize(Nd-1);
     sink_mom = 0;
-//    nrow      = Layout::lattSize();
   }
 
 
   // Initialize header with default values
   ChromaProp_t::ChromaProp_t()
   {
-//    nrow        = Layout::lattSize();
     obsvP       = true;
+    numRetries  = 1;
     // Create an document with an empty state info tag
   }
 
   // Initialize header with default values
   ChromaMultiProp_t::ChromaMultiProp_t()
   {
-//    nrow        = Layout::lattSize();
   }
 
 
@@ -165,8 +162,6 @@ namespace Chroma
       multi1d<int> t_srce;
       read(paramtop, "j_decay",  header.j_decay);
       read(paramtop, "t_source", t_srce);
-
-//	read(paramtop, "nrow", header.nrow);
 
       if (header.source_type == "SHELL_SOURCE")
       {
@@ -349,8 +344,6 @@ namespace Chroma
 
       read(paramtop, "j_decay", header.j_decay);
 
-//	read(paramtop, "nrow", header.nrow);
-
       if (header.sink_type == "SHELL_SINK")
       {
 	XMLReader shelltop(paramtop, "ShellSink");
@@ -525,7 +518,6 @@ namespace Chroma
 	}
 	header.source = os.str();
       }
-//      read(paramtop, "nrow", header.nrow);
       break;
 
       default:
@@ -613,7 +605,6 @@ namespace Chroma
       QDP_abort(1);
     }
 
-//    read(paramtop, "nrow", header.nrow);
   }
 
   //! SeqPropagator header reader
@@ -657,7 +648,6 @@ namespace Chroma
     read(paramtop, "InvertParam", param.invParam);
     read(paramtop, "t_sink", param.t_sink);
     read(paramtop, "sink_mom", param.sink_mom);
-//    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -724,7 +714,6 @@ namespace Chroma
       QDP_abort(1);
     }
 
-//    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -740,6 +729,9 @@ namespace Chroma
 
     param.quarkSpinType = QUARK_SPIN_TYPE_FULL;
     param.obsvP = true;
+    param.numRetries = 1;
+
+    QDPIO::cout << __func__ << ": numRetries = " << param.numRetries << endl;
 
     switch (version) 
     {
@@ -750,7 +742,6 @@ namespace Chroma
       // in a <FermionAction> tag beneath <Param>
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-//      read(paramtop, "nrow", param.nrow);
 
       XMLBufferWriter xml_out;
       push(xml_out,"FermionAction");
@@ -768,7 +759,6 @@ namespace Chroma
       // goes into a <FermionAction> tag beneath <Param>
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-//      read(paramtop, "nrow", param.nrow);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
 
@@ -792,7 +782,6 @@ namespace Chroma
 
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-//      read(paramtop, "nrow", param.nrow);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
 
@@ -815,7 +804,6 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "InvertParam", param.invParam);
-//      read(paramtop, "nrow", param.nrow);
 
       bool nonRelProp;
       read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
@@ -848,7 +836,6 @@ namespace Chroma
 	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
 
       read(paramtop, "InvertParam", param.invParam);
-//      read(paramtop, "nrow", param.nrow);
       read(paramtop, "obsvP", param.obsvP);
 
       if (paramtop.count("boundary") != 0)
@@ -868,9 +855,28 @@ namespace Chroma
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
       read(paramtop, "InvertParam", param.invParam);
-//      read(paramtop, "nrow", param.nrow);
       read(paramtop, "obsvP", param.obsvP);
 
+      if (paramtop.count("boundary") != 0)
+      {
+	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
+	QDP_abort(1);
+      }
+    }
+    break;
+
+    case 10:
+    {
+      XMLReader xml_tmp(paramtop, "FermionAction");
+      std::ostringstream os;
+      xml_tmp.print(os);
+      param.fermact = os.str();
+
+      read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
+      read(paramtop, "InvertParam", param.invParam);
+      read(paramtop, "obsvP", param.obsvP);
+      read(paramtop, "numRetries", param.numRetries);
+    
       if (paramtop.count("boundary") != 0)
       {
 	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
@@ -885,6 +891,9 @@ namespace Chroma
 		  << " unsupported." << endl;
       QDP_abort(1);
     }
+
+    QDPIO::cout << __func__ << ": exiting, param.numRetries = " << param.numRetries << endl;
+
   }
 
 
@@ -909,7 +918,6 @@ namespace Chroma
     
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-//      read(paramtop, "nrow", param.nrow);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
 
@@ -936,7 +944,6 @@ namespace Chroma
 
       read(paramtop, "InvertParam", param.invParam);
       read(paramtop, "boundary", boundary);
-//      read(paramtop, "nrow", param.nrow);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
 
@@ -962,7 +969,6 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "InvertParam", param.invParam);
-//      read(paramtop, "nrow", param.nrow);
 
       bool nonRelProp;
       read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
@@ -988,7 +994,6 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "InvertParam", param.invParam);
-//      read(paramtop, "nrow", param.nrow);
 
       bool nonRelProp;
       read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
@@ -1009,7 +1014,6 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "InvertParam", param.invParam);
-//      read(paramtop, "nrow", param.nrow);
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // quark spin components
     }
@@ -1156,8 +1160,6 @@ namespace Chroma
     write(xml, "j_decay", header.j_decay);   // I think these two are duplicates of what
     write(xml, "t_source", header.t_source); // is in header.source
 
-//    write(xml, "nrow",  header.nrow);
-
     pop(xml);
   }
 
@@ -1188,8 +1190,6 @@ namespace Chroma
     xml << header.sink;
     write(xml, "j_decay", header.j_decay);
 
-//    write(xml, "nrow",  header.nrow);
-
     pop(xml);
   }
 
@@ -1199,13 +1199,13 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 9;
+    int version = 10;
     write(xml, "version", version);
     write(xml, "quarkSpinType", header.quarkSpinType);
     write(xml, "obsvP", header.obsvP);           // new - measured 5D stuff
+    write(xml, "numRetries", header.numRetries); 
     xml << header.fermact;
     write(xml, "InvertParam", header.invParam);
-//    write(xml, "nrow", header.nrow);
 
     pop(xml);
   }
@@ -1221,7 +1221,6 @@ namespace Chroma
     write(xml, "MultiMasses", header.MultiMasses);
     xml << header.fermact;
     write(xml, "InvertParam", header.invParam);
-//    write(xml, "nrow", header.nrow);
 
     pop(xml);
   }
@@ -1239,7 +1238,6 @@ namespace Chroma
     write(xml, "InvertParam", param.invParam);
     write(xml, "t_sink", param.t_sink);
     write(xml, "sink_mom", param.sink_mom);
-//    write(xml, "nrow", param.nrow);
 
     pop(xml);
   }
@@ -1253,7 +1251,6 @@ namespace Chroma
     int version = 2;
     write(xml, "version", version);
     xml << param.seqsrc;
-//    write(xml, "nrow", param.nrow);
 
     pop(xml);
   }

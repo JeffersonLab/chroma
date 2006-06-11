@@ -36,9 +36,10 @@ Mres calculation
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -111,10 +112,10 @@ Mres calculation
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:09:14 EDT</run_date>
+    <run_date>11 Jun 06 01:50:30 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -172,10 +173,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:09:14 EDT</run_date>
+          <run_date>11 Jun 06 01:50:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -254,10 +255,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:09:15 EDT</run_date>
+          <run_date>11 Jun 06 01:50:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -268,9 +269,10 @@ Mres calculation
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -377,40 +379,88 @@ Mres calculation
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.07225e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>9.06655e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>7.95544e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>9.28537e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>8.30213e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>9.53169e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>8.69587e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>9.15213e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.06433e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.0218e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>7.66799e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.03003e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -426,10 +476,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:09:16 EDT</run_date>
+          <run_date>11 Jun 06 01:50:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

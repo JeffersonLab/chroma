@@ -50,9 +50,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -236,9 +237,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>9</version>
+       <version>10</version>
        <quarkSpinType>FULL</quarkSpinType>
        <obsvP>false</obsvP>
+       <numRetries>1</numRetries>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>
@@ -274,9 +276,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>9</version>
+       <version>10</version>
        <obsvP>false</obsvP>
        <quarkSpinType>FULL</quarkSpinType>
+       <numRetries>1</numRetries>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>
@@ -312,9 +315,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>9</version>
+       <version>10</version>
        <obsvP>false</obsvP>
        <quarkSpinType>FULL</quarkSpinType>
+       <numRetries>1</numRetries>
        <FermionAction>
         <FermAct>WILSON</FermAct>
         <Kappa>0.11</Kappa>
@@ -417,10 +421,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.2.1</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>04 May 06 23:02:19 EDT</run_date>
+    <run_date>11 Jun 06 01:49:33 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -478,10 +482,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:20 EDT</run_date>
+          <run_date>11 Jun 06 01:49:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -572,10 +576,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:20 EDT</run_date>
+          <run_date>11 Jun 06 01:49:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -586,9 +590,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -707,40 +712,88 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.21385e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.28473e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.4602e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.13819e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.3071e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>9.81162e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.24071e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.32559e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.01553e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.21519e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.14209e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.2809e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -756,10 +809,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:22 EDT</run_date>
+          <run_date>11 Jun 06 01:49:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -850,9 +903,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -937,10 +991,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:22 EDT</run_date>
+          <run_date>11 Jun 06 01:49:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1032,9 +1086,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1106,9 +1161,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1196,10 +1252,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:23 EDT</run_date>
+          <run_date>11 Jun 06 01:49:36 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1290,9 +1346,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1377,10 +1434,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:23 EDT</run_date>
+          <run_date>11 Jun 06 01:49:36 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1391,9 +1448,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1532,9 +1590,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1599,40 +1658,88 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.76005e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.25404e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.33426e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.56363e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.57528e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.07134e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.45776e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.25648e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>3.86998e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.14841e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.06424e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.04073e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -1648,10 +1755,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:24 EDT</run_date>
+          <run_date>11 Jun 06 01:49:37 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1662,9 +1769,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1803,9 +1911,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1886,9 +1995,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1953,40 +2063,88 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.3249e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.28243e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.3249e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.28243e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.42395e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.53402e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.42395e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.53402e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.2707e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.29912e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.2707e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.29912e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -2002,10 +2160,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:26 EDT</run_date>
+          <run_date>11 Jun 06 01:49:38 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2016,9 +2174,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2157,9 +2316,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2224,40 +2384,88 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.13844e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.27024e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.13844e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>48</n_count>
+            <resid>4.27024e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.5898e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.3814e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.5898e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.3814e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.44767e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.48501e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.44767e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>49</n_count>
+            <resid>4.48501e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -2273,10 +2481,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.1</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>04 May 06 23:02:27 EDT</run_date>
+          <run_date>11 Jun 06 01:49:39 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2351,9 +2559,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Propagator_file_info>
         <Propagator_record_info><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2435,9 +2644,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </SequentialProp_file_info>
               <SequentialProp_record_info><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2528,9 +2738,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2609,9 +2820,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </SequentialProp_file_info>
               <SequentialProp_record_info><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2702,9 +2914,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2785,9 +2998,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2866,9 +3080,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </SequentialProp_file_info>
               <SequentialProp_record_info><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2959,9 +3174,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>

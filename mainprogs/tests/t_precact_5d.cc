@@ -1,4 +1,4 @@
-// $Id: t_precact_5d.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
+// $Id: t_precact_5d.cc,v 3.1 2006-06-11 06:30:34 edwards Exp $
 /*! \file
  *  \brief Test 5d fermion actions
  */
@@ -44,18 +44,18 @@ void check_qprop(XMLWriter& xml_out, const string& prefix,
   sol_unprec=zero;
 
   // Do solution one;
-  int n_count1 = PP(sol_prec, source);
+  SystemSolverResults_t res1 = PP(sol_prec, source);
   cout << "QPROP Prec done" << endl << flush ; 
 
-  int n_count2 = UP(sol_unprec, source);
+  SystemSolverResults_t res2 = UP(sol_unprec, source);
 
   LatticeFermion diff = sol_prec - sol_unprec;
   Double norm_diff = sqrt(norm2(diff));
 
   QDPIO::cout << "Prop Diff: " << norm_diff << endl;
   push(xml_out, prefix);
-  write(xml_out, "n_count1", n_count1);
-  write(xml_out, "n_count2", n_count2);
+  write(xml_out, "n_count1", res1.n_count);
+  write(xml_out, "n_count2", res2.n_count);
   write(xml_out, "prop_diff", norm_diff);
   pop(xml_out);
 
@@ -87,10 +87,10 @@ void check_qpropT(XMLWriter& xml_out, const string& prefix,
   sol_unprec=zero;
 
   // Do solution one;
-  int n_count1 = PP(sol_prec, source);
+  SystemSolverResults_t res1 = PP(sol_prec, source);
   cout << "QPROP Prec done" << endl << flush ; 
 
-  int n_count2 = UP(sol_unprec, source);
+  SystemSolverResults_t res2 = UP(sol_unprec, source);
 
   multi1d<LatticeFermion> diff(N5);
   for(int n=0; n < PP.size(); ++n)
@@ -99,8 +99,8 @@ void check_qpropT(XMLWriter& xml_out, const string& prefix,
 
   QDPIO::cout << "Prop Diff: " << norm_diff << endl;
   push(xml_out, prefix);
-  write(xml_out, "n_count1", n_count1);
-  write(xml_out, "n_count2", n_count2);
+  write(xml_out, "n_count1", res1.n_count);
+  write(xml_out, "n_count2", res2.n_count);
   write(xml_out, "prop_diff", norm_diff);
   pop(xml_out);
 

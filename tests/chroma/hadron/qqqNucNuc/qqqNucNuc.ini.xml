@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: qqqNucNuc.ini.xml,v 3.1 2006-04-11 04:18:25 edwards Exp $
+; $Id: qqqNucNuc.ini.xml,v 3.2 2006-06-11 06:30:37 edwards Exp $
 ;
 ; Test input for the qqqNucNuc program
 ;
@@ -44,10 +44,11 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <FermTypeP>WILSON</FermTypeP>
         <quarkSpinType>FULL</quarkSpinType> 
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>DWF</FermAct>
          <N5>4</N5>
@@ -82,10 +83,11 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <FermTypeP>WILSON</FermTypeP>
         <quarkSpinType>FULL</quarkSpinType> 
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>DWF</FermAct>
          <N5>4</N5>

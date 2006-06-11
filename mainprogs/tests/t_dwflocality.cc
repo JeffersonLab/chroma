@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 3.1 2006-04-03 06:07:39 edwards Exp $
+// $Id: t_dwflocality.cc,v 3.2 2006-06-11 06:30:33 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 
   {
     Handle< SystemSolverArray<LatticeFermion> > PQ(S_pdwf.qpropT(state, invParam));
-    int n_count = (*PQ)(psi, chi);
+    (*PQ)(psi, chi);
   }
   
   res4 = chiralProjectMinus(psi[0]) + chiralProjectPlus(psi[N5-1]) ;

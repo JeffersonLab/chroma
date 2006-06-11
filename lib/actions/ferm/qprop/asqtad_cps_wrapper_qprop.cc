@@ -37,10 +37,11 @@ namespace Chroma
   }
 
 
-  int 
+  SystemSolverResults_t
   AsqtadCPSWrapperQprop::operator() (LatticeStaggeredFermion& psi, 
 				     const LatticeStaggeredFermion& chi) const
   {
+    SystemSolverResults_t res;
 
     // Here is how to get a the mass
     QDPIO::cout << "Mass is " << Mass << endl;
@@ -52,12 +53,11 @@ namespace Chroma
     // Do what thou wouldst here
     QDPIO::cout << "in Asqtad_CPS_qprop_wrapper::operator() stub" << endl;
     QDPIO::cout << "Rewrite this bit please" << endl;
-    
 
-    int n_count = 0;
+    res.n_count = 0;
     psi = chi;
     
-    return n_count;
+    return res;
   }
 
 }

@@ -106,7 +106,7 @@
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5191.66</F_sq>
+                  <F_sq>5191.67</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1646,7 +1646,7 @@
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5177.95</F_sq>
+                  <F_sq>5177.96</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1669,7 +1669,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>6.1752e-13</F_sq>
+                  <F_sq>6.56709e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -1781,7 +1781,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>5.35975e-13</F_sq>
+                  <F_sq>5.27552e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -1837,7 +1837,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>5.45634e-13</F_sq>
+                  <F_sq>5.41305e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -1865,7 +1865,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>6.51334e-13</F_sq>
+                  <F_sq>6.58096e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -1949,7 +1949,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>6.49648e-13</F_sq>
+                  <F_sq>6.5795e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -1977,7 +1977,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>6.44056e-13</F_sq>
+                  <F_sq>6.38492e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2061,7 +2061,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>5.60604e-13</F_sq>
+                  <F_sq>5.60202e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2089,7 +2089,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>5.81035e-13</F_sq>
+                  <F_sq>5.87253e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2173,7 +2173,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>5.78683e-13</F_sq>
+                  <F_sq>5.57208e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2201,7 +2201,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>4.94717e-13</F_sq>
+                  <F_sq>4.86506e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2229,7 +2229,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>5.71973e-13</F_sq>
+                  <F_sq>5.73076e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2313,7 +2313,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>5.33856e-13</F_sq>
+                  <F_sq>5.32512e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2341,7 +2341,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>6.24911e-13</F_sq>
+                  <F_sq>5.80932e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2369,7 +2369,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>7.19383e-13</F_sq>
+                  <F_sq>7.14904e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2397,7 +2397,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>6.4872e-13</F_sq>
+                  <F_sq>6.41453e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2425,7 +2425,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>5.62401e-13</F_sq>
+                  <F_sq>5.4981e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2453,7 +2453,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>6.21052e-13</F_sq>
+                  <F_sq>6.21163e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2509,7 +2509,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>7.5357e-13</F_sq>
+                  <F_sq>7.53625e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2537,7 +2537,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>5.58766e-13</F_sq>
+                  <F_sq>5.63667e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2565,7 +2565,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>4.68124e-13</F_sq>
+                  <F_sq>4.66236e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2593,7 +2593,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>6.32351e-13</F_sq>
+                  <F_sq>6.31904e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2626,7 +2626,7 @@
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5156.11</F_sq>
+                  <F_sq>5156.12</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2649,7 +2649,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>6.04682e-13</F_sq>
+                  <F_sq>5.962e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2789,7 +2789,7 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>6.09821e-13</F_sq>
+                  <F_sq>6.29193e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
@@ -2817,12 +2817,12 @@
               <elem>
                 <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>7.24876e-13</F_sq>
+                  <F_sq>7.22747e-13</F_sq>
                 </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5150.55</F_sq>
+                  <F_sq>5150.56</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>

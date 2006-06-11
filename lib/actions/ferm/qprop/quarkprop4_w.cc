@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: quarkprop4_w.cc,v 3.1 2006-06-11 06:30:33 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -31,6 +31,7 @@ namespace Chroma
 		    const LatticePropagator& q_src,
 		    Handle< SystemSolver<T> > qprop,
 		    QuarkSpinType quarkSpinType,
+		    int numRetries,
 		    int& ncg_had)
   {
     START_CODE();
@@ -80,16 +81,28 @@ namespace Chroma
 	 * Normalize the source in case it is really huge or small - 
 	 * a trick to avoid overflows or underflows
 	 */
-	Real fact = Real(1) / sqrt(norm2(chi));
+	Real fact = 1.0;
+	Real nrm = sqrt(norm2(chi));
+	if (toFloat(nrm) != 0.0)
+	  fact /= nrm;
+
+	// Rescale
 	chi *= fact;
 
 	// Compute the propagator for given source color/spin.
-	int n_count = (*qprop)(psi,chi);
-	ncg_had += n_count;
+	for(int ntry=0; ntry < numRetries; ++ntry)
+	{
+	  SystemSolverResults_t result = (*qprop)(psi,chi);
+	  ncg_had += result.n_count;
 
-	push(xml_out,"Qprop");
-	write(xml_out, "n_count", n_count);
-	pop(xml_out);
+	  push(xml_out,"Qprop");
+	  write(xml_out, "color_source", color_source);
+	  write(xml_out, "spin_source", spin_source);
+	  write(xml_out, "ntry", ntry);
+	  write(xml_out, "n_count", result.n_count);
+	  write(xml_out, "resid", result.resid);
+	  pop(xml_out);
+	}
 
 	// Unnormalize the source following the inverse of the normalization above
 	fact = Real(1) / fact;
@@ -194,9 +207,10 @@ namespace Chroma
 		  const LatticePropagator& q_src,
 		  Handle< SystemSolver<LF> > qprop,
 		  QuarkSpinType quarkSpinType,
+		  int numRetries,
 		  int& ncg_had)
   {
-    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
+    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, numRetries, ncg_had);
   }
 
 
@@ -219,10 +233,11 @@ namespace Chroma
     Handle< FermState<LF,LCM,LCM> > state,
     const InvertParam_t& invParam,
     QuarkSpinType quarkSpinType,
+    int numRetries,
     int& ncg_had) const
   {
     Handle< SystemSolver<LF> > qprop(this->qprop(state,invParam));
-    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
+    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, numRetries, ncg_had);
   }
 
 
@@ -246,10 +261,11 @@ namespace Chroma
     Handle< FermState<LF,LCM,LCM> > state,
     const InvertParam_t& invParam,
     QuarkSpinType quarkSpinType,
+    int numRetries,
     int& ncg_had) const
   {
     Handle< SystemSolver<LF> > qprop(this->qprop(state,invParam));
-    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
+    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, numRetries, ncg_had);
   }
 
 } // namespace Chroma

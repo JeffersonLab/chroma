@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: quarkprop4_s.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -34,6 +34,7 @@ namespace Chroma
 		   Handle< FermState<T,P,Q> > state,
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
+		   int numRetries,
 		   int& ncg_had)
   {
     START_CODE();
@@ -61,18 +62,28 @@ namespace Chroma
        * Normalize the source in case it is really huge or small - 
        * a trick to avoid overflows or underflows
        */
-      Real fact = Real(1) / sqrt(norm2(chi));
+      Real fact = 1.0;
+      Real nrm = sqrt(norm2(chi));
+      if (toFloat(nrm) != 0.0)
+	fact /= nrm;
+
+      // Rescale
       chi *= fact;
 
       // Compute the propagator for given source color.
-//    S_f.qprop(psi, state, chi, invParam, n_count);
-      int n_count = (*qprop)(psi, chi);
-      ncg_had += n_count;
+      for(int ntry=0; ntry < numRetries; ++ntry)
+      {
+	SystemSolverResults_t result = (*qprop)(psi,chi);
+	ncg_had += result.n_count;
 
-      push(xml_out,"Qprop");
-      write(xml_out, "RsdCG", invParam.RsdCG);
-      write(xml_out, "n_count", n_count);
-      pop(xml_out);
+	push(xml_out,"Qprop");
+	write(xml_out, "color_source", color_source);
+	write(xml_out, "ntry", ntry);
+	write(xml_out, "n_count", result.n_count);
+	write(xml_out, "resid", result.resid);
+	write(xml_out, "RsdCG", invParam.RsdCG);
+	pop(xml_out);
+      }
 
       // Unnormalize the source following the inverse of the normalization above
       fact = Real(1) / fact;
@@ -111,11 +122,13 @@ namespace Chroma
 		  multi1d<LatticeColorMatrix> > > state,
 		  const InvertParam_t& invParam,
 		  QuarkSpinType quarkSpinType,
+		  int numRetries,
 		  int& ncg_had)
   {
     quarkProp_a<LatticeStaggeredFermion,
       multi1d<LatticeColorMatrix>,
-      multi1d<LatticeColorMatrix> >(q_sol, xml_out, q_src, S_f, state, invParam, quarkSpinType, ncg_had);
+      multi1d<LatticeColorMatrix> >(q_sol, xml_out, q_src, S_f, state, invParam, 
+				    quarkSpinType, numRetries, ncg_had);
   }
 
 
@@ -143,9 +156,10 @@ namespace Chroma
     multi1d<LatticeColorMatrix> > > state,
     const InvertParam_t& invParam,
     QuarkSpinType quarkSpinType,
+    int numRetries,
     int& ncg_had) const
   {
-    quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, quarkSpinType, ncg_had);
+    quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, quarkSpinType, numRetries, ncg_had);
   }
 
 

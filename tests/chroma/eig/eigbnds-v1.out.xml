@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: eigbnds-v1.out.xml,v 3.0 2006-04-03 04:59:24 edwards Exp $
+; $Id: eigbnds-v1.out.xml,v 3.1 2006-06-11 06:30:34 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -14,7 +14,11 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. Wilson -->
       <Name>EIGBNDSMDAGM</Name>
@@ -33,7 +37,11 @@
         <Kappa>0.11</Kappa>
         <boundary>1 1 1 -1</boundary>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. DWF -->
       <Name>EIGBNDSMDAGM</Name>
@@ -55,7 +63,11 @@
         <N5>6</N5>
         <boundary>1 1 1 -1</boundary>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. DWF -->
       <Name>EIGBNDSMDAGM</Name>
@@ -77,7 +89,11 @@
         <N5>6</N5>
         <boundary>1 1 1 -1</boundary>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. DWF -->
       <Name>EIGBNDSMDAGM</Name>
@@ -99,7 +115,11 @@
         <N5>6</N5>
         <boundary>1 1 1 -1</boundary>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. CFZ -->
       <Name>EIGBNDSMDAGM</Name>
@@ -125,7 +145,11 @@
         <ApproxMin>0.66</ApproxMin>
         <ApproxMax>6.46357</ApproxMax>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
     <elem>
       <!-- This measures lowest/highest ev of prec. CFZ -->
       <Name>EIGBNDSMDAGM</Name>
@@ -151,7 +175,11 @@
         <ApproxMin>0.66</ApproxMin>
         <ApproxMax>6.46357</ApproxMax>
       </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
     </elem>
+
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
@@ -164,10 +192,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:29:48 EST</run_date>
+    <run_date>10 Jun 06 18:37:06 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -263,6 +291,9 @@
             <MaxCG>10000</MaxCG>
             <Nrenorm>10</Nrenorm>
           </Ritz>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+          </NamedObject>
         </Input>
         <LowestEv>
           <EigSpecRitzCG>
@@ -310,6 +341,9 @@
             <MaxCG>10000</MaxCG>
             <Nrenorm>10</Nrenorm>
           </Ritz>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+          </NamedObject>
         </Input>
         <LowestEv>
           <EigSpecRitzCG>
@@ -357,6 +391,9 @@
             <MaxCG>10000</MaxCG>
             <Nrenorm>10</Nrenorm>
           </Ritz>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+          </NamedObject>
         </Input>
         <LowestEv>
           <EigSpecRitzCG>
@@ -404,6 +441,9 @@
             <MaxCG>10000</MaxCG>
             <Nrenorm>10</Nrenorm>
           </Ritz>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+          </NamedObject>
         </Input>
         <LowestEv>
           <EigSpecRitzCG>
@@ -455,6 +495,9 @@
             <MaxCG>10000</MaxCG>
             <Nrenorm>10</Nrenorm>
           </Ritz>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+          </NamedObject>
         </Input>
         <LowestEv>
           <EigSpecRitzCG>
@@ -506,6 +549,9 @@
             <MaxCG>10000</MaxCG>
             <Nrenorm>10</Nrenorm>
           </Ritz>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+          </NamedObject>
         </Input>
         <LowestEv>
           <EigSpecRitzCG>

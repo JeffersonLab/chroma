@@ -1,4 +1,4 @@
-// $Id: asqtad_cps_wrapper_qprop.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: asqtad_cps_wrapper_qprop.h,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -57,7 +57,7 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (LatticeStaggeredFermion& psi, const LatticeStaggeredFermion& chi) const;
+    SystemSolverResults_t operator() (LatticeStaggeredFermion& psi, const LatticeStaggeredFermion& chi) const;
 
   private:
     // Hide default constructor

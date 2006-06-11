@@ -22,6 +22,7 @@ Calculate noisy building blocks - insertions in traces
           </Source>
         </Param>
         <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
           <source_id>nsrc_0</source_id>
         </NamedObject>
       </elem>
@@ -30,9 +31,10 @@ Calculate noisy building blocks - insertions in traces
         <Name>PROPAGATOR</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
           <FermionAction>
             <FermAct>WILSON</FermAct>
             <Kappa>0.11</Kappa>
@@ -54,6 +56,7 @@ Calculate noisy building blocks - insertions in traces
           </InvertParam>
         </Param>
         <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
           <source_id>nsrc_0</source_id>
           <prop_id>nprop_0</prop_id>
         </NamedObject>
@@ -75,6 +78,7 @@ Calculate noisy building blocks - insertions in traces
           <canonical>false</canonical>
         </Param>
         <BuildingBlocks>
+          <GaugeId>default_gauge_field</GaugeId>
           <OutFileName>nbb.dat_0.out</OutFileName>
           <FrwdPropId>nprop_0</FrwdPropId>
           <NoisySrcId>nsrc_0</NoisySrcId>
@@ -115,6 +119,7 @@ Calculate noisy building blocks - insertions in traces
           </Source>
         </Param>
         <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
           <source_id>nsrc_1</source_id>
         </NamedObject>
       </elem>
@@ -123,9 +128,10 @@ Calculate noisy building blocks - insertions in traces
         <Name>PROPAGATOR</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
           <FermionAction>
             <FermAct>WILSON</FermAct>
             <Kappa>0.11</Kappa>
@@ -147,6 +153,7 @@ Calculate noisy building blocks - insertions in traces
           </InvertParam>
         </Param>
         <NamedObject>
+          <gauge_id>default_gauge_field</gauge_id>
           <source_id>nsrc_1</source_id>
           <prop_id>nprop_1</prop_id>
         </NamedObject>
@@ -168,6 +175,7 @@ Calculate noisy building blocks - insertions in traces
           <canonical>false</canonical>
         </Param>
         <BuildingBlocks>
+          <GaugeId>default_gauge_field</GaugeId>
           <OutFileName>nbb.dat_1.out</OutFileName>
           <FrwdPropId>nprop_1</FrwdPropId>
           <NoisySrcId>nsrc_1</NoisySrcId>
@@ -217,10 +225,10 @@ Calculate noisy building blocks - insertions in traces
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.15.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>19 Mar 06 23:53:22 EST</run_date>
+    <run_date>11 Jun 06 01:50:40 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -278,10 +286,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:53:22 EST</run_date>
+          <run_date>11 Jun 06 01:50:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -356,10 +364,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:53:22 EST</run_date>
+          <run_date>11 Jun 06 01:50:41 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -370,9 +378,10 @@ Calculate noisy building blocks - insertions in traces
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -475,40 +484,88 @@ Calculate noisy building blocks - insertions in traces
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.48882e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.34747e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.34595e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>46</n_count>
+            <resid>1.40152e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.45631e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.21181e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>46</n_count>
+            <resid>1.56156e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>46</n_count>
+            <resid>1.46654e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.55201e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.50686e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>46</n_count>
+            <resid>1.47872e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>47</n_count>
+            <resid>1.3473e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -542,10 +599,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:53:24 EST</run_date>
+          <run_date>11 Jun 06 01:50:42 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -620,10 +677,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:53:24 EST</run_date>
+          <run_date>11 Jun 06 01:50:43 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -634,9 +691,10 @@ Calculate noisy building blocks - insertions in traces
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -739,40 +797,88 @@ Calculate noisy building blocks - insertions in traces
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.41172e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.42529e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.27365e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.27022e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.33464e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.48797e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.39969e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.4302e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.22802e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>46</n_count>
+            <resid>1.40571e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.40128e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.27681e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>

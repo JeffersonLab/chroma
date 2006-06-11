@@ -351,13 +351,13 @@ int main(int argc, char **argv)
     srcfil(q_source, input.param.t_srce, color_source);
 
     // Compute the propagator
-    int n_count = (*qprop)(psi, q_source);
-    ncg_had += n_count;
+    SystemSolverResults_t res = (*qprop)(psi, q_source);
+    ncg_had += res.n_count;
 
     push(xml_out,"Qprop");
     write(xml_out, "Mass" , input.param.Mass);
     write(xml_out, "RsdCG", input.param.invParam.RsdCG);
-    write(xml_out, "n_count", n_count);
+    write(xml_out, "n_count", res.n_count);
     pop(xml_out);
 
     FermToProp(psi, quark_propagator, color_source);
@@ -424,13 +424,13 @@ int main(int argc, char **argv)
     coord[0]=1; coord[1] = 1; coord[2] = 1; coord[3] = 1;
     srcfil(q_source, coord,color_source ) ;
 
-    int n_count = (*qprop)(psi, q_source);
+    SystemSolverResults_t res = (*qprop)(psi, q_source);
 
     ncg_had += n_count;
     push(xml_out,"Qprop");
     write(xml_out, "Mass" , input.param.Mass);
     write(xml_out, "RsdCG", input.param.invParam.RsdCG);
-    write(xml_out, "n_count", n_count);
+    write(xml_out, "n_count", res.n_count);
     pop(xml_out);
 
     FermToProp(psi, quark_propagator_4link, color_source);

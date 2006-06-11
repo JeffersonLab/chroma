@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson-smearing.ini.xml,v 3.0 2006-04-03 04:59:26 edwards Exp $
+; $Id: prec_wilson-smearing.ini.xml,v 3.1 2006-06-11 06:30:36 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -65,9 +65,10 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.135</Kappa>

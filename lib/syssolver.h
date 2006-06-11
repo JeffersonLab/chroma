@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: syssolver.h,v 3.1 2006-06-11 06:30:31 edwards Exp $
 /*! @file
  * @brief Linear system solvers
  */
@@ -11,6 +11,18 @@
 namespace Chroma
 {
   //-----------------------------------------------------------------------------------
+  //! Holds return info from SystemSolver call
+  /*! @ingroup solvers */
+  struct SystemSolverResults_t
+  {
+    SystemSolverResults_t() {n_count=0; resid=zero;}
+
+    int  n_count;      /*!< Number of iterations */
+    Real resid;        /*!< (True) Residual of unpreconditioned problem, 
+			*    resid = sqrt(norm2(rhs - A.soln)) */
+  };
+
+
   //! Linear system solvers
   /*! @ingroup solvers
    *
@@ -30,7 +42,7 @@ namespace Chroma
      *
      * Should the accuracy be specified here ???
      */
-    virtual int operator() (T& psi, const T& chi) const = 0;
+    virtual SystemSolverResults_t operator() (T& psi, const T& chi) const = 0;
 
     //! Return the subset on which the operator acts
     virtual const OrderedSubset& subset() const = 0;
@@ -61,7 +73,7 @@ namespace Chroma
      *
      * Should the accuracy be specified here ???
      */
-    virtual int operator() (multi1d<T>& psi, const multi1d<T>& chi) const = 0;
+    virtual SystemSolverResults_t operator() (multi1d<T>& psi, const multi1d<T>& chi) const = 0;
 
     //! Return the subset on which the operator acts
     virtual const OrderedSubset& subset() const = 0;

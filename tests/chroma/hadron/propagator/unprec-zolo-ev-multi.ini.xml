@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: unprec-zolo-ev-multi.ini.xml,v 3.1 2006-04-11 04:18:25 edwards Exp $
+; $Id: unprec-zolo-ev-multi.ini.xml,v 3.2 2006-06-11 06:30:36 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -119,6 +119,7 @@
       <Frequency>1</Frequency>
       <Param>
         <version>8</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <nonRelProp>false</nonRelProp>
         <obsvP>false</obsvP>
         <FermionAction>

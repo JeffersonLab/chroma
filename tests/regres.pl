@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.8 2006-06-11 03:46:37 edwards Exp $
+#  $Id: regres.pl,v 3.9 2006-06-11 06:30:34 edwards Exp $
 #
 #  This is the top-level script used by chroma/scripts/run_chroma_xmldiff.pl
 #
@@ -14,9 +14,9 @@ sub regresDirs
     # includes other files (in subdirs) is not how the perl "do" works.
     # So, spell out all the many regression dirs and source them individually.
     #
-   return (
-	    "$test_dir/purgaug/regres.pl"
-   );
+#   return (
+#	    "$test_dir/purgaug/regres.pl"
+#   );
 
      return ( 
 	    "$test_dir/chroma/io/szin_write_obj/regres.pl",

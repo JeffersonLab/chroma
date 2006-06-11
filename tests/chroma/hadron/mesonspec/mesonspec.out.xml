@@ -51,9 +51,10 @@ Meson Spectrum input
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -155,9 +156,10 @@ Meson Spectrum input
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -442,10 +444,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.6.1</chroma>
+      <chroma>3.7.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>03 Jun 06 17:07:43 EDT</run_date>
+    <run_date>11 Jun 06 01:50:26 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -503,10 +505,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jun 06 17:07:43 EDT</run_date>
+          <run_date>11 Jun 06 01:50:26 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -597,10 +599,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jun 06 17:07:44 EDT</run_date>
+          <run_date>11 Jun 06 01:50:26 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -611,9 +613,10 @@ regression test spectrum output is kept within the chroma xml output
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -732,40 +735,88 @@ regression test spectrum output is kept within the chroma xml output
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.19586e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.23584e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.18609e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.08868e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.40345e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.30652e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.20558e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.27826e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.31127e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.35936e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.25539e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.38267e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -868,9 +919,10 @@ regression test spectrum output is kept within the chroma xml output
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -924,10 +976,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jun 06 17:07:45 EDT</run_date>
+          <run_date>11 Jun 06 01:50:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1020,10 +1072,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jun 06 17:07:45 EDT</run_date>
+          <run_date>11 Jun 06 01:50:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1034,9 +1086,10 @@ regression test spectrum output is kept within the chroma xml output
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1157,40 +1210,88 @@ regression test spectrum output is kept within the chroma xml output
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.29325e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.27659e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.26822e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.15279e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.14569e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.34082e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.1116e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.00775e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.20624e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.49803e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.12701e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.14243e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -1289,9 +1390,10 @@ regression test spectrum output is kept within the chroma xml output
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1430,9 +1532,10 @@ regression test spectrum output is kept within the chroma xml output
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1488,10 +1591,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.6.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jun 06 17:07:46 EDT</run_date>
+          <run_date>11 Jun 06 01:50:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1642,9 +1745,10 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                   </PropSinkSmear>
                   <ForwardProp>
-                    <version>9</version>
+                    <version>10</version>
                     <quarkSpinType>FULL</quarkSpinType>
-                    <obsvP>false</obsvP><FermionAction>
+                    <obsvP>false</obsvP>
+                    <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1713,9 +1817,10 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                   </PropSinkSmear>
                   <ForwardProp>
-                    <version>9</version>
+                    <version>10</version>
                     <quarkSpinType>FULL</quarkSpinType>
-                    <obsvP>false</obsvP><FermionAction>
+                    <obsvP>false</obsvP>
+                    <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1794,9 +1899,10 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                   </PropSinkSmear>
                   <ForwardProp>
-                    <version>9</version>
+                    <version>10</version>
                     <quarkSpinType>FULL</quarkSpinType>
-                    <obsvP>false</obsvP><FermionAction>
+                    <obsvP>false</obsvP>
+                    <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1873,9 +1979,10 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                   </PropSinkSmear>
                   <ForwardProp>
-                    <version>9</version>
+                    <version>10</version>
                     <quarkSpinType>FULL</quarkSpinType>
-                    <obsvP>false</obsvP><FermionAction>
+                    <obsvP>false</obsvP>
+                    <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1975,31 +2082,31 @@ regression test spectrum output is kept within the chroma xml output
                     </elem>
                     <elem>
                       <re>-0.000181779</re>
-                      <im>-4.27999e-07</im>
+                      <im>-4.27984e-07</im>
                     </elem>
                     <elem>
                       <re>-0.000166071</re>
-                      <im>-4.21702e-07</im>
+                      <im>-4.21695e-07</im>
                     </elem>
                     <elem>
                       <re>-0.000158443</re>
-                      <im>-4.01111e-07</im>
+                      <im>-4.01108e-07</im>
                     </elem>
                     <elem>
                       <re>-0.000157498</re>
-                      <im>-4.31861e-07</im>
+                      <im>-4.31859e-07</im>
                     </elem>
                     <elem>
                       <re>-0.000158409</re>
-                      <im>-5.04382e-07</im>
+                      <im>-5.0438e-07</im>
                     </elem>
                     <elem>
                       <re>-0.000166561</re>
-                      <im>-4.29159e-07</im>
+                      <im>-4.29154e-07</im>
                     </elem>
                     <elem>
                       <re>-0.000180929</re>
-                      <im>-2.92706e-07</im>
+                      <im>-2.92696e-07</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2009,11 +2116,11 @@ regression test spectrum output is kept within the chroma xml output
                   <mesprop>
                     <elem>
                       <re>0.000671569</re>
-                      <im>7.86735e-06</im>
+                      <im>7.86736e-06</im>
                     </elem>
                     <elem>
                       <re>-3.86788e-06</re>
-                      <im>7.21062e-07</im>
+                      <im>7.2106e-07</im>
                     </elem>
                     <elem>
                       <re>-1.04978e-06</re>
@@ -2024,11 +2131,11 @@ regression test spectrum output is kept within the chroma xml output
                       <im>1.53763e-07</im>
                     </elem>
                     <elem>
-                      <re>-3.78867e-07</re>
+                      <re>-3.78868e-07</re>
                       <im>-1.78151e-08</im>
                     </elem>
                     <elem>
-                      <re>-4.36639e-07</re>
+                      <re>-4.36638e-07</re>
                       <im>-9.05742e-08</im>
                     </elem>
                     <elem>
@@ -2037,7 +2144,7 @@ regression test spectrum output is kept within the chroma xml output
                     </elem>
                     <elem>
                       <re>-3.5001e-06</re>
-                      <im>-6.52948e-07</im>
+                      <im>-6.52949e-07</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2047,35 +2154,35 @@ regression test spectrum output is kept within the chroma xml output
                   <mesprop>
                     <elem>
                       <re>-0.000443725</re>
-                      <im>5.99571e-07</im>
+                      <im>5.99585e-07</im>
                     </elem>
                     <elem>
-                      <re>6.00131e-07</re>
-                      <im>1.93102e-08</im>
+                      <re>6.00132e-07</re>
+                      <im>1.93094e-08</im>
                     </elem>
                     <elem>
-                      <re>6.57023e-08</re>
-                      <im>2.74245e-08</im>
+                      <re>6.57026e-08</re>
+                      <im>2.74242e-08</im>
                     </elem>
                     <elem>
-                      <re>5.84155e-08</re>
-                      <im>1.06146e-08</im>
+                      <re>5.84161e-08</re>
+                      <im>1.06147e-08</im>
                     </elem>
                     <elem>
                       <re>3.55329e-08</re>
-                      <im>-3.00278e-09</im>
+                      <im>-3.00274e-09</im>
                     </elem>
                     <elem>
-                      <re>3.70369e-10</re>
-                      <im>-2.80163e-08</im>
+                      <re>3.70141e-10</re>
+                      <im>-2.80164e-08</im>
                     </elem>
                     <elem>
-                      <re>9.84026e-09</re>
-                      <im>-6.07891e-09</im>
+                      <re>9.8398e-09</re>
+                      <im>-6.07894e-09</im>
                     </elem>
                     <elem>
-                      <re>5.91886e-07</re>
-                      <im>-8.32763e-09</im>
+                      <re>5.91885e-07</re>
+                      <im>-8.32759e-09</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2088,32 +2195,32 @@ regression test spectrum output is kept within the chroma xml output
                       <im>1.84284e-06</im>
                     </elem>
                     <elem>
-                      <re>9.20942e-08</re>
+                      <re>9.20924e-08</re>
                       <im>1.44235e-08</im>
                     </elem>
                     <elem>
-                      <re>-1.7068e-08</re>
+                      <re>-1.70667e-08</re>
                       <im>1.10334e-09</im>
                     </elem>
                     <elem>
-                      <re>-1.92759e-08</re>
-                      <im>2.62212e-09</im>
+                      <re>-1.92761e-08</re>
+                      <im>2.62213e-09</im>
                     </elem>
                     <elem>
                       <re>-3.91604e-10</re>
                       <im>-1.46777e-10</im>
                     </elem>
                     <elem>
-                      <re>-1.61668e-08</re>
-                      <im>-8.92098e-10</im>
+                      <re>-1.61665e-08</re>
+                      <im>-8.92006e-10</im>
                     </elem>
                     <elem>
-                      <re>-2.12959e-09</re>
-                      <im>-4.6065e-09</im>
+                      <re>-2.12891e-09</re>
+                      <im>-4.60649e-09</im>
                     </elem>
                     <elem>
-                      <re>-6.62043e-08</re>
-                      <im>-1.24488e-08</im>
+                      <re>-6.62032e-08</re>
+                      <im>-1.24481e-08</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2153,9 +2260,10 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                   </PropSinkSmear>
                   <ForwardProp>
-                    <version>9</version>
+                    <version>10</version>
                     <quarkSpinType>FULL</quarkSpinType>
-                    <obsvP>false</obsvP><FermionAction>
+                    <obsvP>false</obsvP>
+                    <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2224,9 +2332,10 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                   </PropSinkSmear>
                   <ForwardProp>
-                    <version>9</version>
+                    <version>10</version>
                     <quarkSpinType>FULL</quarkSpinType>
-                    <obsvP>false</obsvP><FermionAction>
+                    <obsvP>false</obsvP>
+                    <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2308,15 +2417,15 @@ regression test spectrum output is kept within the chroma xml output
                   <mesprop>
                     <elem>
                       <re>-0.0176893</re>
-                      <im>-3.19224e-06</im>
+                      <im>-3.19231e-06</im>
                     </elem>
                     <elem>
                       <re>-0.00165794</re>
-                      <im>1.20059e-06</im>
+                      <im>1.20058e-06</im>
                     </elem>
                     <elem>
                       <re>-0.000656006</re>
-                      <im>-3.55003e-08</im>
+                      <im>-3.55042e-08</im>
                     </elem>
                     <elem>
                       <re>-0.000305172</re>
@@ -2324,11 +2433,11 @@ regression test spectrum output is kept within the chroma xml output
                     </elem>
                     <elem>
                       <re>-0.00021521</re>
-                      <im>-2.76326e-07</im>
+                      <im>-2.76325e-07</im>
                     </elem>
                     <elem>
                       <re>-0.000305029</re>
-                      <im>-6.44663e-07</im>
+                      <im>-6.44664e-07</im>
                     </elem>
                     <elem>
                       <re>-0.000655855</re>
@@ -2336,7 +2445,7 @@ regression test spectrum output is kept within the chroma xml output
                     </elem>
                     <elem>
                       <re>-0.00165649</re>
-                      <im>-2.75307e-06</im>
+                      <im>-2.75309e-06</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2346,30 +2455,30 @@ regression test spectrum output is kept within the chroma xml output
                   <mesprop>
                     <elem>
                       <re>-0.00165633</re>
-                      <im>-3.06735e-06</im>
+                      <im>-3.06736e-06</im>
                     </elem>
                     <elem>
                       <re>-3.8546e-05</re>
-                      <im>4.63041e-07</im>
+                      <im>4.63039e-07</im>
                     </elem>
                     <elem>
                       <re>-5.56295e-06</re>
-                      <im>1.1544e-07</im>
+                      <im>1.15439e-07</im>
                     </elem>
                     <elem>
                       <re>-1.25382e-06</re>
-                      <im>4.16372e-08</im>
+                      <im>4.1637e-08</im>
                     </elem>
                     <elem>
-                      <re>-5.51597e-07</re>
-                      <im>-1.87721e-09</im>
+                      <re>-5.51598e-07</re>
+                      <im>-1.87708e-09</im>
                     </elem>
                     <elem>
                       <re>-1.28157e-06</re>
-                      <im>-5.32444e-08</im>
+                      <im>-5.32443e-08</im>
                     </elem>
                     <elem>
-                      <re>-5.49251e-06</re>
+                      <re>-5.49252e-06</re>
                       <im>-2.02652e-07</im>
                     </elem>
                     <elem>
@@ -2384,35 +2493,35 @@ regression test spectrum output is kept within the chroma xml output
                   <mesprop>
                     <elem>
                       <re>0.000190723</re>
-                      <im>1.26887e-06</im>
+                      <im>1.26885e-06</im>
                     </elem>
                     <elem>
-                      <re>2.60655e-06</re>
-                      <im>4.32313e-07</im>
+                      <re>2.60654e-06</re>
+                      <im>4.32311e-07</im>
                     </elem>
                     <elem>
                       <re>1.3453e-07</re>
-                      <im>5.05704e-08</im>
+                      <im>5.05705e-08</im>
                     </elem>
                     <elem>
-                      <re>1.9423e-08</re>
-                      <im>5.92282e-09</im>
+                      <re>1.94228e-08</re>
+                      <im>5.9229e-09</im>
                     </elem>
                     <elem>
-                      <re>2.25723e-09</re>
-                      <im>1.0455e-09</im>
+                      <re>2.25731e-09</re>
+                      <im>1.04553e-09</im>
                     </elem>
                     <elem>
-                      <re>7.85194e-09</re>
-                      <im>4.03519e-10</im>
+                      <re>7.85103e-09</re>
+                      <im>4.0354e-10</im>
                     </elem>
                     <elem>
-                      <re>1.02334e-07</re>
-                      <im>-5.11866e-09</im>
+                      <re>1.02335e-07</re>
+                      <im>-5.11872e-09</im>
                     </elem>
                     <elem>
                       <re>2.46346e-06</re>
-                      <im>-5.71459e-08</im>
+                      <im>-5.71463e-08</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2425,32 +2534,32 @@ regression test spectrum output is kept within the chroma xml output
                       <im>-1.91949e-06</im>
                     </elem>
                     <elem>
-                      <re>8.17107e-07</re>
-                      <im>3.44625e-07</im>
+                      <re>8.17104e-07</re>
+                      <im>3.44624e-07</im>
                     </elem>
                     <elem>
                       <re>1.6506e-08</re>
-                      <im>1.42722e-08</im>
+                      <im>1.42721e-08</im>
                     </elem>
                     <elem>
-                      <re>-4.44583e-09</re>
-                      <im>1.11728e-09</im>
+                      <re>-4.44629e-09</re>
+                      <im>1.11721e-09</im>
                     </elem>
                     <elem>
-                      <re>7.18041e-10</re>
-                      <im>-6.73487e-10</im>
+                      <re>7.18496e-10</re>
+                      <im>-6.73471e-10</im>
                     </elem>
                     <elem>
-                      <re>1.32675e-08</re>
-                      <im>-7.80678e-09</im>
+                      <re>1.32679e-08</re>
+                      <im>-7.80671e-09</im>
                     </elem>
                     <elem>
                       <re>7.889e-08</re>
                       <im>-2.97824e-08</im>
                     </elem>
                     <elem>
-                      <re>8.86993e-07</re>
-                      <im>2.65691e-09</im>
+                      <re>8.8699e-07</re>
+                      <im>2.65801e-09</im>
                     </elem>
                   </mesprop>
                 </elem>

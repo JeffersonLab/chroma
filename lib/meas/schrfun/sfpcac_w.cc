@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.8 2006-04-26 03:41:36 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.9 2006-06-11 06:30:33 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -148,7 +148,8 @@ namespace Chroma
   	  
 	    // Solve for the propagator
 	    psi = zero;
-	    ncg_had += (*qprop)(psi, chi);
+	    SystemSolverResults_t res = (*qprop)(psi, chi);
+	    ncg_had += res.n_count;
 	  }
 
 
@@ -286,7 +287,8 @@ namespace Chroma
 
 	  chi = where(tmask, LatticeFermion(-psi), LatticeFermion(zero));
 	  psi = zero;
-	  ncg_had += (*qprop)(psi, chi);
+	  SystemSolverResults_t res = (*qprop)(psi, chi);
+	  ncg_had += res.n_count;
 
 	  FermToProp(psi, quark_prop_s, color_source, spin_source);
 	}
@@ -319,7 +321,8 @@ namespace Chroma
 
 	  chi = where(tmask, LatticeFermion(-psi), LatticeFermion(zero));
 	  psi = zero;
-	  (*qprop)(psi, chi);
+	  SystemSolverResults_t res = (*qprop)(psi, chi);
+	  ncg_had += res.n_count;
 
 	  FermToProp(psi, quark_prop_s, color_source, spin_source);
 	}
@@ -348,7 +351,8 @@ namespace Chroma
 	  chi -= where(t_coord == (x0-1), psi, LatticeFermion(zero));
 
 	  psi = zero;
-	  ncg_had += (*qprop)(psi, chi);
+	  SystemSolverResults_t res = (*qprop)(psi, chi);
+	  ncg_had += res.n_count;
 
 	  FermToProp(psi, quark_prop_s, color_source, spin_source);
 	}
@@ -376,7 +380,8 @@ namespace Chroma
 	  chi  = where(t_coord == (y0+1), psi, LatticeFermion(zero));
 	  chi -= where(t_coord == (y0-1), psi, LatticeFermion(zero));
 	  psi = zero;
-	  ncg_had += (*qprop)(psi, chi);
+	  SystemSolverResults_t res = (*qprop)(psi, chi);
+	  ncg_had += res.n_count;
 
 	  FermToProp(psi, quark_prop_s, color_source, spin_source);
 	}

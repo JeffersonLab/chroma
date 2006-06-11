@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_dwftransf.out.xml,v 3.1 2006-04-11 04:18:25 edwards Exp $
+; $Id: unprec_dwftransf.out.xml,v 3.2 2006-06-11 06:30:37 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -53,9 +53,10 @@
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>UNPRECONDITIONED_DWFTRANSF</FermAct>
          <Mass>-1.0</Mass>
@@ -116,10 +117,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:12:00 EDT</run_date>
+    <run_date>11 Jun 06 02:09:40 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -177,10 +178,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:12:00 EDT</run_date>
+          <run_date>11 Jun 06 02:09:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -271,10 +272,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:12:00 EDT</run_date>
+          <run_date>11 Jun 06 02:09:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -285,9 +286,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>UNPRECONDITIONED_DWFTRANSF</FermAct>
       <Mass>-1.0</Mass>
       <b5>0.6</b5>
@@ -404,40 +406,88 @@
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>19</n_count>
+            <resid>2.20015e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>19</n_count>
+            <resid>2.19289e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>19</n_count>
+            <resid>2.19688e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>19</n_count>
+            <resid>2.19886e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>18</n_count>
+            <resid>1.99384e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>18</n_count>
+            <resid>1.99477e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>18</n_count>
+            <resid>1.99402e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>18</n_count>
+            <resid>1.99197e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>19</n_count>
+            <resid>2.03808e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>19</n_count>
+            <resid>2.04146e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>19</n_count>
+            <resid>2.03864e-05</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>19</n_count>
+            <resid>2.03749e-05</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>

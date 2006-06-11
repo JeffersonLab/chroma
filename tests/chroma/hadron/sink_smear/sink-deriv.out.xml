@@ -53,9 +53,10 @@ Sink smear a prop
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -1269,10 +1270,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:15:13 EDT</run_date>
+    <run_date>11 Jun 06 01:33:13 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1330,10 +1331,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:13 EDT</run_date>
+          <run_date>11 Jun 06 01:33:14 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1426,10 +1427,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:15:13 EDT</run_date>
+          <run_date>11 Jun 06 01:33:14 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1440,9 +1441,10 @@ Sink smear a prop
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1563,40 +1565,88 @@ Sink smear a prop
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.68502e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.24689e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>6.94472e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.20532e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.17474e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.20482e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.28977e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.57095e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.4306e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>8.20733e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.61904e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.54288e-08</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -1697,9 +1747,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1852,9 +1903,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2007,9 +2059,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2150,9 +2203,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2293,9 +2347,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2436,9 +2491,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2579,9 +2635,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2722,9 +2779,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2865,9 +2923,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3008,9 +3067,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3151,9 +3211,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3294,9 +3355,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3437,9 +3499,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3580,9 +3643,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3723,9 +3787,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3866,9 +3931,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4009,9 +4075,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4152,9 +4219,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4295,9 +4363,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4438,9 +4507,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4581,9 +4651,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4724,9 +4795,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4867,9 +4939,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -5010,9 +5083,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -5153,9 +5227,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -5296,9 +5371,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -5439,9 +5515,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -5582,9 +5659,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -5725,9 +5803,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>

@@ -53,9 +53,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -145,9 +146,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -237,9 +239,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -329,9 +332,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -421,9 +425,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -513,9 +518,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -605,9 +611,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -697,9 +704,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -789,9 +797,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -881,9 +890,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -973,9 +983,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -1065,9 +1076,10 @@
       <Name>PROPAGATOR_FERM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>8</version>
-        <nonRelProp>false</nonRelProp>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -1204,10 +1216,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.5.1</chroma>
+      <chroma>3.7.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>23 May 06 12:01:37 EDT</run_date>
+    <run_date>11 Jun 06 01:33:41 EDT</run_date>
     <Setgeom>
       <latt_size>2 2 2 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1265,10 +1277,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:37 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1358,10 +1370,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:37 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1372,9 +1384,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1491,7 +1504,7 @@
           <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>7.2911 0.925316 0.636831 1.0182</prop_corr>
@@ -1515,10 +1528,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1608,10 +1621,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1622,9 +1635,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1741,7 +1755,7 @@
           <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>21</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>1.45926 7.66926 0.517326 0.639872</prop_corr>
@@ -1765,10 +1779,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1858,10 +1872,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1872,9 +1886,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1991,7 +2006,7 @@
           <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.49306 0.785274 6.39054 0.737083</prop_corr>
@@ -2015,10 +2030,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2108,10 +2123,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2122,9 +2137,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2241,7 +2257,7 @@
           <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.769976 0.588673 1.0862 7.70984</prop_corr>
@@ -2265,10 +2281,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2358,10 +2374,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2372,9 +2388,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2491,7 +2508,7 @@
           <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>6.5636 0.339244 0.424003 1.04395</prop_corr>
@@ -2515,10 +2532,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2608,10 +2625,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2622,9 +2639,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2741,7 +2759,7 @@
           <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.659385 7.00784 0.919203 0.491021</prop_corr>
@@ -2765,10 +2783,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2858,10 +2876,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2872,9 +2890,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2991,7 +3010,7 @@
           <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.655657 1.19514 7.58991 0.808384</prop_corr>
@@ -3015,10 +3034,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3108,10 +3127,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3122,9 +3141,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3241,7 +3261,7 @@
           <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>21</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.851995 0.424777 0.51543 6.53808</prop_corr>
@@ -3265,10 +3285,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3358,10 +3378,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3372,9 +3392,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3491,7 +3512,7 @@
           <source_corr>96 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>8.09051 1.15921 0.7265 1.06612</prop_corr>
@@ -3515,10 +3536,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3608,10 +3629,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3622,9 +3643,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3741,7 +3763,7 @@
           <source_corr>0 96 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>1.05608 7.29033 0.620309 0.52639</prop_corr>
@@ -3765,10 +3787,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3858,10 +3880,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3872,9 +3894,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3991,7 +4014,7 @@
           <source_corr>0 0 96 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.0829304 0.167 4.56228 0.243476</prop_corr>
@@ -4015,10 +4038,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4108,10 +4131,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4122,9 +4145,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4241,7 +4265,7 @@
           <source_corr>0 0 0 96</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>0</ncg_had>
+          <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
           <prop_corr>0.314937 0.161971 0.314345 5.03695</prop_corr>
@@ -4265,10 +4289,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.5.1</chroma>
+            <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>23 May 06 12:01:38 EDT</run_date>
+          <run_date>11 Jun 06 01:33:41 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>

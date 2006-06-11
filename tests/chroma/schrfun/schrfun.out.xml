@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun.out.xml,v 1.5 2006-04-26 03:45:15 edwards Exp $
+; $Id: schrfun.out.xml,v 1.6 2006-06-11 06:30:39 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
@@ -16,9 +16,10 @@
       <Name>SCHROEDINGER_FUNCTIONAL_PCAC</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>CLOVER</FermAct>
           <Kappa>0.115</Kappa>
@@ -92,10 +93,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.2.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>25 Apr 06 23:44:30 EDT</run_date>
+    <run_date>11 Jun 06 01:34:07 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -156,10 +157,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.2.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>25 Apr 06 23:44:30 EDT</run_date>
+          <run_date>11 Jun 06 01:34:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -170,9 +171,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>CLOVER</FermAct>
       <Kappa>0.115</Kappa>
       <clovCoeff>1.17</clovCoeff>
@@ -275,7 +277,7 @@
             <fd_PP>0.547876</fd_PP>
           </ZA_measurements>
           <Relaxation_Iterations>
-            <ncg_had>754</ncg_had>
+            <ncg_had>904</ncg_had>
           </Relaxation_Iterations>
         </sfpcac>
       </SFpcac>

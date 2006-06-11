@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -40,12 +40,12 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (T& psi, const T& chi) const
+    SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
       START_CODE();
 
-      int n_count;
-  
+      SystemSolverResults_t res;
+
       /* Step (i) */
       /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_o */
       T chi_tmp;
@@ -66,7 +66,7 @@ namespace Chroma
 	(*A)(tmp, chi_tmp, MINUS);
     
 	/* psi = (M^dag * M)^(-1) chi */
-	InvCG2(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+	InvCG2(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
       }
       break;
   
@@ -76,14 +76,14 @@ namespace Chroma
 	InvMR(*A, chi_tmp, psi, 
 	      invParam.MRover, 
 	      invParam.RsdCG, 
-	      invParam.MaxCG, n_count);
+	      invParam.MaxCG, res.n_count);
 	break;
 
       case BICG_INVERTER:
 	/* psi = M^(-1) chi_tmp */
 	InvBiCG(*A, chi_tmp, psi, 
 		invParam.RsdCG, 
-		invParam.MaxCG, n_count);
+		invParam.MaxCG, res.n_count);
 	break;
 #endif
   
@@ -91,8 +91,8 @@ namespace Chroma
 	QDP_error_exit("Unknown inverter type", invParam.invType);
       }
   
-      if ( n_count == invParam.MaxCG )
-	QDP_error_exit("no convergence in the inverter", n_count);
+      if ( res.n_count == invParam.MaxCG )
+	QDP_error_exit("no convergence in the inverter", res.n_count);
   
       /* Step (ii) */
       /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
@@ -104,9 +104,17 @@ namespace Chroma
 	A->evenEvenInvLinOp(psi, tmp2, PLUS);
       }
   
+      // Compute residual
+      {
+	T  r;
+	A->unprecLinOp(r, psi, PLUS);
+	r -= chi;
+	res.resid = sqrt(norm2(r));
+      }
+
       END_CODE();
 
-      return n_count;
+      return res;
     }
 
   private:

@@ -1,4 +1,4 @@
-// $Id: t_propagator_fuzz_baryon_s.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
+// $Id: t_propagator_fuzz_baryon_s.cc,v 3.1 2006-06-11 06:30:34 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -14,7 +14,7 @@
 // Include everything...
 #include "chroma.h"
 
-  // more work -- this should be in chroma.h
+// more work -- this should be in chroma.h
 #include "meas/smear/fuzz_smear.h"
 
 /*
@@ -24,8 +24,8 @@
 
 
 enum FermType {
-  FERM_TYPE_STAGGERED,
-  FERM_TYPE_UNKNOWN
+FERM_TYPE_STAGGERED,
+FERM_TYPE_UNKNOWN
 };
 
 
@@ -33,8 +33,8 @@ using namespace Chroma;
 
 
 /*
- * Input 
- */
+* Input 
+*/
 
 
 // Parameters which must be determined from the XML input
@@ -210,31 +210,31 @@ stag_src_type get_stag_src(XMLReader& xml, const string& path)
   stag_src_type ans ; 
 
   try
+  {
+    string src_name;
+    read(xml, path, src_name);
+    if (src_name == "LOCAL_SRC") 
     {
-      string src_name;
-      read(xml, path, src_name);
-      if (src_name == "LOCAL_SRC") 
-	{
-	  QDPIO::cout << "****> LOCAL SOURCE <****" << endl;
-	  ans = LOCAL_SRC ; 
-	} 
-      else if (src_name == "GAUGE_INVAR_LOCAL_SOURCE") 
-	{
-	  QDPIO::cout << "****> GAUGE INVARIANT LOCAL SOURCE <****" << endl;
-	  ans = GAUGE_INVAR_LOCAL_SOURCE ; 
-	} 
-      else if (src_name == "FUZZED_SRC") 
-	{
-	  QDPIO::cout << "***> FUZZED SOURCE ****" << endl;
-	  ans = FUZZED_SRC ; 
-	} 
+      QDPIO::cout << "****> LOCAL SOURCE <****" << endl;
+      ans = LOCAL_SRC ; 
+    } 
+    else if (src_name == "GAUGE_INVAR_LOCAL_SOURCE") 
+    {
+      QDPIO::cout << "****> GAUGE INVARIANT LOCAL SOURCE <****" << endl;
+      ans = GAUGE_INVAR_LOCAL_SOURCE ; 
+    } 
+    else if (src_name == "FUZZED_SRC") 
+    {
+      QDPIO::cout << "***> FUZZED SOURCE ****" << endl;
+      ans = FUZZED_SRC ; 
+    } 
 
-      else
-	{
-	  QDPIO::cerr << "src_name " << src_name << " out of range " << endl;
-	  QDP_abort(1);
-	}
+    else
+    {
+      QDPIO::cerr << "src_name " << src_name << " out of range " << endl;
+      QDP_abort(1);
     }
+  }
   catch (const string& e) 
   {
     QDPIO::cerr << "Error reading data: " << e << endl;
@@ -299,16 +299,16 @@ int main(int argc, char **argv)
   XMLReader xml_in ; 
   string in_name = Chroma::getXMLInputFileName() ; 
   try
-    {
-      xml_in.open(in_name);
-    }
+  {
+    xml_in.open(in_name);
+  }
   catch (...) 
-    {
-      QDPIO::cerr << "Error reading input file " << in_name << endl;
-      QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
-      QDPIO::cerr << "The default name is ./DATA" << endl;
-      throw;
-    }
+  {
+    QDPIO::cerr << "Error reading input file " << in_name << endl;
+    QDPIO::cerr << "The input file name can be passed via the -i flag " << endl;
+    QDPIO::cerr << "The default name is ./DATA" << endl;
+    throw;
+  }
 
 
   // Read data
@@ -327,20 +327,20 @@ int main(int argc, char **argv)
 
   int fuzz_width = 2 ; 
   try
-    {
-      read(xml_in, "/propagator/param/fuzz_width",fuzz_width );
-    }
+  {
+    read(xml_in, "/propagator/param/fuzz_width",fuzz_width );
+  }
   catch (const string& e) 
-    {
-      QDPIO::cerr << "Error reading fuzzing width " << e << endl;
-      throw;
-    }
+  {
+    QDPIO::cerr << "Error reading fuzzing width " << e << endl;
+    throw;
+  }
   QDPIO::cout << "fuzz width = " << fuzz_width  << endl;
 
 
-     bool use_gauge_invar_oper ;
-     use_gauge_invar_oper = false ;
-     read(xml_in, "/propagator/param/use_gauge_invar_oper",use_gauge_invar_oper );
+  bool use_gauge_invar_oper ;
+  use_gauge_invar_oper = false ;
+  read(xml_in, "/propagator/param/use_gauge_invar_oper",use_gauge_invar_oper );
 
 
   // 
@@ -353,25 +353,25 @@ int main(int argc, char **argv)
   read(xml_in, "/propagator/param/do_gauge_transform",do_gauge_transform );
 
   if( do_gauge_transform )
-    {
-      // gauge transform the gauge fields
-      multi1d<LatticeColorMatrix> u_trans(Nd);
+  {
+    // gauge transform the gauge fields
+    multi1d<LatticeColorMatrix> u_trans(Nd);
 
-      // create a random gauge transform
-       LatticeColorMatrix v ;
+    // create a random gauge transform
+    LatticeColorMatrix v ;
   
-       gaussian(v);
-       reunit(v) ; 
+    gaussian(v);
+    reunit(v) ; 
 
-       for(int dir = 0 ; dir < Nd ; ++dir)
-	 {
-	   u_trans[dir] = v*u[dir]*adj(shift(v,FORWARD,dir)) ;
-	   u[dir] = u_trans[dir] ;
-	 }
+    for(int dir = 0 ; dir < Nd ; ++dir)
+    {
+      u_trans[dir] = v*u[dir]*adj(shift(v,FORWARD,dir)) ;
+      u[dir] = u_trans[dir] ;
+    }
 
-       QDPIO::cout << "Random gauge transform done" << endl;
+    QDPIO::cout << "Random gauge transform done" << endl;
 
-    } // end of gauge transform
+  } // end of gauge transform
 
 
 
@@ -404,11 +404,11 @@ int main(int argc, char **argv)
   int j_decay = Nd-1;
 
   if( ! use_gauge_invar_oper )
-    {
-      QDPIO::cout << "Starting Coulomb gauge fixing" << endl;
-      coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara);
-      QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
-    }
+  {
+    QDPIO::cout << "Starting Coulomb gauge fixing" << endl;
+    coulGauge(u, n_gf, j_decay, input.param.GFAccu, input.param.GFMax, true, input.param.OrPara);
+    QDPIO::cout << "No. of gauge fixing iterations =" << n_gf << endl;
+  }
 
   // 
   // Ape fuzz the gauge fields
@@ -427,17 +427,17 @@ int main(int argc, char **argv)
       
   u_smr = u;
   for(int i=0; i < sm_numb; ++i)
-    {
-      multi1d<LatticeColorMatrix> u_tmp(Nd);
+  {
+    multi1d<LatticeColorMatrix> u_tmp(Nd);
       
-      for(int mu = 0; mu < Nd; ++mu)
-	if ( mu != j_decay )
-	  APE_Smear(u_smr, u_tmp[mu], mu, 0, sm_fact, BlkAccu, BlkMax, j_decay);
-	else
-	  u_tmp[mu] = u_smr[mu];
+    for(int mu = 0; mu < Nd; ++mu)
+      if ( mu != j_decay )
+	APE_Smear(u_smr, u_tmp[mu], mu, 0, sm_fact, BlkAccu, BlkMax, j_decay);
+      else
+	u_tmp[mu] = u_smr[mu];
     
-      u_smr = u_tmp;
-    }
+    u_smr = u_tmp;
+  }
       
   
 
@@ -494,32 +494,32 @@ int main(int argc, char **argv)
   QDPIO::cout << "LOCAL INVERSIONS"  << endl;
 
   for(int color_source = 0; color_source < Nc; ++color_source) 
-    {
-      psi = zero;   // note this is ``zero'' and not 0
+  {
+    psi = zero;   // note this is ``zero'' and not 0
 
-      const int src_ind = 0 ; 
-      ncg_had += ks_compute_quark_propagator(psi,type_of_src, fuzz_width,
-					     u, u_smr, qprop, xml_out,
-					     input.param.invParam.RsdCG,
-					     input.param.Mass,
-					     j_decay, 
-					     src_ind, color_source) ;
+    const int src_ind = 0 ; 
+    ncg_had += ks_compute_quark_propagator(psi,type_of_src, fuzz_width,
+					   u, u_smr, qprop, xml_out,
+					   input.param.invParam.RsdCG,
+					   input.param.Mass,
+					   j_decay, 
+					   src_ind, color_source) ;
 
-      /*
-       * Move the solution to the appropriate components
-       * of quark propagator.
-       */
-      FermToProp(psi, quark_propagator_Lsink_Lsrc, color_source);
+    /*
+     * Move the solution to the appropriate components
+     * of quark propagator.
+     */
+    FermToProp(psi, quark_propagator_Lsink_Lsrc, color_source);
 
-      //
-      //  fuzz at the sink 
-      //
+    //
+    //  fuzz at the sink 
+    //
 
-      fuzz_smear(u_smr, psi,psi_fuzz, fuzz_width, j_decay) ;
-      FermToProp(psi_fuzz, quark_propagator_Fsink_Lsrc, color_source);
+    fuzz_smear(u_smr, psi,psi_fuzz, fuzz_width, j_decay) ;
+    FermToProp(psi_fuzz, quark_propagator_Fsink_Lsrc, color_source);
 
 
-    }  //color_source
+  }  //color_source
     
 
 
@@ -532,156 +532,156 @@ int main(int argc, char **argv)
   QDPIO::cout << "FUZZED SOURCE INVERSIONS"  << endl;
 
   for(int color_source = 0; color_source < Nc; ++color_source) 
-    {
-      psi = zero;   // note this is ``zero'' and not 0
+  {
+    psi = zero;   // note this is ``zero'' and not 0
 
-      const int src_ind = 0 ; 
-      ncg_had += ks_compute_quark_propagator(psi,type_of_src, fuzz_width,
-					     u, u_smr, qprop, xml_out,
-					     input.param.invParam.RsdCG,
-					     input.param.Mass,
-					     j_decay, 
-					     src_ind, color_source) ;
+    const int src_ind = 0 ; 
+    ncg_had += ks_compute_quark_propagator(psi,type_of_src, fuzz_width,
+					   u, u_smr, qprop, xml_out,
+					   input.param.invParam.RsdCG,
+					   input.param.Mass,
+					   j_decay, 
+					   src_ind, color_source) ;
 
-      /*
-       * Move the solution to the appropriate components
-       * of quark propagator.
-       */
-      FermToProp(psi, quark_propagator_Lsink_Fsrc, color_source);
+    /*
+     * Move the solution to the appropriate components
+     * of quark propagator.
+     */
+    FermToProp(psi, quark_propagator_Lsink_Fsrc, color_source);
 
-      //
-      //  fuzz at the sink 
-      //
+    //
+    //  fuzz at the sink 
+    //
 
-      fuzz_smear(u_smr, psi,psi_fuzz, fuzz_width, j_decay) ;
-      FermToProp(psi_fuzz, quark_propagator_Fsink_Fsrc, color_source);
+    fuzz_smear(u_smr, psi,psi_fuzz, fuzz_width, j_decay) ;
+    FermToProp(psi_fuzz, quark_propagator_Fsink_Fsrc, color_source);
 
 
-    }  //color_source
+  }  //color_source
     
       
 
   
-      //
-      // compute some simple baryon correlators
-      //
+  //
+  // compute some simple baryon correlators
+  //
 
-      push(xml_out, "baryon_correlators");
+  push(xml_out, "baryon_correlators");
 
-      // describe the source
-      string NN ;
-      write(xml_out, "source_time", t_source);
-      push(xml_out, "smearing_info");
-      NN = "L" ; 
-      write_smearing_info(NN, LOCAL_SRC,xml_out,fuzz_width) ;
+  // describe the source
+  string NN ;
+  write(xml_out, "source_time", t_source);
+  push(xml_out, "smearing_info");
+  NN = "L" ; 
+  write_smearing_info(NN, LOCAL_SRC,xml_out,fuzz_width) ;
 
-      NN = "F" ; 
-      write_smearing_info(NN,FUZZED_SRC,xml_out,fuzz_width) ;
+  NN = "F" ; 
+  write_smearing_info(NN,FUZZED_SRC,xml_out,fuzz_width) ;
     
-      pop(xml_out);
+  pop(xml_out);
 
-      // write out the baryon correlators 
-      string b_tag("srcLLL_sinkLLL_nucleon") ;  
-      ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
+  // write out the baryon correlators 
+  string b_tag("srcLLL_sinkLLL_nucleon") ;  
+  ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
 
-      // single quark fuzzed
+  // single quark fuzzed
 
-      b_tag = "srcLLL_sinkFLL_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Fsink_Lsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
+  b_tag = "srcLLL_sinkFLL_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Fsink_Lsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
 
-      b_tag = "srcFLL_sinkLLL_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Lsink_Fsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
+  b_tag = "srcFLL_sinkLLL_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Lsink_Fsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
 
-      b_tag = "srcFLL_sinkFLL_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Fsink_Fsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
-
-
-
-      // double quark fuzzed
-
-      b_tag = "srcLLL_sinkFFL_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Fsink_Lsrc, 
-			quark_propagator_Fsink_Lsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
-
-      b_tag = "srcFFL_sinkLLL_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Lsink_Fsrc, 
-			quark_propagator_Lsink_Fsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
-
-      b_tag = "srcFFL_sinkFFL_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Fsink_Fsrc, 
-			quark_propagator_Fsink_Fsrc, 
-			quark_propagator_Lsink_Lsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
-
-
-      // treble quark fuzzed
-
-      b_tag = "srcLLL_sinkFFF_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Fsink_Lsrc, 
-			quark_propagator_Fsink_Lsrc, 
-			quark_propagator_Fsink_Lsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
-
-      b_tag = "srcFFF_sinkLLL_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Lsink_Fsrc, 
-			quark_propagator_Lsink_Fsrc, 
-			quark_propagator_Lsink_Fsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
-
-      b_tag = "srcFFF_sinkFFF_nucleon" ;
-      ks_compute_baryon(b_tag,
-			quark_propagator_Fsink_Fsrc, 
-			quark_propagator_Fsink_Fsrc, 
-			quark_propagator_Fsink_Fsrc, 
-			xml_out, j_decay, 
-			input.param.nrow[3]) ;
+  b_tag = "srcFLL_sinkFLL_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Fsink_Fsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
 
 
 
-      pop(xml_out);  // baryon correlators
+  // double quark fuzzed
+
+  b_tag = "srcLLL_sinkFFL_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Fsink_Lsrc, 
+		    quark_propagator_Fsink_Lsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
+
+  b_tag = "srcFFL_sinkLLL_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Lsink_Fsrc, 
+		    quark_propagator_Lsink_Fsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
+
+  b_tag = "srcFFL_sinkFFL_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Fsink_Fsrc, 
+		    quark_propagator_Fsink_Fsrc, 
+		    quark_propagator_Lsink_Lsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
+
+
+  // treble quark fuzzed
+
+  b_tag = "srcLLL_sinkFFF_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Fsink_Lsrc, 
+		    quark_propagator_Fsink_Lsrc, 
+		    quark_propagator_Fsink_Lsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
+
+  b_tag = "srcFFF_sinkLLL_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Lsink_Fsrc, 
+		    quark_propagator_Lsink_Fsrc, 
+		    quark_propagator_Lsink_Fsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
+
+  b_tag = "srcFFF_sinkFFF_nucleon" ;
+  ks_compute_baryon(b_tag,
+		    quark_propagator_Fsink_Fsrc, 
+		    quark_propagator_Fsink_Fsrc, 
+		    quark_propagator_Fsink_Fsrc, 
+		    xml_out, j_decay, 
+		    input.param.nrow[3]) ;
+
+
+
+  pop(xml_out);  // baryon correlators
 
       
-      pop(xml_out);
-      xml_out.close();
-      xml_in.close();
+  pop(xml_out);
+  xml_out.close();
+  xml_in.close();
 
-      // Time to bolt
-      Chroma::finalize();
-      QDPIO::cout << "CHROMA_RUN_COMPLETE " << endl;
-      exit(0);
+  // Time to bolt
+  Chroma::finalize();
+  QDPIO::cout << "CHROMA_RUN_COMPLETE " << endl;
+  exit(0);
 }
 
 
@@ -758,75 +758,75 @@ int ks_compute_quark_propagator(LatticeStaggeredFermion & psi,
   q_source = zero ;
 
   if( type_of_src == LOCAL_SRC )
-    {
-      q_source = zero ;
-      multi1d<int> coord(Nd);
+  {
+    q_source = zero ;
+    multi1d<int> coord(Nd);
 
-      PropIndexTodelta(src_ind, coord) ; 
-      srcfil(q_source, coord,color_source ) ;
-    }
-	  else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
-	    {
-	      q_source = zero ;
-	      multi1d<int> coord(Nd);
+    PropIndexTodelta(src_ind, coord) ; 
+    srcfil(q_source, coord,color_source ) ;
+  }
+  else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
+  {
+    q_source = zero ;
+    multi1d<int> coord(Nd);
 	      
-	      // start with local source 
-	      coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-	      srcfil(q_source, coord,color_source ) ;
+    // start with local source 
+    coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+    srcfil(q_source, coord,color_source ) ;
 	      
-	      // now do the shift
-	      PropIndexTodelta(src_ind, coord) ; 
-	      q_source_fuzz = q_source  ;
-	      q_source = shiftDeltaPropCov(coord,q_source_fuzz,u,
-					   false); 
+    // now do the shift
+    PropIndexTodelta(src_ind, coord) ; 
+    q_source_fuzz = q_source  ;
+    q_source = shiftDeltaPropCov(coord,q_source_fuzz,u,
+				 false); 
 
-	    }
-	  else if( type_of_src == FUZZED_SRC )
-	    {
-	      q_source = zero ;
-	      multi1d<int> coord(Nd);
+  }
+  else if( type_of_src == FUZZED_SRC )
+  {
+    q_source = zero ;
+    multi1d<int> coord(Nd);
 
-	      PropIndexTodelta(src_ind, coord) ; 
-	      srcfil(q_source, coord,color_source ) ;
-
-
-	      fuzz_smear(u_smr, q_source,q_source_fuzz, 
-			 fuzz_width, j_decay) ; 
-
-	      q_source = q_source_fuzz  ;
-	    }
+    PropIndexTodelta(src_ind, coord) ; 
+    srcfil(q_source, coord,color_source ) ;
 
 
+    fuzz_smear(u_smr, q_source,q_source_fuzz, 
+	       fuzz_width, j_decay) ; 
 
-	  // Use the last initial guess as the current guess
+    q_source = q_source_fuzz  ;
+  }
 
-	  // Compute the propagator for given source color/spin 
-	  // int n_count;
 
-        StopWatch swatch;
-	swatch.start();
 
-	int n_count = (*qprop)(psi, q_source);
-	  swatch.stop();
-	  double time_in_sec  = swatch.getTimeInSeconds();
+  // Use the last initial guess as the current guess
+
+  // Compute the propagator for given source color/spin 
+  // int n_count;
+
+  StopWatch swatch;
+  swatch.start();
+
+  SystemSolverResults_t res n_count = (*qprop)(psi, q_source);
+  swatch.stop();
+  double time_in_sec  = swatch.getTimeInSeconds();
 
     
-	  ncg_had += n_count;
+  ncg_had += res.n_count;
 
-	// this is done for xmldif reasons
-	  if( src_ind == 0 )
-	  {
-	    push(xml_out,"Qprop");
-	    write(xml_out, "Staggered_src_tag" , src_ind);
-	    write(xml_out, "Mass" , Mass);
-	    write(xml_out, "RsdCG", RsdCG);
-	    write(xml_out, "n_count", n_count);
-	    write(xml_out, "time_in_sec",time_in_sec );
-	    pop(xml_out);
-	  }
+  // this is done for xmldif reasons
+  if( src_ind == 0 )
+  {
+    push(xml_out,"Qprop");
+    write(xml_out, "Staggered_src_tag" , src_ind);
+    write(xml_out, "Mass" , Mass);
+    write(xml_out, "RsdCG", RsdCG);
+    write(xml_out, "n_count", n_count);
+    write(xml_out, "time_in_sec",time_in_sec );
+    pop(xml_out);
+  }
 
 
-	return ncg_had ;
+  return ncg_had ;
 }
 
 
@@ -840,14 +840,14 @@ void write_smearing_info(string name, stag_src_type type_of_src,
   write(xml_out, "element_tag", name);
 
   if( type_of_src == LOCAL_SRC )
-    { write(xml_out, "source_type", "LOCAL_SRC"); }
+  { write(xml_out, "source_type", "LOCAL_SRC"); }
   else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  )
-    { write(xml_out, "source_type", "GAUGE_INVAR_LOCAL_SOURCE"); }
+  { write(xml_out, "source_type", "GAUGE_INVAR_LOCAL_SOURCE"); }
   else if( type_of_src == FUZZED_SRC )
-    { 
-      write(xml_out, "source_type", "FUZZED_SRC"); 
-      write(xml_out, "fuzzed_width", fuzz_width); 
-    }
+  { 
+    write(xml_out, "source_type", "FUZZED_SRC"); 
+    write(xml_out, "fuzzed_width", fuzz_width); 
+  }
 
   pop(xml_out);
 

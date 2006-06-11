@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec-zolo-ev-multi.out.xml,v 3.1 2006-04-11 04:18:25 edwards Exp $
+; $Id: unprec-zolo-ev-multi.out.xml,v 3.2 2006-06-11 06:30:37 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -122,6 +122,7 @@
       <Frequency>1</Frequency>
       <Param>
         <version>8</version>
+        <quarkSpinType>FULL</quarkSpinType>
         <nonRelProp>false</nonRelProp>
         <obsvP>false</obsvP>
         <FermionAction>
@@ -230,10 +231,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.1.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Apr 06 23:10:55 EDT</run_date>
+    <run_date>11 Jun 06 02:08:34 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -291,10 +292,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:10:56 EDT</run_date>
+          <run_date>11 Jun 06 02:08:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -884,10 +885,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:11:10 EDT</run_date>
+          <run_date>11 Jun 06 02:08:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1107,10 +1108,10 @@
         </Source_record_info>
         <ProgramInfo>
           <code_version>
-            <chroma>3.1.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.7.0</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Apr 06 23:11:10 EDT</run_date>
+          <run_date>11 Jun 06 02:08:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

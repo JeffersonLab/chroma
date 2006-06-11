@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_altivec_w.h,v 3.1 2006-05-01 15:27:20 kostas Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.h,v 3.2 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -52,12 +52,12 @@ namespace Chroma
     /*!
      * \param m_q_       quark mass ( Read )
      */
-    ALTIVECDWFQpropT(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A,  // throw away
-		 Handle< FermState<T,P,Q> > state_, 
-		 const Real& OverMass_,
-		 const Real& Mass_,
-		 const AnisoParam_t& anisoParam_,
-		 const InvertParam_t& invParam_) : 
+    ALTIVECDWFQpropT(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A,
+		     Handle< FermState<T,P,Q> > state_, 
+		     const Real& OverMass_,
+		     const Real& Mass_,
+		     const AnisoParam_t& anisoParam_,
+		     const InvertParam_t& invParam_) : 
       OverMass(OverMass_), Mass(Mass_), 
       N5(A->size()), anisoParam(anisoParam_), invParam(invParam_) 
       {init(state_);}
@@ -77,7 +77,7 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const;
+    SystemSolverResults_t operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const;
 
   protected:
     //! Private internal initializer

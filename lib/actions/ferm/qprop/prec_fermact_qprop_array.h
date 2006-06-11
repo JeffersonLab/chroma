@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_fermact_qprop_array.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: prec_fermact_qprop_array.h,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -64,7 +64,7 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (multi1d<T>& psi, const multi1d<T>& chi) const;
+    SystemSolverResults_t operator() (multi1d<T>& psi, const multi1d<T>& chi) const;
 
   private:
     Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > A;

@@ -1,4 +1,4 @@
-// $Id: quarkprop4_multi_w.cc,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: quarkprop4_multi_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -23,7 +23,7 @@ namespace Chroma {
 			 multi1d<LatticeColorMatrix> > > state,
 			 const multi1d<Real>& masses,
 			 const MultiInvertParam_t& invParam,
-			 const int n_soln,
+			 int n_soln,
 			 int& ncg_had)
   {
     START_CODE();
@@ -57,7 +57,12 @@ namespace Chroma {
 	     * Normalize the source in case it is really huge or small - 
 	     * a trick to avoid overflows or underflows
 	     */
-	    Real fact = Real(1) / sqrt(norm2(chi));
+	    Real fact = 1.0;
+	    Real nrm = sqrt(norm2(chi));
+	    if (toFloat(nrm) != 0.0)
+	      fact /= nrm;
+
+	    // Rescale
 	    chi *= fact;
 	    
 	    // Compute the propagator for given source color/spin.
@@ -65,7 +70,6 @@ namespace Chroma {
 	    
 	    // The psi-s are zeroed in multiQprop
 	    S_f.multiQprop(psi, masses, state, chi, invParam, n_soln, n_count);
-	    
 	    
 	    ncg_had += n_count;
 	    

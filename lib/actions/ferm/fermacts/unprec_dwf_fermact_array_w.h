@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_array_w.h,v 3.1 2006-05-10 04:48:29 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.h,v 3.2 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
@@ -95,14 +95,15 @@ namespace Chroma
     /*!
      * This routine is actually generic to Domain Wall fermions (Array) fermions
      *
-     * \param q_sol    quark propagator ( Write )
-     * \param q_src    source ( Read )
-     * \param xml_out  diagnostic output ( Modify )
-     * \param state    gauge connection state ( Read )
-     * \param t_src    time slice of source ( Read )
-     * \param j_decay  direction of decay ( Read )
-     * \param invParam inverter parameters ( Read )
-     * \param ncg_had  number of CG iterations ( Write )
+     * \param q_sol        quark propagator ( Write )
+     * \param q_src        source ( Read )
+     * \param xml_out      diagnostic output ( Modify )
+     * \param state        gauge connection state ( Read )
+     * \param t_src        time slice of source ( Read )
+     * \param j_decay      direction of decay ( Read )
+     * \param invParam     inverter parameters ( Read )
+     * \param numRetries   number of retries of qprop calls ( Read )
+     * \param ncg_had      number of CG iterations ( Write )
      */
     void quarkProp(LatticePropagator& q_sol,   // Oops, need to make propagator type more general
 		   XMLWriter& xml_out,
@@ -111,6 +112,7 @@ namespace Chroma
 		   Handle< FermState<T,P,Q> > state,
 		   const InvertParam_t& invParam,
 		   QuarkSpinType quarkSpinType,
+		   int numRetries,
 		   bool obsvP,
 		   int& ncg_had) const;
 

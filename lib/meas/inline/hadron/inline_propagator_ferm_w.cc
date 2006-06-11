@@ -1,4 +1,4 @@
-// $Id: inline_propagator_ferm_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_propagator_ferm_w.cc,v 3.2 2006-06-11 06:30:33 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator returning only a single lattice fermion
  *
@@ -350,7 +350,8 @@ namespace Chroma
       QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
       swatch.start();
 
-      int ncg_had = (*PP)(quark_soln, quark_source);
+      SystemSolverResults_t res = (*PP)(quark_soln, quark_source);
+      ncg_had = res.n_count;
 
       swatch.stop();
       QDPIO::cout << "Propagator computed: time= " 

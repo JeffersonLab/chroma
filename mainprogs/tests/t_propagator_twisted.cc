@@ -1,4 +1,4 @@
-// $Id: t_propagator_twisted.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
+// $Id: t_propagator_twisted.cc,v 3.1 2006-06-11 06:30:34 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation of twisted mass QCD
  *   
@@ -290,7 +290,6 @@ int main(int argc, char **argv)
   LatticePropagator quark_propagator;
   XMLBufferWriter xml_buf;
   int ncg_had = 0;
-  int n_count;
 
   LatticeFermion q_source, psi;
 
@@ -319,16 +318,14 @@ int main(int argc, char **argv)
 
 
         // Compute the propagator for given source color/spin 
-        // int n_count;
-	n_count = (*qprop)(psi, q_source);     
-
-        ncg_had += n_count;
+	SystemSolverResults_t res = (*qprop)(psi, q_source);     
+        ncg_had += res.n_count;
       
         push(xml_out,"Qprop");
         write(xml_out, "Mass" , input.param.mass_param.Mass);
         write(xml_out, "gamma5_mass" , input.param.mass_param.H);
         write(xml_out, "RsdCG", input.param.invParam.RsdCG);
-        write(xml_out, "n_count", n_count);
+        write(xml_out, "n_count", res.n_count);
         pop(xml_out);
 
         /*

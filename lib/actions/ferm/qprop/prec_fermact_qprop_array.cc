@@ -1,6 +1,14 @@
-// $Id: prec_fermact_qprop_array.cc,v 3.1 2006-04-11 03:02:59 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 3.2 2006-06-11 06:30:32 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 3.1  2006-04-11 03:02:59  edwards
+// Revision 3.2  2006-06-11 06:30:32  edwards
+// Change in interface. The quarkProp routines now all take a "numRetries"
+// variable for the number of times to call the qprop routine. The propagator
+// regression tests have all been up to version 10 to read this new variable.
+// The SystemSolver routines now all return a  SystemSolverResults_t  struct
+// instead of an int of "n_count" . A residual of the unpreconditioned
+// system of equations for the qprop and qpropT is computed.
+//
+// Revision 3.1  2006/04/11 03:02:59  edwards
 // Removed debugging.
 //
 // Revision 3.0  2006/04/03 04:58:53  edwards
@@ -119,14 +127,15 @@ namespace Chroma
    * \return number of CG iterations
    */
   template <> 
-  int PrecFermAct5DQprop<LatticeFermion, 
-			 multi1d<LatticeColorMatrix>,
-			 multi1d<LatticeColorMatrix> >::operator()(multi1d<LatticeFermion>& psi, 
-								   const multi1d<LatticeFermion>& chi) const
+  SystemSolverResults_t
+  PrecFermAct5DQprop<LatticeFermion, 
+		     multi1d<LatticeColorMatrix>,
+		     multi1d<LatticeColorMatrix> >::operator()(multi1d<LatticeFermion>& psi, 
+							       const multi1d<LatticeFermion>& chi) const
   {
     START_CODE();
 
-    int n_count;
+    SystemSolverResults_t res;
     const int N5 = size();
   
     if (psi.size() != size() && chi.size() != size())
@@ -154,22 +163,21 @@ namespace Chroma
       multi1d<LatticeFermion> tmp(N5);
 
       (*A)(tmp, chi_tmp, MINUS);
-
       
       /* psi = (M^dag * M)^(-1) chi_tmp */
-      InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+      InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
     }
     break;
   
 #if 0
     case MR_INVERTER:
       /* psi = M^(-1) chi */
-      InvMR (*A, chi_tmp, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, n_count);
+      InvMR (*A, chi_tmp, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, res.n_count);
       break;
 
     case BICG_INVERTER:
       /* psi = M^(-1) chi */
-      InvBiCG (*A, chi_tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+      InvBiCG (*A, chi_tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
       break;
 #endif
   
@@ -177,8 +185,8 @@ namespace Chroma
       QDP_error_exit("Unknown inverter type", invParam.invType);
     }
   
-    if ( n_count == invParam.MaxCG )
-      QDP_error_exit("no convergence in the inverter", n_count);
+    if ( res.n_count == invParam.MaxCG )
+      QDP_error_exit("no convergence in the inverter", res.n_count);
    
     
     /* Step (ii) */
@@ -198,9 +206,17 @@ namespace Chroma
       
     }
     
+    // Compute residual
+    {
+      multi1d<LatticeFermion>  r(N5);
+      A->unprecLinOp(r, psi, PLUS);
+      r -= chi;
+      res.resid = sqrt(norm2(r));
+    }
+
     END_CODE();
 
-    return n_count;
+    return res;
   }
 
 

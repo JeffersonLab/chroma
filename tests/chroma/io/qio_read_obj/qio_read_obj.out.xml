@@ -112,10 +112,10 @@ Write some QIO objects
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.2.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.7.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>26 Apr 06 16:53:55 EDT</run_date>
+    <run_date>11 Jun 06 01:34:04 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>

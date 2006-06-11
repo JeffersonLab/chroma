@@ -1,4 +1,4 @@
-// $Id: cfgtransf.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
+// $Id: cfgtransf.cc,v 3.1 2006-06-11 06:30:33 edwards Exp $
 /*! \file
  *  \brief Many-to-many gauge transformation routine
  */
@@ -88,56 +88,31 @@ int main(int argc, char **argv)
   QDPIO::cin >> input_type;
   
 
-#if 0
+  // Schroedinger BC
   Real SchrPhiMult;            /* Multiplier for Schr. BC fields */
-  bool SchrFermP;           /* Set Schroedinger fermion phases? */
-  multi1d<Real> theta(Nd-1);          /* Angles (units of pi) for Schroedinger phases */
+  int loop_extent;
+  int decay_dir;
 
-  // Cannot handle Symanzik or Schroedinger BC yet
   if ( input_type == 9 )
   {
-    QDPIO::cout << "Enter level of Symanzik improvement of gauge action\n"
-		<< "  ( 0) No improvement (1x1 plaquette Wilson action)\n"
-		<< "  (-1) Arbitrary coeff for 1x2 rectangle\n"
-		<< "  ( 1) Tree level coeff for 1x2 rectangle\n"
-		<< "  (-2) Arbitrary coeff. for 1x2 rect. and parallelogram\n"
-		<< "  ( 2) 1-loop coeff. for 1x2 rect. and parallelogram\n";
-    QDPIO::cin >> GlueImp;
-  
-    QDPIO::cout << "Enter Schroedinger boundary type\n"
-		<< "  (0) Do not use Schroedinger BC\n"
-		<< "  (1) Zero field on boundary\n"
-		<< "  (2) Canonical alpha collaboration field\n";
-    QDPIO::cin >> SchrFun;
+    QDPIO::cout << "This will be a Schroedinger style config used for c_sw measurements\n" << endl;
+
+    QDPIO::cout << "Enter extent of loops in decay direction\n" << endl;
+    QDPIO::cin >> loop_extent;;
   
     QDPIO::cout << "Enter multiplier for Schroedinger boundary fields\n";
     QDPIO::cin >> SchrPhiMult;
  
     QDPIO::cout << "Enter the boundary condition direction\n";
-    QDPIO::cin >> j_decay;
-
-    QDPIO::cout << "Use fermion phases in Schroedinger boundary? [0/1]\n";
-    QDPIO::cin >> SchrFermP;
-
-    if (SchrFermP)
-    {
-      QDPIO::cout << "Enter the " << Nc << " thetas\n";
-      QDPIO::cin >> theta;
-    }
-    else
-    {
-      theta = 0;
-    }
+    QDPIO::cin >> decay_dir;
   }
   else
   {
-    GlueImp = 0;
-    SchrFun = 0;
-    SchrFermP = NO;
-    theta = 0;
+    loop_extent = 1;
+    decay_dir   = Nd-1;
     SchrPhiMult = 1;
   }
-#endif
+
 
   int output_type;
   QDPIO::cout << "Enter output Gauge field type\n"
@@ -353,11 +328,19 @@ int main(int argc, char **argv)
 
 #if 0
   case 9:
+  {
     push(xml_out,"Schroedinger_BC_config");
     write(xml_out, "input_type", input_type);
     pop(xml_out);
-    u = SFBndFld;
-    break;
+
+    SchrGaugeBCParams params;
+    params.loop_extent = loop_extent;
+    params.SchrPhiMult = SchrPhiMult;
+    params.decay_dir   = decay_dir;
+    SchrNonPertGaugeBC gaugebc(params);
+    u = gaugebc.SFBndFld();
+  }
+  break;
 #endif
 
 // case 10: Ancient fortran szin_config

@@ -109,7 +109,7 @@
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5191.66</F_sq>
+                  <F_sq>5191.67</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1099,7 +1099,7 @@
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5186.49</F_sq>
+                  <F_sq>5186.5</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1129,7 +1129,7 @@
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5186.19</F_sq>
+                  <F_sq>5186.2</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2029,7 +2029,7 @@
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5173.29</F_sq>
+                  <F_sq>5173.3</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>

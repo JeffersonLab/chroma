@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 3.1 2006-06-11 06:30:31 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -61,17 +61,17 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (LatticeFermion& psi, const LatticeFermion& chi) const
-    {
-      START_CODE();
+    SystemSolverResults_t operator() (LatticeFermion& psi, const LatticeFermion& chi) const
+      {
+	START_CODE();
 
-      Real mass = S_f->getQuarkMass();
-      int n_count;
+	SystemSolverResults_t res;
+	Real mass = S_f->getQuarkMass();
 
-      switch( invParam.invType ) {
-      case CG_INVERTER:
+	switch( invParam.invType ) 
 	{
-
+	case CG_INVERTER:
+	{
 	  // We do our solve into tmp, so make sure this is the supplied initial guess
 	  LatticeFermion tmp = psi;
 
@@ -91,7 +91,7 @@ namespace Chroma
 
 	    // Source is not chiral. In this case we should use,
 	    // InvCG2 with M
-	    InvCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+	    InvCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
 
 	  }
 	  else {
@@ -103,7 +103,7 @@ namespace Chroma
 
 	    // Source is chiral. In this case we should use InvCG1
 	    // with the special MdagM
-	    InvCG1(*MM, chi,tmp, invParam.RsdCG, invParam.MaxCG, n_count);
+	    InvCG1(*MM, chi,tmp, invParam.RsdCG, invParam.MaxCG, res.n_count);
 	    (*M)(psi,tmp, MINUS);
 	  }
   
@@ -113,11 +113,11 @@ namespace Chroma
     
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " 
 		      << sqrt(norm2(Mpsi))/sqrt(norm2(chi)) 
-		      << "  n_count = " << n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << endl;
 
 	}
 	break;
-      case REL_CG_INVERTER:
+	case REL_CG_INVERTER:
 	{
 
 	  LatticeFermion tmp = psi;
@@ -131,7 +131,7 @@ namespace Chroma
 	    // Source is not chiral. In this case we should use,
 	    // InvCG2 with M
 	    (*M)(tmp, chi, MINUS); 
-	    InvRelCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+	    InvRelCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
     
 	  }
 	  else {
@@ -141,7 +141,7 @@ namespace Chroma
 	    Handle<LinearOperator<T> > MM( dynamic_cast< LinearOperator<LatticeFermion>* >( S_f->lMdagM(state, ichiral) ) );
 
 	    (*M)(tmp, chi, MINUS);	
-	    InvRelCG1(*MM, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+	    InvRelCG1(*MM, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
       
 	  }
 
@@ -150,24 +150,24 @@ namespace Chroma
 	  Mpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " 
 		      << sqrt(norm2(Mpsi))/sqrt(norm2(chi))
-		      << "  n_count = " << n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << endl;
 
 	}
 	break;
 
 #if 0
-      case MR_INVERTER:
-	// psi = D^(-1)* chi
-	InvMR (*M, chi, psi, MRover, invParam.RsdCG, invParam.MaxCG, n_count);
-	break;
+	case MR_INVERTER:
+	  // psi = D^(-1)* chi
+	  InvMR (*M, chi, psi, MRover, invParam.RsdCG, invParam.MaxCG, res.n_count);
+	  break;
 
-      case BICG_INVERTER:
-	// psi = D^(-1) chi
-	InvBiCG (*M, chi, psi, invParam.RsdCG, invParam.MaxCG, n_count);
-	break;
+	case BICG_INVERTER:
+	  // psi = D^(-1) chi
+	  InvBiCG (*M, chi, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
+	  break;
 #endif
 
-      case SUMR_INVERTER:
+	case SUMR_INVERTER:
 	{
 	  // Solve by SUMR solver -- for shifted unitary matrices
 	  //
@@ -183,7 +183,7 @@ namespace Chroma
 	    Handle< LinearOperator<T> > U(S_f->lgamma5epsH(state));
 	
 	    // Now solve:
-	    InvSUMR(*U, chi, psi, zeta, rho, invParam.RsdCG, invParam.MaxCG, n_count);
+	    InvSUMR(*U, chi, psi, zeta, rho, invParam.RsdCG, invParam.MaxCG, res.n_count);
 	
 	    // Restore to normal scaling
 	    Real fact = Real(2)/(Real(1) - mu);
@@ -198,11 +198,11 @@ namespace Chroma
 	  Dpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi || = " 
 		      << sqrt(norm2(Dpsi))/sqrt(norm2(chi))
-		      << "  n_count = " << n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << endl;
 	}
 	break;
 
-      case REL_SUMR_INVERTER:
+	case REL_SUMR_INVERTER:
 	{
 	  // Solve by Relaxed SUMR solver -- for shifted unitary matrices
 	  //
@@ -220,7 +220,7 @@ namespace Chroma
 	    Real fact = Real(2)/(Real(1) - mu);
 	
 	    // Now solve:
-	    InvRelSUMR(*U, chi, psi, zeta, rho, invParam.RsdCG, invParam.MaxCG, n_count);
+	    InvRelSUMR(*U, chi, psi, zeta, rho, invParam.RsdCG, invParam.MaxCG, res.n_count);
 	
 	    // Restore to normal scaling
 	    psi *= fact;
@@ -236,10 +236,10 @@ namespace Chroma
 	  Dpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi || = " 
 		      << sqrt(norm2(Dpsi)) / sqrt(norm2(chi)) 
-		      << "  n_count = " << n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << endl;
 	}
 	break;
-      case REL_GMRESR_SUMR_INVERTER:
+	case REL_GMRESR_SUMR_INVERTER:
 	{
 	  // Solve by Relaxed SUMR solver -- for shifted unitary matrices
 	  //
@@ -260,7 +260,7 @@ namespace Chroma
 	    Real fact = Real(2)/(Real(1) - mu);
 	
 	    // Now solve:
-	    InvRelGMRESR_SUMR(*PrecU, zeta, rho, *UnprecU, chi, psi, invParam.RsdCG, invParam.RsdCGPrec, invParam.MaxCG, invParam.MaxCGPrec, n_count);
+	    InvRelGMRESR_SUMR(*PrecU, zeta, rho, *UnprecU, chi, psi, invParam.RsdCG, invParam.RsdCGPrec, invParam.MaxCG, invParam.MaxCGPrec, res.n_count);
 	
 	    // Restore to normal scaling
 	    psi *= fact;
@@ -277,11 +277,11 @@ namespace Chroma
 
 	  QDPIO::cout << "OvQprop || chi - D psi || = " 
 		      << sqrt(norm2(Dpsi))/sqrt(norm2(chi))
-		      << "  n_count = " << n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << endl;
 	}
 	break;
 
-      case REL_GMRESR_CG_INVERTER:
+	case REL_GMRESR_CG_INVERTER:
 	{
       
 	  LatticeFermion tmp= psi;
@@ -309,7 +309,7 @@ namespace Chroma
 	  Handle< LinearOperator<T> > M(S_f->linOp(state));
 
 	  (*M)(tmp,chi,MINUS);
-	  InvRelGMRESR_CG(*MM_prec,*MM, tmp, psi, invParam.RsdCG, invParam.RsdCGPrec, invParam.MaxCG, invParam.MaxCGPrec, n_count);
+	  InvRelGMRESR_CG(*MM_prec,*MM, tmp, psi, invParam.RsdCG, invParam.RsdCGPrec, invParam.MaxCG, invParam.MaxCGPrec, res.n_count);
 	
    
 
@@ -318,31 +318,41 @@ namespace Chroma
 	  Mpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = "
 		      << sqrt(norm2(Mpsi)) / sqrt(norm2(chi))
-		      << "  n_count = " << n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << endl;
 
 
 	}
 	break;
 
-      default:
-	QDP_error_exit("Zolotarev4DFermActBj::qprop Solver Type not implemented\n");
-	break;
-      };
+	default:
+	  QDP_error_exit("Zolotarev4DFermActBj::qprop Solver Type not implemented\n");
+	  break;
+	};
 
-      if ( n_count == invParam.MaxCG ) { 
-	QDP_error_exit("Zolotarev4DFermAct::qprop: No convergence in solver: n_count = %d\n", n_count);
-      }
+	if ( res.n_count == invParam.MaxCG ) { 
+	  QDP_error_exit("Zolotarev4DFermAct::qprop: No convergence in solver: n_count = %d\n", res.n_count);
+	}
 
-      // Normalize and remove contact term 
-      Real ftmp = Real(1) / ( Real(1) - mass );
+	// Compute residual
+	{
+	  Handle< LinearOperator<T> > M(S_f->linOp(state));
+    
+	  T  r;
+	  (*M)(r, psi, PLUS);
+	  r -= chi;
+	  res.resid = sqrt(norm2(r));
+	}
+
+	// Normalize and remove contact term 
+	Real ftmp = Real(1) / ( Real(1) - mass );
   
-      psi -= chi;
-      psi *= ftmp;
+	psi -= chi;
+	psi *= ftmp;
 
-      END_CODE();
+	END_CODE();
 
-      return n_count;
-    }
+	return res;
+      }
 
   private:
     // Hide default constructor
@@ -444,463 +454,463 @@ namespace Chroma
     switch( invParam.invType ) {
 
     case CG_INVERTER: 
-      {
-	// This is M_scaled = 2 D(0). 
-	// the fact that D has zero masss is enforced earlier 
-	//
-	Handle< LinearOperator<T> > 
-	  M_scaled(new lopscl<T, Real>( linOp(state), Real(2) ) );
+    {
+      // This is M_scaled = 2 D(0). 
+      // the fact that D has zero masss is enforced earlier 
+      //
+      Handle< LinearOperator<T> > 
+	M_scaled(new lopscl<T, Real>( linOp(state), Real(2) ) );
 
-	Chirality ischiral;
-	LinearOperator<T>* MdagMPtr;
-	multi1d<Real> shifted_masses(n_mass);
+      Chirality ischiral;
+      LinearOperator<T>* MdagMPtr;
+      multi1d<Real> shifted_masses(n_mass);
     
+      for(int i = 0; i < n_mass; i++) { 
+	shifted_masses[i] = ( Real(1) + masses[i] )/( Real(1) - masses[i] );
+	shifted_masses[i] += ( Real(1) / shifted_masses[i] );
+	shifted_masses[i] -= Real(2);
+      }
+
+      
+      // This is icky. I have to new and delete, 
+      // and I can't drop in a handle as I
+      //    a) Can't declare variables in a case statement
+      //       in case it jumps.
+      // 
+      // Hence I have to deal directly with the f***ing pointer
+      // using new and delete.
+      //
+      //
+      // MdagMPtr = 4 D^{dag}(0) D(0)
+      //
+      // The Zero is enforced elsewhere
+      ischiral = isChiralVector(chi);
+      if( ischiral == CH_NONE || ( isChiral() == false ) ) {
+
+	// I have one scaled by 2. The MdagM fixes up the scale
+	// factor of 4. I don't need to recompute coeffs etc here.
+	//
+      
+	MdagMPtr = new MdagMLinOp<T>(M_scaled);
+      }
+      else { 
+	// Special lovddag version
+	MdagMPtr = new lopscl<T, Real> ( lMdagM( state, ischiral ), Real(4) );
+      }
+      
+      // Do the solve
+      //
+      // This really solves with Kerel:
+      //
+      // (1/(1-m^2)) 4 D(m)^{dag} D(m)
+      //  
+      //  =  4 D(0)^{dag} D(0) + shift
+      //
+      // with shift = (1+m)/(1-m) + (1-m)/(1+m) - 2
+      // 
+      //
+      // result of  solution is:
+      //
+      // psi = [ (1 - m^2 ) / 4 ] [ D^{dag}(m) D(m) ]^{-1} chi
+      //
+      //     = [ ( 1 - m^2 ) / 2 ] (2 D^{dag}(m))^{-1} D(m)^{-1} chi
+      //
+      //     = [ ( 1 - m^2 ) / 2 ] ( 2 D(m))^{-1} D^{-dag}(m) chi
+      MInvCG(*MdagMPtr, chi, psi, shifted_masses, invParam.RsdCG, invParam.MaxCG, n_count);
+
+      // Delete MdagMPtr. Do it right away before I forget.
+      delete MdagMPtr;
+
+      if ( n_count == invParam.MaxCG ) {
+	QDP_error_exit("no convergence in the inverter", n_count);    
+      }
+      
+      // Now make the solution(s)
+      switch(n_soln) { 
+      case 4:
+
+
+	// Compensate for the  4/(1-m^2) factor
+
 	for(int i = 0; i < n_mass; i++) { 
-	  shifted_masses[i] = ( Real(1) + masses[i] )/( Real(1) - masses[i] );
-	  shifted_masses[i] += ( Real(1) / shifted_masses[i] );
-	  shifted_masses[i] -= Real(2);
+	  psi[i] *= Real(4) / ( Real(1) - masses[i]*masses[i] );
 	}
-
-      
-	// This is icky. I have to new and delete, 
-	// and I can't drop in a handle as I
-	//    a) Can't declare variables in a case statement
-	//       in case it jumps.
-	// 
-	// Hence I have to deal directly with the f***ing pointer
-	// using new and delete.
-	//
-	//
-	// MdagMPtr = 4 D^{dag}(0) D(0)
-	//
-	// The Zero is enforced elsewhere
-	ischiral = isChiralVector(chi);
-	if( ischiral == CH_NONE || ( isChiral() == false ) ) {
-
-	  // I have one scaled by 2. The MdagM fixes up the scale
-	  // factor of 4. I don't need to recompute coeffs etc here.
-	  //
-      
-	  MdagMPtr = new MdagMLinOp<T>(M_scaled);
-	}
-	else { 
-	  // Special lovddag version
-	  MdagMPtr = new lopscl<T, Real> ( lMdagM( state, ischiral ), Real(4) );
-	}
-      
-	// Do the solve
-	//
-	// This really solves with Kerel:
-	//
-	// (1/(1-m^2)) 4 D(m)^{dag} D(m)
-	//  
-	//  =  4 D(0)^{dag} D(0) + shift
-	//
-	// with shift = (1+m)/(1-m) + (1-m)/(1+m) - 2
-	// 
-	//
-	// result of  solution is:
-	//
-	// psi = [ (1 - m^2 ) / 4 ] [ D^{dag}(m) D(m) ]^{-1} chi
-	//
-	//     = [ ( 1 - m^2 ) / 2 ] (2 D^{dag}(m))^{-1} D(m)^{-1} chi
-	//
-	//     = [ ( 1 - m^2 ) / 2 ] ( 2 D(m))^{-1} D^{-dag}(m) chi
-	MInvCG(*MdagMPtr, chi, psi, shifted_masses, invParam.RsdCG, invParam.MaxCG, n_count);
-
-	// Delete MdagMPtr. Do it right away before I forget.
-	delete MdagMPtr;
-
-	if ( n_count == invParam.MaxCG ) {
-	  QDP_error_exit("no convergence in the inverter", n_count);    
-	}
-      
-	// Now make the solution(s)
-	switch(n_soln) { 
-	case 4:
-
-
-	  // Compensate for the  4/(1-m^2) factor
-
-	  for(int i = 0; i < n_mass; i++) { 
-	    psi[i] *= Real(4) / ( Real(1) - masses[i]*masses[i] );
-	  }
-	  break;
+	break;
 	
-	case 3:
-	  // Copy ofver the solutions of D^{-1} for solutions to D_dag^{-1}
-	  for( int i = 0 ; i < n_mass; i++) {
-	    psi[n_mass + i] = psi[i];
-	  }
-	  // Fall through to the case below:
+      case 3:
+	// Copy ofver the solutions of D^{-1} for solutions to D_dag^{-1}
+	for( int i = 0 ; i < n_mass; i++) {
+	  psi[n_mass + i] = psi[i];
+	}
+	// Fall through to the case below:
 
-	case 1:
-	case 2:
-	  for(int iset=0; iset < nsets; iset++) {
-	    for(int i=0; i < n_mass; i++) {
-	      int j = i+iset*n_mass;
-	      T tmp1;
+      case 1:
+      case 2:
+	for(int iset=0; iset < nsets; iset++) {
+	  for(int i=0; i < n_mass; i++) {
+	    int j = i+iset*n_mass;
+	    T tmp1;
 	    	    
-	      // Need to multiply:
-	      //
-	      //  (2/(1-m^2)) (2D(m))  or  (2/(1-m^2)) (2D^{dag}(m))
-	      //
-	      //  as appropriate. D(m) = m + (1 - m) D(0)
-	      //  
-	      // so  2D(m) = 2m + (1-m) 2D(0)
-	      //           = [1+m-(1-m)] + (1-m) 2D(0)
-	      //
-	      // and 2/(1-m^2) = 2/((1+m)(1-m)
-	      //
-	      // finally: 
-	      //
-	      //  (2/(1-m^2)) (2D(m))  
-	      //  = 2/(1+m) * [ (1+m)/(1-m) - 1 + 2D(0) ]
-	      //  = 2/(1+m) * [ {(1+m)/(1-m) - 1} + M_scaled ]
-	      //
-	      //  
-	      (*M_scaled)(tmp1, psi[j], isign_set[iset]);
+	    // Need to multiply:
+	    //
+	    //  (2/(1-m^2)) (2D(m))  or  (2/(1-m^2)) (2D^{dag}(m))
+	    //
+	    //  as appropriate. D(m) = m + (1 - m) D(0)
+	    //  
+	    // so  2D(m) = 2m + (1-m) 2D(0)
+	    //           = [1+m-(1-m)] + (1-m) 2D(0)
+	    //
+	    // and 2/(1-m^2) = 2/((1+m)(1-m)
+	    //
+	    // finally: 
+	    //
+	    //  (2/(1-m^2)) (2D(m))  
+	    //  = 2/(1+m) * [ (1+m)/(1-m) - 1 + 2D(0) ]
+	    //  = 2/(1+m) * [ {(1+m)/(1-m) - 1} + M_scaled ]
+	    //
+	    //  
+	    (*M_scaled)(tmp1, psi[j], isign_set[iset]);
 	    
-	      ftmp = (Real(1) + masses[i])/(Real(1) - masses[i]) - Real(1);
+	    ftmp = (Real(1) + masses[i])/(Real(1) - masses[i]) - Real(1);
 	
-	      tmp1 += ftmp*psi[j];
+	    tmp1 += ftmp*psi[j];
 
-	      tmp1 *= Real(2)/(Real(1) + masses[i]);
+	    tmp1 *= Real(2)/(Real(1) + masses[i]);
 	    
 	    
-	      // Subtract off contact term 
-	      psi[j] = tmp1 - chi;
+	    // Subtract off contact term 
+	    psi[j] = tmp1 - chi;
 
-	      // overall noramalisation 
-	      ftmp = Real(1) / ( Real(1) - masses[i] );
-	      psi[j] *= ftmp;
+	    // overall noramalisation 
+	    ftmp = Real(1) / ( Real(1) - masses[i] );
+	    psi[j] *= ftmp;
 	    
-	    }
 	  }
-	  break;
-	default:
-	  QDP_error_exit("This value of n_soln is not known about %d\n", n_soln);
-	  break;
-	}  // End switch over n_soln;
-      }    
-      break; // End of CG case
+	}
+	break;
+      default:
+	QDP_error_exit("This value of n_soln is not known about %d\n", n_soln);
+	break;
+      }  // End switch over n_soln;
+    }    
+    break; // End of CG case
 
     case REL_CG_INVERTER: 
-      {
-	// This is M_scaled = 2 D(0). 
-	// the fact that D has zero masss is enforced earlier 
-	//
-	Handle< LinearOperator<T> > 
-	  // This is a really ugly construction but should work
-	  M_scaled(new approx_lopscl<T, Real>(dynamic_cast<LinearOperator<T>* >(linOp(state)),Real(2) ) );
+    {
+      // This is M_scaled = 2 D(0). 
+      // the fact that D has zero masss is enforced earlier 
+      //
+      Handle< LinearOperator<T> > 
+	// This is a really ugly construction but should work
+	M_scaled(new approx_lopscl<T, Real>(dynamic_cast<LinearOperator<T>* >(linOp(state)),Real(2) ) );
 
-	Chirality ischiral;
-	LinearOperator<T>* MdagMPtr;
-	multi1d<Real> shifted_masses(n_mass);
+      Chirality ischiral;
+      LinearOperator<T>* MdagMPtr;
+      multi1d<Real> shifted_masses(n_mass);
+
+      for(int i = 0; i < n_mass; i++) { 
+	shifted_masses[i] = ( Real(1) + masses[i] )/( Real(1) - masses[i] );
+	shifted_masses[i] += ( Real(1) / shifted_masses[i] );
+	shifted_masses[i] -= Real(2);
+      }
+
+      
+      // This is icky. I have to new and delete, 
+      // and I can't drop in a handle as I
+      //    a) Can't declare variables in a case statement
+      //       in case it jumps.
+      // 
+      // Hence I have to deal directly with the f***ing pointer
+      // using new and delete.
+      //
+      //
+      // MdagMPtr = 4 D^{dag}(0) D(0)
+      //
+      // The Zero is enforced elsewhere
+      ischiral = isChiralVector(chi);
+      if( ischiral == CH_NONE || ( isChiral() == false ) ) {
+
+	// I have one scaled by 2. The MdagM fixes up the scale
+	// factor of 4. I don't need to recompute coeffs etc here.
+	//      
+	MdagMPtr = new approx_lmdagm<T>(M_scaled);
+      }
+      else { 
+	// Special lovddag version
+	// This is yet another ugly cast.
+	MdagMPtr = new approx_lopscl<T, Real> ( dynamic_cast<LinearOperator<T>* >(lMdagM( state, ischiral )), Real(4) );
+      }
+      
+      // Do the solve
+      //
+      // This really solves with Kerel:
+      //
+      // (1/(1-m^2)) 4 D(m)^{dag} D(m)
+      //  
+      //  =  4 D(0)^{dag} D(0) + shift
+      //
+      // with shift = (1+m)/(1-m) + (1-m)/(1+m) - 2
+      // 
+      //
+      // result of  solution is:
+      //
+      // psi = [ (1 - m^2 ) / 4 ] [ D^{dag}(m) D(m) ]^{-1} chi
+      //
+      //     = [ ( 1 - m^2 ) / 2 ] (2 D^{dag}(m))^{-1} D(m)^{-1} chi
+      //
+      //     = [ ( 1 - m^2 ) / 2 ] ( 2 D(m))^{-1} D^{-dag}(m) chi
+
+      
+      MInvRelCG(*MdagMPtr, chi, psi, shifted_masses, invParam.RsdCG, invParam.MaxCG, n_count);
+
+      // Delete MdagMPtr. Do it right away before I forget.
+      delete MdagMPtr;
+
+      if ( n_count == invParam.MaxCG ) {
+	QDP_error_exit("no convergence in the inverter", n_count);    
+      }
+      
+      // Now make the solution(s)
+      switch(n_soln) { 
+      case 4:
+
+
+	// Compensate for the  4/(1-m^2) factor
 
 	for(int i = 0; i < n_mass; i++) { 
-	  shifted_masses[i] = ( Real(1) + masses[i] )/( Real(1) - masses[i] );
-	  shifted_masses[i] += ( Real(1) / shifted_masses[i] );
-	  shifted_masses[i] -= Real(2);
+	  psi[i] *= Real(4) / ( Real(1) - masses[i]*masses[i] );
 	}
-
-      
-	// This is icky. I have to new and delete, 
-	// and I can't drop in a handle as I
-	//    a) Can't declare variables in a case statement
-	//       in case it jumps.
-	// 
-	// Hence I have to deal directly with the f***ing pointer
-	// using new and delete.
-	//
-	//
-	// MdagMPtr = 4 D^{dag}(0) D(0)
-	//
-	// The Zero is enforced elsewhere
-	ischiral = isChiralVector(chi);
-	if( ischiral == CH_NONE || ( isChiral() == false ) ) {
-
-	  // I have one scaled by 2. The MdagM fixes up the scale
-	  // factor of 4. I don't need to recompute coeffs etc here.
-	  //      
-	  MdagMPtr = new approx_lmdagm<T>(M_scaled);
-	}
-	else { 
-	  // Special lovddag version
-	  // This is yet another ugly cast.
-	  MdagMPtr = new approx_lopscl<T, Real> ( dynamic_cast<LinearOperator<T>* >(lMdagM( state, ischiral )), Real(4) );
-	}
-      
-	// Do the solve
-	//
-	// This really solves with Kerel:
-	//
-	// (1/(1-m^2)) 4 D(m)^{dag} D(m)
-	//  
-	//  =  4 D(0)^{dag} D(0) + shift
-	//
-	// with shift = (1+m)/(1-m) + (1-m)/(1+m) - 2
-	// 
-	//
-	// result of  solution is:
-	//
-	// psi = [ (1 - m^2 ) / 4 ] [ D^{dag}(m) D(m) ]^{-1} chi
-	//
-	//     = [ ( 1 - m^2 ) / 2 ] (2 D^{dag}(m))^{-1} D(m)^{-1} chi
-	//
-	//     = [ ( 1 - m^2 ) / 2 ] ( 2 D(m))^{-1} D^{-dag}(m) chi
-
-      
-	MInvRelCG(*MdagMPtr, chi, psi, shifted_masses, invParam.RsdCG, invParam.MaxCG, n_count);
-
-	// Delete MdagMPtr. Do it right away before I forget.
-	delete MdagMPtr;
-
-	if ( n_count == invParam.MaxCG ) {
-	  QDP_error_exit("no convergence in the inverter", n_count);    
-	}
-      
-	// Now make the solution(s)
-	switch(n_soln) { 
-	case 4:
-
-
-	  // Compensate for the  4/(1-m^2) factor
-
-	  for(int i = 0; i < n_mass; i++) { 
-	    psi[i] *= Real(4) / ( Real(1) - masses[i]*masses[i] );
-	  }
-	  break;
+	break;
 	
-	case 3:
-	  // Copy ofver the solutions of D^{-1} for solutions to D_dag^{-1}
-	  for( int i = 0 ; i < n_mass; i++) {
-	    psi[n_mass + i] = psi[i];
-	  }
-	  // Fall through to the case below:
+      case 3:
+	// Copy ofver the solutions of D^{-1} for solutions to D_dag^{-1}
+	for( int i = 0 ; i < n_mass; i++) {
+	  psi[n_mass + i] = psi[i];
+	}
+	// Fall through to the case below:
 
-	case 1:
-	case 2:
-	  for(int iset=0; iset < nsets; iset++) {
-	    for(int i=0; i < n_mass; i++) {
-	      int j = i+iset*n_mass;
-	      T tmp1;
+      case 1:
+      case 2:
+	for(int iset=0; iset < nsets; iset++) {
+	  for(int i=0; i < n_mass; i++) {
+	    int j = i+iset*n_mass;
+	    T tmp1;
 	    	    
-	      // Need to multiply:
-	      //
-	      //  (2/(1-m^2)) (2D(m))  or  (2/(1-m^2)) (2D^{dag}(m))
-	      //
-	      //  as appropriate. D(m) = m + (1 - m) D(0)
-	      //  
-	      // so  2D(m) = 2m + (1-m) 2D(0)
-	      //           = [1+m-(1-m)] + (1-m) 2D(0)
-	      //
-	      // and 2/(1-m^2) = 2/((1+m)(1-m)
-	      //
-	      // finally: 
-	      //
-	      //  (2/(1-m^2)) (2D(m))  
-	      //  = 2/(1+m) * [ (1+m)/(1-m) - 1 + 2D(0) ]
-	      //  = 2/(1+m) * [ {(1+m)/(1-m) - 1} + M_scaled ]
-	      //
-	      //  
-	      (*M_scaled)(tmp1, psi[j], isign_set[iset]);
+	    // Need to multiply:
+	    //
+	    //  (2/(1-m^2)) (2D(m))  or  (2/(1-m^2)) (2D^{dag}(m))
+	    //
+	    //  as appropriate. D(m) = m + (1 - m) D(0)
+	    //  
+	    // so  2D(m) = 2m + (1-m) 2D(0)
+	    //           = [1+m-(1-m)] + (1-m) 2D(0)
+	    //
+	    // and 2/(1-m^2) = 2/((1+m)(1-m)
+	    //
+	    // finally: 
+	    //
+	    //  (2/(1-m^2)) (2D(m))  
+	    //  = 2/(1+m) * [ (1+m)/(1-m) - 1 + 2D(0) ]
+	    //  = 2/(1+m) * [ {(1+m)/(1-m) - 1} + M_scaled ]
+	    //
+	    //  
+	    (*M_scaled)(tmp1, psi[j], isign_set[iset]);
 	    
-	      ftmp = (Real(1) + masses[i])/(Real(1) - masses[i]) - Real(1);
+	    ftmp = (Real(1) + masses[i])/(Real(1) - masses[i]) - Real(1);
 	
-	      tmp1 += ftmp*psi[j];
+	    tmp1 += ftmp*psi[j];
 
-	      tmp1 *= Real(2)/(Real(1) + masses[i]);
+	    tmp1 *= Real(2)/(Real(1) + masses[i]);
 	    
 	    
-	      // Subtract off contact term 
-	      psi[j] = tmp1 - chi;
+	    // Subtract off contact term 
+	    psi[j] = tmp1 - chi;
 
-	      // overall noramalisation 
-	      ftmp = Real(1) / ( Real(1) - masses[i] );
-	      psi[j] *= ftmp;
+	    // overall noramalisation 
+	    ftmp = Real(1) / ( Real(1) - masses[i] );
+	    psi[j] *= ftmp;
 	    
-	    }
 	  }
-	  break;
-	default:
-	  QDP_error_exit("This value of n_soln is not known about %d\n", n_soln);
-	  break;
-	}  // End switch over n_soln;
-      }    
-      break; // End of CG case
+	}
+	break;
+      default:
+	QDP_error_exit("This value of n_soln is not known about %d\n", n_soln);
+	break;
+      }  // End switch over n_soln;
+    }    
+    break; // End of CG case
 
     case SUMR_INVERTER:
-      {
+    {
 
-	/* Only do psi = D^(-1) chi */
-	if (n_soln != 1) {
-	  QDP_error_exit("SUMMR inverter does not solve for D_dag");
-	}
+      /* Only do psi = D^(-1) chi */
+      if (n_soln != 1) {
+	QDP_error_exit("SUMMR inverter does not solve for D_dag");
+      }
 
-	Handle< LinearOperator<T> > U = lgamma5epsH(state);
+      Handle< LinearOperator<T> > U = lgamma5epsH(state);
 
-	multi1d<Complex> shifted_masses(n_mass);
+      multi1d<Complex> shifted_masses(n_mass);
 
-	// This is the code from SZIN. I checked the shifts . Should work ok
-	for(int i=0; i < n_mass; ++i) {
-	  shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] );
-	}
+      // This is the code from SZIN. I checked the shifts . Should work ok
+      for(int i=0; i < n_mass; ++i) {
+	shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] );
+      }
       
-	// For the case of the overlap rho, is always 1
-	multi1d<Real> rho(n_mass);
-	rho = Real(1);
+      // For the case of the overlap rho, is always 1
+      multi1d<Real> rho(n_mass);
+      rho = Real(1);
 
-	multi1d<Real> scaledRsdCG(n_mass);
-	for(int i=0; i < n_mass; i++) {
-	  scaledRsdCG[i] = invParam.RsdCG[i]*(Real(1) - masses[i])/Real(2);
-	}
+      multi1d<Real> scaledRsdCG(n_mass);
+      for(int i=0; i < n_mass; i++) {
+	scaledRsdCG[i] = invParam.RsdCG[i]*(Real(1) - masses[i])/Real(2);
+      }
 
-	// Do the solve
-	MInvSUMR(*U, chi, psi, shifted_masses, rho, scaledRsdCG, invParam.MaxCG,n_count);
+      // Do the solve
+      MInvSUMR(*U, chi, psi, shifted_masses, rho, scaledRsdCG, invParam.MaxCG,n_count);
 
 #if 1 
-	for(int s=0; s < n_mass; s++) { 
+      for(int s=0; s < n_mass; s++) { 
 
-	  // Check back solutions
-	  T r;
-	  (*U)(r, psi[s], PLUS);
-	  r *= rho[s];
-	  r += shifted_masses[s]*psi[s];
+	// Check back solutions
+	T r;
+	(*U)(r, psi[s], PLUS);
+	r *= rho[s];
+	r += shifted_masses[s]*psi[s];
 
 
-	  r -= chi;
-	  Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
-	  QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << invParam.RsdCG[s] << endl;
+	r -= chi;
+	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
+	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << invParam.RsdCG[s] << endl;
 	
-	}
+      }
 #endif
       
-	/* psi <- (D^(-1) - 1) chi */
-	for(int i=0; i < n_mass; ++i) {
+      /* psi <- (D^(-1) - 1) chi */
+      for(int i=0; i < n_mass; ++i) {
 	
-	  // Go back to (1/2)( 1 + mu + (1 - mu) normalisation
-	  ftmp = Real(2) / ( Real(1) - masses[i] );
-	  psi[i] *= ftmp;
+	// Go back to (1/2)( 1 + mu + (1 - mu) normalisation
+	ftmp = Real(2) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
 	
-	  // Remove conact term
-	  psi[i] -= chi;
+	// Remove conact term
+	psi[i] -= chi;
 	
-	  // overall noramalisation 
-	  ftmp = Real(1) / ( Real(1) - masses[i] );
-	  psi[i] *= ftmp;
+	// overall noramalisation 
+	ftmp = Real(1) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
 	
-	}
       }
-      break; // End of MR inverter case
+    }
+    break; // End of MR inverter case
     case REL_SUMR_INVERTER:
-      {
+    {
 
-	/* Only do psi = D^(-1) chi */
-	if (n_soln != 1) {
-	  QDP_error_exit("SUMMR inverter does not solve for D_dag");
-	}
+      /* Only do psi = D^(-1) chi */
+      if (n_soln != 1) {
+	QDP_error_exit("SUMMR inverter does not solve for D_dag");
+      }
 
-	Handle< LinearOperator<T> > U(lgamma5epsH(state));
+      Handle< LinearOperator<T> > U(lgamma5epsH(state));
 
-	multi1d<Complex> shifted_masses(n_mass);
+      multi1d<Complex> shifted_masses(n_mass);
 
-	// This is the code from SZIN. I checked the shifts . Should work ok
-	for(int i=0; i < n_mass; ++i) {
-	  shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] );
-	}
+      // This is the code from SZIN. I checked the shifts . Should work ok
+      for(int i=0; i < n_mass; ++i) {
+	shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] );
+      }
       
-	// For the case of the overlap rho, is always 1
-	multi1d<Real> rho(n_mass);
-	rho = Real(1);
+      // For the case of the overlap rho, is always 1
+      multi1d<Real> rho(n_mass);
+      rho = Real(1);
 
-	// We are solving with a scaled operator 
-	//  shifted_masses[i] + gamma_5 eps
-	//
-	// which is the original scaled by 2/(1 - m)
-	// 
-	// So I should rescale each desired RsdCG by (1-m)/2
-	// where m is the smallest mass.
-	multi1d<Real> scaledRsdCG(n_mass);
-	for(int i=0; i < n_mass; i++) {
-	  scaledRsdCG[i] = invParam.RsdCG[i]*(1-masses[i])/Real(2);
-	}
+      // We are solving with a scaled operator 
+      //  shifted_masses[i] + gamma_5 eps
+      //
+      // which is the original scaled by 2/(1 - m)
+      // 
+      // So I should rescale each desired RsdCG by (1-m)/2
+      // where m is the smallest mass.
+      multi1d<Real> scaledRsdCG(n_mass);
+      for(int i=0; i < n_mass; i++) {
+	scaledRsdCG[i] = invParam.RsdCG[i]*(1-masses[i])/Real(2);
+      }
 
-	// Do the solve
-	MInvRelSUMR(*U, chi, psi, shifted_masses, rho, scaledRsdCG, invParam.MaxCG,n_count);
+      // Do the solve
+      MInvRelSUMR(*U, chi, psi, shifted_masses, rho, scaledRsdCG, invParam.MaxCG,n_count);
  
 #if 1 
-	for(int s=0; s < n_mass; s++) { 
+      for(int s=0; s < n_mass; s++) { 
 
-	  // Check back solutions
-	  T r;
-	  (*U)(r, psi[s], PLUS);
-	  r *= rho[s];
-	  r += shifted_masses[s]*psi[s];
+	// Check back solutions
+	T r;
+	(*U)(r, psi[s], PLUS);
+	r *= rho[s];
+	r += shifted_masses[s]*psi[s];
 
-	  r -= chi;
-	  Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
-	  QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << invParam.RsdCG[s] << endl;
+	r -= chi;
+	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
+	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << invParam.RsdCG[s] << endl;
 	
-	}
+      }
 #endif
 
 
-	/* psi <- (D^(-1) - 1) chi */
-	for(int i=0; i < n_mass; ++i) {
+      /* psi <- (D^(-1) - 1) chi */
+      for(int i=0; i < n_mass; ++i) {
 	
-	  // Go back to (1/2)( 1 + mu + (1 - mu) normalisation
-	  ftmp = Real(2) / ( Real(1) - masses[i] );
-	  psi[i] *= ftmp;
+	// Go back to (1/2)( 1 + mu + (1 - mu) normalisation
+	ftmp = Real(2) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
 	
-	  // Remove conact term
-	  psi[i] -= chi;
+	// Remove conact term
+	psi[i] -= chi;
 	
-	  // overall noramalisation 
-	  ftmp = Real(1) / ( Real(1) - masses[i] );
-	  psi[i] *= ftmp;
+	// overall noramalisation 
+	ftmp = Real(1) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
 	
-	}
       }
-      break; // End of MR inverter case
+    }
+    break; // End of MR inverter case
 #if 0
     case MR_INVERTER:
-      {
+    {
 
-	/* psi = D^(-1) chi */
-	if (n_soln != 1) {
-	  QDP_error_exit("MR inverter does not solve for D_dag");
-	}
-
-	// This is the code from SZIN. I checked the shifts . Should work ok
-	multi1d<Real> shifted_masses(n_mass);
-	for(int i=0; i < n_mass; ++i) {
-	  shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] ) - 1;
-	}
-      
-	// Do the solve
-	MInvMR (*M_scaled, chi, psi, shifted_masses, invParam.RsdCG, ncg_had);
-	if ( n_count == invParam.MaxCG ) {
-	  QDP_error_exit("no convergence in the inverter", n_count);    
-	}
-      
-	/* psi <- (D^(-1) - 1) chi */
-	for(i=0; i < n_mass; ++i) {
-	
-	  // Go back to (1/2)( 1 + mu + (1 - mu) normalisation
-	  ftmp = Real(2) / ( Real(1) - masses[i] );
-	  psi[i] *= ftmp;
-	
-	  // Remove conact term
-	  psi[i] -= chi;
-	
-	  // overall noramalisation 
-	  ftmp = Real(1) / ( Real(1) - masses[i] );
-	  psi[i] *= ftmp;
-	
-	}
+      /* psi = D^(-1) chi */
+      if (n_soln != 1) {
+	QDP_error_exit("MR inverter does not solve for D_dag");
       }
-      break; // End of MR inverter case
+
+      // This is the code from SZIN. I checked the shifts . Should work ok
+      multi1d<Real> shifted_masses(n_mass);
+      for(int i=0; i < n_mass; ++i) {
+	shifted_masses[i] = (Real(1) + masses[i]) / ( Real(1) - masses[i] ) - 1;
+      }
+      
+      // Do the solve
+      MInvMR (*M_scaled, chi, psi, shifted_masses, invParam.RsdCG, ncg_had);
+      if ( n_count == invParam.MaxCG ) {
+	QDP_error_exit("no convergence in the inverter", n_count);    
+      }
+      
+      /* psi <- (D^(-1) - 1) chi */
+      for(i=0; i < n_mass; ++i) {
+	
+	// Go back to (1/2)( 1 + mu + (1 - mu) normalisation
+	ftmp = Real(2) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
+	
+	// Remove conact term
+	psi[i] -= chi;
+	
+	// overall noramalisation 
+	ftmp = Real(1) / ( Real(1) - masses[i] );
+	psi[i] *= ftmp;
+	
+      }
+    }
+    break; // End of MR inverter case
 #endif
 
 
@@ -912,6 +922,6 @@ namespace Chroma
     END_CODE();
   }
   
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
   

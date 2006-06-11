@@ -1,4 +1,4 @@
-// $Id: dwf_fermact_qprop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: dwf_fermact_qprop_array_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Base class for unprec and even-odd preconditioned DWF qprop
  */
@@ -28,9 +28,10 @@ namespace Chroma
      * \param m_q_       quark mass ( Read )
      */
     DWFQprop(Handle< SystemSolverArray<T> > qpropT_,
+	     Handle< LinearOperatorArray<T> > A_,
 	     Handle< LinearOperatorArray<T> > PV_,
 	     const Real& m_q_) : 
-      qpropT(qpropT_), PV(PV_), m_q(m_q_) {}
+      qpropT(qpropT_), A(A_), PV(PV_), m_q(m_q_) {}
 
     //! Destructor is automatic
     ~DWFQprop() {}
@@ -44,11 +45,11 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (T& psi, const T& chi) const
+    SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
       START_CODE();
 
-      int n_count;
+      SystemSolverResults_t res;
       const int N5 = PV->size();
   
       // Initialize the 5D fields
@@ -72,7 +73,15 @@ namespace Chroma
       psi5[0] = psi;
 
       // Solve  D5(m_q) . psi5 = chi5
-      n_count = (*qpropT)(psi5, chi5);
+      res = (*qpropT)(psi5, chi5);
+
+      // Compute residual
+      {
+	multi1d<T>  r(N5);
+	(*A)(r, psi5, PLUS);
+	r -= chi5;
+	res.resid = sqrt(norm2(r));
+      }
 
       // Overall normalization
       Real ftmp1 = Real(1) / Real(1 - m_q);
@@ -85,7 +94,7 @@ namespace Chroma
 
       END_CODE();
 
-      return n_count;
+      return res;
     }
 
   private:
@@ -93,6 +102,7 @@ namespace Chroma
     DWFQprop() {}
 
     Handle< SystemSolverArray<T> > qpropT;
+    Handle< LinearOperatorArray<T> > A;
     Handle< LinearOperatorArray<T> > PV;
     const Real m_q;
   };
@@ -108,6 +118,7 @@ namespace Chroma
 						   const InvertParam_t& invParam) const
   {
     return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(qpropT(state,invParam)), 
+			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,getQuarkMass())),
 			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,Real(1))),
 			    getQuarkMass());
   }
@@ -121,6 +132,7 @@ namespace Chroma
 					      const InvertParam_t& invParam) const
   { 
     return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(qpropT(state,invParam)), 
+			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,getQuarkMass())),
 			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,Real(1))),
 			    getQuarkMass());
   }

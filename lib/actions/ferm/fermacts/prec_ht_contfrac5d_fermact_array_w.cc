@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 3.1 2006-06-11 06:30:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -401,12 +401,12 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (T& psi, const T& chi) const
+    SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
       START_CODE();
     
+      SystemSolverResults_t res;
       const int N5 = A->size();
-      int n_count;
     
       int G5 = Ns*Ns - 1;
       
@@ -449,7 +449,7 @@ namespace Chroma
 	(*A)(tmp5_1, chi5, MINUS);
 
 	// Solve M^{+}M psi = M^{+} chi
-	InvCG2(*A, tmp5_1, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
+	InvCG2(*A, tmp5_1, psi5, invParam.RsdCG, invParam.MaxCG, res.n_count);
         
 	
 	// psi[N5-1]_odd now holds the desired piece.
@@ -496,9 +496,21 @@ namespace Chroma
 	QDP_error_exit("Unknown inverter type", invParam.invType);
       }
   
-      if ( n_count == invParam.MaxCG )
-	QDP_error_exit("no convergence in the inverter", n_count);
+      if ( res.n_count == invParam.MaxCG )
+	QDP_error_exit("no convergence in the inverter", res.n_count);
     
+#if 0
+      // Compute residual
+      {
+	multi1d<T>  r(N5);
+	A->unprecLinOp(r, psi5, PLUS);
+	r -= chi5;
+	res.resid = sqrt(norm2(r));
+      }
+#else
+      res.resid = zero;
+#endif
+
       // Solution now lives in chi5
       
       // Multiply back in factor 2/(1-m) to return to 
@@ -515,7 +527,7 @@ namespace Chroma
 
       END_CODE();
 
-      return n_count;
+      return res;
     }
 
   private:

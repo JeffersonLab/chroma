@@ -24,7 +24,7 @@
         <elem>
           <TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial>
             <S_odd_odd>
-              <n_count>3</n_count>
+              <n_count>4</n_count>
               <S_oo>94.1701</S_oo>
             </S_odd_odd>
             <S>94.1701</S>
@@ -136,7 +136,7 @@
           <monomial>1</monomial>
           <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
             <n_count>11</n_count>
-            <F_sq>0.556073</F_sq>
+            <F_sq>0.556072</F_sq>
           </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
         </elem>
       </ForcesByMonomial>
@@ -448,7 +448,7 @@
           <monomial>1</monomial>
           <TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
             <n_count>15</n_count>
-            <F_sq>0.297938</F_sq>
+            <F_sq>0.297939</F_sq>
           </TwoFlavorExactHasenbuschWilsonTypeFermMonomial>
         </elem>
       </ForcesByMonomial>

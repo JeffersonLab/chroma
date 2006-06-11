@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: qprop_io.h,v 3.1 2006-06-11 06:30:33 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -34,8 +34,6 @@ struct PropSourceConst_t
 
   int              j_decay;         /*!< decay direction */
   int              t_source;        /*!< source slice location */
-
-//  multi1d<int>     nrow;            /*!< lattice size */
 };
 
 //! Propagator source smearing header
@@ -58,22 +56,19 @@ struct PropSinkSmear_t
   std::string      sink_type;       /*!< sink type */
 
   int              j_decay;         /*!< decay direction */
-
-//  multi1d<int>     nrow;          /*!< lattice size */
 };
 
 
 //! Multiple propagator header
 struct ChromaMultiProp_t 
 { 
-  ChromaMultiProp_t();          // default constructor
-  QuarkSpinType   quarkSpinType;   // why spin components to compute
+  ChromaMultiProp_t();              /*!< default constructor */
+  QuarkSpinType   quarkSpinType;    /*!< what spin components to compute */
 
   //! String holding XML of the FermionAction section
-  std::string     fermact;
+  std::string     fermact;          /*!< fermion action */
 
-  MultiInvertParam_t   invParam;   // Inverter parameters
-//  multi1d<int>    nrow;          // lattice size
+  MultiInvertParam_t   invParam;    /*!< Inverter parameters */
  
   multi1d<Real>   MultiMasses;
 };
@@ -82,17 +77,17 @@ struct ChromaMultiProp_t
 //! Propagator header with action
 struct ChromaProp_t 
 { 
-  ChromaProp_t();               // default constructor
-  QuarkSpinType   quarkSpinType;   // why spin components to compute
+  ChromaProp_t();                   /*!< default constructor */
+  QuarkSpinType   quarkSpinType;    /*!< why spin components to compute */
 
   // String holding XML of the FermionAction section
-  std::string     fermact;
+  std::string     fermact;          /*!< fermion action */
 
-  bool            obsvP;        // measure any observables (like Z_V, or mresP) on 5D prop
+  bool            obsvP;            /*!< measure any observables (like Z_V, or mresP) on 5D prop */
+  int             numRetries;       /*!< number of calls to qprop for each source component */
   
   // String holding XML for auxiliary state information
-  InvertParam_t   invParam;     // Inverter parameters
-//  multi1d<int>    nrow;         // lattice size
+  InvertParam_t   invParam;         /*!< Inverter parameters */
 };
 
 
@@ -107,8 +102,6 @@ struct SeqSource_t
   multi1d<int>     sink_mom;        /*!< sink momentum */
   int              t_sink;          /*!< time slice of sink */
   int              j_decay;         /*!< decay direction */
-
-//  multi1d<int>     nrow;
 };
 
 
@@ -120,7 +113,6 @@ struct ChromaSeqProp_t
   std::string      seq_src;
   multi1d<int>     sink_mom;
   int              t_sink;
-//  multi1d<int>     nrow;
 };
 
 

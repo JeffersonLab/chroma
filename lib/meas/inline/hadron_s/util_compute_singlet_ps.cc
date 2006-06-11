@@ -129,21 +129,20 @@ namespace Chroma {
 
 
       // Compute the propagator for given source color/spin 
-      // int n_count;
 
       psi = zero ; 
 
       StopWatch swatch;
       swatch.start();
-      int n_count = (*qprop)(psi, q_source);
+      SystemSolverResults_t res = (*qprop)(psi, q_source);
       swatch.stop();
       double time_in_sec  = swatch.getTimeInSeconds();
-      ncg_had += n_count;
+      ncg_had += res.n_count;
       
       push(xml_out,"Qprop");
       write(xml_out, "Mass" , Mass);
       write(xml_out, "RsdCG", RsdCG);
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       write(xml_out, "time_in_sec",time_in_sec );
       pop(xml_out);
   

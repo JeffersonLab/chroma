@@ -52,9 +52,10 @@ Sink smear a prop
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
          <Kappa>0.11</Kappa>
@@ -175,7 +176,7 @@ Sink smear a prop
       <chroma>3.7.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Jun 06 12:21:22 EDT</run_date>
+    <run_date>11 Jun 06 01:33:21 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -236,7 +237,7 @@ Sink smear a prop
             <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jun 06 12:21:23 EDT</run_date>
+          <run_date>11 Jun 06 01:33:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -331,7 +332,7 @@ Sink smear a prop
             <chroma>3.7.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jun 06 12:21:23 EDT</run_date>
+          <run_date>11 Jun 06 01:33:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -342,9 +343,10 @@ Sink smear a prop
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -464,40 +466,88 @@ Sink smear a prop
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>9.14082e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>1.03567e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>8.25095e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>1.03165e-07</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>9.8873e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>8.03733e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>9.75417e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>8.32911e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.2533e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>8.26723e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>7.58458e-08</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>23</n_count>
+            <resid>8.32306e-08</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
@@ -597,9 +647,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -746,9 +797,10 @@ Sink smear a prop
           <t_source>0</t_source>
         </PropSource>
         <ForwardProp>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>

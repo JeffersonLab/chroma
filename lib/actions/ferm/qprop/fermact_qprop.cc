@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: fermact_qprop.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -46,11 +46,11 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (T& psi, const T& chi) const
+    SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
       START_CODE();
 
-      int n_count;
+      SystemSolverResults_t res;
   
       switch(invParam.invType)
       {
@@ -61,19 +61,19 @@ namespace Chroma
 	(*A)(tmp, chi, MINUS);
 	
 	/* psi = (M^dag * M)^(-1) chi */
-	InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+	InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
       }
       break;
   
 #if 0
       case MR_INVERTER:
 	/* psi = M^(-1) chi */
-	InvMR (*A, chi, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, n_count);
+	InvMR (*A, chi, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, res.n_count);
 	break;
 
       case BICG_INVERTER:
 	/* psi = M^(-1) chi */
-	InvBiCG (*A, chi, psi, invParam.RsdCG, invParam.MaxCG, n_count);
+	InvBiCG (*A, chi, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
 	break;
 #endif
   
@@ -81,12 +81,20 @@ namespace Chroma
 	QDP_error_exit("Unknown inverter type", invParam.invType);
       }
       
-      if ( n_count == invParam.MaxCG )
-	QDP_error_exit("no convergence in the inverter", n_count);
+      if ( res.n_count == invParam.MaxCG )
+	QDP_error_exit("no convergence in the inverter", res.n_count);
   
+      // Compute residual
+      {
+	T  r;
+	(*A)(r, psi, PLUS);
+	r -= chi;
+	res.resid = sqrt(norm2(r));
+      }
+
       END_CODE();
 
-      return n_count;
+      return res;
     }
 
   private:

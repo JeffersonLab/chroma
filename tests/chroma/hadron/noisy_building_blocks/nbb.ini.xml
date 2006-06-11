@@ -28,9 +28,10 @@ Calculate noisy building blocks - insertions in traces
         <Name>PROPAGATOR</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
           <FermionAction>
             <FermAct>WILSON</FermAct>
             <Kappa>0.11</Kappa>
@@ -74,6 +75,7 @@ Calculate noisy building blocks - insertions in traces
           <canonical>false</canonical>
         </Param>
         <BuildingBlocks>
+          <GaugeId>default_gauge_field</GaugeId>
           <OutFileName>nbb.dat_0.out</OutFileName>
           <FrwdPropId>nprop_0</FrwdPropId>
           <NoisySrcId>nsrc_0</NoisySrcId>
@@ -123,9 +125,10 @@ Calculate noisy building blocks - insertions in traces
         <Name>PROPAGATOR</Name>
         <Frequency>1</Frequency>
         <Param>
-          <version>9</version>
+          <version>10</version>
           <quarkSpinType>FULL</quarkSpinType>
           <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
           <FermionAction>
             <FermAct>WILSON</FermAct>
             <Kappa>0.11</Kappa>
@@ -169,6 +172,7 @@ Calculate noisy building blocks - insertions in traces
           <canonical>false</canonical>
         </Param>
         <BuildingBlocks>
+          <GaugeId>default_gauge_field</GaugeId>
           <OutFileName>nbb.dat_1.out</OutFileName>
           <FrwdPropId>nprop_1</FrwdPropId>
           <NoisySrcId>nsrc_1</NoisySrcId>

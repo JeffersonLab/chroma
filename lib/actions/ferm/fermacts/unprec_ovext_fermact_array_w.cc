@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -430,12 +430,12 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    int operator() (T& psi, const T& chi) const
+    SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
       START_CODE();
 
+      SystemSolverResults_t res;
       const int  N5 = A->size();   // array size better match
-      int n_count;
   
       int G5 = Ns*Ns - 1;
 
@@ -448,17 +448,12 @@ namespace Chroma
       switch(invParam.invType)
       {
       case CG_INVERTER: 
-
 	psi5[N5-1] = Gamma(G5)*chi;
-
-	
 	(*A)(chi5, psi5, MINUS);
-
-
 	psi5[N5-1] = psi;
 
 	// psi5 = (H_o)^(-2) chi5
-	InvCG2(*A, chi5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
+	InvCG2(*A, chi5, psi5, invParam.RsdCG, invParam.MaxCG, res.n_count);
 	break;
   
       case MR_INVERTER:
@@ -470,8 +465,18 @@ namespace Chroma
 	QDP_error_exit("Unknown inverter type", invParam.invType);
       }
       
-      if ( n_count == invParam.MaxCG )
-	QDP_error_exit("no convergence in the inverter", n_count);
+      if ( res.n_count == invParam.MaxCG )
+	QDP_error_exit("no convergence in the inverter", res.n_count);
+
+      // Compute residual
+      {
+	multi1d<T>  r(N5);
+	(*A)(r, psi5, PLUS);
+	chi5 = zero;
+	chi5[N5-1] = Gamma(G5)*chi;
+	r -= chi5;
+	res.resid = sqrt(norm2(r));
+      }
 
       // Need to multiply chi[N5-1] by (2 + a5 Dw)
       // reuse chi[0] here
@@ -493,7 +498,7 @@ namespace Chroma
 
       END_CODE();
 
-      return n_count;
+      return res;
     }
 
   private:
