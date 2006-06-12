@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.31 2006-06-11 06:31:49 edwards Exp $
+# $Id: Makefile.in,v 3.32 2006-06-12 02:04:22 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -208,7 +208,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
 	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
 	meas/smear/link_smearing_aggregate.cc \
-	meas/smear/link_smearing_factory.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
@@ -580,9 +579,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) hyp_smear3d.$(OBJEXT) \
 	laplacian.$(OBJEXT) sink_smear2.$(OBJEXT) \
 	stout_smear.$(OBJEXT) link_smearing_aggregate.$(OBJEXT) \
-	link_smearing_factory.$(OBJEXT) ape_link_smearing.$(OBJEXT) \
-	hyp_link_smearing.$(OBJEXT) no_link_smearing.$(OBJEXT) \
-	stout_link_smearing.$(OBJEXT) \
+	ape_link_smearing.$(OBJEXT) hyp_link_smearing.$(OBJEXT) \
+	no_link_smearing.$(OBJEXT) stout_link_smearing.$(OBJEXT) \
 	quark_smearing_aggregate.$(OBJEXT) no_quark_smearing.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) \
 	quark_displacement_aggregate.$(OBJEXT) \
@@ -2060,7 +2058,6 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
 	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
 	meas/smear/link_smearing_aggregate.cc \
-	meas/smear/link_smearing_factory.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
@@ -2644,7 +2641,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linear_extrap_predictor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_smearing_aggregate.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_smearing_factory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loops_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lovddag_w.Po@am__quote@
@@ -4779,20 +4775,6 @@ link_smearing_aggregate.obj: meas/smear/link_smearing_aggregate.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/link_smearing_aggregate.cc' object='link_smearing_aggregate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o link_smearing_aggregate.obj `if test -f 'meas/smear/link_smearing_aggregate.cc'; then $(CYGPATH_W) 'meas/smear/link_smearing_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/link_smearing_aggregate.cc'; fi`
-
-link_smearing_factory.o: meas/smear/link_smearing_factory.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT link_smearing_factory.o -MD -MP -MF "$(DEPDIR)/link_smearing_factory.Tpo" -c -o link_smearing_factory.o `test -f 'meas/smear/link_smearing_factory.cc' || echo '$(srcdir)/'`meas/smear/link_smearing_factory.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/link_smearing_factory.Tpo" "$(DEPDIR)/link_smearing_factory.Po"; else rm -f "$(DEPDIR)/link_smearing_factory.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/link_smearing_factory.cc' object='link_smearing_factory.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o link_smearing_factory.o `test -f 'meas/smear/link_smearing_factory.cc' || echo '$(srcdir)/'`meas/smear/link_smearing_factory.cc
-
-link_smearing_factory.obj: meas/smear/link_smearing_factory.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT link_smearing_factory.obj -MD -MP -MF "$(DEPDIR)/link_smearing_factory.Tpo" -c -o link_smearing_factory.obj `if test -f 'meas/smear/link_smearing_factory.cc'; then $(CYGPATH_W) 'meas/smear/link_smearing_factory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/link_smearing_factory.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/link_smearing_factory.Tpo" "$(DEPDIR)/link_smearing_factory.Po"; else rm -f "$(DEPDIR)/link_smearing_factory.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/link_smearing_factory.cc' object='link_smearing_factory.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o link_smearing_factory.obj `if test -f 'meas/smear/link_smearing_factory.cc'; then $(CYGPATH_W) 'meas/smear/link_smearing_factory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/link_smearing_factory.cc'; fi`
 
 ape_link_smearing.o: meas/smear/ape_link_smearing.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ape_link_smearing.o -MD -MP -MF "$(DEPDIR)/ape_link_smearing.Tpo" -c -o ape_link_smearing.o `test -f 'meas/smear/ape_link_smearing.cc' || echo '$(srcdir)/'`meas/smear/ape_link_smearing.cc; \
