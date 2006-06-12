@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_sink_smearing.h,v 3.1 2006-06-10 16:28:52 edwards Exp $
+// $Id: pt_sink_smearing.h,v 3.2 2006-06-12 02:13:47 edwards Exp $
 /*! \file
  *  \brief Point sink smearing
  */
@@ -47,7 +47,7 @@ namespace Chroma
       SinkSmear(const Params& p, const multi1d<LatticeColorMatrix>& u) :
 	params(p), u_smr(u) 
 	{
-	  this->create(u_smr, params.link_smearing.xml, params.link_smearing.id);
+	  this->create(u_smr, params.link_smearing);
 	}
 
       //! Smear the sink

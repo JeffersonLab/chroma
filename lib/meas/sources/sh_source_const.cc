@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 3.6 2006-06-10 16:28:34 edwards Exp $
+// $Id: sh_source_const.cc,v 3.7 2006-06-12 02:13:47 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -190,16 +190,18 @@ namespace Chroma
 	// Smear the gauge field if needed
 	//
 	multi1d<LatticeColorMatrix> u_smr = u;
-	std::istringstream  xml_l(params.link_smearing.xml);
-	XMLReader  linktop(xml_l);
-	const string link_path = "/LinkSmearing";
-        QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	{
+	  std::istringstream  xml_l(params.link_smearing.xml);
+	  XMLReader  linktop(xml_l);
+	  const string link_path = "/LinkSmearing";
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
 	
-	Handle< LinkSmearing >
-	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
-								       linktop,
-								       link_path));
-	(*linkSmearing)(u_smr);
+	  Handle< LinkSmearing >
+	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
+									 linktop,
+									 link_path));
+	  (*linkSmearing)(u_smr);
+	}
 
 	//
 	// Create the quark smearing object

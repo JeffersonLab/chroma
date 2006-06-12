@@ -1,4 +1,4 @@
-// $Id: pt_source_const.cc,v 3.2 2006-06-10 16:28:34 edwards Exp $
+// $Id: pt_source_const.cc,v 3.3 2006-06-12 02:13:47 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -159,9 +159,22 @@ namespace Chroma
 
       try
       {
-	// Possibly smear the links for the displacement
+	//
+	// Smear the gauge field if needed
+	//
 	multi1d<LatticeColorMatrix> u_smr = u;
-	linkSmear(u_smr, std::string("/LinkSmearing"), params.link_smearing.xml, params.link_smearing.id);
+	{
+	  std::istringstream  xml_l(params.link_smearing.xml);
+	  XMLReader  linktop(xml_l);
+	  const string link_path = "/LinkSmearing";
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	
+	  Handle< LinkSmearing >
+	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
+									 linktop,
+									 link_path));
+	  (*linkSmearing)(u_smr);
+	}
 
 	//
 	// Create the quark displacement object

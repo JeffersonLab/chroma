@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quark_source_sink.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: quark_source_sink.h,v 3.1 2006-06-12 02:13:47 edwards Exp $
 
 /*! @file
  * @brief Quark source or sink smearing
@@ -9,7 +9,9 @@
 #define __quark_source_sink_h__
 
 #include "chromabase.h"
+#include "handle.h"
 #include "meas/smear/link_smearing_factory.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma
 {
@@ -38,14 +40,23 @@ namespace Chroma
     //! Potentially smear the gauge field
     /*!
      * \param u                   Gauge field to smear ( Modify )
-     * \param link_smearing       XML of link smearing ( Read )
-     * \param link_smearing_type  link smearing type ( Read )
+     * \param link_smearing       group holding XML of link smearing ( Read )
      */
     virtual void create(multi1d<LatticeColorMatrix>& u,
-			std::string link_smearing,
-			std::string link_smearing_type)
+			const GroupXML_t& link_smearing)
     {
-      linkSmear(u, std::string("/LinkSmearing"), link_smearing, link_smearing_type);
+      //
+      // Smear the gauge field if needed
+      //
+      std::istringstream  xml_l(link_smearing.xml);
+      XMLReader  linktop(xml_l);
+      const string link_path = "/LinkSmearing";
+	
+      Handle< LinkSmearing >
+	linkSmearing(TheLinkSmearingFactory::Instance().createObject(link_smearing.id,
+								     linktop,
+								     link_path));
+      (*linkSmearing)(u);
     }
 
 

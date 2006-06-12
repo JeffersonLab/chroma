@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.5 2006-05-21 04:49:51 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.6 2006-06-12 02:13:47 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -66,29 +66,9 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      {
-	XMLReader xml_tmp(paramtop, "SourceQuarkSmearing");
-	std::ostringstream os;
-	xml_tmp.print(os);
-	read(xml_tmp, "wvf_kind", source_quark_smearing_type);
-	source_quark_smearing = os.str();
-      }
-
-      {
-	XMLReader xml_tmp(paramtop, "SinkQuarkSmearing");
-	std::ostringstream os;
-	xml_tmp.print(os);
-	read(xml_tmp, "wvf_kind", sink_quark_smearing_type);
-	sink_quark_smearing = os.str();
-      }
-
-      {
-	XMLReader xml_tmp(paramtop, "LinkSmearing");
-	std::ostringstream os;
-	xml_tmp.print(os);
-	read(xml_tmp, "LinkSmearingType", link_smearing_type);
-	link_smearing = os.str();
-      }
+      source_quark_smearing = readXMLGroup(paramtop, "SourceQuarkSmearing", "wvf_kind");
+      sink_quark_smearing   = readXMLGroup(paramtop, "SinkQuarkSmearing", "wvf_kind");
+      link_smearing         = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
 
       read(paramtop, "operator_coeff_file", operator_coeff_file);
       read(paramtop, "displacement_length", displacement_length);
@@ -105,9 +85,9 @@ namespace Chroma
       write(xml, "BaryonOperatorType", GroupBaryonOperatorEnv::name);
       write(xml, "operator_coeff_file", operator_coeff_file);
       write(xml, "displacement_length", displacement_length);
-      xml << source_quark_smearing;
-      xml << sink_quark_smearing;
-      xml << link_smearing;
+      xml << source_quark_smearing.xml;
+      xml << sink_quark_smearing.xml;
+      xml << link_smearing.xml;
 
       pop(xml);
     }
@@ -127,31 +107,39 @@ namespace Chroma
       try
       {
 	// Smear the gauge field if needed
-        QDPIO::cout << "Link smearing type = " << params.link_smearing_type << endl;
-	linkSmear(u_smr, std::string("/LinkSmearing"), 
-		  params.link_smearing, params.link_smearing_type);
-
+	{
+	  std::istringstream  xml_l(params.link_smearing.xml);
+	  XMLReader  linktop(xml_l);
+	  const string link_path = "/LinkSmearing";
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	
+	  Handle< LinkSmearing >
+	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
+									 linktop,
+									 link_path));
+	  (*linkSmearing)(u_smr);
+	}
 
 	// Create the source quark smearing object
 	{
-	  std::istringstream  xml_s(params.source_quark_smearing);
+	  std::istringstream  xml_s(params.source_quark_smearing.xml);
 	  XMLReader  smeartop(xml_s);
 	  const string smear_path = "/SourceQuarkSmearing";
 	
 	  sourceQuarkSmearing = 
-	    TheFermSmearingFactory::Instance().createObject(params.source_quark_smearing_type,
+	    TheFermSmearingFactory::Instance().createObject(params.source_quark_smearing.id,
 							    smeartop,
 							    smear_path);
 	}
 
 	// Create the sink quark smearing object
 	{
-	  std::istringstream  xml_s(params.sink_quark_smearing);
+	  std::istringstream  xml_s(params.sink_quark_smearing.xml);
 	  XMLReader  smeartop(xml_s);
 	  const string smear_path = "/SinkQuarkSmearing";
 	
 	  sinkQuarkSmearing = 
-	    TheFermSmearingFactory::Instance().createObject(params.sink_quark_smearing_type,
+	    TheFermSmearingFactory::Instance().createObject(params.sink_quark_smearing.id,
 							    smeartop,
 							    smear_path);
 	}

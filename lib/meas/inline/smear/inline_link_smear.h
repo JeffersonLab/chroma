@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_link_smear.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: inline_link_smear.h,v 3.1 2006-06-12 02:13:47 edwards Exp $
 /*! \file
  *  \brief Inline link smearing
  */
@@ -9,6 +9,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -28,8 +29,7 @@ namespace Chroma
 
       unsigned long frequency;
 
-      std::string      link_smearing;        /*!< link smearing xml */
-      std::string      link_smearing_type;   /*!< link smearing type name */
+      GroupXML_t       link_smearing;        /*!< link smearing xml */
 
       struct NamedObject_t
       {

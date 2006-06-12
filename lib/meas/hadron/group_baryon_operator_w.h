@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.4 2006-05-21 04:40:21 edwards Exp $
+// $Id: group_baryon_operator_w.h,v 1.5 2006-06-12 02:13:47 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -10,6 +10,7 @@
 #include "handle.h"
 #include "meas/hadron/baryon_operator.h"
 #include "meas/smear/quark_smearing.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 {
@@ -30,14 +31,9 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
 
-      std::string      source_quark_smearing;       /*!< xml string holding source smearing params */
-      std::string      source_quark_smearing_type;  /*!< source quark smearing type name */
-
-      std::string      sink_quark_smearing;         /*!< xml string holding sink smearing params */
-      std::string      sink_quark_smearing_type;    /*!< sink quark smearing type name */
-
-      std::string      link_smearing;               /*!< link smearing xml */
-      std::string      link_smearing_type;          /*!< link smearing type name */
+      GroupXML_t       source_quark_smearing;       /*!< xml string holding smearing params */
+      GroupXML_t       sink_quark_smearing;         /*!< xml string holding smearing params */
+      GroupXML_t       link_smearing;               /*!< link smearing xml */
 
       std::string operator_coeff_file;      /*!< File holding group coefficients */
       int   displacement_length;

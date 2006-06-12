@@ -1,8 +1,9 @@
-// $Id: inline_link_smear.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_link_smear.cc,v 3.2 2006-06-12 02:13:47 edwards Exp $
 /*! \file
  *  \brief Inline Link smearing
  */
 
+#include "handle.h"
 #include "meas/inline/smear/inline_link_smear.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
@@ -63,13 +64,7 @@ namespace Chroma
 	  frequency = 1;
       
 	// Read program parameters
-	{
-	  XMLReader xml_tmp(paramtop, "Param");
-	  std::ostringstream os;
-	  xml_tmp.print(os);
-	  read(xml_tmp, "LinkSmearingType", link_smearing_type);
-	  link_smearing = os.str();
-	}
+	link_smearing = readXMLGroup(paramtop, "Param", "LinkSmearingType");
 
 	// Read in the linksmear outfile
 	read(paramtop, "NamedObject", named_obj);
@@ -88,7 +83,7 @@ namespace Chroma
     {
       push(xml, path);
       
-      xml << link_smearing;
+      xml << link_smearing.xml;
       Chroma::write(xml, "NamedObject", named_obj);
 
       pop(xml);
@@ -131,7 +126,18 @@ namespace Chroma
       // Smear the gauge field if needed
       //
       multi1d<LatticeColorMatrix> u_smr = u;
-      linkSmear(u_smr, std::string("/Param"), params.link_smearing, params.link_smearing_type);
+      {
+	std::istringstream  xml_l(params.link_smearing.xml);
+	XMLReader  linktop(xml_l);
+	const string link_path = "/LinkSmearing";
+	QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	
+	Handle< LinkSmearing >
+	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
+								       linktop,
+								       link_path));
+	(*linkSmearing)(u_smr);
+      }
 
       // Check if the smeared gauge field is unitary
       unitarityCheck(u_smr);

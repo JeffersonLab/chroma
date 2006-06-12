@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_smearing.h,v 3.4 2006-06-10 16:28:34 edwards Exp $
+// $Id: sh_source_smearing.h,v 3.5 2006-06-12 02:13:47 edwards Exp $
 /*! \file
  *  \brief Shell source smearing
  */
@@ -52,7 +52,7 @@ namespace Chroma
       SourceSmearing(const Params& p, const multi1d<LatticeColorMatrix>& u) :
 	params(p), u_smr(u) 
 	{
-	  this->create(u_smr, params.link_smearing.xml, params.link_smearing.id);
+	  this->create(u_smr, params.link_smearing);
 	}
 
       //! Construct the source
