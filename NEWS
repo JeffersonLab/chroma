@@ -1,4 +1,7 @@
 06/11/2006 -- Robert Edwards
+	Version 3.7.2. Fixed param path in inline_link_smear.
+
+06/11/2006 -- Robert Edwards
 	Version 3.7.1. Bug fixes. Removed all use of linkSmear - it is problematic
         with the current qdp++.
 
