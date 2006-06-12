@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.13 2006-05-24 21:10:04 edwards Exp $
+# $Id: Makefile.am,v 3.14 2006-06-12 02:08:42 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -718,7 +718,6 @@ libchroma_a_SOURCES = \
 	meas/smear/laplacian.cc \
 	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
 	meas/smear/link_smearing_aggregate.cc \
-	meas/smear/link_smearing_factory.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc \
 	meas/smear/no_link_smearing.cc \
