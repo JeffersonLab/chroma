@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_link_smear.h,v 3.1 2006-06-12 02:13:47 edwards Exp $
+// $Id: inline_link_smear.h,v 3.2 2006-06-12 03:37:39 edwards Exp $
 /*! \file
  *  \brief Inline link smearing
  */
@@ -25,7 +25,7 @@ namespace Chroma
     {
       Params();
       Params(XMLReader& xml_in, const std::string& path);
-      void write(XMLWriter& xml_out, const std::string& path);
+      void writeXML(XMLWriter& xml_out, const std::string& path);
 
       unsigned long frequency;
 
