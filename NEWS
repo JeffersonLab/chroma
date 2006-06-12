@@ -1,4 +1,8 @@
 06/11/2006 -- Robert Edwards
+	Version 3.7.1. Bug fixes. Removed all use of linkSmear - it is problematic
+        with the current qdp++.
+
+06/11/2006 -- Robert Edwards
 	Version 3.7.0. Change in quarkProp and SystemSolver interface. 
 	QuarkProp now takes a number of tries (restarts) at calling the qprop routine. 
 	The SystemSolver routines now return a structure of iteration counts and
