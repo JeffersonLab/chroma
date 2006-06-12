@@ -1,4 +1,4 @@
-// $Id: inline_link_smear.cc,v 3.2 2006-06-12 02:13:47 edwards Exp $
+// $Id: inline_link_smear.cc,v 3.3 2006-06-12 03:37:09 edwards Exp $
 /*! \file
  *  \brief Inline Link smearing
  */
@@ -79,12 +79,12 @@ namespace Chroma
 
     // Write params
     void
-    Params::write(XMLWriter& xml, const std::string& path) 
+    Params::writeXML(XMLWriter& xml, const std::string& path) 
     {
       push(xml, path);
       
       xml << link_smearing.xml;
-      Chroma::write(xml, "NamedObject", named_obj);
+      write(xml, "NamedObject", named_obj);
 
       pop(xml);
     }
@@ -110,7 +110,7 @@ namespace Chroma
       write(xml_out, "update_no", update_no);
     
       // Write out the input
-      params.write(xml_out, "Input");
+      params.writeXML(xml_out, "Input");
 
       // Write out the config header
       write(xml_out, "Config_info", gauge_xml);
@@ -126,10 +126,11 @@ namespace Chroma
       // Smear the gauge field if needed
       //
       multi1d<LatticeColorMatrix> u_smr = u;
+      try 
       {
 	std::istringstream  xml_l(params.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-	const string link_path = "/LinkSmearing";
+	const string link_path = "/Param";
 	QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
 	
 	Handle< LinkSmearing >
@@ -137,6 +138,11 @@ namespace Chroma
 								       linktop,
 								       link_path));
 	(*linkSmearing)(u_smr);
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << InlineLinkSmearEnv::name << ": error creating link smearing: " << e << endl;
+	QDP_abort(1);
       }
 
       // Check if the smeared gauge field is unitary
