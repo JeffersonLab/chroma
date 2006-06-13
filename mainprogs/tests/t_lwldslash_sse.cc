@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_sse.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
+// $Id: t_lwldslash_sse.cc,v 3.1 2006-06-13 20:15:25 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -65,23 +65,23 @@ int main(int argc, char **argv)
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
 
-      clock_t myt1;
-      clock_t myt2;
-      double mydt=2.0;
-     
+      QDP::StopWatch swatch;
+      double mydt;
+ 
       if (first) 
       {
 	for(iter=1; ; iter <<= 1)
 	{
 	  QDPIO::cout << "Applying D " << iter << " times" << endl;
 
-	  myt1=clock();
+	  swatch.reset();
+  	  swatch.start();
 	  for(int i=iter; i-- > 0; ) {
 	    D.apply(chi, psi, (isign == 1 ? PLUS : MINUS), cb);
 	  }
-	  myt2=clock();
+	  swatch.stop();
+	  mydt=swatch.getTimeInSeconds();
 
-	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
 	  Internal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
@@ -93,14 +93,15 @@ int main(int argc, char **argv)
       }
 	
       QDPIO::cout << "Applying D for timings" << endl;
-      
-      myt1=clock();
+    
+      swatch.reset();
+      swatch.start(); 
       for(int i=iter; i-- > 0; ) {
 	D.apply(chi, psi, (isign == 1 ? PLUS : MINUS), cb);
       }
-      myt2=clock();
+      swatch.stop();
       
-      mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+      mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       Internal::globalSum(mydt);
       mydt /= Layout::numNodes();
@@ -133,23 +134,25 @@ int main(int argc, char **argv)
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
 
-      clock_t myt1;
-      clock_t myt2;
-      double mydt= 2.0;
-      
+      double mydt;
+      QDP::StopWatch swatch;
+ 
       if (first) 
       {
 	for(iter=1; ; iter <<= 1)
 	{
 	  QDPIO::cout << "Applying D " << iter << " times" << endl;
+	
+	  swatch.reset();
+	  swatch.start();
 
-	  myt1=clock();
 	  for(int i=iter; i-- > 0; ) {
 	    D_opt.apply(chi, psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
 	  }
-	  myt2=clock();
+	  swatch.stop();
 
-	  mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+
+	  mydt=swatch.getTimeInSeconds();
 	  Internal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
@@ -161,14 +164,14 @@ int main(int argc, char **argv)
       }
 
       QDPIO::cout << "Applying D for timings" << endl;
-      
-      myt1=clock();
+     
+      swatch.reset();
+      swatch.start(); 
       for(int i=iter; i-- > 0; ) {
 	D_opt.apply(chi, psi, (isign == 1 ? PLUS : MINUS ) , cb); // NOTE: for timings throw away return value
       }
-      myt2=clock();
-      
-      mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
+      swatch.stop(); 
+      mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       Internal::globalSum(mydt);
       mydt /= Layout::numNodes();
