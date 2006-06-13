@@ -1,4 +1,4 @@
-// $Id: default_gauge_field.cc,v 3.2 2006-04-19 03:35:33 edwards Exp $
+// $Id: default_gauge_field.cc,v 3.3 2006-06-13 18:19:19 bjoo Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */
@@ -9,6 +9,7 @@
 #include "meas/inline/io/default_gauge_field.h"
 
 #include <stdio.h>
+#include <typeinfo>
 
 namespace Chroma 
 { 
