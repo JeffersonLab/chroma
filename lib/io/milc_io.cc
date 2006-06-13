@@ -1,4 +1,4 @@
-// $Id: milc_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: milc_io.cc,v 3.1 2006-06-13 18:16:57 bjoo Exp $
 
 /*! \file
  *  \brief MILC gauge format routines
@@ -6,6 +6,7 @@
 
 #include "chromabase.h"
 #include "io/milc_io.h"
+#include <time.h>
 
 namespace Chroma 
 {
