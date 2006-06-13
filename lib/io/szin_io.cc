@@ -1,4 +1,4 @@
-// $Id: szin_io.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
+// $Id: szin_io.cc,v 3.1 2006-06-13 18:18:14 bjoo Exp $
 
 /*! \file
  *  \brief Reader/writers for szin headers
@@ -7,6 +7,7 @@
 #include "chromabase.h"
 #include "chroma_config.h"
 #include "io/szin_io.h"
+#include <time.h>
 
 namespace Chroma 
 {
@@ -52,17 +53,17 @@ namespace Chroma
     banner += QDP_PACKAGE_STRING;
 
     {
-      std::time_t now;
+      time_t now;
 
-      if(std::time(&now)==-1)
+      if(time(&now)==-1)
       {
 	QDPIO::cerr<<"SzinGauge_t: cannot get the time.\n";
 	QDP_abort(1);
       }
-      std::tm *tp = std::localtime(&now);
+      tm *tp = localtime(&now);
 
       char date_tmp[64];
-      std::strftime(date_tmp, 63, "%d %b %y %X %Z", tp);
+      strftime(date_tmp, 63, "%d %b %y %X %Z", tp);
       date = date_tmp;
     }
   }
