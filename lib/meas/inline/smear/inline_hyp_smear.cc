@@ -1,4 +1,4 @@
-// $Id: inline_hyp_smear.cc,v 3.2 2006-06-10 16:29:34 edwards Exp $
+// $Id: inline_hyp_smear.cc,v 3.3 2006-06-13 20:22:30 bjoo Exp $
 /*! \file
  *  \brief Inline Hyp smearing
  */
@@ -196,23 +196,30 @@ namespace Chroma
 
 
     // Check if the gauge field configuration is unitarized
-    clock_t t1 = clock();
+    QDP::StopWatch swatch;
+    swatch.reset();
+    swatch.start();
     unitarityCheck(u);
-    clock_t t2 = clock();
-    QDPIO::cout << "Unitarity took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
+    swatch.stop();
+
+    QDPIO::cout << "Unitarity took " << swatch.getTimeInSeconds() << " secs" << endl;
   
 
     // Calculate some gauge invariant observables just for info.
-    t1 = clock();
+    swatch.reset();
+    swatch.start();
     MesPlq(xml_out, "Observables", u);
-    t2 = clock();
-    QDPIO::cout << "Plaquette took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
+    swatch.stop();
+ 
+    QDPIO::cout << "Plaquette took " << swatch.getTimeInSeconds() <<  " secs" << endl;
 
 
     // Now hyp smear
     multi1d<LatticeColorMatrix> u_hyp(Nd);
 
-    t1 = clock();
+    swatch.reset();
+    swatch.start();
+ 
     if (params.param.num_smear > 0)
     {
       for (int n = 0; n < params.param.num_smear; n++)
@@ -231,8 +238,9 @@ namespace Chroma
     {
       u_hyp = u;
     }
-    t2 = clock();
-    QDPIO::cout << "Hypsmear took " << (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC) << " secs" << endl;
+    swatch.stop();
+
+   QDPIO::cout << "Hypsmear took " << swatch.getTimeInSeconds() << " secs" << endl;
 
     // Calculate some gauge invariant observables just for info.
 
