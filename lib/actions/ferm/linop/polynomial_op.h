@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 3.1 2006-06-06 19:02:33 kostas Exp $
+// $Id: polynomial_op.h,v 3.2 2006-06-13 18:16:00 bjoo Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
  *    to 1/Q^2 in the range [\mu, Lambda_max] with Q = \gamma5 M
@@ -43,8 +43,11 @@ namespace Chroma
 
 
     int bitrevers(int n,int maxBits){
-      int bits[maxBits] ;
-      int br_bits[maxBits] ;
+      // int bits[maxBits] ;
+      // int br_bits[maxBits] ;
+      multi1d<int> bits(maxBits);
+      multi1d<int> br_bits(maxBits);
+
       int br(0);
       for(int i(0);i<maxBits;i++){
 	bits[i] = n % 2 ;
