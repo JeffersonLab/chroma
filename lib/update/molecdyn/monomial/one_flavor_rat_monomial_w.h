@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.1 2006-06-13 20:19:19 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -12,6 +12,8 @@
 #include "actions/ferm/fermacts/remez_coeff.h"
 #include "actions/ferm/invert/invert.h"
 #include "invtype.h"
+#include <typeinfo>
+using namespace std;
 
 namespace Chroma
 {

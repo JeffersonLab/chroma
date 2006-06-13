@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 3.1 2006-06-13 20:18:18 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -12,6 +12,9 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "actions/ferm/invert/invert.h"
 #include "invtype.h"
+
+#include <typeinfo>
+using namespace std;
 
 namespace Chroma
 {

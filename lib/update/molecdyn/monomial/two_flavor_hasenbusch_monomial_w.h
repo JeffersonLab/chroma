@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.1 2006-06-13 20:18:45 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -13,7 +13,8 @@
 #include "actions/ferm/invert/invert.h"
 #include "invtype.h"
 
-
+#include <typeinfo>
+using namespace std;
 
 namespace Chroma
 {
