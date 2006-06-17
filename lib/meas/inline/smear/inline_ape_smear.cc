@@ -1,4 +1,4 @@
-// $Id: inline_ape_smear.cc,v 3.2 2006-06-10 16:29:34 edwards Exp $
+// $Id: inline_ape_smear.cc,v 3.3 2006-06-17 18:31:09 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -56,7 +56,6 @@ namespace Chroma
     read(paramtop, "link_smear_num", param.link_smear_num);
     read(paramtop, "link_smear_fact", param.link_smear_fact);
     read(paramtop, "j_decay", param.j_decay);
-    read(paramtop, "nrow", param.nrow);
   }
 
   //! Parameters for running code
@@ -71,7 +70,6 @@ namespace Chroma
     write(xml, "j_decay", param.j_decay);
     write(xml, "BlkAccu", param.BlkAccu);
     write(xml, "BlkMax", param.BlkMax);
-    write(xml, "nrow", param.nrow);
 
     pop(xml);
   }

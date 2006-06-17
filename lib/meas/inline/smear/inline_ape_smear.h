@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_ape_smear.h,v 3.1 2006-06-10 16:29:34 edwards Exp $
+// $Id: inline_ape_smear.h,v 3.2 2006-06-17 18:31:09 edwards Exp $
 /*! \file
  *  \brief Inline APE smearing
  */
@@ -34,10 +34,9 @@ namespace Chroma
       int link_smear_num;
       Real link_smear_fact;		/*!< Smearing parameters */
       int BlkMax;                       /*!< Max number of iterations */
-      int BlkAccu;                      /*!< Relative error to maximize trace */
+      Real BlkAccu;                     /*!< Relative error to maximize trace */
 
       int j_decay;			/*!< Decay direction */
-      multi1d<int> nrow;		/*!< Lattice dimension */
     } param;
 
     struct NamedObject_t
