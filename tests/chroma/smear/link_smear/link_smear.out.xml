@@ -39,7 +39,7 @@ Stout smear task
         <num_smear>1</num_smear>
         <no_smear_dir>3</no_smear_dir>
         <BlkMax>100</BlkMax>
-        <BlkAccu>5.0e-6</BlkAccu>
+        <BlkAccu>1.0e-6</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -97,7 +97,7 @@ Stout smear task
       <chroma>3.7.3</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>17 Jun 06 14:24:33 EDT</run_date>
+    <run_date>17 Jun 06 14:23:57 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -240,7 +240,7 @@ Stout smear task
       <num_smear>1</num_smear>
       <no_smear_dir>3</no_smear_dir>
       <BlkMax>100</BlkMax>
-      <BlkAccu>5.0e-6</BlkAccu>
+      <BlkAccu>1.0e-6</BlkAccu>
     </Param>
 
           <NamedObject>
@@ -285,20 +285,20 @@ Stout smear task
         <Link_observables>
           <w_plaq>0.997954</w_plaq>
           <s_plaq>0.999668</s_plaq>
-          <t_plaq>0.99624</t_plaq>
-          <link>0.379505</link>
+          <t_plaq>0.996241</t_plaq>
+          <link>0.379506</link>
           <pollp>
             <elem>
-              <re>0.971072</re>
-              <im>-0.00117978</im>
+              <re>0.971071</re>
+              <im>-0.00117993</im>
             </elem>
             <elem>
-              <re>0.97074</re>
-              <im>-0.0012596</im>
+              <re>0.970741</re>
+              <im>-0.00125955</im>
             </elem>
             <elem>
               <re>0.971185</re>
-              <im>-0.00113509</im>
+              <im>-0.00113507</im>
             </elem>
             <elem>
               <re>0.879539</re>
