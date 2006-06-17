@@ -13,10 +13,13 @@ Stout smear task
       <Name>LINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>2</version>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
         <link_smear_num>1</link_smear_num>
         <no_smear_dir>3</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -28,13 +31,15 @@ Stout smear task
       <Name>LINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>5</version>
         <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
-        <version>4</version>
         <alpha1>0.75</alpha1>
         <alpha2>0.6</alpha2>
         <alpha3>0.3</alpha3>
         <num_smear>1</num_smear>
         <no_smear_dir>3</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>5.0e-6</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -46,13 +51,15 @@ Stout smear task
       <Name>LINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>5</version>
         <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
-        <version>4</version>
         <alpha1>0.75</alpha1>
         <alpha2>0.6</alpha2>
         <alpha3>0.3</alpha3>
         <num_smear>1</num_smear>
         <no_smear_dir>-1</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -87,10 +94,10 @@ Stout smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.1</chroma>
+      <chroma>3.7.3</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 23:36:04 EDT</run_date>
+    <run_date>17 Jun 06 14:24:33 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -147,10 +154,13 @@ Stout smear task
       <linksmear>
         <update_no>0</update_no>
         <Input><Param>
+      <version>2</version>
       <LinkSmearingType>APE_SMEAR</LinkSmearingType>
       <link_smear_fact>2.5</link_smear_fact>
       <link_smear_num>1</link_smear_num>
       <no_smear_dir>3</no_smear_dir>
+      <BlkMax>100</BlkMax>
+      <BlkAccu>1.0e-5</BlkAccu>
     </Param>
 
           <NamedObject>
@@ -222,13 +232,15 @@ Stout smear task
       <linksmear>
         <update_no>0</update_no>
         <Input><Param>
+      <version>5</version>
       <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
-      <version>4</version>
       <alpha1>0.75</alpha1>
       <alpha2>0.6</alpha2>
       <alpha3>0.3</alpha3>
       <num_smear>1</num_smear>
       <no_smear_dir>3</no_smear_dir>
+      <BlkMax>100</BlkMax>
+      <BlkAccu>5.0e-6</BlkAccu>
     </Param>
 
           <NamedObject>
@@ -271,22 +283,22 @@ Stout smear task
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.997955</w_plaq>
-          <s_plaq>0.999669</s_plaq>
-          <t_plaq>0.996241</t_plaq>
+          <w_plaq>0.997954</w_plaq>
+          <s_plaq>0.999668</s_plaq>
+          <t_plaq>0.99624</t_plaq>
           <link>0.379505</link>
           <pollp>
             <elem>
-              <re>0.971069</re>
-              <im>-0.00117933</im>
+              <re>0.971072</re>
+              <im>-0.00117978</im>
             </elem>
             <elem>
-              <re>0.970735</re>
-              <im>-0.00125969</im>
+              <re>0.97074</re>
+              <im>-0.0012596</im>
             </elem>
             <elem>
-              <re>0.971179</re>
-              <im>-0.001135</im>
+              <re>0.971185</re>
+              <im>-0.00113509</im>
             </elem>
             <elem>
               <re>0.879539</re>
@@ -300,13 +312,15 @@ Stout smear task
       <linksmear>
         <update_no>0</update_no>
         <Input><Param>
+      <version>5</version>
       <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
-      <version>4</version>
       <alpha1>0.75</alpha1>
       <alpha2>0.6</alpha2>
       <alpha3>0.3</alpha3>
       <num_smear>1</num_smear>
       <no_smear_dir>-1</no_smear_dir>
+      <BlkMax>100</BlkMax>
+      <BlkAccu>1.0e-5</BlkAccu>
     </Param>
 
           <NamedObject>

@@ -10,12 +10,14 @@ Hyp smear task
       <Name>HYP_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>4</version>
+        <version>5</version>
         <alpha1>0.75</alpha1>
         <alpha2>0.6</alpha2>
         <alpha3>0.3</alpha3>
         <num_smear>1</num_smear>
         <j_decay>-1</j_decay>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>

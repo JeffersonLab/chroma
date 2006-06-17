@@ -10,10 +10,13 @@ Stout smear task
       <Name>LINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>2</version>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
         <link_smear_num>1</link_smear_num>
         <no_smear_dir>3</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -25,13 +28,15 @@ Stout smear task
       <Name>LINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>5</version>
         <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
-        <version>4</version>
         <alpha1>0.75</alpha1>
         <alpha2>0.6</alpha2>
         <alpha3>0.3</alpha3>
         <num_smear>1</num_smear>
         <no_smear_dir>3</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>5.0e-6</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -43,13 +48,15 @@ Stout smear task
       <Name>LINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>5</version>
         <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
-        <version>4</version>
         <alpha1>0.75</alpha1>
         <alpha2>0.6</alpha2>
         <alpha3>0.3</alpha3>
         <num_smear>1</num_smear>
         <no_smear_dir>-1</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>

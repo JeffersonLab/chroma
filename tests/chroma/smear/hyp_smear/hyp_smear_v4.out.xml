@@ -13,18 +13,38 @@ Hyp smear task
       <Name>HYP_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>4</version>
+        <version>5</version>
         <alpha1>0.75</alpha1>
         <alpha2>0.6</alpha2>
         <alpha3>0.3</alpha3>
         <num_smear>1</num_smear>
         <j_decay>-1</j_decay>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
-        <hyp_id>nowhere</hyp_id>
+        <gauge_id>default_gauge_field</gauge_id>
+        <hyp_id>hyp_cfg</hyp_id>
       </NamedObject>
     </elem>
+
+    <elem>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>hyp_cfg</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin.cfg</file_name>
+        <trunc>true</trunc>
+        <j_decay>3</j_decay>
+        <t_start>1</t_start>
+        <t_end>5</t_end>
+      </File>
+    </elem>
+
 
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
@@ -38,10 +58,10 @@ Hyp smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>3.7.3</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:16:56 EST</run_date>
+    <run_date>17 Jun 06 14:21:12 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -99,10 +119,10 @@ Hyp smear task
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>3.7.3</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:16:56 EST</run_date>
+          <run_date>17 Jun 06 14:21:12 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -113,20 +133,25 @@ Hyp smear task
         </ProgramInfo>
         <Input>
           <Param>
-            <version>4</version>
+            <version>5</version>
             <num_smear>1</num_smear>
             <alpha1>0.75</alpha1>
             <alpha2>0.6</alpha2>
             <alpha3>0.3</alpha3>
             <j_decay>1</j_decay>
+            <BlkAccu>1e-05</BlkAccu>
+            <BlkMax>100</BlkMax>
             <nrow>4 4 4 8</nrow>
           </Param>
           <NamedObject>
-            <hyp_id>nowhere</hyp_id>
+            <gauge_id>default_gauge_field</gauge_id>
+            <hyp_id>hyp_cfg</hyp_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -182,6 +207,12 @@ Hyp smear task
           </pollp>
         </HYP_observables>
       </hypsmear>
+    </elem>
+    <elem>
+      <szin_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>hyp_cfg</object_id>
+      </szin_write_named_obj>
     </elem>
   </InlineObservables>
 </chroma>
