@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.5 2006-06-03 21:10:52 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.6 2006-06-17 17:47:06 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -547,10 +547,10 @@ namespace Chroma
 	write(xml_out, "sink_type_1", all_sinks[loop].sink_prop_1.sink_type);
 	write(xml_out, "sink_disp_type_1", all_sinks[loop].sink_prop_1.sink_disp_type);
 
-	write(xml_out, "source_type_2", all_sinks[loop].sink_prop_1.source_type);
-	write(xml_out, "source_disp_type_2", all_sinks[loop].sink_prop_1.source_disp_type);
-	write(xml_out, "sink_type_2", all_sinks[loop].sink_prop_1.sink_type);
-	write(xml_out, "sink_disp_type_2", all_sinks[loop].sink_prop_1.sink_disp_type);
+	write(xml_out, "source_type_2", all_sinks[loop].sink_prop_2.source_type);
+	write(xml_out, "source_disp_type_2", all_sinks[loop].sink_prop_2.source_disp_type);
+	write(xml_out, "sink_type_2", all_sinks[loop].sink_prop_2.sink_type);
+	write(xml_out, "sink_disp_type_2", all_sinks[loop].sink_prop_2.sink_disp_type);
 	pop(xml_out);
       }
       pop(xml_out);
