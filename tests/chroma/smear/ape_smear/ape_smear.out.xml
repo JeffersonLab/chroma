@@ -13,13 +13,15 @@ APE smear task
       <Name>APE_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>2</version>
+        <version>3</version>
         <link_smear_num>5</link_smear_num>
         <link_smear_fact>2.5</link_smear_fact>
         <j_decay>3</j_decay>
-        <nrow>4 4 4 8</nrow>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>5.0e-6</BlkAccu>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <ape_id>nowhere</ape_id>
       </NamedObject>
     </elem>
@@ -36,10 +38,10 @@ APE smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.6</chroma>
-      <qdp>1.18.1</qdp>
+      <chroma>3.7.3</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>18 Dec 05 11:14:21 EST</run_date>
+    <run_date>17 Jun 06 14:29:50 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -97,10 +99,10 @@ APE smear task
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.6</chroma>
-            <qdp>1.18.1</qdp>
+            <chroma>3.7.3</chroma>
+            <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>18 Dec 05 11:14:21 EST</run_date>
+          <run_date>17 Jun 06 14:29:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -111,18 +113,22 @@ APE smear task
         </ProgramInfo>
         <Input>
           <Param>
-            <version>2</version>
+            <version>3</version>
             <link_smear_num>5</link_smear_num>
             <link_smear_fact>2.5</link_smear_fact>
             <j_decay>3</j_decay>
-            <nrow>4 4 4 8</nrow>
+            <BlkAccu>5e-06</BlkAccu>
+            <BlkMax>100</BlkMax>
           </Param>
           <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
             <ape_id>nowhere</ape_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
+
+
 
 
         </Config_info>
@@ -160,21 +166,21 @@ APE smear task
         </Smearing_parameters>
         <APE_observables>
           <w_plaq>0.998169</w_plaq>
-          <s_plaq>0.999966</s_plaq>
+          <s_plaq>0.999965</s_plaq>
           <t_plaq>0.996372</t_plaq>
-          <link>0.379512</link>
+          <link>0.379513</link>
           <pollp>
             <elem>
-              <re>0.971769</re>
-              <im>-0.00117411</im>
+              <re>0.971767</re>
+              <im>-0.00117463</im>
             </elem>
             <elem>
-              <re>0.971411</re>
-              <im>-0.00125042</im>
+              <re>0.971413</re>
+              <im>-0.0012502</im>
             </elem>
             <elem>
-              <re>0.97188</re>
-              <im>-0.00112742</im>
+              <re>0.971882</re>
+              <im>-0.00112722</im>
             </elem>
             <elem>
               <re>0.879539</re>
