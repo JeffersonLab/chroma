@@ -1,3 +1,7 @@
+06/18/2006 -- Robert Edwards
+	Version 3.7.3. Bug fix in xml output in task MESONSPEC. Some code cleanups to make
+        various compilers happy.
+
 06/11/2006 -- Robert Edwards
 	Version 3.7.2. Fixed param path in inline_link_smear.
 
