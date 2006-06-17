@@ -1,4 +1,4 @@
-// $Id: hyp_link_smearing.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: hyp_link_smearing.cc,v 3.1 2006-06-17 18:25:09 edwards Exp $
 /*! \file
  *  \brief Hyp link smearing
  */
@@ -59,6 +59,8 @@ namespace Chroma
       read(paramtop, "version", version);
       num_smear = 1;
       no_smear_dir = -1;
+      BlkMax = 100;
+      BlkAccu = 1.0e-5;
 
       switch (version) 
       {
@@ -72,6 +74,13 @@ namespace Chroma
       case 4:
 	read(paramtop, "num_smear", num_smear);
 	read(paramtop, "no_smear_dir", no_smear_dir);
+	break;
+
+      case 5:
+	read(paramtop, "num_smear", num_smear);
+	read(paramtop, "no_smear_dir", no_smear_dir);
+	read(paramtop, "BlkMax", BlkMax);
+	read(paramtop, "BlkAccu", BlkAccu);
 	break;
 
       default :
@@ -90,16 +99,18 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 4;
+      int version = 5;
       write(xml, "version", version);
       write(xml, "LinkSmearingType", name);
 
       /* this version allows a variable num_smear */
-      write(xml, "num_smear", num_smear);
       write(xml, "alpha1", alpha1);
       write(xml, "alpha2", alpha2);
       write(xml, "alpha3", alpha3);
+      write(xml, "num_smear", num_smear);
       write(xml, "no_smear_dir", num_smear);
+      write(xml, "BlkMax", BlkMax);
+      write(xml, "BlkAccu", BlkAccu);
 
       pop(xml);
     }
@@ -114,9 +125,6 @@ namespace Chroma
       {
 	QDPIO::cout << "Hyp Smear gauge field" << endl;
 
-	int BlkMax = 100;
-	Real BlkAccu = 1.0e-5;
-
 	for (int n = 0; n < params.num_smear; n++)
 	{
 	  multi1d<LatticeColorMatrix> u_hyp(Nd);
@@ -124,11 +132,11 @@ namespace Chroma
 	  if (params.no_smear_dir < 0 || params.no_smear_dir >= Nd)
 	    Hyp_Smear(u, u_hyp, 
 		      params.alpha1, params.alpha2, params.alpha3, 
-		      BlkAccu, BlkMax);
+		      params.BlkAccu, params.BlkMax);
 	  else
 	    Hyp_Smear3d(u, u_hyp, 
 			params.alpha1, params.alpha2, params.alpha3, 
-			BlkAccu, BlkMax, params.no_smear_dir);
+			params.BlkAccu, params.BlkMax, params.no_smear_dir);
 
 	  u = u_hyp;
 	}

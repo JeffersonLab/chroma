@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ape_link_smearing.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: ape_link_smearing.h,v 3.1 2006-06-17 18:25:09 edwards Exp $
 /*! \file
  *  \brief APE link smearing
  */
@@ -29,6 +29,8 @@ namespace Chroma
       int link_smear_num;               /*!< Smearing hits */
       Real link_smear_fact;		/*!< Smearing parameters */
       int no_smear_dir;			/*!< Direction to not smear */
+      int BlkMax;                       /*!< Max number of iterations */
+      Real BlkAccu;                     /*!< Relative error to maximize trace */
     };
 
 

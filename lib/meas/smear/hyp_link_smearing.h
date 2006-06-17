@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hyp_link_smearing.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: hyp_link_smearing.h,v 3.1 2006-06-17 18:25:09 edwards Exp $
 /*! \file
  *  \brief HYP link smearing
  */
@@ -32,6 +32,8 @@ namespace Chroma
       Real alpha3;	                /*!< staple coefficient "3" */
       int num_smear;			/*!< Number of smearing hits */
       int no_smear_dir;			/*!< Direction to not smear */
+      int BlkMax;                       /*!< Max number of iterations */
+      Real BlkAccu;                     /*!< Relative error to maximize trace */
     };
 
 
