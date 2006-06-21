@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.1 2006-06-21 18:37:10 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.2 2006-06-21 20:42:09 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -34,7 +34,7 @@ namespace Chroma
    * so called TwoFlavorExact actions.
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D : public ExactHasenbuschWilsonTypeFermMonomial5D<P,Q,Phi>
+  class TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D : public ExactWilsonTypeFermMonomial5D<P,Q,Phi>
   {
   public:
      //! virtual destructor:
@@ -405,7 +405,7 @@ namespace Chroma
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial5D() {}
+    ~TwoFlavorExactHasenbuschEvenOddPrecWilsonTypeFermMonomial5D() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
@@ -492,11 +492,11 @@ namespace Chroma
    * Can supply a default dsdq algorithm
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactHasenbuschEvenOddPrecConstDetWilsonTypeFermMonomial5D : public TwoFlavorExactHasenbuschEvenOddPrecWilsonTypeFermMonomial5D<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial5D : public TwoFlavorExactHasenbuschEvenOddPrecWilsonTypeFermMonomial5D<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactHasenbuschEvenOddPrecConstDetWilsonTypeFermMonomial5D() {}
+    ~TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial5D() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) {

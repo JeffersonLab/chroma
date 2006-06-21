@@ -1,4 +1,4 @@
-// $Id: monomial_aggregate_w.cc,v 3.0 2006-04-03 04:59:08 edwards Exp $
+// $Id: monomial_aggregate_w.cc,v 3.1 2006-06-21 20:42:09 bjoo Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -28,6 +28,9 @@
 #include "update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h"
 
 #include "update/molecdyn/monomial/prec_logdet_ee_monomial_w.h"
+
+#include "update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.h"
+#include "update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial5d_w.h"
 
 namespace Chroma
 {
@@ -68,6 +71,13 @@ namespace Chroma
 
       // Even Even part of a logdet monomial
       success &=  PrecLogDetEvenEvenMonomial4DEnv::registered;
+
+      // 5D Hasenbusch Monomials
+      success &=  EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registered;
+
+      success &=  UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registered;
+
+
       return success;
     }
 
