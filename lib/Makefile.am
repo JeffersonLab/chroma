@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.14 2006-06-12 02:08:42 edwards Exp $
+# $Id: Makefile.am,v 3.15 2006-06-21 20:44:00 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -434,6 +434,9 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_hasenbusch_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.h \
+	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
@@ -940,6 +943,8 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/prec_constdet_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc \
+	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial5d_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
