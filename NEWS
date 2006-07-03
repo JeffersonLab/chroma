@@ -1,5 +1,5 @@
 07/03/2006 -- Robert Edwards
-	Version 3.7.4. Whatever small changes before the big API change.
+	Version 3.7.4. 5D Hasenbusch monomial support.
 
 06/18/2006 -- Robert Edwards
 	Version 3.7.3. Bug fix in xml output in task MESONSPEC. Some code cleanups to make
