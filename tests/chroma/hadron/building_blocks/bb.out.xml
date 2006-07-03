@@ -1090,10 +1090,10 @@ Calculate building blocks - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:49:42 EDT</run_date>
+    <run_date>03 Jul 06 10:56:59 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1151,10 +1151,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:42 EDT</run_date>
+          <run_date>03 Jul 06 10:56:59 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1245,10 +1245,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:42 EDT</run_date>
+          <run_date>03 Jul 06 10:57:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1276,16 +1276,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -1478,10 +1474,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:43 EDT</run_date>
+          <run_date>03 Jul 06 10:57:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1592,11 +1588,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -1660,10 +1653,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:43 EDT</run_date>
+          <run_date>03 Jul 06 10:57:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1691,16 +1684,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -1836,11 +1825,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1981,10 +1967,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:45 EDT</run_date>
+          <run_date>03 Jul 06 10:57:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2080,11 +2066,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2155,11 +2138,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2226,10 +2206,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:45 EDT</run_date>
+          <run_date>03 Jul 06 10:57:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2257,16 +2237,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -2370,11 +2346,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -2438,11 +2411,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -2583,10 +2553,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:46 EDT</run_date>
+          <run_date>03 Jul 06 10:57:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2681,11 +2651,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2749,10 +2716,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:46 EDT</run_date>
+          <run_date>03 Jul 06 10:57:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2780,16 +2747,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -2893,11 +2856,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -3038,10 +2998,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:47 EDT</run_date>
+          <run_date>03 Jul 06 10:57:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3137,11 +3097,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -3212,11 +3169,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -3283,10 +3237,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:47 EDT</run_date>
+          <run_date>03 Jul 06 10:57:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3314,16 +3268,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -3427,11 +3377,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -3495,11 +3442,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -3640,10 +3584,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:48 EDT</run_date>
+          <run_date>03 Jul 06 10:57:06 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3738,11 +3682,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -3806,10 +3747,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:48 EDT</run_date>
+          <run_date>03 Jul 06 10:57:06 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3837,16 +3778,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -3950,11 +3887,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -4095,10 +4029,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:49 EDT</run_date>
+          <run_date>03 Jul 06 10:57:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4194,11 +4128,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -4269,11 +4200,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -4340,10 +4268,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:50 EDT</run_date>
+          <run_date>03 Jul 06 10:57:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4371,16 +4299,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -4484,11 +4408,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -4552,11 +4473,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -4697,10 +4615,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:51 EDT</run_date>
+          <run_date>03 Jul 06 10:57:08 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4795,11 +4713,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -4863,10 +4778,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:51 EDT</run_date>
+          <run_date>03 Jul 06 10:57:08 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4894,16 +4809,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -5007,11 +4918,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -5152,10 +5060,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:52 EDT</run_date>
+          <run_date>03 Jul 06 10:57:09 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5251,11 +5159,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -5326,11 +5231,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -5397,10 +5299,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:52 EDT</run_date>
+          <run_date>03 Jul 06 10:57:09 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5428,16 +5330,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -5541,11 +5439,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -5609,11 +5504,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -5754,10 +5646,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:53 EDT</run_date>
+          <run_date>03 Jul 06 10:57:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5852,11 +5744,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -5920,10 +5809,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:53 EDT</run_date>
+          <run_date>03 Jul 06 10:57:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5951,16 +5840,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -6064,11 +5949,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -6209,10 +6091,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:54 EDT</run_date>
+          <run_date>03 Jul 06 10:57:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6308,11 +6190,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -6383,11 +6262,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -6454,10 +6330,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:54 EDT</run_date>
+          <run_date>03 Jul 06 10:57:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6485,16 +6361,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -6598,11 +6470,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -6666,11 +6535,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -6811,10 +6677,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:57 EDT</run_date>
+          <run_date>03 Jul 06 10:57:12 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6909,11 +6775,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -6977,10 +6840,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:57 EDT</run_date>
+          <run_date>03 Jul 06 10:57:13 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7008,16 +6871,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -7121,11 +6980,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -7266,10 +7122,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:58 EDT</run_date>
+          <run_date>03 Jul 06 10:57:14 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7365,11 +7221,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -7440,11 +7293,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -7511,10 +7361,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:58 EDT</run_date>
+          <run_date>03 Jul 06 10:57:14 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7542,16 +7392,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -7655,11 +7501,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -7723,11 +7566,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -7868,10 +7708,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:59 EDT</run_date>
+          <run_date>03 Jul 06 10:57:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7966,11 +7806,8 @@ Calculate building blocks - insertions in 3-pt functions
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -8034,10 +7871,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:49:59 EDT</run_date>
+          <run_date>03 Jul 06 10:57:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8065,16 +7902,12 @@ Calculate building blocks - insertions in 3-pt functions
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -8178,11 +8011,8 @@ Calculate building blocks - insertions in 3-pt functions
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>

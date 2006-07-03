@@ -173,10 +173,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:33:21 EDT</run_date>
+    <run_date>03 Jul 06 11:05:37 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -207,7 +207,7 @@ Sink smear a prop
   <Observables>
     <w_plaq>-0.00355243</w_plaq>
     <s_plaq>-0.00700866</s_plaq>
-    <t_plaq>-9.62032e-05</t_plaq>
+    <t_plaq>-9.62043e-05</t_plaq>
     <link>0.114362</link>
     <pollp>
       <elem>
@@ -223,7 +223,7 @@ Sink smear a prop
         <im>0.0300484</im>
       </elem>
       <elem>
-        <re>-0.0213987</re>
+        <re>-0.0213986</re>
         <im>-0.0267862</im>
       </elem>
     </pollp>
@@ -234,10 +234,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:21 EDT</run_date>
+          <run_date>03 Jul 06 11:05:37 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -298,7 +298,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.62032e-05</t_plaq>
+          <t_plaq>-9.62043e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -314,7 +314,7 @@ Sink smear a prop
               <im>0.0300484</im>
             </elem>
             <elem>
-              <re>-0.0213987</re>
+              <re>-0.0213986</re>
               <im>-0.0267862</im>
             </elem>
           </pollp>
@@ -329,10 +329,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:21 EDT</run_date>
+          <run_date>03 Jul 06 11:05:38 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -360,16 +360,12 @@ Sink smear a prop
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -391,7 +387,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.62032e-05</t_plaq>
+          <t_plaq>-9.62043e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -407,7 +403,7 @@ Sink smear a prop
               <im>0.0300484</im>
             </elem>
             <elem>
-              <re>-0.0213987</re>
+              <re>-0.0213986</re>
               <im>-0.0267862</im>
             </elem>
           </pollp>
@@ -470,91 +466,91 @@ Sink smear a prop
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>9.14082e-08</resid>
+            <resid>9.43913e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>1.03567e-07</resid>
+            <resid>8.83271e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>8.25095e-08</resid>
+            <resid>6.84266e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>1.03165e-07</resid>
+            <resid>8.77953e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>9.8873e-08</resid>
+            <resid>8.7284e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>8.03733e-08</resid>
+            <resid>7.35725e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>9.75417e-08</resid>
+            <resid>8.72662e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>8.32911e-08</resid>
+            <resid>8.25013e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>7.2533e-08</resid>
+            <resid>8.47299e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>8.26723e-08</resid>
+            <resid>7.23509e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>7.58458e-08</resid>
+            <resid>6.83785e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>23</n_count>
-            <resid>8.32306e-08</resid>
+            <resid>7.39303e-08</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>276</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0303537 0.000909183 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870806</prop_corr>
+          <prop_corr>0.0303537 0.000909183 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870807</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -594,7 +590,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.62032e-05</t_plaq>
+          <t_plaq>-9.62043e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -610,13 +606,13 @@ Sink smear a prop
               <im>0.0300484</im>
             </elem>
             <elem>
-              <re>-0.0213987</re>
+              <re>-0.0213986</re>
               <im>-0.0267862</im>
             </elem>
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.0303537 0.000909183 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870806</forward_prop_corr>
+          <forward_prop_corr>0.0303537 0.000909183 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870807</forward_prop_corr>
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
@@ -664,16 +660,12 @@ Sink smear a prop
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1e-12</RsdCG>
-            <MaxCG>1000</MaxCG>
-            <MROver>1</MROver>
-            <RsdCGPrec>1e-12</RsdCGPrec>
-            <MaxCGPrec>1000</MaxCGPrec>
-          </InvertParam>
-        </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
         <PropSink>
           <version>5</version>
           <SinkType>POINT_SINK</SinkType><Sink>
@@ -744,7 +736,7 @@ Sink smear a prop
         <Observables>
           <w_plaq>-0.00355243</w_plaq>
           <s_plaq>-0.00700866</s_plaq>
-          <t_plaq>-9.62032e-05</t_plaq>
+          <t_plaq>-9.62043e-05</t_plaq>
           <link>0.114362</link>
           <pollp>
             <elem>
@@ -760,13 +752,13 @@ Sink smear a prop
               <im>0.0300484</im>
             </elem>
             <elem>
-              <re>-0.0213987</re>
+              <re>-0.0213986</re>
               <im>-0.0267862</im>
             </elem>
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.0303537 0.000909183 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870806</forward_prop_corr>
+          <forward_prop_corr>0.0303537 0.000909183 5.1972e-05 2.70648e-06 2.54932e-07 2.13105e-06 4.25442e-05 0.000870807</forward_prop_corr>
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
@@ -814,16 +806,12 @@ Sink smear a prop
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1e-12</RsdCG>
-            <MaxCG>1000</MaxCG>
-            <MROver>1</MROver>
-            <RsdCGPrec>1e-12</RsdCGPrec>
-            <MaxCGPrec>1000</MaxCGPrec>
-          </InvertParam>
-        </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
         <PropSink>
           <version>5</version>
           <SinkType>SHELL_SINK</SinkType><Sink>

@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_hamberwu.out.xml,v 3.2 2006-06-11 06:30:37 edwards Exp $
+; $Id: unprec_hamberwu.out.xml,v 3.3 2006-07-03 15:22:26 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -120,10 +120,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 02:10:05 EDT</run_date>
+    <run_date>03 Jul 06 11:02:10 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -181,10 +181,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 02:10:05 EDT</run_date>
+          <run_date>03 Jul 06 11:02:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -275,10 +275,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 02:10:05 EDT</run_date>
+          <run_date>03 Jul 06 11:02:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -307,16 +307,12 @@
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-08</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-08</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-8</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>

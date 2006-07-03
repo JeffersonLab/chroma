@@ -3247,10 +3247,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:33:44 EDT</run_date>
+    <run_date>03 Jul 06 11:06:17 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -3308,10 +3308,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3404,10 +3404,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3435,16 +3435,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -3565,10 +3561,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3661,10 +3657,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3692,16 +3688,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -3822,10 +3814,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3918,10 +3910,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3949,16 +3941,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -4079,10 +4067,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4175,10 +4163,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4206,16 +4194,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -4336,10 +4320,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:45 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4432,10 +4416,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4463,16 +4447,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -4593,10 +4573,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4689,10 +4669,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4720,16 +4700,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -4850,10 +4826,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4946,10 +4922,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4977,16 +4953,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -5107,10 +5079,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5203,10 +5175,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5234,16 +5206,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -5364,10 +5332,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5460,10 +5428,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5491,16 +5459,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -5621,10 +5585,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:46 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5717,10 +5681,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5748,16 +5712,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -5878,10 +5838,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5974,10 +5934,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6005,16 +5965,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -6135,10 +6091,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6231,10 +6187,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6262,16 +6218,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -6392,10 +6344,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6488,10 +6440,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6519,16 +6471,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -6649,10 +6597,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6745,10 +6693,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6776,16 +6724,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -6906,10 +6850,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:47 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7002,10 +6946,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7033,16 +6977,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -7163,10 +7103,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7259,10 +7199,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7290,16 +7230,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -7420,10 +7356,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7516,10 +7452,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7547,16 +7483,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -7677,10 +7609,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7773,10 +7705,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7804,16 +7736,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -7934,10 +7862,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8030,10 +7958,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8061,16 +7989,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -8191,10 +8115,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:48 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8287,10 +8211,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8318,16 +8242,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -8448,10 +8368,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8544,10 +8464,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8575,16 +8495,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -8705,10 +8621,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8801,10 +8717,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8832,16 +8748,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -8962,10 +8874,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9058,10 +8970,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9089,16 +9001,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -9219,10 +9127,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9315,10 +9223,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:49 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9346,16 +9254,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -9476,10 +9380,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9572,10 +9476,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9603,16 +9507,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -9733,10 +9633,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9829,10 +9729,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9860,16 +9760,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -9990,10 +9886,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10086,10 +9982,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10117,16 +10013,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -10247,10 +10139,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10343,10 +10235,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10374,16 +10266,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -10504,10 +10392,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:50 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10600,10 +10488,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:51 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10631,16 +10519,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -10761,10 +10645,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:51 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10857,10 +10741,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:51 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10888,16 +10772,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -11018,10 +10898,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:51 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11114,10 +10994,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:51 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11145,16 +11025,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -11275,10 +11151,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:51 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11371,10 +11247,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:51 EDT</run_date>
+          <run_date>03 Jul 06 11:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11402,16 +11278,12 @@
         <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-10</RsdCG>
-              <MaxCG>2000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-10</RsdCGPrec>
-              <MaxCGPrec>2000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -11532,10 +11404,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:51 EDT</run_date>
+          <run_date>03 Jul 06 11:06:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

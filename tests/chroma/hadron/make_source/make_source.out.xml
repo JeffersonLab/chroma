@@ -165,10 +165,10 @@ Make a propagator source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:50:16 EDT</run_date>
+    <run_date>03 Jul 06 10:57:40 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -226,10 +226,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:16 EDT</run_date>
+          <run_date>03 Jul 06 10:57:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -308,10 +308,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:16 EDT</run_date>
+          <run_date>03 Jul 06 10:57:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -403,10 +403,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:16 EDT</run_date>
+          <run_date>03 Jul 06 10:57:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -481,10 +481,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:16 EDT</run_date>
+          <run_date>03 Jul 06 10:57:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

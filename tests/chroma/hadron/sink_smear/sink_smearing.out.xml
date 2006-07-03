@@ -158,10 +158,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:33:22 EDT</run_date>
+    <run_date>03 Jul 06 11:05:42 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -219,10 +219,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:22 EDT</run_date>
+          <run_date>03 Jul 06 11:05:42 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -311,10 +311,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:22 EDT</run_date>
+          <run_date>03 Jul 06 11:05:43 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -342,16 +342,12 @@ Sink smear a prop
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -634,16 +630,12 @@ Sink smear a prop
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1e-12</RsdCG>
-            <MaxCG>1000</MaxCG>
-            <MROver>1</MROver>
-            <RsdCGPrec>1e-12</RsdCGPrec>
-            <MaxCGPrec>1000</MaxCGPrec>
-          </InvertParam>
-        </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
         <PropSink>
           <version>5</version>
           <SinkType>POINT_SINK</SinkType><Sink>
@@ -770,16 +762,12 @@ Sink smear a prop
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1e-12</RsdCG>
-            <MaxCG>1000</MaxCG>
-            <MROver>1</MROver>
-            <RsdCGPrec>1e-12</RsdCGPrec>
-            <MaxCGPrec>1000</MaxCGPrec>
-          </InvertParam>
-        </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
         <PropSink>
           <version>5</version>
           <SinkType>SHELL_SINK</SinkType><Sink>

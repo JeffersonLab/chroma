@@ -641,10 +641,10 @@ Sequential source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:33:01 EDT</run_date>
+    <run_date>03 Jul 06 11:05:09 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -702,10 +702,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:01 EDT</run_date>
+          <run_date>03 Jul 06 11:05:09 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -794,10 +794,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:02 EDT</run_date>
+          <run_date>03 Jul 06 11:05:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -825,16 +825,12 @@ Sequential source
         <boundary>1 1 1 0</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -1025,10 +1021,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:03 EDT</run_date>
+          <run_date>03 Jul 06 11:05:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1124,11 +1120,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -1197,11 +1190,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -1272,10 +1262,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:03 EDT</run_date>
+          <run_date>03 Jul 06 11:05:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1370,11 +1360,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -1442,10 +1429,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:03 EDT</run_date>
+          <run_date>03 Jul 06 11:05:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1541,11 +1528,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -1614,11 +1598,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -1689,10 +1670,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:03 EDT</run_date>
+          <run_date>03 Jul 06 11:05:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1787,11 +1768,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -1859,10 +1837,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:03 EDT</run_date>
+          <run_date>03 Jul 06 11:05:12 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1958,11 +1936,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2031,11 +2006,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2106,10 +2078,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:04 EDT</run_date>
+          <run_date>03 Jul 06 11:05:12 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2204,11 +2176,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2276,10 +2245,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:04 EDT</run_date>
+          <run_date>03 Jul 06 11:05:12 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2375,11 +2344,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2448,11 +2414,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2523,10 +2486,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:04 EDT</run_date>
+          <run_date>03 Jul 06 11:05:12 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2621,11 +2584,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2693,10 +2653,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:04 EDT</run_date>
+          <run_date>03 Jul 06 11:05:12 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2792,11 +2752,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2865,11 +2822,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -2940,10 +2894,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:04 EDT</run_date>
+          <run_date>03 Jul 06 11:05:13 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3038,11 +2992,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -3110,10 +3061,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:05 EDT</run_date>
+          <run_date>03 Jul 06 11:05:13 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3209,11 +3160,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -3282,11 +3230,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -3357,10 +3302,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:05 EDT</run_date>
+          <run_date>03 Jul 06 11:05:13 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3455,11 +3400,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -3527,10 +3469,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:05 EDT</run_date>
+          <run_date>03 Jul 06 11:05:13 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3625,11 +3567,8 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>

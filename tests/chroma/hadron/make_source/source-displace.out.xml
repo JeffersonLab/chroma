@@ -112,10 +112,10 @@ Make a propagator source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:50:25 EDT</run_date>
+    <run_date>03 Jul 06 10:57:55 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -158,12 +158,12 @@ Make a propagator source
         <im>0.031735</im>
       </elem>
       <elem>
-        <re>-0.000155889</re>
+        <re>-0.000155886</re>
         <im>0.00880705</im>
       </elem>
       <elem>
         <re>0.0281716</re>
-        <im>-0.0108409</im>
+        <im>-0.0108408</im>
       </elem>
     </pollp>
   </Observables>
@@ -173,10 +173,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:25 EDT</run_date>
+          <run_date>03 Jul 06 10:57:56 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -251,12 +251,12 @@ Make a propagator source
               <im>0.031735</im>
             </elem>
             <elem>
-              <re>-0.000155889</re>
+              <re>-0.000155886</re>
               <im>0.00880705</im>
             </elem>
             <elem>
               <re>0.0281716</re>
-              <im>-0.0108409</im>
+              <im>-0.0108408</im>
             </elem>
           </pollp>
         </Observables>
@@ -270,10 +270,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:25 EDT</run_date>
+          <run_date>03 Jul 06 10:57:57 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -348,12 +348,12 @@ Make a propagator source
               <im>0.031735</im>
             </elem>
             <elem>
-              <re>-0.000155889</re>
+              <re>-0.000155886</re>
               <im>0.00880705</im>
             </elem>
             <elem>
               <re>0.0281716</re>
-              <im>-0.0108409</im>
+              <im>-0.0108408</im>
             </elem>
           </pollp>
         </Observables>

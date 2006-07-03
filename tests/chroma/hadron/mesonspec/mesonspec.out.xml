@@ -444,10 +444,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:50:26 EDT</run_date>
+    <run_date>03 Jul 06 10:58:00 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -505,10 +505,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:26 EDT</run_date>
+          <run_date>03 Jul 06 10:58:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -599,10 +599,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:26 EDT</run_date>
+          <run_date>03 Jul 06 10:58:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -630,16 +630,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -936,16 +932,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1e-12</RsdCG>
-            <MaxCG>1000</MaxCG>
-            <MROver>1</MROver>
-            <RsdCGPrec>1e-12</RsdCGPrec>
-            <MaxCGPrec>1000</MaxCGPrec>
-          </InvertParam>
-        </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
         <PropSink>
           <version>5</version>
           <SinkType>POINT_SINK</SinkType><Sink>
@@ -976,10 +968,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:27 EDT</run_date>
+          <run_date>03 Jul 06 10:58:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1072,10 +1064,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:28 EDT</run_date>
+          <run_date>03 Jul 06 10:58:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1103,16 +1095,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -1407,16 +1395,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1e-12</RsdCG>
-            <MaxCG>1000</MaxCG>
-            <MROver>1</MROver>
-            <RsdCGPrec>1e-12</RsdCGPrec>
-            <MaxCGPrec>1000</MaxCGPrec>
-          </InvertParam>
-        </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
         <PropSink>
           <version>5</version>
           <SinkType>POINT_SINK</SinkType><Sink>
@@ -1549,16 +1533,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1e-12</RsdCG>
-            <MaxCG>1000</MaxCG>
-            <MROver>1</MROver>
-            <RsdCGPrec>1e-12</RsdCGPrec>
-            <MaxCGPrec>1000</MaxCGPrec>
-          </InvertParam>
-        </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
         <PropSink>
           <version>5</version>
           <SinkType>POINT_SINK</SinkType><Sink>
@@ -1591,10 +1571,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:50:29 EDT</run_date>
+          <run_date>03 Jul 06 10:58:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1762,16 +1742,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-                    <InvertParam>
-                      <invType>CG_INVERTER</invType>
-                      <RsdCG>1e-12</RsdCG>
-                      <MaxCG>1000</MaxCG>
-                      <MROver>1</MROver>
-                      <RsdCGPrec>1e-12</RsdCGPrec>
-                      <MaxCGPrec>1000</MaxCGPrec>
-                    </InvertParam>
-                  </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
                   <PropSource>
                     <version>6</version><Source>
       <version>2</version>
@@ -1834,16 +1810,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-                    <InvertParam>
-                      <invType>CG_INVERTER</invType>
-                      <RsdCG>1e-12</RsdCG>
-                      <MaxCG>1000</MaxCG>
-                      <MROver>1</MROver>
-                      <RsdCGPrec>1e-12</RsdCGPrec>
-                      <MaxCGPrec>1000</MaxCGPrec>
-                    </InvertParam>
-                  </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
                   <PropSource>
                     <version>6</version><Source>
       <version>2</version>
@@ -1916,16 +1888,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-                    <InvertParam>
-                      <invType>CG_INVERTER</invType>
-                      <RsdCG>1e-12</RsdCG>
-                      <MaxCG>1000</MaxCG>
-                      <MROver>1</MROver>
-                      <RsdCGPrec>1e-12</RsdCGPrec>
-                      <MaxCGPrec>1000</MaxCGPrec>
-                    </InvertParam>
-                  </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
                   <PropSource>
                     <version>6</version><Source>
       <version>2</version>
@@ -1996,16 +1964,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-                    <InvertParam>
-                      <invType>CG_INVERTER</invType>
-                      <RsdCG>1e-12</RsdCG>
-                      <MaxCG>1000</MaxCG>
-                      <MROver>1</MROver>
-                      <RsdCGPrec>1e-12</RsdCGPrec>
-                      <MaxCGPrec>1000</MaxCGPrec>
-                    </InvertParam>
-                  </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
                   <PropSource>
                     <version>6</version><Source>
       <version>2</version>
@@ -2055,7 +2019,7 @@ regression test spectrum output is kept within the chroma xml output
                 <sink_type_1>POINT_SINK</sink_type_1>
                 <sink_disp_type_1>NONE</sink_disp_type_1>
                 <source_type_2>SHELL_SOURCE</source_type_2>
-                <source_disp_type_2>NONE</source_disp_type_2>
+                <source_disp_type_2>D-DERIV</source_disp_type_2>
                 <sink_type_2>POINT_SINK</sink_type_2>
                 <sink_disp_type_2>NONE</sink_disp_type_2>
               </elem>
@@ -2065,9 +2029,9 @@ regression test spectrum output is kept within the chroma xml output
                 <sink_type_1>POINT_SINK</sink_type_1>
                 <sink_disp_type_1>NONE</sink_disp_type_1>
                 <source_type_2>SHELL_SOURCE</source_type_2>
-                <source_disp_type_2>NONE</source_disp_type_2>
+                <source_disp_type_2>D-DERIV</source_disp_type_2>
                 <sink_type_2>POINT_SINK</sink_type_2>
-                <sink_disp_type_2>NONE</sink_disp_type_2>
+                <sink_disp_type_2>D-DERIV</sink_disp_type_2>
               </elem>
             </SourceSinkType>
             <Mesons>
@@ -2277,16 +2241,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-                    <InvertParam>
-                      <invType>CG_INVERTER</invType>
-                      <RsdCG>1e-12</RsdCG>
-                      <MaxCG>1000</MaxCG>
-                      <MROver>1</MROver>
-                      <RsdCGPrec>1e-12</RsdCGPrec>
-                      <MaxCGPrec>1000</MaxCGPrec>
-                    </InvertParam>
-                  </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
                   <PropSource>
                     <version>6</version><Source>
       <version>2</version>
@@ -2349,16 +2309,12 @@ regression test spectrum output is kept within the chroma xml output
         <boundary>1 1 1 -1</boundary>
       </FermionBC>
     </FermionAction>
-
-                    <InvertParam>
-                      <invType>CG_INVERTER</invType>
-                      <RsdCG>1e-12</RsdCG>
-                      <MaxCG>1000</MaxCG>
-                      <MROver>1</MROver>
-                      <RsdCGPrec>1e-12</RsdCGPrec>
-                      <MaxCGPrec>1000</MaxCGPrec>
-                    </InvertParam>
-                  </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
                   <PropSource>
                     <version>6</version><Source>
       <version>2</version>
@@ -2404,7 +2360,7 @@ regression test spectrum output is kept within the chroma xml output
                 <sink_type_1>POINT_SINK</sink_type_1>
                 <sink_disp_type_1>NONE</sink_disp_type_1>
                 <source_type_2>SHELL_SOURCE</source_type_2>
-                <source_disp_type_2>NONE</source_disp_type_2>
+                <source_disp_type_2>D-DERIV</source_disp_type_2>
                 <sink_type_2>POINT_SINK</sink_type_2>
                 <sink_disp_type_2>NONE</sink_disp_type_2>
               </elem>
