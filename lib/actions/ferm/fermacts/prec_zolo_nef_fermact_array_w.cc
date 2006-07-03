@@ -1,4 +1,4 @@
-// $Id: prec_zolo_nef_fermact_array_w.cc,v 3.2 2006-06-11 06:30:31 edwards Exp $
+// $Id: prec_zolo_nef_fermact_array_w.cc,v 3.3 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -222,7 +222,7 @@ namespace Chroma
 					    const LatticePropagator& q_src,
 					    int t_src, int j_decay,
 					    Handle< FermState<T,P,Q> > state,
-					    const InvertParam_t& invParam,
+					    const GroupXML_t& invParam,
 					    QuarkSpinType quarkSpinType,
 					    int numRetries,
 					    bool obsvP,

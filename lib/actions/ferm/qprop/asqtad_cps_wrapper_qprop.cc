@@ -19,7 +19,7 @@ namespace Chroma
 					       Handle< FermState<LatticeStaggeredFermion,
 					       multi1d<LatticeColorMatrix>,
 					       multi1d<LatticeColorMatrix> > state_, 
-					       const InvertParam_t& invParam_) :
+					       const GroupXML_t& invParam_) :
     Mass(S_.getQuarkMass()), invParam(invParam_), state(state_)
   {
     

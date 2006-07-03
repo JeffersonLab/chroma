@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: quarkprop4_s.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -9,6 +9,9 @@
 #include "fermact.h"
 #include "util/ferm/transf.h"
 #include "actions/ferm/qprop/quarkprop4_s.h"
+#include "actions/ferm/invert/syssolver_linop_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/multi_syssolver_mdagm_factory.h"
 
 
 namespace Chroma 
@@ -32,7 +35,7 @@ namespace Chroma
 		   const LatticeStaggeredPropagator& q_src,
 		   const StaggeredTypeFermAct<T,P,Q>& S_f,
 		   Handle< FermState<T,P,Q> > state,
-		   const InvertParam_t& invParam,
+		   const GroupXML_t& invParam,
 		   QuarkSpinType quarkSpinType,
 		   int numRetries,
 		   int& ncg_had)
@@ -81,7 +84,6 @@ namespace Chroma
 	write(xml_out, "ntry", ntry);
 	write(xml_out, "n_count", result.n_count);
 	write(xml_out, "resid", result.resid);
-	write(xml_out, "RsdCG", invParam.RsdCG);
 	pop(xml_out);
       }
 
@@ -102,6 +104,13 @@ namespace Chroma
   }
 
 
+
+
+  typedef LatticeStaggeredFermion LF;
+  typedef multi1d<LatticeColorMatrix> LCM;
+
+
+
   //! Given a complete propagator as a source, this does all the inversions needed
   /*! \ingroup qprop
    *
@@ -120,7 +129,7 @@ namespace Chroma
 		  Handle< FermState<LatticeStaggeredFermion,
 		  multi1d<LatticeColorMatrix>,
 		  multi1d<LatticeColorMatrix> > > state,
-		  const InvertParam_t& invParam,
+		  const GroupXML_t& invParam,
 		  QuarkSpinType quarkSpinType,
 		  int numRetries,
 		  int& ncg_had)
@@ -154,7 +163,7 @@ namespace Chroma
     Handle< FermState<LatticeStaggeredFermion,
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix> > > state,
-    const InvertParam_t& invParam,
+    const GroupXML_t& invParam,
     QuarkSpinType quarkSpinType,
     int numRetries,
     int& ncg_had) const
@@ -163,4 +172,61 @@ namespace Chroma
   }
 
 
-}; // namespace Chroma
+
+
+
+  // Return a linear operator solver for this action to solve M*psi=chi 
+  /*! \ingroup qprop */
+  template<>
+  LinOpSystemSolver<LF>*
+  StaggeredTypeFermAct<LF,LCM,LCM>::invLinOp(Handle< FermState<LF,LCM,LCM> > state,
+					     const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+	
+    // THIS NEEDS TO BE FIXED TO USE A PROPER MDAGM
+    return TheLinOpStagFermSystemSolverFactory::Instance().createObject(invParam.id,
+									paramtop,
+									invParam.path,
+									linOp(state));
+  }
+
+
+  //! Return a linear operator solver for this action to solve MdagM*psi=chi 
+  /*! \ingroup qprop */
+  template<>
+  MdagMSystemSolver<LF>*
+  StaggeredTypeFermAct<LF,LCM,LCM>::invMdagM(Handle< FermState<LF,LCM,LCM> > state,
+					     const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    // THIS NEEDS TO BE FIXED TO USE A PROPER MDAGM
+    return TheMdagMStagFermSystemSolverFactory::Instance().createObject(invParam.id,
+									paramtop,
+									invParam.path,
+									linOp(state));
+  }
+
+
+  //! Return a linear operator solver for this action to solve (MdagM+shift_i)*psi_i = chi 
+  /*! \ingroup qprop */
+  template<>
+  MdagMMultiSystemSolver<LF>*
+  StaggeredTypeFermAct<LF,LCM,LCM>::mInvMdagM(Handle< FermState<LF,LCM,LCM> > state,
+					      const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    // THIS NEEDS TO BE FIXED TO USE A PROPER MDAGM
+    return TheMdagMStagFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
+									 paramtop,
+									 invParam.path,
+									 linOp(state));
+  }
+
+
+} // namespace Chroma

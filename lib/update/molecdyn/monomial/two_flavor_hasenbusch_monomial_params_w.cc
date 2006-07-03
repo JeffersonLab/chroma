@@ -1,4 +1,4 @@
-// $Id: two_flavor_hasenbusch_monomial_params_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: two_flavor_hasenbusch_monomial_params_w.cc,v 3.1 2006-07-03 15:26:10 edwards Exp $
 /*! @file
  * @brief Two-flavor Hasenbusch monomial params
  */
@@ -17,7 +17,7 @@ namespace Chroma
     
     try {
       // Read the inverter Parameters
-      read(paramtop, "./InvertParam", inv_param);
+      inv_param = readXMLGroup(paramtop, "InvertParam", "invType");
       XMLReader xml_tmp(paramtop, "./FermionAction");
       std::ostringstream os;
       xml_tmp.print(os);

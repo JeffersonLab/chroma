@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg1.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: invcg1.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -8,6 +8,7 @@
 #define __invcg1__
 
 #include "linearop.h"
+#include "syssolver.h"
 
 namespace Chroma {
 
@@ -41,7 +42,7 @@ namespace Chroma {
  *  \param psi     Solution    	    	       (Modify)
  *  \param RsdCG   CG residual accuracy        (Read)
  *  \param MaxCG   Maximum CG iterations       (Read)
- *  \param n_count Number of CG iteration      (Write)
+ *  \return res    System solver results
  *
  * Local Variables:
  *
@@ -65,12 +66,12 @@ namespace Chroma {
  */
 
 template<typename T>
-void InvCG1(const LinearOperator<T>& A,
-	    const T& chi,
-	    T& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count);
+SystemSolverResults_t 
+InvCG1(const LinearOperator<T>& A,
+       const T& chi,
+       T& psi,
+       const Real& RsdCG, 
+       int MaxCG);
 
 }  // end namespace Chroma
 

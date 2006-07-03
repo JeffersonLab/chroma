@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.1 2006-06-13 20:18:45 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -10,8 +10,6 @@
 
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
-#include "actions/ferm/invert/invert.h"
-#include "invtype.h"
 
 #include <typeinfo>
 using namespace std;
@@ -26,8 +24,7 @@ namespace Chroma
    *
    * Can supply default dsdq()
    *                    pseudoferm refresh
-   *                    getX()
-   *                    invert()algorithm
+   *                    getX() algorithm
    * 
    * CAVEAT: I assume there is only 1 pseudofermion field in the following
    * so called TwoFlavorExact monomial.
@@ -127,7 +124,6 @@ namespace Chroma
       // Get the fermion action for the preconditioner
       const WilsonTypeFermAct<Phi,P,Q>& S_prec = getFermActPrec();
 
-      
       // Create a Connect State, apply fermionic boundaries
       Handle< FermState<Phi,P,Q> > f_state(S_f.createState(field_state.getQ()));
       
@@ -135,7 +131,7 @@ namespace Chroma
       Handle< DiffLinearOperator<Phi,P,Q> > M(S_f.linOp(f_state));
       Handle< DiffLinearOperator<Phi,P,Q> > M_prec(S_prec.linOp(f_state));
 
-      Phi eta=zero;
+      Phi eta = zero;
       
       // Fill the eta field with gaussian noise
       gaussian(eta, M->subset());
@@ -165,29 +161,35 @@ namespace Chroma
       // prepare the source
       // Zero out everything - to make sure there is no junk
       // in uninitialised places
-      Phi eta_tmp=zero;
-      Phi phi_tmp=zero;
+      Phi eta_tmp = zero;
+      Phi phi_tmp = zero;
       getPhi() = zero;
 
       (*M)(eta_tmp, eta, MINUS);  // M^\dag \eta
-      int n_count = invert(phi_tmp, *M_prec, eta_tmp); // (M^dag_prec M_prec)^{-1}
+
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(S_prec.invMdagM(f_state, getInvParams()));
+
+      // Solve MdagM_prec X = eta
+      SystemSolverResults_t res = (*invMdagM)(phi_tmp, eta_tmp);
+
       (*M_prec)(getPhi(), phi_tmp, PLUS); // (Now get phi = M_prec (M_prec^{-1}\phi)
-     
 
       // Now invert M_prec^{dagger} on it
       getMDSolutionPredictor().reset();
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+
       push(xml_out, "FieldRefreshment");
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       pop(xml_out);
-
-
     }				    
   
     //! Copy pseudofermions if any
-    virtual void setInternalFields(const Monomial<P,Q>& m) {
+    virtual void setInternalFields(const Monomial<P,Q>& m) 
+    {
       try {
-	const TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>& fm = dynamic_cast<  const TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>& >(m);
+	const TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>& fm = 
+	  dynamic_cast<  const TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>& >(m);
 
 	getPhi() = fm.getPhi();
       }
@@ -201,85 +203,50 @@ namespace Chroma
     }
 
 
-    virtual int invert(Phi& phi,
-		       const DiffLinearOperator<Phi,P,Q>& M,
-		       const Phi& eta) const
+    // We want to generate X = (M^dag M)^{-1} M^{\dagger}_prec \phi
+    // Which is a normal solve on M^dag M X = M^{\dagger}_prec \phi
+    virtual int getX( Phi& X, const AbsFieldState<P,Q>& s)
     {
+      // Grab the fermact
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getFermActPrec();
 
-      const InvertParam_t& inv_param = getInvParams();
-      int n_count = 0;
+      // Make the state
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
+
+      // Get linop
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
+
+      // Get system solver
+      const GroupXML_t& inv_param = getInvParams();
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state,inv_param));
+
+      SystemSolverResults_t res;
 
       // Do the inversion...
-      switch( inv_param.invType) {
-        case CG_INVERTER:
-	{
-	  // Solve MdagM phi = eta
-	  InvCG2(M, eta, phi, inv_param.RsdCG, inv_param.MaxCG, n_count);
-	  QDPIO::cout << "2Flav::invert,  n_count = " << n_count << endl;
-	}
-	break;
-        default:
-	{
-	  QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-	  QDP_abort(1);
-	}
-	break;
+//    case CG_INVERTER:
+      {
+	// Solve MdagM X = M^{dag}_prec \phi
+	// Do the inversion...
+
+	// Need MdagM for CG based predictor
+	Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+	Phi M_dag_prec_phi;
+
+	// M_dag_prec phi = M^{dag}_prec \phi - the RHS
+	(*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
+
+	(getMDSolutionPredictor())(X, *MdagM, M_dag_prec_phi);
+
+	// Solve MdagM X = eta
+	res = (*invMdagM)(X, M_dag_prec_phi);
+
+	(getMDSolutionPredictor()).newVector(X);
       }
 
-      return n_count;
+      return res.n_count;
     }
-
-  // We want to generate X = (M^dag M)^{-1} M^{\dagger}_prec \phi
-  // Which is a normal solve on M^dag M X = M^{\dagger}_prec \phi
-  virtual int getX( Phi& X, const AbsFieldState<P,Q>& s)
-  {
-
-    // Grab the fermact
-    const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
-    const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getFermActPrec();
-
-    // Make the state
-    Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
-
-    // Get linop
-    Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
-    Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
-
-    int n_count;
-
-    // Do the inversion...
-    const InvertParam_t& inv_param = getInvParams();
-    switch( inv_param.invType) {
-    case CG_INVERTER:
-    {
-      // Solve MdagM X = M^{dag}_prec \phi
-      // Do the inversion...
-
-      // Need MdagM for CG based predictor
-      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
-      Phi M_dag_prec_phi;
-
-      // M_dag_prec phi = M^{dag}_prec \phi - the RHS
-      (*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
-
-      (getMDSolutionPredictor())(X, *MdagM, M_dag_prec_phi);
-
-      n_count = invert(X, *M, M_dag_prec_phi);
-
-      (getMDSolutionPredictor()).newVector(X);
-
-    }
-    break;
-    default:
-    {
-      QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-      QDP_abort(1);
-    }
-    break;
-    };
-
-    return n_count;
-  }
 
 
   protected:
@@ -299,7 +266,7 @@ namespace Chroma
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
 
     //! Do an inversion of the type 
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
 
 
@@ -379,7 +346,7 @@ namespace Chroma
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
 
     //! Get parameters for the inverter
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
   };
 
@@ -470,7 +437,7 @@ namespace Chroma
 
 
     //! Get parameters for the inverter
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
   };
 

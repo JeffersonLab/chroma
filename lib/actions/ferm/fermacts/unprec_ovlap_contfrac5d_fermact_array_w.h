@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -101,7 +101,7 @@ namespace Chroma
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
     LinearOperator<T>* linOp4D(Handle< FermState<T,P,Q> > state,
 			       const Real& m_q,
-			       const InvertParam_t& invParam) const
+			       const GroupXML_t& invParam) const
     {
       QDPIO::cerr << "linOp4D not implemented" << endl;
       QDP_abort(1);
@@ -110,7 +110,7 @@ namespace Chroma
     
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
     LinearOperator<T>* DeltaLs(Handle< FermState<T,P,Q> > state,
-			       const InvertParam_t& invParam) const 
+			       const GroupXML_t& invParam) const 
       {
 	Handle< LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
 	return new lDeltaLs(lin);
@@ -118,7 +118,7 @@ namespace Chroma
 
     //! Compute quark propagator over base type
     SystemSolver<LatticeFermion>* qprop(Handle< FermState<T,P,Q> > state,
-					const InvertParam_t& invParam) const;
+					const GroupXML_t& invParam) const;
 
     //! Destructor is automatic
     ~UnprecOvlapContFrac5DFermActArray() {}

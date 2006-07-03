@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_fermact_qprop_array.h,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: prec_fermact_qprop_array.h,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -30,7 +30,7 @@ namespace Chroma
      * \param invParam_  inverter parameters ( Read )
      */
     PrecFermAct5DQprop(Handle< EvenOddPrecLinearOperatorArray<T,P,Q > > A_,
-		       const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
+		       Handle< LinOpSystemSolverArray<T> > invA_) : A(A_), invA(invA_) 
       {}
 
     //! Another constructor for compatibility
@@ -42,11 +42,13 @@ namespace Chroma
      * \param invParam_  inverter parameters ( Read )
      */
     PrecFermAct5DQprop(Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > A_,
+		       Handle< LinOpSystemSolverArray<T> > invA_,
 		       Handle< FermState<T,P,Q> > state_,  // throw away
 		       const Real& OverMass_,    // throw away
 		       const Real& Mass_,        // throw away
-		       const AnisoParam_t& anisoParam_, // throw away
- 		       const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
+		       const AnisoParam_t& anisoParam_,  // throw away
+		       const GroupXML_t& invParam_  // throw away
+		       ) : A(A_), invA(invA_)
       {}
 
     //! Destructor is automatic
@@ -66,13 +68,18 @@ namespace Chroma
      */
     SystemSolverResults_t operator() (multi1d<T>& psi, const multi1d<T>& chi) const;
 
+  protected:
+    //! Hide default constructor
+    PrecFermAct5DQprop() {}
+
   private:
     Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > A;
-    const InvertParam_t invParam;
+    Handle< LinOpSystemSolverArray<T> > invA;
+    
   };
 
 
-}; // namespace Chroma
+} // namespace Chroma
 
 
 #endif

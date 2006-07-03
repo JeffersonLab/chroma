@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.1 2006-06-11 06:30:33 edwards Exp $
+// $Id: qprop_io.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -645,7 +645,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    read(paramtop, "InvertParam", param.invParam);
+    param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
     read(paramtop, "t_sink", param.t_sink);
     read(paramtop, "sink_mom", param.sink_mom);
   }
@@ -740,7 +740,7 @@ namespace Chroma
     {
       // In V4 the fermion action specific stuff is within the <Param> tag and not
       // in a <FermionAction> tag beneath <Param>
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "boundary", boundary);
 
       XMLBufferWriter xml_out;
@@ -757,7 +757,7 @@ namespace Chroma
     {
       // In this modified version of v4, the fermion action specific stuff
       // goes into a <FermionAction> tag beneath <Param>
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "boundary", boundary);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
@@ -780,7 +780,7 @@ namespace Chroma
       if (nonRelProp)
 	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
 
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "boundary", boundary);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
@@ -803,7 +803,7 @@ namespace Chroma
       xml_tmp.print(os);
       param.fermact = os.str();
 
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 
       bool nonRelProp;
       read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
@@ -835,7 +835,7 @@ namespace Chroma
       if (nonRelProp)
 	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
 
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "obsvP", param.obsvP);
 
       if (paramtop.count("boundary") != 0)
@@ -854,7 +854,7 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "obsvP", param.obsvP);
 
       if (paramtop.count("boundary") != 0)
@@ -873,7 +873,7 @@ namespace Chroma
       param.fermact = os.str();
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "obsvP", param.obsvP);
       read(paramtop, "numRetries", param.numRetries);
     
@@ -916,7 +916,7 @@ namespace Chroma
     {
       read(paramtop, "MultiMasses", param.MultiMasses);
     
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "boundary", boundary);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
@@ -942,7 +942,7 @@ namespace Chroma
       if (nonRelProp)
 	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
 
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "boundary", boundary);
 
       XMLReader xml_tmp(paramtop, "FermionAction");
@@ -968,7 +968,7 @@ namespace Chroma
       xml_tmp.print(os);
       param.fermact = os.str();
 
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 
       bool nonRelProp;
       read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
@@ -993,7 +993,7 @@ namespace Chroma
       xml_tmp.print(os);
       param.fermact = os.str();
 
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 
       bool nonRelProp;
       read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
@@ -1013,7 +1013,7 @@ namespace Chroma
       xml_tmp.print(os);
       param.fermact = os.str();
 
-      read(paramtop, "InvertParam", param.invParam);
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // quark spin components
     }
@@ -1026,15 +1026,15 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    // Sanity check. No of residuals must be same as no of masses
-    if ( param.MultiMasses.size() != param.invParam.RsdCG.size() ) { 
-      QDPIO::cerr << "Number of Masses in param.MultiMasses (" 
-		  << param.MultiMasses.size() 
-		  << ") differs from no of RsdCGs in param.invParam.RsdCG (" 
-		  << param.invParam.RsdCG.size() << ")" << endl;
-
-      QDP_abort(1);
-    }
+//    // Sanity check. No of residuals must be same as no of masses
+//    if ( param.MultiMasses.size() != param.invParam.RsdCG.size() ) { 
+//      QDPIO::cerr << "Number of Masses in param.MultiMasses (" 
+//		  << param.MultiMasses.size() 
+//		  << ") differs from no of RsdCGs in param.invParam.RsdCG (" 
+//		  << param.invParam.RsdCG.size() << ")" << endl;
+//
+//      QDP_abort(1);
+//    }
 
   }
 
@@ -1205,7 +1205,7 @@ namespace Chroma
     write(xml, "obsvP", header.obsvP);           // new - measured 5D stuff
     write(xml, "numRetries", header.numRetries); 
     xml << header.fermact;
-    write(xml, "InvertParam", header.invParam);
+    xml << header.invParam.xml;
 
     pop(xml);
   }
@@ -1220,7 +1220,7 @@ namespace Chroma
     write(xml, "quarkSpinType", header.quarkSpinType);
     write(xml, "MultiMasses", header.MultiMasses);
     xml << header.fermact;
-    write(xml, "InvertParam", header.invParam);
+    xml << header.invParam.xml;
 
     pop(xml);
   }
@@ -1235,7 +1235,7 @@ namespace Chroma
     write(xml, "version", version);
     write(xml, "quarkSpinType", param.quarkSpinType);
     write(xml, "seq_src", param.seq_src);
-    write(xml, "InvertParam", param.invParam);
+    xml << param.invParam.xml;
     write(xml, "t_sink", param.t_sink);
     write(xml, "sink_mom", param.sink_mom);
 

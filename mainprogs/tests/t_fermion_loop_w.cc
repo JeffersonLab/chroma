@@ -1,4 +1,4 @@
-// $Id: t_fermion_loop_w.cc,v 3.1 2006-06-11 06:30:34 edwards Exp $
+// $Id: t_fermion_loop_w.cc,v 3.2 2006-07-03 15:26:11 edwards Exp $
 /*! \file
  *  \brief Main code for  generation of disconnected 
  *         loops
@@ -54,7 +54,7 @@ struct Param_t
   GaugeStartType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
-  InvertParam_t  invParam;
+  SysSolverCGParams  invParam;
 
   Real GFAccu, OrPara;    // Gauge fixing tolerance and over-relaxation param
   int GFMax;              // Maximum gauge fixing iterations
@@ -212,7 +212,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     }
 
 //    read(paramtop, "invType", input.param.invType);
-    input.param.invParam.invType = CG_INVERTER;   //need to fix this
+//    input.param.invParam.invType = CG_INVERTER;   //need to fix this
     read(paramtop, "RsdCG", input.param.invParam.RsdCG);
     read(paramtop, "MaxCG", input.param.invParam.MaxCG);
     //    read(paramtop, "GFAccu", input.param.GFAccu);
@@ -371,7 +371,14 @@ int main(int argc, char **argv)
 
   // Set up a state for the current u,
   Handle< FermState<T,P,Q> > state(S_f.createState(u));
-  Handle< SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,input.param.invParam));
+  GroupXML_t inv_param;
+  {
+    XMLBufferWriter xml_buf;
+    write(xml_buf, "InvertParam", input.param.invParam);
+    XMLReader xml_in(xml_buf);
+    inv_param = readXMLGroup(xml_in, "/InvertParam", "invType");
+  }
+  Handle< SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,inv_param));
 
   //
   // Loop over the source color and spin , creating the source

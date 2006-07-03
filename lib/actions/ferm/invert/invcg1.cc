@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: invcg1.cc,v 3.1 2006-07-03 15:26:08 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -40,7 +40,7 @@ namespace Chroma {
  *  \param psi     Solution    	    	       (Modify)
  *  \param RsdCG   CG residual accuracy        (Rea/Write)
  *  \param MaxCG   Maximum CG iterations       (Read)
- *  \param n_count Number of CG iteration      (Write)
+ *  \return res    System solver results
  *
  * Local Variables:
  *
@@ -66,16 +66,18 @@ namespace Chroma {
 
 
 template<typename T>
-void InvCG1_a(const LinearOperator<T>& A,
-	      const T& chi,
-	      T& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count)
+SystemSolverResults_t 
+InvCG1_a(const LinearOperator<T>& A,
+	 const T& chi,
+	 T& psi,
+	 const Real& RsdCG, 
+	 int MaxCG)
 {
   START_CODE();
 
   const OrderedSubset& s = A.subset();
+
+  SystemSolverResults_t  res;
 
   T p;                 moveToFastMemoryHint(p);
   T ap;                moveToFastMemoryHint(ap);
@@ -118,10 +120,11 @@ void InvCG1_a(const LinearOperator<T>& A,
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   if ( toBool(cp  <=  rsd_sq) )
   {
-    n_count = 0;
+    res.n_count = 0;
+    res.resid   = sqrt(cp);
     revertFromFastMemoryHint(psi, true); // Revert psi, and copy contents
     END_CODE();
-    return;
+    return res;
   }
 
   //
@@ -176,10 +179,18 @@ void InvCG1_a(const LinearOperator<T>& A,
 
     if ( toBool(cp  <=  rsd_sq) )
     {
-      n_count = k;
+      res.n_count = k;
+      res.resid   = sqrt(cp);
+
+      // Compute the actual residual
+      {
+	A(ap, psi, PLUS);
+	Double actual_res = norm2(chi - ap,s);
+	res.resid = sqrt(actual_res);
+      }
       revertFromFastMemoryHint(psi,true); // Get back psi, copy contents.
       END_CODE();
-      return;
+      return res;
     }
 
     //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
@@ -188,33 +199,35 @@ void InvCG1_a(const LinearOperator<T>& A,
     //  p[k+1] := r[k] + b[k+1] p[k]
     p[s] = r + b*p;	/* Nc Ns  flops */
   }
-  n_count = MaxCG;
-  QDP_error_exit("too many CG iterations: count = %d", n_count);
+  res.n_count = MaxCG;
+  res.resid   = sqrt(cp);
+  QDP_error_exit("too many CG iterations: count = %d", res.n_count);
   revertFromFastMemoryHint(psi,true);
   END_CODE();
+  return res;
 }
 
 // Fix here for now
 template<>
-void InvCG1(const LinearOperator<LatticeFermion>& A,
-	    const LatticeFermion& chi,
-	    LatticeFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
+SystemSolverResults_t 
+InvCG1(const LinearOperator<LatticeFermion>& A,
+       const LatticeFermion& chi,
+       LatticeFermion& psi,
+       const Real& RsdCG, 
+       int MaxCG)
 {
-  InvCG1_a(A, chi, psi, RsdCG, MaxCG, n_count);
+  return InvCG1_a(A, chi, psi, RsdCG, MaxCG);
 }
 
 template<>
-void InvCG1(const LinearOperator<LatticeStaggeredFermion>& A,
-	    const LatticeStaggeredFermion& chi,
-	    LatticeStaggeredFermion& psi,
-	    const Real& RsdCG, 
-	    int MaxCG, 
-	    int& n_count)
+SystemSolverResults_t 
+InvCG1(const LinearOperator<LatticeStaggeredFermion>& A,
+       const LatticeStaggeredFermion& chi,
+       LatticeStaggeredFermion& psi,
+       const Real& RsdCG, 
+       int MaxCG)
 {
-  InvCG1_a(A, chi, psi, RsdCG, MaxCG, n_count);
+  return InvCG1_a(A, chi, psi, RsdCG, MaxCG);
 }
 
 }  // end namespace Chroma

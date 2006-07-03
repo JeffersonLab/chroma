@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_wilson_fermact_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: prec_wilson_fermact_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -10,6 +10,9 @@
 #include "fermact.h"
 #include "actions/ferm/fermacts/wilson_fermact_params_w.h"
 #include "actions/ferm/linop/lgherm_w.h"
+#include "actions/ferm/invert/syssolver_linop.h"
+#include "actions/ferm/invert/syssolver_mdagm.h"
+#include "io/xml_group_reader.h"
 
 
 namespace Chroma
@@ -60,6 +63,14 @@ namespace Chroma
       { 
 	return new lgherm<LatticeFermion>(linOp(state));
       }
+
+    //! Return a linear operator solver for this action to solve M*psi=chi 
+    LinOpSystemSolver<T>* invLinOp(Handle< FermState<T,P,Q> > state,
+				   const GroupXML_t& invParam) const;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi 
+    MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
+				   const GroupXML_t& invParam) const;
 
     //! Destructor is automatic
     ~EvenOddPrecWilsonFermAct() {}

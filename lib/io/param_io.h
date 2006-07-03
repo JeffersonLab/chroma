@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: param_io.h,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: param_io.h,v 3.1 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Various parameter structs and reader/writers
  */
@@ -8,7 +8,6 @@
 #define __param_io_h__
 
 #include "chromabase.h"
-#include "invtype.h"
 
 // ! now needed
 
@@ -44,21 +43,6 @@ namespace Chroma
     int version;
   };
 
-
-  //---------------------------- Readers -----------------------------
-  //! Read inverter parameters
-  void read(XMLReader& xml, const string& path, InvertParam_t& param);
-
-  //! Read inverter parameters
-  void read(XMLReader& xml, const string& path, MultiInvertParam_t& param);
-
-
-  //---------------------------- Writers -----------------------------
-  //! Write inverter parameters
-  void write(XMLWriter& xml, const string& path, const InvertParam_t& param);
-
-  //! Write inverter parameters
-  void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param);
 
   /*! @} */  // end of group io
 

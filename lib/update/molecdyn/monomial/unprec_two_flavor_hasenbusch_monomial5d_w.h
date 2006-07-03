@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.h,v 3.1 2006-06-21 20:42:09 bjoo Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -42,9 +42,8 @@ namespace Chroma
       // Construct out of a parameter struct. Check against the desired FermAct name
       UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5D(const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_);
 
-
       // Copy Constructor
-      UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5D(const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact((m.fermact)), fermact_prec(m.fermact_prec), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
+//      UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5D(const UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact((m.fermact)), fermact_prec(m.fermact_prec), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
     protected:
 
@@ -70,7 +69,7 @@ namespace Chroma
       }
 
       //! Do an inversion of the type 
-      const InvertParam_t getInvParams(void) const {
+      const GroupXML_t getInvParams(void) const {
 	return inv_param;
       }
 
@@ -89,7 +88,7 @@ namespace Chroma
       Handle<const UnprecWilsonTypeFermAct5D<T,P,Q> > fermact_prec;
 
       // The parameters for the inversion
-      InvertParam_t inv_param;
+      GroupXML_t inv_param;
       
       // A handle for the chrono predictor
       Handle< AbsChronologicalPredictor5D<T> > chrono_predictor;

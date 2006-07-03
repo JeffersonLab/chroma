@@ -1,4 +1,4 @@
-// $Id: unprec_ovext_fermact_array_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.cc,v 3.2 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -17,6 +17,7 @@
 #include "io/overlap_state_info.h"
 #include "actions/ferm/fermacts/zolotarev.h"
 
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 namespace Chroma
 {
@@ -415,7 +416,7 @@ namespace Chroma
 		 Handle< LinearOperator<T> > Dw_,
 		 const Real& Mass_,
 		 const Real& a5_,
-		 const InvertParam_t& invParam_) : 
+		 const SysSolverCGParams& invParam_) : 
       A(A_), Dw(Dw_), Mass(Mass_), a5(a5_), invParam(invParam_) {}
 
     //! Destructor is automatic
@@ -445,25 +446,21 @@ namespace Chroma
       psi5 = zero;
       chi5 = zero;
 
-      switch(invParam.invType)
+//      if( invType == "CG_INVERTER") 
       {
-      case CG_INVERTER: 
 	psi5[N5-1] = Gamma(G5)*chi;
 	(*A)(chi5, psi5, MINUS);
 	psi5[N5-1] = psi;
 
 	// psi5 = (H_o)^(-2) chi5
-	InvCG2(*A, chi5, psi5, invParam.RsdCG, invParam.MaxCG, res.n_count);
-	break;
-  
-      case MR_INVERTER:
-      case BICG_INVERTER:
-	QDP_error_exit("Unsupported inverter type", invParam.invType);
-	break;
-  
-      default:
-	QDP_error_exit("Unknown inverter type", invParam.invType);
+	res = InvCG2(*A, chi5, psi5, invParam.RsdCG, invParam.MaxCG);
       }
+//      else
+//      {
+//	QDPIO::cerr << UnprecOvExtFermActArrayEnv::name 
+//		    << "Unsupported inverter type =" << invType << endl;
+//	QDP_abort(1);
+//      }
       
       if ( res.n_count == invParam.MaxCG )
 	QDP_error_exit("no convergence in the inverter", res.n_count);
@@ -507,25 +504,28 @@ namespace Chroma
 
     Handle< LinearOperatorArray<T> > A;
     Handle< LinearOperator<T> > Dw;
-    const Real Mass;
-    const Real a5;
-    const InvertParam_t invParam;
+    Real Mass;
+    Real a5;
+    SysSolverCGParams invParam;
   };
 
  
   //! Propagator of an un-preconditioned Extended-Overlap linear operator
   SystemSolver<LatticeFermion>* 
   UnprecOvExtFermActArray::qprop(Handle< FermState<T,P,Q> > state,
-				 const InvertParam_t& invParam) const
+				 const GroupXML_t& invParam) const
   {
     Real a5 = param.b5- param.c5;
     Handle< LinearOperator<T> > D_w(new UnprecWilsonLinOp(state, -param.OverMass));
 
+    std::istringstream  is(invParam.xml);
+    XMLReader  paramtop(is);
+	
     return new OvExt5DQprop<T>(Handle< LinearOperatorArray<T> >(linOp(state)),
 			       D_w,
 			       getQuarkMass(),
 			       a5,
-			       invParam);
+			       SysSolverCGParams(paramtop,invParam.path));
   }
   
 

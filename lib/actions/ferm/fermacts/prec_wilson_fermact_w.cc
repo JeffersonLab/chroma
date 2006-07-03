@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -9,6 +9,9 @@
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+
+#include "actions/ferm/invert/syssolver_linop_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_factory.h"
 
 namespace Chroma
 {
@@ -63,6 +66,36 @@ namespace Chroma
   EvenOddPrecWilsonFermAct::linOp(Handle< FermState<T,P,Q> > state) const
   {
     return new EvenOddPrecWilsonLinOp(state,param.Mass,param.anisoParam);
+  }
+
+
+  //! Return a linear operator solver for this action to solve M*psi=chi 
+  LinOpSystemSolver<LatticeFermion>* 
+  EvenOddPrecWilsonFermAct::invLinOp(Handle< FermState<T,P,Q> > state,
+				     const GroupXML_t& invParam) const
+  {
+    std::istringstream  is(invParam.xml);
+    XMLReader  paramtop(is);
+	
+    return TheLinOpFermSystemSolverFactory::Instance().createObject(invParam.id,
+								    paramtop,
+								    invParam.path,
+								    linOp(state));
+  }
+
+
+  //! Return a linear operator solver for this action to solve M^dag.M*psi=chi 
+  MdagMSystemSolver<LatticeFermion>* 
+  EvenOddPrecWilsonFermAct::invMdagM(Handle< FermState<T,P,Q> > state,
+				     const GroupXML_t& invParam) const
+  {
+    std::istringstream  is(invParam.xml);
+    XMLReader  paramtop(is);
+	
+    return TheMdagMFermSystemSolverFactory::Instance().createObject(invParam.id,
+								    paramtop,
+								    invParam.path,
+								    linOp(state));
   }
 
 }

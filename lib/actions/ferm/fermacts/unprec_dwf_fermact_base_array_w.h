@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -12,6 +12,7 @@
 #include "actions/ferm/linop/unprec_dwf4d_linop_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"
 #include "actions/ferm/linop/llincomb.h"
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
  
 namespace Chroma
@@ -61,16 +62,19 @@ namespace Chroma
     /*! Use the fact that  linOp4D(m_q) = [P^{-1} (D^{(5)}(1))^{-1} D^{(5)}(m_q) P]_{11} */
     virtual LinearOperator<T>* linOp4D(Handle< FermState<T,P,Q> > state,
 				       const Real& m_q,
-				       const InvertParam_t& invParam) const
+				       const GroupXML_t& invParam) const
     {
+      std::istringstream  is(invParam.xml);
+      XMLReader  paramtop(is);
+	
       return new UnprecDWF4DLinOp<T>(unprecLinOp(state,m_q),
 				     unprecLinOp(state,Real(1)),
-				     invParam);
+				     SysSolverCGParams(paramtop,invParam.path));
     }
 
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
     virtual LinearOperator<T>* DeltaLs(Handle< FermState<T,P,Q> > state,
-				       const InvertParam_t& invParam) const 
+				       const GroupXML_t& invParam) const 
     {
       Handle< LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
       return new lDeltaLs(lin);
@@ -79,7 +83,7 @@ namespace Chroma
     //! Define quark propagator routine for 4D fermions
     /*! Default implementation provided */
     SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
-			   const InvertParam_t& invParam) const;
+			   const GroupXML_t& invParam) const;
 
     //! Apply the Dminus operator on a fermion.
     /*! 

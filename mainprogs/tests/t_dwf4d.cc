@@ -1,4 +1,4 @@
-// $Id: t_dwf4d.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: t_dwf4d.cc,v 3.1 2006-07-03 15:26:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -31,7 +31,7 @@ bool linkage_hack()
 struct Param_t
 {
   multi1d<int> nrow;		// Lattice dimension
-  InvertParam_t   invParam;   // Inverter parameters
+  GroupXML_t   invParam;   // Inverter parameters
 };
 
 //! Mega-structure of all input
@@ -48,7 +48,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
   read(paramtop, "nrow", param.nrow);
-  read(paramtop, "InvertParam", param.invParam);
+  param.invParam = readXMLGroup(paramtop, "/InvertParam", "invType");
 }
 
 

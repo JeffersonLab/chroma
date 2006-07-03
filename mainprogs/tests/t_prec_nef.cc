@@ -1,11 +1,11 @@
-// $Id: t_prec_nef.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
+// $Id: t_prec_nef.cc,v 3.1 2006-07-03 15:26:11 edwards Exp $
 
 #include "chroma.h"
 
 using namespace Chroma;
 
 struct App_input_t {
-  InvertParam_t   invParam;   // Inverter parameters
+  GroupXML_t      invParam;   // Inverter parameters
   Cfg_t           cfg;
   multi1d<int>    nrow;
 };
@@ -21,7 +21,7 @@ void read(XMLReader& xml, const string& path, App_input_t& input)
     // Read in the gauge configuration info
     read(inputtop, "Cfg", input.cfg);
     read(inputtop, "nrow", input.nrow);
-    read(inputtop, "InvertParam", input.invParam);
+    input.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
   }
   catch (const string& e) 
   {

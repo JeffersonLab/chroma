@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 3.1 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -16,7 +16,7 @@ namespace Chroma
 				    const Real& Mass_,
 				    const Real& b5_,
 				    const Real& c5_,
-				    const InvertParam_t& invParam_)
+				    const SysSolverCGParams& invParam_)
   {
     Mass = Mass_;
     b5 = b5_;
@@ -42,7 +42,7 @@ namespace Chroma
   {
     START_CODE();
 
-    int n_count;
+    SystemSolverResults_t res;
 
     // OK Copy from SZIN Code. DOn't DO hermitian op... just do the D's
     switch(isign) 
@@ -55,12 +55,11 @@ namespace Chroma
 
       tmp = psi; 
       
-      InvCG2<LatticeFermion>(*D_denum, 
-			     chi, 
-			     tmp,
-			     invParam.RsdCG,
-			     invParam.MaxCG,
-			     n_count);
+      res = InvCG2<LatticeFermion>(*D_denum, 
+				   chi, 
+				   tmp,
+				   invParam.RsdCG,
+				   invParam.MaxCG);
       (*D_w)(chi, tmp, PLUS);
    
       break;
@@ -72,12 +71,11 @@ namespace Chroma
       chi = GammaConst<Ns,Ns*Ns-1>()*psi;      
       (*D_denum)(tmp, chi, MINUS);
 
-      InvCG2<LatticeFermion>(*D_denum, 
-			     tmp, 
-			     chi,
-			     invParam.RsdCG,
-			     invParam.MaxCG,
-			     n_count);
+      res = InvCG2<LatticeFermion>(*D_denum, 
+				   tmp, 
+				   chi,
+				   invParam.RsdCG,
+				   invParam.MaxCG);
       
       (*D_w)(tmp, chi, PLUS);
       chi  = GammaConst<Ns,Ns*Ns-1>()*tmp;
@@ -92,7 +90,7 @@ namespace Chroma
     }
     
     chi *= (b5 + c5);
-    QDPIO::cout << "UnprecDWFTransfLinOp: ncount= " << n_count << endl;
+    QDPIO::cout << "UnprecDWFTransfLinOp: ncount= " << res.n_count << endl;
     END_CODE();
   }
 
@@ -104,7 +102,7 @@ namespace Chroma
 					 const Real& Mass_,
 					 const Real& b5_,
 					 const Real& c5_,
-					 const InvertParam_t& invParam_)
+					 const SysSolverCGParams& invParam_)
   {
     Mass = Mass_;
     b5 = b5_;
@@ -141,8 +139,7 @@ namespace Chroma
 			   tmp,
 			   chi, 
 			   invParam.RsdCG,
-			   invParam.MaxCG,
-			   n_count);
+			   invParam.MaxCG);
 
     (*D_w)(tmp, chi, PLUS);
     chi = GammaConst<Ns,Ns*Ns-1>()*tmp;

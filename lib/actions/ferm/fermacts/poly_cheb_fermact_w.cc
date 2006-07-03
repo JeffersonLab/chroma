@@ -1,4 +1,4 @@
-// $Id: poly_cheb_fermact_w.cc,v 3.1 2006-06-06 19:06:34 kostas Exp $
+// $Id: poly_cheb_fermact_w.cc,v 3.2 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -10,6 +10,9 @@
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+
+#include "actions/ferm/invert/syssolver_polyprec_factory.h"
+#include "actions/ferm/invert/syssolver_polyprec_aggregate.h"
 
 namespace Chroma
 {
@@ -43,6 +46,7 @@ namespace Chroma
     bool registerAll()
     {
       bool foo = true;
+      foo &= PolyPrecSysSolverEnv::registered;
       foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
       foo &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
       return foo;
@@ -157,6 +161,22 @@ namespace Chroma
     Handle< DiffLinearOperator<T,P,Q> > Pol(polyLinOp(state));
 
     return new PolyPrec<T,P,Q>(M, Pol);
+  }
+
+
+  //! Return a linear operator solver for this action to solve M*psi=chi 
+  PolyPrecSystemSolver<LatticeFermion>* 
+  PolyChebFermAct::invPolyPrec(Handle< FermState<T,P,Q> > state,
+			       const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    // Return solver for [Q*P(Q^2)*Q]^{-1} X = phi
+    return ThePolyPrecFermSystemSolverFactory::Instance().createObject(invParam.id,
+								       paramtop,
+								       invParam.path,
+								       polyPrecLinOp(state));
   }
 
 }

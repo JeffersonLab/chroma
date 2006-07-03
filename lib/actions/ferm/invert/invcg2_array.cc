@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 3.1 2006-05-24 06:31:59 kostas Exp $
+// $Id: invcg2_array.cc,v 3.2 2006-07-03 15:26:08 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -40,7 +40,7 @@ namespace Chroma
    *  \param psi     Solution    	    	       (Modify)
    *  \param RsdCG   CG residual accuracy        (Read)
    *  \param MaxCG   Maximum CG iterations       (Read)
-   *  \param n_count Number of CG iteration      (Write)
+   *  \return res    System solver results
    *
    * Local Variables:
    *
@@ -65,17 +65,19 @@ namespace Chroma
 
 #undef PRINT_5D_RESID
   template<typename T, typename C>
-  void InvCG2_a(const C& M,
-		const multi1d<T> & chi,
-		multi1d<T>& psi,
-		const Real& RsdCG, 
-		int MaxCG, 
-		int& n_count)
+  SystemSolverResults_t 
+  InvCG2_a(const C& M,
+	   const multi1d<T> & chi,
+	   multi1d<T>& psi,
+	   const Real& RsdCG, 
+	   int MaxCG)
   {
     START_CODE();
 
     const int N = psi.size();
     const OrderedSubset& s = M.subset();
+
+    SystemSolverResults_t res;
 
     // Move what we can to fast memory
     multi1d<T> mp(N);            moveToFastMemoryHint(mp);
@@ -145,14 +147,15 @@ namespace Chroma
     //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
     if ( toBool(cp  <=  rsd_sq) )
     {
-      n_count = 0;
+      res.n_count = 0;
+      res.resid   = sqrt(cp);
       swatch.stop();
       QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
       // Try it all at the end.
       flopcount.report("invcg2_array", swatch.getTimeInSeconds());
       revertFromFastMemoryHint(psi,true);
       END_CODE();
-      return;
+      return res;
     }
 
     //
@@ -175,8 +178,6 @@ namespace Chroma
    
       //  d = | mp | ** 2
       d = norm2(mp, s); flopcount.addSiteFlops(4*Nc*Ns*N,s);
-
-    
 
       a = Real(c)/Real(d);
 
@@ -216,29 +217,30 @@ namespace Chroma
 
       if ( toBool(cp  <=  rsd_sq) )
       {
-	n_count = k;
+	res.n_count = k;
 	swatch.stop();
 	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 	flopcount.report("invcg2_array", swatch.getTimeInSeconds());
 	revertFromFastMemoryHint(psi,true);
 
-
-	//Check the true residual
+	// Compute the actual residual
 	{
 	  M(mp, psi, PLUS);
 	  M(mmp, mp, MINUS);
-	  Double true_res(0);
-	  for(int n=0; n < N; ++n){
-	    Double norm_r = norm2(chi[n] - mmp[n],s) ;
-	    QDPIO::cout<<"True residual "<<" r[" << n << "] = "<< sqrt(norm_r/chi_sq)<<endl;
-	    true_res += norm_r ;
+	  Double actual_res(zero);
+	  for(int n=0; n < N; ++n)
+	  {
+	    Double norm_r = norm2(chi[n] - mmp[n],s);
+//	    QDPIO::cout<<"True residual "<<" r[" << n << "] = "<< sqrt(norm_r/chi_sq)<<endl;
+	    actual_res += norm_r ;
 	  }
 	  
-	  QDPIO::cout << "True residual r = " << sqrt(true_res/chi_sq) << endl;
+	  res.resid = sqrt(actual_res);
+	  QDPIO::cout << "Actual residual r = " << sqrt(actual_res) << endl;
 	}
 
 	END_CODE();
-	return;
+	return res;
       }
 
       //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
@@ -253,42 +255,28 @@ namespace Chroma
       flopcount.addSiteFlops(4*Nc*Ns*N,s);
     }
 
-    n_count = MaxCG;
+    res.n_count = MaxCG;
+    res.resid   = sqrt(cp);
     swatch.stop();
     QDPIO::cerr << "Nonconvergence Warning" << endl;
     flopcount.report("invcg2_array", swatch.getTimeInSeconds());
     revertFromFastMemoryHint(psi,true);
 
-   
     END_CODE();
- 
+    return res;
   }
 
 
   // Fix here for now
   template<>
-  void InvCG2(const LinearOperatorArray<LatticeFermion>& M,
-	      const multi1d<LatticeFermion>& chi,
-	      multi1d<LatticeFermion>& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count)
+  SystemSolverResults_t 
+  InvCG2(const LinearOperatorArray<LatticeFermion>& M,
+	 const multi1d<LatticeFermion>& chi,
+	 multi1d<LatticeFermion>& psi,
+	 const Real& RsdCG, 
+	 int MaxCG)
   {
-    InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
-  }
-
-
-  template<>
-  void InvCG2(const DiffLinearOperatorArray<LatticeFermion,
-	                                    multi1d<LatticeColorMatrix>,
-	                                    multi1d<LatticeColorMatrix> >& M,
-	      const multi1d<LatticeFermion>& chi,
-	      multi1d<LatticeFermion>& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count)
-  {
-    InvCG2_a(M, chi, psi, RsdCG, MaxCG, n_count);
+    return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
   }
 
 }  // end namespace Chroma

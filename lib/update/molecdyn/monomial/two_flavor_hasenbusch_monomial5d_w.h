@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.2 2006-06-21 20:42:09 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.3 2006-07-03 15:26:10 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -10,10 +10,8 @@
 
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
-#include "actions/ferm/invert/invert.h"
-#include "invtype.h"
+//#include <typeinfo>
 
-#include <typeinfo>
 using namespace std;
 
 namespace Chroma
@@ -180,7 +178,11 @@ namespace Chroma
       (*M)(tmp, eta, MINUS);
 
       // Solve  (V^dag*V)*eta = tmp
-      int n_count = invert(eta, *M_2, tmp);
+      // Get system solver
+      Handle< MdagMSystemSolverArray<Phi> > invMdagM(precFA.invMdagM(f_state, getInvParams()));
+
+      // Do the inversion
+      SystemSolverResults_t res = (*invMdagM)(eta, tmp);
 
       // Finally, get phi
       (*M_2)(getPhi(), eta, PLUS);
@@ -224,7 +226,7 @@ namespace Chroma
     virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermActPrec(void) const =0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t getInvParams(void) const = 0;
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
@@ -232,8 +234,6 @@ namespace Chroma
     //! Get (M^dagM)^{-1} phi
     virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)
     {
-      const InvertParam_t& inv_param = getInvParams();
-
       // Grab the fermact
       const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
       const WilsonTypeFermAct5D<Phi,P,Q>& FA_prec = getFermActPrec();
@@ -250,61 +250,20 @@ namespace Chroma
     
       (*M_prec)(MPrecDagPhi, getPhi(), MINUS);
 
-      int n_count;
+      // Get system solver
+      Handle< MdagMSystemSolverArray<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
 
-      // Get the chrono prediction
-      switch( inv_param.invType) {
-      case CG_INVERTER:
-      {
-	// CG Chrono predictor needs MdagM
-	Handle< DiffLinearOperatorArray<Phi,P,Q> > MdagM(FA.lMdagM(state));
-	(getMDSolutionPredictor())(X, *MdagM, MPrecDagPhi);
+      // CG Chrono predictor needs MdagM
+      Handle< DiffLinearOperatorArray<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      (getMDSolutionPredictor())(X, *MdagM, MPrecDagPhi);
 
-	// Do the inversion
-	n_count = invert(X, *M, MPrecDagPhi);
+      // Do the inversion
+      SystemSolverResults_t res = (*invMdagM)(X, MPrecDagPhi);
 
-	// Register the new vector
-	(getMDSolutionPredictor()).newVector(X);
-      }
-      break;
-      default:
-      {
-	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-	QDP_abort(1);
-      }
-      break;
-      };
+      // Register the new vector
+      (getMDSolutionPredictor()).newVector(X);
  
-      return n_count;
-    }
-
-  
-    // Get X = (A^dag*A)^{-1} eta
-    virtual int invert(multi1d<Phi>& X, const DiffLinearOperatorArray<Phi,P,Q>& M,
-		       const multi1d<Phi>& eta) const
-    {
-      const InvertParam_t& inv_param = getInvParams();
-
-      int n_count =0;
-
-      // Do the inversion...
-      switch( inv_param.invType) {
-      case CG_INVERTER:
-      {
-	// Solve MdagM X = eta
-	InvCG2(M, eta, X, inv_param.RsdCG, inv_param.MaxCG, n_count);
-	QDPIO::cout << "2Flav5D::invert,  n_count = " << n_count << endl;
-      }
-      break;
-      default:
-      {
-	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-	QDP_abort(1);
-      }
-      break;
-      };
-
-      return n_count;
+      return res.n_count;
     }
 
    };
@@ -386,7 +345,7 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getFermActPrec(void) const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t getInvParams(void) const = 0;
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
@@ -472,7 +431,7 @@ namespace Chroma
     virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getFermActPrec() const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t getInvParams(void) const = 0;
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;

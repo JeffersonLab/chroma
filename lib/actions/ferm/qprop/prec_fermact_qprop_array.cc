@@ -1,6 +1,12 @@
-// $Id: prec_fermact_qprop_array.cc,v 3.2 2006-06-11 06:30:32 edwards Exp $
+// $Id: prec_fermact_qprop_array.cc,v 3.3 2006-07-03 15:26:09 edwards Exp $
 // $Log: prec_fermact_qprop_array.cc,v $
-// Revision 3.2  2006-06-11 06:30:32  edwards
+// Revision 3.3  2006-07-03 15:26:09  edwards
+// Changed FermionAction API to produce system solver classes. No longer have
+// a fixed InvertParam set. Removed old inverter enum and support. Have default
+// creation for inverters to solve M*psi=chi, MdagM*psi=chi, and multi-shift
+// support. Some older files still have explicit calls to CG solver.
+//
+// Revision 3.2  2006/06/11 06:30:32  edwards
 // Change in interface. The quarkProp routines now all take a "numRetries"
 // variable for the number of times to call the qprop routine. The propagator
 // regression tests have all been up to version 10 to read this new variable.
@@ -135,7 +141,6 @@ namespace Chroma
   {
     START_CODE();
 
-    SystemSolverResults_t res;
     const int N5 = size();
   
     if (psi.size() != size() && chi.size() != size())
@@ -154,41 +159,10 @@ namespace Chroma
 	chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
     }
 
-    QDPIO::cout << "InvType is " << invParam.invType << endl << flush;
-    switch(invParam.invType)
-    {
-    case CG_INVERTER: 
-    {
-      /* tmp = M_dag(u) * chi_tmp */
-      multi1d<LatticeFermion> tmp(N5);
-
-      (*A)(tmp, chi_tmp, MINUS);
-      
-      /* psi = (M^dag * M)^(-1) chi_tmp */
-      InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
-    }
-    break;
+    // Call inverter
+    // psi = M^(-1) psi
+    SystemSolverResults_t res = (*invA)(psi, chi_tmp);
   
-#if 0
-    case MR_INVERTER:
-      /* psi = M^(-1) chi */
-      InvMR (*A, chi_tmp, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, res.n_count);
-      break;
-
-    case BICG_INVERTER:
-      /* psi = M^(-1) chi */
-      InvBiCG (*A, chi_tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
-      break;
-#endif
-  
-    default:
-      QDP_error_exit("Unknown inverter type", invParam.invType);
-    }
-  
-    if ( res.n_count == invParam.MaxCG )
-      QDP_error_exit("no convergence in the inverter", res.n_count);
-   
-    
     /* Step (ii) */
     /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
  
@@ -227,10 +201,11 @@ namespace Chroma
   template<>
   SystemSolverArray<LF>* 
   EvenOddPrecWilsonTypeFermAct5D<LF,LCM,LCM>::qpropT(Handle< FermState<LF,LCM,LCM> > state,
-						     const InvertParam_t& invParam) const
+						     const GroupXML_t& invParam) const
   {
     return new PrecFermAct5DQprop<LF,LCM,LCM>(
-      Handle< EvenOddPrecLinearOperatorArray<LF,LCM,LCM> >(linOp(state)), invParam);
+      Handle< EvenOddPrecLinearOperatorArray<LF,LCM,LCM> >(linOp(state)), 
+      Handle< LinOpSystemSolverArray<LF> >(invLinOp(state,invParam)));
   }
   
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_altivec_w.h,v 3.3 2006-06-11 20:28:13 edwards Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.h,v 3.4 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -9,7 +9,7 @@
 
 #include "fermact.h"
 #include "io/aniso_io.h"
-
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 extern "C" 
 {
@@ -44,7 +44,7 @@ namespace Chroma
 		     const Real& Mass_,
 		     int N5_,
 		     const AnisoParam_t& anisoParam_,
-		     const InvertParam_t& invParam_) : 
+		     const SysSolverCGParams& invParam_) : 
       OverMass(OverMass_), Mass(Mass_), 
       N5(N5_), anisoParam(anisoParam_), invParam(invParam_) 
       {init(state_);}
@@ -59,7 +59,7 @@ namespace Chroma
 		     const Real& OverMass_,
 		     const Real& Mass_,
 		     const AnisoParam_t& anisoParam_,
-		     const InvertParam_t& invParam_) : 
+		     const SysSolverCGParams& invParam_) : 
       A(A_), OverMass(OverMass_), Mass(Mass_), 
       N5(A->size()), anisoParam(anisoParam_), invParam(invParam_) 
       {init(state_);}
@@ -92,11 +92,11 @@ namespace Chroma
     ALTIVEC_DWF_Gauge *g;
 
     Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
-    const Real OverMass;
-    const Real Mass;
-    const int  N5;
-    const AnisoParam_t anisoParam;
-    const InvertParam_t invParam;
+    Real OverMass;
+    Real Mass;
+    int  N5;
+    AnisoParam_t anisoParam;
+    SysSolverCGParams invParam;
   };
 
 }

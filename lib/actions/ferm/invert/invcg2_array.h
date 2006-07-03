@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg2_array.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: invcg2_array.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -8,6 +8,7 @@
 #define __invcg2_array__
 
 #include "linearop.h"
+#include "syssolver.h"
 
 namespace Chroma 
 {
@@ -67,22 +68,12 @@ namespace Chroma
    * @{
    */
   template<typename T>
-  void InvCG2(const LinearOperatorArray<T>& M,
-	      const multi1d<T>& chi,
-	      multi1d<T>& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count);
-
-
-  template<typename T, typename P, typename Q>
-  void InvCG2(const DiffLinearOperatorArray<T,P,Q>& M,
-	      const multi1d<T>& chi,
-	      multi1d<T>& psi,
-	      const Real& RsdCG, 
-	      int MaxCG, 
-	      int& n_count);
-
+  SystemSolverResults_t 
+  InvCG2(const LinearOperatorArray<T>& M,
+	 const multi1d<T>& chi,
+	 multi1d<T>& psi,
+	 const Real& RsdCG, 
+	 int MaxCG);
 
   /*! @} */  // end of group invert
 

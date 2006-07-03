@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_io.h,v 3.0 2006-04-03 04:58:56 edwards Exp $
+// $Id: enum_io.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
 
 /*! \file
  * \brief Enums
@@ -26,7 +26,6 @@
 #include "enum_fermtype_io.h"
 #include "enum_simplebctype_io.h"
 #include "enum_gaugeacttype_io.h"
-#include "enum_invtype_io.h"
 #include "enum_wvfkind_io.h"
 #include "enum_qdpvolfmt_io.h"
 #include "enum_srcsnktype_io.h"

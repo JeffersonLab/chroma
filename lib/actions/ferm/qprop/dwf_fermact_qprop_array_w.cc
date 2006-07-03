@@ -1,4 +1,4 @@
-// $Id: dwf_fermact_qprop_array_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: dwf_fermact_qprop_array_w.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Base class for unprec and even-odd preconditioned DWF qprop
  */
@@ -115,7 +115,7 @@ namespace Chroma
   template<>
   SystemSolver<LF>* 
   EvenOddPrecDWFermActBaseArray<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
-						   const InvertParam_t& invParam) const
+						   const GroupXML_t& invParam) const
   {
     return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(qpropT(state,invParam)), 
 			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,getQuarkMass())),
@@ -129,7 +129,7 @@ namespace Chroma
   template<>
   SystemSolver<LF>* 
   UnprecDWFermActBaseArray<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
-					      const InvertParam_t& invParam) const
+					      const GroupXML_t& invParam) const
   { 
     return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(qpropT(state,invParam)), 
 			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,getQuarkMass())),

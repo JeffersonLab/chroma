@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_hasenbusch_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial_w.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -70,7 +70,7 @@ namespace Chroma
       }
 
       //! Do an inversion of the type 
-      const InvertParam_t getInvParams(void) const {
+      const GroupXML_t& getInvParams(void) const {
 	return inv_param;
       }
 
@@ -89,7 +89,7 @@ namespace Chroma
       Handle<const UnprecWilsonTypeFermAct<T,P,Q> > fermact_prec;
 
       // The parameters for the inversion
-      InvertParam_t inv_param;
+      GroupXML_t inv_param;
       
       // A handle for the chrono predictor
       Handle< AbsChronologicalPredictor4D<T> > chrono_predictor;

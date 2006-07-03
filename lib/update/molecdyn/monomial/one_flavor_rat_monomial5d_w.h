@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 3.1 2006-06-13 20:19:41 bjoo Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -10,8 +10,6 @@
 
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "actions/ferm/fermacts/remez_coeff.h"
-#include "actions/ferm/invert/invert.h"
-#include "invtype.h"
 
 #include <typeinfo>
 using namespace std;
@@ -479,7 +477,7 @@ namespace Chroma
     virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
@@ -517,42 +515,6 @@ namespace Chroma
     //! Return the partial fraction expansion for the heat-bath in PV
     virtual const RemezCoeff_t& getSIPVPFE() const = 0;
 
-    //! Get X = (A^dag*A + q_i)^{-1} eta
-    virtual int invert(multi1d< multi1d<Phi> >& X, 
-		       const multi1d<Real>& shifts, 
-		       const DiffLinearOperatorArray<Phi,P,Q>& A,
-		       const multi1d<Phi>& eta) const
-    {
-      const InvertParam_t& inv_param = getInvParams();
-
-      int n_count = 0;
-      multi1d<Real> RsdCG(shifts.size());
-      RsdCG = inv_param.RsdCG;
-      
-      // X allocated and passed in
-//    X=zero;
-
-      // Do the inversion...
-      switch( inv_param.invType) {
-      case CG_INVERTER:
-      {
-	// Solve A^dag*M X = eta
-	MInvCG(A, eta, X, shifts, RsdCG, inv_param.MaxCG, n_count);
-	QDPIO::cout << "1Flav5D::invert, n_count = " << n_count << endl;
-      }
-      break;
-      default:
-      {
-	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-	QDP_abort(1);
-      }
-      break;
-      };
-
-      return n_count;
-    }
-
-
     //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
     virtual int getX(multi1d< multi1d<Phi> >& X, 
 		     const multi1d<Real>& shifts, 
@@ -565,11 +527,13 @@ namespace Chroma
       // Make the state
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 
-      // Get linop
-      Handle< const DiffLinearOperatorArray<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      // Get multi-shift system solver
+      Handle< MdagMMultiSystemSolverArray<Phi> > invMdagM(FA.mInvMdagM(state, getInvParams()));
 
-      int n_count = invert(X, shifts, *MdagM, chi);
-      return n_count;
+      // Do the inversion
+      SystemSolverResults_t res = (*invMdagM)(X, shifts, chi);
+
+      return res.n_count;
     }
 
   
@@ -585,13 +549,13 @@ namespace Chroma
       // Make the state
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 
-      // Get linop
-      Handle< const DiffLinearOperatorArray<Phi,P,Q> > 
-	MdagM(new DiffMdagMLinOpArray<Phi,P,Q>(FA.linOpPV(state)));
-    
-      // Do the inversion...
-      int n_count = invert(X, shifts, *MdagM, chi);
-      return n_count;
+      // Get multi-shift system solver
+      Handle< MdagMMultiSystemSolverArray<Phi> > invMdagM(FA.mInvMdagMPV(state, getInvParams()));
+
+      // Do the inversion
+      SystemSolverResults_t res = (*invMdagM)(X, shifts, chi);
+
+      return res.n_count;
     }
 
   };
@@ -629,7 +593,7 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
@@ -715,7 +679,7 @@ namespace Chroma
     virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;

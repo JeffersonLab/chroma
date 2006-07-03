@@ -1,4 +1,4 @@
-// $Id: unprec_ppdwf4d_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_ppdwf4d_linop_w.cc,v 3.1 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D using prec 5D bits
  */
@@ -24,7 +24,7 @@ namespace Chroma
     START_CODE();
 
     const int  N5 = size();   // array size better match
-    int n_count;
+    SystemSolverResults_t res;
   
     // Initialize the 5D fields
     multi1d<LatticeFermion> psi5(N5);
@@ -61,20 +61,13 @@ namespace Chroma
 	  chi_tmp[n][rb[1]] = chi5[n] - tmp2[n];
       }
 
-      switch(invParam.invType)
-      {
-      case CG_INVERTER: 
+//      case CG_INVERTER: 
       {
 	/* tmp5 = M_dag(u) * chi_tmp */
 	(*PV)(tmp5, chi_tmp, MINUS);
 
 	/* psi5 = (M^dag * M)^(-1) chi_tmp */
-	InvCG2 (*PV, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, n_count);
-      }
-      break;
-  
-      default:
-	QDP_error_exit("Unknown inverter type", invParam.invType);
+	res = InvCG2 (*PV, tmp5, psi5, invParam.RsdCG, invParam.MaxCG);
       }
 
       /* Step (ii) */
@@ -109,24 +102,17 @@ namespace Chroma
 	  chi_tmp[n][rb[1]] = chi5[n] - tmp2[n];
       }
 
-      switch(invParam.invType)
-      {
-      case CG_INVERTER: 
+//      case CG_INVERTER: 
       {
 	multi1d<LatticeFermion> tmp1(N5);
 	for(int n=0; n < N5; ++n)
 	  tmp1[n][rb[1]] = zero;
   
 	/* tmp1 = (M^dag * M)^(-1) chi_tmp */
-	InvCG2(*PV, chi_tmp, tmp1, invParam.RsdCG, invParam.MaxCG, n_count);
+	res = InvCG2(*PV, chi_tmp, tmp1, invParam.RsdCG, invParam.MaxCG);
 
 	/* tmp5_o = M(u) * tmp1_o = (M^dag)^(-1) * chi_tmp_o */
 	(*PV)(tmp5, tmp1, PLUS);
-      }
-      break;
-  
-      default:
-	QDP_error_exit("Unknown inverter type", invParam.invType);
       }
 
       /* Step (ii) */
@@ -147,8 +133,8 @@ namespace Chroma
     break;
     }
     
-    if ( n_count == invParam.MaxCG )
-      QDP_error_exit("no convergence in the inverter", n_count);
+    if ( res.n_count == invParam.MaxCG )
+      QDP_error_exit("no convergence in the inverter", res.n_count);
   
     // Project out first slice after  chi <- chi5 <- P^(-1) . psi5
     DwfFld(chi5, psi5, MINUS);

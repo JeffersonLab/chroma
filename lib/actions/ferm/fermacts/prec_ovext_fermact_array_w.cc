@@ -1,4 +1,4 @@
-// $Id: prec_ovext_fermact_array_w.cc,v 3.1 2006-06-11 06:30:31 edwards Exp $
+// $Id: prec_ovext_fermact_array_w.cc,v 3.2 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -17,6 +17,8 @@
 
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
+
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 namespace Chroma
 {
@@ -399,7 +401,7 @@ namespace Chroma
     PrecOvExt5DQprop(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A_,
 		     Handle< LinearOperator<T> > D_denum_,
 		     const Real& Mass_,
-		     const InvertParam_t& invParam_) : 
+		     const SysSolverCGParams& invParam_) : 
       A(A_), D_denum(D_denum_), Mass(Mass_),  invParam(invParam_) {}
 
     //! Destructor is automatic
@@ -427,9 +429,7 @@ namespace Chroma
 	multi1d<T> chi5(N5);
 	multi1d<T> psi5(N5);
 
-	switch(invParam.invType) 
-	{
-	case CG_INVERTER: 
+//	if( invType == "CG_INVERTER") 
 	{
 	  multi1d<T> tmp5_1(N5);
 	  {
@@ -463,7 +463,7 @@ namespace Chroma
 	  psi5[N5-1][rb[1]] = psi;     
 
 	  // Solve M^{+}M psi = M^{+} chi
-	  InvCG2(*A, tmp5_1, psi5, invParam.RsdCG, invParam.MaxCG, res.n_count);
+	  res = InvCG2(*A, tmp5_1, psi5, invParam.RsdCG, invParam.MaxCG);
         
 	  // psi[N5-1]_odd now holds the desired piece.
 	
@@ -495,19 +495,12 @@ namespace Chroma
 	    }
 	  } // tmp5_2, tmp5_3 disappear 
 	} // tmp5_1 disappears
-	break;
-      
-	case MR_INVERTER:
-	  QDP_error_exit("Unsupported inverter type", invParam.invType);
-	  break;
-
-	case BICG_INVERTER:
-	  QDP_error_exit("Unsupported inverter type", invParam.invType);
-	  break;
-      
-	default:
-	  QDP_error_exit("Unknown inverter type", invParam.invType);
-	}
+//	else
+//	{
+//	  QDPIO::cerr << EvenOddPrecOvExtFermActArrayEnv::name 
+//		      << "Unsupported inverter type =" << invParam.invType << endl;
+//	  QDP_abort(1);
+//	}
   
 	if ( res.n_count == invParam.MaxCG )
 	  QDP_error_exit("no convergence in the inverter", res.n_count);
@@ -547,15 +540,15 @@ namespace Chroma
 
     Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
     Handle< LinearOperator<T> > D_denum;
-    const Real Mass;
-    const InvertParam_t invParam;
+    Real Mass;
+    SysSolverCGParams invParam;
   };
 
  
   //! Propagator of an un-preconditioned Extended-Overlap linear operator
   SystemSolver<LatticeFermion>* 
   EvenOddPrecOvExtFermActArray::qprop(Handle< FermState<T,P,Q> > state,
-				      const InvertParam_t& invParam) const
+				      const GroupXML_t& invParam) const
   {
     Real a5 = param.b5- param.c5;
 
@@ -563,7 +556,10 @@ namespace Chroma
     Handle< LinearOperator<LatticeFermion> > D_denum(new UnprecDWFTransfDenLinOp(a5, D_w));
     Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A(linOp(state));
 
-    return new PrecOvExt5DQprop<T,P,Q>(A, D_denum, param.Mass, invParam);
+    std::istringstream  is(invParam.xml);
+    XMLReader  paramtop(is);
+	
+    return new PrecOvExt5DQprop<T,P,Q>(A, D_denum, param.Mass, SysSolverCGParams(paramtop,invParam.path));
   }
 
 }

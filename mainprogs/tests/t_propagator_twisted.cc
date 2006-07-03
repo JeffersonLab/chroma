@@ -1,4 +1,4 @@
-// $Id: t_propagator_twisted.cc,v 3.1 2006-06-11 06:30:34 edwards Exp $
+// $Id: t_propagator_twisted.cc,v 3.2 2006-07-03 15:26:11 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation of twisted mass QCD
  *   
@@ -39,7 +39,7 @@ struct Param_t
 
   PropType prop_type;      // storage order for stored propagator
 
-  InvertParam_t  invParam;
+  SysSolverCGParams  invParam;
 
   Real GFAccu, OrPara;    // Gauge fixing tolerance and over-relaxation param
   int GFMax;              // Maximum gauge fixing iterations
@@ -145,7 +145,6 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
     read(paramtop,"Twisted_mass",input.param.mass_param); 
 
 //    read(paramtop, "invType", input.param.invType);
-    input.param.invParam.invType = CG_INVERTER;   //need to fix this
     read(paramtop, "RsdCG", input.param.invParam.RsdCG);
     read(paramtop, "MaxCG", input.param.invParam.MaxCG);
 
@@ -283,9 +282,17 @@ int main(int argc, char **argv)
   //
   UnprecParWilsonFermAct  S_f(fbc,input.param.mass_param) ;
 
+  GroupXML_t inv_param;
+  {
+    XMLBufferWriter xml_buf;
+    write(xml_buf, "InvertParam", input.param.invParam);
+    XMLReader xml_in(xml_buf);
+    inv_param = readXMLGroup(xml_in, "/InvertParam", "invType");
+  }
+
   // Set up a state for the current u,
   Handle<const ConnectState > state(S_f.createState(u));
-  Handle<const SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,input.param.invParam));
+  Handle<const SystemSolver<LatticeFermion> > qprop(S_f.qprop(state,inv_param));
 
   LatticePropagator quark_propagator;
   XMLBufferWriter xml_buf;

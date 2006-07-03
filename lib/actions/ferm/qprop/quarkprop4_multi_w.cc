@@ -1,4 +1,4 @@
-// $Id: quarkprop4_multi_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: quarkprop4_multi_w.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -22,7 +22,7 @@ namespace Chroma {
 			 multi1d<LatticeColorMatrix>,
 			 multi1d<LatticeColorMatrix> > > state,
 			 const multi1d<Real>& masses,
-			 const MultiInvertParam_t& invParam,
+			 const GroupXML_t& invParam,
 			 int n_soln,
 			 int& ncg_had)
   {
@@ -74,7 +74,7 @@ namespace Chroma {
 	    ncg_had += n_count;
 	    
 	    push(xml_out,"Qprop");
-	    write(xml_out, "RsdCG", invParam.RsdCG);
+//	    write(xml_out, "RsdCG", invParam.RsdCG);
 	    write(xml_out, "n_count", n_count);
 	    pop(xml_out);
 	    
@@ -118,7 +118,7 @@ namespace Chroma {
 					  multi1d<LatticeColorMatrix>,
 					  multi1d<LatticeColorMatrix> > > state,
 					  const multi1d<Real>& masses,
-					  const MultiInvertParam_t& invParam,
+					  const GroupXML_t& invParam,
 					  const int n_soln,
 					  int& ncg_had)
   {

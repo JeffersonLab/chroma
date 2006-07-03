@@ -1,4 +1,4 @@
-// $Id: asqtad_cps_wrapper_qprop.h,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: asqtad_cps_wrapper_qprop.h,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -16,6 +16,8 @@
 #include "linearop.h"
 #include "fermact.h"
 #include "state.h"
+#include "actions/ferm/invert/syssolver_cg_params.h"
+
 
 namespace Chroma
 {
@@ -43,8 +45,8 @@ namespace Chroma
      */
     AsqtadCPSWrapperQprop(const EvenOddStaggeredTypeFermAct<T,P,Q>& S_,
 			  Handle< FermState<T,P,Q> > state, 
-			  const InvertParam_t& invParam_);
-
+			  const SysSolverCGParams& invParam_);
+    
     //! Destructor is automatic
     ~AsqtadCPSWrapperQprop();
 
@@ -63,8 +65,8 @@ namespace Chroma
     // Hide default constructor
     AsqtadCPSWrapperQprop() {}
 
-    const Real Mass;
-    const InvertParam_t invParam;
+    Real Mass;
+    SysSolverCGParams invParam;
     Handle< FermState<T,P,Q> > state;
   };
 

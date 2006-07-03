@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: asqtad_fermact_s.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -51,7 +51,7 @@ namespace Chroma
 
     //! Return quark prop solver, solution of unpreconditioned system
     SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
-			   const InvertParam_t& invParam) const;
+			   const GroupXML_t& invParam) const;
 
     //! accessors 
     const Real getQuarkMass() const {return Mass;}

@@ -1,4 +1,4 @@
-// $Id: one_flavor_rat_monomial5d_params_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_params_w.cc,v 3.1 2006-07-03 15:26:10 edwards Exp $
 /*! @file
  * @brief One-flavor monomial params
  */
@@ -39,7 +39,7 @@ namespace Chroma
     
     try {
       // Read the inverter Parameters
-      read(paramtop, "InvertParam", inv_param);
+      inv_param = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "Remez", remez);
       read(paramtop, "expNumPower", expNumPower);
       read(paramtop, "expDenPower", expDenPower);
@@ -70,7 +70,7 @@ namespace Chroma
 
     try {
       // Read the inverter Parameters
-      read(paramtop, "InvertParam", inv_param);
+      inv_param = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "Remez", remez);
       read(paramtop, "nthRoot", nthRoot);
       read(paramtop, "nthRootPV", nthRootPV);

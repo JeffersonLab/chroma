@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -40,6 +40,10 @@
 
 #include "actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h"
 
+#include "actions/ferm/invert/syssolver_linop_aggregate.h"
+#include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
+#include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
+
 #if 0
 #include "actions/ferm/fermacts/unprec_stout_fermact_w.h"
 #include "actions/ferm/fermacts/prec_stout_fermact_w.h"
@@ -56,6 +60,11 @@ namespace Chroma
     bool registerAll() 
     {
       bool success = true;
+
+      // All system solvers
+      success &= LinOpSysSolverEnv::registered;
+      success &= MdagMSysSolverEnv::registered;
+      success &= MdagMMultiSysSolverEnv::registered;
 
       // All 4D bcs
       success &= WilsonTypeFermBCEnv::registered;
@@ -93,6 +102,11 @@ namespace Chroma
     bool registerAll() 
     {
       bool success = true;
+
+      // All 5D system solvers
+      success &= LinOpSysSolverArrayEnv::registered;
+      success &= MdagMSysSolverArrayEnv::registered;
+      success &= MdagMMultiSysSolverArrayEnv::registered;
 
       // All 5D bcs
       success &= WilsonTypeFermBCEnv::registered;

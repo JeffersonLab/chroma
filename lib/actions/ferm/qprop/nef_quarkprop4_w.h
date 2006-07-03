@@ -1,4 +1,4 @@
-// $Id: nef_quarkprop4_w.h,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: nef_quarkprop4_w.h,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -35,7 +35,7 @@ namespace Chroma
 		 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& S_f,
 		 Handle< FermState<LatticeFermion,
 		 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
-		 const InvertParam_t& invParam,
+		 const GroupXML_t& invParam,
 		 int numRetries,
 		 int& ncg_had);
 
@@ -60,7 +60,7 @@ namespace Chroma
 		 multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> >& S_f,
 		 Handle< FermState<LatticeFermion, 
 		 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
-		 const InvertParam_t& invParam,
+		 const GroupXML_t& invParam,
 		 int numRetries,
 		 int& ncg_had);
 

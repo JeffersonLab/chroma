@@ -1,4 +1,4 @@
-// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.cc,v 3.2 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -19,6 +19,8 @@
 #include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 #include "io/enum_io/enum_io.h"
+
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 namespace Chroma
 {
@@ -359,7 +361,7 @@ namespace Chroma
     OvHTCFZ5DQprop(Handle< LinearOperatorArray<T> > A_,
 		   Handle< LinearOperator<T> > D_denum_,
 		   const Real& Mass_,
-		   const InvertParam_t& invParam_) : 
+		   const SysSolverCGParams& invParam_) : 
       A(A_), D_denum(D_denum_), Mass(Mass_), invParam(invParam_) {}
 
     //! Destructor is automatic
@@ -387,7 +389,6 @@ namespace Chroma
       multi1d<LatticeFermion> chi5(N5);
       multi1d<LatticeFermion> psi5(N5);
 
-      
       // For reasons I do not appreciate doing the solve as
       //  M^{dag} M psi = M^{dag} chi
       //  seems a few iterations faster and more accurate than
@@ -396,9 +397,7 @@ namespace Chroma
 
       // So first get  M^{dag} gamma_5 chi into the source.
     
-      switch(invParam.invType) 
-      {
-      case CG_INVERTER: 
+//      if( invType == "CG_INVERTER") 
       {
 	multi1d<LatticeFermion> tmp5(N5);
 	
@@ -421,13 +420,14 @@ namespace Chroma
 	
 	// psi5 = (M^{dag} M)^(-1) M^{dag} * gamma_5 * chi5
 	// psi5[N5]  = (1 - m)/2 D^{-1}(m) chi [N5]
-	InvCG2(*A, tmp5, psi5, invParam.RsdCG, invParam.MaxCG, res.n_count);
+	res = InvCG2(*A, tmp5, psi5, invParam.RsdCG, invParam.MaxCG);
       }
-      break;
-      
-      default:
-	QDP_error_exit("Unknown inverter type", invParam.invType);
-      }
+//      else
+//      {
+//	QDPIO::cerr << UnprecHTContFrac5DFermActArrayEnv::name 
+//		    << "Unsupported inverter type =" << invType << endl;
+//	QDP_abort(1);
+//     }
   
       if ( res.n_count == invParam.MaxCG )
 	QDP_error_exit("no convergence in the inverter", res.n_count);
@@ -465,15 +465,15 @@ namespace Chroma
 
     Handle< LinearOperatorArray<T> > A;
     Handle< LinearOperator<T> > D_denum;  
-    const Real Mass;
-    const InvertParam_t invParam;
+    Real Mass;
+    SysSolverCGParams invParam;
   };
 
   
   //! Propagator of unpreconditioned H_T kernel continued fraction (5D) operator
   SystemSolver<LatticeFermion>* 
   UnprecHTContFrac5DFermActArray::qprop(Handle< FermState<T,P,Q> > state,
-					const InvertParam_t& invParam) const
+					const GroupXML_t& invParam) const
   {
     Real a5 = params.b5 - params.c5;
     Real WilsonMass = -params.OverMass;
@@ -481,10 +481,13 @@ namespace Chroma
     Handle< LinearOperator<T> > D_w(new UnprecWilsonLinOp(state, WilsonMass));
     Handle< LinearOperator<T> > D_denum(new UnprecDWFTransfDenLinOp(a5, D_w));
 
+    std::istringstream  is(invParam.xml);
+    XMLReader  paramtop(is);
+	
     return new OvHTCFZ5DQprop<T>(Handle< LinearOperatorArray<T> >(linOp(state)),
 				 D_denum,
 				 getQuarkMass(),
-				 invParam);
+				 SysSolverCGParams(paramtop,invParam.path));
   }
 
 

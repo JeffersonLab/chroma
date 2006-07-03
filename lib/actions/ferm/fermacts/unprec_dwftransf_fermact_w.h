@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -8,10 +8,9 @@
 #define __unprec_dwftransf_fermact_w_h__
 
 #include "fermact.h"
-#include "invtype.h"
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 #include "io/aniso_io.h"
-
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 namespace Chroma
 {
@@ -32,7 +31,7 @@ namespace Chroma
     Real Mass;
     Real b5;
     Real c5;
-    Chroma::InvertParam_t invParam;
+    SysSolverCGParams  invParam;
   };
 
 
@@ -54,20 +53,6 @@ namespace Chroma
     typedef LatticeFermion               T;
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
-
-    //! General FermBC
-    UnprecDWFTransfFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
-			   const Real& Mass_, 
-			   const Real& b5_,
-			   const Real& c5_,
-			   const InvertParam_t& invParam_) : 
-      cfs(cfs_) 
-      {
-	param.Mass=Mass_; 
-	param.b5=b5_;
-	param.c5=c5_;
-	param.invParam=invParam_;
-      }
 
     //! General FermBC
     UnprecDWFTransfFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 

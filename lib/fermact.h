@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 3.1 2006-06-11 06:30:31 edwards Exp $
+// $Id: fermact.h,v 3.2 2006-07-03 15:26:06 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -9,7 +9,6 @@
 #define __fermact_h__
 
 #include "chromabase.h"
-#include "invtype.h"
 #include "fermbc.h"
 #include "state.h"
 #include "create_state.h"
@@ -19,7 +18,11 @@
 #include "lmdagm.h"
 #include "eo_prec_linop.h"
 #include "syssolver.h"
+#include "io/xml_group_reader.h"
 #include "io/enum_io/enum_quarkspintype_io.h"
+#include "actions/ferm/invert/syssolver_linop.h"
+#include "actions/ferm/invert/syssolver_mdagm.h"
+#include "actions/ferm/invert/multi_syssolver_mdagm.h"
 
 namespace Chroma
 {
@@ -93,7 +96,7 @@ namespace Chroma
 
     //! Return quark prop solver, solution of unpreconditioned system
     virtual SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
-				   const InvertParam_t& invParam) const = 0;
+				   const GroupXML_t& invParam) const = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
     /*!
@@ -110,7 +113,7 @@ namespace Chroma
 			   XMLWriter& xml_out,
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   Handle< FermState<T,P,Q> > state,
-			   const InvertParam_t& invParam,
+			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
 			   int numRetries,
 			   int& ncg_had) const = 0;
@@ -137,7 +140,7 @@ namespace Chroma
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   int t_src, int j_decay,
 			   Handle< FermState<T,P,Q> > state,
-			   const InvertParam_t& invParam,
+			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
 			   int numRetries,
 			   bool obsvP,
@@ -188,10 +191,22 @@ namespace Chroma
     //! Produce a linear operator M^dag.M for this action
     virtual LinearOperator<T>* lMdagM(Handle< FermState<T,P,Q> > state) const = 0;
 
+    //! Return a linear operator solver for this action to solve M*psi=chi 
+    virtual LinOpSystemSolver<T>* invLinOp(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const = 0;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi 
+    virtual MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const = 0;
+
+    //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+    virtual MdagMMultiSystemSolver<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
+						 const GroupXML_t& invParam) const = 0;
+
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
     virtual SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
-				   const InvertParam_t& invParam) const;
+				   const GroupXML_t& invParam) const;
   };
 
 
@@ -265,10 +280,36 @@ namespace Chroma
     //! Produce a Pauli-Villars linear operator for this action
     virtual LinearOperatorArray<T >* linOpPV(Handle< FermState<T,P,Q> > state) const = 0;
 
+    //! Return a linear operator solver for this action to solve M*psi=chi 
+    virtual LinOpSystemSolverArray<T>* invLinOp(Handle< FermState<T,P,Q> > state,
+						const GroupXML_t& invParam) const = 0;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi 
+    virtual MdagMSystemSolverArray<T>* invMdagM(Handle< FermState<T,P,Q> > state,
+						const GroupXML_t& invParam) const = 0;
+
+    //! Return a linear operator solver for this action to solve PV*psi=chi 
+    /*! Do we need this critter? */
+    virtual LinOpSystemSolverArray<T>* invLinOpPV(Handle< FermState<T,P,Q> > state,
+						  const GroupXML_t& invParam) const = 0;
+
+    //! Return a linear operator solver for this action to solve PV^dag*PV*psi=chi 
+    /*! This is used in two-flavor molecdyn monomials */
+    virtual MdagMSystemSolverArray<T>* invMdagMPV(Handle< FermState<T,P,Q> > state,
+						  const GroupXML_t& invParam) const = 0;
+ 
+    //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+    virtual MdagMMultiSystemSolverArray<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
+						      const GroupXML_t& invParam) const = 0;
+
+    //! Return a multi-shift linear operator solver for this action to solve (PV^dag*PV+shift)*psi=chi 
+    virtual MdagMMultiSystemSolverArray<T>* mInvMdagMPV(Handle< FermState<T,P,Q> > state,
+							const GroupXML_t& invParam) const = 0;
+
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
     virtual SystemSolverArray<T>* qpropT(Handle< FermState<T,P,Q> > state,
-					 const InvertParam_t& invParam) const;
+					 const GroupXML_t& invParam) const;
   };
 
 
@@ -320,6 +361,20 @@ namespace Chroma
     //! Produce a hermitian version of the linear operator
     virtual LinearOperator<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const = 0;
 
+    //! Return a linear operator solver for this action to solve M*psi=chi 
+    /*! Default implementation */
+    virtual LinOpSystemSolver<T>* invLinOp(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi 
+    /*! Default implementation */
+    virtual MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const;
+
+    //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+    virtual MdagMMultiSystemSolver<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
+						 const GroupXML_t& invParam) const;
+
     //! Given a complete propagator as a source, this does all the inversions needed
     /*!
      * Provides a default version
@@ -337,7 +392,7 @@ namespace Chroma
 			   XMLWriter& xml_out,
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   Handle< FermState<T,P,Q> > state,
-			   const InvertParam_t& invParam,
+			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
 			   int numRetries,
 			   int& ncg_had) const;
@@ -367,14 +422,48 @@ namespace Chroma
     //! Produce a hermitian version of the linear operator
     virtual LinearOperatorArray<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const = 0;
 
+    //! Return a linear operator solver for this action to solve M*psi=chi 
+    /*! Default implementation provided */
+    virtual LinOpSystemSolverArray<T>* invLinOp(Handle< FermState<T,P,Q> > state,
+						const GroupXML_t& invParam) const;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi 
+    /*! Default implementation provided */
+    virtual MdagMSystemSolverArray<T>* invMdagM(Handle< FermState<T,P,Q> > state,
+						const GroupXML_t& invParam) const;
+
+    //! Return a linear operator solver for this action to solve PV*psi=chi 
+    /*! 
+     * Default implementation provided
+     *
+     * Do we need this critter? 
+     */
+    virtual LinOpSystemSolverArray<T>* invLinOpPV(Handle< FermState<T,P,Q> > state,
+						  const GroupXML_t& invParam) const;
+
+    //! Return a linear operator solver for this action to solve PV^dag*PV*psi=chi 
+    /*! Default implementation provided */
+    virtual MdagMSystemSolverArray<T>* invMdagMPV(Handle< FermState<T,P,Q> > state,
+						  const GroupXML_t& invParam) const;
+ 
+    //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+    /*! Default implementation provided */
+    virtual MdagMMultiSystemSolverArray<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
+						      const GroupXML_t& invParam) const;
+
+    //! Return a multi-shift linear operator solver for this action to solve (PV^dag*PV+shift)*psi=chi 
+    /*! Default implementation provided */
+    virtual MdagMMultiSystemSolverArray<T>* mInvMdagMPV(Handle< FermState<T,P,Q> > state,
+							const GroupXML_t& invParam) const;
+
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)
     virtual LinearOperator<T>* linOp4D(Handle< FermState<T,P,Q> > state,
 				       const Real& m_q,
-				       const InvertParam_t& invParam) const = 0;
+				       const GroupXML_t& invParam) const = 0;
 
     //! Produce a  DeltaLs = 1-epsilon^2(H) operator
     virtual LinearOperator<T>* DeltaLs(Handle<  FermState<T,P,Q> > state,
-				       const InvertParam_t& invParam) const = 0;
+				       const GroupXML_t& invParam) const = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
     /*!
@@ -393,7 +482,7 @@ namespace Chroma
 			   XMLWriter& xml_out,
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   Handle< FermState<T,P,Q> > state,
-			   const InvertParam_t& invParam,
+			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
 			   int numRetries,
 			   int& ncg_had) const;
@@ -438,7 +527,7 @@ namespace Chroma
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
     virtual SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
-				   const InvertParam_t& invParam) const;
+				   const GroupXML_t& invParam) const;
   };
 
   //! Even-odd preconditioned Wilson-like fermion actions specialised to Wilson Like (gauge independent diagonal term) actions.
@@ -526,7 +615,7 @@ namespace Chroma
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
     virtual SystemSolverArray<T>* qpropT(Handle< FermState<T,P,Q> > state,
-					 const InvertParam_t& invParam) const;
+					 const GroupXML_t& invParam) const;
   };
 
   //! Even-odd preconditioned Wilson-like fermion actions including derivatives
@@ -569,6 +658,20 @@ namespace Chroma
     //! Return the quark mass
     virtual const Real getQuarkMass() const = 0;
 
+    //! Return a linear operator solver for this action to solve M*psi=chi 
+    /*! Default implementation provided */
+    virtual LinOpSystemSolver<T>* invLinOp(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const;
+
+    //! Return a linear operator solver for this action to solve MdagM*psi=chi 
+    /*! Default implementation provided */
+    virtual MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
+					   const GroupXML_t& invParam) const;
+
+    //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+    virtual MdagMMultiSystemSolver<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
+						 const GroupXML_t& invParam) const;
+
     //! Given a complete propagator as a source, this does all the inversions needed
     /*!
      * Provides a default version
@@ -586,7 +689,7 @@ namespace Chroma
 			   XMLWriter& xml_out,
 			   const typename PropTypeTraits<T>::Type_t& q_src,
 			   Handle< FermState<T,P,Q> > state,
-			   const InvertParam_t& invParam,
+			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
 			   int numRetries,
 			   int& ncg_had) const;
@@ -631,7 +734,7 @@ namespace Chroma
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
     virtual SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
-				   const InvertParam_t& invParam) const;
+				   const GroupXML_t& invParam) const;
   };
 
 }

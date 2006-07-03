@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.1 2006-06-11 06:30:33 edwards Exp $
+// $Id: qprop_io.h,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -7,7 +7,7 @@
 #ifndef __qprop_io_h__
 #define __qprop_io_h__
 
-#include "io/enum_io/enum_invtype_io.h"
+#include "io/xml_group_reader.h"
 #include "io/enum_io/enum_qdpvolfmt_io.h"
 #include "io/enum_io/enum_quarkspintype_io.h"
 
@@ -68,7 +68,7 @@ struct ChromaMultiProp_t
   //! String holding XML of the FermionAction section
   std::string     fermact;          /*!< fermion action */
 
-  MultiInvertParam_t   invParam;    /*!< Inverter parameters */
+  GroupXML_t      invParam;         /*!< Inverter parameters */
  
   multi1d<Real>   MultiMasses;
 };
@@ -87,7 +87,7 @@ struct ChromaProp_t
   int             numRetries;       /*!< number of calls to qprop for each source component */
   
   // String holding XML for auxiliary state information
-  InvertParam_t   invParam;         /*!< Inverter parameters */
+  GroupXML_t      invParam;         /*!< Inverter parameters */
 };
 
 
@@ -109,7 +109,7 @@ struct SeqSource_t
 struct ChromaSeqProp_t
 {
   QuarkSpinType    quarkSpinType;   // which spin components to compute
-  InvertParam_t    invParam;
+  GroupXML_t       invParam;
   std::string      seq_src;
   multi1d<int>     sink_mom;
   int              t_sink;

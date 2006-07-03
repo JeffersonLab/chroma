@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_multi_propagator_w.cc,v 3.2 2006-07-03 15:26:10 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -441,11 +441,10 @@ namespace Chroma
 	// print to debug
 	QDPIO::cout << "Modified fermact is: " << out_param.fermact << endl << flush;
 
-	out_param.invParam.invType = params.param.invParam.invType;
-	out_param.invParam.MROver = params.param.invParam.MROver;
-	out_param.invParam.MaxCG = params.param.invParam.MaxCG;
-	out_param.invParam.RsdCG = params.param.invParam.RsdCG[m];
-//	out_param.nrow =params.param.nrow ;
+//	out_param.invParam.invType = params.param.invParam.invType;
+//	out_param.invParam.MROver = params.param.invParam.MROver;
+//	out_param.invParam.MaxCG = params.param.invParam.MaxCG;
+//	out_param.invParam.RsdCG = params.param.invParam.RsdCG[m];
       
       
 	write(record_xml, "ForwardProp", out_param);

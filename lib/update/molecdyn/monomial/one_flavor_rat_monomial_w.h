@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.1 2006-06-13 20:19:19 bjoo Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -10,8 +10,6 @@
 
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "actions/ferm/fermacts/remez_coeff.h"
-#include "actions/ferm/invert/invert.h"
-#include "invtype.h"
 #include <typeinfo>
 using namespace std;
 
@@ -283,7 +281,7 @@ namespace Chroma
     virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;
@@ -309,39 +307,19 @@ namespace Chroma
 		     const Phi& chi, 
 		     const AbsFieldState<P,Q>& s) const
     {
-      const InvertParam_t& inv_param = getInvParams();
-
       // Grab the fermact
       const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
       // Make the state
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 
-      // Get linop
-      Handle< LinearOperator<Phi> > MdagM(FA.lMdagM(state));
+      // Get multi-shift system solver
+      Handle< MdagMMultiSystemSolver<Phi> > invMdagM(FA.mInvMdagM(state, getInvParams()));
 
-      int n_count =0;
-      multi1d<Real> RsdCG(shifts.size());
-      RsdCG = inv_param.RsdCG;
-
-      // Do the inversion...
-      switch( inv_param.invType) {
-      case CG_INVERTER:
-      {
-	// Solve MdagM X = eta
-	MInvCG(*MdagM, chi, X, shifts, RsdCG, inv_param.MaxCG, n_count);
-	QDPIO::cout << "1Flav::invert, n_count = " << n_count << endl;
-      }
-      break;
-      default:
-      {
-	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-	QDP_abort(1);
-      }
-      break;
-      };
+      // Do the inversion
+      SystemSolverResults_t res = (*invMdagM)(X, shifts, chi);
       
-      return n_count;
+      return res.n_count;
     }
 
   };
@@ -380,7 +358,7 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;
@@ -448,7 +426,7 @@ namespace Chroma
     virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Return number of roots in used
     virtual int getNthRoot() const = 0;

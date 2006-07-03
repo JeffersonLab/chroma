@@ -1,11 +1,10 @@
-// $Id: param_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: param_io.cc,v 3.1 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Various parameter readers/writers for main programs
  */
 
 #include "chromabase.h"
 #include "io/param_io.h"
-#include "io/enum_io/enum_invtype_io.h"
 
 namespace Chroma 
 {
@@ -57,79 +56,84 @@ namespace Chroma
   }
 
 
+#if 0
 
-  //! Read inverter parameters
-  void read(XMLReader& xml, const string& path, InvertParam_t& param)
-  {
-    XMLReader paramtop(xml, path);
+// THIS STUFF IS OBSOLETE AND WILL BE REMOVED!!!
+//
+//  //! Read inverter parameters
+//  void read(XMLReader& xml, const string& path, InvertParam_t& param)
+//  {
+//    XMLReader paramtop(xml, path);
+//
+//    try {
+//      read(paramtop, "invType", param.invType);
+//      read(paramtop, "RsdCG", param.RsdCG);
+//      read(paramtop, "MaxCG", param.MaxCG);
+//      param.MROver = 1;
+//    
+//      if( paramtop.count("RsdCGPrec") == 1 ) {
+//	read(paramtop, "RsdCGPrec", param.RsdCGPrec);
+//      }
+//      else {
+//	param.RsdCGPrec = param.RsdCG;
+//      }
+//
+//      if( paramtop.count("MaxCGPrec") == 1 ) {
+//	read(paramtop, "MaxCGPrec", param.MaxCGPrec);
+//      }
+//      else {
+//	param.MaxCGPrec = param.MaxCG;
+//      }
+//
+//    }
+//    catch( const string& e ) { 
+//      QDPIO::cerr << "Caught exception : " << e << endl;
+//      QDP_abort(1);
+//    }
+//
+//  }
+//
+//  //! Read inverter parameters
+//  void read(XMLReader& xml, const string& path, MultiInvertParam_t& param)
+//  {
+//    XMLReader paramtop(xml, path);
+//
+//    read(paramtop, "invType", param.invType);
+//    read(paramtop, "RsdCG", param.RsdCG);
+//    read(paramtop, "MaxCG", param.MaxCG);
+//
+//    param.MROver = 1;
+//  }
+//
+//
+//  //---------------------------- Writers -----------------------------
+//  //! Write inverter parameters
+//  void write(XMLWriter& xml, const string& path, const InvertParam_t& param)
+//  {
+//    push(xml, path);
+//
+//    write(xml, "invType", param.invType);
+//    write(xml, "RsdCG", param.RsdCG);
+//    write(xml, "MaxCG", param.MaxCG);
+//    write(xml, "MROver", param.MROver);
+//    write(xml, "RsdCGPrec", param.RsdCGPrec);
+//    write(xml, "MaxCGPrec", param.MaxCGPrec);
+//    pop(xml);
+//  }
+//
+//  //! Write inverter parameters
+//  void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param)
+//  {
+//    push(xml, path);
+//
+//    write(xml, "invType", param.invType);
+//    write(xml, "RsdCG", param.RsdCG);
+//    write(xml, "MaxCG", param.MaxCG);
+//    write(xml, "MROver", param.MROver);
+//
+//    pop(xml);
+//  }
+#endif
 
-    try {
-      read(paramtop, "invType", param.invType);
-      read(paramtop, "RsdCG", param.RsdCG);
-      read(paramtop, "MaxCG", param.MaxCG);
-      param.MROver = 1;
-    
-      if( paramtop.count("RsdCGPrec") == 1 ) {
-	read(paramtop, "RsdCGPrec", param.RsdCGPrec);
-      }
-      else {
-	param.RsdCGPrec = param.RsdCG;
-      }
-
-      if( paramtop.count("MaxCGPrec") == 1 ) {
-	read(paramtop, "MaxCGPrec", param.MaxCGPrec);
-      }
-      else {
-	param.MaxCGPrec = param.MaxCG;
-      }
-
-    }
-    catch( const string& e ) { 
-      QDPIO::cerr << "Caught exception : " << e << endl;
-      QDP_abort(1);
-    }
-
-  }
-
-  //! Read inverter parameters
-  void read(XMLReader& xml, const string& path, MultiInvertParam_t& param)
-  {
-    XMLReader paramtop(xml, path);
-
-    read(paramtop, "invType", param.invType);
-    read(paramtop, "RsdCG", param.RsdCG);
-    read(paramtop, "MaxCG", param.MaxCG);
-
-    param.MROver = 1;
-  }
-
-
-  //---------------------------- Writers -----------------------------
-  //! Write inverter parameters
-  void write(XMLWriter& xml, const string& path, const InvertParam_t& param)
-  {
-    push(xml, path);
-
-    write(xml, "invType", param.invType);
-    write(xml, "RsdCG", param.RsdCG);
-    write(xml, "MaxCG", param.MaxCG);
-    write(xml, "MROver", param.MROver);
-    write(xml, "RsdCGPrec", param.RsdCGPrec);
-    write(xml, "MaxCGPrec", param.MaxCGPrec);
-    pop(xml);
-  }
-
-  //! Write inverter parameters
-  void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param)
-  {
-    push(xml, path);
-
-    write(xml, "invType", param.invType);
-    write(xml, "RsdCG", param.RsdCG);
-    write(xml, "MaxCG", param.MaxCG);
-    write(xml, "MROver", param.MROver);
-
-    pop(xml);
-  }
 
 }  // end namespace Chroma

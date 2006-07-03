@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_staggered_qprop.h,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: prec_staggered_qprop.h,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -11,6 +11,7 @@
 
 #include "fermact.h"
 #include "actions/ferm/invert/invcg1.h"
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 
 namespace Chroma
@@ -33,14 +34,15 @@ namespace Chroma
     EvenOddFermActQprop(Handle< EvenOddLinearOperator<T,P,Q> > M_,
 			Handle< LinearOperator<T> > A_,
 			const Real& Mass_,
-			const InvertParam_t& invParam_) : 
+			const SysSolverCGParams& invParam_) : 
       M(M_), A(A_), Mass(Mass_), invParam(invParam_) 
       {}
 
     EvenOddFermActQprop(const EvenOddStaggeredTypeFermAct<T,P,Q>& S_,
 			Handle< FermState<T,P,Q> > state,
-			const InvertParam_t& invParam_) :
-      M(S_.linOp(state)), A(S_.lMdagM(state)), Mass(S_.getQuarkMass()), invParam(invParam_) {}
+			const SysSolverCGParams& invParam_) :
+      M(S_.linOp(state)), A(S_.lMdagM(state)),
+      Mass(S_.getQuarkMass()), invParam(invParam_) {}
 
     //! Destructor is automatic
     ~EvenOddFermActQprop() {}
@@ -58,8 +60,6 @@ namespace Chroma
     {
       START_CODE();
 
-      SystemSolverResults_t res;
-  
       LatticeStaggeredFermion tmp, tmp1, tmp2;
       tmp = tmp1 = tmp2 = zero;
       Real invm;
@@ -76,7 +76,7 @@ namespace Chroma
     
 
       /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
-      InvCG1(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
+      SystemSolverResults_t res = InvCG1(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG);
       
       // psi[rb[0]] is returned, so reconstruct psi[rb[1]]
       invm = Real(1)/(2*Mass);
@@ -121,8 +121,8 @@ namespace Chroma
 
     Handle< EvenOddLinearOperator<T,P,Q> > M;
     Handle< LinearOperator<T> > A;
-    const Real Mass;
-    const InvertParam_t invParam;
+    Real Mass;
+    SysSolverCGParams invParam; 
   };
 
 }; // End namespace

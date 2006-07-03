@@ -37,7 +37,7 @@ struct Param_t
   CfgType  cfg_type;       // storage order for stored gauge configuration
   PropType prop_type;      // storage order for stored propagator
 
-  InvertParam_t  invParam;
+  SysSolverCGParams  invParam;
 
   bool use_gauge_invar_oper ;
 
@@ -193,7 +193,7 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
 
 
 //    read(paramtop, "invType", input.param.invType);
-    input.param.invParam.invType = CG_INVERTER;   //need to fix this
+//    input.param.invParam.invType = CG_INVERTER;   //need to fix this
     read(paramtop, "RsdCG", input.param.invParam.RsdCG);
     read(paramtop, "MaxCG", input.param.invParam.MaxCG);
     read(paramtop, "Nsamples", input.param.Nsamples);
@@ -321,7 +321,14 @@ int main(int argc, char **argv)
   Handle< FermState<LatticeStaggeredFermion,
                     multi1d<LatticeColorMatrix>,
                     multi1d<LatticeColorMatrix> > > state(S_f.createState(u));
-  Handle< SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,input.param.invParam));
+  GroupXML_t inv_param;
+  {
+    XMLBufferWriter xml_buf;
+    write(xml_buf, "InvertParam", input.param.invParam);
+    XMLReader xml_in(xml_buf);
+    inv_param = readXMLGroup(xml_in, "/InvertParam", "invType");
+  }
+  Handle< SystemSolver<LatticeStaggeredFermion> > qprop(S_f.qprop(state,inv_param));
 
 
   LatticeStaggeredPropagator quark_propagator;

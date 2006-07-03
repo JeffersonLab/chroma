@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -45,7 +45,11 @@ namespace Chroma
     Real approxMin;
     Real approxMax;
 
-    InvertParam_t invParamInner;
+    struct InvParamInner
+    {
+      Real RsdCG;
+      int  MaxCG;
+    } invParamInner;
     OverlapInnerSolverType inner_solver_type;
 
     bool isChiralP;    

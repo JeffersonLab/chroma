@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.4 2006-06-11 20:28:13 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.5 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -294,7 +294,8 @@ namespace Chroma
   //! Private internal initializer
   void SSEDWFQpropT::init(Handle< FermState<LatticeFermion,
 			  multi1d<LatticeColorMatrix>,
-			  multi1d<LatticeColorMatrix> > > state)
+			  multi1d<LatticeColorMatrix> > > state,
+			  const GroupXML_t& inv)
   {
     QDPIO::cout << "entering SSEDWFQpropT::init" << endl;
 
@@ -302,6 +303,14 @@ namespace Chroma
     {
       QDPIO::cerr << "SSEDWFQpropT: only supports Nd=4 and Nc=3" << endl;
       QDP_abort(1);
+    }
+
+    // Read the XML for the CG params
+    {
+      std::istringstream  is(inv.xml);
+      XMLReader  paramtop(is);
+	
+      read(paramtop, inv.path, invParam);
     }
 
     if (invParam.invType != CG_INVERTER)

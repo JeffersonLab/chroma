@@ -1,4 +1,4 @@
-// $Id: minvcg_array.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: minvcg_array.cc,v 3.1 2006-07-03 15:26:08 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -89,6 +89,11 @@ namespace Chroma
     FlopCounter flopcount;
     StopWatch swatch;
 
+    if (shifts.size() != RsdCG.size()) 
+    {
+      QDPIO::cerr << "MinvCG: number of shifts and residuals must match" << endl;
+      QDP_abort(1);
+    }
 
     if (n_shift == 0) {
       QDPIO::cerr << "MinvCG: You must supply at least 1 shift. shift.size() = " << n_shift << endl;

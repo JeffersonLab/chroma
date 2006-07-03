@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_two_flavor_monomial5d_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial5d_w.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
@@ -61,7 +61,7 @@ namespace Chroma
       }
 
       //! Get parameters for the inverter
-      const InvertParam_t getInvParams(void) const { 
+      const GroupXML_t& getInvParams(void) const { 
 	return inv_param;
       }
 
@@ -83,7 +83,7 @@ namespace Chroma
       Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q> > fermact;
 
       // The parameters for the inversion
-      InvertParam_t inv_param;
+      GroupXML_t inv_param;
       Handle<AbsChronologicalPredictor5D<T> > chrono_predictor;
     };
 

@@ -1,4 +1,4 @@
-// $Id: fermact_qprop.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: fermact_qprop.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -31,7 +31,7 @@ namespace Chroma
      * \param invParam_  inverter parameters ( Read )
      */
     FermActQprop(Handle< LinearOperator<T> > A_,
-		 const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
+		 Handle< SystemSolver<T> > invA_) : A(A_), invA(invA_) 
     {}
 
     //! Destructor is automatic
@@ -50,39 +50,8 @@ namespace Chroma
     {
       START_CODE();
 
-      SystemSolverResults_t res;
-  
-      switch(invParam.invType)
-      {
-      case CG_INVERTER: 
-      {
-	/* tmp = M_dag(u) * chi_1 */
-	T  tmp;
-	(*A)(tmp, chi, MINUS);
-	
-	/* psi = (M^dag * M)^(-1) chi */
-	InvCG2 (*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
-      }
-      break;
-  
-#if 0
-      case MR_INVERTER:
-	/* psi = M^(-1) chi */
-	InvMR (*A, chi, psi, invParam.MRover, invParam.RsdCG, invParam.MaxCG, res.n_count);
-	break;
-
-      case BICG_INVERTER:
-	/* psi = M^(-1) chi */
-	InvBiCG (*A, chi, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
-	break;
-#endif
-  
-      default:
-	QDP_error_exit("Unknown inverter type", invParam.invType);
-      }
-      
-      if ( res.n_count == invParam.MaxCG )
-	QDP_error_exit("no convergence in the inverter", res.n_count);
+      // Call inverter
+      SystemSolverResults_t res = (*invA)(psi, chi);
   
       // Compute residual
       {
@@ -102,7 +71,7 @@ namespace Chroma
     FermActQprop() {}
 
     Handle< LinearOperator<T> > A;
-    const InvertParam_t invParam;
+    Handle< SystemSolver<T> > invA;
   };
 
 
@@ -114,15 +83,15 @@ namespace Chroma
 	    multi1d<LatticeColorMatrix> >::qprop(Handle< FermState<LatticeFermion, 
 						 multi1d<LatticeColorMatrix>,
 						 multi1d<LatticeColorMatrix> > > state,
-						 const InvertParam_t& invParam) const
+						 const GroupXML_t& invParam) const
   {
     // Typedefs to save typing
     typedef LatticeFermion               T;
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
 
-    return new FermActQprop<T>(Handle< LinearOperator<T> >(linOp(state)),
-			       invParam);
+    return new FermActQprop<T>(linOp(state),
+			       invLinOp(state,invParam));
   }
 
 
@@ -134,16 +103,17 @@ namespace Chroma
 	    multi1d<LatticeColorMatrix> >::qprop(Handle< FermState< LatticeStaggeredFermion,
 						 multi1d<LatticeColorMatrix>,
 						 multi1d<LatticeColorMatrix> > > state,
-						 const InvertParam_t& invParam) const
+						 const GroupXML_t& invParam) const
   {
     // Typedefs to save typing
     typedef LatticeStaggeredFermion      T;
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
 
-    return new FermActQprop<T>(Handle< LinearOperator<T> >(linOp(state)),
-			       invParam);
+    return new FermActQprop<T>(linOp(state),
+			       invLinOp(state,invParam));
   }
+
 
 } // namespace Chroma
 

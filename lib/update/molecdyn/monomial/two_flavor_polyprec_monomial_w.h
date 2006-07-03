@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_polyprec_monomial_w.h,v 3.1 2006-06-13 20:16:42 bjoo Exp $
+// $Id: two_flavor_polyprec_monomial_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials
@@ -11,8 +11,6 @@
 #include "polyfermact.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
-#include "actions/ferm/invert/invert.h"
-#include "invtype.h"
 
 #include <typeinfo>
 using namespace std;
@@ -150,44 +148,14 @@ namespace Chroma
     virtual const PolyWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
 
-    // Get X = (Q*P(Q^2)*Q)^{-1} eta
-    virtual int invert(Phi& X, const DiffLinearOperator<Phi,P,Q>& M, const Phi& eta) const
-    {
-      const InvertParam_t& inv_param = getInvParams();
-
-      int n_count = 0;
-
-      // Do the inversion...
-      switch( inv_param.invType) {
-      case CG_INVERTER:
-      {
-	// Solve M X = eta
-	InvCG1(M, eta, X, inv_param.RsdCG, inv_param.MaxCG, n_count);
-	QDPIO::cout << "2Flav::invert,  n_count = " << n_count << endl;
-      }
-      break;
-      default:
-      {
-	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-	QDP_abort(1);
-      }
-      break;
-      };
-      
-      return n_count;
-    }
-
-
     //! Get (Q*P(Q^2)*Q)^{-1} phi
     virtual int getX(Phi& X, const AbsFieldState<P,Q>& s)
     {
-      const InvertParam_t& inv_param = getInvParams();
-
       // Grab the fermact
       const PolyWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
@@ -198,28 +166,17 @@ namespace Chroma
    
       // Get linop
       Handle< DiffLinearOperator<Phi,P,Q> > M(FA.polyPrecLinOp(state));
-      int n_count;
+
+      // Solve [Q*P(Q^2)*Q]^{-1} X = phi
+      // Get system solver
+      Handle< PolyPrecSystemSolver<Phi> > invPolyPrec(FA.invPolyPrec(state, getInvParams()));
 
       // Do the inversion...
-      switch( inv_param.invType) {
-      case CG_INVERTER:
-      {
-	// Solve M X = eta
-	// Do the inversion...
-	(getMDSolutionPredictor())(X, *M, getPhi());
-	n_count = invert(X, *M, getPhi());
-	(getMDSolutionPredictor()).newVector(X);
-      }
-      break;
-      default:
-      {
-	QDPIO::cerr << "Currently only CG Inverter is implemented" << endl;
-	QDP_abort(1);
-      }
-      break;
-      };
+      (getMDSolutionPredictor())(X, *M, getPhi());
+      SystemSolverResults_t res = (*invPolyPrec)(X, getPhi());
+      (getMDSolutionPredictor()).newVector(X);
 
-      return n_count;
+      return res.n_count;
     }
 
   };
@@ -278,7 +235,7 @@ namespace Chroma
     virtual const PolyWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Get at the chronological predcitor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
@@ -350,7 +307,7 @@ namespace Chroma
     virtual const PolyWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
-    virtual const InvertParam_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams(void) const = 0;
 
     //! Accessor for pseudofermion with Pf index i (read only)
     virtual const Phi& getPhi(void) const = 0;

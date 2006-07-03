@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -76,7 +76,7 @@ namespace Chroma
 	Real Kappa;
 	read(paramtop, "Kappa", Kappa);
 	Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-      }
+       }
       else {
 	QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
 	QDP_abort(1);
@@ -85,7 +85,6 @@ namespace Chroma
       // Read b5 c5 and the solver params
       read(paramtop, "b5", b5);
       read(paramtop, "c5", c5);
-      // read(paramtop, "invParam", invParam);
       read(paramtop, "RsdCG", invParam.RsdCG);
       read(paramtop, "MaxCG", invParam.MaxCG);
     }

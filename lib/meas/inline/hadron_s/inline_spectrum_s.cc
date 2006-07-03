@@ -236,7 +236,7 @@ namespace Chroma {
     //    read(inputtop, "prop_inversion", input.prop_param);
     read(inputtop, "Mass", input.Mass);
     read(inputtop, "u0", input.u0);
-    input.invParam.invType = CG_INVERTER;   
+//    input.invParam.invType = CG_INVERTER;   
     read(inputtop, "RsdCG", input.invParam.RsdCG);
     read(inputtop, "MaxCG", input.invParam.MaxCG);
 
@@ -250,7 +250,7 @@ namespace Chroma {
 	     const InlineStaggeredSpectrumParams::Quark_Prop_t& input) {
     push(xml, path);
     write(xml, "Mass", input.Mass);
-    write(xml,"Inverter",input.invParam.invType);
+//    write(xml,"Inverter",input.invParam.invType);
     write(xml,"RsdCG", input.invParam.RsdCG);
     write(xml,"MaxCG", input.invParam.MaxCG);
     pop(xml);
@@ -784,8 +784,17 @@ namespace Chroma {
     Handle< FermState<LatticeStaggeredFermion,
 		      multi1d<LatticeColorMatrix>,
 		      multi1d<LatticeColorMatrix> > > state(S_f.createState(u));
+
+    // Jiggery-pokery to turn a CG struct into a GroupXML_t for the qprops
+    GroupXML_t inv_param;
+    {
+      XMLBufferWriter xml_buf;
+      write(xml_buf, "InvertParam", params.prop_param.invParam);
+      XMLReader xml_in(xml_buf);
+      inv_param = readXMLGroup(xml_in, "/InvertParam", "invType");
+    }
     Handle< SystemSolver<LatticeStaggeredFermion> > 
-      qprop(S_f.qprop(state, params.prop_param.invParam));
+      qprop(S_f.qprop(state, inv_param));
 
 
 

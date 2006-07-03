@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: poly_cheb_fermact_w.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: poly_cheb_fermact_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -87,6 +87,11 @@ namespace Chroma
 
     //! Produce a linear operator M^dag.M for this action
     PolyLinearOperator<T,P,Q>* polyLinOp(Handle< FermState<T,P,Q> > state) const;
+
+    //! Return a linear operator solver for this action to solve M*psi=chi 
+    /*! Default implementation provided */
+    PolyPrecSystemSolver<T>* invPolyPrec(Handle< FermState<T,P,Q> > state,
+					 const GroupXML_t& invParam) const;
 
     //! Destructor is automatic
     ~PolyChebFermAct() {}

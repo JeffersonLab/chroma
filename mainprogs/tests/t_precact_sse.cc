@@ -1,4 +1,4 @@
-// $Id: t_precact_sse.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
+// $Id: t_precact_sse.cc,v 3.1 2006-07-03 15:26:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -34,11 +34,18 @@ int main(int argc, char **argv)
 //  XMLReader gauge_xml;
 //  readSzin(gauge_xml, u, "test_purgaug.cfg1");
 
-  InvertParam_t  invParam;
-  invParam.invType = CG_INVERTER;
+  SysSolverCGParams  invParam;
   invParam.RsdCG = 1.0e-6;
   invParam.MaxCG = 3000;
   int n_count = 0;
+
+  GroupXML_t inv_param;
+  {
+    XMLBufferWriter xml_buf;
+    write(xml_buf, "InvertParam", invParam);
+    XMLReader xml_in(xml_buf);
+    inv_param = readXMLGroup(xml_in, "/InvertParam", "invType");
+  }
 
   // Create the BC objects
   const int bnd[] = {1,1,1,-1};
@@ -57,10 +64,10 @@ int main(int argc, char **argv)
   
   {
     // Setup solvers
-//    Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(S_pdwf.qpropT(state,invParam));
-    Handle< const SystemSolver< multi1d<LatticeFermion> > > QDPqpropT(new PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >(Handle< const EvenOddPrecLinearOperator<multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(S_pdwf.linOp(state)), invParam));
+//    Handle< const SystemSolver< multi1d<LatticeFermion> > > qpropT(S_pdwf.qpropT(state,inv_param));
+    Handle< const SystemSolver< multi1d<LatticeFermion> > > QDPqpropT(new PrecFermAct5DQprop<LatticeFermion, multi1d<LatticeColorMatrix> >(Handle< const EvenOddPrecLinearOperator<multi1d<LatticeFermion>, multi1d<LatticeColorMatrix> > >(S_pdwf.linOp(state)), inv_param));
 
-    Handle< const SystemSolver< multi1d<LatticeFermion> > > SSEqpropT(new SSEDWFQpropT(state,WilsonMass,m_q,N5,invParam));
+    Handle< const SystemSolver< multi1d<LatticeFermion> > > SSEqpropT(new SSEDWFQpropT(state,WilsonMass,m_q,N5,inv_param));
 
     // Try the qpropT
     multi1d<LatticeFermion>  psi5a(N5), psi5b(N5), chi5(N5), tmp1(N5);
@@ -87,7 +94,7 @@ int main(int argc, char **argv)
 
   {
     // Setup solvers
-    Handle< const SystemSolver< LatticeFermion > > qprop(S_pdwf.qprop(state,invParam));
+    Handle< const SystemSolver< LatticeFermion > > qprop(S_pdwf.qprop(state,inv_param));
 
     // Try the qprop
     LatticeFermion chi, psia, psib;

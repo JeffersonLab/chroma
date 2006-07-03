@@ -1,4 +1,4 @@
-// $Id: overlap_fermact_base_w.cc,v 3.1 2006-06-11 06:30:31 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 3.2 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -22,6 +22,8 @@
 #include "actions/ferm/linop/lopscl.h"
 #include "meas/eig/ischiral_w.h"
 
+#include "actions/ferm/invert/syssolver_cg_params.h"
+#include "actions/ferm/invert/multi_syssolver_cg_params.h"
 
 namespace Chroma 
 { 
@@ -46,7 +48,7 @@ namespace Chroma
      */
     Ovlap4DQprop(Handle< OverlapFermActBase> S_f_,
 		 Handle< FermState<T,P,Q> > state_,
-		 const InvertParam_t& invParam_) : 
+		 const SysSolverCGParams& invParam_) : 
       S_f(S_f_), state(state_), invParam(invParam_) {}
     
     //! Destructor is automatic
@@ -68,9 +70,7 @@ namespace Chroma
 	SystemSolverResults_t res;
 	Real mass = S_f->getQuarkMass();
 
-	switch( invParam.invType ) 
-	{
-	case CG_INVERTER:
+//	if( invType == "CG_INVERTER") 
 	{
 	  // We do our solve into tmp, so make sure this is the supplied initial guess
 	  LatticeFermion tmp = psi;
@@ -79,10 +79,8 @@ namespace Chroma
     
 	  // Check whether the source is chiral.
 	  Chirality ichiral = isChiralVector(chi);
-	  if( ichiral == CH_NONE || ( S_f->isChiral() == false )) { 
-
-     
-
+	  if( ichiral == CH_NONE || ( S_f->isChiral() == false )) 
+	  { 
 	    Handle<LinearOperator<T> > MM(S_f->lMdagM(state));
 
 	    // Do this at the end as otherwise it may mix chiralities?
@@ -91,11 +89,11 @@ namespace Chroma
 
 	    // Source is not chiral. In this case we should use,
 	    // InvCG2 with M
-	    InvCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
+	    res = InvCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG);
 
 	  }
-	  else {
-
+	  else 
+	  {
 	    // If we have a chiral source we have M^{dag} M = M^{2}
 	    // but applying M at the front might mix chiralities hurting
 	    // convergence so we do it last
@@ -103,7 +101,7 @@ namespace Chroma
 
 	    // Source is chiral. In this case we should use InvCG1
 	    // with the special MdagM
-	    InvCG1(*MM, chi,tmp, invParam.RsdCG, invParam.MaxCG, res.n_count);
+	    res = InvCG1(*MM, chi,tmp, invParam.RsdCG, invParam.MaxCG);
 	    (*M)(psi,tmp, MINUS);
 	  }
   
@@ -114,35 +112,32 @@ namespace Chroma
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " 
 		      << sqrt(norm2(Mpsi))/sqrt(norm2(chi)) 
 		      << "  n_count = " << res.n_count << " iters" << endl;
-
 	}
-	break;
-	case REL_CG_INVERTER:
+#if 0
+	else if (invType == "REL_CG_INVERTER")
 	{
-
 	  LatticeFermion tmp = psi;
 	  Handle<LinearOperator<T> > M(S_f->linOp(state));
 
 
 	  // Check whether the source is chiral.
 	  Chirality ichiral = isChiralVector(chi);
-	  if( ichiral == CH_NONE || ( S_f->isChiral() == false )) { 
-
+	  if( ichiral == CH_NONE || ( S_f->isChiral() == false )) 
+	  { 
+	    
 	    // Source is not chiral. In this case we should use,
 	    // InvCG2 with M
 	    (*M)(tmp, chi, MINUS); 
 	    InvRelCG2(*M, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
-    
 	  }
-	  else {
-	
+	  else 
+	  {
 	    // Source is chiral. In this case we should use InvCG1
 	    // with the special MdagM
 	    Handle<LinearOperator<T> > MM( dynamic_cast< LinearOperator<LatticeFermion>* >( S_f->lMdagM(state, ichiral) ) );
 
 	    (*M)(tmp, chi, MINUS);	
 	    InvRelCG1(*MM, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
-      
 	  }
 
 	  LatticeFermion Mpsi;
@@ -153,21 +148,19 @@ namespace Chroma
 		      << "  n_count = " << res.n_count << " iters" << endl;
 
 	}
-	break;
-
 #if 0
-	case MR_INVERTER:
+	else if (invType == "MR_INVERTER")
+	{
 	  // psi = D^(-1)* chi
 	  InvMR (*M, chi, psi, MRover, invParam.RsdCG, invParam.MaxCG, res.n_count);
-	  break;
-
-	case BICG_INVERTER:
+	}
+	else if (invType == "BICG_INVERTER")
+	{
 	  // psi = D^(-1) chi
 	  InvBiCG (*M, chi, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
-	  break;
+	}
 #endif
-
-	case SUMR_INVERTER:
+	else if (invType == "SUMR_INVERTER")
 	{
 	  // Solve by SUMR solver -- for shifted unitary matrices
 	  //
@@ -200,9 +193,7 @@ namespace Chroma
 		      << sqrt(norm2(Dpsi))/sqrt(norm2(chi))
 		      << "  n_count = " << res.n_count << " iters" << endl;
 	}
-	break;
-
-	case REL_SUMR_INVERTER:
+	else if (invType == "REL_SUMR_INVERTER")
 	{
 	  // Solve by Relaxed SUMR solver -- for shifted unitary matrices
 	  //
@@ -238,8 +229,7 @@ namespace Chroma
 		      << sqrt(norm2(Dpsi)) / sqrt(norm2(chi)) 
 		      << "  n_count = " << res.n_count << " iters" << endl;
 	}
-	break;
-	case REL_GMRESR_SUMR_INVERTER:
+	else if (invType == "REL_GMRESR_SUMR_INVERTER")
 	{
 	  // Solve by Relaxed SUMR solver -- for shifted unitary matrices
 	  //
@@ -279,9 +269,7 @@ namespace Chroma
 		      << sqrt(norm2(Dpsi))/sqrt(norm2(chi))
 		      << "  n_count = " << res.n_count << " iters" << endl;
 	}
-	break;
-
-	case REL_GMRESR_CG_INVERTER:
+	else if (invType == "REL_GMRESR_GG_INVERTER")
 	{
       
 	  LatticeFermion tmp= psi;
@@ -319,15 +307,13 @@ namespace Chroma
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = "
 		      << sqrt(norm2(Mpsi)) / sqrt(norm2(chi))
 		      << "  n_count = " << res.n_count << " iters" << endl;
-
-
 	}
-	break;
-
-	default:
-	  QDP_error_exit("Zolotarev4DFermActBj::qprop Solver Type not implemented\n");
-	  break;
-	};
+	else
+	{
+	  QDPIO::cerr << "Zolotarev4DFermActBj::qprop Solver Type not implemented" << endl;
+	  QDP_abort(1);
+	}
+#endif
 
 	if ( res.n_count == invParam.MaxCG ) { 
 	  QDP_error_exit("Zolotarev4DFermAct::qprop: No convergence in solver: n_count = %d\n", res.n_count);
@@ -360,55 +346,62 @@ namespace Chroma
 
     Handle< OverlapFermActBase > S_f;
     Handle< FermState<T,P,Q> > state;
-    const InvertParam_t invParam;
+    const SysSolverCGParams invParam;
   };
 
  
-  // Propagator for unpreconditioned overlap-like fermion actions
-  /* Yuk, just make a clone of the current action and pass it around */
+// Propagator for unpreconditioned overlap-like fermion actions
+/* Yuk, just make a clone of the current action and pass it around */
   SystemSolver<LatticeFermion>* 
   OverlapFermActBase::qprop(Handle< FermState<T,P,Q> > state,
-			    const InvertParam_t& invParam) const
+			    const GroupXML_t& invParam) const
   {
-    return new Ovlap4DQprop(Handle<OverlapFermActBase>(clone()), state, invParam);
+    std::istringstream  is(invParam.xml);
+    XMLReader  paramtop(is);
+	
+    return new Ovlap4DQprop(Handle<OverlapFermActBase>(clone()), state, 
+			    SysSolverCGParams(paramtop,invParam.path));
   }
 
 
 
-  /* This routine is Wilson type Overlap fermions */
+/* This routine is Wilson type Overlap fermions */
 
-  /* Compute multiple quark mass propagators for an unpreconditioned overla fermion */
-  /* using the single mass source in "chi" - so, the source can */
-  /* be of any desired form. The results will appear in "psi", which is */
-  /* ignored on input (and set to zero initially) */
+/* Compute multiple quark mass propagators for an unpreconditioned overla fermion */
+/* using the single mass source in "chi" - so, the source can */
+/* be of any desired form. The results will appear in "psi", which is */
+/* ignored on input (and set to zero initially) */
 
-  /* This routine can return the solution to the following systems,
-     when using CG */
-  /*   D * psi           = chi   (n_soln = 1) */
-  /*   D^dag * psi       = chi   (n_soln = 2) */
-  /*  and all of the above for n_soln = 3 */
-  /*   (D * D^dag) * psi = chi   (for n_soln = 4) */
+/* This routine can return the solution to the following systems,
+   when using CG */
+/*   D * psi           = chi   (n_soln = 1) */
+/*   D^dag * psi       = chi   (n_soln = 2) */
+/*  and all of the above for n_soln = 3 */
+/*   (D * D^dag) * psi = chi   (for n_soln = 4) */
  
-  /* u        -- gauge field ( Read ) */
-  /* chi      -- source ( Modify ) */
-  /* Mass     -- quark masses in lattice units ( Read ) */
-  /* psi      -- quark propagators ( Write ) */
-  /* ncg_had  -- number of CG iterations ( Modify ) */
+/* u        -- gauge field ( Read ) */
+/* chi      -- source ( Modify ) */
+/* Mass     -- quark masses in lattice units ( Read ) */
+/* psi      -- quark propagators ( Write ) */
+/* ncg_had  -- number of CG iterations ( Modify ) */
   void 
   OverlapFermActBase::multiQprop(multi1d<T>& psi,
 				 const multi1d<Real>& masses,
 				 Handle< FermState<T,P,Q> > state, 
 				 const T& chi, 
-				 const MultiInvertParam_t& invParam,
+				 const GroupXML_t& invParam_,
 				 const int n_soln,
 				 int& n_count) const
-
   {
 
     if ( toBool( getQuarkMass() != 0 ) ) {
       QDP_error_exit("Multi Mass Qprop only works if action has mass = 0 (strictly)");
     }
 
+    std::istringstream  is(invParam_.xml);
+    XMLReader  paramtop(is);
+	
+    MultiSysSolverCGParams invParam(paramtop, invParam_.path);
 
     int nsets ;
     int msets ;
@@ -451,9 +444,9 @@ namespace Chroma
   
   
     Real ftmp;
-    switch( invParam.invType ) {
+//    switch( invParam.invType ) {
 
-    case CG_INVERTER: 
+//    case CG_INVERTER: 
     {
       // This is M_scaled = 2 D(0). 
       // the fact that D has zero masss is enforced earlier 
@@ -529,7 +522,6 @@ namespace Chroma
       switch(n_soln) { 
       case 4:
 
-
 	// Compensate for the  4/(1-m^2) factor
 
 	for(int i = 0; i < n_mass; i++) { 
@@ -593,6 +585,7 @@ namespace Chroma
 	break;
       }  // End switch over n_soln;
     }    
+#if 0
     break; // End of CG case
 
     case REL_CG_INVERTER: 
@@ -763,7 +756,7 @@ namespace Chroma
 
       multi1d<Real> scaledRsdCG(n_mass);
       for(int i=0; i < n_mass; i++) {
-	scaledRsdCG[i] = invParam.RsdCG[i]*(Real(1) - masses[i])/Real(2);
+	scaledRsdCG[i] = RsdCG[i]*(Real(1) - masses[i])/Real(2);
       }
 
       // Do the solve
@@ -781,7 +774,7 @@ namespace Chroma
 
 	r -= chi;
 	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
-	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << invParam.RsdCG[s] << endl;
+	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[s] << endl;
 	
       }
 #endif
@@ -833,7 +826,7 @@ namespace Chroma
       // where m is the smallest mass.
       multi1d<Real> scaledRsdCG(n_mass);
       for(int i=0; i < n_mass; i++) {
-	scaledRsdCG[i] = invParam.RsdCG[i]*(1-masses[i])/Real(2);
+	scaledRsdCG[i] = RsdCG[i]*(1-masses[i])/Real(2);
       }
 
       // Do the solve
@@ -850,7 +843,7 @@ namespace Chroma
 
 	r -= chi;
 	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
-	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << invParam.RsdCG[s] << endl;
+	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[s] << endl;
 	
       }
 #endif
@@ -917,6 +910,7 @@ namespace Chroma
     default:
       QDP_error_exit("Unknown inverter type %d\n", invParam.invType);
     }
+#endif
 
 
     END_CODE();

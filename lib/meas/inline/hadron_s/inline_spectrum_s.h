@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: inline_spectrum_s.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -11,8 +11,8 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "invtype.h"
 #include "meas/hadron/enum_loops_s.h"
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 namespace Chroma 
 { 
@@ -75,7 +75,7 @@ namespace Chroma
       Real         Mass;      // Staggered mass
       Real         u0;        // Tadpole Factor
 
-      InvertParam_t  invParam; // inversion parameters
+      SysSolverCGParams  invParam; // inversion parameters
 
     } prop_param ;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -95,7 +95,7 @@ namespace Chroma
     //! Redefine quark propagator routine for 4D fermions
     /*! Default implementation provided */
     SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
-			   const InvertParam_t& invParam) const;
+			   const GroupXML_t& invParam) const;
   
     //! Define a multi mass qprop
     /*! this should be possible for most 4D operators of the 
@@ -106,7 +106,7 @@ namespace Chroma
 		    const multi1d<Real>& masses,
 		    Handle< FermState<T,P,Q> > state,
 		    const T& chi,
-		    const MultiInvertParam_t& invParam,
+		    const GroupXML_t& invParam,
 		    const int n_soln,
 		    int & ncg_had) const;
 
@@ -123,7 +123,7 @@ namespace Chroma
 			const LatticePropagator& q_src,
 			Handle< FermState<T,P,Q> > state,
 			const multi1d<Real>& masses,
-			const MultiInvertParam_t& invParam,
+			const GroupXML_t& invParam,
 			const int n_soln,
 			int& ncg_had);
   };

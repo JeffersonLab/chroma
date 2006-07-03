@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_pdwf4d_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_pdwf4d_linop_w.h,v 3.1 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D using prec 5D bits
  */
@@ -10,8 +10,7 @@
 #include "linearop.h"
 #include "eo_prec_linop.h"
 #include "handle.h"
-#include "invtype.h"
-
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 
 namespace Chroma
@@ -28,13 +27,13 @@ namespace Chroma
     /*! Requires that the pointer p is a return value of new */
     UnprecPDWF4DLinOp(EvenOddPrecLinearOperatorArray<T,P,Q>* D_, 
 		      UnprecLinearOperatorArray<T,P,Q>* PV_,
-		      const InvertParam_t& invParam_) : 
+		      const SysSolverCGParams& invParam_) : 
       D(D_), PV(PV_), invParam(invParam_) {}
 
     //! Copy pointer (one more owner)
     UnprecPDWF4DLinOp(Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > D_, 
 		      Handle< UnprecLinearOperatorArray<T,P,Q> > PV_,
-		      const InvertParam_t& invParam_) : 
+		      const SysSolverCGParams& invParam_) : 
       D(D_), PV(PV_), invParam(invParam_) {}
 
     //! Destructor
@@ -50,10 +49,14 @@ namespace Chroma
     /*! For this operator, the sign is ignored */
     void operator() (T& chi, const T& psi, enum PlusMinus isign) const;
 
+  protected:
+    //! Hide default constructor
+    UnprecPDWF4DLinOp() {}
+
   private:
     Handle< EvenOddPrecLinearOperatorArray<T,P,Q> > D;
     Handle< UnprecLinearOperatorArray<T,P,Q> > PV;
-    const InvertParam_t invParam;
+    SysSolverCGParams invParam;
   };
 
 }

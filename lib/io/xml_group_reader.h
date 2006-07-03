@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: xml_group_reader.h,v 1.1 2006-05-24 21:07:28 edwards Exp $
+// $Id: xml_group_reader.h,v 1.2 2006-07-03 15:26:10 edwards Exp $
 /*! \file
  *  \brief Read an XML group as a string
  */
@@ -18,6 +18,7 @@ namespace Chroma
   {
     std::string  xml;     /*!< xml holding group */
     std::string  id;      /*!< typeid within group */
+    std::string  path;    /*!< pathname of root */
   };
 
 

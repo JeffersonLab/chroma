@@ -1,4 +1,4 @@
-// $Id: xml_group_reader.cc,v 1.1 2006-05-24 21:07:27 edwards Exp $
+// $Id: xml_group_reader.cc,v 1.2 2006-07-03 15:26:10 edwards Exp $
 /*! \file
  *  \brief Read an XML group as a string
  */
@@ -25,6 +25,7 @@ namespace Chroma
       xml_tmp.print(os);
       read(xml_tmp, type_name, group.id);
       group.xml = os.str();
+      group.path = "/" + path;
     }
     catch(const std::string& e) 
     {

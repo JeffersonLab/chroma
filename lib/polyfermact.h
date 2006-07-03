@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polyfermact.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: polyfermact.h,v 3.1 2006-07-03 15:26:06 edwards Exp $
 
 /*! @file
  * @brief Class structure for polynomial fermion actions
@@ -11,6 +11,7 @@
 #include "chromabase.h"
 #include "fermact.h"
 #include "polylinop.h"
+#include "actions/ferm/invert/syssolver_polyprec.h"
 
 namespace Chroma
 {
@@ -32,6 +33,10 @@ namespace Chroma
 
     //! Produce a polynomial linear operator for this action
     virtual PolyLinearOperator<T,P,Q>* polyLinOp(Handle< FermState<T,P,Q> > state) const = 0;
+
+    //! Return a linear operator solver for this action to solve M*psi=chi 
+    virtual PolyPrecSystemSolver<T>* invPolyPrec(Handle< FermState<T,P,Q> > state,
+						 const GroupXML_t& invParam) const = 0;
   };
 
 }

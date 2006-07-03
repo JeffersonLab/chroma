@@ -1,4 +1,4 @@
-// $Id: t_dwflocality.cc,v 3.2 2006-06-11 06:30:33 edwards Exp $
+// $Id: t_dwflocality.cc,v 3.3 2006-07-03 15:26:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -40,13 +40,12 @@ int main(int argc, char **argv)
   write(xml,"bc",boundary);
   pop(xml);
 
-  InvertParam_t invParam ;
+  SysSolverCGParams invParam;
   int N5 ;
   Real WilsonMass ;
   Real m_q = 1.0;
   invParam.RsdCG = 1.0e-7 ;
   invParam.MaxCG = 5000 ;
-  invParam.invType = CG_INVERTER ;
 
   read(xml_in, "Ls", N5);
 
@@ -123,7 +122,12 @@ int main(int argc, char **argv)
   QDPIO::cout << "5D source norm :" << norm2(chi)<< endl;
 
   {
-    Handle< SystemSolverArray<LatticeFermion> > PQ(S_pdwf.qpropT(state, invParam));
+    XMLBufferWriter xml_buf;
+    write(xml_buf, "InvertParam", invParam);
+    XMLReader xml_inn(xml_buf);
+    GroupXML_t inv_param = readXMLGroup(xml_inn, "/InvertParam", "invType");
+
+    Handle< SystemSolverArray<LatticeFermion> > PQ(S_pdwf.qpropT(state, inv_param));
     (*PQ)(psi, chi);
   }
   

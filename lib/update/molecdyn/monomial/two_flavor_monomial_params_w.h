@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_params_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: two_flavor_monomial_params_w.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
 /*! @file
  * @brief Two-flavor monomial params
  */
@@ -8,7 +8,7 @@
 #define __two_flavor_monomial_params_w_h__
 
 #include "chromabase.h"
-#include "invtype.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 {
@@ -22,7 +22,7 @@ namespace Chroma
 
     // Read monomial from some root path
     TwoFlavorWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
-    InvertParam_t inv_param; // Inverter Parameters
+    GroupXML_t inv_param; // Inverter Parameters
     string ferm_act;
     string predictor_xml;   // The Chrono Predictor XML
 

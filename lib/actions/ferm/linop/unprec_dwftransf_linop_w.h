@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.h,v 3.1 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -9,8 +9,8 @@
 
 #include "linearop.h"
 #include "handle.h"
-#include "invtype.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 
 namespace Chroma 
@@ -38,7 +38,7 @@ namespace Chroma
 			 const Real& Mass_,
 			 const Real& b5_,
 			 const Real& c5_,
-			 const InvertParam_t& invParam_)
+			 const SysSolverCGParams& invParam_)
     {create(fs,Mass_, b5_, c5_, invParam_);}
 
     //! Destructor is automatic
@@ -52,7 +52,7 @@ namespace Chroma
 		const Real& Mass_,
 		const Real& b5_,
 		const Real& c5_,
-		const InvertParam_t& invParam_);
+		const SysSolverCGParams& invParam_);
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
@@ -64,7 +64,7 @@ namespace Chroma
     Real Mass;
     Real b5;
     Real c5;
-    InvertParam_t invParam;
+    SysSolverCGParams invParam;
     Handle< LinearOperator<LatticeFermion> > D_w;
     Handle< LinearOperator<LatticeFermion> > D_denum;  
     Handle< FermBC<T,P,Q> > fbc;
@@ -93,7 +93,7 @@ namespace Chroma
 			      const Real& Mass_,
 			      const Real& b5_,
 			      const Real& c5_,
-			      const InvertParam_t& invParam_)
+			      const SysSolverCGParams& invParam_)
     {create(fs, Mass_, b5_, c5_, invParam_);}
 
     //! Destructor is automatic
@@ -110,7 +110,7 @@ namespace Chroma
 		const Real& Mass_,
 		const Real& b5_,
 		const Real& c5_,
-		const InvertParam_t& invParam_);
+		const SysSolverCGParams& invParam_);
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
@@ -120,7 +120,7 @@ namespace Chroma
     Real Mass;
     Real b5;
     Real c5;
-    InvertParam_t invParam;
+    SysSolverCGParams invParam;
     Handle< LinearOperator<LatticeFermion> > D_w;
     Handle< LinearOperator<LatticeFermion> > D_denum;  
     Handle< FermBC<T,P,Q> > fbc;

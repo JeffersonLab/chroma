@@ -1,4 +1,4 @@
-// $Id: prec_fermact_qprop.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: prec_fermact_qprop.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -6,7 +6,6 @@
  */
 
 #include "fermact.h"
-#include "actions/ferm/invert/invcg2.h"
 
 namespace Chroma 
 { 
@@ -25,7 +24,7 @@ namespace Chroma
      * \param invParam_  inverter parameters ( Read )
      */
     PrecFermActQprop(Handle< EvenOddPrecLinearOperator<T,P,Q> > A_,
-		     const InvertParam_t& invParam_) : A(A_), invParam(invParam_) 
+		     Handle< LinOpSystemSolver<T> > invA_) : A(A_), invA(invA_) 
       {}
 
     //! Destructor is automatic
@@ -44,8 +43,6 @@ namespace Chroma
     {
       START_CODE();
 
-      SystemSolverResults_t res;
-
       /* Step (i) */
       /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_o */
       T chi_tmp;
@@ -57,43 +54,9 @@ namespace Chroma
 	chi_tmp[rb[1]] = chi - tmp2;
       }
 
-      switch(invParam.invType)
-      {
-      case CG_INVERTER: 
-      {
-	/* tmp = A_dag(u) * chi_tmp */
-	T  tmp;
-	(*A)(tmp, chi_tmp, MINUS);
-    
-	/* psi = (M^dag * M)^(-1) chi */
-	InvCG2(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG, res.n_count);
-      }
-      break;
-  
-#if 0
-      case MR_INVERTER:
-	/* psi = M^(-1) chi_tmp */
-	InvMR(*A, chi_tmp, psi, 
-	      invParam.MRover, 
-	      invParam.RsdCG, 
-	      invParam.MaxCG, res.n_count);
-	break;
+      // Call inverter
+      SystemSolverResults_t res = (*invA)(psi, chi_tmp);
 
-      case BICG_INVERTER:
-	/* psi = M^(-1) chi_tmp */
-	InvBiCG(*A, chi_tmp, psi, 
-		invParam.RsdCG, 
-		invParam.MaxCG, res.n_count);
-	break;
-#endif
-  
-      default:
-	QDP_error_exit("Unknown inverter type", invParam.invType);
-      }
-  
-      if ( res.n_count == invParam.MaxCG )
-	QDP_error_exit("no convergence in the inverter", res.n_count);
-  
       /* Step (ii) */
       /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
       {
@@ -122,7 +85,7 @@ namespace Chroma
     PrecFermActQprop() {}
 
     Handle< EvenOddPrecLinearOperator<T,P,Q> > A;
-    const InvertParam_t invParam;
+    Handle< LinOpSystemSolver<T> > invA;
   };
 
 
@@ -133,11 +96,10 @@ namespace Chroma
   template<>
   SystemSolver<LF>* 
   EvenOddPrecWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
-						  const InvertParam_t& invParam) const
+						  const GroupXML_t& invParam) const
   {
-    return new PrecFermActQprop<LF,LCM,LCM>(
-      Handle< EvenOddPrecLinearOperator<LF,LCM,LCM> >(linOp(state)),
-      invParam);
+    return new PrecFermActQprop<LF,LCM,LCM>(Handle< EvenOddPrecLinearOperator<LF,LCM,LCM> >(linOp(state)), 
+					    Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
   }
   
 } // namespace Chroma 

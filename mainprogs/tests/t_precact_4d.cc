@@ -1,4 +1,4 @@
-// $Id: t_precact_4d.cc,v 3.1 2006-06-11 06:30:34 edwards Exp $
+// $Id: t_precact_4d.cc,v 3.2 2006-07-03 15:26:11 edwards Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -262,7 +262,7 @@ void check_derivs(XMLWriter& xml_out, const string& prefix,
 struct Param_t
 {
   multi1d<int> nrow;		// Lattice dimension
-  InvertParam_t   invParam;   // Inverter parameters
+  GroupXML_t   invParam;   // Inverter parameters
 };
 
 //! Mega-structure of all input
@@ -279,7 +279,7 @@ void read(XMLReader& xml, const string& path, Param_t& param)
 {
   XMLReader paramtop(xml, path);
   read(paramtop, "nrow", param.nrow);
-  read(paramtop, "InvertParam", param.invParam);
+  param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 }
 
 

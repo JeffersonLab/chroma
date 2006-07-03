@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_params_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: one_flavor_rat_monomial_params_w.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
 /*! @file
  * @brief One-flavor monomial params
  */
@@ -8,7 +8,7 @@
 #define __one_flavor_rat_monomial_params_w_h__
 
 #include "chromabase.h"
-#include "invtype.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 {
@@ -25,7 +25,7 @@ namespace Chroma
     OneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path,
 					     int expNumPower_, int expDenPower_);
 
-    InvertParam_t   inv_param;     // Inverter Parameters
+    GroupXML_t      inv_param;     /*!< Inverter Parameters */
     std::string     ferm_act;
     int             expNumPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
     int             expDenPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}

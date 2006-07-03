@@ -1,6 +1,12 @@
-// $Id: nef_quarkprop4_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 3.1  2006-06-11 06:30:32  edwards
+// Revision 3.2  2006-07-03 15:26:09  edwards
+// Changed FermionAction API to produce system solver classes. No longer have
+// a fixed InvertParam set. Removed old inverter enum and support. Have default
+// creation for inverters to solve M*psi=chi, MdagM*psi=chi, and multi-shift
+// support. Some older files still have explicit calls to CG solver.
+//
+// Revision 3.1  2006/06/11 06:30:32  edwards
 // Change in interface. The quarkProp routines now all take a "numRetries"
 // variable for the number of times to call the qprop routine. The propagator
 // regression tests have all been up to version 10 to read this new variable.
@@ -96,9 +102,7 @@ namespace Chroma
    * \param q_src    source ( Read )
    * \param t_src    time slice of source ( Read )
    * \param j_decay  direction of decay ( Read )
-   * \param invType  inverter type ( Read )
-   * \param RsdCG    CG (or MR) residual used here ( Read )
-   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param invParam inverter params ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    */
   template<typename T, typename P, typename Q, template<class,class,class> class C>
@@ -108,7 +112,7 @@ namespace Chroma
 		       int t_src, int j_decay,
 		       const C<T,P,Q>& S_f,
 		       Handle< FermState<T,P,Q> > state,
-		       const InvertParam_t& invParam,
+		       const GroupXML_t& invParam,
 		       int numRetries,
 		       int& ncg_had)
   {
@@ -299,9 +303,7 @@ namespace Chroma
    * \param q_src    source ( Read )
    * \param t_src    time slice of source ( Read )
    * \param j_decay  direction of decay ( Read )
-   * \param invType  inverter type ( Read )
-   * \param RsdCG    CG (or MR) residual used here ( Read )
-   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param invParam inverter params ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    */
 
@@ -313,7 +315,7 @@ namespace Chroma
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& S_f,
 		      Handle< FermState<LatticeFermion, 
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
-		      const InvertParam_t& invParam,
+		      const GroupXML_t& invParam,
 		      int numRetries,
 		      int& ncg_had)
   {
@@ -340,9 +342,7 @@ namespace Chroma
    * \param q_src    source ( Read )
    * \param t_src    time slice of source ( Read )
    * \param j_decay  direction of decay ( Read )
-   * \param invType  inverter type ( Read )
-   * \param RsdCG    CG (or MR) residual used here ( Read )
-   * \param MaxCG    maximum number of CG iterations ( Read )
+   * \param invParam inverter params ( Read )
    * \param ncg_had  number of CG iterations ( Write )
    */
 
@@ -354,7 +354,7 @@ namespace Chroma
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& S_f,
 		      Handle< FermState<LatticeFermion,
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
-		      const InvertParam_t& invParam,
+		      const GroupXML_t& invParam,
 		      int numRetries,
 		      int& ncg_had)
   {
