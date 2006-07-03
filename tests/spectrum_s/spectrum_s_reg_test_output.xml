@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>3.5.1</chroma>
-      <qdp>1.20.6</qdp>
+      <chroma>3.8.0</chroma>
+      <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>24 May 06 17:21:30 BST</run_date>
+    <run_date>03 Jul 06 12:26:18 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -31,7 +31,6 @@
     </Param>
     <Inversion>
       <Mass>0.1</Mass>
-      <Inverter>21</Inverter>
       <RsdCG>1e-05</RsdCG>
       <MaxCG>3000</MaxCG>
     </Inversion>
@@ -52,7 +51,7 @@
   </Output_version>
   <Observables>
     <w_plaq>-0.00209272</w_plaq>
-    <s_plaq>0.00514884</s_plaq>
+    <s_plaq>0.00514883</s_plaq>
     <t_plaq>-0.00933428</t_plaq>
     <link>0.121381</link>
     <pollp>
@@ -62,7 +61,7 @@
       </elem>
       <elem>
         <re>0.035506</re>
-        <im>-0.0163279</im>
+        <im>-0.016328</im>
       </elem>
       <elem>
         <re>0.0152873</re>
@@ -96,8 +95,8 @@
         <Meas000000>
           <loop>
             <elem>
-              <re>16.9056</re>
-              <im>3.22009</im>
+              <re>16.9055</re>
+              <im>3.21964</im>
             </elem>
             <elem>
               <re>0</re>
@@ -118,8 +117,8 @@
         <Meas000000>
           <loop>
             <elem>
-              <re>-0.671257</re>
-              <im>4.31884</im>
+              <re>-0.67114</re>
+              <im>4.31883</im>
             </elem>
             <elem>
               <re>0</re>
@@ -140,8 +139,8 @@
         <Meas000000>
           <loop>
             <elem>
-              <re>-0.803075</re>
-              <im>-0.322388</im>
+              <re>-0.803093</re>
+              <im>-0.32242</im>
             </elem>
             <elem>
               <re>0</re>
@@ -162,8 +161,8 @@
         <Meas000000>
           <loop>
             <elem>
-              <re>-0.336202</re>
-              <im>0.324147</im>
+              <re>-0.3362</re>
+              <im>0.324154</im>
             </elem>
             <elem>
               <re>0</re>
@@ -184,20 +183,20 @@
         <Meas000000>
           <loop>
             <elem>
-              <re>-0.0125211</re>
-              <im>-0.0135686</im>
+              <re>-0.0125208</re>
+              <im>-0.0135683</im>
             </elem>
             <elem>
-              <re>-0.0148831</re>
-              <im>0.0153575</im>
+              <re>-0.0148832</re>
+              <im>0.0153574</im>
             </elem>
             <elem>
-              <re>-0.0175645</re>
-              <im>-0.00282731</im>
+              <re>-0.017564</re>
+              <im>-0.00282668</im>
             </elem>
             <elem>
-              <re>-0.0152025</re>
-              <im>0.00103844</im>
+              <re>-0.0152016</re>
+              <im>0.00103761</im>
             </elem>
           </loop>
         </Meas000000>
@@ -206,8 +205,8 @@
         <Meas000000>
           <loop>
             <elem>
-              <re>3.82092</re>
-              <im>-0.356551</im>
+              <re>3.82122</re>
+              <im>-0.356653</im>
             </elem>
             <elem>
               <re>0</re>
@@ -227,7 +226,7 @@
       <Qprop_noise>
         <Noise_number>1</Noise_number>
         <RsdCG>1e-05</RsdCG>
-        <n_count>466</n_count>
+        <n_count>468</n_count>
         <Seed>
           <Seed>
             <elem>3274</elem>
@@ -245,8 +244,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>41.085</re>
-              <im>-15.778</im>
+              <re>41.0851</re>
+              <im>-15.7782</im>
             </elem>
             <elem>
               <re>0</re>
@@ -267,8 +266,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>-1.94427</re>
-              <im>-0.31212</im>
+              <re>-1.94407</re>
+              <im>-0.312282</im>
             </elem>
             <elem>
               <re>0</re>
@@ -289,8 +288,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>1.32371</re>
-              <im>0.894238</im>
+              <re>1.32372</re>
+              <im>0.894359</im>
             </elem>
             <elem>
               <re>0</re>
@@ -311,8 +310,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>0.597499</re>
-              <im>-0.554524</im>
+              <re>0.597463</re>
+              <im>-0.554579</im>
             </elem>
             <elem>
               <re>0</re>
@@ -329,20 +328,20 @@
         <Meas000001>
           <loop>
             <elem>
-              <re>0.0250091</re>
-              <im>-0.0336843</im>
+              <re>0.0250085</re>
+              <im>-0.0336862</im>
             </elem>
             <elem>
-              <re>0.0722842</re>
-              <im>0.00399748</im>
+              <re>0.0722798</re>
+              <im>0.00400129</im>
             </elem>
             <elem>
-              <re>0.0440748</re>
-              <im>-0.0122352</im>
+              <re>0.0440705</re>
+              <im>-0.0122392</im>
             </elem>
             <elem>
-              <re>-0.00320029</re>
-              <im>0.0419221</im>
+              <re>-0.00320083</re>
+              <im>0.0419241</im>
             </elem>
           </loop>
         </Meas000001>
@@ -355,8 +354,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>-3.88437</re>
-              <im>1.7495</im>
+              <re>-3.88414</re>
+              <im>1.74947</im>
             </elem>
             <elem>
               <re>0</re>
@@ -372,7 +371,7 @@
       <Qprop_noise>
         <Noise_number>2</Noise_number>
         <RsdCG>1e-05</RsdCG>
-        <n_count>462</n_count>
+        <n_count>460</n_count>
         <Seed>
           <Seed>
             <elem>682</elem>
@@ -394,8 +393,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>34.9658</re>
-              <im>2.58502</im>
+              <re>34.9655</re>
+              <im>2.58486</im>
             </elem>
             <elem>
               <re>0</re>
@@ -416,8 +415,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>3.23653</re>
-              <im>1.26462</im>
+              <re>3.23593</re>
+              <im>1.2643</im>
             </elem>
             <elem>
               <re>0</re>
@@ -438,8 +437,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>-1.09864</re>
-              <im>0.147753</im>
+              <re>-1.09865</re>
+              <im>0.147952</im>
             </elem>
             <elem>
               <re>0</re>
@@ -460,8 +459,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>0.273208</re>
-              <im>0.278825</im>
+              <re>0.2732</re>
+              <im>0.27882</im>
             </elem>
             <elem>
               <re>0</re>
@@ -474,20 +473,20 @@
         <Meas000002>
           <loop>
             <elem>
-              <re>0.00211004</re>
-              <im>0.0198707</im>
+              <re>0.00210844</re>
+              <im>0.0198696</im>
             </elem>
             <elem>
-              <re>0.0437946</re>
-              <im>0.00441539</im>
+              <re>0.0437912</re>
+              <im>0.00441856</im>
             </elem>
             <elem>
-              <re>0.0513522</re>
-              <im>-0.0398325</im>
+              <re>0.0513504</re>
+              <im>-0.039835</im>
             </elem>
             <elem>
-              <re>0.00966765</re>
-              <im>0.0155464</im>
+              <re>0.00966756</re>
+              <im>0.0155468</im>
             </elem>
           </loop>
         </Meas000002>
@@ -504,8 +503,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>-4.19928</re>
-              <im>-11.7203</im>
+              <re>-4.19901</re>
+              <im>-11.7199</im>
             </elem>
             <elem>
               <re>0</re>
@@ -517,7 +516,7 @@
       <Qprop_noise>
         <Noise_number>3</Noise_number>
         <RsdCG>1e-05</RsdCG>
-        <n_count>468</n_count>
+        <n_count>469</n_count>
         <Seed>
           <Seed>
             <elem>650</elem>
@@ -543,8 +542,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>22.0035</re>
-              <im>-0.246629</im>
+              <re>22.0037</re>
+              <im>-0.246743</im>
             </elem>
           </loop>
         </Meas000003>
@@ -565,8 +564,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>-5.99556</re>
-              <im>-1.66783</im>
+              <re>-5.99543</re>
+              <im>-1.66775</im>
             </elem>
           </loop>
         </Meas000003>
@@ -587,8 +586,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>-0.30841</re>
-              <im>-0.845619</im>
+              <re>-0.308514</re>
+              <im>-0.84563</im>
             </elem>
           </loop>
         </Meas000003>
@@ -609,8 +608,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>0.168318</re>
-              <im>-0.0394807</im>
+              <re>0.168334</re>
+              <im>-0.0394831</im>
             </elem>
           </loop>
         </Meas000003>
@@ -619,20 +618,20 @@
         <Meas000003>
           <loop>
             <elem>
-              <re>-0.0300768</re>
-              <im>-0.0208083</im>
+              <re>-0.0300782</re>
+              <im>-0.0208073</im>
             </elem>
             <elem>
-              <re>-0.00319432</re>
-              <im>0.0234824</im>
+              <re>-0.00319656</re>
+              <im>0.0234804</im>
             </elem>
             <elem>
-              <re>0.017572</re>
-              <im>0.0181165</im>
+              <re>0.0175715</re>
+              <im>0.0181163</im>
             </elem>
             <elem>
-              <re>-0.00931046</re>
-              <im>-0.0207905</im>
+              <re>-0.00931018</re>
+              <im>-0.0207895</im>
             </elem>
           </loop>
         </Meas000003>
@@ -653,8 +652,8 @@
               <im>0</im>
             </elem>
             <elem>
-              <re>-4.76738</re>
-              <im>0.0742528</im>
+              <re>-4.76797</re>
+              <im>0.0746064</im>
             </elem>
           </loop>
         </Meas000003>
@@ -664,25 +663,25 @@
         <Mean>
           <loop>
             <elem>
-              <re>4.22639</re>
-              <im>0.805023</im>
+              <re>4.22638</re>
+              <im>0.804909</im>
             </elem>
             <elem>
               <re>10.2713</re>
-              <im>-3.94451</im>
+              <im>-3.94455</im>
             </elem>
             <elem>
-              <re>8.74145</re>
-              <im>0.646254</im>
+              <re>8.74137</re>
+              <im>0.646214</im>
             </elem>
             <elem>
-              <re>5.50088</re>
-              <im>-0.0616572</im>
+              <re>5.50094</re>
+              <im>-0.0616857</im>
             </elem>
           </loop>
         </Mean>
         <MeanError>
-          <loop>4.22639 10.2713 8.74145 5.50088</loop>
+          <loop>4.22638 10.2713 8.74137 5.50094</loop>
         </MeanError>
       </loop_one_cross_one>
       <loop_gamma3_cross_one>
@@ -690,25 +689,25 @@
         <Mean>
           <loop>
             <elem>
-              <re>-0.167814</re>
+              <re>-0.167785</re>
               <im>1.07971</im>
             </elem>
             <elem>
-              <re>-0.486068</re>
-              <im>-0.0780301</im>
+              <re>-0.486017</re>
+              <im>-0.0780705</im>
             </elem>
             <elem>
-              <re>0.809133</re>
-              <im>0.316155</im>
+              <re>0.808982</re>
+              <im>0.316075</im>
             </elem>
             <elem>
-              <re>-1.49889</re>
-              <im>-0.416958</im>
+              <re>-1.49886</re>
+              <im>-0.416937</im>
             </elem>
           </loop>
         </Mean>
         <MeanError>
-          <loop>0.167814 0.486068 0.809133 1.49889</loop>
+          <loop>0.167785 0.486017 0.808982 1.49886</loop>
         </MeanError>
       </loop_gamma3_cross_one>
       <loop_gamma3gamma5_cross_one>
@@ -716,25 +715,25 @@
         <Mean>
           <loop>
             <elem>
-              <re>-0.200769</re>
-              <im>-0.0805971</im>
+              <re>-0.200773</re>
+              <im>-0.0806051</im>
             </elem>
             <elem>
-              <re>0.330927</re>
-              <im>0.22356</im>
+              <re>0.33093</re>
+              <im>0.22359</im>
             </elem>
             <elem>
-              <re>-0.27466</re>
-              <im>0.0369383</im>
+              <re>-0.274662</re>
+              <im>0.036988</im>
             </elem>
             <elem>
-              <re>-0.0771025</re>
-              <im>-0.211405</im>
+              <re>-0.0771285</re>
+              <im>-0.211407</im>
             </elem>
           </loop>
         </Mean>
         <MeanError>
-          <loop>0.200769 0.330927 0.27466 0.0771025</loop>
+          <loop>0.200773 0.33093 0.274662 0.0771285</loop>
         </MeanError>
       </loop_gamma3gamma5_cross_one>
       <loop_gamma5_cross_one>
@@ -742,25 +741,25 @@
         <Mean>
           <loop>
             <elem>
-              <re>-0.0840504</re>
-              <im>0.0810368</im>
+              <re>-0.08405</re>
+              <im>0.0810384</im>
             </elem>
             <elem>
-              <re>0.149375</re>
-              <im>-0.138631</im>
+              <re>0.149366</re>
+              <im>-0.138645</im>
             </elem>
             <elem>
-              <re>0.0683021</re>
-              <im>0.0697062</im>
+              <re>0.0682999</re>
+              <im>0.069705</im>
             </elem>
             <elem>
-              <re>0.0420794</re>
-              <im>-0.00987017</im>
+              <re>0.0420836</re>
+              <im>-0.00987077</im>
             </elem>
           </loop>
         </Mean>
         <MeanError>
-          <loop>0.0840504 0.149375 0.0683021 0.0420794</loop>
+          <loop>0.08405 0.149366 0.0682999 0.0420836</loop>
         </MeanError>
       </loop_gamma5_cross_one>
       <loop_gamma5_cross_one_k>
@@ -768,25 +767,25 @@
         <Mean>
           <loop>
             <elem>
-              <re>-0.00386969</re>
-              <im>-0.0120476</im>
+              <re>-0.00387052</re>
+              <im>-0.0120481</im>
             </elem>
             <elem>
-              <re>0.0245003</re>
-              <im>0.0118132</im>
+              <re>0.0244978</re>
+              <im>0.0118144</im>
             </elem>
             <elem>
-              <re>0.0238586</re>
-              <im>-0.00919464</im>
+              <re>0.0238571</re>
+              <im>-0.00919614</im>
             </elem>
             <elem>
-              <re>-0.00451141</re>
-              <im>0.00942911</im>
+              <re>-0.00451127</re>
+              <im>0.00942978</im>
             </elem>
           </loop>
         </Mean>
         <MeanError>
-          <loop>0.0116598 0.0203585 0.0155991 0.00532366</loop>
+          <loop>0.0116598 0.0203576 0.0155983 0.00532345</loop>
         </MeanError>
       </loop_gamma5_cross_one_k>
       <loop_gamma5_cross_gamma5>
@@ -794,25 +793,25 @@
         <Mean>
           <loop>
             <elem>
-              <re>0.955229</re>
-              <im>-0.0891377</im>
+              <re>0.955305</re>
+              <im>-0.0891631</im>
             </elem>
             <elem>
-              <re>-0.971093</re>
-              <im>0.437376</im>
+              <re>-0.971034</re>
+              <im>0.437367</im>
             </elem>
             <elem>
-              <re>-1.04982</re>
-              <im>-2.93008</im>
+              <re>-1.04975</re>
+              <im>-2.92998</im>
             </elem>
             <elem>
-              <re>-1.19184</re>
-              <im>0.0185632</im>
+              <re>-1.19199</re>
+              <im>0.0186516</im>
             </elem>
           </loop>
         </Mean>
         <MeanError>
-          <loop>0.955229 0.971093 1.04982 1.19184</loop>
+          <loop>0.955305 0.971034 1.04975 1.19199</loop>
         </MeanError>
       </loop_gamma5_cross_gamma5>
     </local_loops_s>
@@ -822,72 +821,72 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.816925</time_in_sec>
+    <time_in_sec>1.261</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>649</n_count>
-    <time_in_sec>0.811066</time_in_sec>
+    <time_in_sec>1.277</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.800075</time_in_sec>
+    <time_in_sec>1.257</time_in_sec>
   </Qprop>
   <Pseudoscalars>
     <Lsink_Lsrc>
       <Pseudoscalar>
         <gamma5_CROSS_gamma5>
-          <Pi>0.500304 0.365576 0.377266 0.441742</Pi>
+          <Pi>0.500304 0.365575 0.377266 0.441742</Pi>
         </gamma5_CROSS_gamma5>
         <gamma5_CROSS_gamma0_gamma5>
-          <Pi>0.00277335 -0.00714684 0.000559455 -0.00483145</Pi>
+          <Pi>0.00277311 -0.0071471 0.000559486 -0.00483113</Pi>
         </gamma5_CROSS_gamma0_gamma5>
         <gamma5_CROSS_gamma1_gamma5>
-          <Pi>0.0071042 0.00288298 0.00289458 -0.00487728</Pi>
+          <Pi>0.00710316 0.00288367 0.00289382 -0.00487699</Pi>
         </gamma5_CROSS_gamma1_gamma5>
         <gamma5_CROSS_gamma2_gamma5>
-          <Pi>0.0106533 -0.000122897 0.0089999 -0.00395837</Pi>
+          <Pi>0.0106535 -0.000123259 0.00899959 -0.00395794</Pi>
         </gamma5_CROSS_gamma2_gamma5>
         <gamma3_gamma5_CROSS_gamma3_gamma5>
-          <Pi>-0.12559 0.0636421 -0.082142 0.0475575</Pi>
+          <Pi>-0.125589 0.0636418 -0.0821412 0.0475572</Pi>
         </gamma3_gamma5_CROSS_gamma3_gamma5>
         <gamma5_CROSS_gamma2_gamma3>
-          <Pi>0.00206273 0.00150125 -0.00217835 -4.82883e-05</Pi>
+          <Pi>0.00206274 0.00150124 -0.00217831 -4.83541e-05</Pi>
         </gamma5_CROSS_gamma2_gamma3>
         <gamma5_CROSS_gamma1_gamma3>
-          <Pi>0.00270436 -3.85558e-05 0.0012011 -0.00173134</Pi>
+          <Pi>0.00270439 -3.86019e-05 0.00120118 -0.00173131</Pi>
         </gamma5_CROSS_gamma1_gamma3>
         <gamma5_CROSS_gamma0_gamma3>
-          <Pi>0.00516192 -0.00167363 1.1709e-06 0.000187361</Pi>
+          <Pi>0.00516195 -0.00167363 1.20932e-06 0.000187389</Pi>
         </gamma5_CROSS_gamma0_gamma3>
         <gamma3_gamma5_CROSS_gamma1_gamma2>
-          <Pi>0.00865718 0.00131036 0.00450754 0.0123699</Pi>
+          <Pi>0.00865782 0.00130989 0.004508 0.0123698</Pi>
         </gamma3_gamma5_CROSS_gamma1_gamma2>
         <gamma3_gamma5_CROSS_gamma0_gamma2>
-          <Pi>0.0120226 -0.00465574 0.00928719 0.00547205</Pi>
+          <Pi>0.0120218 -0.00465561 0.0092865 0.00547151</Pi>
         </gamma3_gamma5_CROSS_gamma0_gamma2>
         <gamma3_gamma5_CROSS_gamma0_gamma1>
-          <Pi>0.0170136 0.00210079 -0.0037226 0.000524698</Pi>
+          <Pi>0.0170136 0.00210105 -0.00372299 0.000524262</Pi>
         </gamma3_gamma5_CROSS_gamma0_gamma1>
         <gamma5_CROSS_gamma3>
-          <Pi>0.00085876 0.000219348 0.000170454 3.56367e-06</Pi>
+          <Pi>0.00085876 0.000219338 0.000170458 3.54224e-06</Pi>
         </gamma5_CROSS_gamma3>
         <gamma3_gamma5_CROSS_gamma2>
-          <Pi>-0.00301712 -0.00248973 -0.00216979 -0.00182636</Pi>
+          <Pi>-0.00301709 -0.00248975 -0.00216976 -0.00182626</Pi>
         </gamma3_gamma5_CROSS_gamma2>
         <gamma3_gamma5_CROSS_gamma1>
-          <Pi>-0.00570869 -0.00143003 -0.000204141 -0.000780747</Pi>
+          <Pi>-0.00570867 -0.00142995 -0.000204059 -0.000780791</Pi>
         </gamma3_gamma5_CROSS_gamma1>
         <gamma3_gamma5_CROSS_gamma0>
-          <Pi>-0.00457281 0.000249336 0.00173209 0.00048057</Pi>
+          <Pi>-0.0045728 0.000249353 0.00173212 0.000480554</Pi>
         </gamma3_gamma5_CROSS_gamma0>
         <gamma3_gamma5_CROSS_one>
-          <Pi>-0.000785825 -0.000389997 3.52969e-05 -0.000183477</Pi>
+          <Pi>-0.000785826 -0.000390015 3.52929e-05 -0.000183504</Pi>
         </gamma3_gamma5_CROSS_one>
       </Pseudoscalar>
     </Lsink_Lsrc>
@@ -896,52 +895,52 @@
     <Lsink_Lsrc>
       <Here_are_all_16_scalars>
         <re_sc0>
-          <Sc>-0.12559 -0.0636421 -0.082142 -0.0475575</Sc>
+          <Sc>-0.125589 -0.0636418 -0.0821412 -0.0475572</Sc>
         </re_sc0>
         <re_sc1>
-          <Sc>-0.00865718 0.00131036 -0.00450754 0.0123699</Sc>
+          <Sc>-0.00865782 0.00130989 -0.004508 0.0123698</Sc>
         </re_sc1>
         <re_sc2>
-          <Sc>-0.0120226 -0.00465574 -0.00928719 0.00547205</Sc>
+          <Sc>-0.0120218 -0.00465561 -0.0092865 0.00547151</Sc>
         </re_sc2>
         <re_sc3>
-          <Sc>-0.0170136 0.00210079 0.0037226 0.000524698</Sc>
+          <Sc>-0.0170136 0.00210105 0.00372299 0.000524262</Sc>
         </re_sc3>
         <re_sc4>
-          <Sc>-0.500304 0.365576 -0.377266 0.441742</Sc>
+          <Sc>-0.500304 0.365575 -0.377266 0.441742</Sc>
         </re_sc4>
         <re_sc5>
-          <Sc>-0.00301712 0.00248973 -0.00216979 0.00182636</Sc>
+          <Sc>-0.00301709 0.00248975 -0.00216976 0.00182626</Sc>
         </re_sc5>
         <re_sc6>
-          <Sc>-0.00570869 0.00143003 -0.000204141 0.000780747</Sc>
+          <Sc>-0.00570867 0.00142995 -0.000204059 0.000780791</Sc>
         </re_sc6>
         <re_sc7>
-          <Sc>-0.00457281 -0.000249336 0.00173209 -0.00048057</Sc>
+          <Sc>-0.0045728 -0.000249353 0.00173212 -0.000480554</Sc>
         </re_sc7>
         <re_sc8>
-          <Sc>-0.00277335 -0.00714684 -0.000559455 -0.00483145</Sc>
+          <Sc>-0.00277311 -0.0071471 -0.000559486 -0.00483113</Sc>
         </re_sc8>
         <re_sc9>
-          <Sc>-0.0071042 0.00288298 -0.00289458 -0.00487728</Sc>
+          <Sc>-0.00710316 0.00288367 -0.00289382 -0.00487699</Sc>
         </re_sc9>
         <re_sc10>
-          <Sc>-0.0106533 -0.000122898 -0.0089999 -0.00395837</Sc>
+          <Sc>-0.0106535 -0.000123259 -0.00899959 -0.00395794</Sc>
         </re_sc10>
         <re_sc11>
-          <Sc>-0.000785825 0.000389997 3.52969e-05 0.000183477</Sc>
+          <Sc>-0.000785826 0.000390015 3.52929e-05 0.000183504</Sc>
         </re_sc11>
         <re_sc12>
-          <Sc>-0.00206273 0.00150125 0.00217835 -4.82883e-05</Sc>
+          <Sc>-0.00206274 0.00150124 0.00217831 -4.83541e-05</Sc>
         </re_sc12>
         <re_sc13>
-          <Sc>-0.00270436 -3.85558e-05 -0.0012011 -0.00173134</Sc>
+          <Sc>-0.00270439 -3.86019e-05 -0.00120118 -0.00173131</Sc>
         </re_sc13>
         <re_sc14>
-          <Sc>-0.00516192 -0.00167363 -1.1709e-06 0.000187361</Sc>
+          <Sc>-0.00516195 -0.00167363 -1.20932e-06 0.000187389</Sc>
         </re_sc14>
         <re_sc15>
-          <Sc>-0.00085876 0.000219348 -0.000170454 3.56367e-06</Sc>
+          <Sc>-0.00085876 0.000219338 -0.000170458 3.54224e-06</Sc>
         </re_sc15>
       </Here_are_all_16_scalars>
     </Lsink_Lsrc>
@@ -951,23 +950,23 @@
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>644</n_count>
-      <time_in_sec>0.806115</time_in_sec>
+      <time_in_sec>1.306</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>640</n_count>
-      <time_in_sec>0.79934</time_in_sec>
+      <time_in_sec>1.282</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
-      <n_count>618</n_count>
-      <time_in_sec>0.772239</time_in_sec>
+      <n_count>617</n_count>
+      <time_in_sec>1.236</time_in_sec>
     </Qprop>
     <SingletPseudoscalar>
       <gamma5_CROSS_one>
-        <Pi>-2.88451e-05 3.03251e-05 1.90998e-05 -1.41345e-05</Pi>
+        <Pi>-2.8845e-05 3.03266e-05 1.90982e-05 -1.41346e-05</Pi>
       </gamma5_CROSS_one>
     </SingletPseudoscalar>
   </Computation_4link_pseudoscalar>
@@ -982,19 +981,19 @@
     <srcLLL_sinkLLL_nucleon>
       <elem>
         <re>0.0274824</re>
-        <im>-0.00105072</im>
+        <im>-0.0010507</im>
       </elem>
       <elem>
-        <re>0.00342291</re>
-        <im>-0.00135044</im>
+        <re>0.00342362</re>
+        <im>-0.00135103</im>
       </elem>
       <elem>
-        <re>0.00220163</re>
-        <im>0.00137463</im>
+        <re>0.00220162</re>
+        <im>0.00137462</im>
       </elem>
       <elem>
-        <re>0.000515076</re>
-        <im>0.00679719</im>
+        <re>0.000514964</re>
+        <im>0.00679721</im>
       </elem>
     </srcLLL_sinkLLL_nucleon>
   </baryon_correlators>
@@ -1003,42 +1002,42 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.79948</time_in_sec>
+    <time_in_sec>1.251</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.798226</time_in_sec>
+    <time_in_sec>1.246</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
-    <n_count>636</n_count>
-    <time_in_sec>0.794182</time_in_sec>
-  </Qprop>
-  <Qprop>
-    <Staggered_src_tag>0</Staggered_src_tag>
-    <Mass>0.1</Mass>
-    <RsdCG>1e-05</RsdCG>
-    <n_count>640</n_count>
-    <time_in_sec>0.800067</time_in_sec>
+    <n_count>620</n_count>
+    <time_in_sec>1.225</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.798866</time_in_sec>
+    <time_in_sec>1.249</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
-    <n_count>636</n_count>
-    <time_in_sec>0.793337</time_in_sec>
+    <n_count>640</n_count>
+    <time_in_sec>1.324</time_in_sec>
+  </Qprop>
+  <Qprop>
+    <Staggered_src_tag>0</Staggered_src_tag>
+    <Mass>0.1</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>620</n_count>
+    <time_in_sec>1.224</time_in_sec>
   </Qprop>
   <baryon_correlators>
     <source_time>0</source_time>
@@ -1056,181 +1055,181 @@
     <srcLLL_sinkLLL_nucleon>
       <elem>
         <re>0.0274823</re>
-        <im>-0.00105072</im>
+        <im>-0.0010507</im>
       </elem>
       <elem>
-        <re>0.00342316</re>
-        <im>-0.00135072</im>
+        <re>0.00342348</re>
+        <im>-0.00135108</im>
       </elem>
       <elem>
-        <re>0.0022016</re>
-        <im>0.00137463</im>
+        <re>0.00220162</re>
+        <im>0.00137464</im>
       </elem>
       <elem>
-        <re>0.000515129</re>
-        <im>0.0067968</im>
+        <re>0.000514748</re>
+        <im>0.00679705</im>
       </elem>
     </srcLLL_sinkLLL_nucleon>
     <srcLLL_sinkFLL_nucleon>
       <elem>
         <re>0.0200973</re>
-        <im>-0.0124702</im>
+        <im>-0.0124703</im>
       </elem>
       <elem>
-        <re>0.00381919</re>
-        <im>-0.000500435</im>
+        <re>0.00381928</re>
+        <im>-0.000500425</im>
       </elem>
       <elem>
         <re>0.00322766</re>
         <im>-0.00168848</im>
       </elem>
       <elem>
-        <re>-0.00352593</re>
-        <im>0.00585204</im>
+        <re>-0.00352605</re>
+        <im>0.00585087</im>
       </elem>
     </srcLLL_sinkFLL_nucleon>
     <srcFLL_sinkLLL_nucleon>
       <elem>
         <re>0.0274823</re>
-        <im>-0.00105072</im>
+        <im>-0.0010507</im>
       </elem>
       <elem>
-        <re>0.00342316</re>
-        <im>-0.00135072</im>
+        <re>0.00342348</re>
+        <im>-0.00135108</im>
       </elem>
       <elem>
-        <re>0.0022016</re>
-        <im>0.00137463</im>
+        <re>0.00220162</re>
+        <im>0.00137464</im>
       </elem>
       <elem>
-        <re>0.000515129</re>
-        <im>0.0067968</im>
+        <re>0.000514748</re>
+        <im>0.00679705</im>
       </elem>
     </srcFLL_sinkLLL_nucleon>
     <srcFLL_sinkFLL_nucleon>
       <elem>
         <re>0.0200973</re>
-        <im>-0.0124702</im>
+        <im>-0.0124703</im>
       </elem>
       <elem>
-        <re>0.00381919</re>
-        <im>-0.000500435</im>
+        <re>0.00381928</re>
+        <im>-0.000500425</im>
       </elem>
       <elem>
         <re>0.00322766</re>
         <im>-0.00168848</im>
       </elem>
       <elem>
-        <re>-0.00352593</re>
-        <im>0.00585204</im>
+        <re>-0.00352605</re>
+        <im>0.00585087</im>
       </elem>
     </srcFLL_sinkFLL_nucleon>
     <srcLLL_sinkFFL_nucleon>
       <elem>
         <re>0.034836</re>
-        <im>0.006232</im>
+        <im>0.00623212</im>
       </elem>
       <elem>
-        <re>-0.000251606</re>
-        <im>0.00697689</im>
+        <re>-0.000250768</re>
+        <im>0.00697721</im>
       </elem>
       <elem>
-        <re>-0.00382887</re>
-        <im>-0.00042217</im>
+        <re>-0.00382888</re>
+        <im>-0.000422096</im>
       </elem>
       <elem>
-        <re>-0.0239809</re>
-        <im>0.0125858</im>
+        <re>-0.0239823</re>
+        <im>0.0125855</im>
       </elem>
     </srcLLL_sinkFFL_nucleon>
     <srcFFL_sinkLLL_nucleon>
       <elem>
         <re>0.0274823</re>
-        <im>-0.00105072</im>
+        <im>-0.0010507</im>
       </elem>
       <elem>
-        <re>0.00342316</re>
-        <im>-0.00135072</im>
+        <re>0.00342348</re>
+        <im>-0.00135108</im>
       </elem>
       <elem>
-        <re>0.0022016</re>
-        <im>0.00137463</im>
+        <re>0.00220162</re>
+        <im>0.00137464</im>
       </elem>
       <elem>
-        <re>0.000515129</re>
-        <im>0.0067968</im>
+        <re>0.000514748</re>
+        <im>0.00679705</im>
       </elem>
     </srcFFL_sinkLLL_nucleon>
     <srcFFL_sinkFFL_nucleon>
       <elem>
         <re>0.034836</re>
-        <im>0.006232</im>
+        <im>0.00623212</im>
       </elem>
       <elem>
-        <re>-0.000251606</re>
-        <im>0.00697689</im>
+        <re>-0.000250768</re>
+        <im>0.00697721</im>
       </elem>
       <elem>
-        <re>-0.00382887</re>
-        <im>-0.00042217</im>
+        <re>-0.00382888</re>
+        <im>-0.000422096</im>
       </elem>
       <elem>
-        <re>-0.0239809</re>
-        <im>0.0125858</im>
+        <re>-0.0239823</re>
+        <im>0.0125855</im>
       </elem>
     </srcFFL_sinkFFL_nucleon>
     <srcLLL_sinkFFF_nucleon>
       <elem>
         <re>0.236273</re>
-        <im>0.12771</im>
+        <im>0.127711</im>
       </elem>
       <elem>
-        <re>0.00833023</re>
-        <im>-0.014034</im>
+        <re>0.00832974</re>
+        <im>-0.0140352</im>
       </elem>
       <elem>
-        <re>-0.0255934</re>
-        <im>0.0408873</im>
+        <re>-0.0255929</re>
+        <im>0.0408877</im>
       </elem>
       <elem>
-        <re>-0.0107367</re>
-        <im>-0.0118561</im>
+        <re>-0.0107399</re>
+        <im>-0.0118507</im>
       </elem>
     </srcLLL_sinkFFF_nucleon>
     <srcFFF_sinkLLL_nucleon>
       <elem>
         <re>0.0274823</re>
-        <im>-0.00105072</im>
+        <im>-0.0010507</im>
       </elem>
       <elem>
-        <re>0.00342316</re>
-        <im>-0.00135072</im>
+        <re>0.00342348</re>
+        <im>-0.00135108</im>
       </elem>
       <elem>
-        <re>0.0022016</re>
-        <im>0.00137463</im>
+        <re>0.00220162</re>
+        <im>0.00137464</im>
       </elem>
       <elem>
-        <re>0.000515129</re>
-        <im>0.0067968</im>
+        <re>0.000514748</re>
+        <im>0.00679705</im>
       </elem>
     </srcFFF_sinkLLL_nucleon>
     <srcFFF_sinkFFF_nucleon>
       <elem>
         <re>0.236273</re>
-        <im>0.12771</im>
+        <im>0.127711</im>
       </elem>
       <elem>
-        <re>0.00833023</re>
-        <im>-0.014034</im>
+        <re>0.00832974</re>
+        <im>-0.0140352</im>
       </elem>
       <elem>
-        <re>-0.0255934</re>
-        <im>0.0408873</im>
+        <re>-0.0255929</re>
+        <im>0.0408877</im>
       </elem>
       <elem>
-        <re>-0.0107367</re>
-        <im>-0.0118561</im>
+        <re>-0.0107399</re>
+        <im>-0.0118507</im>
       </elem>
     </srcFFF_sinkFFF_nucleon>
   </baryon_correlators>
@@ -1238,28 +1237,28 @@
     <Lsink_Lsrc>
       <Pseudoscalar>
         <gamma5_CROSS_gamma5>
-          <Pi>0.500303 0.365575 0.377265 0.441742</Pi>
+          <Pi>0.500303 0.365575 0.377266 0.441741</Pi>
         </gamma5_CROSS_gamma5>
       </Pseudoscalar>
     </Lsink_Lsrc>
     <Fsink_Lsrc>
       <Pseudoscalar>
         <gamma5_CROSS_gamma5>
-          <Pi>0.0460612 -0.0657257 -0.0616949 -0.0453159</Pi>
+          <Pi>0.0460594 -0.065725 -0.0616948 -0.0453119</Pi>
         </gamma5_CROSS_gamma5>
       </Pseudoscalar>
     </Fsink_Lsrc>
     <Lsink_Fsrc>
       <Pseudoscalar>
         <gamma5_CROSS_gamma5>
-          <Pi>0.500303 0.365575 0.377265 0.441742</Pi>
+          <Pi>0.500303 0.365575 0.377266 0.441741</Pi>
         </gamma5_CROSS_gamma5>
       </Pseudoscalar>
     </Lsink_Fsrc>
     <Fsink_Fsrc>
       <Pseudoscalar>
         <gamma5_CROSS_gamma5>
-          <Pi>0.0460612 -0.0657257 -0.0616949 -0.0453159</Pi>
+          <Pi>0.0460594 -0.065725 -0.0616948 -0.0453119</Pi>
         </gamma5_CROSS_gamma5>
       </Pseudoscalar>
     </Fsink_Fsrc>

@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: spectrum_s.out.xml,v 3.3 2006-06-11 06:30:39 edwards Exp $
+; $Id: spectrum_s.out.xml,v 3.4 2006-07-03 16:28:34 edwards Exp $
 ;
 ; Chroma input file for staggered Spectrum_s measurement.
 ;
@@ -106,10 +106,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:33:54 EDT</run_date>
+    <run_date>03 Jul 06 12:27:49 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -190,10 +190,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.7.0</chroma>
+            <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>11 Jun 06 01:33:54 EDT</run_date>
+          <run_date>03 Jul 06 12:27:49 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -216,7 +216,6 @@
           </Param>
           <Inversion>
             <Mass>0.1</Mass>
-            <Inverter>21</Inverter>
             <RsdCG>1e-05</RsdCG>
             <MaxCG>3000</MaxCG>
           </Inversion>
@@ -282,7 +281,7 @@
                 <loop>
                   <elem>
                     <re>1.13439</re>
-                    <im>0.0138373</im>
+                    <im>0.013821</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -303,7 +302,7 @@
               <Meas000000>
                 <loop>
                   <elem>
-                    <re>0.0193126</re>
+                    <re>0.0193464</re>
                     <im>4.06779</im>
                   </elem>
                   <elem>
@@ -325,8 +324,8 @@
               <Meas000000>
                 <loop>
                   <elem>
-                    <re>-1.97852</re>
-                    <im>-0.724108</im>
+                    <re>-1.97851</re>
+                    <im>-0.724106</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -347,8 +346,8 @@
               <Meas000000>
                 <loop>
                   <elem>
-                    <re>0.390298</re>
-                    <im>-0.0992527</im>
+                    <re>0.390292</re>
+                    <im>-0.0992547</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -369,19 +368,19 @@
               <Meas000000>
                 <loop>
                   <elem>
-                    <re>0.017791</re>
+                    <re>0.0177912</re>
                     <im>-0.119012</im>
                   </elem>
                   <elem>
-                    <re>0.02469</re>
+                    <re>0.0246898</re>
                     <im>0.115904</im>
                   </elem>
                   <elem>
-                    <re>0.0185845</re>
+                    <re>0.0185846</re>
                     <im>-0.118332</im>
                   </elem>
                   <elem>
-                    <re>0.0116855</re>
+                    <re>0.011686</re>
                     <im>0.12144</im>
                   </elem>
                 </loop>
@@ -391,8 +390,8 @@
               <Meas000000>
                 <loop>
                   <elem>
-                    <re>-0.0953859</re>
-                    <im>-2.03307</im>
+                    <re>-0.0954284</re>
+                    <im>-2.03322</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -430,8 +429,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>0.821727</re>
-                    <im>-0.985632</im>
+                    <re>0.821706</re>
+                    <im>-0.985625</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -452,8 +451,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>0.00364835</re>
-                    <im>1.65472</im>
+                    <re>0.00361962</re>
+                    <im>1.65471</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -474,8 +473,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>0.845356</re>
-                    <im>0.00250402</im>
+                    <re>0.845352</re>
+                    <im>0.00249405</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -496,8 +495,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>-0.0845019</re>
-                    <im>-0.0703613</im>
+                    <re>-0.084506</re>
+                    <im>-0.0703562</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -514,20 +513,20 @@
               <Meas000001>
                 <loop>
                   <elem>
-                    <re>-0.000430064</re>
-                    <im>0.00389638</im>
+                    <re>-0.000429499</re>
+                    <im>0.00389581</im>
                   </elem>
                   <elem>
-                    <re>-0.00309125</re>
-                    <im>-0.00322479</im>
+                    <re>-0.00309054</re>
+                    <im>-0.00322433</im>
                   </elem>
                   <elem>
-                    <re>-0.00563685</re>
-                    <im>0.00290427</im>
+                    <re>-0.00563614</re>
+                    <im>0.00290363</im>
                   </elem>
                   <elem>
-                    <re>-0.00297566</re>
-                    <im>-0.00357586</im>
+                    <re>-0.0029751</re>
+                    <im>-0.00357511</im>
                   </elem>
                 </loop>
               </Meas000001>
@@ -540,8 +539,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>-0.270512</re>
-                    <im>0.435074</im>
+                    <re>-0.270455</re>
+                    <im>0.43509</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -579,8 +578,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>0.792181</re>
-                    <im>1.06356</im>
+                    <re>0.792086</re>
+                    <im>1.06354</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -601,8 +600,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>-0.222654</re>
-                    <im>2.84593</im>
+                    <re>-0.222631</re>
+                    <im>2.8459</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -623,8 +622,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>0.400423</re>
-                    <im>0.137816</im>
+                    <re>0.400428</re>
+                    <im>0.137795</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -645,8 +644,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>0.936272</re>
-                    <im>0.0171515</im>
+                    <re>0.936258</re>
+                    <im>0.0171481</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -659,20 +658,20 @@
               <Meas000002>
                 <loop>
                   <elem>
-                    <re>0.00449795</re>
-                    <im>0.0600821</im>
+                    <re>0.00449847</re>
+                    <im>0.0600822</im>
                   </elem>
                   <elem>
-                    <re>0.00562662</re>
-                    <im>-0.0605641</im>
+                    <re>0.00562655</re>
+                    <im>-0.0605643</im>
                   </elem>
                   <elem>
-                    <re>0.00411148</re>
-                    <im>0.0598318</im>
+                    <re>0.00411155</re>
+                    <im>0.0598319</im>
                   </elem>
                   <elem>
-                    <re>0.00298282</re>
-                    <im>-0.0593497</im>
+                    <re>0.00298346</re>
+                    <im>-0.0593498</im>
                   </elem>
                 </loop>
               </Meas000002>
@@ -689,8 +688,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>-1.32695</re>
-                    <im>-1.71504</im>
+                    <re>-1.32696</re>
+                    <im>-1.71502</im>
                   </elem>
                   <elem>
                     <re>0</re>
@@ -728,8 +727,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>1.44138</re>
-                    <im>-4.02086</im>
+                    <re>1.44129</re>
+                    <im>-4.02084</im>
                   </elem>
                 </loop>
               </Meas000003>
@@ -750,8 +749,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>-0.0233698</re>
-                    <im>3.88844</im>
+                    <re>-0.023404</re>
+                    <im>3.88849</im>
                   </elem>
                 </loop>
               </Meas000003>
@@ -772,8 +771,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>0.510537</re>
-                    <im>0.132832</im>
+                    <re>0.510547</re>
+                    <im>0.132833</im>
                   </elem>
                 </loop>
               </Meas000003>
@@ -794,8 +793,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>-0.0520173</re>
-                    <im>-0.186622</im>
+                    <re>-0.0520127</re>
+                    <im>-0.186618</im>
                   </elem>
                 </loop>
               </Meas000003>
@@ -804,20 +803,20 @@
               <Meas000003>
                 <loop>
                   <elem>
-                    <re>0.00579468</re>
-                    <im>-0.00787992</im>
+                    <re>0.00579413</re>
+                    <im>-0.00788008</im>
                   </elem>
                   <elem>
-                    <re>0.00723705</re>
-                    <im>0.00773272</im>
+                    <re>0.00723702</re>
+                    <im>0.0077329</im>
                   </elem>
                   <elem>
-                    <re>0.00787733</re>
-                    <im>-0.00779904</im>
+                    <re>0.00787766</re>
+                    <im>-0.00780006</im>
                   </elem>
                   <elem>
-                    <re>0.00643496</re>
-                    <im>0.00794624</im>
+                    <re>0.00643478</re>
+                    <im>0.00794723</im>
                   </elem>
                 </loop>
               </Meas000003>
@@ -838,8 +837,8 @@
                     <im>0</im>
                   </elem>
                   <elem>
-                    <re>0.409063</re>
-                    <im>0.230537</im>
+                    <re>0.408979</re>
+                    <im>0.230503</im>
                   </elem>
                 </loop>
               </Meas000003>
@@ -850,24 +849,24 @@
                 <loop>
                   <elem>
                     <re>0.283598</re>
-                    <im>0.00345931</im>
+                    <im>0.00345525</im>
                   </elem>
                   <elem>
-                    <re>0.205432</re>
-                    <im>-0.246408</im>
+                    <re>0.205427</re>
+                    <im>-0.246406</im>
                   </elem>
                   <elem>
-                    <re>0.198045</re>
-                    <im>0.26589</im>
+                    <re>0.198022</re>
+                    <im>0.265885</im>
                   </elem>
                   <elem>
-                    <re>0.360345</re>
+                    <re>0.360322</re>
                     <im>-1.00521</im>
                   </elem>
                 </loop>
               </Mean>
               <MeanError>
-                <loop>0.283598 0.205432 0.198045 0.360345</loop>
+                <loop>0.283598 0.205427 0.198022 0.360322</loop>
               </MeanError>
             </loop_one_cross_one>
             <loop_gamma3_cross_one>
@@ -875,25 +874,25 @@
               <Mean>
                 <loop>
                   <elem>
-                    <re>0.00482816</re>
+                    <re>0.00483659</re>
                     <im>1.01695</im>
                   </elem>
                   <elem>
-                    <re>0.000912086</re>
-                    <im>0.41368</im>
+                    <re>0.000904906</re>
+                    <im>0.413678</im>
                   </elem>
                   <elem>
-                    <re>-0.0556636</re>
-                    <im>0.711481</im>
+                    <re>-0.0556578</re>
+                    <im>0.711475</im>
                   </elem>
                   <elem>
-                    <re>-0.00584246</re>
-                    <im>0.972111</im>
+                    <re>-0.005851</re>
+                    <im>0.972122</im>
                   </elem>
                 </loop>
               </Mean>
               <MeanError>
-                <loop>0.00482816 0.000912086 0.0556636 0.00584246</loop>
+                <loop>0.00483659 0.000904906 0.0556578 0.005851</loop>
               </MeanError>
             </loop_gamma3_cross_one>
             <loop_gamma3gamma5_cross_one>
@@ -901,25 +900,25 @@
               <Mean>
                 <loop>
                   <elem>
-                    <re>-0.494629</re>
-                    <im>-0.181027</im>
+                    <re>-0.494628</re>
+                    <im>-0.181026</im>
                   </elem>
                   <elem>
-                    <re>0.211339</re>
-                    <im>0.000626006</im>
+                    <re>0.211338</re>
+                    <im>0.000623512</im>
                   </elem>
                   <elem>
-                    <re>0.100106</re>
-                    <im>0.0344539</im>
+                    <re>0.100107</re>
+                    <im>0.0344488</im>
                   </elem>
                   <elem>
-                    <re>0.127634</re>
-                    <im>0.0332079</im>
+                    <re>0.127637</re>
+                    <im>0.0332084</im>
                   </elem>
                 </loop>
               </Mean>
               <MeanError>
-                <loop>0.494629 0.211339 0.100106 0.127634</loop>
+                <loop>0.494628 0.211338 0.100107 0.127637</loop>
               </MeanError>
             </loop_gamma3gamma5_cross_one>
             <loop_gamma5_cross_one>
@@ -927,25 +926,25 @@
               <Mean>
                 <loop>
                   <elem>
-                    <re>0.0975744</re>
-                    <im>-0.0248132</im>
+                    <re>0.0975731</re>
+                    <im>-0.0248137</im>
                   </elem>
                   <elem>
-                    <re>-0.0211255</re>
-                    <im>-0.0175903</im>
+                    <re>-0.0211265</re>
+                    <im>-0.0175891</im>
                   </elem>
                   <elem>
-                    <re>0.234068</re>
-                    <im>0.00428788</im>
+                    <re>0.234065</re>
+                    <im>0.00428703</im>
                   </elem>
                   <elem>
-                    <re>-0.0130043</re>
-                    <im>-0.0466555</im>
+                    <re>-0.0130032</re>
+                    <im>-0.0466546</im>
                   </elem>
                 </loop>
               </Mean>
               <MeanError>
-                <loop>0.0975744 0.0211255 0.234068 0.0130043</loop>
+                <loop>0.0975731 0.0211265 0.234065 0.0130032</loop>
               </MeanError>
             </loop_gamma5_cross_one>
             <loop_gamma5_cross_one_k>
@@ -953,25 +952,25 @@
               <Mean>
                 <loop>
                   <elem>
-                    <re>0.00691339</re>
-                    <im>-0.0157283</im>
+                    <re>0.00691357</re>
+                    <im>-0.0157285</im>
                   </elem>
                   <elem>
-                    <re>0.0086156</re>
-                    <im>0.014962</im>
+                    <re>0.0086157</re>
+                    <im>0.0149622</im>
                   </elem>
                   <elem>
-                    <re>0.00623411</re>
-                    <im>-0.0158488</im>
+                    <re>0.00623442</re>
+                    <im>-0.0158492</im>
                   </elem>
                   <elem>
-                    <re>0.00453191</re>
-                    <im>0.0166151</im>
+                    <re>0.00453229</re>
+                    <im>0.0166155</im>
                   </elem>
                 </loop>
               </Mean>
               <MeanError>
-                <loop>0.00386582 0.00581858 0.00500547 0.00307624</loop>
+                <loop>0.00386576 0.00581842 0.00500537 0.00307619</loop>
               </MeanError>
             </loop_gamma5_cross_one_k>
             <loop_gamma5_cross_gamma5>
@@ -979,25 +978,25 @@
               <Mean>
                 <loop>
                   <elem>
-                    <re>-0.0238465</re>
-                    <im>-0.508269</im>
+                    <re>-0.0238571</re>
+                    <im>-0.508305</im>
                   </elem>
                   <elem>
-                    <re>-0.0676279</re>
-                    <im>0.108769</im>
+                    <re>-0.0676138</re>
+                    <im>0.108773</im>
                   </elem>
                   <elem>
-                    <re>-0.331737</re>
-                    <im>-0.428759</im>
+                    <re>-0.331741</re>
+                    <im>-0.428754</im>
                   </elem>
                   <elem>
-                    <re>0.102266</re>
-                    <im>0.0576343</im>
+                    <re>0.102245</re>
+                    <im>0.0576259</im>
                   </elem>
                 </loop>
               </Mean>
               <MeanError>
-                <loop>0.0238465 0.0676279 0.331737 0.102266</loop>
+                <loop>0.0238571 0.0676138 0.331741 0.102245</loop>
               </MeanError>
             </loop_gamma5_cross_gamma5>
           </local_loops_s>
@@ -1007,21 +1006,21 @@
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>108</n_count>
-          <time_in_sec>0.238</time_in_sec>
+          <time_in_sec>0.217</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>119</n_count>
-          <time_in_sec>0.249</time_in_sec>
+          <time_in_sec>0.243</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>115</n_count>
-          <time_in_sec>0.235</time_in_sec>
+          <time_in_sec>0.231</time_in_sec>
         </Qprop>
         <Pseudoscalars>
           <Lsink_Lsrc>
@@ -1144,7 +1143,7 @@
                 <Vec>0.00535968 -0.00556493 0.00522318 -0.00554077</Vec>
               </gamma_z_CROSS_gamma_z>
               <M_VT>
-                <Vec>6.60695e-12 -1.73223e-13 2.90188e-12 1.14477e-13</Vec>
+                <Vec>0.0134764 0.00610284 0.0126751 0.00606903</Vec>
               </M_VT>
             </Vector_meson>
           </Lsink_Lsrc>
@@ -1154,19 +1153,19 @@
             <Mass>0.1</Mass>
             <RsdCG>1e-05</RsdCG>
             <n_count>117</n_count>
-            <time_in_sec>0.232</time_in_sec>
+            <time_in_sec>0.236</time_in_sec>
           </Qprop>
           <Qprop>
             <Mass>0.1</Mass>
             <RsdCG>1e-05</RsdCG>
             <n_count>117</n_count>
-            <time_in_sec>0.232</time_in_sec>
+            <time_in_sec>0.237</time_in_sec>
           </Qprop>
           <Qprop>
             <Mass>0.1</Mass>
             <RsdCG>1e-05</RsdCG>
             <n_count>117</n_count>
-            <time_in_sec>0.233</time_in_sec>
+            <time_in_sec>0.24</time_in_sec>
           </Qprop>
           <SingletPseudoscalar>
             <gamma5_CROSS_one>
@@ -1206,42 +1205,42 @@
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>108</n_count>
-          <time_in_sec>0.214</time_in_sec>
+          <time_in_sec>0.222</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>115</n_count>
-          <time_in_sec>0.228</time_in_sec>
+          <time_in_sec>0.235</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>104</n_count>
-          <time_in_sec>0.21</time_in_sec>
+          <time_in_sec>0.212</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>108</n_count>
-          <time_in_sec>0.247</time_in_sec>
+          <time_in_sec>0.222</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>115</n_count>
-          <time_in_sec>0.227</time_in_sec>
+          <time_in_sec>0.233</time_in_sec>
         </Qprop>
         <Qprop>
           <Staggered_src_tag>0</Staggered_src_tag>
           <Mass>0.1</Mass>
           <RsdCG>1e-05</RsdCG>
           <n_count>104</n_count>
-          <time_in_sec>0.205</time_in_sec>
+          <time_in_sec>0.214</time_in_sec>
         </Qprop>
         <baryon_correlators>
           <source_time>0</source_time>
