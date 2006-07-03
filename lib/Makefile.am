@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.15 2006-06-21 20:44:00 bjoo Exp $
+# $Id: Makefile.am,v 3.16 2006-07-03 15:17:59 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -15,7 +15,7 @@ VPATH = $(TOPDIR)/lib
 nobase_include_HEADERS = \
 	chroma_config.h chroma.h chromabase.h chromainc.h common_declarations.h \
         boundcond.h create_state.h fermact.h \
-	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h invtype.h lib.h \
+	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h lib.h \
 	linearop.h eo_prec_linop.h prec_constdet_linop.h prec_logdet_linop.h \
 	lmdagm.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
@@ -53,6 +53,26 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
+	actions/ferm/invert/syssolver_linop.h \
+	actions/ferm/invert/syssolver_linop_factory.h \
+	actions/ferm/invert/syssolver_linop_aggregate.h \
+	actions/ferm/invert/syssolver_mdagm.h \
+	actions/ferm/invert/syssolver_mdagm_factory.h \
+	actions/ferm/invert/syssolver_mdagm_aggregate.h \
+	actions/ferm/invert/syssolver_polyprec.h \
+	actions/ferm/invert/syssolver_polyprec_factory.h \
+	actions/ferm/invert/syssolver_polyprec_aggregate.h \
+	actions/ferm/invert/syssolver_cg_params.h \
+	actions/ferm/invert/syssolver_linop_cg.h \
+	actions/ferm/invert/syssolver_linop_cg_array.h \
+	actions/ferm/invert/syssolver_mdagm_cg.h \
+	actions/ferm/invert/syssolver_mdagm_cg_array.h \
+	actions/ferm/invert/multi_syssolver_cg_params.h \
+	actions/ferm/invert/multi_syssolver_mdagm.h \
+	actions/ferm/invert/multi_syssolver_mdagm_factory.h \
+	actions/ferm/invert/multi_syssolver_mdagm_aggregate.h \
+	actions/ferm/invert/multi_syssolver_mdagm_cg.h \
+	actions/ferm/invert/multi_syssolver_mdagm_cg_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/llincomb.h \
 	actions/ferm/linop/lopscl.h \
@@ -97,7 +117,6 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_fermtype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
 	io/enum_io/enum_gaugeacttype_io.h \
-	io/enum_io/enum_invtype_io.h \
 	io/enum_io/enum_plusminus_io.h \
 	io/enum_io/enum_wvfkind_io.h \
 	io/enum_io/enum_quarkspintype_io.h \
@@ -644,6 +663,19 @@ libchroma_a_SOURCES = \
         actions/ferm/invert/minvsumr.cc \
 	actions/ferm/invert/minv_rel_cg.cc \
 	actions/ferm/invert/minv_rel_sumr.cc \
+	actions/ferm/invert/syssolver_linop_aggregate.cc \
+	actions/ferm/invert/syssolver_mdagm_aggregate.cc \
+	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
+	actions/ferm/invert/syssolver_cg_params.cc \
+	actions/ferm/invert/syssolver_linop_cg.cc \
+	actions/ferm/invert/syssolver_linop_cg_array.cc \
+	actions/ferm/invert/syssolver_mdagm_cg.cc \
+	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
+	actions/ferm/invert/syssolver_polyprec_cg.cc \
+	actions/ferm/invert/multi_syssolver_cg_params.cc \
+	actions/ferm/invert/multi_syssolver_mdagm_aggregate.cc \
+	actions/ferm/invert/multi_syssolver_mdagm_cg.cc \
+	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/prec_fermact_qprop.cc \
@@ -679,7 +711,6 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_gaugeacttype_io.cc \
 	io/enum_io/enum_heatbathtype_io.cc \
 	io/enum_io/enum_inner_solver_type_io.cc \
-	io/enum_io/enum_invtype_io.cc \
 	io/enum_io/enum_plusminus_io.cc \
 	io/enum_io/enum_md_integrator_type_io.cc \
 	io/enum_io/enum_proptype_io.cc io/enum_io/enum_qdpvolfmt_io.cc \
