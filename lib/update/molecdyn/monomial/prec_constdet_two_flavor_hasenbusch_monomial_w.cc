@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -51,30 +51,21 @@ namespace Chroma
 
   // Constructor
   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial::EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
-    const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_) 
+    const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param) 
   {
-    inv_param = param_.inv_param;
+    inv_param = param.inv_param;
 
     {
-      std::istringstream is(param_.ferm_act);
+      std::istringstream is(param.fermact.xml);
       XMLReader fermact_reader(is);
+      QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " 
+		  << param.fermact.id << endl;
       
-      // Get the name of the ferm act
-      std::string fermact_string;
-      try { 
-	read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-      }
-      catch( const std::string& e) { 
-	QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-	QDP_abort(1);
-      }
-      
-      QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string << endl;
-      
-      
-      WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+      WilsonTypeFermAct<T,P,Q>* tmp_act = 
+	TheWilsonTypeFermActFactory::Instance().createObject(param.fermact.id, fermact_reader, param.fermact.path);
 
-      EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* downcast=dynamic_cast<EvenOddPrecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >*>(tmp_act);
+      EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast =
+	dynamic_cast<EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {
@@ -86,24 +77,15 @@ namespace Chroma
     }
 
     {
-      std::istringstream is(param_.ferm_act_prec);
+      std::istringstream is(param.fermact_prec.xml);
       XMLReader fermact_reader(is);
+      QDPIO::cout << "EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " 
+		  << param.fermact_prec.id << endl;
       
-      // Get the name of the ferm act
-      std::string fermact_string;
-      try { 
-	read(fermact_reader, "/FermionActionPrec/FermAct", fermact_string);
-      }
-      catch( const std::string& e) { 
-	QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-	QDP_abort(1);
-      }
-      
-      QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string << endl;
-      
-      WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionActionPrec");
+      WilsonTypeFermAct<T,P,Q>* tmp_act = 
+	TheWilsonTypeFermActFactory::Instance().createObject(param.fermact_prec.id, fermact_reader, param.fermact_prec.path);
 
-      EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
+      EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast = dynamic_cast<EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {
@@ -114,24 +96,21 @@ namespace Chroma
       fermact_prec = downcast;    
     }
 
-
     // Get Chronological predictor
-    AbsChronologicalPredictor4D<LatticeFermion>* tmp=0x0;
-    if( param_.predictor_xml == "" ) {
+    AbsChronologicalPredictor4D<LatticeFermion>* tmp = 0x0;
+    if( param.predictor.xml == "" ) {
       // No predictor specified use zero guess
        tmp = new ZeroGuess4DChronoPredictor();
     }
-    else {
-
-      
-      try { 
-	std::string chrono_name;
-	std::istringstream chrono_is(param_.predictor_xml);
+    else 
+    {
+      try 
+      {
+	std::istringstream chrono_is(param.predictor.xml);
 	XMLReader chrono_xml(chrono_is);
-	read(chrono_xml, "/ChronologicalPredictor/Name", chrono_name);
-	tmp = The4DChronologicalPredictorFactory::Instance().createObject(chrono_name, 
-								 chrono_xml, 
-								 "/ChronologicalPredictor");
+	tmp = The4DChronologicalPredictorFactory::Instance().createObject(param.predictor.id, 
+									  chrono_xml, 
+									  param.predictor.path);
       }
       catch(const std::string& e ) { 
 	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
@@ -143,13 +122,10 @@ namespace Chroma
       QDPIO::cerr << "Failed to create ZeroGuess4DChronoPredictor" << endl;
       QDP_abort(1);
     }
+
     chrono_predictor = tmp;
-
-    
   }
-
-
   
-}; //end namespace Chroma
+} //end namespace Chroma
 
 

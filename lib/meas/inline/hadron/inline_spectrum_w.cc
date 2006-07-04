@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -378,18 +378,14 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      std::istringstream  xml_s(prop_header.fermact);
+      std::istringstream  xml_s(prop_header.fermact.xml);
       XMLReader  fermacttop(xml_s);
-      const string fermact_path = "/FermionAction";
-      string fermact;
       Real Mass;
 
       QDPIO::cout << "Try action and mass" << endl;
       try
       {
-	XMLReader top(fermacttop, fermact_path);
-
-	read(top, "FermAct", fermact);
+	XMLReader top(fermacttop, prop_header.fermact.path);
 
 	// Yuk - need to hop some hoops. This should be isolated.
 	if (top.count("Mass") != 0) 
@@ -418,7 +414,7 @@ namespace Chroma
 	QDP_abort(1);
       }
     
-      QDPIO::cout << "FermAct = " << fermact << endl;
+      QDPIO::cout << "FermAct = " << prop_header.fermact.id << endl;
       QDPIO::cout << "Mass = " << Mass << endl;
 
       // Flags
@@ -456,11 +452,11 @@ namespace Chroma
       bool Sl_src = false;
       bool Wl_src = false;
 
-      if (source_header.source_type == "POINT_SOURCE")
+      if (source_header.source.id == "POINT_SOURCE")
 	Pt_src = true;
-      else if (source_header.source_type == "SHELL_SOURCE")
+      else if (source_header.source.id == "SHELL_SOURCE")
 	Sl_src = true;
-      else if (source_header.source_type == "WALL_SOURCE")
+      else if (source_header.source.id == "WALL_SOURCE")
 	Wl_src = true;
       else
       {

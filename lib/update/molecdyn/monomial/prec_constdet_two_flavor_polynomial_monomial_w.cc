@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_polynomial_monomial_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: prec_constdet_two_flavor_polynomial_monomial_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -50,29 +50,22 @@ namespace Chroma
 
   // Constructor
   EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomial::EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomial(
-    const TwoFlavorWilsonTypeFermMonomialParams& param_) 
+    const TwoFlavorWilsonTypeFermMonomialParams& param) 
   {
-    inv_param = param_.inv_param;
+    inv_param = param.inv_param;
 
     {
-      std::istringstream is(param_.ferm_act);
+      std::istringstream is(param.fermact.xml);
       XMLReader fermact_reader(is);
       
-      // Get the name of the ferm act
-      std::string fermact_string;
-      try { 
-	read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-      }
-      catch( const std::string& e) { 
-	QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-	QDP_abort(1);
-      }
+      QDPIO::cout << EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::name 
+		  << ": construct " << param.fermact.id << endl;
       
-      QDPIO::cout << EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::name << ": construct " << fermact_string << endl;
+      WilsonTypeFermAct<T,P,Q>* tmp_act = 
+	TheWilsonTypeFermActFactory::Instance().createObject(param.fermact.id, fermact_reader, param.fermact.path);
       
-      WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
-      
-      PolyWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<PolyWilsonTypeFermAct<T,P,Q>*>(tmp_act);
+      PolyWilsonTypeFermAct<T,P,Q>* downcast = 
+	dynamic_cast<PolyWilsonTypeFermAct<T,P,Q>*>(tmp_act);
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {

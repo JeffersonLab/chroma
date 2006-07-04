@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.10 2006-05-23 15:54:36 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.11 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -488,12 +488,11 @@ namespace Chroma
 
 	for(int i=0; i < quarks[n].dilutions.size(); ++i)
 	{
-	  std::istringstream  xml_s(quarks[n].dilutions[i].source_header.source);
+	  std::istringstream  xml_s(quarks[n].dilutions[i].source_header.source.xml);
 	  XMLReader  sourcetop(xml_s);
-	  const string source_path = "/Source";
-//	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source_type << endl;
+//	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
 
-	  if (quarks[n].dilutions[i].source_header.source_type != DiluteZNQuarkSourceConstEnv::name)
+	  if (quarks[n].dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::name)
 	  {
 	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
 	    QDP_abort(1);
@@ -502,7 +501,8 @@ namespace Chroma
 	  QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
 
 	  // Manually create the params so I can peek into them and use the source constructor
-	  DiluteZNQuarkSourceConstEnv::Params       srcParams(sourcetop, source_path);
+	  DiluteZNQuarkSourceConstEnv::Params  srcParams(sourcetop, 
+							 quarks[n].dilutions[i].source_header.source.path);
 	  DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
       
 	  if (first) 

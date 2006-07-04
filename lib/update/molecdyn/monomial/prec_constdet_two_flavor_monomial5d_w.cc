@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_monomial5d_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial5d_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -49,26 +49,18 @@ namespace Chroma
 
   // Constructor
   EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D::EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5D(
-    const TwoFlavorWilsonTypeFermMonomialParams& param_) 
+    const TwoFlavorWilsonTypeFermMonomialParams& param) 
   {
-    inv_param = param_.inv_param;
+    inv_param = param.inv_param;
 
-    std::istringstream is(param_.ferm_act);
+    std::istringstream is(param.fermact.xml);
     XMLReader fermact_reader(is);
 
-    // Get the name of the ferm act
-    std::string fermact_string;
-    try { 
-      read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-      QDP_abort(1);
-    }
+    WilsonTypeFermAct5D<T,P,Q>* tmp_act = 
+      TheWilsonTypeFermAct5DFactory::Instance().createObject(param.fermact.id, fermact_reader, param.fermact.path);
 
-    WilsonTypeFermAct5D<T,P,Q>* tmp_act = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
-
-    EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>* downcast=dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
+    EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>* downcast =
+      dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
@@ -79,18 +71,19 @@ namespace Chroma
     fermact = downcast;    
 
     // Get Chronological predictor
-    AbsChronologicalPredictor5D<LatticeFermion>* tmp=0x0;
-    if( param_.predictor_xml == "" ) {
+    AbsChronologicalPredictor5D<LatticeFermion>* tmp = 0x0;
+    if( param.predictor.xml == "" ) {
       // No predictor specified use zero guess
       tmp = new ZeroGuess5DChronoPredictor(fermact->size());
     }
-    else {
-      try { 
-	std::string chrono_name;
-	std::istringstream chrono_is(param_.predictor_xml);
+    else 
+    {
+      try 
+      {
+	std::istringstream chrono_is(param.predictor.xml);
 	XMLReader chrono_xml(chrono_is);
-	read(chrono_xml, "/ChronologicalPredictor/Name", chrono_name);
-	tmp = The5DChronologicalPredictorFactory::Instance().createObject(chrono_name, fermact->size(), chrono_xml, "/ChronologicalPredictor");
+	tmp = The5DChronologicalPredictorFactory::Instance().createObject(
+	  param.predictor.id, fermact->size(), chrono_xml, param.predictor.path);
       }
       catch(const std::string& e ) { 
 	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;

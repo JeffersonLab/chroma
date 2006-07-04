@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -257,15 +257,14 @@ namespace Chroma
       // for efficiency. However, I'm anticipating that we will 
       // have different smearings at the sink of the forward props.
       // In that case, the loop needs to be in inverted.
-      std::istringstream  xml_s(params.sink_header.sink);
+      std::istringstream  xml_s(params.sink_header.sink.xml);
       XMLReader  sinktop(xml_s);
-      const string sink_path = "/Sink";
-      QDPIO::cout << "Sink = " << params.sink_header.sink_type << endl;
+      QDPIO::cout << "Sink = " << params.sink_header.sink.id << endl;
 	
       Handle< QuarkSourceSink<LatticePropagator> >
-	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(params.sink_header.sink_type,
+	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(params.sink_header.sink.id,
 									 sinktop,
-									 sink_path,
+									 params.sink_header.sink.path,
 									 u));
 
       // Do the sink smearing BEFORE the interpolating operator
@@ -278,17 +277,16 @@ namespace Chroma
       //
       // Construct the sequential source
       //
-      QDPIO::cout << "Sequential source = " << params.param.seqsrc_type << endl;
+      QDPIO::cout << "Sequential source = " << params.param.seqsrc.xml << endl;
 
-      std::istringstream  xml_seq(params.param.seqsrc);
+      std::istringstream  xml_seq(params.param.seqsrc.xml);
       XMLReader  seqsrctop(xml_seq);
-      const string seqsrc_path = "/SeqSource";
-      QDPIO::cout << "SeqSource = " << params.param.seqsrc_type << endl;
+      QDPIO::cout << "SeqSource = " << params.param.seqsrc.id << endl;
 	
       Handle< HadronSeqSource<LatticePropagator> >
-	hadSeqSource(TheWilsonHadronSeqSourceFactory::Instance().createObject(params.param.seqsrc_type,
+	hadSeqSource(TheWilsonHadronSeqSourceFactory::Instance().createObject(params.param.seqsrc.id,
 									      seqsrctop,
-									      seqsrc_path));
+									      params.param.seqsrc.path));
 
       swatch.reset();
       swatch.start();

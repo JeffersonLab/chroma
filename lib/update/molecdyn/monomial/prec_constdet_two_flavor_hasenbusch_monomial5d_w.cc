@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_hasenbusch_monomial5d_w.cc,v 3.1 2006-06-21 20:42:09 bjoo Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial5d_w.cc,v 3.2 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -51,52 +51,35 @@ namespace Chroma
 
   // Constructor
   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial5D::EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial5D(
-    const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_) 
+    const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param) 
   {
-    inv_param = param_.inv_param;
+    inv_param = param.inv_param;
 
-    std::istringstream is(param_.ferm_act);
+    std::istringstream is(param.fermact.xml);
     XMLReader fermact_reader(is);
-      
-    // Get the name of the ferm act
-    std::string fermact_string;
-    try { 
-      read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-      QDP_abort(1);
-    }
 
-
-    std::istringstream is_prec(param_.ferm_act_prec);
+    std::istringstream is_prec(param.fermact_prec.xml);
     XMLReader fermact_reader_prec(is_prec);
     
-    // Get the name of the ferm act
-    std::string fermact_string_prec;
-    try { 
-      read(fermact_reader_prec, "/FermionActionPrec/FermAct", fermact_string_prec);
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-      QDP_abort(1);
-    }
-    
-    if( fermact_string_prec != fermact_string ) {
+    if( param.fermact_prec.id != param.fermact.id ) {
       QDPIO::cerr << "For now both the numerator and the denominator fermacts mast be the same: You have asked for " 
-		  << fermact_string 
+		  << param.fermact.id 
 		  << " in the denominator and " 
-		  << fermact_string_prec << " in the numerator" << endl;
+		  << param.fermact_prec.id << " in the numerator" << endl;
       QDP_abort(1);
       
     }
 
-    QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial5D: construct " << fermact_string << endl;
-    
+    QDPIO::cout << "EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial5D: construct " 
+		<< param.fermact.id << endl;
       
-    WilsonTypeFermAct5D< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* tmp_act = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    WilsonTypeFermAct5D<T,P,Q>* tmp_act = 
+      TheWilsonTypeFermAct5DFactory::Instance().createObject(param.fermact.id, 
+							     fermact_reader, 
+							     param.fermact.path);
 
-    EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>* downcast=dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
+    EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>* downcast = 
+      dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
       
     // Check success of the downcast 
     if( downcast == 0x0 ) {
@@ -105,13 +88,17 @@ namespace Chroma
     }
     
     fermact = downcast;    
-    
       
-    QDPIO::cout << "EvanOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string_prec << endl;
+    QDPIO::cout << "EvenOddPrecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " 
+		<< param.fermact_prec.id << endl;
     
-    WilsonTypeFermAct5D<T,P,Q>* tmp_act_prec = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionActionPrec");
+    WilsonTypeFermAct5D<T,P,Q>* tmp_act_prec = 
+      TheWilsonTypeFermAct5DFactory::Instance().createObject(param.fermact_prec.id, 
+							     fermact_reader_prec, 
+							     param.fermact_prec.path);
 
-    EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>* downcast_prec=dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>*>(tmp_act_prec);
+    EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>* downcast_prec = 
+      dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>*>(tmp_act_prec);
       
     // Check success of the downcast 
     if( downcast == 0x0 ) {
@@ -121,7 +108,8 @@ namespace Chroma
     
     fermact_prec = downcast_prec;    
     
-    if (fermact->size() != fermact_prec->size()) { 
+    if (fermact->size() != fermact_prec->size()) 
+    {
       QDPIO::cerr << "Error: numerator action has to have the same length in the 5th dimension as the denominator action." << endl;
       QDPIO::cerr << "N5 in FermionAction " << fermact->size() << endl;
       QDPIO::cerr << "N5 in FermionActionPrec " << fermact_prec->size() << endl;
@@ -129,22 +117,21 @@ namespace Chroma
     }
     
     // Get Chronological predictor
-    AbsChronologicalPredictor5D<LatticeFermion>* tmp=0x0;
-    if( param_.predictor_xml == "" ) {
+    AbsChronologicalPredictor5D<LatticeFermion>* tmp = 0x0;
+    if ( param.predictor.xml == "" ) {
       // No predictor specified use zero guess
        tmp = new ZeroGuess5DChronoPredictor(fermact->size());
     }
-    else {
-
-      
-      try { 
-	std::string chrono_name;
-	std::istringstream chrono_is(param_.predictor_xml);
+    else 
+    {
+      try 
+      { 
+	std::istringstream chrono_is(param.predictor.xml);
 	XMLReader chrono_xml(chrono_is);
-	read(chrono_xml, "/ChronologicalPredictor/Name", chrono_name);
-	tmp = The5DChronologicalPredictorFactory::Instance().createObject(chrono_name, fermact->size(),
-								 chrono_xml, 
-								 "/ChronologicalPredictor");
+	tmp = The5DChronologicalPredictorFactory::Instance().createObject(
+	  param.predictor.id, fermact->size(),
+	  chrono_xml, 
+	  param.predictor.path);
       }
       catch(const std::string& e ) { 
 	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
@@ -156,13 +143,10 @@ namespace Chroma
       QDPIO::cerr << "Failed to create ZeroGuess4DChronoPredictor" << endl;
       QDP_abort(1);
     }
-    chrono_predictor = tmp;
 
-    
+    chrono_predictor = tmp;
   }
 
-
-  
-}; //end namespace Chroma
+} //end namespace Chroma
 
 

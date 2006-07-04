@@ -1,4 +1,4 @@
-// $Id: inline_stoch_meson_w.cc,v 3.1 2006-05-09 20:32:24 edwards Exp $
+// $Id: inline_stoch_meson_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic meson operator
  *
@@ -459,12 +459,11 @@ namespace Chroma
 
 	for(int i=0; i < quarks[n].dilutions.size(); ++i)
 	{
-	  std::istringstream  xml_s(quarks[n].dilutions[i].source_header.source);
+	  std::istringstream  xml_s(quarks[n].dilutions[i].source_header.source.xml);
 	  XMLReader  sourcetop(xml_s);
-	  const string source_path = "/Source";
-//	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source_type << endl;
+//	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
 
-	  if (quarks[n].dilutions[i].source_header.source_type != DiluteZNQuarkSourceConstEnv::name)
+	  if (quarks[n].dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::name)
 	  {
 	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
 	    QDP_abort(1);
@@ -473,7 +472,8 @@ namespace Chroma
 	  QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
 
 	  // Manually create the params so I can peek into them and use the source constructor
-	  DiluteZNQuarkSourceConstEnv::Params       srcParams(sourcetop, source_path);
+	  DiluteZNQuarkSourceConstEnv::Params  srcParams(sourcetop, 
+							 quarks[n].dilutions[i].source_header.source.path);
 	  DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
       
 	  if (first) 
@@ -585,8 +585,8 @@ namespace Chroma
     meson_opA.j_decay     = j_decay;
     meson_opA.seed_l      = quarks[1].seed;
     meson_opA.seed_r      = quarks[0].seed;
-    meson_opA.smearing_l  = params.source_smearing.source;
-    meson_opA.smearing_r  = params.source_smearing.source;
+    meson_opA.smearing_l  = params.source_smearing.source.xml;
+    meson_opA.smearing_r  = params.source_smearing.source.xml;
     meson_opA.inser.resize(Ns*Ns);
 
     // Sanity check
@@ -601,16 +601,15 @@ namespace Chroma
     {
       int G5 = Ns*Ns-1;
 
-      std::istringstream  xml_s(params.source_smearing.source);
+      std::istringstream  xml_s(params.source_smearing.source.xml);
       XMLReader  sourcetop(xml_s);
-      const string source_path = "/Source";
-      QDPIO::cout << "Source = " << params.source_smearing.source_type << endl;
+      QDPIO::cout << "Source = " << params.source_smearing.source.id << endl;
 
       Handle< QuarkSourceSink<LatticeFermion> >
 	sourceSmearing(TheFermSourceSmearingFactory::Instance().createObject(
-			 params.source_smearing.source_type,
+			 params.source_smearing.source.id,
 			 sourcetop,
-			 source_path,
+			 params.source_smearing.source.path,
 			 u));
 
       push(xml_out, "OperatorA");
@@ -677,8 +676,8 @@ namespace Chroma
     meson_opB.j_decay     = j_decay;
     meson_opB.seed_l      = quarks[0].seed;
     meson_opB.seed_r      = quarks[1].seed;
-    meson_opB.smearing_l  = params.sink_smearing.sink;
-    meson_opB.smearing_r  = params.sink_smearing.sink;
+    meson_opB.smearing_l  = params.sink_smearing.sink.xml;
+    meson_opB.smearing_r  = params.sink_smearing.sink.xml;
     meson_opB.inser.resize(Ns*Ns);
 
     // Sanity check
@@ -692,16 +691,15 @@ namespace Chroma
     {
       int G5 = Ns*Ns-1;
 
-      std::istringstream  xml_s(params.sink_smearing.sink);
+      std::istringstream  xml_s(params.sink_smearing.sink.xml);
       XMLReader  sinktop(xml_s);
-      const string sink_path = "/Sink";
-      QDPIO::cout << "Sink = " << params.sink_smearing.sink_type << endl;
+      QDPIO::cout << "Sink = " << params.sink_smearing.sink.id << endl;
 
       Handle< QuarkSourceSink<LatticeFermion> >
 	sinkSmearing(TheFermSinkSmearingFactory::Instance().createObject(
-		       params.sink_smearing.sink_type,
+		       params.sink_smearing.sink.id,
 		       sinktop,
-		       sink_path,
+		       params.sink_smearing.sink.path,
 		       u));
 
       push(xml_out, "OperatorB");

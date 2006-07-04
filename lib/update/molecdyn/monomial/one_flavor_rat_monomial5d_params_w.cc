@@ -1,4 +1,4 @@
-// $Id: one_flavor_rat_monomial5d_params_w.cc,v 3.1 2006-07-03 15:26:10 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_params_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! @file
  * @brief One-flavor monomial params
  */
@@ -45,17 +45,14 @@ namespace Chroma
       read(paramtop, "expDenPower", expDenPower);
       read(paramtop, "nthRoot", nthRoot);
       read(paramtop, "nthRootPV", nthRootPV);
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
+      fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
     }
     catch(const string& s) {
       QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "OneFlavorWilsonTypeFermRatMonomial5DParams: read " << ferm_act << endl;
+    QDPIO::cout << "OneFlavorWilsonTypeFermRatMonomial5DParams: read " << fermact.id << endl;
   }
 
   // Read the parameters
@@ -74,17 +71,14 @@ namespace Chroma
       read(paramtop, "Remez", remez);
       read(paramtop, "nthRoot", nthRoot);
       read(paramtop, "nthRootPV", nthRootPV);
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
+      fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
     }
     catch(const string& s) {
       QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "OneFlavorWilsonTypeFermRatMonomial5DParams: read " << ferm_act << endl;
+    QDPIO::cout << "OneFlavorWilsonTypeFermRatMonomial5DParams: read " << fermact.id << endl;
   }
 
   //! Read Parameters

@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_mres_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -49,12 +49,7 @@ namespace Chroma
     read(inputtop, "nrow", input.nrow);
 
     if (inputtop.count("FermionAction") != 0)
-    {
-      XMLReader xml_tmp(inputtop, "FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      input.fermact = os.str();
-    }
+      input.fermact = readXMLGroup(inputtop, "FermionAction", "FermAct");
   }
 
 
@@ -64,14 +59,10 @@ namespace Chroma
     push(xml, path);
     write(xml, "nrow", input.nrow);
 
-    QDPIO::cout << "write mresparams: fermact=XX" << input.fermact << "XX\n";
+    QDPIO::cout << "write mresparams: fermact=XX" << input.fermact.xml << "XX\n";
 
-    if (input.fermact != "")
-    {
-      istringstream header_is(input.fermact);
-      XMLReader xml_header(header_is);
-      xml << xml_header;
-    }
+    if (input.fermact.xml != "")
+      xml << input.fermact.xml;
       
     pop(xml);
   }
@@ -315,10 +306,10 @@ namespace Chroma
     // Initialize fermion action
     //
     string ferm_act_str;
-    if (params.param.fermact == "")
-      ferm_act_str = prop_header.fermact;
+    if (params.param.fermact.xml == "")
+      ferm_act_str = prop_header.fermact.xml;
     else
-      ferm_act_str = params.param.fermact;
+      ferm_act_str = params.param.fermact.xml;
       
     std::istringstream  xml_s(ferm_act_str);
     XMLReader  fermacttop(xml_s);

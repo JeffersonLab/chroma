@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -319,17 +319,13 @@ namespace Chroma
 	// Hunt around to find the mass and the boundary conditions
 	// NOTE: this may be problematic in the future if actions are used with no
 	// clear def. of a Mass
-	std::istringstream  xml_s(prop_header[loop].fermact);
+	std::istringstream  xml_s(prop_header[loop].fermact.xml);
 	XMLReader  fermacttop(xml_s);
-	const string fermact_path = "/FermionAction";
-	string fermact;
 	
 	QDPIO::cout << "Try action and mass" << endl;
 	try
 	  {
-	    XMLReader top(fermacttop, fermact_path);
-	    
-	    read(top, "FermAct", fermact);
+	    XMLReader top(fermacttop, prop_header[loop].fermact.path);
 	    
 	    // Yuk - need to hop some hoops. This should be isolated.
 	    if (top.count("Mass") != 0) 
@@ -359,7 +355,7 @@ namespace Chroma
 	    QDP_abort(1);
 	  }
 	
-	QDPIO::cout << "FermAct = " << fermact << endl;
+	QDPIO::cout << "FermAct = " << prop_header[loop].fermact.path << endl;
 	QDPIO::cout << "Mass = " << Mass[loop] << endl;
 	QDPIO::cout << "boundary = "
 		    << bc[loop][0]<<" "

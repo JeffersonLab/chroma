@@ -1,4 +1,4 @@
-// $Id: inline_multi_propagator_w.cc,v 3.2 2006-07-03 15:26:10 edwards Exp $
+// $Id: inline_multi_propagator_w.cc,v 3.3 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -289,22 +289,9 @@ namespace Chroma
     //
     // Initialize fermion action
     //
-    std::istringstream  xml_s(params.param.fermact);
+    std::istringstream  xml_s(params.param.fermact.xml);
     XMLReader  fermacttop(xml_s);
-    const string fermact_path = "/FermionAction";
-    string fermact;
-
-    try
-    {
-      read(fermacttop, fermact_path + "/FermAct", fermact);
-    }
-    catch (const std::string& e) 
-    {
-      QDPIO::cerr << "Error reading fermact: " << e << endl;
-      QDP_abort(1);
-    }
-
-    QDPIO::cout << "FermAct = " << fermact << endl;
+    QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
 
 
     // Deal with auxiliary (and polymorphic) state information
@@ -333,9 +320,9 @@ namespace Chroma
 
       // Generic Wilson-Type stuff
       Handle< FermionAction<T,P,Q> >
-	S_f(TheFermionActionFactory::Instance().createObject(fermact,
+	S_f(TheFermionActionFactory::Instance().createObject(params.param.fermact.id,
 							     fermacttop,
-							     fermact_path));
+							     params.param.fermact.path));
 
       
       // If this cast fails a bad cast exception is thrown.
@@ -416,11 +403,8 @@ namespace Chroma
 	// I need a way to glom a mass into an XML document
 	// and this is it
 
-	// copy fermact
-	std::string fermact_str = params.param.fermact;
-	
 	// make a reader
-	std::istringstream fermact_is(fermact_str);
+	std::istringstream fermact_is(params.param.fermact.xml);
 	XMLReader fermact_reader(fermact_is);
 
 	
@@ -433,13 +417,13 @@ namespace Chroma
 	  QDP_abort(1);
 	}
 	
-	// turn back into a string
-	XMLBufferWriter newfermact_writer;
-	newfermact_writer << fermact_reader ;
+	// turn back into a group
+	// this should not be needed, need to fix "path" in readXMLGroup
+	XMLReader xml_read(fermact_reader, "/");
+	out_param.fermact = readXMLGroup(xml_read, "FermionAction", "FermAct");
 
-	out_param.fermact = newfermact_writer.printCurrentContext() ;
 	// print to debug
-	QDPIO::cout << "Modified fermact is: " << out_param.fermact << endl << flush;
+	QDPIO::cout << "Modified fermact is: " << out_param.fermact.xml << endl << flush;
 
 //	out_param.invParam.invType = params.param.invParam.invType;
 //	out_param.invParam.MROver = params.param.invParam.MROver;

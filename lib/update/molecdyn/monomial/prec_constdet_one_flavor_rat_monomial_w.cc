@@ -1,4 +1,4 @@
-// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -52,30 +52,17 @@ namespace Chroma
     inv_param = param.inv_param;
     nthRoot   = param.nthRoot;
 
-    cout << "Param.ferm_act is : "<< param.ferm_act << endl;
+    cout << "Param.fermact is : "<< param.fermact.id << endl;
 
-    std::istringstream is(param.ferm_act);
+    std::istringstream is(param.fermact.xml);
     XMLReader fermact_reader(is);
+    QDPIO::cout << "Fermact reader holds: " << param.fermact.xml << endl;
 
-    cout << "Fermact reader holds: " << endl;
-    fermact_reader.print(cout);
-    cout << flush << endl;
+    const WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(
+      param.fermact.id, fermact_reader, param.fermact.path);
 
-    // Get the name of the ferm act
-    std::string fermact_string;
-    try { 
-      read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-      QDPIO::cout << "Fermact string is " << fermact_string << endl;
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-      QDP_abort(1);
-    }
-
-
-    const WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
-
-    const EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<const EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
+    const EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast =
+      dynamic_cast<const EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {

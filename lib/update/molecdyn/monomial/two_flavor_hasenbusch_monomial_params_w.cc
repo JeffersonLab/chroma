@@ -1,4 +1,4 @@
-// $Id: two_flavor_hasenbusch_monomial_params_w.cc,v 3.1 2006-07-03 15:26:10 edwards Exp $
+// $Id: two_flavor_hasenbusch_monomial_params_w.cc,v 3.2 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief Two-flavor Hasenbusch monomial params
  */
@@ -18,24 +18,15 @@ namespace Chroma
     try {
       // Read the inverter Parameters
       inv_param = readXMLGroup(paramtop, "InvertParam", "invType");
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
+      fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
+      fermact_prec = readXMLGroup(paramtop, "FermionActionPrec", "FermAct");
 
-      XMLReader xml_tmp_prec(paramtop, "./FermionActionPrec");
-      std::ostringstream os_prec;
-      xml_tmp_prec.print(os_prec);
-      ferm_act_prec = os_prec.str();
-
-      if( paramtop.count("./ChronologicalPredictor") == 0 ) {
-	predictor_xml="";
+      if( paramtop.count("./ChronologicalPredictor") == 0 ) 
+      {
+	predictor.xml = "";
       }
       else {
-	XMLReader chrono_xml_reader(paramtop, "./ChronologicalPredictor");
-	std::ostringstream chrono_os;
-	chrono_xml_reader.print(chrono_os);
-	predictor_xml = chrono_os.str();
+	predictor = readXMLGroup(paramtop, "ChronologicalPredictor", "Name");
       }
       
     }
@@ -44,7 +35,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    QDPIO::cout << "TwoFlavorHasenbuschWilsonTypeFermMonomialParams: read \n" << ferm_act << endl;
+    QDPIO::cout << "TwoFlavorHasenbuschWilsonTypeFermMonomialParams: read \n" << fermact.id << endl;
   }
 
   //! Read Parameters

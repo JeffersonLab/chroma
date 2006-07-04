@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
+// $Id: qprop_io.cc,v 3.3 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -12,14 +12,14 @@ namespace Chroma
 
   // Given a fermion action in string form, return the boundary
   /* HACK - THIS DEFINITELY NEEDS IMPROVEMENT */
-  multi1d<int> getFermActBoundary(const string& fermact)
+  multi1d<int> getFermActBoundary(const GroupXML_t& fermact)
   {
     //
     // Initialize fermion action
     //
-    std::istringstream  xml_s(fermact);
+    std::istringstream  xml_s(fermact.xml);
     XMLReader  fermacttop(xml_s);
-    XMLReader  top(fermacttop, "/FermionAction");
+    XMLReader  top(fermacttop, fermact.path);
 
     multi1d<int> boundary;
 
@@ -63,14 +63,14 @@ namespace Chroma
     //
     // Initialize source xml
     //
-    std::istringstream  xml_s(source);
+    std::istringstream  xml_s(source.xml);
     XMLReader  sourcetop(xml_s);
 
     multi1d<int> t_srce;
 
     try
     {
-      XMLReader  top(sourcetop, "/Source");
+      XMLReader  top(sourcetop, source.path);
 
       read(top, "t_srce", t_srce);
     }
@@ -150,7 +150,7 @@ namespace Chroma
       int version;
       read(paramtop, "version", version);
 
-      read(paramtop, "source_type", header.source_type);
+      read(paramtop, "source_type", header.source.id);
 
       std::string wave_state;
       read(paramtop, "wave_state", wave_state);
@@ -163,7 +163,7 @@ namespace Chroma
       read(paramtop, "j_decay",  header.j_decay);
       read(paramtop, "t_source", t_srce);
 
-      if (header.source_type == "SHELL_SOURCE")
+      if (header.source.id == "SHELL_SOURCE")
       {
 	XMLReader shelltop(paramtop, "ShellSource");
 
@@ -200,7 +200,7 @@ namespace Chroma
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Source");
 	  write(xml_tmp, "version", 1);
-	  write(xml_tmp, "SourceType", header.source_type);
+	  write(xml_tmp, "SourceType", header.source.id);
 
 	  {
 	    push(xml_tmp, "SmearingParam");
@@ -237,7 +237,7 @@ namespace Chroma
 	// Recurse back in to re-read
 	read(xml_readback, "/Param", header);
       }
-      else if (header.source_type == "POINT_SOURCE")
+      else if (header.source.id == "POINT_SOURCE")
       {
 	XMLReader xml_readback;
 	{
@@ -246,7 +246,7 @@ namespace Chroma
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Source");
 	  write(xml_tmp, "version", 1);
-	  write(xml_tmp, "SourceType", header.source_type);
+	  write(xml_tmp, "SourceType", header.source.id);
 
 	  write(xml_tmp, "t_srce",  t_srce);
 	  write(xml_tmp, "j_decay",  header.j_decay);
@@ -262,7 +262,7 @@ namespace Chroma
 	// Recurse back in to re-read
 	read(xml_readback, "/Param", header);
       }
-      else if (header.source_type == "WALL_SOURCE")
+      else if (header.source.id == "WALL_SOURCE")
       {
 	XMLReader xml_readback;
 	{
@@ -271,7 +271,7 @@ namespace Chroma
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Source");
 	  write(xml_tmp, "version", 1);
-	  write(xml_tmp, "SourceType", header.source_type);
+	  write(xml_tmp, "SourceType", header.source.id);
 
 	  write(xml_tmp, "t_source",  t_srce[header.j_decay]);
 	  write(xml_tmp, "j_decay",  header.j_decay);
@@ -287,7 +287,7 @@ namespace Chroma
 	// Recurse back in to re-read
 	read(xml_readback, "/Param", header);
       }
-      else if (header.source_type == "RAND_Z2_WALL_SOURCE")
+      else if (header.source.id == "RAND_Z2_WALL_SOURCE")
       {
 	XMLReader xml_readback;
 	{
@@ -296,7 +296,7 @@ namespace Chroma
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Source");
 	  write(xml_tmp, "version", 1);
-	  write(xml_tmp, "SourceType", header.source_type);
+	  write(xml_tmp, "SourceType", header.source.id);
 
 	  write(xml_tmp, "t_source",  t_srce[header.j_decay]);
 	  write(xml_tmp, "j_decay",  header.j_decay);
@@ -315,7 +315,7 @@ namespace Chroma
       else
       {
 	std::ostringstream  os;
-	os << "Unsupported source type= " << header.source_type 
+	os << "Unsupported source type= " << header.source.id 
 	   << "  in file= " << __FILE__ 
 	   << "  at line= " << __LINE__
 	   << endl;
@@ -333,7 +333,7 @@ namespace Chroma
       int version;
       read(paramtop, "version", version);
 
-      read(paramtop, "sink_type", header.sink_type);
+      read(paramtop, "sink_type", header.sink.id);
 
       std::string wave_state;
       read(paramtop, "wave_state", wave_state);
@@ -344,7 +344,7 @@ namespace Chroma
 
       read(paramtop, "j_decay", header.j_decay);
 
-      if (header.sink_type == "SHELL_SINK")
+      if (header.sink.id == "SHELL_SINK")
       {
 	XMLReader shelltop(paramtop, "ShellSink");
 
@@ -381,7 +381,7 @@ namespace Chroma
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Sink");
 	  write(xml_tmp, "version", 1);
-	  write(xml_tmp, "SinkType", header.sink_type);
+	  write(xml_tmp, "SinkType", header.sink.id);
 
 	  {
 	    push(xml_tmp, "SmearingParam");
@@ -415,7 +415,7 @@ namespace Chroma
 	// Recurse back in to re-read
 	read(xml_readback, "/Param", header);
       }
-      else if (header.sink_type == "POINT_SINK")
+      else if (header.sink.id == "POINT_SINK")
       {
 	XMLReader xml_readback;
 	{
@@ -424,7 +424,7 @@ namespace Chroma
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Sink");
 	  write(xml_tmp, "version", 1);
-	  write(xml_tmp, "SinkType", header.sink_type);
+	  write(xml_tmp, "SinkType", header.sink.id);
 
 	  write(xml_tmp, "j_decay",  header.j_decay);
 
@@ -439,7 +439,7 @@ namespace Chroma
 	// Recurse back in to re-read
 	read(xml_readback, "/Param", header);
       }
-      else if (header.sink_type == "WALL_SINK")
+      else if (header.sink.id == "WALL_SINK")
       {
 	XMLReader xml_readback;
 	{
@@ -448,7 +448,7 @@ namespace Chroma
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Sink");
 	  write(xml_tmp, "version", 1);
-	  write(xml_tmp, "SinkType", header.sink_type);
+	  write(xml_tmp, "SinkType", header.sink.id);
 
 	  pop(xml_tmp);  // Sink
 	  pop(xml_tmp);  // Param
@@ -464,7 +464,7 @@ namespace Chroma
       else
       {
 	std::ostringstream  os;
-	os << "Unsupported sink type= " << header.sink_type 
+	os << "Unsupported sink type= " << header.sink.id 
 	   << "  in file= " << __FILE__ 
 	   << "  at line= " << __LINE__
 	   << endl;
@@ -493,10 +493,9 @@ namespace Chroma
 
       case 6:
       {
+	header.source = readXMLGroup(paramtop, "Source", "SourceType");
+
 	XMLReader xml_tmp(paramtop, "Source");
-	std::ostringstream os;
-	xml_tmp.print(os);
-	read(xml_tmp, "SourceType", header.source_type);
 	read(xml_tmp, "j_decay", header.j_decay);
 	if (xml_tmp.count("t_source") != 0)
 	{
@@ -516,7 +515,6 @@ namespace Chroma
 	{
 	  throw string("neither t_source nor t_srce found");
 	}
-	header.source = os.str();
       }
       break;
 
@@ -547,12 +545,10 @@ namespace Chroma
     {
     case 6:
     {
+      header.source = readXMLGroup(paramtop, "Source", "SourceType");
+
       XMLReader xml_tmp(paramtop, "Source");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      read(xml_tmp, "SourceType", header.source_type);
       read(xml_tmp, "j_decay", header.j_decay);
-      header.source = os.str();
     }
     break;
 
@@ -583,12 +579,10 @@ namespace Chroma
 
       case 5:
       {
+	header.sink = readXMLGroup(paramtop, "Sink", "SinkType");
+
 	XMLReader xml_tmp(paramtop, "Sink");
-	std::ostringstream os;
-	xml_tmp.print(os);
-	read(xml_tmp, "SinkType", header.sink_type); 
 	read(xml_tmp, "j_decay", header.j_decay);
-	header.sink = os.str();
       }
       break;
 
@@ -697,14 +691,12 @@ namespace Chroma
 
     case 2:
     {
+      param.seqsrc = readXMLGroup(paramtop, "SeqSource", "SeqSourceType");
+
       XMLReader xml_tmp(paramtop, "SeqSource");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      read(xml_tmp, "SeqSourceType", param.seqsrc_type);
       read(xml_tmp, "t_sink", param.t_sink);
       read(xml_tmp, "sink_mom", param.sink_mom);
       read(xml_tmp, "j_decay", param.j_decay);
-      param.seqsrc = os.str();
     }
     break;
 
@@ -748,7 +740,8 @@ namespace Chroma
       xml_out << paramtop;
       pop(xml_out);
 
-      param.fermact = xml_out.printCurrentContext();
+      XMLReader xml_inn(xml_out);
+      param.fermact = readXMLGroup(xml_inn, "FermionAction", "FermAct");
     }
     break;
 
@@ -768,7 +761,8 @@ namespace Chroma
       write(xml_out, "boundary", boundary);
       pop(xml_out);
 
-      param.fermact = xml_out.printCurrentContext();
+      XMLReader xml_inn(xml_out);
+      param.fermact = readXMLGroup(xml_inn, "FermionAction", "FermAct");
     }
     break;
 
@@ -791,18 +785,15 @@ namespace Chroma
       write(xml_out, "boundary", boundary);
       pop(xml_out);
 
-      param.fermact = xml_out.printCurrentContext();
+      XMLReader xml_inn(xml_out);
+      param.fermact = readXMLGroup(xml_inn, "FermionAction", "FermAct");
     }
     break;
 
     /**************************************************************************/
     case 7:
     {
-      XMLReader xml_tmp(paramtop, "FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      param.fermact = os.str();
-
+      param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
       param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 
       bool nonRelProp;
@@ -825,10 +816,7 @@ namespace Chroma
 
     case 8:
     {
-      XMLReader xml_tmp(paramtop, "FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      param.fermact = os.str();
+      param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
       bool nonRelProp;
       read(paramtop, "nonRelProp", nonRelProp); // new - is this prop non-relativistic
@@ -848,10 +836,7 @@ namespace Chroma
 
     case 9:
     {
-      XMLReader xml_tmp(paramtop, "FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      param.fermact = os.str();
+      param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
       param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
@@ -867,10 +852,7 @@ namespace Chroma
 
     case 10:
     {
-      XMLReader xml_tmp(paramtop, "FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      param.fermact = os.str();
+      param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
       param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
@@ -927,7 +909,8 @@ namespace Chroma
       write(xml_out, "boundary", boundary);
       pop(xml_out);
 
-      param.fermact = xml_out.printCurrentContext();
+      XMLReader xml_inn(xml_out);
+      param.fermact = readXMLGroup(xml_inn, "FermionAction", "FermAct");
     }
     break;
 
@@ -953,7 +936,8 @@ namespace Chroma
       write(xml_out, "boundary", boundary);
       pop(xml_out);
 
-      param.fermact = xml_out.printCurrentContext();
+      XMLReader xml_inn(xml_out);
+      param.fermact = readXMLGroup(xml_inn, "FermionAction", "FermAct");
     }
     break;
 
@@ -963,11 +947,7 @@ namespace Chroma
     {
       read(paramtop, "MultiMasses", param.MultiMasses);
 
-      XMLReader xml_tmp(paramtop, "FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      param.fermact = os.str();
-
+      param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
       param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 
       bool nonRelProp;
@@ -988,11 +968,7 @@ namespace Chroma
     {
       read(paramtop, "MultiMasses", param.MultiMasses);
 
-      XMLReader xml_tmp(paramtop, "FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      param.fermact = os.str();
-
+      param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
       param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 
       bool nonRelProp;
@@ -1008,11 +984,7 @@ namespace Chroma
     {
       read(paramtop, "MultiMasses", param.MultiMasses);
 
-      XMLReader xml_tmp(paramtop, "FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      param.fermact = os.str();
-
+      param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
       param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // quark spin components
@@ -1156,7 +1128,7 @@ namespace Chroma
 
     int version = 6;
     write(xml, "version", version);
-    xml << header.source;
+    xml << header.source.xml;
     write(xml, "j_decay", header.j_decay);   // I think these two are duplicates of what
     write(xml, "t_source", header.t_source); // is in header.source
 
@@ -1171,7 +1143,7 @@ namespace Chroma
 
     int version = 6;
     write(xml, "version", version);
-    xml << header.source;
+    xml << header.source.xml;
     write(xml, "j_decay", header.j_decay);
 
     pop(xml);
@@ -1185,9 +1157,7 @@ namespace Chroma
 
     int version = 5;
     write(xml, "version", version);
-
-    write(xml, "SinkType", header.sink_type);
-    xml << header.sink;
+    xml << header.sink.xml;
     write(xml, "j_decay", header.j_decay);
 
     pop(xml);
@@ -1204,7 +1174,7 @@ namespace Chroma
     write(xml, "quarkSpinType", header.quarkSpinType);
     write(xml, "obsvP", header.obsvP);           // new - measured 5D stuff
     write(xml, "numRetries", header.numRetries); 
-    xml << header.fermact;
+    xml << header.fermact.xml;
     xml << header.invParam.xml;
 
     pop(xml);
@@ -1219,7 +1189,7 @@ namespace Chroma
     write(xml, "version", version);
     write(xml, "quarkSpinType", header.quarkSpinType);
     write(xml, "MultiMasses", header.MultiMasses);
-    xml << header.fermact;
+    xml << header.fermact.xml;
     xml << header.invParam.xml;
 
     pop(xml);
@@ -1250,7 +1220,7 @@ namespace Chroma
 
     int version = 2;
     write(xml, "version", version);
-    xml << param.seqsrc;
+    xml << param.seqsrc.xml;
 
     pop(xml);
   }

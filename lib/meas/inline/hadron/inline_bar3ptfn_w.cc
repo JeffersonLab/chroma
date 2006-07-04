@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 3.2 2006-05-05 03:07:20 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 3.3 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -440,7 +440,7 @@ namespace Chroma
       int gamma_insertion = params.named_obj.seqprops[seq_src_ctr].gamma_insertion;
 
       // Derived from input seqprop
-      std::string   seqsrc_type = seqsource_header.seqsrc_type;
+      std::string   seqsrc_type = seqsource_header.seqsrc.id;
       QDPIO::cout << "Seqsource name = " << seqsrc_type  << endl;
       int           t_sink   = seqsource_header.t_sink;
       multi1d<int>  sink_mom = seqsource_header.sink_mom;

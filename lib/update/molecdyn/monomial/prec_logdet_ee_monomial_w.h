@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_logdet_ee_monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: prec_logdet_ee_monomial_w.h,v 3.1 2006-07-04 02:55:52 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -107,7 +107,7 @@ namespace Chroma
 
     // Read monomial from some root path
     PrecLogDetEvenEvenMonomialParams(XMLReader& in, const std::string& path);
-    std::string ferm_act;
+    GroupXML_t fermact;
     int num_flavors;
   };
 

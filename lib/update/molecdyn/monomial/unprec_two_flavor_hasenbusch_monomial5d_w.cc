@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.cc,v 3.1 2006-06-21 20:42:09 bjoo Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.cc,v 3.2 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -47,53 +47,33 @@ namespace Chroma
 
   // Constructor
   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5D::UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5D(
-    const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param_) 
+    const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param) 
   {
-    inv_param = param_.inv_param;
+    inv_param = param.inv_param;
 
-    std::istringstream is(param_.ferm_act);
+    std::istringstream is(param.fermact.xml);
     XMLReader fermact_reader(is);
 
-    // Get the name of the ferm act
-    std::string fermact_string;
-    
-    try { 
-      read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-      QDP_abort(1);
-    }
-
-    std::istringstream is_prec(param_.ferm_act_prec);
+    std::istringstream is_prec(param.fermact_prec.xml);
     XMLReader fermact_prec_reader(is_prec);
 
-    // Get the name of the ferm act
-    std::string fermact_prec_string;
-    
-    try { 
-      read(fermact_prec_reader, "/FermionActionPrec/FermAct", fermact_prec_string);
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-      QDP_abort(1);
-    }
-
     // Check that the two 
-    if( fermact_prec_string != fermact_string ) { 
+    if( param.fermact_prec.id != param.fermact.id ) { 
       QDPIO::cerr << "For now both the numerator and the denominator fermacts mast be the same: You have asked for " 
-		  << fermact_string 
+		  << param.fermact.id 
 		  << " in the denominator and " 
-		  << fermact_prec_string << " in the numerator" << endl;
+		  << param.fermact_prec.id << " in the numerator" << endl;
       QDP_abort(1);
     }
     
 
-    QDPIO::cout << "UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_string << endl;
-    WilsonTypeFermAct5D<T,P,Q>* tmp_act = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
+    QDPIO::cout << "UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << param.fermact.id << endl;
+    WilsonTypeFermAct5D<T,P,Q>* tmp_act = 
+      TheWilsonTypeFermAct5DFactory::Instance().createObject(param.fermact.id, fermact_reader, param.fermact.path);
    
 
-    UnprecWilsonTypeFermAct5D<T,P,Q>* downcast=dynamic_cast<UnprecWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
+    UnprecWilsonTypeFermAct5D<T,P,Q>* downcast = 
+      dynamic_cast<UnprecWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
@@ -103,13 +83,12 @@ namespace Chroma
 
     fermact = downcast;    
 
-
-    QDPIO::cout << "UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << fermact_prec_string << endl;
+    QDPIO::cout << "UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial: construct " << param.fermact_prec.id << endl;
 
     WilsonTypeFermAct5D<T,P,Q>* tmp_act_prec = 
-      TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_prec_string, 
+      TheWilsonTypeFermAct5DFactory::Instance().createObject(param.fermact_prec.id, 
 							     fermact_prec_reader, 
-							     "/FermionActionPrec");
+							     param.fermact_prec.path);
 
     UnprecWilsonTypeFermAct5D<T,P,Q>* downcast_prec = 
       dynamic_cast<UnprecWilsonTypeFermAct5D<T,P,Q>*>(tmp_act_prec);
@@ -134,23 +113,21 @@ namespace Chroma
     //------------------------------------
 
     // Get Chronological predictor
-    AbsChronologicalPredictor5D<LatticeFermion>* tmp=0x0;
-    if( param_.predictor_xml == "" ) {
+    AbsChronologicalPredictor5D<LatticeFermion>* tmp = 0x0;
+    if( param.predictor.xml == "" ) {
       // No predictor specified use zero guess
        tmp = new ZeroGuess5DChronoPredictor(fermact->size());
     }
-    else {
-
-      
-      try { 
-	std::string chrono_name;
-	std::istringstream chrono_is(param_.predictor_xml);
+    else 
+    {
+      try 
+      { 
+	std::istringstream chrono_is(param.predictor.xml);
 	XMLReader chrono_xml(chrono_is);
-	read(chrono_xml, "/ChronologicalPredictor/Name", chrono_name);
-	tmp = The5DChronologicalPredictorFactory::Instance().createObject(chrono_name, 
+	tmp = The5DChronologicalPredictorFactory::Instance().createObject(param.predictor.id, 
 									  fermact->size(),
 									  chrono_xml, 
-									  std::string("/ChronologicalPredictor"));
+									  param.predictor.path);
       }
       catch(const std::string& e ) { 
 	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
@@ -166,8 +143,9 @@ namespace Chroma
     }
     chrono_predictor = tmp;
 
-    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: finished " << fermact_string << endl;
+    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: finished " << param.fermact.id << endl;
   }
-}; //end namespace Chroma
+
+} //end namespace Chroma
 
 

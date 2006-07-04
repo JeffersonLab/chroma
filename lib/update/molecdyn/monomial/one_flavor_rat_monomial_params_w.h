@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_params_w.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
+// $Id: one_flavor_rat_monomial_params_w.h,v 3.2 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief One-flavor monomial params
  */
@@ -26,10 +26,10 @@ namespace Chroma
 					     int expNumPower_, int expDenPower_);
 
     GroupXML_t      inv_param;     /*!< Inverter Parameters */
-    std::string     ferm_act;
-    int             expNumPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
-    int             expDenPower;   // (M^dag*M)^{expNumPower / (2*expDenPower)}
-    int             nthRoot;       // Use "n" copies of nth-root 1-flavor
+    GroupXML_t      fermact;       /*!< Fermion action */
+    int             expNumPower;   /*!< (M^dag*M)^{expNumPower / (2*expDenPower)} */
+    int             expDenPower;   /*!< (M^dag*M)^{expNumPower / (2*expDenPower)} */
+    int             nthRoot;       /*!< Use "n" copies of nth-root 1-flavor */
 
     struct Remez_t   // eigenvalue bounds of M^dag*M
     {

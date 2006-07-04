@@ -1,4 +1,4 @@
-// $Id: inline_make_source_ferm_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_make_source_ferm_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source for lattice fermions
  *
@@ -206,15 +206,14 @@ namespace Chroma
 
     try
     {
-      std::istringstream  xml_s(params.param.source);
+      std::istringstream  xml_s(params.param.source.xml);
       XMLReader  sourcetop(xml_s);
-      const string source_path = "/Source";
-      QDPIO::cout << "Source = " << params.param.source_type << endl;
+      QDPIO::cout << "Source = " << params.param.source.id << endl;
 
       Handle< QuarkSourceConstruction<LatticeFermion> >
-	sourceConstruction(TheFermSourceConstructionFactory::Instance().createObject(params.param.source_type,
+	sourceConstruction(TheFermSourceConstructionFactory::Instance().createObject(params.param.source.id,
 										     sourcetop,
-										     source_path));
+										     params.param.source.path));
       quark_source = (*sourceConstruction)(u);
     }
     catch(const std::string& e) 

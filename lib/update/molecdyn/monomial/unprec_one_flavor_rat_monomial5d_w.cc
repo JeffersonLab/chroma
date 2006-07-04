@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -50,25 +50,15 @@ namespace Chroma
     nthRoot   = param.nthRoot;
     nthRootPV = param.nthRoot;
 
-    std::istringstream is(param.ferm_act);
+    std::istringstream is(param.fermact.xml);
     XMLReader fermact_reader(is);
+    QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial5D: construct " << param.fermact.id << endl;
 
-    // Get the name of the ferm act
-    std::string fermact_string;
-    try { 
-      read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-      QDP_abort(1);
-    }
+    WilsonTypeFermAct5D<T,P,Q>* tmp_act = 
+      TheWilsonTypeFermAct5DFactory::Instance().createObject(param.fermact.id, fermact_reader, param.fermact.path);
 
-
-    QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial5D: construct " << fermact_string << endl;
-
-    WilsonTypeFermAct5D<T,P,Q>* tmp_act = TheWilsonTypeFermAct5DFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
-
-    UnprecWilsonTypeFermAct5D<T,P,Q>* downcast=dynamic_cast<UnprecWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
+    UnprecWilsonTypeFermAct5D<T,P,Q>* downcast = 
+      dynamic_cast<UnprecWilsonTypeFermAct5D<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
@@ -97,7 +87,7 @@ namespace Chroma
 		   param.remez.digitPrecision);
     //*********************************************************************
 
-    QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial5D: finished " << fermact_string << endl;
+    QDPIO::cout << "UnprecOneFlavorWilsonTypeFermRatMonomial5D: finished " << param.fermact.id << endl;
   }
 
 } //end namespace Chroma

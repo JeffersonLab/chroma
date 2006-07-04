@@ -1,4 +1,4 @@
-// $Id: inline_sfpcac_w.cc,v 1.1 2006-04-10 21:17:05 edwards Exp $
+// $Id: inline_sfpcac_w.cc,v 1.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline Schroedinger functional measurements
  */
@@ -216,22 +216,9 @@ namespace Chroma
     //
     // Initialize fermion action
     //
-    std::istringstream  xml_s(params.param.fermact);
+    std::istringstream  xml_s(params.param.fermact.xml);
     XMLReader  fermacttop(xml_s);
-    const string fermact_path = "/FermionAction";
-    string fermact;
-
-    try
-    {
-      read(fermacttop, fermact_path + "/FermAct", fermact);
-    }
-    catch (const std::string& e) 
-    {
-      QDPIO::cerr << "Error reading fermact: " << e << endl;
-      QDP_abort(1);
-    }
-
-    QDPIO::cout << "FermAct = " << fermact << endl;
+    QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
 
  
     // Initialize the slow Fourier transform phases
@@ -253,9 +240,9 @@ namespace Chroma
 
       // Generic Wilson-Type stuff
       Handle< WilsonTypeFermAct<T,P,Q> >
-	S_f(TheWilsonTypeFermActFactory::Instance().createObject(fermact,
+	S_f(TheWilsonTypeFermActFactory::Instance().createObject(params.param.fermact.id,
 								 fermacttop,
-								 fermact_path));
+								 params.param.fermact.path));
 
 
       Handle< FermState<T,P,Q> > state(S_f->createState(u));

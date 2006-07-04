@@ -37,24 +37,14 @@ namespace Chroma {
  
 
  
-  PrecLogDetEvenEvenMonomialParams::PrecLogDetEvenEvenMonomialParams(XMLReader& in, const std::string& path) {
+  PrecLogDetEvenEvenMonomialParams::PrecLogDetEvenEvenMonomialParams(XMLReader& in, const std::string& path) 
+  {
     XMLReader paramtop(in, path);
     
-    try {
-      // Read the inverter Parameters
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
-    }
-    catch(const string& s) {
-      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
-      QDP_abort(1);
-    }
-
+    fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
     read(paramtop,"num_flavors", num_flavors);
 
-    QDPIO::cout << "PrecLogDetEvenEvenMonomialParams: read \n" << ferm_act << endl;
+    QDPIO::cout << "PrecLogDetEvenEvenMonomialParams: read \n" << fermact.id << endl;
   }
 
   void read(XMLReader& r, const std::string& path,  PrecLogDetEvenEvenMonomialParams& p) 
@@ -69,27 +59,19 @@ namespace Chroma {
   }
 
 
-  PrecLogDetEvenEvenMonomial4D::PrecLogDetEvenEvenMonomial4D(const PrecLogDetEvenEvenMonomialParams& p) : num_flavors(p.num_flavors) {
-
+  PrecLogDetEvenEvenMonomial4D::PrecLogDetEvenEvenMonomial4D(const PrecLogDetEvenEvenMonomialParams& p) : 
+    num_flavors(p.num_flavors) 
+  {
     // Grok the fermact out of the XML
-    std::istringstream is(p.ferm_act);
+    std::istringstream is(p.fermact.xml);
     XMLReader fermact_reader(is);
+    QDPIO::cout << "EvanOddPrecConstDetTwoFlavorWilsonTypeFermMonomial: construct " << p.fermact.id << endl;
 
-    // Get the name of the ferm act
-    std::string fermact_string;
-    try { 
-      read(fermact_reader, "/FermionAction/FermAct", fermact_string);
-    }
-    catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the fermact name: " << e<<  endl;
-      QDP_abort(1);
-    }
+    WilsonTypeFermAct<T,P,Q>* tmp_act = 
+      TheWilsonTypeFermActFactory::Instance().createObject(p.fermact.id, fermact_reader, p.fermact.path);
 
-    QDPIO::cout << "EvanOddPrecConstDetTwoFlavorWilsonTypeFermMonomial: construct " << fermact_string << endl;
-
-    WilsonTypeFermAct<T,P,Q>* tmp_act = TheWilsonTypeFermActFactory::Instance().createObject(fermact_string, fermact_reader, "/FermionAction");
-
-    EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>*>(tmp_act);
+    EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>* downcast = 
+      dynamic_cast<EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {

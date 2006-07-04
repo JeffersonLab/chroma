@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_spectrumOct_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -360,17 +360,13 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      std::istringstream  xml_s(prop_header[loop].fermact);
+      std::istringstream  xml_s(prop_header[loop].fermact.xml);
       XMLReader  fermacttop(xml_s);
-      const string fermact_path = "/FermionAction";
-      string fermact;
       
       QDPIO::cout << "Try action and mass" << endl;
       try
       {
-	XMLReader top(fermacttop, fermact_path);
-
-	read(top, "FermAct", fermact);
+	XMLReader top(fermacttop, prop_header[loop].fermact.path);
 
 	// Yuk - need to hop some hoops. This should be isolated.
 	if (top.count("Mass") != 0) 
@@ -400,7 +396,7 @@ namespace Chroma
 	QDP_abort(1);
       }
     
-      QDPIO::cout << "FermAct = " << fermact << endl;
+      QDPIO::cout << "FermAct = " << prop_header[loop].fermact.id << endl;
       QDPIO::cout << "Mass = " << Mass[loop] << endl;
     }
     // Derived from input prop
@@ -457,11 +453,11 @@ namespace Chroma
     
     //light quark determines the source type....
     //this is a problem that has to be fixed!
-    if (source_header[0].source_type == "POINT_SOURCE")
+    if (source_header[0].source.id == "POINT_SOURCE")
       Pt_src = true;
-    else if (source_header[0].source_type == "SHELL_SOURCE")
+    else if (source_header[0].source.id == "SHELL_SOURCE")
       Sl_src = true;
-    else if (source_header[0].source_type == "WALL_SOURCE")
+    else if (source_header[0].source.id == "WALL_SOURCE")
       Wl_src = true;
     else
     {

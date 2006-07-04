@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.6 2006-06-17 17:47:06 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.7 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -295,17 +295,13 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      std::istringstream  xml_s(s.prop_header.prop_header.fermact);
+      std::istringstream  xml_s(s.prop_header.prop_header.fermact.xml);
       XMLReader  fermacttop(xml_s);
-      const string fermact_path = "/FermionAction";
-      string fermact;
       
       QDPIO::cout << "Try action and mass" << endl;
       try
       {
-	XMLReader top(fermacttop, fermact_path);
-
-	read(top, "FermAct", fermact);
+	XMLReader top(fermacttop, s.prop_header.prop_header.fermact.path);
 
 	// Yuk - need to hop some hoops. This should be isolated.
 	if (top.count("Mass") != 0) 
@@ -335,7 +331,7 @@ namespace Chroma
 	QDP_abort(1);
       }
     
-      QDPIO::cout << "FermAct = " << fermact << endl;
+      QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << endl;
       QDPIO::cout << "Mass = " << s.Mass << endl;
     }
 

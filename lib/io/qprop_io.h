@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.2 2006-07-03 15:26:09 edwards Exp $
+// $Id: qprop_io.h,v 3.3 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -29,8 +29,7 @@ struct PropSourceConst_t
 
   multi1d<int> getTSrce();          /*!< return 4D coords of source (may not exist) */
 
-  std::string      source;          /*!< string holding source xml */
-  std::string      source_type;     /*!< source type */
+  GroupXML_t       source;          /*!< Holds source xml params*/
 
   int              j_decay;         /*!< decay direction */
   int              t_source;        /*!< source slice location */
@@ -41,9 +40,7 @@ struct PropSourceSmear_t
 {
   PropSourceSmear_t();              /*!< default constructor */
 
-  std::string      source;          /*!< string holding source xml */
-  std::string      source_type;     /*!< source type */
-
+  GroupXML_t       source;          /*!< Holds source xml params*/
   int              j_decay;         /*!< decay direction */
 };
 
@@ -52,9 +49,7 @@ struct PropSinkSmear_t
 {
   PropSinkSmear_t();                /*!< default constructor */
 
-  std::string      sink;            /*!< string holding sink smearing xml */
-  std::string      sink_type;       /*!< sink type */
-
+  GroupXML_t       sink;            /*!< Holds sink xml params*/
   int              j_decay;         /*!< decay direction */
 };
 
@@ -66,8 +61,7 @@ struct ChromaMultiProp_t
   QuarkSpinType   quarkSpinType;    /*!< what spin components to compute */
 
   //! String holding XML of the FermionAction section
-  std::string     fermact;          /*!< fermion action */
-
+  GroupXML_t      fermact;          /*!< fermion action */
   GroupXML_t      invParam;         /*!< Inverter parameters */
  
   multi1d<Real>   MultiMasses;
@@ -81,8 +75,7 @@ struct ChromaProp_t
   QuarkSpinType   quarkSpinType;    /*!< why spin components to compute */
 
   // String holding XML of the FermionAction section
-  std::string     fermact;          /*!< fermion action */
-
+  GroupXML_t      fermact;          /*!< fermion action */
   bool            obsvP;            /*!< measure any observables (like Z_V, or mresP) on 5D prop */
   int             numRetries;       /*!< number of calls to qprop for each source component */
   
@@ -96,8 +89,7 @@ struct SeqSource_t
 {
   SeqSource_t();                    /*!< default constructor */
 
-  std::string      seqsrc;          /*!< string holding sequential source xml */
-  std::string      seqsrc_type;     /*!< sequential source type */
+  GroupXML_t       seqsrc;          /*!< Sequential source xml */
 
   multi1d<int>     sink_mom;        /*!< sink momentum */
   int              t_sink;          /*!< time slice of sink */
@@ -163,7 +155,7 @@ struct QQbarMescomp_t
 
 
 //! Given a fermion action in string form, return the boundary
-multi1d<int> getFermActBoundary(const std::string& fermact);
+multi1d<int> getFermActBoundary(const GroupXML_t& fermact);
 
 //! Propagator source read
 void read(XMLReader& xml, const std::string& path, PropSourceConst_t& header);

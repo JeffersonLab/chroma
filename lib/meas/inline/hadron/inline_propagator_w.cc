@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 3.3 2006-06-11 06:30:33 edwards Exp $
+// $Id: inline_propagator_w.cc,v 3.4 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -325,22 +325,9 @@ namespace Chroma
     //
     // Initialize fermion action
     //
-    std::istringstream  xml_s(params.param.fermact);
+    std::istringstream  xml_s(params.param.fermact.xml);
     XMLReader  fermacttop(xml_s);
-    const string fermact_path = "/FermionAction";
-    string fermact;
-
-    try
-    {
-      read(fermacttop, fermact_path + "/FermAct", fermact);
-    }
-    catch (const std::string& e) 
-    {
-      QDPIO::cerr << "Error reading fermact: " << e << endl;
-      QDP_abort(1);
-    }
-
-    QDPIO::cout << "FermAct = " << fermact << endl;
+    QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
 
 
     // Deal with auxiliary (and polymorphic) state information
@@ -371,9 +358,9 @@ namespace Chroma
 
 	// Generic Wilson-Type stuff
 	Handle< FermionAction<T,P,Q> >
-	  S_f(TheFermionActionFactory::Instance().createObject(fermact,
+	  S_f(TheFermionActionFactory::Instance().createObject(params.param.fermact.id,
 							       fermacttop,
-							       fermact_path));
+							       params.param.fermact.path));
 
 
 	Handle< FermState<T,P,Q> > state(S_f->createState(u));

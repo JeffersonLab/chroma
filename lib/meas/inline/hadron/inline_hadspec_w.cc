@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -331,17 +331,13 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      std::istringstream  xml_s(prop_header[loop].prop_header.fermact);
+      std::istringstream  xml_s(prop_header[loop].prop_header.fermact.xml);
       XMLReader  fermacttop(xml_s);
-      const string fermact_path = "/FermionAction";
-      string fermact;
       
       QDPIO::cout << "Try action and mass" << endl;
       try
       {
-	XMLReader top(fermacttop, fermact_path);
-
-	read(top, "FermAct", fermact);
+	XMLReader top(fermacttop, prop_header[loop].prop_header.fermact.path);
 
 	// Yuk - need to hop some hoops. This should be isolated.
 	if (top.count("Mass") != 0) 
@@ -371,7 +367,7 @@ namespace Chroma
 	QDP_abort(1);
       }
     
-      QDPIO::cout << "FermAct = " << fermact << endl;
+      QDPIO::cout << "FermAct = " << prop_header[loop].prop_header.fermact.id << endl;
       QDPIO::cout << "Mass = " << Mass[loop] << endl;
     }
 
@@ -389,7 +385,7 @@ namespace Chroma
     //
     for (int loop(1); loop < params.named_obj.prop_ids.size(); ++loop)
     {
-      if (prop_header[loop].source_header.source_type != prop_header[0].source_header.source_type)
+      if (prop_header[loop].source_header.source.id != prop_header[0].source_header.source.id)
       {
 	QDPIO::cerr << "HADSPEC: prop source smearing types do not agree" << endl;
 	QDP_abort(1);
@@ -459,11 +455,11 @@ namespace Chroma
 
     // Construct group name for output
     string src_type;
-    if (prop_header[0].source_header.source_type == "POINT_SOURCE")
+    if (prop_header[0].source_header.source.id == "POINT_SOURCE")
       src_type = "Point";
-    else if (prop_header[0].source_header.source_type == "SHELL_SOURCE")
+    else if (prop_header[0].source_header.source.id == "SHELL_SOURCE")
       src_type = "Shell";
-    else if (prop_header[0].source_header.source_type == "WALL_SOURCE")
+    else if (prop_header[0].source_header.source.id == "WALL_SOURCE")
       src_type = "Wall";
     else
     {
@@ -489,7 +485,7 @@ namespace Chroma
     QDPIO::cout << "Sink type = "   << snk_type << endl;
 
     push(xml_array, "SourceSinkType");
-    write(xml_array, "source_type", prop_header[0].source_header.source_type);
+    write(xml_array, "source_type", prop_header[0].source_header.source.id);
     write(xml_array, "sink_type", sink_type[0]);
     pop(xml_array);
 

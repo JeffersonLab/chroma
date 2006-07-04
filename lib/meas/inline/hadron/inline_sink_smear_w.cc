@@ -1,4 +1,4 @@
-// $Id: inline_sink_smear_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_sink_smear_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
 /*! \file
  * \brief Inline construction of sink_smear
  *
@@ -210,17 +210,16 @@ namespace Chroma
     //
     try
     {
-      QDPIO::cout << "Sink_xml = " << params.param.sink << endl;
+      QDPIO::cout << "Sink_xml = " << params.param.sink.xml << endl;
 
-      std::istringstream  xml_s(params.param.sink);
+      std::istringstream  xml_s(params.param.sink.xml);
       XMLReader  sinktop(xml_s);
-      const string sink_path = "/Sink";
-      QDPIO::cout << "Sink = " << params.param.sink_type << endl;
+      QDPIO::cout << "Sink = " << params.param.sink.id << endl;
 
       Handle< QuarkSourceSink<LatticePropagator> >
-	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(params.param.sink_type,
+	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(params.param.sink.id,
 									 sinktop,
-									 sink_path,
+									 params.param.sink.path,
 									 u));
       (*sinkSmearing)(quark_propagator);
     }
