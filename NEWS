@@ -1,3 +1,13 @@
+07/04/2006 -- Robert Edwards
+	Version 3.8.0. Changed FermionAction API to produce system
+        solver classes. No longer have a fixed InvertParam
+	set. Removed old inverter enum and support. Have default creation
+	for inverters to solve M*psi=chi, MdagM*psi=chi, and multi-shift
+	support. Some older files still have explicit calls to CG solver.
+        Converted usage of  source/source_type, fermact, sink/sink_type
+        to using GroupXML_t. Converted all monomials to use GroupXML_t as
+        well.
+
 07/03/2006 -- Robert Edwards
 	Version 3.7.4. 5D Hasenbusch monomial support.
 
