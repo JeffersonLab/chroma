@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: wallformfac.cc,v 3.1 2006-07-04 03:29:35 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
   }
 
   // Sanity check
-  if (input.param.wall_source && forward_source_header.source_type != "WALL_SOURCE")
+  if (input.param.wall_source && forward_source_header.source.id != "WALL_SOURCE")
   {
     QDPIO::cerr << "Wallformfac: wall_source flag set but not a wall source forward prop" << endl;
     QDP_abort(1);
@@ -375,7 +375,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Backward propagator successfully read" << endl;
    
   // Sanity check
-  if (! input.param.wall_source && backward_source_header.source_type != "WALL_SOURCE")
+  if (! input.param.wall_source && backward_source_header.source.id != "WALL_SOURCE")
   {
     QDPIO::cerr << "Wallformfac: wall_source flag false but not a wall source backward prop" << endl;
     QDP_abort(1);
@@ -440,15 +440,14 @@ int main(int argc, char *argv[])
     // Sink smear the propagator
     try
     {
-      std::istringstream  xml_s(backward_source_header.source);
+      std::istringstream  xml_s(backward_source_header.source.xml);
       XMLReader  sinktop(xml_s);
-      const string sink_path = "/Source";
-      QDPIO::cout << "Source = " << backward_source_header.source_type << endl;
+      QDPIO::cout << "Source = " << backward_source_header.source.id << endl;
 
       Handle< QuarkSourceSink<LatticePropagator> >
-	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(backward_source_header.source_type,
+	sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(backward_source_header.source.id,
 									 sinktop,
-									 sink_path,
+									 backward_source_header.source.path,
 									 u));
       (*sinkSmearing)(forward_quark_tmp);
     }
@@ -460,7 +459,7 @@ int main(int argc, char *argv[])
 
 #if 0
     // OLD code - just for reference
-    if (backward_source_header.source_type == "SHELL_SOURCE")
+    if (backward_source_header.source.id == "SHELL_SOURCE")
     {
       sink_smear2(u, forward_quark_tmp, 
 		  backward_source_header.sourceSmearParam.wvf_kind, 
