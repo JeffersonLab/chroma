@@ -447,7 +447,7 @@ regression test spectrum output is kept within the chroma xml output
       <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>03 Jul 06 10:58:00 EDT</run_date>
+    <run_date>03 Jul 06 22:52:32 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -508,7 +508,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:58:00 EDT</run_date>
+          <run_date>03 Jul 06 22:52:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -602,7 +602,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:58:01 EDT</run_date>
+          <run_date>03 Jul 06 22:52:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -828,8 +828,7 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -939,8 +938,7 @@ regression test spectrum output is kept within the chroma xml output
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -971,7 +969,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:58:02 EDT</run_date>
+          <run_date>03 Jul 06 22:52:36 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1067,7 +1065,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:58:02 EDT</run_date>
+          <run_date>03 Jul 06 22:52:36 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1295,8 +1293,7 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1402,8 +1399,7 @@ regression test spectrum output is kept within the chroma xml output
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1425,8 +1421,7 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1540,8 +1535,7 @@ regression test spectrum output is kept within the chroma xml output
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1574,7 +1568,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:58:04 EDT</run_date>
+          <run_date>03 Jul 06 22:52:37 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1705,8 +1699,7 @@ regression test spectrum output is kept within the chroma xml output
                 <First_forward_prop>
                   <version>1</version>
                   <PropSinkSmear>
-                    <version>5</version>
-                    <SinkType>POINT_SINK</SinkType><Sink>
+                    <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1779,8 +1772,7 @@ regression test spectrum output is kept within the chroma xml output
                 <Second_forward_prop>
                   <version>1</version>
                   <PropSinkSmear>
-                    <version>5</version>
-                    <SinkType>POINT_SINK</SinkType><Sink>
+                    <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1851,8 +1843,7 @@ regression test spectrum output is kept within the chroma xml output
                 <First_forward_prop>
                   <version>1</version>
                   <PropSinkSmear>
-                    <version>5</version>
-                    <SinkType>POINT_SINK</SinkType><Sink>
+                    <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1925,8 +1916,7 @@ regression test spectrum output is kept within the chroma xml output
                 <Second_forward_prop>
                   <version>1</version>
                   <PropSinkSmear>
-                    <version>5</version>
-                    <SinkType>POINT_SINK</SinkType><Sink>
+                    <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2204,8 +2194,7 @@ regression test spectrum output is kept within the chroma xml output
                 <First_forward_prop>
                   <version>1</version>
                   <PropSinkSmear>
-                    <version>5</version>
-                    <SinkType>POINT_SINK</SinkType><Sink>
+                    <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2278,8 +2267,7 @@ regression test spectrum output is kept within the chroma xml output
                 <Second_forward_prop>
                   <version>1</version>
                   <PropSinkSmear>
-                    <version>5</version>
-                    <SinkType>POINT_SINK</SinkType><Sink>
+                    <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>

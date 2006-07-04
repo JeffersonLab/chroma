@@ -424,7 +424,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>03 Jul 06 10:56:48 EDT</run_date>
+    <run_date>03 Jul 06 22:52:00 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -485,7 +485,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:48 EDT</run_date>
+          <run_date>03 Jul 06 22:52:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -579,7 +579,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:48 EDT</run_date>
+          <run_date>03 Jul 06 22:52:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -808,7 +808,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:49 EDT</run_date>
+          <run_date>03 Jul 06 22:52:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -828,8 +828,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>SHELL_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -987,7 +986,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:50 EDT</run_date>
+          <run_date>03 Jul 06 22:52:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1007,8 +1006,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>SHELL_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1242,7 +1240,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:50 EDT</run_date>
+          <run_date>03 Jul 06 22:52:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1262,8 +1260,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>SHELL_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1421,7 +1418,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:51 EDT</run_date>
+          <run_date>03 Jul 06 22:52:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1506,7 +1503,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>SHELL_SINK</SinkType>
         <Sink>
           <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
@@ -1545,7 +1541,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -1735,7 +1730,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:52 EDT</run_date>
+          <run_date>03 Jul 06 22:52:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1820,7 +1815,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>SHELL_SINK</SinkType>
         <Sink>
           <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
@@ -1859,7 +1853,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -1940,7 +1933,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -2130,7 +2122,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:53 EDT</run_date>
+          <run_date>03 Jul 06 22:52:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2215,7 +2207,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>SHELL_SINK</SinkType>
         <Sink>
           <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
@@ -2254,7 +2245,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -2444,7 +2434,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:54 EDT</run_date>
+          <run_date>03 Jul 06 22:52:06 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2628,7 +2618,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>SHELL_SINK</SinkType>
         <Sink>
           <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
@@ -2667,7 +2656,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -2798,7 +2786,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>SHELL_SINK</SinkType>
         <Sink>
           <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
@@ -2837,7 +2824,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -2918,7 +2904,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -3049,7 +3034,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>SHELL_SINK</SinkType>
         <Sink>
           <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
@@ -3088,7 +3072,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>

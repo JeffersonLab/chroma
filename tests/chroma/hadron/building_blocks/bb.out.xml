@@ -1093,7 +1093,7 @@ Calculate building blocks - insertions in 3-pt functions
       <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>03 Jul 06 10:56:59 EDT</run_date>
+    <run_date>03 Jul 06 22:51:17 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1154,7 +1154,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:56:59 EDT</run_date>
+          <run_date>03 Jul 06 22:51:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1248,7 +1248,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:00 EDT</run_date>
+          <run_date>03 Jul 06 22:51:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1477,7 +1477,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:01 EDT</run_date>
+          <run_date>03 Jul 06 22:51:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1497,8 +1497,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>SHELL_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1656,7 +1655,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:01 EDT</run_date>
+          <run_date>03 Jul 06 22:51:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1741,7 +1740,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>SHELL_SINK</SinkType>
         <Sink>
           <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
@@ -1780,7 +1778,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -1970,7 +1967,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:02 EDT</run_date>
+          <run_date>03 Jul 06 22:51:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1990,8 +1987,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2209,7 +2205,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:02 EDT</run_date>
+          <run_date>03 Jul 06 22:51:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2294,7 +2290,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -2317,7 +2312,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -2382,7 +2376,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -2556,7 +2549,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:03 EDT</run_date>
+          <run_date>03 Jul 06 22:51:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2576,8 +2569,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2719,7 +2711,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:03 EDT</run_date>
+          <run_date>03 Jul 06 22:51:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2804,7 +2796,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -2827,7 +2818,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -3001,7 +2991,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:04 EDT</run_date>
+          <run_date>03 Jul 06 22:51:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3021,8 +3011,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3240,7 +3229,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:05 EDT</run_date>
+          <run_date>03 Jul 06 22:51:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3325,7 +3314,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -3348,7 +3336,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -3413,7 +3400,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -3587,7 +3573,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:06 EDT</run_date>
+          <run_date>03 Jul 06 22:51:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3607,8 +3593,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3750,7 +3735,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:06 EDT</run_date>
+          <run_date>03 Jul 06 22:51:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3835,7 +3820,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -3858,7 +3842,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -4032,7 +4015,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:07 EDT</run_date>
+          <run_date>03 Jul 06 22:51:24 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4052,8 +4035,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4271,7 +4253,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:07 EDT</run_date>
+          <run_date>03 Jul 06 22:51:25 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4356,7 +4338,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -4379,7 +4360,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -4444,7 +4424,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -4618,7 +4597,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:08 EDT</run_date>
+          <run_date>03 Jul 06 22:51:26 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4638,8 +4617,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4781,7 +4759,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:08 EDT</run_date>
+          <run_date>03 Jul 06 22:51:26 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4866,7 +4844,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -4889,7 +4866,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -5063,7 +5039,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:09 EDT</run_date>
+          <run_date>03 Jul 06 22:51:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5083,8 +5059,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5302,7 +5277,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:09 EDT</run_date>
+          <run_date>03 Jul 06 22:51:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5387,7 +5362,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -5410,7 +5384,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -5475,7 +5448,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -5649,7 +5621,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:10 EDT</run_date>
+          <run_date>03 Jul 06 22:51:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5669,8 +5641,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5812,7 +5783,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:10 EDT</run_date>
+          <run_date>03 Jul 06 22:51:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5897,7 +5868,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -5920,7 +5890,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -6094,7 +6063,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:11 EDT</run_date>
+          <run_date>03 Jul 06 22:51:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6114,8 +6083,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -6333,7 +6301,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:11 EDT</run_date>
+          <run_date>03 Jul 06 22:51:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6418,7 +6386,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -6441,7 +6408,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -6506,7 +6472,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -6680,7 +6645,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:12 EDT</run_date>
+          <run_date>03 Jul 06 22:51:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6700,8 +6665,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -6843,7 +6807,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:13 EDT</run_date>
+          <run_date>03 Jul 06 22:51:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6928,7 +6892,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -6951,7 +6914,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -7125,7 +7087,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:14 EDT</run_date>
+          <run_date>03 Jul 06 22:51:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7145,8 +7107,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -7364,7 +7325,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:14 EDT</run_date>
+          <run_date>03 Jul 06 22:51:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7449,7 +7410,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -7472,7 +7432,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -7537,7 +7496,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -7711,7 +7669,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:15 EDT</run_date>
+          <run_date>03 Jul 06 22:51:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7731,8 +7689,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SeqSource>
 </Param>
           <PropSink>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>1</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -7874,7 +7831,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:15 EDT</run_date>
+          <run_date>03 Jul 06 22:51:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7959,7 +7916,6 @@ Calculate building blocks - insertions in 3-pt functions
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -7982,7 +7938,6 @@ Calculate building blocks - insertions in 3-pt functions
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>

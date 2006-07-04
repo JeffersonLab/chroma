@@ -1273,7 +1273,7 @@ Sink smear a prop
       <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>03 Jul 06 11:05:27 EDT</run_date>
+    <run_date>03 Jul 06 22:47:58 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1334,7 +1334,7 @@ Sink smear a prop
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:05:27 EDT</run_date>
+          <run_date>03 Jul 06 22:48:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1430,7 +1430,7 @@ Sink smear a prop
             <chroma>3.8.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:05:28 EDT</run_date>
+          <run_date>03 Jul 06 22:48:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1658,8 +1658,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1767,8 +1766,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1798,8 +1796,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>SHELL_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1919,8 +1916,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>SHELL_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -1962,8 +1958,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2071,8 +2066,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2102,8 +2096,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2211,8 +2204,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2242,8 +2234,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2351,8 +2342,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2382,8 +2372,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2491,8 +2480,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2522,8 +2510,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2631,8 +2618,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2662,8 +2648,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2771,8 +2756,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2802,8 +2786,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2911,8 +2894,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -2942,8 +2924,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3051,8 +3032,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3082,8 +3062,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3191,8 +3170,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3222,8 +3200,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3331,8 +3308,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3362,8 +3338,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3471,8 +3446,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3502,8 +3476,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3611,8 +3584,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3642,8 +3614,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3751,8 +3722,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3782,8 +3752,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3891,8 +3860,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -3922,8 +3890,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4031,8 +3998,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4062,8 +4028,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4171,8 +4136,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4202,8 +4166,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4311,8 +4274,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4342,8 +4304,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4451,8 +4412,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4482,8 +4442,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4591,8 +4550,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4622,8 +4580,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4731,8 +4688,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4762,8 +4718,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4871,8 +4826,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -4902,8 +4856,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5011,8 +4964,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5042,8 +4994,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5151,8 +5102,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5182,8 +5132,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5291,8 +5240,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5322,8 +5270,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5431,8 +5378,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5462,8 +5408,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5571,8 +5516,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5602,8 +5546,7 @@ Sink smear a prop
         <update_no>0</update_no>
         <Input>
           <Param>
-            <version>5</version>
-            <SinkType>POINT_SINK</SinkType><Sink>
+            <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
@@ -5711,8 +5654,7 @@ Sink smear a prop
     </InvertParam>
 </ForwardProp>
         <PropSink>
-          <version>5</version>
-          <SinkType>POINT_SINK</SinkType><Sink>
+          <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
       <j_decay>3</j_decay>
