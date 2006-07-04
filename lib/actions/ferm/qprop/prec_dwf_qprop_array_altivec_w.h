@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_altivec_w.h,v 3.4 2006-07-03 15:26:09 edwards Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.h,v 3.5 2006-07-04 03:25:59 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -10,6 +10,7 @@
 #include "fermact.h"
 #include "io/aniso_io.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
+
 
 extern "C" 
 {
@@ -40,14 +41,14 @@ namespace Chroma
      * \param m_q_       quark mass ( Read )
      */
     ALTIVECDWFQpropT(Handle< FermState<T,P,Q> > state_, 
-		     const Real& OverMass_,
-		     const Real& Mass_,
-		     int N5_,
-		     const AnisoParam_t& anisoParam_,
-		     const SysSolverCGParams& invParam_) : 
+		 const Real& OverMass_,
+		 const Real& Mass_,
+		 int N5_,
+		 const AnisoParam_t& anisoParam_,
+		 const SysSolverCGParams& invParam_) : 
       OverMass(OverMass_), Mass(Mass_), 
-      N5(N5_), anisoParam(anisoParam_), invParam(invParam_) 
-      {init(state_);}
+      N5(N5_), anisoParam(anisoParam_)
+      {init(state_, invParam_);}
 #endif
 
     //! Alternative constructor for compatibility
@@ -55,14 +56,15 @@ namespace Chroma
      * \param m_q_       quark mass ( Read )
      */
     ALTIVECDWFQpropT(Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A_,
-		     Handle< FermState<T,P,Q> > state_, 
-		     const Real& OverMass_,
-		     const Real& Mass_,
-		     const AnisoParam_t& anisoParam_,
-		     const SysSolverCGParams& invParam_) : 
+		 Handle< LinOpSystemSolverArray<T> > invA_,   // throw away
+		 Handle< FermState<T,P,Q> > state_, 
+		 const Real& OverMass_,
+		 const Real& Mass_,
+		 const AnisoParam_t& anisoParam_,
+		 const GroupXML_t& invParam_) : 
       A(A_), OverMass(OverMass_), Mass(Mass_), 
-      N5(A->size()), anisoParam(anisoParam_), invParam(invParam_) 
-      {init(state_);}
+      N5(A->size()), anisoParam(anisoParam_)
+      {init(state_, invParam_);}
 
     //! Need a real destructor
     ~ALTIVECDWFQpropT() {fini();}
@@ -83,7 +85,7 @@ namespace Chroma
 
   protected:
     //! Private internal initializer
-    void init(Handle< FermState<T,P,Q> > state);
+    void init(Handle< FermState<T,P,Q> > state, const GroupXML_t& inv);
 
     //! Private internal destructor
     void fini();

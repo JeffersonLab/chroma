@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.5 2006-07-03 15:26:09 edwards Exp $
+// $Id: prec_dwf_qprop_array_sse_w.cc,v 3.6 2006-07-04 03:25:59 edwards Exp $
 /*! \file
  *  \brief SSE 5D DWF specific quark propagator solver
  */
@@ -306,16 +306,16 @@ namespace Chroma
     }
 
     // Read the XML for the CG params
+    try
     {
       std::istringstream  is(inv.xml);
       XMLReader  paramtop(is);
-	
+
       read(paramtop, inv.path, invParam);
     }
-
-    if (invParam.invType != CG_INVERTER)
+    catch (const std::string& e)
     {
-      QDPIO::cerr << "SSE qpropT only supports CG" << endl;
+      QDPIO::cerr << "SSEDWFQpropT: only support a CG inverter" << endl;
       QDP_abort(1);
     }
 

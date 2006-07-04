@@ -1,4 +1,4 @@
-// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.5 2006-06-11 20:28:13 edwards Exp $
+// $Id: prec_dwf_qprop_array_altivec_w.cc,v 3.6 2006-07-04 03:25:59 edwards Exp $
 /*! \file
  *  \brief ALTIVEC 5D DWF specific quark propagator solver
  */
@@ -293,8 +293,9 @@ namespace Chroma
   //----------------------------------------------------------------------------------
   //! Private internal initializer
   void ALTIVECDWFQpropT::init(Handle< FermState<LatticeFermion,
-			      multi1d<LatticeColorMatrix>,
-			      multi1d<LatticeColorMatrix> > > state)
+			  multi1d<LatticeColorMatrix>,
+			  multi1d<LatticeColorMatrix> > > state,
+			  const GroupXML_t& inv)
   {
     QDPIO::cout << "entering ALTIVECDWFQpropT::init" << endl;
 
@@ -304,9 +305,17 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    if (invParam.invType != CG_INVERTER)
+    // Read the XML for the CG params
+    try
     {
-      QDPIO::cerr << "ALTIVEC qpropT only supports CG" << endl;
+      std::istringstream  is(inv.xml);
+      XMLReader  paramtop(is);
+
+      read(paramtop, inv.path, invParam);
+    }
+    catch (const std::string& e)
+    {
+      QDPIO::cerr << "ALTIVECDWFQpropT: only support a CG inverter" << endl;
       QDP_abort(1);
     }
 
@@ -321,9 +330,19 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    if (ALTIVEC_DWF_init(lattice_size.slice(), ALTIVEC_DWF_FLOAT, NULL, NULL) != 0)
+#if BASE_PRECISION == 32
+    ALTIVEC_DWF_FP_SIZE dwf_prec = ALTIVEC_DWF_FLOAT;
+    std::string dwf_error_str = "single prec.";
+#elif BASE_PRECISION == 64
+    ALTIVEC_DWF_FP_SIZE dwf_prec = ALTIVEC_DWF_DOUBLE;
+    std::string dwf_error_str = "double prec.";
+#else
+#error "Unknown BASE_PRECISION"
+#endif
+
+    if (ALTIVEC_DWF_init(lattice_size.slice(), dwf_prec, NULL, NULL) != 0)
     {
-      QDPIO::cerr << __func__ << ": error in ALTIVEC_DWF_init" << endl;
+      QDPIO::cerr << __func__ << ": error in ALTIVEC_DWF_init: " << dwf_error_str << endl;
       QDP_abort(1);
     }
 
@@ -371,7 +390,7 @@ namespace Chroma
    * \return number of CG iterations
    */
   SystemSolverResults_t 
-  ALTIVECDWFQpropT::operator()(multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
+  ALTIVECDWFQpropT::operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
   {
     QDPIO::cout << "entering ALTIVECDWFQpropT::operator()" << endl;
 
@@ -392,7 +411,7 @@ namespace Chroma
     int    max_iter = invParam.MaxCG;
     double out_eps;
     ALTIVECDWF::solve_cg5(psi, g, M5, m_f, 
-		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
+			  chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
 
 //    fini();   // only needed because 2 qpropT might be active - ALTIVEC CG does not allow this
 
