@@ -1,4 +1,4 @@
-// $Id: wilslp.cc,v 3.1 2006-06-10 16:30:18 edwards Exp $
+// $Id: wilslp.cc,v 3.2 2006-07-05 19:22:45 edwards Exp $
 /*! \file
  *  \brief Calculate Wilson loops
  */
@@ -123,13 +123,6 @@ namespace Chroma
     lengthr = lsizer/2;
     length = 2 * lengthr + lengthr/2; // this is a hack (see later)
 
-    multi1d<Double> wloop1(lengthr);
-    multi1d<Double> wloop2(lengtht);
-    multi1d<Double> wloop3(lengtht);
-    multi2d<Double> wils_loop1(lengthr, lengthr);
-    multi2d<Double> wils_loop2(lengtht, lengthr);
-    multi2d<Double> wils_loop3(lengtht,  length);  
-
     /* Compute "space-like" planar Wilson loops, if desired */
     if ( (kind & 1) != 0 )
     {
@@ -138,6 +131,7 @@ namespace Chroma
 	  QDP_error_exit("Wrong lattice size for space-like Wilson loops: ", 
 			 mu, nrow[mu]);
                     
+      multi2d<Double> wils_loop1(lengthr, lengthr);
       wils_loop1 = 0;			/* initialize the Wilson loops */
 
       for(j = 1;j  < ( nspace); ++j )
@@ -208,6 +202,8 @@ namespace Chroma
       write(xml, "lengthr", lengthr);
       push(xml, "wloop1");
                   
+      multi1d<Double> wloop1(lengthr);
+
       for(r = 0; r < lengthr; ++r)
       {
 	for(t = 0; t < lengthr; ++t)
@@ -235,6 +231,7 @@ namespace Chroma
     /* Compute "time-like" planar Wilson loops, if desired */
     if ( (kind & 2) != 0 )
     {
+      multi2d<Double> wils_loop2(lengtht, lengthr);
       wils_loop2 = 0;                       /* initialize the Wilson loops */
 
       QDPIO::cout << "computing time-like Wilson loops" << endl;
@@ -296,12 +293,14 @@ namespace Chroma
       write(xml, "lengtht", lengtht);
       push(xml, "wloop2");
 
+      multi1d<Double> wloop2(lengtht);
+
       for(r = 0; r < lengthr; ++r)
       {
 	for(t = 0; t < lengtht; ++t)
 	{
-	  wils_loop2[t][r] = wils_loop2[t][r] * dummy;
-	  wloop2[t]      = wils_loop2[t][r];
+	  wils_loop2[t][r] *= dummy;
+	  wloop2[t]         = wils_loop2[t][r];
 	}
 	push(xml, "elem");
 	write(xml, "r", r);
@@ -330,6 +329,10 @@ namespace Chroma
       else
 	length = 2 * lengthr + lengthr/2;
 
+      QDPIO::cout << "wils_loop3: lengtht=" << lengtht << "  length=" << length 
+		  << "  nspace=" << nspace << "   j_decay=" << j_decay
+		  << "  t_dir=" << t_dir << endl;
+      multi2d<Double> wils_loop3(lengtht,  length);  
       wils_loop3 = 0;     /* initialize the non-planar Wilson loops */
 
       for(j = 1;j  < ( nspace); ++j )
@@ -1146,13 +1149,17 @@ namespace Chroma
 
       push(xml,"wils_loop3"); // XML tag for wils_wloop3
       write(xml, "lengthr", lengthr);
+      write(xml, "lengtht", lengtht);
+      write(xml, "length", length);
       push(xml, "wloop3");
 
-      for(r = 0; r < r_off+lengthr; ++r)
+      multi1d<Double> wloop3(wils_loop3.size2());
+
+      for(r = 0; r < wils_loop3.size1(); ++r)
       {
-        for(t = 0; t < lengtht; ++t)
+        for(t = 0; t < wils_loop3.size2(); ++t)
         {
-          wloop3[t]      = wils_loop3[t][r];
+          wloop3[t] = wils_loop3[t][r];
         }
 	push(xml, "elem");
         write(xml, "r", r);
