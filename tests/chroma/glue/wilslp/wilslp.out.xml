@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: wilslp.out.xml,v 3.3 2006-06-11 06:30:34 edwards Exp $
+; $Id: wilslp.out.xml,v 3.4 2006-07-06 17:43:57 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -45,10 +45,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:49:32 EDT</run_date>
+    <run_date>06 Jul 06 13:43:42 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -145,6 +145,8 @@
         </wils_loop2>
         <wils_loop3>
           <lengthr>2</lengthr>
+          <lengtht>4</lengtht>
+          <length>5</length>
           <wloop3>
             <elem>
               <r>0</r>
