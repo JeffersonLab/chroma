@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: wilslp.ini.xml,v 3.2 2006-06-10 16:37:59 edwards Exp $
+; $Id: wilslp.ini.xml,v 3.3 2006-07-06 19:51:37 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -21,7 +21,7 @@
       <Name>WILSLP</Name>
       <Frequency>1</Frequency>
       <Param>
-        <kind>6</kind>
+        <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
       </Param>
