@@ -1,3 +1,6 @@
+07/06/2006 -- Robert Edwards
+	Version 3.8.1. Fixes in wilslp (Wilson loops).
+
 07/04/2006 -- Robert Edwards
 	Version 3.8.0. Changed FermionAction API to produce system
         solver classes. No longer have a fixed InvertParam
