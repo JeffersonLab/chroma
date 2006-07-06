@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: wilslp.out.xml,v 3.4 2006-07-06 17:43:57 edwards Exp $
+; $Id: wilslp.out.xml,v 3.5 2006-07-06 17:44:36 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -24,7 +24,7 @@
       <Name>WILSLP</Name>
       <Frequency>1</Frequency>
       <Param>
-        <kind>6</kind>
+        <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
       </Param>
@@ -48,7 +48,7 @@
       <chroma>3.8.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>06 Jul 06 13:43:42 EDT</run_date>
+    <run_date>06 Jul 06 13:44:17 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -129,6 +129,19 @@
         <update_no>0</update_no>
         <decay_dir>3</decay_dir>
         <t_dir>3</t_dir>
+        <wils_loop1>
+          <lengthr>2</lengthr>
+          <wloop1>
+            <elem>
+              <r>0</r>
+              <loop>0.994801 0.992365</loop>
+            </elem>
+            <elem>
+              <r>1</r>
+              <loop>0.992354 0.99012</loop>
+            </elem>
+          </wloop1>
+        </wils_loop1>
         <wils_loop2>
           <lengthr>2</lengthr>
           <lengtht>4</lengtht>
