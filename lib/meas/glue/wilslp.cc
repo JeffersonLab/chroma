@@ -1,4 +1,4 @@
-// $Id: wilslp.cc,v 3.2 2006-07-05 19:22:45 edwards Exp $
+// $Id: wilslp.cc,v 3.3 2006-07-08 04:34:55 edwards Exp $
 /*! \file
  *  \brief Calculate Wilson loops
  */
@@ -36,7 +36,6 @@ namespace Chroma
   {
     START_CODE();
 
-
     multi1d<int> nrow(Nd);
     nrow = Layout::lattSize();
     
@@ -56,7 +55,6 @@ namespace Chroma
 
     int lengthr;
     int lengtht;
-    int length;
     int lsizet;
     int lsizer;
     int nspace;
@@ -107,7 +105,7 @@ namespace Chroma
     nr = 0;
     space_dir[nr] = nu;
     for(mu = nu+1;mu  < ( Nd); ++mu )
-      if ( mu != j_decay )
+      if ( mu != j_decay && mu != t_dir )
       {
 	r = nrow[mu];
 	if( r == lsizer )
@@ -117,11 +115,23 @@ namespace Chroma
 	}
       }
 
+    QDPIO::cout << "nspace = " << nspace
+		<< "  space_dir = " 
+		<< space_dir[0] << " " 
+		<< space_dir[1] << " " 
+		<< space_dir[2] << " " 
+		<< space_dir[3] << endl;
+
     if( nr != (nspace-1) )
-      QDP_error_exit("Trouble with space dimensions for Wilson loops: ", nr, nspace, nu);
+    {
+      QDPIO::cerr << __func__ 
+		  << ": Trouble with space dimensions for Wilson loops: nr = " << nr
+		  << "  nspace = " << nspace
+		  << "  nu = " << nu << endl;
+      QDP_abort(1);
+    }
 
     lengthr = lsizer/2;
-    length = 2 * lengthr + lengthr/2; // this is a hack (see later)
 
     /* Compute "space-like" planar Wilson loops, if desired */
     if ( (kind & 1) != 0 )
@@ -316,6 +326,7 @@ namespace Chroma
     /* Compute "time-like" off-axis Wilson loops, if desired */
     if ( (kind & 4) != 0 )
     {
+      int length;
       if( nspace < 2 )
       {
 	for(mu = 0;mu  < ( Nd); ++mu )
@@ -1169,9 +1180,9 @@ namespace Chroma
 
       pop(xml);        // XML end tag for wloop3
       pop(xml);        // XML end tag for wils_wloop3
+      QDPIO::cout << "wils_loop3 data written to .xml file " << endl;  
     }      /* end of option "off-axis Wilson loops" */
 
-    QDPIO::cout << "wils_loop3 data written to .xml file " << endl;  
     QDPIO::cout << "All wils_loop data written to .xml file " << endl;  
 
     END_CODE();
