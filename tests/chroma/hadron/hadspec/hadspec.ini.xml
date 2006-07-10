@@ -152,7 +152,7 @@ Hadron spectrum input
          This version is a clone of the one below, however the xml output is
          written within the same chroma output file
       </annotation>
-      <Name>HADSPEC</Name>
+      <Name>HADRON_SPECTRUM</Name>
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
@@ -183,7 +183,7 @@ regression test spectrum output is kept within the chroma xml output
          This version is a clone of the one above; however, the xml output is
          written to a separate output file
       </annotation>
-      <Name>HADSPEC</Name>
+      <Name>HADRON_SPECTRUM</Name>
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>

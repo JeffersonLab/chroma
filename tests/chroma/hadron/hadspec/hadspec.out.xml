@@ -155,7 +155,7 @@ Hadron spectrum input
          This version is a clone of the one below, however the xml output is
          written within the same chroma output file
       </annotation>
-      <Name>HADSPEC</Name>
+      <Name>HADRON_SPECTRUM</Name>
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
@@ -186,7 +186,7 @@ regression test spectrum output is kept within the chroma xml output
          This version is a clone of the one above; however, the xml output is
          written to a separate output file
       </annotation>
-      <Name>HADSPEC</Name>
+      <Name>HADRON_SPECTRUM</Name>
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
@@ -232,7 +232,7 @@ regression test spectrum output is kept within the chroma xml output
       <chroma>3.9.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Jul 06 15:03:11 EDT</run_date>
+    <run_date>10 Jul 06 15:17:44 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -293,7 +293,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jul 06 15:03:11 EDT</run_date>
+          <run_date>10 Jul 06 15:17:45 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -387,7 +387,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jul 06 15:03:12 EDT</run_date>
+          <run_date>10 Jul 06 15:17:45 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -904,7 +904,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jul 06 15:03:13 EDT</run_date>
+          <run_date>10 Jul 06 15:17:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
