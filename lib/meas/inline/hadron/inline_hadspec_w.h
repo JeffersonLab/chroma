@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hadspec_w.h,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_hadspec_w.h,v 3.1 2006-07-10 19:43:36 edwards Exp $
 /*! \file
  * \brief Inline hadron spectrum calculations
  *
@@ -37,10 +37,6 @@ namespace Chroma
       bool MesonP;             // Meson spectroscopy
       bool CurrentP;           // Meson currents
       bool BaryonP;            // Baryons spectroscopy
-
-      bool HybMesP;            // Hybrid meson spectroscopy
-      int  numb_sm;            // number of smearing levels for E- and B-fields
-      Real fact_sm;            // Smearing factor for "smeared" E- and B-fields 
 
       bool time_rev;           // Use time reversal in baryon spectroscopy
 

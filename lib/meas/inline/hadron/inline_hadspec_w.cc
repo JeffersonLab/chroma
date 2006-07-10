@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.3 2006-07-10 19:43:36 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -8,17 +8,13 @@
 #include "meas/inline/hadron/inline_hadspec_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
-#include "meas/smear/ape_smear.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "io/param_io.h"
 #include "io/qprop_io.h"
 #include "meas/hadron/mesons_w.h"
 #include "meas/hadron/barhqlq_w.h"
-#include "meas/hadron/hybmeson_w.h"
 #include "meas/hadron/curcor2_w.h"
-#include "meas/glue/mesfield.h"
-#include "util/gauge/taproj.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
 
@@ -32,7 +28,7 @@ namespace Chroma
       return new InlineHadSpec(InlineHadSpecParams(xml_in, path));
     }
 
-    const std::string name = "HADSPEC";
+    const std::string name = "HADRON_SPECTRUM";
     const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
   };
 
@@ -56,27 +52,13 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    if (paramtop.count("HybMesP") != 0)
-    {
-      // Must read f_mu-nu smearing params
-      read(paramtop, "fact_sm", param.fact_sm);
-      read(paramtop, "numb_sm", param.numb_sm);
-    }
-    else
-    {
-      param.fact_sm = zero;
-      param.numb_sm = 0;
-    }
-
     read(paramtop, "MesonP", param.MesonP);
     read(paramtop, "CurrentP", param.CurrentP);
     read(paramtop, "BaryonP", param.BaryonP);
-    read(paramtop, "HybMesP", param.HybMesP);
     read(paramtop, "time_rev", param.time_rev);
 
     read(paramtop, "mom2_max", param.mom2_max);
     read(paramtop, "avg_equiv_mom", param.avg_equiv_mom);
-    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -91,21 +73,42 @@ namespace Chroma
     write(xml, "MesonP", param.MesonP);
     write(xml, "CurrentP", param.CurrentP);
     write(xml, "BaryonP", param.BaryonP);
-    write(xml, "HybMesP", param.HybMesP);
-
-    if (param.HybMesP)
-    {
-      // Must write f_mu-nu smearing params
-      write(xml, "fact_sm", param.fact_sm);
-      write(xml, "numb_sm", param.numb_sm);
-    }
 
     write(xml, "time_rev", param.time_rev);
 
     write(xml, "mom2_max", param.mom2_max);
     write(xml, "avg_equiv_mom", param.avg_equiv_mom);
 
-    write(xml, "nrow", param.nrow);
+    pop(xml);
+  }
+
+
+  namespace InlineHadSpecEnv 
+  { 
+    struct Prop_t
+    {
+      string first_id;
+      string second_id;
+    };
+  }
+
+
+  //! Propagator input
+  void read(XMLReader& xml, const string& path, InlineHadSpecEnv::Prop_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "first_id", input.first_id);
+    read(inputtop, "second_id", input.second_id);
+  }
+
+  //! Propagator output
+  void write(XMLWriter& xml, const string& path, const InlineHadSpecEnv::Prop_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "first_id", input.first_id);
+    write(xml, "second_id", input.second_id);
 
     pop(xml);
   }
@@ -117,7 +120,13 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
-    read(inputtop, "prop_ids", input.prop_ids);
+
+    InlineHadSpecEnv::Prop_t props;
+    read(inputtop, "prop_ids", props);
+
+    input.prop_ids.resize(2);
+    input.prop_ids[0] = props.first_id;
+    input.prop_ids[1] = props.second_id;
   }
 
   //! Propagator output
@@ -125,8 +134,12 @@ namespace Chroma
   {
     push(xml, path);
 
+    InlineHadSpecEnv::Prop_t props;
+    props.first_id  = input.prop_ids[0];
+    props.second_id = input.prop_ids[1];
+
     write(xml, "gauge_id", input.gauge_id);
-    write(xml, "prop_ids", input.prop_ids);
+    write(xml, "prop_ids", props);
 
     pop(xml);
   }
@@ -192,7 +205,7 @@ namespace Chroma
     {
       string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-      push(xml_out, "hadspec_w");
+      push(xml_out, "hadspec");
       write(xml_out, "update_no", update_no);
       write(xml_out, "xml_file", xml_file);
       pop(xml_out);
@@ -245,9 +258,9 @@ namespace Chroma
 
     QDPIO::cout << " HADSPEC: Spectroscopy for Wilson-like fermions" << endl;
     QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
-    QDPIO::cout << "     volume: " << params.param.nrow[0];
+    QDPIO::cout << "     volume: " << Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
-      QDPIO::cout << " x " << params.param.nrow[i];
+      QDPIO::cout << " x " << Layout::lattSize()[i];
     }
     QDPIO::cout << endl;
 
@@ -260,7 +273,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 11);
+    write(xml_out, "out_version", 14);
     pop(xml_out);
 
 
@@ -309,7 +322,7 @@ namespace Chroma
 	{
 	  read(prop_record_xml, "/SinkSmear", prop_header[loop]);
 
-	  read(prop_record_xml, "/SinkSmear/PropSource/Source/SinkType", sink_type[loop]);
+	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/SinkType", sink_type[loop]);
 	}
       }
       catch( std::bad_cast ) 
@@ -468,7 +481,7 @@ namespace Chroma
     }
 
     string snk_type;
-    if (sink_type[0] == "POINT_SOURCE")
+    if (sink_type[0] == "POINT_SINK")
       snk_type = "Point";
     else if (sink_type[0] == "SHELL_SINK")
       snk_type = "Shell";
@@ -476,7 +489,7 @@ namespace Chroma
       snk_type = "Wall";
     else
     {
-      QDPIO::cerr << "Unsupported sink type" << endl;
+      QDPIO::cerr << "Unsupported sink type = " << sink_type[0] << endl;
       QDP_abort(1);
     }
 
@@ -517,50 +530,6 @@ namespace Chroma
 	      t0, bc_spec, params.param.time_rev, 
 	      xml_array, source_sink_type + "_Wilson_Baryons");
     } // end if (BaryonP)
-
-
-    // Next do the hybrid mesons
-    if (params.param.HybMesP) 
-    {
-      /* Smear the gauge fields to construct smeared E- and B-fields */
-      int BlkMax = 100;
-      Real BlkAccu = fuzz;
-      BlkAccu *= 0.01;
-      multi1d<LatticeColorMatrix> f;
-      multi1d<LatticeColorMatrix> u_smr = u;
-      multi1d<LatticeColorMatrix> u_tmp(Nd);
-
-      for(int i=0; i < params.param.numb_sm; ++i)
-      {
-	for(int mu = 0; mu < Nd; ++mu)
-	{
-	  // Smear all directions, including time
-	  APE_Smear(u_smr, u_tmp[mu], mu, 0, 
-		    params.param.fact_sm, BlkAccu, BlkMax, 
-		    j_decay);
-	}
-
-	u_smr = u_tmp;
-      }
-
-      mesField(f, u_smr);  // compute F_munu fields
-
-      // Make traceless (is already anti-hermitian)
-      for(int i = 0; i < f.size(); ++i) {
-	taproj(f[i]);
-      }
-
-      if (sink_type[0] == "WALL_SINK")
-      {
-	QDPIO::cerr << "Wall-source hybrid mesons not supported" << endl;
-	QDP_abort(1);
-      }
-
-      multi1d<int> t_srce  = prop_header[0].source_header.getTSrce();
-      hybmeson(f, u_smr, quark_propagator[0], quark_propagator[1], phases, t_srce,
-	       xml_array, source_sink_type + "_Wilson_Hybrid_Mesons");
-    } // end if (HybMesP)
-
 
     pop(xml_array);  // array element
 
