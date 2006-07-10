@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: wilslp.out.xml,v 3.5 2006-07-06 17:44:36 edwards Exp $
+; $Id: wilslp.out.xml,v 3.6 2006-07-10 18:27:42 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -24,9 +24,13 @@
       <Name>WILSLP</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>2</version>
         <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
+        <GaugeBC>
+          <Name>PERIODIC_GAUGEBC</Name>
+        </GaugeBC>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -45,10 +49,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.8.0</chroma>
+      <chroma>3.9.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>06 Jul 06 13:44:17 EDT</run_date>
+    <run_date>10 Jul 06 14:27:04 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
