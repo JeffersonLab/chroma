@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: wilslp.out.xml,v 3.6 2006-07-10 18:27:42 edwards Exp $
+; $Id: wilslp.out.xml,v 3.7 2006-07-10 18:31:55 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -37,6 +37,27 @@
       </NamedObject>
     </elem>
 
+    <elem>
+      <!-- Wilson loops -->
+      <Name>WILSLP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <kind>7</kind>
+        <j_decay>3</j_decay>
+        <t_dir>3</t_dir>
+        <GaugeBC>
+          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+          <SchrPhiMult>2.0</SchrPhiMult>
+          <loop_extent>1</loop_extent>
+          <decay_dir>3</decay_dir>
+        </GaugeBC>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
@@ -52,7 +73,7 @@
       <chroma>3.9.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Jul 06 14:27:04 EDT</run_date>
+    <run_date>10 Jul 06 14:30:34 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -184,6 +205,67 @@
             <elem>
               <r>4</r>
               <loop>0.981976 0.979224 0.976711 0.97406</loop>
+            </elem>
+          </wloop3>
+        </wils_loop3>
+      </WilsonLoop>
+    </elem>
+    <elem>
+      <WilsonLoop>
+        <update_no>0</update_no>
+        <decay_dir>3</decay_dir>
+        <t_dir>3</t_dir>
+        <wils_loop1>
+          <lengthr>2</lengthr>
+          <wloop1>
+            <elem>
+              <r>0</r>
+              <loop>0.746109 0.744301</loop>
+            </elem>
+            <elem>
+              <r>1</r>
+              <loop>0.744281 0.742658</loop>
+            </elem>
+          </wloop1>
+        </wils_loop1>
+        <wils_loop2>
+          <lengthr>2</lengthr>
+          <lengtht>4</lengtht>
+          <wloop2>
+            <elem>
+              <r>0</r>
+              <loop>0.62173 0.49607 0.371111 0.246844</loop>
+            </elem>
+            <elem>
+              <r>1</r>
+              <loop>0.620306 0.494852 0.370186 0.246161</loop>
+            </elem>
+          </wloop2>
+        </wils_loop2>
+        <wils_loop3>
+          <lengthr>2</lengthr>
+          <lengtht>4</lengtht>
+          <length>5</length>
+          <wloop3>
+            <elem>
+              <r>0</r>
+              <loop>0.620195 0.494811 0.370188 0.246196</loop>
+            </elem>
+            <elem>
+              <r>1</r>
+              <loop>0.617192 0.492374 0.368276 0.244893</loop>
+            </elem>
+            <elem>
+              <r>2</r>
+              <loop>0.618656 0.493509 0.369159 0.245506</loop>
+            </elem>
+            <elem>
+              <r>3</r>
+              <loop>0.61855 0.493482 0.369212 0.245644</loop>
+            </elem>
+            <elem>
+              <r>4</r>
+              <loop>0.613804 0.489495 0.366298 0.243685</loop>
             </elem>
           </wloop3>
         </wils_loop3>

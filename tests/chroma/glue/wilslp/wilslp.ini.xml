@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: wilslp.ini.xml,v 3.4 2006-07-10 18:27:42 edwards Exp $
+; $Id: wilslp.ini.xml,v 3.5 2006-07-10 18:31:55 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -27,6 +27,27 @@
         <t_dir>3</t_dir>
         <GaugeBC>
           <Name>PERIODIC_GAUGEBC</Name>
+        </GaugeBC>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- Wilson loops -->
+      <Name>WILSLP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <kind>7</kind>
+        <j_decay>3</j_decay>
+        <t_dir>3</t_dir>
+        <GaugeBC>
+          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+          <SchrPhiMult>2.0</SchrPhiMult>
+          <loop_extent>1</loop_extent>
+          <decay_dir>3</decay_dir>
         </GaugeBC>
       </Param>
       <NamedObject>
