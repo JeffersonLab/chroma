@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 3.2 2006-06-10 16:30:18 edwards Exp $
+// $Id: inline_wilslp.h,v 3.3 2006-07-10 19:04:47 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -9,6 +9,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -30,9 +31,10 @@ namespace Chroma
 
     struct Param_t
     {
-      int kind;
-      int j_decay;
-      int t_dir;
+      int           kind;
+      int           j_decay;
+      int           t_dir;
+      GroupXML_t    gaugebc;
     } param;
 
     struct NamedObject_t
