@@ -264,7 +264,7 @@ Meson Spectrum input
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
-                <operation>PLUS</operation>
+                <factor>1.0</factor>
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -281,7 +281,7 @@ Meson Spectrum input
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_deriv_sink_2</second_id>
-                <operation>PLUS</operation>
+                <factor>1.0</factor>
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -306,7 +306,7 @@ Meson Spectrum input
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
-                <operation>MINUS</operation> 
+                <factor>-1.0</factor> 
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -356,7 +356,7 @@ regression test spectrum output is kept within the chroma xml output
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
-                <operation>PLUS</operation>
+                <factor>1.0</factor>
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -373,7 +373,7 @@ regression test spectrum output is kept within the chroma xml output
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_deriv_sink_2</second_id>
-                <operation>PLUS</operation>
+                <factor>1.0</factor>
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -398,7 +398,7 @@ regression test spectrum output is kept within the chroma xml output
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
-                <operation>MINUS</operation> 
+                <factor>-1.0</factor> 
 
                 <SourceSpinInsertion>
                   <version>1</version>

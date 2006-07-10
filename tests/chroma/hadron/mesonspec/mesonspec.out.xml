@@ -267,7 +267,7 @@ Meson Spectrum input
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
-                <operation>PLUS</operation>
+                <factor>1.0</factor>
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -284,7 +284,7 @@ Meson Spectrum input
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_deriv_sink_2</second_id>
-                <operation>PLUS</operation>
+                <factor>1.0</factor>
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -309,7 +309,7 @@ Meson Spectrum input
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
-                <operation>MINUS</operation> 
+                <factor>-1.0</factor> 
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -359,7 +359,7 @@ regression test spectrum output is kept within the chroma xml output
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
-                <operation>PLUS</operation>
+                <factor>1.0</factor>
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -376,7 +376,7 @@ regression test spectrum output is kept within the chroma xml output
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_deriv_sink_2</second_id>
-                <operation>PLUS</operation>
+                <factor>1.0</factor>
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -401,7 +401,7 @@ regression test spectrum output is kept within the chroma xml output
               <elem>
                 <first_id>sh_pt_sink_1</first_id>
                 <second_id>deriv_pt_sink_2</second_id>
-                <operation>MINUS</operation> 
+                <factor>-1.0</factor> 
 
                 <SourceSpinInsertion>
                   <version>1</version>
@@ -444,10 +444,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.8.0</chroma>
+      <chroma>3.9.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>03 Jul 06 22:52:32 EDT</run_date>
+    <run_date>10 Jul 06 15:16:51 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -505,10 +505,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
+            <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 22:52:32 EDT</run_date>
+          <run_date>10 Jul 06 15:16:52 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -599,10 +599,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
+            <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 22:52:35 EDT</run_date>
+          <run_date>10 Jul 06 15:16:52 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -966,10 +966,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
+            <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 22:52:36 EDT</run_date>
+          <run_date>10 Jul 06 15:16:54 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1062,10 +1062,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
+            <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 22:52:36 EDT</run_date>
+          <run_date>10 Jul 06 15:16:54 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1565,10 +1565,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
+            <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>03 Jul 06 22:52:37 EDT</run_date>
+          <run_date>10 Jul 06 15:16:55 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1605,7 +1605,7 @@ regression test spectrum output is kept within the chroma xml output
       <gamma>3</gamma>
     </SinkSpinInsertion>
 
-                    <operation>PLUS</operation>
+                    <factor>1</factor>
                   </elem>
                   <elem>
                     <first_id>sh_pt_sink_1</first_id>
@@ -1620,7 +1620,7 @@ regression test spectrum output is kept within the chroma xml output
       <gamma>5</gamma>
     </SinkSpinInsertion>
 
-                    <operation>PLUS</operation>
+                    <factor>1</factor>
                   </elem>
                 </correlator_terms>
               </elem>
@@ -1643,7 +1643,7 @@ regression test spectrum output is kept within the chroma xml output
       <gamma>7</gamma>
     </SinkSpinInsertion>
 
-                    <operation>MINUS</operation>
+                    <factor>-1</factor>
                   </elem>
                 </correlator_terms>
               </elem>
@@ -1659,7 +1659,7 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Output_version>
-          <out_version>2</out_version>
+          <out_version>3</out_version>
         </Output_version>
         <Observables>
           <w_plaq>0.994804</w_plaq>
