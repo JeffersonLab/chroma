@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.7 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.8 2006-07-10 19:44:13 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -11,7 +11,6 @@
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
-#include "io/enum_io/enum_plusminus_io.h"
 #include "io/param_io.h"
 #include "io/qprop_io.h"
 #include "meas/inline/make_xml_file.h"
@@ -96,7 +95,7 @@ namespace Chroma
 
     read(inputtop, "first_id", input.first_id);
     read(inputtop, "second_id", input.second_id);
-    read(inputtop, "operation", input.operation);
+    read(inputtop, "factor", input.factor);
 
     input.source_spin_insertion = readXMLGroup(inputtop, "SourceSpinInsertion", "SpinInsertionType");
     input.sink_spin_insertion   = readXMLGroup(inputtop, "SinkSpinInsertion", "SpinInsertionType");
@@ -112,7 +111,7 @@ namespace Chroma
     write(xml, "second_id", input.second_id);
     xml << input.source_spin_insertion.xml;
     xml << input.sink_spin_insertion.xml;
-    write(xml, "operation", input.operation);
+    write(xml, "factor", input.factor);
 
     pop(xml);
   }
@@ -437,7 +436,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 2);
+    write(xml_out, "out_version", 3);
     pop(xml_out);
 
 
@@ -618,21 +617,7 @@ namespace Chroma
 
 	  LatticeComplex tmp = trace(prop_2 * prop_1);
 
-	  switch(named_obj.correlator_terms[loop].operation)
-	  {
-	  case PLUS:
-	    corr_fn += tmp;
-	    break;
-
-	  case MINUS:
-	    corr_fn -= tmp;
-	    break;
-
-	  default:
-	    QDPIO::cerr << InlineMesonSpecEnv::name 
-			<< ": illegal value of operation" << endl;
-	    QDP_abort(1);
-	  }
+	  corr_fn += named_obj.correlator_terms[loop].factor * tmp;
 	}
 
 	multi2d<DComplex> hsum;

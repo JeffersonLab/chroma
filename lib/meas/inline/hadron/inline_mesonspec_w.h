@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mesonspec_w.h,v 3.2 2006-05-26 04:59:44 edwards Exp $
+// $Id: inline_mesonspec_w.h,v 3.3 2006-07-10 19:44:13 edwards Exp $
 /*! \file
  * \brief Inline meson spectrum calculations
  *
@@ -57,7 +57,7 @@ namespace Chroma
 	  GroupXML_t    source_spin_insertion;   /*!< xml string holding source spin insertion params */
 	  GroupXML_t    sink_spin_insertion;     /*!< xml string holding sink spin insertion params */
 
-	  PlusMinus     operation;
+	  Real          factor;
 	};
 
 	multi1d<CorrelatorTerms_t> correlator_terms;
