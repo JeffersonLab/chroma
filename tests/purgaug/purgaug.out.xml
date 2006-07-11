@@ -38,7 +38,7 @@
 
     <elem>
       <Name>WILSLP</Name>
-      <Frequency>10</Frequency>
+      <Frequency>1</Frequency>
       <Param>
         <version>2</version>
         <kind>7</kind>
@@ -83,7 +83,7 @@
       <chroma>3.9.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jul 06 00:17:56 EDT</run_date>
+    <run_date>11 Jul 06 00:21:26 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -158,6 +158,67 @@
                   </elem>
                 </poly_loop>
               </PolyakovLoop>
+            </elem>
+            <elem>
+              <WilsonLoop>
+                <update_no>2</update_no>
+                <decay_dir>3</decay_dir>
+                <t_dir>3</t_dir>
+                <wils_loop1>
+                  <lengthr>2</lengthr>
+                  <wloop1>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.785868 0.675581</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.672375 0.563507</loop>
+                    </elem>
+                  </wloop1>
+                </wils_loop1>
+                <wils_loop2>
+                  <lengthr>2</lengthr>
+                  <lengtht>4</lengtht>
+                  <wloop2>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.895985 0.841684 0.801118 0.766299</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.811999 0.735845 0.688409 0.65066</loop>
+                    </elem>
+                  </wloop2>
+                </wils_loop2>
+                <wils_loop3>
+                  <lengthr>2</lengthr>
+                  <lengtht>4</lengtht>
+                  <length>5</length>
+                  <wloop3>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.789426 0.735817 0.697405 0.663879</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.634873 0.571357 0.533428 0.503301</loop>
+                    </elem>
+                    <elem>
+                      <r>2</r>
+                      <loop>0.69727 0.637512 0.598113 0.565903</loop>
+                    </elem>
+                    <elem>
+                      <r>3</r>
+                      <loop>0.688616 0.642997 0.610688 0.581419</loop>
+                    </elem>
+                    <elem>
+                      <r>4</r>
+                      <loop>0.483951 0.439621 0.413948 0.393587</loop>
+                    </elem>
+                  </wloop3>
+                </wils_loop3>
+              </WilsonLoop>
             </elem>
           </InlineObservables>
         </Update>

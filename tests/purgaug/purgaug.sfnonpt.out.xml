@@ -38,14 +38,17 @@
 
     <elem>
       <Name>WILSLP</Name>
-      <Frequency>10</Frequency>
+      <Frequency>1</Frequency>
       <Param>
         <version>2</version>
         <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
         <GaugeBC>
-          <Name>PERIODIC_GAUGEBC</Name>
+          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+          <SchrPhiMult>2.0</SchrPhiMult>
+          <loop_extent>1</loop_extent>
+          <decay_dir>3</decay_dir>
         </GaugeBC>
       </Param>
       <NamedObject>
@@ -86,7 +89,7 @@
       <chroma>3.9.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jul 06 00:18:04 EDT</run_date>
+    <run_date>11 Jul 06 00:20:11 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -161,6 +164,67 @@
                   </elem>
                 </poly_loop>
               </PolyakovLoop>
+            </elem>
+            <elem>
+              <WilsonLoop>
+                <update_no>2</update_no>
+                <decay_dir>3</decay_dir>
+                <t_dir>3</t_dir>
+                <wils_loop1>
+                  <lengthr>2</lengthr>
+                  <wloop1>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.466131 0.337887</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.332372 0.223961</loop>
+                    </elem>
+                  </wloop1>
+                </wils_loop1>
+                <wils_loop2>
+                  <lengthr>2</lengthr>
+                  <lengtht>4</lengtht>
+                  <wloop2>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.509385 0.350886 0.232567 0.1351</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.419645 0.256602 0.155019 0.0811015</loop>
+                    </elem>
+                  </wloop2>
+                </wils_loop2>
+                <wils_loop3>
+                  <lengthr>2</lengthr>
+                  <lengtht>4</lengtht>
+                  <length>5</length>
+                  <wloop3>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.393966 0.261816 0.166799 0.0937907</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.253041 0.141282 0.0776307 0.0374446</loop>
+                    </elem>
+                    <elem>
+                      <r>2</r>
+                      <loop>0.303549 0.185517 0.109619 0.0563841</loop>
+                    </elem>
+                    <elem>
+                      <r>3</r>
+                      <loop>0.296097 0.194614 0.120506 0.0657199</loop>
+                    </elem>
+                    <elem>
+                      <r>4</r>
+                      <loop>0.142314 0.0768032 0.0404055 0.0197265</loop>
+                    </elem>
+                  </wloop3>
+                </wils_loop3>
+              </WilsonLoop>
             </elem>
           </InlineObservables>
         </Update>

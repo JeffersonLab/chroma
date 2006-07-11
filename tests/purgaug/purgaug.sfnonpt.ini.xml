@@ -35,14 +35,17 @@
 
     <elem>
       <Name>WILSLP</Name>
-      <Frequency>10</Frequency>
+      <Frequency>1</Frequency>
       <Param>
         <version>2</version>
         <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
         <GaugeBC>
-          <Name>PERIODIC_GAUGEBC</Name>
+          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+          <SchrPhiMult>2.0</SchrPhiMult>
+          <loop_extent>1</loop_extent>
+          <decay_dir>3</decay_dir>
         </GaugeBC>
       </Param>
       <NamedObject>

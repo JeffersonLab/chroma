@@ -35,7 +35,7 @@
 
     <elem>
       <Name>WILSLP</Name>
-      <Frequency>10</Frequency>
+      <Frequency>1</Frequency>
       <Param>
         <version>2</version>
         <kind>7</kind>
