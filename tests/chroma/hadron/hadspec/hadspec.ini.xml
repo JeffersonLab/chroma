@@ -165,10 +165,16 @@ Hadron spectrum input
        </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <first_id>sh_pt_sink_1</first_id>
-          <second_id>sh_pt_sink_1</second_id>
-        </prop_ids>
+        <sink_pairs>
+          <elem>
+            <first_id>sh_pt_sink_1</first_id>
+            <second_id>sh_pt_sink_1</second_id>
+          </elem>
+          <elem>
+            <first_id>sh_sh_sink_1</first_id>
+            <second_id>sh_sh_sink_1</second_id>
+          </elem>
+        </sink_pairs>
       </NamedObject>
       <!--  
 The USER should write to a separate file. However, for the
@@ -196,12 +202,18 @@ regression test spectrum output is kept within the chroma xml output
        </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <first_id>sh_pt_sink_1</first_id>
-          <second_id>sh_pt_sink_1</second_id>
-        </prop_ids>
+        <sink_pairs>
+          <elem>
+            <first_id>sh_pt_sink_1</first_id>
+            <second_id>sh_pt_sink_1</second_id>
+          </elem>
+          <elem>
+            <first_id>sh_sh_sink_1</first_id>
+            <second_id>sh_sh_sink_1</second_id>
+          </elem>
+        </sink_pairs>
       </NamedObject>
-         <xml_file>hadspec.dat.xml</xml_file>
+      <xml_file>hadspec.dat.xml</xml_file>
     </elem>
 
   </InlineMeasurements>
