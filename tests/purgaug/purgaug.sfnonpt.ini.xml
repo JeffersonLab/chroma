@@ -37,9 +37,13 @@
       <Name>WILSLP</Name>
       <Frequency>10</Frequency>
       <Param>
-        <kind>3</kind>
+        <version>2</version>
+        <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
+        <GaugeBC>
+          <Name>PERIODIC_GAUGEBC</Name>
+        </GaugeBC>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>

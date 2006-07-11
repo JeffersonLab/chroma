@@ -40,9 +40,13 @@
       <Name>WILSLP</Name>
       <Frequency>10</Frequency>
       <Param>
-        <kind>3</kind>
+        <version>2</version>
+        <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
+        <GaugeBC>
+          <Name>PERIODIC_GAUGEBC</Name>
+        </GaugeBC>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -79,10 +83,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
+      <chroma>3.9.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>11 Jun 06 00:32:18 EDT</run_date>
+    <run_date>11 Jul 06 00:18:04 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -141,7 +145,7 @@
                 <poly_loop>
                   <elem>
                     <re>0.291655</re>
-                    <im>0.0908566</im>
+                    <im>0.0908565</im>
                   </elem>
                   <elem>
                     <re>0.325097</re>
@@ -153,7 +157,7 @@
                   </elem>
                   <elem>
                     <re>-0.0388252</re>
-                    <im>-0.0225306</im>
+                    <im>-0.0225305</im>
                   </elem>
                 </poly_loop>
               </PolyakovLoop>
