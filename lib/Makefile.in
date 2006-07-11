@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.40 2006-07-06 17:54:28 edwards Exp $
+# $Id: Makefile.in,v 3.41 2006-07-11 03:51:03 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -380,8 +380,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/formfac_w.cc meas/hadron/hybmeson_w.cc \
 	meas/hadron/loops_w.cc meas/hadron/derivmesonseqsrc_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/photon_seqsrc_w.cc \
-	meas/hadron/mesons_w.cc meas/hadron/qqq_w.cc \
-	meas/hadron/qqbar_w.cc \
+	meas/hadron/mesons_w.cc meas/hadron/mesons2_w.cc \
+	meas/hadron/qqq_w.cc meas/hadron/qqbar_w.cc \
 	meas/hadron/baryon_operator_aggregate_w.cc \
 	meas/hadron/seqsource_aggregate_w.cc \
 	meas/hadron/seqpiontest_w.cc \
@@ -727,8 +727,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	DjDk_w.$(OBJEXT) D_j_w.$(OBJEXT) formfac_w.$(OBJEXT) \
 	hybmeson_w.$(OBJEXT) loops_w.$(OBJEXT) \
 	derivmesonseqsrc_w.$(OBJEXT) mesonseqsrc_w.$(OBJEXT) \
-	photon_seqsrc_w.$(OBJEXT) mesons_w.$(OBJEXT) qqq_w.$(OBJEXT) \
-	qqbar_w.$(OBJEXT) baryon_operator_aggregate_w.$(OBJEXT) \
+	photon_seqsrc_w.$(OBJEXT) mesons_w.$(OBJEXT) \
+	mesons2_w.$(OBJEXT) qqq_w.$(OBJEXT) qqbar_w.$(OBJEXT) \
+	baryon_operator_aggregate_w.$(OBJEXT) \
 	seqsource_aggregate_w.$(OBJEXT) seqpiontest_w.$(OBJEXT) \
 	simple_spin_insertion_w.$(OBJEXT) walldeltaff_w.$(OBJEXT) \
 	walldeltapff_w.$(OBJEXT) wallff_w.$(OBJEXT) \
@@ -1178,7 +1179,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
 	meas/hadron/mesonseqsrc_w.h meas/hadron/derivmesonseqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h meas/hadron/mesons_w.h \
-	meas/hadron/seqpiontest_w.h \
+	meas/hadron/mesons2_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/baryon_operator_aggregate_w.h \
 	meas/hadron/baryon_operator_factory_w.h \
 	meas/hadron/seqsource_aggregate_w.h \
@@ -1828,7 +1829,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
 	meas/hadron/mesonseqsrc_w.h meas/hadron/derivmesonseqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h meas/hadron/mesons_w.h \
-	meas/hadron/seqpiontest_w.h \
+	meas/hadron/mesons2_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/baryon_operator_aggregate_w.h \
 	meas/hadron/baryon_operator_factory_w.h \
 	meas/hadron/seqsource_aggregate_w.h \
@@ -2304,8 +2305,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/formfac_w.cc meas/hadron/hybmeson_w.cc \
 	meas/hadron/loops_w.cc meas/hadron/derivmesonseqsrc_w.cc \
 	meas/hadron/mesonseqsrc_w.cc meas/hadron/photon_seqsrc_w.cc \
-	meas/hadron/mesons_w.cc meas/hadron/qqq_w.cc \
-	meas/hadron/qqbar_w.cc \
+	meas/hadron/mesons_w.cc meas/hadron/mesons2_w.cc \
+	meas/hadron/qqq_w.cc meas/hadron/qqbar_w.cc \
 	meas/hadron/baryon_operator_aggregate_w.cc \
 	meas/hadron/seqsource_aggregate_w.cc \
 	meas/hadron/seqpiontest_w.cc \
@@ -2750,6 +2751,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesQl_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mescomp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesfield.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesonseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesphas_follana_s.Po@am__quote@
@@ -7692,6 +7694,20 @@ mesons_w.obj: meas/hadron/mesons_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/mesons_w.cc' object='mesons_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mesons_w.obj `if test -f 'meas/hadron/mesons_w.cc'; then $(CYGPATH_W) 'meas/hadron/mesons_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/mesons_w.cc'; fi`
+
+mesons2_w.o: meas/hadron/mesons2_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesons2_w.o -MD -MP -MF "$(DEPDIR)/mesons2_w.Tpo" -c -o mesons2_w.o `test -f 'meas/hadron/mesons2_w.cc' || echo '$(srcdir)/'`meas/hadron/mesons2_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mesons2_w.Tpo" "$(DEPDIR)/mesons2_w.Po"; else rm -f "$(DEPDIR)/mesons2_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/mesons2_w.cc' object='mesons2_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mesons2_w.o `test -f 'meas/hadron/mesons2_w.cc' || echo '$(srcdir)/'`meas/hadron/mesons2_w.cc
+
+mesons2_w.obj: meas/hadron/mesons2_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesons2_w.obj -MD -MP -MF "$(DEPDIR)/mesons2_w.Tpo" -c -o mesons2_w.obj `if test -f 'meas/hadron/mesons2_w.cc'; then $(CYGPATH_W) 'meas/hadron/mesons2_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/mesons2_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mesons2_w.Tpo" "$(DEPDIR)/mesons2_w.Po"; else rm -f "$(DEPDIR)/mesons2_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/mesons2_w.cc' object='mesons2_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mesons2_w.obj `if test -f 'meas/hadron/mesons2_w.cc'; then $(CYGPATH_W) 'meas/hadron/mesons2_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/mesons2_w.cc'; fi`
 
 qqq_w.o: meas/hadron/qqq_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qqq_w.o -MD -MP -MF "$(DEPDIR)/qqq_w.Tpo" -c -o qqq_w.o `test -f 'meas/hadron/qqq_w.cc' || echo '$(srcdir)/'`meas/hadron/qqq_w.cc; \
