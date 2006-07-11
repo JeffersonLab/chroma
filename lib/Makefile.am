@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.16 2006-07-03 15:17:59 edwards Exp $
+# $Id: Makefile.am,v 3.17 2006-07-11 03:50:46 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -410,7 +410,9 @@ nobase_include_HEADERS += \
 	meas/hadron/mesonseqsrc_w.h \
 	meas/hadron/derivmesonseqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h \
-	meas/hadron/mesons_w.h meas/hadron/seqpiontest_w.h \
+	meas/hadron/mesons_w.h \
+	meas/hadron/mesons2_w.h \
+        meas/hadron/seqpiontest_w.h \
         meas/hadron/baryon_operator_aggregate_w.h \
         meas/hadron/baryon_operator_factory_w.h \
         meas/hadron/seqsource_aggregate_w.h \
@@ -944,6 +946,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/mesonseqsrc_w.cc \
 	meas/hadron/photon_seqsrc_w.cc \
         meas/hadron/mesons_w.cc \
+        meas/hadron/mesons2_w.cc \
 	meas/hadron/qqq_w.cc meas/hadron/qqbar_w.cc \
         meas/hadron/baryon_operator_aggregate_w.cc \
         meas/hadron/seqsource_aggregate_w.cc \
