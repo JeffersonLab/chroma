@@ -1,4 +1,8 @@
 07/11/2006 -- Robert Edwards
+	Version 3.9.0. Changed interface to the inline WILSLP and MESONSPEC.
+        Turned on  HADRON_SPECTRUM (hadspec). This is a replacement for SPECTRUM.
+
+07/11/2006 -- Robert Edwards
 	Version 3.8.2. More small fixes in wilslp (Wilson loops).
 
 07/06/2006 -- Robert Edwards
