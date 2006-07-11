@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hadspec_w.h,v 3.1 2006-07-10 19:43:36 edwards Exp $
+// $Id: inline_hadspec_w.h,v 3.2 2006-07-11 03:51:51 edwards Exp $
 /*! \file
  * \brief Inline hadron spectrum calculations
  *
@@ -48,7 +48,14 @@ namespace Chroma
     struct NamedObject_t
     {
       std::string  gauge_id;           /*!< Input gauge field */
-      multi1d<std::string> prop_ids;
+
+      struct Props_t
+      {
+	std::string  first_id;
+	std::string  second_id;
+      };
+
+      multi1d<Props_t> sink_pairs;
     } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern

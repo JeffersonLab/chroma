@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.3 2006-07-10 19:43:36 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.4 2006-07-11 03:51:51 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -12,7 +12,7 @@
 #include "util/info/proginfo.h"
 #include "io/param_io.h"
 #include "io/qprop_io.h"
-#include "meas/hadron/mesons_w.h"
+#include "meas/hadron/mesons2_w.h"
 #include "meas/hadron/barhqlq_w.h"
 #include "meas/hadron/curcor2_w.h"
 #include "meas/inline/make_xml_file.h"
@@ -67,7 +67,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 11;
+    int version = 1;
     write(xml, "version", version);
 
     write(xml, "MesonP", param.MesonP);
@@ -83,18 +83,8 @@ namespace Chroma
   }
 
 
-  namespace InlineHadSpecEnv 
-  { 
-    struct Prop_t
-    {
-      string first_id;
-      string second_id;
-    };
-  }
-
-
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineHadSpecEnv::Prop_t& input)
+  void read(XMLReader& xml, const string& path, InlineHadSpecParams::NamedObject_t::Props_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -103,7 +93,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineHadSpecEnv::Prop_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineHadSpecParams::NamedObject_t::Props_t& input)
   {
     push(xml, path);
 
@@ -120,13 +110,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
-
-    InlineHadSpecEnv::Prop_t props;
-    read(inputtop, "prop_ids", props);
-
-    input.prop_ids.resize(2);
-    input.prop_ids[0] = props.first_id;
-    input.prop_ids[1] = props.second_id;
+    read(inputtop, "sink_pairs", input.sink_pairs);
   }
 
   //! Propagator output
@@ -134,12 +118,8 @@ namespace Chroma
   {
     push(xml, path);
 
-    InlineHadSpecEnv::Prop_t props;
-    props.first_id  = input.prop_ids[0];
-    props.second_id = input.prop_ids[1];
-
     write(xml, "gauge_id", input.gauge_id);
-    write(xml, "prop_ids", props);
+    write(xml, "sink_pairs", input.sink_pairs);
 
     pop(xml);
   }
@@ -193,6 +173,141 @@ namespace Chroma
 
     pop(xml_out);
   }
+
+
+
+  // Anonymous namespace
+  namespace 
+  {
+    //! Useful structure holding sink props
+    struct SinkPropContainer_t
+    {
+      ForwardProp_t prop_header;
+      string quark_propagator_id;
+      Real Mass;
+    
+      multi1d<int> bc; 
+    
+      string source_type;
+      string source_disp_type;
+      string sink_type;
+      string sink_disp_type;
+    };
+
+
+    //! Useful structure holding sink props
+    struct AllSinkProps_t
+    {
+      SinkPropContainer_t  sink_prop_1;
+      SinkPropContainer_t  sink_prop_2;
+    };
+
+
+    //! Read a sink prop
+    void readSinkProp(SinkPropContainer_t& s, const std::string& id)
+    {
+      try
+      {
+	// Try a cast to see if it succeeds
+	const LatticePropagator& foo = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(id);
+
+	// Snarf the data into a copy
+	s.quark_propagator_id = id;
+	
+	// Snarf the prop info. This is will throw if the prop_id is not there
+	XMLReader prop_file_xml, prop_record_xml;
+	TheNamedObjMap::Instance().get(id).getFileXML(prop_file_xml);
+	TheNamedObjMap::Instance().get(id).getRecordXML(prop_record_xml);
+   
+	// Try to invert this record XML into a ChromaProp struct
+	// Also pull out the id of this source
+	{
+	  read(prop_record_xml, "/SinkSmear", s.prop_header);
+	  
+	  read(prop_record_xml, "/SinkSmear/PropSource/Source/SourceType", s.source_type);
+	  read(prop_record_xml, "/SinkSmear/PropSource/Source/Displacement/DisplacementType", 
+	       s.source_disp_type);
+
+	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/SinkType", s.sink_type);
+	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/Displacement/DisplacementType", 
+	       s.sink_disp_type);
+	}
+      }
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << InlineHadSpecEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineHadSpecEnv::name << ": error message: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
+
+
+      // Derived from input prop
+      // Hunt around to find the mass
+      // NOTE: this may be problematic in the future if actions are used with no
+      // clear def. of a Mass
+      std::istringstream  xml_s(s.prop_header.prop_header.fermact.xml);
+      XMLReader  fermacttop(xml_s);
+      
+      QDPIO::cout << "Try action and mass" << endl;
+      try
+      {
+	XMLReader top(fermacttop, s.prop_header.prop_header.fermact.path);
+
+	// Yuk - need to hop some hoops. This should be isolated.
+	if (top.count("Mass") != 0) 
+	{
+	  read(top, "Mass", s.Mass);
+	}
+	else if (top.count("Kappa") != 0)
+	{
+	  Real Kappa;
+	  read(top, "Kappa", Kappa);
+	  s.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+	}
+	else if (top.count("m_q") != 0) 
+	{
+	  read(top, "m_q", s.Mass);
+	}
+	else
+	{
+	  QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
+	  throw std::string("Neither Mass nor Kappa found");
+	}
+	s.bc = getFermActBoundary(s.prop_header.prop_header.fermact);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << "Error reading fermact or mass: " << e << endl;
+	QDP_abort(1);
+      }
+    
+      QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << endl;
+      QDPIO::cout << "Mass = " << s.Mass << endl;
+    }
+
+
+    //! Read all sinks
+    void readAllSinks(AllSinkProps_t& s, 
+		      InlineHadSpecParams::NamedObject_t::Props_t sink_pair)
+    {
+      QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.first_id << endl;
+      readSinkProp(s.sink_prop_1, sink_pair.first_id);
+      QDPIO::cout << "Forward propagator successfully parsed" << endl;
+
+      QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.second_id << endl;
+      readSinkProp(s.sink_prop_2, sink_pair.second_id);
+      QDPIO::cout << "Forward propagator successfully parsed" << endl;
+    }
+
+  } // namespace anonymous
+
 
 
   // Function call
@@ -280,262 +395,178 @@ namespace Chroma
     // First calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
 
-    // First propagator is the light quark second is the strange quark
-    const int Nprops = 2;
-    if (params.named_obj.prop_ids.size() != Nprops)
-    {
-      QDPIO::cerr << "HADSPEC needs two propagators. Found " ;
-      QDPIO::cerr <<params.named_obj.prop_ids.size()<< endl;
-      QDP_abort(2);
-    }
-
-    multi1d<ForwardProp_t> prop_header(params.named_obj.prop_ids.size());
-    multi1d<LatticePropagator> quark_propagator(params.named_obj.prop_ids.size());
-    multi1d<Real> Mass(params.named_obj.prop_ids.size());
-    
-    multi2d<int> bc(params.named_obj.prop_ids.size(), 4); 
-    
     // Keep an array of all the xml output buffers
-    // This spectrum code does only one measurement using several propagators
-    XMLArrayWriter xml_array(xml_out, 1);
-    push(xml_array, "Wilson_hadron_measurements");
+    push(xml_out, "Wilson_hadron_measurements");
 
-    // Now loop over the various fermion masses
-    multi1d<string> sink_type(Nprops);
-
-    for(int loop=0; loop < Nprops; ++loop)
+    // Now loop over the various fermion pairs
+    for(int lpair=0; lpair < params.named_obj.sink_pairs.size(); ++lpair)
     {
-      QDPIO::cout << "Attempt to parse forward propagator = " << params.named_obj.prop_ids[loop] << endl;
-      try
-      {
-	// Snarf the data into a copy
-	quark_propagator[loop] =
-	  TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[loop]);
-	
-	// Snarf the prop info. This is will throw if the prop_id is not there
-	XMLReader prop_file_xml, prop_record_xml;
-	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getFileXML(prop_file_xml);
-	TheNamedObjMap::Instance().get(params.named_obj.prop_ids[loop]).getRecordXML(prop_record_xml);
-   
-	// Try to invert this record XML into a ChromaProp struct
-	// Also pull out the id of this source
-	{
-	  read(prop_record_xml, "/SinkSmear", prop_header[loop]);
+      const InlineHadSpecParams::NamedObject_t::Props_t named_obj = params.named_obj.sink_pairs[lpair];
 
-	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/SinkType", sink_type[loop]);
-	}
-      }
-      catch( std::bad_cast ) 
-      {
-	QDPIO::cerr << InlineHadSpecEnv::name << ": caught dynamic cast error" 
-		    << endl;
-	QDP_abort(1);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << InlineHadSpecEnv::name << ": error message: " << e 
-		    << endl;
-	QDP_abort(1);
-      }
-      QDPIO::cout << "Forward propagator successfully parsed" << endl;
+      push(xml_out, "elem");
 
+      AllSinkProps_t all_sinks;
+      readAllSinks(all_sinks, named_obj);
 
       // Derived from input prop
-      // Hunt around to find the mass
-      // NOTE: this may be problematic in the future if actions are used with no
-      // clear def. of a Mass
-      std::istringstream  xml_s(prop_header[loop].prop_header.fermact.xml);
-      XMLReader  fermacttop(xml_s);
+      int j_decay = all_sinks.sink_prop_1.prop_header.source_header.j_decay;
+      int t0      = all_sinks.sink_prop_1.prop_header.source_header.t_source;
+      int bc_spec = all_sinks.sink_prop_1.bc[j_decay] ;
+
+      // Sanity checks
+      {
+	if (all_sinks.sink_prop_2.prop_header.source_header.j_decay != j_decay)
+	{
+	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	  QDP_abort(1);
+	}
+	if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
+	{
+	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	  QDP_abort(1);
+	}
+	if (all_sinks.sink_prop_2.prop_header.source_header.t_source != 
+	    all_sinks.sink_prop_1.prop_header.source_header.t_source)
+	{
+	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
+	  QDP_abort(1);
+	}
+	if (all_sinks.sink_prop_1.source_type != all_sinks.sink_prop_2.source_type)
+	{
+	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << endl;
+	  QDP_abort(1);
+	}
+	if (all_sinks.sink_prop_1.sink_type != all_sinks.sink_prop_2.sink_type)
+	{
+	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << endl;
+	  QDP_abort(1);
+	}
+      }
+
+
+      // Initialize the slow Fourier transform phases
+      SftMom phases(params.param.mom2_max, params.param.avg_equiv_mom, j_decay);
+
+      // Keep a copy of the phases with NO momenta
+      SftMom phases_nomom(0, true, j_decay);
+
+      // Masses
+      write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
+      write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
+      write(xml_out, "t0", t0);
+
+      // Save prop input
+      push(xml_out, "Forward_prop_headers");
+      write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
+      write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
+      pop(xml_out);
+
+      // Sanity check - write out the norm2 of the forward prop in the j_decay direction
+      // Use this for any possible verification
+      push(xml_out, "Forward_prop_correlator");
+      {
+	const LatticePropagator& sink_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	const LatticePropagator& sink_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+
+	write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
+	write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
+      }
+      pop(xml_out);
+
+
+      push(xml_out, "SourceSinkType");
+      {
+	QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
+	QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
+	QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
+	QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+
+	write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
+	write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
+	write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
+	write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
+
+	write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
+	write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
+	write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
+	write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
+      }
+      pop(xml_out);
+
+
+      // References for use later
+      const LatticePropagator& sink_prop_1 = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+      const LatticePropagator& sink_prop_2 = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+
+
+      // Construct group name for output
+      string src_type;
+      if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
+	src_type = "Point";
+      else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
+	src_type = "Shell";
+      else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
+	src_type = "Wall";
+      else
+      {
+	QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	QDP_abort(1);
+      }
+
+      string snk_type;
+      if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
+	snk_type = "Point";
+      else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
+	snk_type = "Shell";
+      else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
+	snk_type = "Wall";
+      else
+      {
+	QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	QDP_abort(1);
+      }
+
+      string source_sink_type = src_type + "_" + snk_type;
+      QDPIO::cout << "Source type = " << src_type << endl;
+      QDPIO::cout << "Sink type = "   << snk_type << endl;
+
+      // Do the mesons first
+      if (params.param.MesonP) 
+      {
+	mesons2(sink_prop_1, sink_prop_2, phases, t0,
+		xml_out, source_sink_type + "_Wilson_Mesons");
+      } // end if (MesonP)
+
+
+      // Do the currents next
+      if (params.param.CurrentP) 
+      {
+	// Construct the rho vector-current and the pion axial current divergence
+	if (snk_type == "Point")
+	{
+	  curcor2(u, sink_prop_1, sink_prop_2, phases, 
+		  t0, 3,
+		  xml_out, src_type + "_Point_Meson_Currents");
+	}
+      } // end if (CurrentP)
       
-      QDPIO::cout << "Try action and mass" << endl;
-      try
-      {
-	XMLReader top(fermacttop, prop_header[loop].prop_header.fermact.path);
 
-	// Yuk - need to hop some hoops. This should be isolated.
-	if (top.count("Mass") != 0) 
-	{
-	  read(top, "Mass", Mass[loop]);
-	}
-	else if (top.count("Kappa") != 0)
-	{
-	  Real Kappa;
-	  read(top, "Kappa", Kappa);
-	  Mass[loop] = kappaToMass(Kappa);    // Convert Kappa to Mass
-	}
-	else if (top.count("m_q") != 0) 
-	{
-	  read(top, "m_q", Mass[loop]);
-	}
-	else
-	{
-	  QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
-	  throw std::string("Neither Mass nor Kappa found");
-	}
-	bc[loop] = getFermActBoundary(prop_header[loop].prop_header.fermact);
-      }
-      catch (const string& e) 
+      // Do the baryons
+      if (params.param.BaryonP) 
       {
-	QDPIO::cerr << "Error reading fermact or mass: " << e << endl;
-	QDP_abort(1);
-      }
-    
-      QDPIO::cout << "FermAct = " << prop_header[loop].prop_header.fermact.id << endl;
-      QDPIO::cout << "Mass = " << Mass[loop] << endl;
+	barhqlq(sink_prop_2, sink_prop_1, phases, 
+		t0, bc_spec, params.param.time_rev, 
+		xml_out, source_sink_type + "_Wilson_Baryons");
+      } // end if (BaryonP)
+
+      pop(xml_out);  // array element
     }
-
- 
-    //
-    // Sanity checks
-    // For now, force the type of source and sink smearings to agree.
-    // This could/should be relaxed to say point/smeared for BNDST
-    // type constructions in which case the BNDST type will be used
-    // in place of point or shell.
-    //
-    // NOTE: the only real requirement is that in BARHQLQ that the
-    // width of sink smearing is the same since no antisymmetrization
-    // is done.
-    //
-    for (int loop(1); loop < params.named_obj.prop_ids.size(); ++loop)
-    {
-      if (prop_header[loop].source_header.source.id != prop_header[0].source_header.source.id)
-      {
-	QDPIO::cerr << "HADSPEC: prop source smearing types do not agree" << endl;
-	QDP_abort(1);
-      }
-
-      if (sink_type[loop] != sink_type[0])
-      {
-	QDPIO::cerr << "HADSPEC: prop sink smearing types do not agree" << endl;
-	QDP_abort(1);
-      }
-    }
-
-
-    // Derived from input prop
-    int j_decay = prop_header[0].source_header.j_decay;
-    int t0      = prop_header[0].source_header.t_source;
-    int bc_spec = bc[0][j_decay] ;
-    for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
-    {
-      if (prop_header[loop].source_header.j_decay != j_decay)
-      {
-	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
-	QDP_abort(1);
-      }
-      if (bc[loop][j_decay] != bc_spec)
-      {
-	QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
-	QDP_abort(1);
-      }
-      if (prop_header[loop].source_header.t_source != prop_header[0].source_header.t_source)
-      {
-	QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
-	QDP_abort(1);
-      }
-    }
-  
-
-    // Initialize the slow Fourier transform phases
-    SftMom phases(params.param.mom2_max, params.param.avg_equiv_mom, j_decay);
-
-    // Keep a copy of the phases with NO momenta
-    SftMom phases_nomom(0, true, j_decay);
-
-    // Next array element - name auto-written
-    push(xml_array);
-    write(xml_array, "Masses", Mass);
-    write(xml_array, "t0", t0);
-
-    // Save prop input
-    write(xml_array, "ForwardProp", prop_header);
-
-    // Sanity check - write out the norm2 of the forward prop in the j_decay direction
-    // Use this for any possible verification
-    {
-      multi1d< multi1d<Double> > forward_prop_corr(params.named_obj.prop_ids.size());
-      for (int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
-      {
-	forward_prop_corr[loop] = sumMulti(localNorm2(quark_propagator[loop]), 
-					   phases.getSet());
-      }
-	  
-      push(xml_array, "Forward_prop_correlator");
-      write(xml_array, "forward_prop_corr", forward_prop_corr);
-      pop(xml_array);
-    }
-
-
-    // Construct group name for output
-    string src_type;
-    if (prop_header[0].source_header.source.id == "POINT_SOURCE")
-      src_type = "Point";
-    else if (prop_header[0].source_header.source.id == "SHELL_SOURCE")
-      src_type = "Shell";
-    else if (prop_header[0].source_header.source.id == "WALL_SOURCE")
-      src_type = "Wall";
-    else
-    {
-      QDPIO::cerr << "Unsupported source type" << endl;
-      QDP_abort(1);
-    }
-
-    string snk_type;
-    if (sink_type[0] == "POINT_SINK")
-      snk_type = "Point";
-    else if (sink_type[0] == "SHELL_SINK")
-      snk_type = "Shell";
-    else if (sink_type[0] == "WALL_SINK")
-      snk_type = "Wall";
-    else
-    {
-      QDPIO::cerr << "Unsupported sink type = " << sink_type[0] << endl;
-      QDP_abort(1);
-    }
-
-    string source_sink_type = src_type + "_" + snk_type;
-    QDPIO::cout << "Source type = " << src_type << endl;
-    QDPIO::cout << "Sink type = "   << snk_type << endl;
-
-    push(xml_array, "SourceSinkType");
-    write(xml_array, "source_type", prop_header[0].source_header.source.id);
-    write(xml_array, "sink_type", sink_type[0]);
-    pop(xml_array);
-
-    // Do the mesons first
-    if (params.param.MesonP) 
-    {
-      mesons(quark_propagator[0], quark_propagator[1], phases, t0,
-	     xml_array, source_sink_type + "_Wilson_Mesons");
-    } // end if (MesonP)
-
-
-    // Do the currents next
-    if (params.param.CurrentP) 
-    {
-      // Construct the rho vector-current and the pion axial current divergence
-      if (sink_type[0] == "POINT_SINK")
-      {
-	curcor2(u, quark_propagator[0], quark_propagator[1], phases, 
-		t0, 3,
-		xml_array, src_type + "_Point_Meson_Currents");
-      }
-    } // end if (CurrentP)
-
-
-    // Do the baryons
-    if (params.param.BaryonP) 
-    {
-      barhqlq(quark_propagator[1], quark_propagator[0], phases, 
-	      t0, bc_spec, params.param.time_rev, 
-	      xml_array, source_sink_type + "_Wilson_Baryons");
-    } // end if (BaryonP)
-
-    pop(xml_array);  // array element
-
-    pop(xml_array);  // Wilson_spectroscopy
+    pop(xml_out);  // Wilson_spectroscopy
     pop(xml_out);  // hadspec
-
 
     snoop.stop();
     QDPIO::cout << InlineHadSpecEnv::name << ": total time = "
