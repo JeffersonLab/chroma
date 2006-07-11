@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.8 2006-07-10 19:44:13 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.9 2006-07-11 03:51:39 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -337,7 +337,7 @@ namespace Chroma
 
     //! Read all sinks
     void readAllSinks(multi1d<AllCorrelatorTerms_t>& s, 
-		      multi1d<InlineMesonSpecParams::NamedObject_t::Correlators_t::CorrelatorTerms_t> correlator_terms)
+		      const multi1d<InlineMesonSpecParams::NamedObject_t::Correlators_t::CorrelatorTerms_t>& correlator_terms)
     {
       s.resize(correlator_terms.size());
 
@@ -446,7 +446,7 @@ namespace Chroma
     // Keep an array of all the xml output buffers
     push(xml_out, "Wilson_hadron_measurements");
 
-    // Now loop over the various fermion masses
+    // Now loop over the various fermion pairs
     for(int lpair=0; lpair < params.named_obj.correlators.size(); ++lpair)
     {
       const InlineMesonSpecParams::NamedObject_t::Correlators_t named_obj = params.named_obj.correlators[lpair];
