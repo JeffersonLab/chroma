@@ -447,7 +447,7 @@ regression test spectrum output is kept within the chroma xml output
       <chroma>3.9.0</chroma>
       <qdp>1.20.5</qdp>
     </code_version>
-    <run_date>10 Jul 06 15:16:51 EDT</run_date>
+    <run_date>10 Jul 06 23:53:40 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -508,7 +508,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jul 06 15:16:52 EDT</run_date>
+          <run_date>10 Jul 06 23:53:41 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -602,7 +602,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jul 06 15:16:52 EDT</run_date>
+          <run_date>10 Jul 06 23:53:41 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -969,7 +969,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jul 06 15:16:54 EDT</run_date>
+          <run_date>10 Jul 06 23:53:43 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1065,7 +1065,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jul 06 15:16:54 EDT</run_date>
+          <run_date>10 Jul 06 23:53:43 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1568,7 +1568,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.9.0</chroma>
             <qdp>1.20.5</qdp>
           </code_version>
-          <run_date>10 Jul 06 15:16:55 EDT</run_date>
+          <run_date>10 Jul 06 23:53:44 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
