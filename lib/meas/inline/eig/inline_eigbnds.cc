@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.2 2006-07-12 04:55:31 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -104,10 +104,7 @@ namespace Chroma {
       else
 	usePV = false;
 
-      XMLReader xml_tmp(paramtop, "./FermionAction");
-      std::ostringstream os;
-      xml_tmp.print(os);
-      ferm_act = os.str();
+      ferm_act = readXMLGroup(paramtop, "FermionAction", "FermAct");
  
       // Ids
       read(paramtop, "NamedObject", named_obj);
@@ -128,7 +125,7 @@ namespace Chroma {
 
     QDP::write(xml, "Frequency", frequency);
     QDP::write(xml, "usePV", usePV);
-    xml << ferm_act;
+    xml << ferm_act.xml;
     Chroma::write(xml, "Ritz", ritz);
 
     // Ids
@@ -141,24 +138,21 @@ namespace Chroma {
   // Constructor
   InlineEigBndsMdagM::InlineEigBndsMdagM(const InlineEigBndsMdagMParams& p) : params(p) 
   {
-    std::istringstream is(params.ferm_act);
+    std::istringstream is(params.ferm_act.xml);
     XMLReader fermact_reader(is);
 
-    // Get the name of the ferm act
-    string fa;
     try 
     { 
-      read(fermact_reader, "/FermionAction/FermAct", fa);
+      // Construct the factory
+      fermact = TheFermionActionFactory::Instance().createObject(params.ferm_act.id,
+								 fermact_reader,
+								 params.ferm_act.path);
     }
     catch(const string& s) {
-      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
+      QDPIO::cerr << __func__ << ": caught exception constructing fermact: " << s << endl;
       QDP_abort(1);
     }
 
-    // Generic Wilson-Type stuff
-    fermact = TheFermionActionFactory::Instance().createObject(fa,
-							       fermact_reader,
-							       string("./FermionAction"));
   }
 
   // "Do" helper on a 4D action

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_eigbnds.h,v 3.1 2006-07-12 04:55:31 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -13,6 +13,7 @@
 #include "chromabase.h"
 #include "fermact.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -33,8 +34,8 @@ namespace Chroma
     void write(XMLWriter& xml_in, const std::string& path);
 
     unsigned long   frequency;
-    std::string     ferm_act;
-    bool            usePV;   // measure eigs of PV matrix if applicable
+    GroupXML_t      ferm_act;    /*!< fermion action */
+    bool            usePV;       /*!< measure eigs of PV matrix if applicable */
 
     //! Struct for parameters needed for a Ritz type solve
     struct RitzParams_t
