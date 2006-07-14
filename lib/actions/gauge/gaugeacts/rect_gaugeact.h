@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rect_gaugeact.h,v 3.1 2006-04-19 02:29:45 edwards Exp $
+// $Id: rect_gaugeact.h,v 3.2 2006-07-14 20:33:17 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -9,7 +9,7 @@
 
 #include "gaugeact.h"
 #include "gaugebc.h"
-//#include "io/aniso_io.h"
+#include "io/aniso_io.h"
 
 namespace Chroma
 {
@@ -18,18 +18,24 @@ namespace Chroma
   namespace RectGaugeActEnv { 
     extern const string name;
     extern const bool registered;
-  }
+  };
 
   //! Parameter structure
   /*! @ingroup gaugeacts */
   struct RectGaugeActParams {
     // Base Constructor
-    RectGaugeActParams();
+    RectGaugeActParams() {
+      no_temporal_2link=false;
+    }
     
     // Read params from some root path
     RectGaugeActParams(XMLReader& xml_in, const std::string& path);
 
-    Real coeff;  
+    Real coeff_s;
+    Real coeff_t1;
+    Real coeff_t2;
+    bool no_temporal_2link;
+    AnisoParam_t aniso;
   };
   
   /*! @ingroup gaugeacts */
@@ -45,24 +51,22 @@ namespace Chroma
   class RectGaugeAct : public LinearGaugeAction
   {
   public:
+    //! Backward compatibility:
+    RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+		 const Real& coeff_); 
+
+
     //! General CreateGaugeState<P,Q>
     RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
-		 const Real& coeff_) : 
-      cgs(cgs_), coeff(coeff_) {}
+		 const Real& coeff_s_, 
+		 const Real& coeff_t1_,
+		 const Real& coeff_t2_,
+		 const bool no_temporal_2link_,
+		 const AnisoParam_t& aniso_);  
 
     //! Read rectangle coefficient from a param struct
     RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
-		 const RectGaugeActParams& p) :
-      cgs(cgs_), coeff(p.coeff) {}
-
-    //! Is anisotropy used?
-    bool anisoP() const {return false;}
-
-    //! Anisotropy factor
-    const Real anisoFactor() const {return Real(1);}
-
-    //! Anisotropic direction
-    int tDir() const {return Nd-1;}
+		 const RectGaugeActParams& p);
 
     //! Return the set on which the gauge action is defined
     /*! Defined on the even-off (red/black) set */
@@ -88,7 +92,19 @@ namespace Chroma
     ~RectGaugeAct() {}
 
     // Accessors -- non mutable members.
-    const Real getCoeff(void) const { return coeff; }
+    const Real getCoeffS(void) const { return params.coeff_s; }
+    const Real getCoeffT1(void) const { return params.coeff_t1; }
+    const Real getCoeffT2(void) const { return params.coeff_t2; }
+
+    //! Is anisotropy used?
+    bool anisoP() const {return params.aniso.anisoP ;}
+
+    //! Anisotropy factor
+    const Real anisoFactor() const { return params.aniso.xi_0; }
+
+    //! Anisotropic direction
+    int tDir() const {return params.aniso.t_dir;}
+    const bool noTemporal21LoopsP(void) const {return params.no_temporal_2link;}
 
   protected:
     //! Partial construcor
@@ -98,7 +114,7 @@ namespace Chroma
 
   private:
     Handle< CreateGaugeState<P,Q> >  cgs;  // Create gauge state
-    Real coeff;              // The coupling coefficient
+    RectGaugeActParams params; // THe parameter struct
   };
 
 };
