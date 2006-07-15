@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
+// $Id: hmc.cc,v 3.1 2006-07-15 21:41:36 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -290,10 +290,13 @@ namespace Chroma {
       
       QDPIO::cout << "MC Control: About to do " << to_do << " updates" << endl;
 
+      StopWatch swatch;
+
       // XML Output
       push(xml_out, "MCUpdates");
 
-      for(int i=0; i < to_do; i++) {
+      for(int i=0; i < to_do; i++) 
+      {
 	push(xml_out, "elem"); // Caller writes elem rule
 
 	push(xml_out, "Update");
@@ -311,9 +314,19 @@ namespace Chroma {
         QDPIO::cout << "Before HMC trajectory call" << endl;
 
 	// Do the trajectory without accepting 
+	swatch.reset();
+	swatch.start();
 	theHMCTrj( gauge_state, warm_up_p );
+	swatch.stop();
 
-        QDPIO::cout << "After HMC trajectory call" << endl;
+        QDPIO::cout << "After HMC trajectory call: time= "
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
+
+	write(xml_out, "seconds_for_trajectory", swatch.getTimeInSeconds());
+
+	swatch.reset();
+	swatch.start();
 
 	// Create a gauge header for inline measurements.
 	// Since there are defaults always measured, we must always
@@ -338,7 +351,7 @@ namespace Chroma {
 	  // Always measure defaults
 	  for(int m=0; m < default_measurements.size(); m++) 
 	  {
-	    QDPIO::cout << "HMC: do measurement = " << m << endl;
+	    QDPIO::cout << "HMC: do default measurement = " << m << endl;
 	    QDPIO::cout << "HMC: dump named objects" << endl;
 	    TheNamedObjMap::Instance().dump();
 
@@ -348,7 +361,7 @@ namespace Chroma {
 	    the_meas(cur_update, xml_out);
 	    pop(xml_out);
 
-	    QDPIO::cout << "HMC: finished measurement = " << m << endl;
+	    QDPIO::cout << "HMC: finished default measurement = " << m << endl;
 	  }
 	
 	  // Only measure user measurements after warm up
@@ -374,10 +387,25 @@ namespace Chroma {
 	  InlineDefaultGaugeField::reset();
 	}
 
-	if( cur_update % mc_control.save_interval == 0 ) {
+	swatch.stop();
+	QDPIO::cout << "After all measurements: time= "
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
+
+	write(xml_out, "seconds_for_measurements", swatch.getTimeInSeconds());
+
+	if( cur_update % mc_control.save_interval == 0 ) 
+	{
+	  swatch.reset();
+	  swatch.start();
+
 	  // Save state
 	  saveState<UpdateParams>(update_params, mc_control, cur_update, gauge_state.getQ());
-	  
+
+	  swatch.stop();
+	  QDPIO::cout << "After saving state: time= "
+		      << swatch.getTimeInSeconds() 
+		      << " secs" << endl;
 	}
 
 	pop(xml_out); // pop("Update");
