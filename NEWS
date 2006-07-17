@@ -1,3 +1,7 @@
+07/17/2006 -- Robert Edwards
+	Version 3.10.0. Changed inline_spectrum to also support an optional
+        BlkMax and BlkAccu flag.
+
 07/11/2006 -- Robert Edwards
 	Version 3.9.0. Changed interface to the inline WILSLP and MESONSPEC.
         Turned on  HADRON_SPECTRUM (hadspec). This is a replacement for SPECTRUM.
