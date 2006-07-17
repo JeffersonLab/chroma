@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.17 2006-07-11 03:50:46 edwards Exp $
+# $Id: Makefile.am,v 3.18 2006-07-17 20:22:30 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -404,7 +404,9 @@ nobase_include_HEADERS += \
 	meas/hadron/simple_baryon_operator_w.h \
 	meas/hadron/group_baryon_operator_w.h \
 	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
-	meas/hadron/BuildingBlocks_w.h meas/hadron/curcor2_w.h \
+	meas/hadron/BuildingBlocks_w.h \
+        meas/hadron/curcor2_w.h \
+        meas/hadron/curcor3_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
 	meas/hadron/mesonseqsrc_w.h \
@@ -939,7 +941,9 @@ libchroma_a_SOURCES += \
         meas/hadron/simple_baryon_operator_w.cc \
         meas/hadron/group_baryon_operator_w.cc \
 	meas/hadron/baryon_w.cc meas/hadron/BuildingBlocks_w.cc \
-	meas/hadron/curcor2_w.cc meas/hadron/DjDk_w.cc \
+	meas/hadron/curcor2_w.cc \
+	meas/hadron/curcor3_w.cc \
+        meas/hadron/DjDk_w.cc \
 	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
 	meas/hadron/derivmesonseqsrc_w.cc \
