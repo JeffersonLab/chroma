@@ -1,6 +1,6 @@
 07/17/2006 -- Robert Edwards
 	Version 3.10.0. Changed inline_spectrum to also support an optional
-        BlkMax and BlkAccu flag.
+        BlkMax and BlkAccu flag. Start of aniso support in gauge rectangle.
 
 07/11/2006 -- Robert Edwards
 	Version 3.9.0. Changed interface to the inline WILSLP and MESONSPEC.
