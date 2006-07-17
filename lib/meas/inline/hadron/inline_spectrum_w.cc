@@ -1,4 +1,4 @@
-// $Id: inline_spectrum_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 3.3 2006-07-17 20:19:46 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
@@ -53,6 +53,9 @@ namespace Chroma
     param.link_smear_fact = 0;
     param.link_smear_num  = 0;
 
+    param.BlkMax = 100;
+    param.BlkAccu = 1.0e-5;
+
     switch (version) 
     {
     case 9:
@@ -73,6 +76,15 @@ namespace Chroma
       read(paramtop, "HybMesP", param.HybMesP);
       read(paramtop, "link_smear_fact", param.link_smear_fact);
       read(paramtop, "link_smear_num", param.link_smear_num);
+      break;
+
+    case 13:
+      read(paramtop, "Wl_snk", param.Wl_snk);
+      read(paramtop, "HybMesP", param.HybMesP);
+      read(paramtop, "link_smear_fact", param.link_smear_fact);
+      read(paramtop, "link_smear_num", param.link_smear_num);
+      read(paramtop, "BlkMax", param.BlkMax);
+      read(paramtop, "BlkAccu", param.BlkAccu);
       break;
 
     default:
@@ -150,6 +162,8 @@ namespace Chroma
 
     write(xml, "link_smear_fact", param.link_smear_fact);
     write(xml, "link_smear_num", param.link_smear_num);
+    write(xml, "BlkMax", param.BlkMax);
+    write(xml, "BlkAccu", param.BlkAccu);
 
     write(xml, "nrow", Layout::lattSize());
 
@@ -473,9 +487,6 @@ namespace Chroma
 
       if (params.param.Sl_snk && params.param.link_smear_num > 0)
       {
-	int BlkMax = 100;	// Maximum number of blocking/smearing iterations
-	Real BlkAccu = 1.0e-5;	// Blocking/smearing accuracy
-
 	for(int i=0; i < params.param.link_smear_num; ++i)
 	{
 	  multi1d<LatticeColorMatrix> u_tmp(Nd);
@@ -483,7 +494,8 @@ namespace Chroma
 	  for(int mu = 0; mu < Nd; ++mu)
 	  if ( mu != j_decay )
 	    APE_Smear(u_link_smr, u_tmp[mu], mu, 0,
-		      params.param.link_smear_fact, BlkAccu, BlkMax, 
+		      params.param.link_smear_fact, 
+		      params.param.BlkAccu, params.param.BlkMax, 
 		      j_decay);
 	  else
 	    u_tmp[mu] = u_link_smr[mu];
@@ -577,8 +589,8 @@ namespace Chroma
 	swatch.start();
 
 	/* Smear the gauge fields to construct smeared E- and B-fields */
-	int BlkMax = 100;
-	Real BlkAccu = fuzz;
+	int BlkMax = params.param.BlkMax;
+	Real BlkAccu = params.param.BlkAccu;
 	BlkAccu *= 0.01;
 	multi1d<LatticeColorMatrix> f;
 	multi1d<LatticeColorMatrix> u_smr = u;
