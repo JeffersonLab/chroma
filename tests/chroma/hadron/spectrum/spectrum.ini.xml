@@ -86,7 +86,7 @@ Spectrum input
       <Name>SPECTRUM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>12</version>
+        <version>13</version>
         <Pt_snk>true</Pt_snk>
         <Sl_snk>true</Sl_snk>
         <Wl_snk>false</Wl_snk>
@@ -104,6 +104,8 @@ Spectrum input
         <wvfIntPar>5</wvfIntPar>
         <link_smear_fact>2.5</link_smear_fact>
         <link_smear_num>0</link_smear_num>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>5.0e-6</BlkAccu>
         <nrow>4 4 4 8</nrow>
        </Param>
       <NamedObject>
@@ -126,7 +128,7 @@ Spectrum input
       <Name>SPECTRUM</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>12</version>
+        <version>13</version>
         <Pt_snk>true</Pt_snk>
         <Sl_snk>true</Sl_snk>
         <Wl_snk>false</Wl_snk>
@@ -144,6 +146,8 @@ Spectrum input
         <wvfIntPar>5</wvfIntPar>
         <link_smear_fact>2.5</link_smear_fact>
         <link_smear_num>0</link_smear_num>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>5.0e-6</BlkAccu>
         <nrow>4 4 4 8</nrow>
        </Param>
       <NamedObject>
