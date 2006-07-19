@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.1 2006-07-14 20:33:17 bjoo Exp $
+// $Id: rect_gaugeact.cc,v 3.2 2006-07-19 02:28:51 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -10,7 +10,9 @@
 
 namespace Chroma
 {
- 
+
+
+
   namespace RectGaugeActEnv 
   {
     //! Callback
@@ -109,213 +111,179 @@ namespace Chroma
     END_CODE();
   }
 
+  inline
+  void deriv_part(int mu, int nu, Real c_munu,
+		  multi1d<LatticeColorMatrix>& ds_u, 
+		  const multi1d<LatticeColorMatrix>& u) {
+
+    //       ---> --->  = U(x,mu)*U(x+mu, mu)
+    LatticeColorMatrix from_left_2link = u[mu]*shift(u[mu], FORWARD, mu);
 
 
-  //! Computes the derivative of the fermionic action respect to the link field
-  /*!
-   *         |  dS
-   * ds_u -- | ----   ( Write )
-   *         |  dU  
-   *
-   * \param ds_u       result      ( Write )
-   * \param state      gauge field ( Read )
-   */
+    // upper_l =    ----> --->
+    //             ^
+    //             |
+    //
+    // U(x, nu)*U(x+nu,mu)*U(x+mu+nu, mu)
+    LatticeColorMatrix upper_l = u[nu]*shift(from_left_2link, FORWARD, nu);
+
+
+    //       <--- <----
+    //      |
+    //      |
+    //      V ---> ---> (x+2mu)
+    //
+    // so here we have the staple for x + 2mu
+    // we need to shift it forward by 2 mu
+
+    // Here we shift it by mu after assembly
+
+    // shift, backward mu of:
+    // U^dag(x+mu+nu, mu)*U^dag(x+nu, mu)*U^dag(x, nu)*U(x,mu)*U(x+mu,mu)
+    //=U^dag(x+nu, mu)*U^dag(x-mu+nu, mu)*U^dag(x-mu, nu)*U(x-mu,mu)*U(x,mu)
+    LatticeColorMatrix tmp = shift( adj(upper_l)*from_left_2link, BACKWARD, mu);
+    
+
+    // and we shift it again
+    //       <--- <----
+    //      |
+    //      |
+    //      V ---> ---> (x)
+    //=U^dag(x+-mu+nu, mu)*U^dag(x-2mu+nu, mu)*U^dag(x-2mu, nu)*U(x-2mu,mu)*U(x-mu,mu)
+    ds_u[nu] = shift(tmp, BACKWARD, mu);
+
+    
+    // Tmp = u(x+mu, nu)
+    tmp = shift(u[nu], FORWARD, mu);
+    
+    // tmp2 = u(x + 2mu, nu)
+    LatticeColorMatrix tmp2 = shift(tmp, FORWARD, mu);
+
+    // Upper_le = from_left_2link(x+nu) * u^dag(x + 2mu, nu)
+    //          = u(x+nu, mu)*u(x+mu+nu, mu)*u^dag(x+2mu, nu)
+
+    //           = ----> ----> |
+    //                         | 
+    //                         V
+
+    upper_l = shift(from_left_2link, FORWARD, nu)*adj(tmp2);
+
+    // ds_u =  ----> ----> |
+    //                     | 
+    //        <----  <---  V
+
+   // = u(x+nu, mu)*u(x+mu+nu, mu)*u^dag(x+2mu, nu)*u^dag(x+mu, mu)*u^dag(x,mu)
+
+    ds_u[nu] += upper_l * adj(from_left_2link);
+
+    
+
+    //              | <---- <--- ^ 
+    //              |            |
+    //              |            |
+    //          x   V            | x + 2mu
+
+    // u(x+2mu,nu)*u^dag(x+mu+nu,mu)*u^dag(x+nu, mu)*u^dag(x, nu)
+    LatticeColorMatrix up_staple = adj(upper_l)*adj(u[nu]);
+
+    //              ^            |
+    //              |            |
+    //              |            |
+    //          x   <----- <---- V x + 2mu
+
+    //  u^dag(x+2mu,nu) U^dag(x+mu,mu) U^dag(x,mu) U(x,nu)
+    tmp = adj(tmp2)*adj(from_left_2link);
+    LatticeColorMatrix down_staple = tmp*u[nu];
+
+    // The following terms generate force staple for U(x+mu)
+    // the backward shift moves the contribution to the correct place
+    //
+    //              | <---- <--- ^ 
+    //              |            |
+    //              |            |
+    //          x   V----->      | x + 2mu
+
+    
+    // u(x+mu,nu)*u^dag(x+nu,mu)*u^dag(x-mu+nu, mu)*u^dag(x-mu, nu) u(x-mu,mu)
+    ds_u[mu] = shift( up_staple*u[mu], BACKWARD, mu);
+
+    //           x   ^---         | x+2mu
+    //               |            |
+    //               |            |
+    //               <----- <---- V 
+    
+    // shift backward nu shift backward mu of 
+    //  u^dag(x+mu-nu,nu) U^dag(x-nu,mu) U^dag(x-mu-nu,mu) U(x-mu-nu,nu) U(x-mu,mu)
+
+    tmp2 = shift(down_staple, BACKWARD, nu);
+    ds_u[mu] += shift(tmp2*u[mu], BACKWARD, mu);
+    
+    //              | <---- <--- ^ 
+    //              |            |
+    //              |            |
+    //          x   V      ----->| x + 2mu
+    tmp = shift(u[mu], FORWARD, mu);
+    ds_u[mu] += tmp*up_staple;
+
+
+    //         x    ^      ----->| x + 2mu + nu
+    //              |            |
+    //              |            |
+    //              <----- <---- V
+
+
+    ds_u[mu] += tmp*tmp2;
+
+    ds_u[mu] *= c_munu/Real(-2*Nc);
+    ds_u[nu] *= c_munu/Real(-2*Nc);
+  }
+
+
   void
   RectGaugeAct::deriv(multi1d<LatticeColorMatrix>& ds_u,
 		      const Handle< GaugeState<P,Q> >& state) const
   {
-    START_CODE();
-
     ds_u.resize(Nd);
+    Real c;
 
-    LatticeColorMatrix tmp_1;
-    LatticeColorMatrix tmp_2;
-    LatticeColorMatrix tmp_3;
-    LatticeColorMatrix tmp_4;
-    LatticeColorMatrix tmp_5;
-    LatticeColorMatrix tmp_6;
-    LatticeColorMatrix tmp_tot;
-    LatticeColorMatrix tmp_munu;
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
-
+    
     ds_u = zero;
+    ds_tmp = zero; 
 
-    // It is 1/(4Nc) to account for normalisation relevant to fermions
-    // in the taproj, which is a factor of 2 different from the 
-    // one used here.
+    for(int mu=0; mu < Nd; mu++) { 
+      for(int nu=0; nu < Nd; nu++) { 
 
-    Real coeff_tmp = Real(-1)/Real(2*Nc);
+	if (mu == nu) continue;
 
-    for(int mu = 0; mu < Nd; ++mu) {
-
-      tmp_tot = zero;	
-
-      Real coeff_mu;	
-
-      // The way this routine works:
-      // 
-      // Compute the contribs of the 2x1 rectangles to ds_u[mu]
-      // Compute the contribs of the 1x2 rectangles to ds_u[nu]
-      
-      // So if mu == t_dir ds_u[mu] only gets contribs from loops 
-      // that have an extent 2 in the t_dir ==> coeff_mu = coeff_t1
-      if ( mu == params.aniso.t_dir ) {
-	coeff_mu = params.coeff_t1;
-      }
-      else {
-	coeff_mu = params.coeff_s;
-      }
-      
-      
-      bool skip;
-
-      // This is a flag to guard us from doing extra work. 
-      // When mu == t_dir and no_temporal_2link == true
-      // this should be set to false
-
-      if( mu == params.aniso.t_dir && params.no_temporal_2link == true ) {
-	skip = true;
-      }
-      else {
-	skip = false;
-      }
-      
-      
-      /*  2*1 rectangles */
-      /* calculate double_mu links */
-      tmp_3 = u[mu] * shift(u[mu], FORWARD, mu);
-      
-      for(int cb=0; cb < 2; cb++) {
-	
-	
-	tmp_6[rb[1-cb]] = tmp_3 * coeff_tmp;
-
-	for(int j=0, nu=0; nu < Nd; nu++) {
-	  // The way this routine works:
-	  // 
-	  // Compute the contribs of the 2x1 rectangles to ds_u[mu]
-	  // Compute the contribs of the 1x2 rectangles to ds_u[nu]
-	  
-	  // So if mu == t_dir ds_u[mu] only gets contribs from loops 
-	  // that have an extent 2 in the t_dir ==> coeff_mu = coeff_t1
-	  
-	  // Likewise if nu == t_dir d_u[nu] only gets contribs from 
-	  // loops that have an extent 1 in the t_dir .==> coeff_nu = coeff_t2
-	  // In all other cases, mu and nu are spatial so we use the 
-	  // coeff_s;
-	  Real coeff_nu;
-	  
-	  if( nu == params.aniso.t_dir ) { 
-	    coeff_nu = params.coeff_t2;
-	  }
-	  else { 
-	    coeff_nu = params.coeff_s;
-	  }
-	  
-	  
-	  
-	  if(nu == mu)
-	    continue;
-	  
-	  /* forward plaquette */
-	  // Doing this for ds_u[nu]
-	  //
-	  //     <--- <-----
-	  //     |           ^
-	  //     |           . U_{nu} (x)  (coeff_nu) 
-	  //     V           . 
-	  //     ---> -----> . 
-	  tmp_1[rb[cb]] = u[nu] * shift(tmp_6, FORWARD, nu);
-	  tmp_5[rb[1-cb]] = shift(adj(tmp_1)*tmp_3, BACKWARD, mu);
-	  
-	  ds_u[nu][rb[cb]] += coeff_nu*u[nu]*shift(tmp_5, BACKWARD, mu);
-	  
-	  
-	  
-	  tmp_5[rb[1-cb]] = shift(u[nu], FORWARD, mu);
-	  
-	  /* at this point we add the nu contribution directly to ds_u */
-	  /* we could make tmp_tot carry a direction index in order to avoid that */
-	  if(j++ == 0) {
-	    
-	    
-	    //        ^---> --->
-	    //        |        |
-	    // tmp2 = |        |
-	    //                 V 	  
-	    tmp_2[rb[cb]] = tmp_1 * adj(shift(tmp_5, FORWARD, mu));
-	    
-	    if( !skip ) {
-	      // Start off the sum of 2x1 rectangle staples if 
-	      // we are doing those
-	      tmp_4[rb[cb]] = tmp_2;
-	    }
-	    //          -----> --->
-	    //          ^         |
-	    // U(x,nu)  .         |     (coeff[nu][mu]
-	    //          .         |
-	    //          <--- <--- V
-	    ds_u[nu][rb[cb]] += coeff_nu*tmp_2*adj(tmp_3);
-	  }
-	  else {
-	    
-	    //         ^---> --->
-	    //         |        |
-	    // tmp4 += |        |
-	    //                 V
-	    
-	    tmp_2[rb[cb]] = tmp_1 * adj(shift(tmp_5, FORWARD, mu));
-	    
-	    if( !skip ) { 
-	      // Add to the sum of 2x1 rectangle staples if we are doing
-	      // those
-	      tmp_4[rb[cb]] += tmp_2; /* sum to the staple */
-	    }
-	    
-	    ds_u[nu][rb[cb]] += coeff_nu*tmp_2 * adj(tmp_3);
-	  }
-	  
-	  /* backward plaquette */
-	  tmp_1[rb[1-cb]] = adj(u[nu]) * tmp_6;
-	  tmp_2[rb[cb]] = shift(u[nu], FORWARD, mu);
-	  tmp_5[rb[1-cb]] = shift(tmp_2, FORWARD, mu);
-	  
-	  /* add   holds: |        ^ to tmp 4
-	     |        |  
-	     V --> --->          */
-	  
-	  if( !skip ) {
-	    // Add downwards staple to the sum of 2x1 staples if 
-	    // we are doing those
-	    tmp_4[rb[cb]] += shift(tmp_1*tmp_5, BACKWARD, nu);
-	  }
-	  
-	  
-	} // End of nu loop
-	
-	// At this point tmp 4 holds sum_{nu} 2x1 flat staples
-	// and we need to partially 'close them off' with U{mu} if we 
-	// are doing that direction
-	if( !skip ) {
-	  tmp_tot[rb[cb]] += shift(u[mu], FORWARD, mu) * adj(tmp_4);
-	  tmp_tot[rb[1-cb]] += shift(adj(tmp_4)*u[mu], BACKWARD, mu);
+	if ( mu == params.aniso.t_dir ) { 
+	  c = params.coeff_t1;
 	}
-      } // end of cb loop
-      
-	/* ds_u =  u(x,mu) * tmp_tot */
-      if( !skip ) { 
-	// Here we close off the things in tmp_tot_completely.
-	ds_u[mu] += coeff_mu*u[mu] * tmp_tot;
+	else if( nu == params.aniso.t_dir ) { 
+	  c = params.coeff_t2;
+	}
+	else { 
+	  c = params.coeff_s;
+	}
+
+	bool skip = (mu == params.aniso.t_dir && params.no_temporal_2link );
+	if (!skip) {
+	  deriv_part(mu, nu, c, ds_u, u);
+
+	  ds_tmp[mu] += ds_u[mu];
+	  ds_tmp[nu] += ds_u[nu];
+	}
       }
-      
     }
-  
-  
-    // Zero the force on any fixed boundaries
+
+    for(int mu = 0; mu < Nd; mu++) { 
+      ds_u[mu] = u[mu]*ds_tmp[mu];
+    }
+
     getGaugeBC().zero(ds_u);
     
-    END_CODE();
   }
 
 
@@ -331,175 +299,104 @@ namespace Chroma
   // S = -coeff * (V*Nd*(Nd-1)/2) w_rect 
   //   = -coeff * (V*Nd*(Nd-1)/2)*(2/(V*Nd*(Nd-1)*Nc))* Sum Re Tr Rect
   //   = -coeff * (1/(Nc)) * Sum Re Tr Rect
+  inline
+  void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
+	    const multi1d<LatticeColorMatrix>& u);
+  
+  Double
+  RectGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
+  {
+    START_CODE();
+    
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    LatticeReal lgimp = zero;
+    Real c; 
+ 
+    for(int mu=0; mu < Nd; ++mu) { 
+      for(int nu = 0; nu < Nd; ++nu) { 
+	if( mu == nu) continue;
 
-Double
-RectGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
-{
-  START_CODE();
-  
-  const multi1d<LatticeColorMatrix>& u = state->getLinks();
-  
-  LatticeColorMatrix tmp_0;
-  LatticeColorMatrix tmp_1;
-  LatticeColorMatrix tmp_2;
-  LatticeColorMatrix tmp_tot;
-  LatticeReal lgimp = zero;
-  
-  // 2x1 rectangle piece
-  
-  
-  for(int mu = 1; mu < Nd; ++mu)  {
-
-    for(int nu = 0; nu < mu; ++nu) { 
-	
-      Real coeff = params.coeff_s; // The weight of the loop in the action 
-      // Initialize to spatial
-      
-      for(int cb = 0; cb < 2; ++cb)  {
-	
-	// Going t do 1x2 loops (mu, nu, nu)
-	// 
-	//      <---^
-	//      |   |    nu
-	//      |   |     ^
-	//      V   ^     |
-	//      |   |     |
-	//      |   |     |----> mu
-	//      V--->
-	
-	// Mu is the short direction. If it is temporal
-	// we use the coefficient for temporal 1x2 loops (c2t)
-	//
-	// if on the other hand nu (the long direction) is temporal
-	// we use the coefficient for temporal 2x1 loops (c1t)
-	// This overrides the setting above. Luckily 
-	// the way the sum is done, we can never have mu == nu
-	// so the cases don't conflict
-	//
-	// Additionally if nu is temporal, and no_temporal2_link
-	// is turned on we skip this loop entirely
-	bool skip = ( nu == params.aniso.t_dir && params.no_temporal_2link == true );
-	if ( !skip ) {
-	  
-	  if( mu == params.aniso.t_dir ) {
-	    coeff = params.coeff_t2;    // Mu is length 1 in time
-	  }
-	  else if( nu == params.aniso.t_dir ) {
-	    coeff = params.coeff_t1;   
-	  }
-	  else {
-	    coeff = params.coeff_s;
-	  }
-	  
-	  /* tmp_1(x) = u(x-nu,nu) */
-	  tmp_1[rb[cb]] = shift(u[nu], BACKWARD, nu);
-	  
-	  /* tmp_0 = tmp_1 * u(x,nu) = u(x,nu)*u(x+nu,nu) */
-	  tmp_0[rb[cb]] = tmp_1 * u[nu];
-	  
-	  /* tmp_2(x) = tmp_0(x+mu) */
-	  tmp_2[rb[1-cb]] = shift(tmp_0, FORWARD, mu);
-	  
-	  /* tmp_1(x) = u(x+nu,mu) */
-	  tmp_1[rb[1-cb]] = shift(u[mu], FORWARD, nu);
-	  
-	  /* tmp_0 = tmp_2 * tmp_1_dag = u(x+mu-nu,nu)*u(x+mu,nu)*u_dag(x+nu,mu) */
-	  tmp_0[rb[1-cb]] = tmp_2 * adj(tmp_1);
-	  
-	  /* tmp_1 = tmp_0 * u_dag(x,nu) */
-	  /*       = u(x+mu-nu,nu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
-	  tmp_1[rb[1-cb]] = tmp_0 * adj(u[nu]);
-	  
-	  /* tmp_2(x) = tmp_1(x+nu) */
-	  tmp_2[rb[cb]] = shift(tmp_1, FORWARD, nu);
-	  
-	  /* tmp_tot = tmp_2 * u_dag(x,nu) */
-	  /*         = u(x+mu,nu)*u(x+mu+nu,nu)*u_dag(x+2*nu,mu) */
-	  /*          *u_dag(x+nu,nu)*u_dag(x,nu) */
-	  
-	  
-	  tmp_tot[rb[cb]] = coeff * tmp_2 * adj(u[nu]);
+	if( mu == params.aniso.t_dir ) { 
+	  c = params.coeff_t1;    // Param for 2x1 in t
 	}
-	else { 
-	  // If the case above is skipped we should zero tmp_tot[rb[cb]]
-	  tmp_tot[rb[cb]] = zero; 
+	else if ( nu == params.aniso.t_dir ) { 
+	  c = params.coeff_t2; 
+	}
+	else {
+	  c = params.coeff_s;
 	}
 	
-	
-	
-	// Going t do 2x1 loops (mu, mu, nu)
-	// 
-	//                   ^ nu
-	//  <---- <----^     |
-	//  |          |     |
-	//  |          |     ---> mu
-	//  V ---> ---->
-	
-	
-	// Now Mu is the long direction. If it is temporal
-	// we use the coefficient for temporal 2x1 loops (c1t)
-	// Nu is the short direction. If it is temporal
-	// we use the coefficient for temporal 1x2 loops (c2t)
-	// This overrides the setting above. Luckily 
-	// the way the sum is done, we can never have mu == nu
-	// so the cases don't conflict
-	// Additionally if mu is temporal, and no_temporal2_link
-	// is turned on we skip this loop entirely
-	
-	skip = ( mu == params.aniso.t_dir && params.no_temporal_2link == true);
-	if (! skip ) {
-	  
-	  if( mu == params.aniso.t_dir ) {
-	    coeff = params.coeff_t1;   
-	  }
-	  else if( nu == params.aniso.t_dir ) {
-	    coeff = params.coeff_t2;   
-	  }
-	  else {
-	    coeff = params.coeff_s;
-	  }
-	  
-	  /* tmp_1(x) = u(x+mu,nu) */
-	  tmp_1[rb[1-cb]] = shift(u[nu], FORWARD, mu);
-	  
-	  /* tmp_0 = u(x,nu) * tmp_1 = u(x,mu)*u(x+mu,nu) */
-	  tmp_0[rb[1-cb]] = u[mu] * tmp_1;
-	  
-	  /* tmp_2(x) = tmp_0(x-nu) */
-	  tmp_2[rb[cb]] = shift(tmp_0, BACKWARD, nu);
-	  
-	  /* tmp_0 = tmp_2 * u_dag(x,mu) = u(x-nu,mu)*u(x+mu-nu,nu)*u_dag(x,mu) */
-	  tmp_0[rb[cb]] = tmp_2 * adj(u[mu]);
-	  
-	  /* tmp_1(x) = tmp_0(x+mu) */
-	  tmp_1[rb[1-cb]] = shift(tmp_0, FORWARD, mu);
-	  
-	  /* tmp_0 = tmp_1 * u_dag(x,mu) */
-	  /*       = u(x+mu-nu,mu)*u(x+2*mu-nu,nu)*u_dag(x+mu,mu)*u_dag(x,mu) */
-	  tmp_0[rb[1-cb]] = tmp_1 * adj(u[mu]);
-	  
-	  /* tmp_2(x) = tmp_0(x+nu) */
-	  tmp_2[rb[cb]] = shift(tmp_0, FORWARD, nu);
-	  
-	  /* tmp_tot += tmp_2 * u_dag(x,nu) */
-	  /*         += u(x+mu,mu)*u(x+2*mu,nu)*u_dag(x+mu+nu,mu)*u_dag(x+nu,mu) */
-	  /*           *u_dag(x,nu) */
-	  tmp_tot[rb[cb]] += coeff * tmp_2 * adj(u[nu]);
-	} // End of skip
-	    
-	/* lgimp += c_1(mu,nu)*trace(u(x,mu) * tmp_tot) */
-	lgimp[rb[cb]] += real(trace(u[mu] * tmp_tot));
+
+
+	// if mu (the long direction) is t_dir and we need to skip this
+	// then skip = true
+	bool skip = ( mu == params.aniso.t_dir && params.no_temporal_2link );
+	if( !skip ) {
+	  S_part(mu, nu, c, lgimp, u);
+	}
       }
-    } // end nu loop
-  } // end mu loop
+    }
+
+    Double S_rect = sum(lgimp);
+    S_rect *= -Real(1) / Real(Nc);   // note sign here
+    return S_rect;
+    
+  }
   
-  Double S_rect = sum(lgimp);
-  S_rect *= -Real(1) / Real(Nc);   // note sign here
+
+void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
+		     const multi1d<LatticeColorMatrix>& u)
+{
+  LatticeColorMatrix tmp1;
+  LatticeColorMatrix tmp2;
+  LatticeColorMatrix lr_corner;
+  LatticeColorMatrix lower_l;
+  LatticeColorMatrix upper_l;
+  LatticeColorMatrix rectangle_2munu;
+  LatticeColorMatrix rectangle_mu2nu;
   
-  END_CODE();
   
-  return S_rect;
-} 
+  //                     ^
+  // lr_corner =         |   = u(x, mu) * u(x + mu, nu)
+  //                     |
+  //                ----->
+  //
+  
+  lr_corner = u[mu]*shift(u[nu], FORWARD, mu);
+  
+  //                        ^
+  // lower_l =              |
+  //            -----> ----->
+
+  //
+  //  lower_l = u(x, mu) u(x + mu, mu) * u(x + 2mu, nu)  OK!!
+  lower_l = u[mu]*shift(lr_corner, FORWARD, mu);
+  
+  
+  
+  // Upper L =  <----- <-----
+  //            |
+  //            V
+  
+  // tmp2 = adj(tmp_1)*adj(u[mu]) = u^dag(x + mu, nu) u^dag(x, mu)
+  tmp2 = adj(shift(u[mu], FORWARD, mu))*adj(u[mu]);
+  
+  // tmp1 = tmp2(x+nu) = u^dag(x + mu + nu, mu) * u^dag(x + nu, mu)
+  tmp1 = shift(tmp2, FORWARD, nu);
+  
+  // upper_l =  u^dag(x + mu + nu, mu) * u^dag(x + nu, mu) * u^dag(nu)
+  upper_l = tmp1*adj(u[nu]);
+  
+  //   Loop = Lower_l * upper_l
+  //        =  u(x, mu) u(x + mu, mu) * u(x + 2mu, nu)
+  //         * u^dag(x + mu + nu, mu) * u^dag(x + nu, mu) * u^dag(nu)
+  rectangle_2munu = lower_l*upper_l;
+  
+  
+  lgimp += c * real(trace(rectangle_2munu));
+  // lgimp += c2 * real(trace(rectangle_mu2nu));
+}
+
 
 
 // Isotropic case
@@ -534,7 +431,14 @@ RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_,
 
 //! Read rectangle coefficient from a param struct
 RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
-			   const RectGaugeActParams& p) : cgs(cgs_), params(p) {}
+			   const RectGaugeActParams& p) : cgs(cgs_), params(p) {
+  // It is at this point we take into account the anisotropy
+  if( params.aniso.anisoP ) { 
+    params.coeff_s = p.coeff_s / p.aniso.xi_0;
+    params.coeff_t1 = p.coeff_t1 * p.aniso.xi_0;
+    params.coeff_t2 = p.coeff_t2 * p.aniso.xi_0;
+  }
+}
 
 }
 
