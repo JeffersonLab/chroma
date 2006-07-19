@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.3 2006-04-19 02:24:42 edwards Exp $
+#  $Id: regres.pl,v 3.4 2006-07-19 02:22:11 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -156,10 +156,42 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 
-	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_dwf.ini.xml" , 
-	 output      => "t_leapfrog.prec_1flav_dwf.candidate.xml",
-	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_dwf.metric.xml" ,
-	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_dwf.out.xml" ,
-     }
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact.ini.xml" , 
+	 output      => "t_leapfrog.rect_gaugeact.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_1.ini.xml" , 
+	 output      => "t_leapfrog.rect_gaugeact_1.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_1.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_1.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_c1t0.ini.xml" , 
+	 output      => "t_leapfrog.rect_gaugeact_c1t0.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_c1t0.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_c1t0.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_omit2linkT.ini.xml" , 
+	 output      => "t_leapfrog.rect_gaugeact_omit2linkT.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_omit2linkT.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_omit2linkT.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_aniso.ini.xml" , 
+	 output      => "t_leapfrog.rect_gaugeact_aniso.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_aniso.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_aniso.out.xml" ,
+     },
 
      );
