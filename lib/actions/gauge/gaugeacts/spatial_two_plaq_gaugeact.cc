@@ -1,4 +1,4 @@
-// $Id: spatial_two_plaq_gaugeact.cc,v 1.1 2006-07-19 21:42:06 bjoo Exp $
+// $Id: spatial_two_plaq_gaugeact.cc,v 1.2 2006-07-20 15:00:05 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -9,7 +9,7 @@
 #include "actions/gauge/gaugeacts/gauge_createstate_factory.h"
 #include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
 #include "meas/glue/mesplq.h"
-
+#include "util/gauge/taproj.h"
 
 namespace Chroma
 {
@@ -92,6 +92,34 @@ namespace Chroma
    * ds_u -- | ----   ( Write )
    *         |  dU  
    *
+   *
+   * This is a funny action. It is  P(x) P(x+t) 
+   * Where P(x) is the real trace of the plaquette
+   *
+   * The chain rule means the derivative is:
+   *
+   *    \dot{ P(x) } P(x+t) + P(x) \dot{ P(x + t) }
+   *
+   * I can resum this, in a different way to collect all the terms
+   * on a link U(x). This resumming involves x + t -> x
+   * 
+   * so the derivative then becomes
+   *
+   *  \dot{ P(x) } P(x+t) + P(x-t) \dot{ P(x) }
+   *
+   * = [ P(x+t) + P(x-t) ] \dot{ P(x) } = P_sum \dot{P(x)}
+   * 
+   * Now \dot{P(x)} contains the usual force contribugtions from the plaquette
+   * and P_sum is an array of lattice reals.
+   *
+   * The only remaining complication is that I generate force contributions
+   * in the routine for U_(x,i), U_(x+j,i), U_(x,j) and U_(x+i,j)
+   *
+   * and this is done by shifting staples from x to x+j and x+i
+   *
+   * during this shifting I have also to ensure the same shifting of P_sum
+   *  
+   *
    * \param ds_u       result      ( Write )
    * \param state      gauge field ( Read )
    */
@@ -107,22 +135,24 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
 
-
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     LatticeColorMatrix tmp, tmp2;
 
-    ds_u = zero;
+    int t_dir = tDir();
+
+
     ds_tmp = zero;
 
     for(int mu = 0; mu < Nd; mu++) {
-      if ( mu == tDir() ) continue;
+      if ( mu == t_dir ) continue;
       
-      	for(int nu=mu+1; nu < Nd; nu++) {
-	  if( nu == tDir() ||   mu == nu ) continue;
+      	for(int nu=mu+1 ; nu < Nd; nu++) {
+	  if( nu == t_dir ) continue;
 
 	  // Plaquette Forces -> 
-	  // For F_mu
+	  // For F_i
 	  //
+	  //    U(x,i) term        U(x+j,i) term
 	  //        (1)               (2)
 	  //     < ----- ^      x  ^      |             
 	  //     |       |         |      |
@@ -130,6 +160,8 @@ namespace Chroma
 	  //  x  V       |         <------V
 
 	  // For F_nu
+	  //
+	  //    U(x, j) term       U(x+i, j) term
 	  //       (3)                (4)
 	  //     ------->         <------
 	  //            |    +    | 
@@ -154,69 +186,55 @@ namespace Chroma
 
 	  // Make munu plaquette which is just adj(tmp2)*tmp1
 
-	  LatticeColorMatrix P_munu = adj(tmp2)*tmp;
-	  
+	 
 	  // Take the real trace
-	  LatticeReal re_tr_P_munu = real(trace(P_munu));
+	  LatticeReal P_munu = real(trace(adj(tmp2)*tmp));
 
-	  // Shift to get the t+1 slice
-	  LatticeReal s_re_tr_P_munu = shift(re_tr_P_munu, FORWARD, tDir());
+	  LatticeReal P_sum = shift(P_munu, FORWARD, t_dir)+
+	    shift(P_munu, BACKWARD, t_dir);
 
+	  // It is tmp and tmp2 that will
+	  // need to move when I generate the force contrib
+	  // for U(x+i,j) and U(x+j,i) (in terms 2 and 4)
+	  // It is at these times I also ned to shift the P_sum
+	  // in exactly the same way. Terms (1) and (2) 
+	  // have tmp and tmp2 unshifted and require the local P_sum
+	  //
+	  // Since the P_sum is made of lattice reals  multiplication
+	  // is commutative, so it is safe to multiply them into 
+	  // the tmp and tmp2 right here.
 	  
+	  tmp *= P_sum;
+	  tmp2 *= P_sum;
+
 	  // Now Term (1)
-	  ds_tmp[mu] = u[mu]*shift(u[nu], FORWARD, mu)*tmp;
+	  ds_tmp[mu] += shift(u[nu], FORWARD, mu)*tmp;
 
 	  // Now term (2)
-	  ds_tmp[mu] +=u[mu]*shift(tmp2*u[nu], BACKWARD, nu);
+	  ds_tmp[mu] += shift(tmp2*u[nu], BACKWARD, nu);
 
 	  // Now term (3)
-	  ds_tmp[nu] = u[nu]*shift( u[mu], FORWARD, nu)*tmp2;
+	  ds_tmp[nu] += shift(u[mu], FORWARD, nu)*tmp2;
 	  
 	  // Now term (4)
-	  ds_tmp[nu] += u[nu]*shift(tmp*u[mu], BACKWARD, mu);
+	  ds_tmp[nu] += shift(tmp*u[mu], BACKWARD, mu);
 
-	  // Zero the force on any fixed boundaries
-	  // getGaugeBC().zero(ds_tmp);
-
-	  // Chain rule:
-	  //
-	  //    d/dt ( P_{ij}(t) P_{ij}(t+1) )
-	  //     = [ d/dt P_{ij}(t) ] *  P_{ij}(t+1)
-	  //      +  P_{ij}(t) [ d/dt P_{ij}(t+1) ]
-
-	  // Since P_{ij} is a lattice scalar I can pull it to the front:
-	  // so:
-	  //
-	  //  P_{ij}(t+1) [ d/dt P_{ij}(t) ] +  P_{ij}(t) [ d/dt P_{ij}(t+1) ]
-	  //
-	  //  =>  P_{ij}(t+1) F +  P_{ij}(t) F(t+1).
-	  //
-	  //  P_ij contributes to F_i and F_j
-	  // so 
-	  //      P_{ij}(t+1) F_i +  P_{ij}(t) F_i(t+1)
-	  //    + P_{ij}(t+1) F_j +  P_{ij}(t) F_j(t+1)
-
-	  //   P_ij(t+1) F_{j} 
-	  ds_u[nu]  += s_re_tr_P_munu*ds_tmp[nu];
-	  ds_u[nu]  += re_tr_P_munu*shift(ds_tmp[nu], FORWARD, tDir());
-
-	  //            P_ij(t+1) F_{i}
-	  ds_u[mu]  += s_re_tr_P_munu*ds_tmp[mu];
-	  ds_u[mu]  += re_tr_P_munu*shift(ds_tmp[mu], FORWARD, tDir());
-	  
 	}
     }
 
 
+    // Finally multiply by u[mu] in the spatial dirs 
+    // and zero out junk in the time dir
     for(int mu=0; mu < Nd; mu++) {
-      if (mu == tDir()) {
-	// ds_u[mu] = zero;
+      if (mu == t_dir) {
+	ds_u[mu] = zero; // This component is otherwise untouched
+	                 // So we should zero junk out of it
       }
       else { 
-	ds_u[mu] *= Real(-1)/(Real(8));
+	ds_u[mu] = u[mu]*ds_tmp[mu];
+	ds_u[mu] *= Real(-param.coeff)/Real(4*Nc*Nc);
       }
     }
-
  
     // Zero the force on any fixed boundaries
     getGaugeBC().zero(ds_u);
@@ -227,17 +245,15 @@ namespace Chroma
 
   // Get the gauge action
   //
-  // S = -(coeff/(Nc) Sum Re Tr Plaq
+  // S = -(coeff/2) Sum P_{ij}(x) P_{ij}(x+t)
   //
-  // w_plaq is defined in MesPlq as
+  // where P_{ij}(x) is the plaquette on lattice point x and i,j are 
+  // only spatial directions.
   //
-  // w_plaq =( 2/(V*Nd*(Nd-1)*Nc)) * Sum Re Tr Plaq
+  // P has normalisatiom (1/Nc) and so the overall normalisation
+  // for the product is (1/Nc^2). Giving the final multiplier as
   //
-  // so 
-  // S = -coeff * (V*Nd*(Nd-1)/2) w_plaq 
-  //   = -coeff * (V*Nd*(Nd-1)/2)*(2/(V*Nd*(Nd-1)*Nc))* Sum Re Tr Plaq
-  //   = -coeff * (1/(Nc)) * Sum Re Tr Plaq
-
+  //  -coeff/(2 Nc^2 )
   Double
   SpatialTwoPlaqGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
@@ -246,31 +262,30 @@ namespace Chroma
     // Handle< const GaugeState<P,Q> > u_bc(createState(u));
     // Apply boundaries
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    int t_dir = tDir();
 
+    
     // Compute the average plaquettes
     for(int mu=0; mu < Nd; ++mu)
     {
-      if( mu == tDir()) continue;
+      if( mu == t_dir) continue;
 
       for(int nu=mu+1; nu < Nd; ++nu)
       {
-	if( nu == tDir()) continue;
+	if( nu == t_dir) continue;
 	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
 	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
 	/* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
 
 	LatticeReal P_munu = real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu])));
-	LatticeReal tmp = shift(P_munu, FORWARD, tDir());
-#if 1
-	S_pg += sum(P_munu*tmp);
-#else
-	S_pg += sum(P_munu);
-#endif
+
+	S_pg += sum(P_munu*shift(P_munu, FORWARD, t_dir));
+
       }
     }
 
     // Normalize -> 1 factor of Nc from each P_munu
-    S_pg *= Double(-1)/Double(2);
+    S_pg *= Double(-param.coeff)/Real(2*Nc*Nc);
 
     return S_pg;
   } 
