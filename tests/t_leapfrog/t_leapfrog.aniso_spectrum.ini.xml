@@ -5,10 +5,10 @@
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
-	  <Name>MORNINGSTAR_PEARDON_GAUGEACT</Name>
+	  <Name>ANISO_SPECTRUM_GAUGEACT</Name>
 	  <beta>1.7</beta>
-	  <u0s>0.73698</u0s>
-	  <u0t>1</u0t>
+	  <u_s>0.73698</u_s>
+	  <u_t>1</u_t>
 	  <omega>3</omega>
           <AnisoParam>
             <anisoP>true</anisoP>
@@ -27,7 +27,7 @@
    </Hamiltonian>
    <MDIntegrator>
 	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<n_steps>100</n_steps>
+	<n_steps>10</n_steps>
 	<tau0>1.0</tau0>
    </MDIntegrator>
    <GaugeStartup>
