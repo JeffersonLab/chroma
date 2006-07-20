@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.19 2006-07-19 17:19:15 bjoo Exp $
+# $Id: Makefile.am,v 3.20 2006-07-20 18:03:42 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -92,6 +92,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
+	actions/gauge/gaugeacts/mp_gaugeact.h \
 	actions/gauge/gaugeacts/simple_gaugestate.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
@@ -709,6 +710,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
+	actions/gauge/gaugeacts/mp_gaugeact.cc \
 	actions/gauge/gaugeacts/simple_gaugestate.cc \
 	io/eigen_io.cc \
         io/enum_io/enum_cfgtype_io.cc \
