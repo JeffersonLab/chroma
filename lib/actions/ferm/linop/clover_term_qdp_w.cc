@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.1 2006-05-30 20:05:57 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.2 2006-07-20 20:06:31 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -79,7 +79,7 @@ namespace Chroma
 
 
   //! Creation routine
-  void QDPCloverTerm::create(Handle< FermState<T,P,Q> >& fs,
+  void QDPCloverTerm::create(Handle< FermState<T,P,Q> > fs,
 			     const CloverFermActParams& param_)
   {
     u = fs->getLinks();

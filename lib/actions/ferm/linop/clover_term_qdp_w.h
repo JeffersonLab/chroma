@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.2 2006-05-30 22:09:59 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 3.3 2006-07-20 20:06:31 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -49,7 +49,7 @@ namespace Chroma
     ~QDPCloverTerm() {}
 
     //! Creation routine
-    void create(Handle< FermState<T,P,Q> >& fs,
+    void create(Handle< FermState<T,P,Q> > fs,
 		const CloverFermActParams& param_);
 
     //! Computes the inverse of the term on cb using Cholesky
