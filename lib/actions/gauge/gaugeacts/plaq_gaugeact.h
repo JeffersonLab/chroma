@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 3.1 2006-04-19 02:29:45 edwards Exp $
+// $Id: plaq_gaugeact.h,v 3.2 2006-07-20 15:52:40 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -31,7 +31,9 @@ namespace Chroma
     // Read params from some root path
     PlaqGaugeActParams(XMLReader& xml_in, const std::string& path);
 
-    Real coeff;  
+    Real coeff_s;
+    Real coeff_t;
+
     AnisoParam_t aniso;
   };
   
@@ -52,7 +54,23 @@ namespace Chroma
     PlaqGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		 const Real& coeff,
 		 const AnisoParam_t& aniso) : 
-      cgs(cgs_) {param.coeff = coeff; param.aniso = aniso; init();}
+      cgs(cgs_) {
+      param.coeff_s = coeff; 
+      param.coeff_t = coeff,
+      param.aniso = aniso; init();
+    }
+
+    //! General CreateGaugeState<P,Q>
+    PlaqGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+		 const Real& coeff_s,
+		 const Real& coeff_t,
+		 const AnisoParam_t& aniso) : 
+      cgs(cgs_) {
+      param.coeff_s = coeff_s; 
+      param.coeff_t = coeff_t,
+      param.aniso = aniso; init();
+    }
+
 
     //! Read coeff from a param struct
     PlaqGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
@@ -91,8 +109,8 @@ namespace Chroma
     ~PlaqGaugeAct() {}
 
     // Accessors -- non mutable members.
-    const Real getCoeff(void) const {return param.coeff;}
-
+    const Real getCoeffS(void) const {return param.coeff_s;}
+    const Real getCoeffT(void) const { return param.coeff_t; }
   protected:
     PlaqGaugeAct() {}
     void operator=(const PlaqGaugeAct& a) {}       //! Hide assignment

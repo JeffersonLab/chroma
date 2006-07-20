@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.1 2006-04-19 02:29:45 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 3.2 2006-07-20 15:52:40 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -35,11 +35,24 @@ namespace Chroma
     XMLReader paramtop(xml_in, path);
 
     try {
-      read(paramtop, "./coeff", coeff);
 
       //  Read optional anisoParam.
-      if (paramtop.count("AnisoParam") != 0) 
+      if (paramtop.count("AnisoParam") != 0) { 
 	read(paramtop, "AnisoParam", aniso);
+      }
+      
+      // Check if there is a coeff on its own 
+      // If yes, then assume coeff = coeff_s = coeff_t 
+      // This is for backward compatibility
+      if ( paramtop.count("coeff") != 0)  {
+	read(paramtop, "./coeff", coeff_s);
+	coeff_t = coeff_s;
+      }
+      else {
+	// Otherwise 
+	read(paramtop, "./coeff_s", coeff_s);
+	read(paramtop, "./coeff_t", coeff_t);
+      }
     }
     catch( const std::string& e ) { 
       QDPIO::cerr << "Error reading XML: " <<  e << endl;
@@ -66,16 +79,23 @@ namespace Chroma
     {
       for(int nu = mu+1; nu < Nd; ++nu) 
       { 
-	coeffs[mu][nu] = param.coeff;
+	if( mu == tDir() || nu == tDir() ) {
 
-	if( anisoP() && (mu == tDir() || nu == tDir()) )
-	{
-	  coeffs[mu][nu] *= param.aniso.xi_0;
+	  // Temporal Plaquette in either mu or nu direction
+	  coeffs[mu][nu] = param.coeff_t;
+	  if( anisoP() ) {
+	    coeffs[mu][nu] *= param.aniso.xi_0;
+	  }
+
 	}
-	else
-	{
-	  coeffs[mu][nu] /= param.aniso.xi_0;
+	else {
+	  // Spatial Plaquette
+	  coeffs[mu][nu] = param.coeff_s;
+	  if( anisoP() ) { 
+	    coeffs[mu][nu] /= param.aniso.xi_0;
+	  }
 	}
+
 
 	coeffs[nu][mu] = coeffs[mu][nu];
       }
