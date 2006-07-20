@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.4 2006-07-19 02:22:11 bjoo Exp $
+#  $Id: regres.pl,v 3.5 2006-07-20 15:14:53 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -193,5 +193,13 @@
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_aniso.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.rect_gaugeact_aniso.out.xml" ,
      },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.two_plaq_spatial_gaugeact.ini.xml" , 
+	 output      => "t_leapfrog.two_plaq_spatial_gaugeact.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.two_plaq_spatial_gaugeact.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.two_plaq_spatial_gaugeact.out.xml" ,
+     }
 
      );
