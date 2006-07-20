@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mp_gaugeact.h,v 1.1 2006-07-20 18:03:17 bjoo Exp $
+// $Id: mp_gaugeact.h,v 1.2 2006-07-20 18:24:15 bjoo Exp $
 /*! \file
  *  \brief Morningstar Peardont type gaugeact
  */
@@ -11,14 +11,14 @@
 #include "gaugebc.h"
 #include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
-#include "actions/gauge/gaugeacts/two_plaq_spatial_gaugeact.h"
+#include "actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h"
 
 
 namespace Chroma
 {
 
   /*! @ingroup gaugeacts */
-  namespace MPTGaugeActEnv { 
+  namespace MPGaugeActEnv { 
     extern const string name;
     extern const bool registered;
   }
@@ -136,7 +136,7 @@ namespace Chroma
   private:
     Handle<PlaqGaugeAct> plaq;    /*!< Hold a plaquette gaugeact */
     Handle<RectGaugeAct> rect;    /*!< Hold a rectangle gaugeact */
-    Handle<TwoPlaqSpatialGaugeAct> two_plaq /*!< Hold spatial plaquettes separated in time type gaugeact */
+    Handle<SpatialTwoPlaqGaugeAct> two_plaq; /*!< Hold spatial plaquettes separated in time type gaugeact */
     MPGaugeActParams param;   /*!< The couplings and anisotropy*/
   };
 

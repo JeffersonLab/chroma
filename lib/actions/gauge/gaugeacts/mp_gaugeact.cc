@@ -1,4 +1,4 @@
-// $Id: mp_gaugeact.cc,v 1.1 2006-07-20 18:03:17 bjoo Exp $
+// $Id: mp_gaugeact.cc,v 1.2 2006-07-20 18:24:15 bjoo Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */
@@ -63,7 +63,7 @@ namespace Chroma
     // Various tadpole things
     // spatial powers
     Real u_s_2 = param.u0s * param.u0s;
-    Real u_s 4 = u_s_2 * u_s_2;
+    Real u_s_4 = u_s_2 * u_s_2;
     Real u_s_6 = u_s_4 * u_s_2;
     Real u_s_8 = u_s_4 * u_s_4;
 
@@ -92,7 +92,7 @@ namespace Chroma
 
     // Coefficient of 2 plaquette spatial adjoint like thingie
     Real coeff_2plaq = Real(-5)*param.beta*param.omega/(Real(3)*u_s_8);
-    two_plaq = new SpatialTwoPlaqGaugeAct(cgs, coeff, param.aniso);
+    two_plaq = new SpatialTwoPlaqGaugeAct(cgs, coeff_2plaq, param.aniso);
 
   } 
 
