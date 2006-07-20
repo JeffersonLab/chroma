@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: aniso_spectrum_gaugeact.h,v 1.2 2006-07-20 19:53:00 edwards Exp $
+// $Id: aniso_spectrum_gaugeact.h,v 1.3 2006-07-20 20:21:34 edwards Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -38,8 +38,8 @@ namespace Chroma
     AnisoSpectrumGaugeActParams(XMLReader& xml_in, const std::string& path);
 
     Real beta;  
-    Real u0s;
-    Real u0t;
+    Real u_s;
+    Real u_t;
     Real omega;
     AnisoParam_t aniso;
   };
@@ -130,9 +130,9 @@ namespace Chroma
     // Accessors -- non mutable members.
     const Real getBeta(void) const { return param.beta; }
     
-    const Real getU0S(void) const { return param.u0s; }
+    const Real getUS(void) const { return param.u_s; }
     
-    const Real getU0T(void) const { return param.u0t; }
+    const Real getUT(void) const { return param.u_t; }
 
     const Real getOmega(void) const { return param.omega; }
 

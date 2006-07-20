@@ -1,4 +1,4 @@
-// $Id: aniso_spectrum_gaugeact.cc,v 1.2 2006-07-20 19:53:00 edwards Exp $
+// $Id: aniso_spectrum_gaugeact.cc,v 1.3 2006-07-20 20:21:34 edwards Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -37,8 +37,8 @@ namespace Chroma
     try 
     {
       read(paramtop, "beta", beta);
-      read(paramtop, "u0s", u0s);
-      read(paramtop, "u0t", u0t);
+      read(paramtop, "u_s", u_s);
+      read(paramtop, "u_t", u_t);
       read(paramtop, "omega", omega);
       read(paramtop, "AnisoParam", aniso);
     }
@@ -60,8 +60,8 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "beta", param.beta);
-    write(xml, "u0s", param.u0s);
-    write(xml, "u0t", param.u0t);
+    write(xml, "u_s", param.u_s);
+    write(xml, "u_t", param.u_t);
     write(xml, "omega", param.omega);
     write(xml, "AnisoParam", param.aniso);
 
@@ -78,13 +78,13 @@ namespace Chroma
 
     // Various tadpole things
     // spatial powers
-    Real u_s_2 = param.u0s * param.u0s;
+    Real u_s_2 = param.u_s * param.u_s;
     Real u_s_4 = u_s_2 * u_s_2;
     Real u_s_6 = u_s_4 * u_s_2;
     Real u_s_8 = u_s_4 * u_s_4;
 
     // temporal powers
-    Real u_t_2 = param.u0t * param.u0t;
+    Real u_t_2 = param.u_t * param.u_t;
     Real u_t_4 = u_t_2 * u_t_2;
 
     // Coefficients for the plaquette term (eq 4 in hep-lat/9911003)
