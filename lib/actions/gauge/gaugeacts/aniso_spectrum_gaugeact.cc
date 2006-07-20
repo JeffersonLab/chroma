@@ -1,4 +1,4 @@
-// $Id: aniso_spectrum_gaugeact.cc,v 1.1 2006-07-20 18:40:35 edwards Exp $
+// $Id: aniso_spectrum_gaugeact.cc,v 1.2 2006-07-20 19:53:00 edwards Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -34,10 +34,11 @@ namespace Chroma
   {
     XMLReader paramtop(xml_in, path);
 
-    try {
+    try 
+    {
       read(paramtop, "beta", beta);
-      read(paramtop, "u_s", u_s);
-      read(paramtop, "u_t", u_t);
+      read(paramtop, "u0s", u0s);
+      read(paramtop, "u0t", u0t);
       read(paramtop, "omega", omega);
       read(paramtop, "AnisoParam", aniso);
     }
@@ -47,10 +48,24 @@ namespace Chroma
     }
   }
 
+
   void read(XMLReader& xml, const string& path, AnisoSpectrumGaugeActParams& p) 
   {
     AnisoSpectrumGaugeActParams tmp(xml, path);
     p=tmp;
+  }
+
+  void write(XMLWriter& xml, const string& path, const AnisoSpectrumGaugeActParams& param) 
+  {
+    push(xml, path);
+
+    write(xml, "beta", param.beta);
+    write(xml, "u0s", param.u0s);
+    write(xml, "u0t", param.u0t);
+    write(xml, "omega", param.omega);
+    write(xml, "AnisoParam", param.aniso);
+
+    pop(xml);
   }
 
 
@@ -58,16 +73,40 @@ namespace Chroma
   void
   AnisoSpectrumGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
   {
-    // Fold in normalizations and create action
-    // NOTE: the 5/3 is folded into beta, hence divided out of c1 and c2
-    Real c0 = param.beta;
-    plaq = new PlaqGaugeAct(cgs,c0,param.aniso);
+    // Do the plaquette first. Spatial and temporal coeffs
+    // anisotropy multiplied in in the terms constructor
 
-    Real c1 = -c0 * (1/(20*param.u_s*param.u_s));
-    rect = new RectGaugeAct(cgs,c1);
+    // Various tadpole things
+    // spatial powers
+    Real u_s_2 = param.u0s * param.u0s;
+    Real u_s_4 = u_s_2 * u_s_2;
+    Real u_s_6 = u_s_4 * u_s_2;
+    Real u_s_8 = u_s_4 * u_s_4;
 
-    Real c2 = -c0;
-    plaq_sq = new SpatialTwoPlaqGaugeAct(cgs,param.omega,param.aniso);
+    // temporal powers
+    Real u_t_2 = param.u0t * param.u0t;
+    Real u_t_4 = u_t_2 * u_t_2;
+
+    // Coefficients for the plaquette term (eq 4 in hep-lat/9911003)
+    Real plaq_c_s = param.beta * Real(5) * ( Real(1) + param.omega ) / ( Real(3) * u_s_4 );
+    Real plaq_c_t = param.beta * Real(4) / ( Real(3) * u_s_2 * u_t_2 );
+    plaq = new PlaqGaugeAct(cgs, plaq_c_s, plaq_c_t, param.aniso);
+
+    // Coefficients for the rectangle 
+    Real rect_c_s = - param.beta / ( Real(12)*u_s_6 );
+    
+    // Loops that are short in the time direction
+    Real rect_c_t_2 = - param.beta / ( Real(12)*u_s_4*u_t_2);
+
+    // Loops that are long int the time direction ought to be ommitted
+    bool no_temporal_2link = true;
+    Real rect_c_t_1 = 0; // Specify a zero coefficient (skipped anyway)
+
+    rect = new RectGaugeAct(cgs, rect_c_s, rect_c_t_1, rect_c_t_2, no_temporal_2link, param.aniso);
+
+    // Coefficient of 2 plaquette spatial adjoint like thingie
+    Real coeff_2plaq = Real(-5)*param.beta*param.omega/(Real(3)*u_s_8);
+    two_plaq = new SpatialTwoPlaqGaugeAct(cgs, coeff_2plaq, param.aniso);
   } 
 
 }
