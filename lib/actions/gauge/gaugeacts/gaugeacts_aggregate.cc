@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.1 2006-07-20 15:56:59 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */
@@ -16,7 +16,7 @@
 #include "actions/gauge/gaugeacts/lw_1loop_gaugeact.h"
 #include "actions/gauge/gaugeacts/rg_gaugeact.h"
 #include "actions/gauge/gaugeacts/rbc_gaugeact.h"
-
+#include "actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h"
 
 namespace Chroma
 {
@@ -36,7 +36,7 @@ namespace Chroma
       success &= LW1LoopGaugeActEnv::registered;
       success &= RGGaugeActEnv::registered;
       success &= RBCGaugeActEnv::registered;
-
+      success &= SpatialTwoPlaqGaugeActEnv::registered;
       return success;
     }
 
