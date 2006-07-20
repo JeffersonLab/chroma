@@ -1,6 +1,9 @@
-// $Id: dwf_quarkprop4_w.cc,v 3.1 2006-06-11 06:30:32 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 3.2 2006-07-20 20:05:50 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 3.1  2006-06-11 06:30:32  edwards
+// Revision 3.2  2006-07-20 20:05:50  edwards
+// Added norm.
+//
+// Revision 3.1  2006/06/11 06:30:32  edwards
 // Change in interface. The quarkProp routines now all take a "numRetries"
 // variable for the number of times to call the qprop routine. The propagator
 // regression tests have all been up to version 10 to read this new variable.
@@ -313,6 +316,19 @@ namespace Chroma
 	
       }	/* end loop over spin_source */
     } /* end loop over color_source */
+
+    // Construct the norm of the chiral field throughout the bulk
+    {
+      multi1d<Double> bulk_norm2(N5/2);
+      bulk_norm2 = zero;
+
+      for(int s=0; s < bulk_norm2.size(); ++s)
+      {
+	bulk_norm2[s] = norm2(chiralProjectMinus(prop5d[s]) + chiralProjectPlus(prop5d[N5-1-s]));
+      }
+
+      write(xml_out, "bulk_norm2", bulk_norm2);
+    }
 
     // constuct the conserved axial current correlator
     LatticeComplex cfield ;
