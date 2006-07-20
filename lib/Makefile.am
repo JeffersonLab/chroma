@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.20 2006-07-20 18:03:42 bjoo Exp $
+# $Id: Makefile.am,v 3.21 2006-07-20 20:07:26 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -33,6 +33,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/simple_fermstate.h \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermacts/eigen_state.h \
+	actions/ferm/fermacts/extfield.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/periodic_fermbc.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
@@ -87,12 +88,12 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
 	actions/gauge/gaugeacts/pg_gaugeact.h \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h \
+	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
 	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
-	actions/gauge/gaugeacts/mp_gaugeact.h \
 	actions/gauge/gaugeacts/simple_gaugestate.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
@@ -286,6 +287,10 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
+	actions/ferm/fermacts/extfield_factory_w.h \
+	actions/ferm/fermacts/extfield_aggregate_w.h \
+	actions/ferm/fermacts/extfield_fermstate_w.h \
+	actions/ferm/fermacts/prec_clover_extfield_fermact_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/prec_nef_fermact_array_w.h \
@@ -360,6 +365,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/clover_term_qdp_w.h \
 	actions/ferm/linop/prec_clover_linop_w.h \
 	actions/ferm/linop/unprec_clover_linop_w.h \
+	actions/ferm/linop/prec_clover_extfield_linop_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
 	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/prec_dwf_linop_array_w.h \
@@ -705,12 +711,12 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
 	actions/gauge/gaugeacts/pg_gaugeact.cc \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.cc \
+	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc \
 	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
-	actions/gauge/gaugeacts/mp_gaugeact.cc \
 	actions/gauge/gaugeacts/simple_gaugestate.cc \
 	io/eigen_io.cc \
         io/enum_io/enum_cfgtype_io.cc \
@@ -862,6 +868,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/prec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/extfield_aggregate_w.cc \
+	actions/ferm/fermacts/prec_clover_extfield_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.cc \
@@ -930,6 +938,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/clover_term_qdp_w.cc \
 	actions/ferm/linop/prec_clover_linop_w.cc \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
+	actions/ferm/linop/prec_clover_extfield_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
