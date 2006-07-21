@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.2 2006-07-12 04:55:31 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.3 2006-07-21 20:42:52 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -262,6 +262,12 @@ namespace Chroma {
 		  n_CG_count,
 		  xml_out);
     pop(xml_out); // LowestEv
+
+    multi1d<Double> prof(N5);
+    for(int n=0; n < N5; n++)
+      prof[n] = sqrt(norm2(psi[0][n]));
+    
+    write(xml_out, "EigenVectorProfile", prof);
 
     QDPIO::cout << "Look for highest ev" << endl;
     Handle< LinearOperatorArray<LatticeFermion> > MinusMM(new lopsclArray<LatticeFermion, Real>(MM, Real(-1.0)));
