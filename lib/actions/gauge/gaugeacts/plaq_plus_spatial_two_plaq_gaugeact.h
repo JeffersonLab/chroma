@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_plus_spatial_two_plaq_gaugeact.h,v 3.1 2006-07-21 14:58:41 bjoo Exp $
+// $Id: plaq_plus_spatial_two_plaq_gaugeact.h,v 3.2 2006-07-21 18:53:26 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -77,12 +77,7 @@ namespace Chroma
     const Real anisoFactor() const {return param.aniso.xi_0;}
 
     //! Anisotropic direction
-    int tDir() const {
-      if( anisoP() ) {
-	return param.aniso.t_dir;
-      }
-    }
-
+    int tDir() const {return param.aniso.t_dir;}
 
     //! Return the set on which the gauge action is defined
     /*! Defined on the even-off (red/black) set */
