@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.21 2006-07-20 20:07:26 edwards Exp $
+# $Id: Makefile.am,v 3.22 2006-07-21 18:41:07 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -88,6 +88,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
 	actions/gauge/gaugeacts/pg_gaugeact.h \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h \
+	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
 	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
@@ -711,6 +712,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
 	actions/gauge/gaugeacts/pg_gaugeact.cc \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.cc \
+	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc \
 	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
