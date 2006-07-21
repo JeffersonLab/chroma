@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.3 2006-07-20 19:53:00 edwards Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.4 2006-07-21 14:58:41 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */
@@ -10,6 +10,7 @@
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
 #include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/pg_gaugeact.h"
 #include "actions/gauge/gaugeacts/wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/lw_tree_gaugeact.h"
@@ -38,6 +39,8 @@ namespace Chroma
       success &= RGGaugeActEnv::registered;
       success &= RBCGaugeActEnv::registered;
       success &= SpatialTwoPlaqGaugeActEnv::registered;
+      success &= PlaqPlusSpatialTwoPlaqGaugeActEnv::registered;
+
       success &= AnisoSpectrumGaugeActEnv::registered;
       return success;
     }
