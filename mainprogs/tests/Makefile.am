@@ -75,7 +75,8 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_circular_buffer \
     t_precnef \
     t_preccfz \
-    t_stout_state
+    t_stout_state \
+    t_aniso_gaugeact
 
 #
 # The programs and their dependencies
@@ -168,6 +169,7 @@ t_precnef_SOURCES = t_precnef.cc
 t_preccfz_SOURCES = t_preccfz.cc
 t_lwldslash_array_SOURCES = t_lwldslash_array.cc
 t_stout_state_SOURCES = t_stout_state.cc
+t_aniso_gaugeact_SOURCES = t_aniso_gaugeact.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
