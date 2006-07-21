@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.7 2006-07-20 18:36:11 bjoo Exp $
+#  $Id: regres.pl,v 3.8 2006-07-21 02:33:50 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -204,9 +204,9 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 
-	 input       => "$test_dir/t_leapfrog/t_leapfrog.morningstar_peardon_aniso.ini.xml" , 
-	 output      => "t_leapfrog.morningstar_peardon_aniso.candidate.xml",
-	 metric      => "$test_dir/t_leapfrog/t_leapfrog.morningstar_peardon_aniso.metric.xml" ,
-	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.morningstar_peardon_aniso.out.xml" ,
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.aniso_spectrum.ini.xml" , 
+	 output      => "t_leapfrog.aniso_spectrum.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.aniso_spectrum.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.aniso_spectrum.out.xml" ,
      },
      );
