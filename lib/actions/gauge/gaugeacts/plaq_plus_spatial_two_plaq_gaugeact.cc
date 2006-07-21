@@ -1,4 +1,4 @@
-// $Id: plaq_plus_spatial_two_plaq_gaugeact.cc,v 3.1 2006-07-21 14:58:41 bjoo Exp $
+// $Id: plaq_plus_spatial_two_plaq_gaugeact.cc,v 3.2 2006-07-21 18:39:11 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -187,7 +187,12 @@ namespace Chroma
 	  //   |
 	  //   |           (we'll use this for (1) and (4))
 	  //   V
-	  tmp = shift( adj(u[mu]), FORWARD, nu)*adj(u[nu]);
+	  //
+	  //
+	  LatticeColorMatrix u_mu_plus_nu = shift(u[mu], FORWARD, nu);
+	  LatticeColorMatrix u_nu_plus_mu = shift(u[nu], FORWARD, mu);
+
+	  tmp = adj(u_mu_plus_nu)*adj(u[nu]);
 
 	  // Now we do 
 	  //
@@ -195,7 +200,7 @@ namespace Chroma
 	  //           |  (we'll use this for (2) and (3)
 	  //           |
 	  //   <-------v
-	  tmp2 = shift( adj(u[nu]), FORWARD, mu)*adj(u[mu]);
+	  tmp2 = adj(u_nu_plus_mu)*adj(u[mu]);
 
 
 	  // Make munu plaquette which is just adj(tmp2)*tmp1
@@ -225,13 +230,13 @@ namespace Chroma
 	  tmp2 *= P_sum;
 
 	  // Now Term (1)
-	  ds_tmp[mu] += shift(u[nu], FORWARD, mu)*tmp;
+	  ds_tmp[mu] += u_nu_plus_mu*tmp;
 
 	  // Now term (2)
 	  ds_tmp[mu] += shift(tmp2*u[nu], BACKWARD, nu);
 
 	  // Now term (3)
-	  ds_tmp[nu] += shift(u[mu], FORWARD, nu)*tmp2;
+	  ds_tmp[nu] += u_mu_plus_nu*tmp2;
 	  
 	  // Now term (4)
 	  ds_tmp[nu] += shift(tmp*u[mu], BACKWARD, mu);
@@ -263,13 +268,15 @@ namespace Chroma
       //            |    +    | 
       //            |         |
       //   x <----- V         V----->
+      LatticeColorMatrix u_t_plus_nu = shift(u[t_dir], FORWARD, nu);
+      LatticeColorMatrix u_nu_plus_t = shift(u[nu], FORWARD, t_dir);
       
       // First  lets do 
       //    <-----
       //   |
       //   |           (we'll use this for (1) and (4))
       //   V
-      tmp = shift( adj(u[t_dir]), FORWARD, nu)*adj(u[nu]);
+      tmp = adj(u_t_plus_nu)*adj(u[nu]);
       
       // Now we do 
       //
@@ -277,13 +284,14 @@ namespace Chroma
       //           |  (we'll use this for (2) and (3)
       //           |
       //   <-------v
-      tmp2 = shift( adj(u[nu]), FORWARD, t_dir)*adj(u[t_dir]);
+      
+      tmp2 = adj(u_nu_plus_t)*adj(u[t_dir]);
       
 
       // Now Term (1)
       // I can write this directly to ds_tmp[t_dir]
       // which has not been used before
-      ds_tmp[t_dir] += shift(u[nu], FORWARD, t_dir)*tmp;
+      ds_tmp[t_dir] += u_nu_plus_t*tmp;
       
       // Now term (2)
       ds_tmp[t_dir] += shift(tmp2*u[nu], BACKWARD, nu);
@@ -293,7 +301,7 @@ namespace Chroma
       // coefficient and add to ds_tmp[nu]
 
       // Now term (3)
-      ds_u[nu] = shift(u[t_dir], FORWARD, nu)*tmp2;
+      ds_u[nu] = u_t_plus_nu*tmp2;
       
       // Now term (4)
       ds_u[nu] += shift(tmp*u[t_dir], BACKWARD, t_dir);

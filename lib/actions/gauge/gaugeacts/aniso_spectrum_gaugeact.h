@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: aniso_spectrum_gaugeact.h,v 1.3 2006-07-20 20:21:34 edwards Exp $
+// $Id: aniso_spectrum_gaugeact.h,v 1.4 2006-07-21 18:39:11 bjoo Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -12,9 +12,9 @@
 
 #include "gaugeact.h"
 #include "gaugebc.h"
-#include "actions/gauge/gaugeacts/plaq_gaugeact.h"
+// #include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
-#include "actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"
 
 
 namespace Chroma
@@ -32,7 +32,7 @@ namespace Chroma
   struct AnisoSpectrumGaugeActParams 
   {
     // Base Constructor
-    AnisoSpectrumGaugeActParams();
+    AnisoSpectrumGaugeActParams() {};
     
     // Read params from some root path
     AnisoSpectrumGaugeActParams(XMLReader& xml_in, const std::string& path);
@@ -91,12 +91,10 @@ namespace Chroma
 		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const
       {
-	plaq->staple(result,state,mu,cb);
-
+	// plaq->staple(result,state,mu,cb);
+	plaq_plus_two_plaq->staple(result,state,mu,cb); // This will fail I think
 	LatticeColorMatrix tmp;
 	rect->staple(tmp,state,mu,cb);     // This may fail I think in aniso mode
-	result += tmp;
-	two_plaq->staple(tmp,state,mu,cb); // This will fail I think
 	result += tmp;
       }
 
@@ -104,25 +102,27 @@ namespace Chroma
     void deriv(multi1d<LatticeColorMatrix>& result,
 	       const Handle< GaugeState<P,Q> >& state) const
       {
-	plaq->deriv(result,state);
-
+	// plaq->deriv(result,state);
+	plaq_plus_two_plaq->deriv(result,state);
+	
 	multi1d<LatticeColorMatrix> tmp;
 	rect->deriv(tmp,state);
 	result += tmp;
 
-	two_plaq->deriv(tmp,state);
-	result += tmp;
+	
 
       }
 
     //! Compute the actions
     Double S(const Handle< GaugeState<P,Q> >& state) const
       {
-	return plaq->S(state) + rect->S(state) + two_plaq->S(state);
+	//return plaq->S(state) + rect->S(state) + two_plaq->S(state);
+	return plaq_plus_two_plaq->S(state) + rect->S(state);
+
       }
 
     //! Produce a gauge create state object
-    const CreateGaugeState<P,Q>& getCreateState() const {return plaq->getCreateState();}
+    const CreateGaugeState<P,Q>& getCreateState() const {return plaq_plus_two_plaq->getCreateState();}
 
     //! Destructor is automatic
     ~AnisoSpectrumGaugeAct() {}
@@ -146,9 +146,9 @@ namespace Chroma
 
   private:
     AnisoSpectrumGaugeActParams    param;    /*!< The couplings and anisotropy*/
-    Handle<PlaqGaugeAct>           plaq;     /*!< Hold a plaquette gaugeact */
+    //    Handle<PlaqGaugeAct>           plaq;     /*!< Hold a plaquette gaugeact */
     Handle<RectGaugeAct>           rect;     /*!< Hold a rectangle gaugeact */
-    Handle<SpatialTwoPlaqGaugeAct> two_plaq; /*!< Hold spatial plaquettes separated in time type gaugeact */
+    Handle<PlaqPlusSpatialTwoPlaqGaugeAct> plaq_plus_two_plaq; /*!< Hold spatial plaquettes separated in time type gaugeact */
   };
 
 };

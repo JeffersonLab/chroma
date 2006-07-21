@@ -1,4 +1,4 @@
-// $Id: spatial_two_plaq_gaugeact.cc,v 1.2 2006-07-20 15:00:05 bjoo Exp $
+// $Id: spatial_two_plaq_gaugeact.cc,v 1.3 2006-07-21 18:39:11 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -167,13 +167,14 @@ namespace Chroma
 	  //            |    +    | 
 	  //            |         |
 	  //   x <----- V         V----->
-
+	  LatticeColorMatrix u_mu_plus_nu = shift(u[mu],FORWARD, nu);
+	  LatticeColorMatrix u_nu_plus_mu = shift(u[nu],FORWARD, mu);
 	  // First  lets do 
 	  //    <-----
 	  //   |
 	  //   |           (we'll use this for (1) and (4))
 	  //   V
-	  tmp = shift( adj(u[mu]), FORWARD, nu)*adj(u[nu]);
+	  tmp = adj(u_mu_plus_nu)*adj(u[nu]);
 
 	  // Now we do 
 	  //
@@ -181,7 +182,7 @@ namespace Chroma
 	  //           |  (we'll use this for (2) and (3)
 	  //           |
 	  //   <-------v
-	  tmp2 = shift( adj(u[nu]), FORWARD, mu)*adj(u[mu]);
+	  tmp2 = adj(u_nu_plus_mu)*adj(u[mu]);
 
 
 	  // Make munu plaquette which is just adj(tmp2)*tmp1
@@ -208,13 +209,13 @@ namespace Chroma
 	  tmp2 *= P_sum;
 
 	  // Now Term (1)
-	  ds_tmp[mu] += shift(u[nu], FORWARD, mu)*tmp;
+	  ds_tmp[mu] += u_nu_plus_mu*tmp;
 
 	  // Now term (2)
 	  ds_tmp[mu] += shift(tmp2*u[nu], BACKWARD, nu);
 
 	  // Now term (3)
-	  ds_tmp[nu] += shift(u[mu], FORWARD, nu)*tmp2;
+	  ds_tmp[nu] += u_mu_plus_nu*tmp2;
 	  
 	  // Now term (4)
 	  ds_tmp[nu] += shift(tmp*u[mu], BACKWARD, mu);
@@ -285,7 +286,7 @@ namespace Chroma
     }
 
     // Normalize -> 1 factor of Nc from each P_munu
-    S_pg *= Double(-param.coeff)/Real(2*Nc*Nc);
+    S_pg *= Double(-param.coeff)/Double(2*Nc*Nc);
 
     return S_pg;
   } 

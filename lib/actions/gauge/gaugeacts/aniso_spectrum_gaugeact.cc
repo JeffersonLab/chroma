@@ -1,4 +1,4 @@
-// $Id: aniso_spectrum_gaugeact.cc,v 1.3 2006-07-20 20:21:34 edwards Exp $
+// $Id: aniso_spectrum_gaugeact.cc,v 1.4 2006-07-21 18:39:11 bjoo Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -90,8 +90,16 @@ namespace Chroma
     // Coefficients for the plaquette term (eq 4 in hep-lat/9911003)
     Real plaq_c_s = param.beta * Real(5) * ( Real(1) + param.omega ) / ( Real(3) * u_s_4 );
     Real plaq_c_t = param.beta * Real(4) / ( Real(3) * u_s_2 * u_t_2 );
-    plaq = new PlaqGaugeAct(cgs, plaq_c_s, plaq_c_t, param.aniso);
 
+    //    plaq = new PlaqGaugeAct(cgs, plaq_c_s, plaq_c_t, param.aniso);
+
+    // Coefficient of 2 plaquette spatial adjoint like thingie
+    Real coeff_2plaq = Real(-5)*param.beta*param.omega/(Real(3)*u_s_8);
+    plaq_plus_two_plaq = new PlaqPlusSpatialTwoPlaqGaugeAct(cgs, 
+							    plaq_c_s,
+							    plaq_c_t,
+							    coeff_2plaq, 
+							    param.aniso);
     // Coefficients for the rectangle 
     Real rect_c_s = - param.beta / ( Real(12)*u_s_6 );
     
@@ -104,9 +112,7 @@ namespace Chroma
 
     rect = new RectGaugeAct(cgs, rect_c_s, rect_c_t_1, rect_c_t_2, no_temporal_2link, param.aniso);
 
-    // Coefficient of 2 plaquette spatial adjoint like thingie
-    Real coeff_2plaq = Real(-5)*param.beta*param.omega/(Real(3)*u_s_8);
-    two_plaq = new SpatialTwoPlaqGaugeAct(cgs, coeff_2plaq, param.aniso);
+
   } 
 
 }

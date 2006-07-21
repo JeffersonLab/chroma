@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.2 2006-07-19 02:28:51 bjoo Exp $
+// $Id: rect_gaugeact.cc,v 3.3 2006-07-21 18:39:11 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -338,7 +338,7 @@ namespace Chroma
     }
 
     Double S_rect = sum(lgimp);
-    S_rect *= -Real(1) / Real(Nc);   // note sign here
+    S_rect *= -Double(1) / Double(Nc);   // note sign here
     return S_rect;
     
   }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeacts.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: gaugeacts.h,v 3.1 2006-07-21 18:39:11 bjoo Exp $
 
 /*! \file
  * \brief Gauge actions
@@ -21,13 +21,16 @@
 #include "plaq_gaugeact.h"
 #include "rect_gaugeact.h"
 #include "pg_gaugeact.h"
+#include "spatial_two_plaq_gaugeact.h"
+#include "plaq_plus_spatial_two_plaq_gaugeact.h"
+
 
 #include "wilson_gaugeact.h"
 #include "lw_tree_gaugeact.h"
 #include "lw_1loop_gaugeact.h"
 #include "rg_gaugeact.h"
 #include "rbc_gaugeact.h"
-
+#include "aniso_spectrum_gaugeact.h"
 #endif
 
 

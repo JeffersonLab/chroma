@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.4 2006-07-21 14:58:41 bjoo Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.5 2006-07-21 18:39:11 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */
@@ -40,7 +40,6 @@ namespace Chroma
       success &= RBCGaugeActEnv::registered;
       success &= SpatialTwoPlaqGaugeActEnv::registered;
       success &= PlaqPlusSpatialTwoPlaqGaugeActEnv::registered;
-
       success &= AnisoSpectrumGaugeActEnv::registered;
       return success;
     }
