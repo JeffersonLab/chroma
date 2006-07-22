@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.4 2006-07-22 17:34:01 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.5 2006-07-22 17:44:34 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -11,6 +11,7 @@
 #include "meas/eig/eig_spec.h"
 #include "meas/eig/eig_spec_array.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/make_xml_file.h"
 
 #include "actions/ferm/linop/lopscl.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -108,6 +109,12 @@ namespace Chroma {
  
       // Ids
       read(paramtop, "NamedObject", named_obj);
+
+      // Possible alternate XML file pattern
+      if (paramtop.count("xml_file") != 0) 
+      {
+	read(paramtop, "xml_file", xml_file);
+      }
     }
     catch(const std::string& e) 
     {
@@ -298,11 +305,36 @@ namespace Chroma {
 
 
 
-
-  // The "do" function
+  // Function call
   void 
   InlineEigBndsMdagM::operator()(unsigned long update_no,
 				 XMLWriter& xml_out) 
+  {
+    // If xml file not empty, then use alternate
+    if (params.xml_file != "")
+    {
+      string xml_file = makeXMLFileName(params.xml_file, update_no);
+
+      push(xml_out, "EigBndsMdagM");
+      write(xml_out, "update_no", update_no);
+      write(xml_out, "xml_file", xml_file);
+      pop(xml_out);
+
+      XMLFileWriter xml(xml_file);
+      func(update_no, xml);
+    }
+    else
+    {
+      func(update_no, xml_out);
+    }
+  }
+
+
+
+  // The "do" function
+  void 
+  InlineEigBndsMdagM::func(unsigned long update_no,
+			   XMLWriter& xml_out) 
   {
     // Typedefs to save typing
     typedef LatticeFermion               T;

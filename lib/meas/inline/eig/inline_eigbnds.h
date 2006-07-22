@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 3.1 2006-07-12 04:55:31 edwards Exp $
+// $Id: inline_eigbnds.h,v 3.2 2006-07-22 17:44:34 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -52,7 +52,9 @@ namespace Chroma
     struct NamedObject_t
     {
       std::string   gauge_id;
-    } named_obj;
+    } named_obj; 
+
+    std::string xml_file;  // Alternate XML file pattern
   };
 
 
@@ -67,10 +69,15 @@ namespace Chroma
 
     unsigned long getFrequency(void) const {return params.frequency;}
 
+    //! Do the measurement
     void operator()(unsigned long update_no,
 		    XMLWriter& xml_out); 
 
   protected:
+    //! Do the measurement
+    void func(const unsigned long update_no,
+	      XMLWriter& xml_out); 
+
     //! 4D
     void do4d(Handle< LinearOperator<LatticeFermion> > MM,
 	      unsigned long update_no,
