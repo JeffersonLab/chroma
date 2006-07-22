@@ -1,6 +1,7 @@
 #include "chroma.h"
 #include <string>
-
+#include "actions/gauge/gaugeacts/rect_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"
 using namespace Chroma;
 
 //! To insure linking of code, place the registered code flags here
@@ -26,8 +27,6 @@ bool linkageHack(void)
 
   return foo;
 }
-
-
 
 int main(int argc, char *argv[]) 
 {
@@ -127,9 +126,17 @@ int main(int argc, char *argv[])
   H_exact.mesE(gauge_state, KE_old, PE_old);
   QDPIO::cout << "Initial energies: KE =" << KE_old << " PE = " << PE_old <<endl;
 
+  QDP::StopWatch swatch;
+  swatch.reset();
+  swatch.start();
   // Do a trajectory
   (*MD)(gauge_state);
+  swatch.stop();
+  QDPIO::cout << "Trajectory took: " << swatch.getTimeInSeconds() << " sec" <<endl;
+  QDPIO::cout << "Rect force took: " << RectGaugeActEnv::getTime() << " sec" << endl;
+  QDPIO::cout << "Other force took: " << PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime() << " sec" << endl;
 
+  QDPIO::cout << "Time deficit : " << swatch.getTimeInSeconds() - RectGaugeActEnv::getTime() -  PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime() << " sec" << endl;
   Double KE_new, PE_new;
   H_exact.mesE(gauge_state, KE_new, PE_new);
   QDPIO::cout << "Final energies: KE =" << KE_new << " PE = " << PE_new <<endl;
