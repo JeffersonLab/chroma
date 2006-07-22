@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.3 2006-07-21 18:39:11 bjoo Exp $
+// $Id: rect_gaugeact.cc,v 3.4 2006-07-22 00:54:14 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -26,7 +26,13 @@ namespace Chroma
     const std::string name = "RECT_GAUGEACT";
     const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
 									  createGaugeAct);
+
+
+    static double time_spent = 0;
+
+    double getTime(void) { return time_spent; }    
   };
+
 
 
   // Param constructor/reader
@@ -105,6 +111,8 @@ namespace Chroma
 		       const Handle< GaugeState<P,Q> >& state,
 		       int mu, int cb) const
   {
+
+    START_CODE();
     QDPIO::cerr << "RectGaugeAct::staple() - not converted from szin" << endl;
     QDP_abort(1);
 
@@ -114,7 +122,9 @@ namespace Chroma
   inline
   void deriv_part(int mu, int nu, Real c_munu,
 		  multi1d<LatticeColorMatrix>& ds_u, 
-		  const multi1d<LatticeColorMatrix>& u) {
+		  const multi1d<LatticeColorMatrix>& u) 
+  {
+    START_CODE();
 
     //       ---> --->  = U(x,mu)*U(x+mu, mu)
     LatticeColorMatrix from_left_2link = u[mu]*shift(u[mu], FORWARD, mu);
@@ -166,7 +176,7 @@ namespace Chroma
     //                         | 
     //                         V
 
-    upper_l = shift(from_left_2link, FORWARD, nu)*adj(tmp2);
+    upper_l = tmp2*adj(shift(from_left_2link, FORWARD, nu));
 
     // ds_u =  ----> ----> |
     //                     | 
@@ -174,7 +184,7 @@ namespace Chroma
 
    // = u(x+nu, mu)*u(x+mu+nu, mu)*u^dag(x+2mu, nu)*u^dag(x+mu, mu)*u^dag(x,mu)
 
-    ds_u[nu] += upper_l * adj(from_left_2link);
+    ds_u[nu] += adj(from_left_2link*upper_l);
 
     
 
@@ -184,7 +194,7 @@ namespace Chroma
     //          x   V            | x + 2mu
 
     // u(x+2mu,nu)*u^dag(x+mu+nu,mu)*u^dag(x+nu, mu)*u^dag(x, nu)
-    LatticeColorMatrix up_staple = adj(upper_l)*adj(u[nu]);
+    LatticeColorMatrix up_staple = upper_l*adj(u[nu]);
 
     //              ^            |
     //              |            |
@@ -192,7 +202,8 @@ namespace Chroma
     //          x   <----- <---- V x + 2mu
 
     //  u^dag(x+2mu,nu) U^dag(x+mu,mu) U^dag(x,mu) U(x,nu)
-    tmp = adj(tmp2)*adj(from_left_2link);
+    tmp = adj(from_left_2link*tmp2);
+      
     LatticeColorMatrix down_staple = tmp*u[nu];
 
     // The following terms generate force staple for U(x+mu)
@@ -236,6 +247,8 @@ namespace Chroma
 
     ds_u[mu] *= c_munu/Real(-2*Nc);
     ds_u[nu] *= c_munu/Real(-2*Nc);
+
+    END_CODE();
   }
 
 
@@ -243,6 +256,12 @@ namespace Chroma
   RectGaugeAct::deriv(multi1d<LatticeColorMatrix>& ds_u,
 		      const Handle< GaugeState<P,Q> >& state) const
   {
+    START_CODE();
+
+    QDP::StopWatch swatch;
+    swatch.reset();
+    swatch.start();
+
     ds_u.resize(Nd);
     Real c;
 
@@ -283,7 +302,9 @@ namespace Chroma
     }
 
     getGaugeBC().zero(ds_u);
-    
+    swatch.stop();
+    RectGaugeActEnv::time_spent += swatch.getTimeInSeconds();
+    END_CODE();
   }
 
 
@@ -340,13 +361,15 @@ namespace Chroma
     Double S_rect = sum(lgimp);
     S_rect *= -Double(1) / Double(Nc);   // note sign here
     return S_rect;
-    
+
+    END_CODE();
   }
   
 
 void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
 		     const multi1d<LatticeColorMatrix>& u)
 {
+  START_CODE();
   LatticeColorMatrix tmp1;
   LatticeColorMatrix tmp2;
   LatticeColorMatrix lr_corner;
@@ -395,6 +418,8 @@ void S_part(int mu, int nu, Real c, LatticeReal& lgimp,
   
   lgimp += c * real(trace(rectangle_2munu));
   // lgimp += c2 * real(trace(rectangle_mu2nu));
+
+  END_CODE();
 }
 
 

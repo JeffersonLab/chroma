@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rect_gaugeact.h,v 3.2 2006-07-14 20:33:17 bjoo Exp $
+// $Id: rect_gaugeact.h,v 3.3 2006-07-22 00:54:14 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -18,6 +18,8 @@ namespace Chroma
   namespace RectGaugeActEnv { 
     extern const string name;
     extern const bool registered;
+    
+    extern double getTime();
   };
 
   //! Parameter structure

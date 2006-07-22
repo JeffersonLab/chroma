@@ -1,4 +1,4 @@
-// $Id: plaq_plus_spatial_two_plaq_gaugeact.cc,v 3.2 2006-07-21 18:39:11 bjoo Exp $
+// $Id: plaq_plus_spatial_two_plaq_gaugeact.cc,v 3.3 2006-07-22 00:54:14 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -27,6 +27,10 @@ namespace Chroma
     const std::string name = "PLAQ_PLUS_SPATIAL_TWO_PLAQ_GAUGEACT";
     const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
 									  createGaugeAct);
+
+    
+    static double time_spent = 0;
+    double getTime() { return time_spent; }
   };
 
 
@@ -136,6 +140,11 @@ namespace Chroma
 		      const Handle< GaugeState<P,Q> >& state) const
   {
     START_CODE();
+    QDP::StopWatch swatch;
+    swatch.reset();
+    swatch.start();
+
+
 
     ds_u.resize(Nd);
 
@@ -192,7 +201,7 @@ namespace Chroma
 	  LatticeColorMatrix u_mu_plus_nu = shift(u[mu], FORWARD, nu);
 	  LatticeColorMatrix u_nu_plus_mu = shift(u[nu], FORWARD, mu);
 
-	  tmp = adj(u_mu_plus_nu)*adj(u[nu]);
+	  tmp = adj(u[nu]*u_mu_plus_nu);
 
 	  // Now we do 
 	  //
@@ -200,7 +209,7 @@ namespace Chroma
 	  //           |  (we'll use this for (2) and (3)
 	  //           |
 	  //   <-------v
-	  tmp2 = adj(u_nu_plus_mu)*adj(u[mu]);
+	  tmp2 = adj(u[mu]*u_nu_plus_mu);
 
 
 	  // Make munu plaquette which is just adj(tmp2)*tmp1
@@ -276,7 +285,7 @@ namespace Chroma
       //   |
       //   |           (we'll use this for (1) and (4))
       //   V
-      tmp = adj(u_t_plus_nu)*adj(u[nu]);
+      tmp = adj(u[nu]*u_t_plus_nu);
       
       // Now we do 
       //
@@ -285,7 +294,7 @@ namespace Chroma
       //           |
       //   <-------v
       
-      tmp2 = adj(u_nu_plus_t)*adj(u[t_dir]);
+      tmp2 = adj(u[t_dir]*u_nu_plus_t);
       
 
       // Now Term (1)
@@ -323,6 +332,8 @@ namespace Chroma
     // Zero the force on any fixed boundaries
     getGaugeBC().zero(ds_u);
     
+    swatch.stop();
+    PlaqPlusSpatialTwoPlaqGaugeActEnv::time_spent += swatch.getTimeInSeconds();    
 
     END_CODE();
   }
@@ -342,6 +353,9 @@ namespace Chroma
   Double
   PlaqPlusSpatialTwoPlaqGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
+
+    START_CODE();
+
     Double S_pg = zero;
     
 
@@ -388,6 +402,8 @@ namespace Chroma
     S_pg += Double(-param.coeff_plaq_t)/Double(Nc)*S_pg_t;
 
     return S_pg;
+
+    END_CODE();
   } 
 
 }
