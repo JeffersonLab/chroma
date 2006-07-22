@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.3 2006-07-21 20:42:52 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.4 2006-07-22 17:34:01 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -265,7 +265,7 @@ namespace Chroma {
 
     multi1d<Double> prof(N5);
     for(int n=0; n < N5; n++)
-      prof[n] = sqrt(norm2(psi[0][n]));
+      prof[n] = norm2(psi[0][n], MM->subset());
     
     write(xml_out, "EigenVectorProfile", prof);
 
