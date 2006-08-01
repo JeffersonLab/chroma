@@ -1,6 +1,10 @@
-07/17/2006 -- Robert Edwards
-	Version 3.10.0. Changed inline_spectrum to also support an optional
-        BlkMax and BlkAccu flag. Start of aniso support in gauge rectangle.
+07/27/2006 -- Balint Joo
+	Version 3.10.2. Patches to SSE DWF CG to support double-prec sums.
+        Added more optimized plaq+two_plaq gauge monomial. Added profiling
+        to inline_eigbnds in 5D case.
+
+07/21/2006 -- Balint Joo
+	Version 3.10.1. Added two_plaq monomials.
 
 07/11/2006 -- Robert Edwards
 	Version 3.9.0. Changed interface to the inline WILSLP and MESONSPEC.
