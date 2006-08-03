@@ -1,4 +1,4 @@
-// $Id: ferm_createstate_aggregate_w.cc,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: ferm_createstate_aggregate_w.cc,v 3.1 2006-08-03 21:12:13 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */
@@ -7,6 +7,7 @@
 
 #include "actions/ferm/fermacts/ferm_createstate_aggregate_w.h"
 #include "actions/ferm/fermacts/simple_fermstate_w.h"
+#include "actions/ferm/fermacts/stout_fermstate_w.h"
 
 namespace Chroma
 {
@@ -19,6 +20,7 @@ namespace Chroma
       bool success = true;
 
       success &= CreateSimpleFermStateEnv::registered;
+      success &= CreateStoutFermStateEnv::registered;
 
       return success;
     }
