@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.22 2006-07-21 18:41:07 bjoo Exp $
+# $Id: Makefile.am,v 3.23 2006-08-03 18:54:03 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -34,6 +34,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/overlap_state.h \
 	actions/ferm/fermacts/eigen_state.h \
 	actions/ferm/fermacts/extfield.h \
+	actions/ferm/fermacts/stout_fermstate_params.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/periodic_fermbc.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
@@ -285,6 +286,7 @@ nobase_include_HEADERS += \
         actions/ferm/fermacts/ferm_createstate_aggregate_w.h \
         actions/ferm/fermacts/ferm_createstate_factory_w.h \
         actions/ferm/fermacts/ferm_createstate_reader_w.h \
+	actions/ferm/fermacts/stout_fermstate_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
@@ -481,6 +483,11 @@ nobase_include_HEADERS += \
         util/ferm/etensor.h \
         util/ferm/symtensor.h
 
+#	actions/ferm/fermacts/flic_fermact_params_w.h
+#	actions/ferm/fermacts/prec_flic_fermact_w.h
+#	actions/ferm/fermacts/flic_fermstate_w.h
+#	actions/ferm/linop/prec_flic_linop_w.h
+
 
 # Staggered specific headers
 nobase_include_HEADERS += \
@@ -655,6 +662,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc \
 	actions/ferm/fermacts/ovext_neuberger_strategy.cc \
+	actions/ferm/fermacts/stout_fermstate_params.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
 	actions/ferm/invert/invbicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
@@ -855,6 +863,7 @@ libchroma_a_SOURCES += \
         actions/ferm/fermacts/ferm_createstate_reader_w.cc \
         actions/ferm/fermacts/periodic_fermstate_w.cc \
         actions/ferm/fermacts/simple_fermstate_w.cc \
+	actions/ferm/fermacts/stout_fermstate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -870,6 +879,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/prec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/extfield_aggregate_w.cc \
+	actions/ferm/fermacts/extfield_fermstate_w.cc \
 	actions/ferm/fermacts/extfield_aggregate_w.cc \
 	actions/ferm/fermacts/prec_clover_extfield_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
@@ -1013,6 +1024,9 @@ libchroma_a_SOURCES += \
 # Stuff not yet incorporated but lying around
 #	meas/pbp/mespbg5p_w.cc meas/pbp/mespbp_w.cc
 #	meas/pbp/ovpbg5p_w.cc meas/pbp/pbg5p_w.cc
+#	actions/ferm/fermacts/flic_fermact_params_w.cc
+#	actions/ferm/fermacts/prec_flic_fermact_w.cc
+#	actions/ferm/fermacts/flic_fermstate_w.cc
 
 
 
