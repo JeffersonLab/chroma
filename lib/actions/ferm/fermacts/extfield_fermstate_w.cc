@@ -1,7 +1,12 @@
-// $Id: extfield_fermstate_w.cc,v 1.1 2006-07-20 20:28:31 edwards Exp $
+// $Id: extfield_fermstate_w.cc,v 1.2 2006-08-03 18:54:48 edwards Exp $
 /*! \file
  *  \brief External field ferm state and a creator
  */
+
+#if 0
+
+#error "TURNED OFF FOR THE MOMENT - NEED TO FIX CREATEEXTFIELDFermState CONSTRUCTOR CALL"
+
 
 #include "actions/ferm/fermacts/extfield_fermstate_w.h"
 #include "actions/ferm/fermacts/ferm_createstate_factory_w.h"
@@ -41,3 +46,5 @@ namespace Chroma
 
 }
 
+
+#endif
