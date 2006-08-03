@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_params.h,v 1.1 2006-08-02 04:10:22 edwards Exp $
+// $Id: stout_fermstate_params.h,v 1.2 2006-08-03 21:14:36 edwards Exp $
 /* \file
  * \brief Stout params
  */
@@ -18,9 +18,11 @@ namespace Chroma
     //! Default constructor
     StoutFermStateParams() {} 
     StoutFermStateParams(XMLReader& in, const std::string& path);
-    Real rho;
-    int  n_smear;
-    int  orthog_dir; 
+
+    multi2d<Real>  rho;
+    multi1d<bool>  smear_in_this_dirP; // inelegant?
+    int            n_smear;
+    int            orthog_dir;
   };
 
   void read(XMLReader& xml, const std::string& path, StoutFermStateParams& p);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.1 2006-08-03 18:55:28 edwards Exp $
+// $Id: stout_fermstate_w.cc,v 1.2 2006-08-03 21:14:36 edwards Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -9,9 +9,41 @@
 #include "util/gauge/expmat.h"
 #include "util/gauge/taproj.h"
 
+#include "actions/ferm/fermacts/ferm_createstate_factory_w.h"
+#include "actions/ferm/fermacts/ferm_createstate_aggregate_w.h"
+#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
+
+  /*! \ingroup fermacts */
+  namespace CreateStoutFermStateEnv 
+  { 
+    CreateFermState<LatticeFermion,
+		    multi1d<LatticeColorMatrix>, 
+		    multi1d<LatticeColorMatrix> >* createFerm(XMLReader& xml, 
+							      const std::string& path) 
+    {
+      return new CreateStoutFermState(WilsonTypeFermBCEnv::reader(xml, path),
+				      StoutFermStateParams(xml, path));
+    }
+
+    const std::string name = "STOUT_FERM_STATE";
+
+    //! Register all the factories
+    bool registerAll()
+    {
+      bool foo = true;
+      foo &= Chroma::TheCreateFermStateFactory::Instance().registerObject(name, 
+									  createFerm);
+      return foo;
+    }
+
+    const bool registered = registerAll();
+  }
+
+
 
   // Do the force recursion from level i+1, to level i
   void StoutFermState::deriv_recurse(const multi1d<LatticeColorMatrix>&  F_plus,
@@ -46,12 +78,12 @@ namespace Chroma {
       C[mu] = 0;
 
       // If rho is nonzero in this direction then accumulate the staples
-      if( smear_in_this_dirP[mu] == true ) { 
+      if( params.smear_in_this_dirP[mu] == true ) { 
 
 	for(int nu=0; nu < Nd; nu++) { 
 
 	  // Accumulate mu-nu staple
-	  if( mu != nu && smear_in_this_dirP[nu] == true ) {
+	  if( mu != nu && params.smear_in_this_dirP[nu] == true ) {
 
 	    // Forward staple
 	    //             2
@@ -62,7 +94,7 @@ namespace Chroma {
             //       |          V
 	    //       x          x + mu
 	    //
-	    C[mu] += rho(mu, nu)*u_minus[nu] * shift(u_minus[mu], FORWARD, nu) * adj(shift(u_minus[nu], FORWARD, mu));
+	    C[mu] += params.rho(mu, nu)*u_minus[nu] * shift(u_minus[mu], FORWARD, nu) * adj(shift(u_minus[nu], FORWARD, mu));
 	    
 
 	    // Backward staple
@@ -87,7 +119,7 @@ namespace Chroma {
 	    // and here we shift it 
 	    // u_staple(x) += shift(tmp_1_dag(x-nu), BACK, nu)
 	    //             += u_dag(x+mu-nu,nu)*u_dag(x-nu,mu)*u(x-nu,nu)
-	    C[mu] += rho(mu,nu)*shift(tmp_1, BACKWARD, nu);
+	    C[mu] += params.rho(mu,nu)*shift(tmp_1, BACKWARD, nu);
 	  
 	  }  // end if(smear_in_this_dirP[nu]
 	} // end for nu
@@ -95,7 +127,7 @@ namespace Chroma {
 	// C_mu is now created
 	// Now I can form the Q[mu]. First I form iQ and multiply by
 	// -i. iQ is formed with taproj()
-	if(smear_in_this_dirP[mu]) {
+	if(params.smear_in_this_dirP[mu]) {
 	
 	  LatticeColorMatrix Omega;
 	  Omega = C[mu]*adj(u_minus[mu]); // Q_mu is Omega mu here (eq 2 part 2)
@@ -321,13 +353,13 @@ namespace Chroma {
 
     for(int mu = 0; mu < Nd; mu++) { 
 
-      if( smear_in_this_dirP[mu] ) { 
+      if( params.smear_in_this_dirP[mu] ) { 
 	// All the staple terms go here
 	// There are six staple terms
 	LatticeColorMatrix staple_sum = 0;
 
 	for(int nu = 0; nu < Nd; nu++) { 
-	  if( smear_in_this_dirP[nu] == true && nu != mu ) {
+	  if( params.smear_in_this_dirP[nu] == true && nu != mu ) {
 
 
 	    // Staple 1
@@ -339,7 +371,7 @@ namespace Chroma {
 	    //   4 ||   |3        |1                     |
 	    //     ||   |         |                       -> mu
 	    //          V
-	    staple_sum += rho(nu,mu)*shift(u_minus[nu],FORWARD,mu)*adj(shift(u_minus[mu],FORWARD,nu))*adj(u_minus[nu])*Lambda[nu];
+	    staple_sum += params.rho(nu,mu)*shift(u_minus[nu],FORWARD,mu)*adj(shift(u_minus[mu],FORWARD,nu))*adj(u_minus[nu])*Lambda[nu];
 	    
 	
 
@@ -362,7 +394,7 @@ namespace Chroma {
 	    LatticeColorMatrix st_tmp = adj(shift(u_minus[nu],FORWARD,mu))
 	      * adj(u_minus[mu])*Lambda[mu]*u_minus[nu];
 	    
-	    staple_sum  += rho(mu,nu)*shift(st_tmp, BACKWARD, nu);
+	    staple_sum  += params.rho(mu,nu)*shift(st_tmp, BACKWARD, nu);
 	    
 	    
 	    // Staple 3
@@ -382,7 +414,7 @@ namespace Chroma {
 	    // 
 	    LatticeColorMatrix st_tmp2 = adj(u_minus[nu])*Lambda[nu];
 	    st_tmp  = shift(st_tmp2, FORWARD, mu)*adj(u_minus[mu])*u_minus[nu];
-	    staple_sum  += rho(nu,mu)*shift(st_tmp, BACKWARD, nu);
+	    staple_sum  += params.rho(nu,mu)*shift(st_tmp, BACKWARD, nu);
 	    
 	    
 	    
@@ -405,7 +437,7 @@ namespace Chroma {
 	      * Lambda[nu]
 	      * u_minus[nu];
 	    
-	    staple_sum  -= rho(nu,mu)*shift(st_tmp, BACKWARD, nu);
+	    staple_sum  -= params.rho(nu,mu)*shift(st_tmp, BACKWARD, nu);
 	    
 	    
 	    // Staple 5 
@@ -423,7 +455,7 @@ namespace Chroma {
 	    //   Fuse 1 and 2
 	    // 
 	    st_tmp = Lambda[nu]*u_minus[nu];
-	    staple_sum -= rho(nu,mu)*shift(st_tmp,FORWARD, mu)*adj(shift(u_minus[mu],FORWARD, nu))*adj(u_minus[nu]);
+	    staple_sum -= params.rho(nu,mu)*shift(st_tmp,FORWARD, mu)*adj(shift(u_minus[mu],FORWARD, nu))*adj(u_minus[nu]);
 	    
 	    // Finally staple 6
 	    //
@@ -440,7 +472,7 @@ namespace Chroma {
 	    //   Fuse 2 and 3
 	    // 
 	    st_tmp  = adj(u_minus[mu])*Lambda[mu];
-	    staple_sum += rho(mu,nu)*shift(u_minus[nu],FORWARD, mu)*shift(st_tmp, FORWARD, nu)*adj(u_minus[nu]);
+	    staple_sum += params.rho(mu,nu)*shift(u_minus[nu],FORWARD, mu)*shift(st_tmp, FORWARD, nu)*adj(u_minus[nu]);
 	    
 	  } // smear in nu dir
 	} // end nu loop
@@ -461,7 +493,7 @@ namespace Chroma {
     START_CODE();
     multi1d<LatticeColorMatrix> F_minus(Nd); // Force at one level lower
 
-    for(int level=n_smear-1; level >= 0; level--) {
+    for(int level=params.n_smear-1; level >= 0; level--) {
 
       // Take the current force, and compute force one level down 
       // Level is index into smeared link array
@@ -490,16 +522,16 @@ namespace Chroma {
     
     for(int mu = 0; mu < Nd; mu++) { 
 
-      if( smear_in_this_dirP[mu] == true ) { 
+      if( params.smear_in_this_dirP[mu] == true ) { 
 
 	// Do smear
 	LatticeColorMatrix u_staple = 0;
 	for(int nu = 0; nu < Nd; ++nu) {
 	  
-	  if( nu != mu && smear_in_this_dirP[nu] == true ) {
+	  if( nu != mu && params.smear_in_this_dirP[nu] == true ) {
 	    
 	    // Forward staple
-	    u_staple += rho(mu,nu)* (current[nu] * shift(current[mu], FORWARD, nu) * adj(shift(current[nu], FORWARD, mu)));
+	    u_staple += params.rho(mu,nu)* (current[nu] * shift(current[mu], FORWARD, nu) * adj(shift(current[nu], FORWARD, mu)));
 	    
 	    // Backward staple
 	    // tmp_1(x) = u_dag(x,nu)*u(x,mu)*u(x+mu,nu)
@@ -507,7 +539,7 @@ namespace Chroma {
 	    
 	    // u_staple(x) += tmp_1_dag(x-nu)
 	    //             += u_dag(x+mu-nu,nu)*u_dag(x-nu,mu)*u(x-nu,nu)
-	    u_staple += rho(mu,nu)*shift(tmp_1, BACKWARD, nu);
+	    u_staple += params.rho(mu,nu)*shift(tmp_1, BACKWARD, nu);
 	  }
 	}
 
@@ -533,151 +565,196 @@ namespace Chroma {
 
 
 
-
+  // Constructor only from a parameter structure
   StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-				 const multi1d<LatticeColorMatrix>& u_,
-				 const multi2d<Real>& sm_fact_,
-				 const int n_smear_, 
-				 const multi1d<bool>& smear_in_this_dirP_)
+				 const StoutFermStateParams& p_,
+				 const multi1d<LatticeColorMatrix>& u_)
   {
     START_CODE();
-    create(fbc_, u_, sm_fact_, n_smear_, smear_in_this_dirP_);
+    create(fbc_, p_, u_);
     END_CODE();
   }
 
 
-  //! Explicitly specify smearing factor tensor
-  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-				 const multi1d<LatticeColorMatrix>& u_,
-				 const multi2d<Real>& sm_fact_,
-				 const int n_smear_) 
-  {
-    START_CODE();
-    // Specify all smearings but no mask. Assume 
-    // smearing desired in all directions
-    multi1d<bool> smear_in_this_dirP_aux(Nd);
-    for(int mu=0; mu < Nd; mu++) { 
-      smear_in_this_dirP_aux[mu] = true;
-    }
-    
-    create(fbc_, u_, sm_fact_, n_smear_, smear_in_this_dirP_aux);
-    END_CODE();
-  }
-
-  //! Construct isotropic smearing in all 4 directions
-  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-				 const multi1d<LatticeColorMatrix>& u_, 
-				 const Real& sm_fact_, 
-				 const int   n_smear_) 
-  { 
-    START_CODE();
-
-    multi2d<Real> sm_fact_array(Nd, Nd);
-    multi1d<bool> smear_in_this_dirP_aux(Nd);
-    
-    // For each (mu,nu) set sm_fact_array(mu,nu)=sm_fact
-    // (Isotropy). Since mu != nu ever, we set those
-    // to zero for safety
-    for(int mu=0; mu < Nd; mu++) { 
-      
-      for(int nu=0; nu < Nd; nu++) { 
-	
-	if( mu==nu ) { 
-	  sm_fact_array[mu][nu] = 0;
-	}
-	else { 
-	  sm_fact_array[mu][nu] = sm_fact_;
-	}
-	
-      }
-      
-      // smearing in all 4 directions
-      smear_in_this_dirP_aux[mu]=true;
-    }
-    
-    // call the create
-    create(fbc_, u_, sm_fact_array, n_smear_, smear_in_this_dirP_aux);
-    END_CODE();
-  }
-
-  //! Construct isotopic smearing in directions orthogonal to orthog dir
-  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-				 const multi1d<LatticeColorMatrix>& u_,
-				 const Real& sm_fact_, 
-				 const int   n_smear_,
-				 const int   orthog_dir) 
-  {
-    START_CODE();
-    fbc = fbc_;
-    multi2d<Real> sm_fact_array(Nd, Nd);
-    multi1d<bool> smear_in_this_dirP_aux(Nd);
-    
-    // For each (mu,nu) set sm_fact_array(mu,nu)=sm_fact
-    // (Isotropy). Since mu != nu ever, we set those
-    // to zero for safety
-    for(int mu=0; mu < Nd; mu++) { 
-      
-      for(int nu=0; nu < Nd; nu++) { 
-	if( mu != nu ) {
-	  sm_fact_array[mu][nu] = sm_fact_;
-	}
-	else {
-	  // Set the rho to 0 if mu==nu
-	  sm_fact_array[mu][nu] = 0;
-	}
-      }
-      
-      // Mask out the orthog dir
-      if( mu == orthog_dir ) {  // Direction is same as orthog dir
-	smear_in_this_dirP_aux[mu]=false;
-      }
-      else {                    // Direction orthogonal to orthog dir
-	smear_in_this_dirP_aux[mu]=true;
-      }
 
 #if 0
-      QDPIO::cout << "Smearing in direction " << mu << " ? ";
-      if ( smear_in_this_dirP_aux[mu] == true ) { 
-	QDPIO::cout << " yes" << endl;
-      }
-      else {
-	QDPIO::cout << " no" << endl;
-      }
-#endif 
- 
-    }
-      
-    // call the create
-    create(fbc_, u_, sm_fact_array, n_smear_, smear_in_this_dirP_aux);
-    END_CODE();
-  }
+// Get rid of this stuff - all folded to something simple
+//
+//  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
+//				 const multi1d<LatticeColorMatrix>& u_,
+//				 const multi2d<Real>& sm_fact_,
+//				 const int n_smear_, 
+//				 const multi1d<bool>& smear_in_this_dirP_)
+//  {
+//    START_CODE();
+//    create(fbc_, u_, sm_fact_, n_smear_, smear_in_this_dirP_);
+//    END_CODE();
+//  }
+//
+//
+//  //! Explicitly specify smearing factor tensor
+//  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
+//				 const multi1d<LatticeColorMatrix>& u_,
+//				 const multi2d<Real>& sm_fact_,
+//				 const int n_smear_) 
+//  {
+//    START_CODE();
+//    // Specify all smearings but no mask. Assume 
+//    // smearing desired in all directions
+//    multi1d<bool> smear_in_this_dirP_aux(Nd);
+//    for(int mu=0; mu < Nd; mu++) { 
+//      smear_in_this_dirP_aux[mu] = true;
+//    }
+//    
+//    create(fbc_, u_, sm_fact_, n_smear_, smear_in_this_dirP_aux);
+//    END_CODE();
+//  }
+//
+//  //! Construct isotropic smearing in all 4 directions
+//  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
+//				 const multi1d<LatticeColorMatrix>& u_, 
+//				 const Real& sm_fact_, 
+//				 const int   n_smear_) 
+//  { 
+//    START_CODE();
+//
+//    multi2d<Real> sm_fact_array(Nd, Nd);
+//    multi1d<bool> smear_in_this_dirP_aux(Nd);
+//    
+//    // For each (mu,nu) set sm_fact_array(mu,nu)=sm_fact
+//    // (Isotropy). Since mu != nu ever, we set those
+//    // to zero for safety
+//    for(int mu=0; mu < Nd; mu++) { 
+//      
+//      for(int nu=0; nu < Nd; nu++) { 
+//	
+//	if( mu==nu ) { 
+//	  sm_fact_array[mu][nu] = 0;
+//	}
+//	else { 
+//	  sm_fact_array[mu][nu] = sm_fact_;
+//	}
+//	
+//      }
+//      
+//      // smearing in all 4 directions
+//      smear_in_this_dirP_aux[mu]=true;
+//    }
+//    
+//    // call the create
+//    create(fbc_, u_, sm_fact_array, n_smear_, smear_in_this_dirP_aux);
+//    END_CODE();
+//  }
+//
+//  //! Construct isotopic smearing in directions orthogonal to orthog dir
+//  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
+//				 const multi1d<LatticeColorMatrix>& u_,
+//				 const Real& sm_fact_, 
+//				 const int   n_smear_,
+//				 const int   orthog_dir) 
+//  {
+//    START_CODE();
+//    fbc = fbc_;
+//    multi2d<Real> sm_fact_array(Nd, Nd);
+//    multi1d<bool> smear_in_this_dirP_aux(Nd);
+//    
+//    // For each (mu,nu) set sm_fact_array(mu,nu)=sm_fact
+//    // (Isotropy). Since mu != nu ever, we set those
+//    // to zero for safety
+//    for(int mu=0; mu < Nd; mu++) { 
+//      
+//      for(int nu=0; nu < Nd; nu++) { 
+//	if( mu != nu ) {
+//	  sm_fact_array[mu][nu] = sm_fact_;
+//	}
+//	else {
+//	  // Set the rho to 0 if mu==nu
+//	  sm_fact_array[mu][nu] = 0;
+//	}
+//      }
+//      
+//      // Mask out the orthog dir
+//      if( mu == orthog_dir ) {  // Direction is same as orthog dir
+//	smear_in_this_dirP_aux[mu]=false;
+//      }
+//      else {                    // Direction orthogonal to orthog dir
+//	smear_in_this_dirP_aux[mu]=true;
+//      }
+//
+//#if 0
+//      QDPIO::cout << "Smearing in direction " << mu << " ? ";
+//      if ( smear_in_this_dirP_aux[mu] == true ) { 
+//	QDPIO::cout << " yes" << endl;
+//      }
+//      else {
+//	QDPIO::cout << " no" << endl;
+//      }
+//#endif 
+// 
+//    }
+//      
+//    // call the create
+//    create(fbc_, u_, sm_fact_array, n_smear_, smear_in_this_dirP_aux);
+//    END_CODE();
+//  }
+//
+//
+//  // create function
+//  void StoutFermState::create(Handle< FermBC<T,P,Q> > fbc_, 
+//			      const multi1d<LatticeColorMatrix>& u_,
+//			      const multi2d<Real>& sm_fact_,
+//			      const int n_smear_, 
+//			      const multi1d<bool>& smear_in_this_dirP_) 
+//  { 
+//    START_CODE();
+//
+//    // Copy smearing factors
+//    rho.resize(Nd, Nd);
+//    rho = sm_fact_;
+//    
+//    // set n_smear
+//    n_smear = n_smear_;
+//
+//    // Copy the direction maske
+//    smear_in_this_dirP.resize(Nd);
+//    smear_in_this_dirP = smear_in_this_dirP_;
+//
+//    // Allocate smeared links
+//    smeared_links.resize(n_smear + 1);
+//    for(int i=0; i <= n_smear; i++) { 
+//      smeared_links[i].resize(Nd);
+//    }
+//    
+//
+//    // Copy thin links into smeared_links[0]
+//    for(int mu=0; mu < Nd; mu++) { 
+//      smeared_links[0][mu] = u_[mu];
+//    }
+//
+//    // Iterate up the smearings
+//    for(int i=1; i <= n_smear; i++) { 
+//      smear_links(smeared_links[i-1], smeared_links[i]);
+//    }
+//    END_CODE();
+//  }
+#endif
+
 
   // create function
   void StoutFermState::create(Handle< FermBC<T,P,Q> > fbc_, 
-			      const multi1d<LatticeColorMatrix>& u_,
-			      const multi2d<Real>& sm_fact_,
-			      const int n_smear_, 
-			      const multi1d<bool>& smear_in_this_dirP_) 
+			      const StoutFermStateParams& p_,
+			      const multi1d<LatticeColorMatrix>& u_)
   { 
     START_CODE();
 
-    // Copy smearing factors
-    rho.resize(Nd, Nd);
-    rho = sm_fact_;
-    
-    // set n_smear
-    n_smear = n_smear_;
-
-    // Copy the direction maske
-    smear_in_this_dirP.resize(Nd);
-    smear_in_this_dirP = smear_in_this_dirP_;
+    fbc = fbc_;
+    params = p_;
 
     // Allocate smeared links
-    smeared_links.resize(n_smear + 1);
-    for(int i=0; i <= n_smear; i++) { 
+    smeared_links.resize(params.n_smear + 1);
+    for(int i=0; i <= params.n_smear; i++) { 
       smeared_links[i].resize(Nd);
     }
-    
 
     // Copy thin links into smeared_links[0]
     for(int mu=0; mu < Nd; mu++) { 
@@ -685,10 +762,11 @@ namespace Chroma {
     }
 
     // Iterate up the smearings
-    for(int i=1; i <= n_smear; i++) { 
+    for(int i=1; i <= params.n_smear; i++) { 
       smear_links(smeared_links[i-1], smeared_links[i]);
     }
     END_CODE();
   }
+
 
 } // End namespace Chroma

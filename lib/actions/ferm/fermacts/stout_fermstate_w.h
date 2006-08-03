@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.1 2006-08-03 18:55:28 edwards Exp $
+// $Id: stout_fermstate_w.h,v 1.2 2006-08-03 21:14:36 edwards Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -13,9 +13,18 @@
 
 #include "state.h"
 #include "create_state.h"
+#include "actions/ferm/fermacts/stout_fermstate_params.h"
 
 namespace Chroma 
 {
+  /*! @ingroup fermacts */
+  namespace CreateStoutFermStateEnv 
+  { 
+    extern const std::string name;
+    extern const bool registered;
+  }
+
+
   //! Stout field state
   /*! @ingroup fermacts
    *
@@ -31,69 +40,25 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
 
-    //! Explicitly specify everything. This constructor 
-    //  may be made private later
+    //! Constructor only from a parameter structure
     StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-		   const multi1d<LatticeColorMatrix>& u_,
-		   const multi2d<Real>& sm_fact_,
-		   const int n_smear_, 
-		   const multi1d<bool>& smear_in_this_dirP_);
+		   const StoutFermStateParams& p_,
+		   const multi1d<LatticeColorMatrix>& u_);
 
-    //! Explicitly specify smearing factor tensor
-    StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-		   const multi1d<LatticeColorMatrix>& u_,
-		   const multi2d<Real>& sm_fact_,
-		   const int n_smear_);
 
-    //! Construct isotropic smearing in all 4 directions
-    StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-		   const multi1d<LatticeColorMatrix>& u_, 
-		   const Real& sm_fact_, 
-		   const int   n_smear_);
+    //! Return the ferm BC object for this state
+    const FermBC<T,P,Q>& getBC() const {return *fbc;}
 
-    //! Construct isotopic smearing in 3 directions
-    StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-		   const multi1d<LatticeColorMatrix>& u_,
-		   const Real& sm_fact_, 
-		   const int   n_smear_,
-		   const int   j_decay);
+    //! Return the ferm BC object for this state
+    Handle< FermBC<T,P,Q> > getFermBC() const {return fbc;}
 
     //! Destructor is automagic
     ~StoutFermState() {}
 
-#if 0
-#warning "RGE: no idea why this stuff is here - a copy should be a copy, not a new create"
-
-    // Copy Constructor
-    StoutFermState(const StoutFermState& s) 
-      {
-	START_CODE();
-	create(s.getThinLinks(),
-	       s.rho,
-	       s.n_smear, 
-	       s.smear_in_this_dirP);
-	END_CODE();
-      }
-
-    // Assignment
-    StoutFermState& operator=(const StoutFermState& s)
-      {
-	START_CODE();
-	create(s.getThinLinks(),
-	       s.rho,
-	       s.n_smear, 
-	       s.smear_in_this_dirP);
-
-	END_CODE();
-	return *this;
-      }
-#endif
-
-
     //! Return FAT Linke
     const multi1d<LatticeColorMatrix>& getLinks() const 
       {
-	return smeared_links[n_smear];
+	return smeared_links[params.n_smear];
       }
 
     //! Return Links at smearing level n (n=0 is thin, n=n_smear fattest)
@@ -127,20 +92,74 @@ namespace Chroma
 		       multi1d<LatticeColorMatrix>& F_minus,
 		       const int level) const;
 
+#if 0
+// Get rid of this
+
     // create function
     void create(Handle< FermBC<T,P,Q> > fbc_,
 		const multi1d<LatticeColorMatrix>& u_,
 		const multi2d<Real>& sm_fact_,
 		const int n_smear_, 
 		const multi1d<bool>& smear_in_this_dirP_);
+#endif
+
+    // create function
+    void create(Handle< FermBC<T,P,Q> > fbc_,
+		const StoutFermStateParams& p_,
+		const multi1d<LatticeColorMatrix>& u_);
+
 
   private:
     Handle< FermBC<T,P,Q> >  fbc;
     multi1d< multi1d<LatticeColorMatrix> > smeared_links;
-    multi2d< Real > rho;
-    multi1d< bool > smear_in_this_dirP; // inelegant?
-    int n_smear;
+    StoutFermStateParams  params;
   }; // End class
+
+
+
+  //! Create a stout ferm connection state
+  /*! @ingroup fermacts
+   *
+   * This is a factory class for producing a connection state
+   */
+  class CreateStoutFermState : public CreateFermState<LatticeFermion,
+			       multi1d<LatticeColorMatrix>,
+			       multi1d<LatticeColorMatrix> >
+  {
+  public: 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    //! Full constructor
+    CreateStoutFermState(Handle< FermBC<T,P,Q> > fbc_,
+			 const StoutFermStateParams& p_) : 
+      fbc(fbc_), params(p_) {}
+
+    //! Destructor
+    ~CreateStoutFermState() {}
+   
+    //! Construct a ConnectState
+    StoutFermState* operator()(const Q& q) const
+      {
+	return new StoutFermState(fbc, params, q);
+      }
+
+    //! Return the ferm BC object for this state
+    const FermBC<T,P,Q>& getBC() const {return *fbc;}
+
+    //! Return the ferm BC object for this state
+    Handle< FermBC<T,P,Q> > getFermBC() const {return fbc;}
+
+  private:
+    CreateStoutFermState() {}  // hide default constructur
+    void operator=(const CreateStoutFermState&) {} // hide =
+
+  private:
+    Handle< FermBC<T,P,Q> >  fbc;
+    StoutFermStateParams  params;
+  };
 
 } // end namespace
 
