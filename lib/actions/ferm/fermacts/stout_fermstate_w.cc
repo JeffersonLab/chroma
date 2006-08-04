@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.2 2006-08-03 21:14:36 edwards Exp $
+// $Id: stout_fermstate_w.cc,v 1.3 2006-08-04 23:52:59 edwards Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -75,7 +75,7 @@ namespace Chroma
       // If we don't smear in a direction, the rho-s would be zero
       // so C would be zero -- to save work, we just set C 
       // to zero here.
-      C[mu] = 0;
+      C[mu] = zero;
 
       // If rho is nonzero in this direction then accumulate the staples
       if( params.smear_in_this_dirP[mu] == true ) { 
@@ -132,10 +132,6 @@ namespace Chroma
 	  LatticeColorMatrix Omega;
 	  Omega = C[mu]*adj(u_minus[mu]); // Q_mu is Omega mu here (eq 2 part 2)
 
-#if 0
-	  taproj(Omega);           // This does eq(2 part 1)
-	  Q = timesI(Omega);
-#else
 	  LatticeColorMatrix tmp = adj(Omega) - Omega;
 	  LatticeColorMatrix tmp2 = traceColor(tmp);
 	  tmp2 *= Real(1)/Real(Nc);
@@ -144,7 +140,7 @@ namespace Chroma
 	  Q = timesI(tmp);
 
 	  // Check Q is traceless hermitian.?
-#endif
+
 	}
 	else { 
 	  Q = 0;
@@ -152,7 +148,7 @@ namespace Chroma
 
     
 	// Now I need the c1, c0 etc etc from the exponentiator
-	multi1d<LatticeComplex> f(3);
+	multi1d<LatticeDComplex> f(3);
 	
 	LatticeColorMatrix QQ = Q*Q;
 
@@ -160,38 +156,40 @@ namespace Chroma
 
      
 	// This is 
-	LatticeReal c0    = real((1.0/3.0) * trace(Q*QQ));
-	LatticeReal c1    = real((1.0/2.0) * trace(QQ));
+	LatticeDouble c0    = real((1.0/3.0) * trace(Q*QQ));
+	LatticeDouble c1    = real((1.0/2.0) * trace(QQ));
 
-	{
-	  LatticeBoolean latboo_c1 = ( c1 < 1.0e-4 );
-	  LatticeInteger c1trouble = 
-	    where( latboo_c1,
-		   1,
-		   0);
-	  
-	  if ( toBool( sum(c1trouble) > 0 ) ) {
-	    QDPIO::cout << "There are sites where c1 is very small" << endl;
-	    QDPIO::cout << "You may experience numerical instability" << endl;
-	  }
+	LatticeDouble c0abs = fabs(c0);
+	LatticeDouble c0max = Double(2) * pow((c1 / Double(3)), Double(1.5));
+	LatticeDouble theta = acos(c0abs/c0max);
 
-	}
+	LatticeDouble u     = sqrt(c1 / 3.0) * cos(theta / 3.0);
+	LatticeDouble w     = sqrt(c1) * sin(theta / 3.0);
 
-	LatticeReal c0abs = fabs(c0);
-	LatticeReal c0max = 2 * pow((c1 / 3.0), 1.5);
-	LatticeReal theta = acos(c0abs/c0max);
-	LatticeReal u     = sqrt(c1 / 3.0) * cos(theta / 3.0);
-	LatticeReal w     = sqrt(c1) * sin(theta / 3.0);
-	LatticeReal uu    = u*u;
-	LatticeReal ww    = w*w;
-	LatticeReal cosu  = cos(u);
-	LatticeReal cosw  = cos(w);
-	LatticeReal sinu  = sin(u);
-	LatticeReal sinw  = sin(w);
+#if 0
+	XMLFileWriter dummy("./dummy");
+	push(dummy, "crap");
+	write(dummy, "u", u);
+	write(dummy, "w", w);
+#endif
+
+	LatticeDouble uu    = u*u;
+	LatticeDouble ww    = w*w;
+	LatticeDouble cosu  = cos(u);
+	LatticeDouble cosw  = cos(w);
+	LatticeDouble sinu  = sin(u);
+	LatticeDouble sinw  = sin(w);
+	
+	LatticeDouble cos2u = cos(2*u);
+	LatticeDouble sin2u = sin(2*u);
+
+	
 
 	// exp(2iu) and exp(-iu)
-	LatticeComplex exp2iu = cmplx((2*cosu*cosu - 1), 2*cosu*sinu);
-	LatticeComplex expmiu = cmplx(cosu, -sinu);
+	//LatticeDComplex exp2iu = cmplx(( 2*cosu*cosu - 1), 2*cosu*sinu);
+	LatticeDComplex exp2iu = cmplx( cos2u, sin2u );
+
+	LatticeDComplex expmiu = cmplx(cosu, -sinu);
 
 	// c0 is negative
 	LatticeBoolean latboo_c0 = (c0      <      0);
@@ -200,21 +198,21 @@ namespace Chroma
 	LatticeBoolean latboo_w  = (fabs(w) >   0.05);
 	
     
-	LatticeReal denom = 9 * uu - ww;
+	LatticeDouble denom = 9 * uu - ww;
 
 	// xi0 = xi0(w).  Expand xi0 if w is small.
-	LatticeReal xi0 = where(latboo_w, 
+	LatticeDouble xi0 = where(latboo_w, 
 				sinw/w, 
 				1 - (1.0/6.0)*ww*(1-(1.0/20.0)*ww*(1-(1.0/42.0)*ww)));
 	
 	// f_i = f_i(c0, c1). Expand f_i by c1, if c1 is small.
-	f[0] = ((uu - ww) * exp2iu + expmiu 
-		* cmplx(8*uu*cosw, 2*u*(3*uu+ww)*xi0))/denom;
+	f[0] = ((uu - ww) * exp2iu + expmiu * cmplx(8*uu*cosw, 2*u*(3*uu+ww)*xi0))/denom;
 		 
 	
 	f[1] = (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (ww-3*uu)*xi0))/denom;
 	
 	f[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denom;
+
 	
 	// apply everywhere were c0 is negative
 	// f_j(-c0, c1) = (-1)^j f*_j(c0, c1)
@@ -230,25 +228,24 @@ namespace Chroma
 		     adj(f[2]),
 		     f[2]);
 	
-
 	// xi1 = xi1(w) = cos(w)/w^2 - sin(w)/w^3  
 	// Expand xi1 if w is small.
 	// Not in paper but maple tells me 12th order expansion is
 	// xi1= (-1/3)+ (w^2/30)*(1-(w^2/28)*(1-w^2/54));
-	LatticeReal xi1;
+	LatticeDouble xi1;
 	{
-	  LatticeReal www = ww*w;
+	  LatticeDouble www = ww*w;
 	  xi1 = where(latboo_w, 
 		      cosw/ww-sinw/www, 
-		      (-1.0/3.0) + (1.0/30.0)*ww*(1-(1.0/28.0)*ww*(1-(1.0/54.0)*ww)));    
+		      -((1 - ww*(1-ww*(1-ww/54.0)/28.0)/10.0)/3.0));
 	}
 
-	LatticeReal b_denom=2.0*(9.0*uu -ww)*(9.0*uu-ww);
-	
-	multi1d<LatticeComplex> r_1(3);
-	multi1d<LatticeComplex> r_2(3);
 
-	r_1[0]=cmplx(2.0*u, 2.0*(uu-ww))*exp2iu
+	
+	multi1d<LatticeDComplex> r_1(3);
+	multi1d<LatticeDComplex> r_2(3);
+
+	r_1[0]=Double(2)*cmplx(u, uu-ww)*exp2iu
 	  + 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*uu*cosw)
 			 + cmplx(u*(3.0*uu+ww),9.0*uu+ww)*xi0 );
 	
@@ -260,26 +257,26 @@ namespace Chroma
 	  +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
 
 
-	r_2[0]=-2.0*exp2iu + expmiu*cmplx(-8.0*uu*xi0,
-					  2.0*(u*cosw+xi0)+6.0*u*uu*xi1);
-
+	r_2[0]=-2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*uu*xi1,
+						       4*u*xi0);
 	
 	r_2[1]= expmiu*cmplx(cosw+xi0-3.0*uu*xi1, 2.0*u*xi0);
 	r_2[1] = timesMinusI(r_2[1]);
 
-	r_2[2]=expmiu*cmplx(xi0, 3.0*u*xi1);
-	
-	multi1d<LatticeComplex> b_1(3);
-	multi1d<LatticeComplex> b_2(3);
+	r_2[2]=expmiu*cmplx(xi0, -3.0*u*xi1);
+       
+
+	multi1d<LatticeDComplex> b_1(3);
+	multi1d<LatticeDComplex> b_2(3);
+
+	LatticeDouble b_denom=2.0*(9.0*uu -ww)*(9.0*uu-ww);
 
 	for(int j=0; j < 3; j++) { 
 
 	  // This has to be a little more careful
-	  b_1[j]=2.0*u*r_1[j]+(3.0*uu-ww)*r_2[j]-2.0*(15.0*uu+ww)*f[j];
-	  b_1[j]/=b_denom;
+	  b_1[j]=( 2.0*u*r_1[j]+(3.0*uu-ww)*r_2[j]-2.0*(15.0*uu+ww)*f[j] )/b_denom;
+	  b_2[j]=( r_1[j]-3.0*u*r_2[j]-24.0*u*f[j] )/b_denom;
 
-	  b_2[j]=r_1[j]-3.0*u*r_2[j]-24.0*u*f[j];
-	  b_2[j]/=b_denom;
 
 	}
 	 
@@ -326,21 +323,18 @@ namespace Chroma
 	LatticeColorMatrix B_1 = b_1[0] + b_1[1]*Q + b_1[2]*QQ;
 	LatticeColorMatrix B_2 = b_2[0] + b_2[1]*Q + b_2[2]*QQ;
 
-	LatticeComplex g1=trace(F_plus[mu]*B_1*u_minus[mu]);
-	LatticeComplex g2=trace(F_plus[mu]*B_2*u_minus[mu]);
+	LatticeDComplex g1=trace(F_plus[mu]*B_1*u_minus[mu]);
+	LatticeDComplex g2=trace(F_plus[mu]*B_2*u_minus[mu]);
 
 	LatticeColorMatrix Gamma=g1*Q + g2*QQ + f[1]*u_minus[mu]*F_plus[mu]
 	  + f[2]*Q*u_minus[mu]*F_plus[mu] + f[2]*u_minus[mu]*F_plus[mu]*Q;
 
-#if 0
-	Lambda[mu]=Real(0.5)*(Gamma + adj(Gamma)) - (Real(0.5)/Real(Nc))*trace( Gamma + adj(Gamma));
-#else
 	Lambda[mu] = Gamma + adj(Gamma);
 	LatticeColorMatrix tmp = traceColor(Lambda[mu]);
 	tmp *= (Real(1)/Real(Nc));
 	Lambda[mu] -= tmp;
 	Lambda[mu] *= Real(0.5);
-#endif
+
 	F_minus[mu] = F_plus[mu]*(f[0] + f[1]*Q + f[2]*QQ);
 	F_minus[mu] += timesI(adj(C[mu])*Lambda[mu]);
       }
@@ -356,7 +350,7 @@ namespace Chroma
       if( params.smear_in_this_dirP[mu] ) { 
 	// All the staple terms go here
 	// There are six staple terms
-	LatticeColorMatrix staple_sum = 0;
+	LatticeColorMatrix staple_sum = zero;
 
 	for(int nu = 0; nu < Nd; nu++) { 
 	  if( params.smear_in_this_dirP[nu] == true && nu != mu ) {
@@ -493,22 +487,25 @@ namespace Chroma
     START_CODE();
     multi1d<LatticeColorMatrix> F_minus(Nd); // Force at one level lower
 
+    if( params.n_smear == 0 ) {
+      F_minus = F;
+    }
+    
     for(int level=params.n_smear-1; level >= 0; level--) {
-
+	
       // Take the current force, and compute force one level down 
       // Level is index into smeared link array
-      deriv_recurse(F,F_minus,level);   
+      deriv_recurse(F,F_minus,level);
+      
       F = F_minus;
+      
     }
-
-
+    
 
     for(int mu=0; mu < Nd; mu++) { 
       F[mu] = (smeared_links[0])[mu]*F_minus[mu];
     }
-
-
-
+    
     END_CODE();
   }
 
@@ -525,7 +522,7 @@ namespace Chroma
       if( params.smear_in_this_dirP[mu] == true ) { 
 
 	// Do smear
-	LatticeColorMatrix u_staple = 0;
+	LatticeColorMatrix u_staple = zero;
 	for(int nu = 0; nu < Nd; ++nu) {
 	  
 	  if( nu != mu && params.smear_in_this_dirP[nu] == true ) {
@@ -554,10 +551,13 @@ namespace Chroma
 	expmat(u_tmp,EXP_EXACT);
 	
 	next[mu]=u_tmp*current[mu];
+
+
       }
       else { 
 	next[mu]=current[mu]; // No smearing in this dir. Just copyq
       }
+
     }
 
     END_CODE();
@@ -571,7 +571,9 @@ namespace Chroma
 				 const multi1d<LatticeColorMatrix>& u_)
   {
     START_CODE();
+    QDPIO::cout << __func__ << ": entering" << endl;
     create(fbc_, p_, u_);
+    QDPIO::cout << __func__ << ": exiting" << endl;
     END_CODE();
   }
 
