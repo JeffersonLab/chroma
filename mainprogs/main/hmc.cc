@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.1 2006-07-15 21:41:36 edwards Exp $
+// $Id: hmc.cc,v 3.2 2006-08-05 23:30:48 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -458,7 +458,7 @@ int main(int argc, char *argv[])
   Chroma::initialize(&argc, &argv);
   
   // Chroma Init stuff -- Open DATA and XMLDAT
-  linkageHack();
+  QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out, "hmc");

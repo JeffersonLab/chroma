@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   Chroma::initialize(&argc, &argv);
   
   // Chroma Init stuff -- Open DATA and XMLDAT
-  linkageHack();
+  QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
   // Snarf it all
   XMLReader param_in(Chroma::getXMLInputFileName());
