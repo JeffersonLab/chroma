@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeacts.h,v 3.1 2006-07-21 18:39:11 bjoo Exp $
+// $Id: gaugeacts.h,v 3.2 2006-08-06 15:57:19 edwards Exp $
 
 /*! \file
  * \brief Gauge actions
@@ -15,6 +15,8 @@
 
 #ifndef __actgaugee_h__
 #define __actgaugee_h__
+
+#include "simple_gaugestate.h"
 
 #include "gaugeact_factory.h"
 
