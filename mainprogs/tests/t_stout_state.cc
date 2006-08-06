@@ -1,12 +1,12 @@
-// $Id: t_stout_state.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
+// $Id: t_stout_state.cc,v 3.1 2006-08-06 16:40:24 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
-#include "actions/ferm/fermacts/stout_state.h"
-#include "actions/ferm/fermacts/stout_fermact_params.h"
+#include "actions/ferm/fermacts/stout_fermstate_w.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermbcs/periodic_fermbc.h"
 
 using namespace Chroma;
 
@@ -16,28 +16,25 @@ int main(int argc, char *argv[])
   Chroma::initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,8};
-  multi1d<int> nrow(Nd);
-  nrow = foo;  // Use only Nd elements
-
+  multi1d<int> nrow;
 
   // Smearing Parameters 
   XMLReader xml_in(Chroma::getXMLInputFileName());
-  Real rho=0.1;
-  int  n_smear=3;
-  int orthog_dir=2;
+
+  StoutFermStateParams stoutParams;
+
+//  stoutParams.rho = 0.1;
+//  stoutParams.n_smear = 2;
+//  stoutParams.orthog_dir = 2;
+
   try {
-    read(xml_in, "/t_stout_state/rho", rho);
-    read(xml_in, "/t_stout_state/n_smear", n_smear);
-    read(xml_in, "/t_stout_state/orthog_dir", orthog_dir);
+    read(xml_in, "/t_stout_state", stoutParams);
     read(xml_in, "/t_stout_state/nrow", nrow);
   }
   catch(const std::string& err) { 
     QDPIO::cerr << "Caught Error while reading XML: " << err << endl;
     QDP_abort(1);
   }
-
-
 
   Layout::setLattSize(nrow);
   Layout::create();
@@ -86,39 +83,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << endl << "Stout Smearing Checks " << endl;
 
 
-
-
-
-  push(xml, "SmearingParams");
-  write(xml, "rho", rho);
-  write(xml, "n_smear", n_smear);
-  write(xml, "orthog_dir", orthog_dir);
-  pop(xml);
-
-  // smeared and unsmeared gauge fields
-  multi1d<LatticeColorMatrix> u_smear(Nd);
-  multi1d<LatticeColorMatrix> u_tmp(Nd);
-
-  // Get the unsmeared fields into u_tmp
-  u_tmp = u;
-  for(int i=0; i < n_smear; i++) {
-    for(int mu=0; mu < Nd; mu++){
-      if( mu != orthog_dir) { 
-	stout_smear(u_smear[mu], u_tmp, mu, rho, orthog_dir);
-      }
-      else {
-	u_smear[mu] = u_tmp[mu];
-      }
-    }
-
-    u_tmp = u_smear;
-  }
-  
-  MesPlq(u_smear, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq ("<< n_smear << " levels of old stout smearing) = " << w_plaq << endl;
-
-  push(xml, "CheckStoutStateSmear");
-  write(xml, "w_plaq_old_smear", w_plaq);
+  write(xml, "SmearingParams", stoutParams);
 
   // ------------------ REGRESSION TEST THE  STOUT SMEARING IN THE 
   // ------------------ STOUT STATE against the independently cosded routine
@@ -133,18 +98,26 @@ int main(int argc, char *argv[])
   rgauge(u_rg,g);
   
   // Create state - both untransformed and transformed 
-  StoutConnectState s_state(u, rho, n_smear, orthog_dir);
-  StoutConnectState s_state2(u_rg, rho, n_smear, orthog_dir);
+  typedef LatticeFermion               T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
 
+  Handle< FermBC<T,P,Q> > fbc(new PeriodicFermBC<T,P,Q>);
+  Handle< CreateFermState<T,P,Q> > cfs(new CreateStoutFermState(fbc, stoutParams));
+
+  Handle< FermState<T,P,Q> > s_state1((*cfs)(u));
+  Handle< FermState<T,P,Q> > s_state2((*cfs)(u_rg));
 
   // Get the plaquette
-  MesPlq(s_state.getLinks(), w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq ("<< n_smear << " levels of new stout smearing) = " << w_plaq << endl;
+  MesPlq(s_state1->getLinks(), w_plaq, s_plaq, t_plaq, link);
+  QDPIO::cout << "w_plaq ("<< stoutParams.n_smear 
+	      << " levels of new stout smearing) = " << w_plaq << endl;
   write(xml, "new_smearing_from_state", w_plaq);
   
   // Try out the plaquette routine
-  MesPlq(s_state2.getLinks(), w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq (After gauge transf and " << n_smear << " levels new stout smearing) = " << w_plaq << endl << endl;
+  MesPlq(s_state2->getLinks(), w_plaq, s_plaq, t_plaq, link);
+  QDPIO::cout << "w_plaq (After gauge transf and " << stoutParams.n_smear 
+	      << " levels new stout smearing) = " << w_plaq << endl << endl;
   write(xml, "new_smearing_from_state_gtrans", w_plaq);
   pop(xml);
 
@@ -170,8 +143,8 @@ int main(int argc, char *argv[])
   
   // Get Force for untransformed field
   X=zero;  
-  UnprecWilsonLinOp M1(s_state.getLinks(), Mass);
-  InvCG2(M1, phi, X, RsdCG, MaxCG, n_count);
+  UnprecWilsonLinOp M1(s_state1, Mass);
+  InvCG2(M1, phi, X, RsdCG, MaxCG);
   M1(Y, X, PLUS);
   M1.deriv(fat_force, X, Y, MINUS);
   
@@ -180,8 +153,8 @@ int main(int argc, char *argv[])
   // Get Force for transformed field 
   LatticeFermion phi2 = g*phi; // Transform source fermion
   X=zero;
-  UnprecWilsonLinOp M2(s_state2.getLinks(), Mass);
-  InvCG2(M2, phi2, X, RsdCG, MaxCG, n_count);
+  UnprecWilsonLinOp M2(s_state2, Mass);
+  InvCG2(M2, phi2, X, RsdCG, MaxCG);
   M2(Y, X, PLUS);
   M2.deriv(fat_force2, X,Y, MINUS);
 
@@ -203,8 +176,8 @@ int main(int argc, char *argv[])
   write(xml, "forceNormPreGaugeDerivGt", F_norm);
 
   // Now do the recursive derivative wrt thin links.
-  s_state.deriv(fat_force);
-  s_state2.deriv(fat_force2);
+  s_state1->deriv(fat_force);
+  s_state2->deriv(fat_force2);
 
   QDPIO::cout << endl << endl;
   QDPIO::cout << "Force norms after derivative with respect to thin links" << endl;
