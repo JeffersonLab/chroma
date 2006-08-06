@@ -29,9 +29,13 @@ int main(int argc, char *argv[])
 
 
   // Get Periodic Gauge Boundaries
-  Handle<GaugeBC> gbc(new PeriodicGaugeBC);
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
+
+  Handle< GaugeBC<P,Q> > gbc(new PeriodicGaugeBC);
+  Handle< CreateGaugeState<P,Q> > cgs(new CreateSimpleGaugeState<P,Q>(gbc));
   Real betaMC = Real(5.7);
-  RectGaugeAct S_g_MC(gbc, betaMC);
+  RectGaugeAct S_g_MC(cgs, betaMC);
 
   multi1d<LatticeColorMatrix> dsdu_1(Nd);
   multi1d<LatticeColorMatrix> dsdu_2(Nd);
@@ -39,16 +43,16 @@ int main(int argc, char *argv[])
   dsdu_1 = zero;
   dsdu_2 = zero;
 
-  Handle<const ConnectState> state1(S_g_MC.createState(u));
-  S_g_MC.dsdu(dsdu_1, state1);
+  Handle< GaugeState<P,Q> > state1(S_g_MC.createState(u));
+  S_g_MC.deriv(dsdu_1, state1);
   Double S1 = S_g_MC.S(state1);
 
   // Test gauge invariance
   LatticeColorMatrix g;
   rgauge(u, g);
 
-  Handle<const ConnectState> state2(S_g_MC.createState(u));
-  S_g_MC.dsdu(dsdu_2, state2);
+  Handle< GaugeState<P,Q> > state2(S_g_MC.createState(u));
+  S_g_MC.deriv(dsdu_2, state2);
   Double S2 = S_g_MC.S(state2);
 
   push(xml_out, "ForceDiff");
