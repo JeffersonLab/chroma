@@ -34,18 +34,18 @@
     <n_smear>2</n_smear>
     <orthog_dir>4</orthog_dir>
   </SmearingParams>
-  <new_smearing_from_state>0.512052479259081</new_smearing_from_state>
-  <new_smearing_from_state_gtrans>0.512052803296279</new_smearing_from_state_gtrans>
+  <new_smearing_from_state>0.126692303214643</new_smearing_from_state>
+  <new_smearing_from_state_gtrans>0.126692062840852</new_smearing_from_state_gtrans>
   <ForcesCheck>
-    <forceNormPreGaugeDeriv>129.657889854904</forceNormPreGaugeDeriv>
-    <forceNormPreGaugeDerivGt>129.657982891011</forceNormPreGaugeDerivGt>
-    <ForceNormPostGaugeDeriv>277.547758376314</ForceNormPostGaugeDeriv>
-    <ForceNormPostGaugeDerivGt>277.548104483147</ForceNormPostGaugeDerivGt>
-    <force_diff_norm_0>9.3144313792868e-06</force_diff_norm_0>
-    <force_diff_norm_1>9.01988403808628e-06</force_diff_norm_1>
-    <force_diff_norm_2>9.1563071846407e-06</force_diff_norm_2>
-    <force_diff_norm_3>9.27359868749215e-06</force_diff_norm_3>
+    <forceNormPreGaugeDeriv>109.244121299763</forceNormPreGaugeDeriv>
+    <forceNormPreGaugeDerivGt>109.244168800473</forceNormPreGaugeDerivGt>
+    <ForceNormPostGaugeDeriv>829.621532894606</ForceNormPostGaugeDeriv>
+    <ForceNormPostGaugeDerivGt>829.622962622209</ForceNormPostGaugeDerivGt>
+    <force_diff_norm_0>2.71386026676062e-05</force_diff_norm_0>
+    <force_diff_norm_1>2.65969407092762e-05</force_diff_norm_1>
+    <force_diff_norm_2>2.72364901954072e-05</force_diff_norm_2>
+    <force_diff_norm_3>2.70207792621777e-05</force_diff_norm_3>
   </ForcesCheck>
   <ForceDiffNorm>
-    <totalForceDiffNorm>1.8383539753163e-05</totalForceDiffNorm>
+    <totalForceDiffNorm>5.399861035196e-05</totalForceDiffNorm>
   </ForceDiffNorm>

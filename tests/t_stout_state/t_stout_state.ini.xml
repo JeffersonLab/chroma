@@ -2,6 +2,6 @@
 <t_stout_state>
   <nrow>4 4 4 8</nrow>
   <n_smear>2</n_smear>
-  <rho>0.2</rho>
+  <rho>0.5</rho>
   <orthog_dir>4</orthog_dir>
 </t_stout_state>
