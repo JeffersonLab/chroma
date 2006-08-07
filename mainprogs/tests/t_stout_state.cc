@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 3.1 2006-08-06 16:40:24 edwards Exp $
+// $Id: t_stout_state.cc,v 3.2 2006-08-07 03:38:44 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -122,11 +122,11 @@ int main(int argc, char *argv[])
   pop(xml);
 
   // Now get the forces
-  multi1d<LatticeColorMatrix> fat_force(Nd);  //  original 
+  multi1d<LatticeColorMatrix> fat_force1(Nd);  //  original 
   multi1d<LatticeColorMatrix> fat_force2(Nd); //  for the RG transform
 
-  fat_force=0;
-  fat_force2=0;
+  fat_force1 = zero;
+  fat_force2 = zero;
 
   LatticeFermion phi;
   LatticeFermion X;
@@ -140,15 +140,12 @@ int main(int argc, char *argv[])
   Real RsdCG=Real(1.0e-7);
   int MaxCG=200;
 
-  
   // Get Force for untransformed field
   X=zero;  
   UnprecWilsonLinOp M1(s_state1, Mass);
   InvCG2(M1, phi, X, RsdCG, MaxCG);
   M1(Y, X, PLUS);
-  M1.deriv(fat_force, X, Y, MINUS);
-  
-  
+  M1.deriv(fat_force1, X, Y, MINUS);
 
   // Get Force for transformed field 
   LatticeFermion phi2 = g*phi; // Transform source fermion
@@ -167,7 +164,7 @@ int main(int argc, char *argv[])
 
   push(xml, "ForcesCheck");
 
-  F_norm = norm2(fat_force);
+  F_norm = norm2(fat_force1);
   QDPIO::cout << "F_norm for fat force is " << F_norm << endl;
   write(xml, "forceNormPreGaugeDeriv", F_norm);
 
@@ -176,7 +173,7 @@ int main(int argc, char *argv[])
   write(xml, "forceNormPreGaugeDerivGt", F_norm);
 
   // Now do the recursive derivative wrt thin links.
-  s_state1->deriv(fat_force);
+  s_state1->deriv(fat_force1);
   s_state2->deriv(fat_force2);
 
   QDPIO::cout << endl << endl;
@@ -184,7 +181,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "========================================================" << endl << endl;
 
   // Get Force norms
-  F_norm = norm2(fat_force);
+  F_norm = norm2(fat_force1);
   QDPIO::cout << "F_norm for fat force is " << F_norm << endl;
   write(xml, "ForceNormPostGaugeDeriv", F_norm);
 
@@ -194,8 +191,9 @@ int main(int argc, char *argv[])
 
   multi1d<LatticeColorMatrix> force_diff(Nd);
 
-  for(int mu=0; mu < Nd; mu++) { 
-    force_diff[mu]  = fat_force[mu] - adj(g)*fat_force2[mu]*g;
+  for(int mu=0; mu < Nd; mu++) 
+  { 
+    force_diff[mu]  = fat_force1[mu] - adj(g)*fat_force2[mu]*g;
     F_norm = sqrt(norm2(force_diff[mu]));
     QDPIO::cout << "|| force - RG force in dir "<< mu <<" ||=  "<< F_norm <<   endl;
     ostringstream tagname;
