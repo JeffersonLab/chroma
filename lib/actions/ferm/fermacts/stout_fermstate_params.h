@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_params.h,v 1.3 2006-08-07 03:40:32 edwards Exp $
+// $Id: stout_fermstate_params.h,v 1.4 2006-08-07 18:13:28 edwards Exp $
 /* \file
  * \brief Stout params
  */
@@ -22,6 +22,8 @@ namespace Chroma
     multi2d<Real>  rho;
     multi1d<bool>  smear_in_this_dirP; // inelegant?
     int            n_smear;
+
+    Real           sm_fact;
     int            orthog_dir;
   };
 

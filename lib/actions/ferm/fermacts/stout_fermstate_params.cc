@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_params.cc,v 1.3 2006-08-07 03:40:32 edwards Exp $
+// $Id: stout_fermstate_params.cc,v 1.4 2006-08-07 18:13:28 edwards Exp $
 
 #include "actions/ferm/fermacts/stout_fermstate_params.h"
 
@@ -13,7 +13,7 @@ namespace Chroma
     smear_in_this_dirP.resize(Nd);
 
     n_smear = 0;
-    rho = zero;
+    rho = sm_fact = zero;
     orthog_dir = Nd;
     smear_in_this_dirP = true;
   }
@@ -24,7 +24,7 @@ namespace Chroma
     rho.resize(Nd, Nd);
     smear_in_this_dirP.resize(Nd);
 
-    Real sm_fact = zero;
+    sm_fact = zero;
     orthog_dir = Nd;
 
     try 
@@ -84,7 +84,7 @@ namespace Chroma
   void write(XMLWriter& xml, const std::string& path, const StoutFermStateParams& p) 
   {
     push(xml, path);
-    write(xml, "rho", p.rho[0][0]);
+    write(xml, "rho", p.sm_fact);
     write(xml, "n_smear", p.n_smear);
     write(xml, "orthog_dir", p.orthog_dir);
     pop(xml);
