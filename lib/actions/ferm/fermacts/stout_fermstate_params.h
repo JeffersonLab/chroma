@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_params.h,v 1.2 2006-08-03 21:14:36 edwards Exp $
+// $Id: stout_fermstate_params.h,v 1.3 2006-08-07 03:40:32 edwards Exp $
 /* \file
  * \brief Stout params
  */
@@ -16,7 +16,7 @@ namespace Chroma
   struct StoutFermStateParams
   {
     //! Default constructor
-    StoutFermStateParams() {} 
+    StoutFermStateParams();
     StoutFermStateParams(XMLReader& in, const std::string& path);
 
     multi2d<Real>  rho;

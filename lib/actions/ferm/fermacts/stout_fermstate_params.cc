@@ -1,11 +1,23 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_params.cc,v 1.2 2006-08-03 21:14:36 edwards Exp $
+// $Id: stout_fermstate_params.cc,v 1.3 2006-08-07 03:40:32 edwards Exp $
 
 #include "actions/ferm/fermacts/stout_fermstate_params.h"
 
 
 namespace Chroma 
 {
+
+  StoutFermStateParams::StoutFermStateParams() 
+  {
+    rho.resize(Nd, Nd);
+    smear_in_this_dirP.resize(Nd);
+
+    n_smear = 0;
+    rho = zero;
+    orthog_dir = Nd;
+    smear_in_this_dirP = true;
+  }
+
 
   StoutFermStateParams::StoutFermStateParams(XMLReader& in, const std::string& path) 
   {
