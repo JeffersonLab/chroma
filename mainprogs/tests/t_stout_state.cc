@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 3.2 2006-08-07 03:38:44 edwards Exp $
+// $Id: t_stout_state.cc,v 3.3 2006-08-07 04:06:30 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -119,7 +119,6 @@ int main(int argc, char *argv[])
   QDPIO::cout << "w_plaq (After gauge transf and " << stoutParams.n_smear 
 	      << " levels new stout smearing) = " << w_plaq << endl << endl;
   write(xml, "new_smearing_from_state_gtrans", w_plaq);
-  pop(xml);
 
   // Now get the forces
   multi1d<LatticeColorMatrix> fat_force1(Nd);  //  original 
@@ -136,24 +135,25 @@ int main(int argc, char *argv[])
   gaussian(phi);
   
   Real Mass = 0.2;
-  int n_count;
   Real RsdCG=Real(1.0e-7);
   int MaxCG=200;
 
   // Get Force for untransformed field
-  X=zero;  
-  UnprecWilsonLinOp M1(s_state1, Mass);
-  InvCG2(M1, phi, X, RsdCG, MaxCG);
-  M1(Y, X, PLUS);
-  M1.deriv(fat_force1, X, Y, MINUS);
+  {
+    X=zero;  
+    UnprecWilsonLinOp M1(s_state1, Mass);
+    InvCG2(M1, phi, X, RsdCG, MaxCG);
+    M1(Y, X, PLUS);
+    M1.deriv(fat_force1, X, Y, MINUS);
 
-  // Get Force for transformed field 
-  LatticeFermion phi2 = g*phi; // Transform source fermion
-  X=zero;
-  UnprecWilsonLinOp M2(s_state2, Mass);
-  InvCG2(M2, phi2, X, RsdCG, MaxCG);
-  M2(Y, X, PLUS);
-  M2.deriv(fat_force2, X,Y, MINUS);
+    // Get Force for transformed field 
+    LatticeFermion phi2 = g*phi; // Transform source fermion
+    X=zero;
+    UnprecWilsonLinOp M2(s_state2, Mass);
+    InvCG2(M2, phi2, X, RsdCG, MaxCG);
+    M2(Y, X, PLUS);
+    M2.deriv(fat_force2, X,Y, MINUS);
+  }
 
 
   QDPIO::cout << "Force norms before derivative with respect to thin links" << endl;
