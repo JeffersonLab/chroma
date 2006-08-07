@@ -30,7 +30,7 @@
     </pollp>
   </Observables>
   <SmearingParams>
-    <rho>0</rho>
+    <rho>0.5</rho>
     <n_smear>2</n_smear>
     <orthog_dir>4</orthog_dir>
   </SmearingParams>
