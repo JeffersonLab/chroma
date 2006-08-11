@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quark_smearing_factory.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: quark_smearing_factory.h,v 3.1 2006-08-11 16:13:30 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark smearing objects
  */
@@ -15,6 +15,7 @@
 namespace Chroma
 {
   //! Quark smearing factory (foundry)
+  /*! \ingroup smear */
   typedef SingletonHolder< 
     ObjectFactory<QuarkSmearing<LatticePropagator>, 
 		  std::string,
@@ -25,6 +26,7 @@ namespace Chroma
 
 
   //! Quark smearing factory (foundry)
+  /*! \ingroup smear */
   typedef SingletonHolder< 
     ObjectFactory<QuarkSmearing<LatticeFermion>, 
 		  std::string,
@@ -35,6 +37,7 @@ namespace Chroma
 
 
   //! Quark smearing factory (foundry)
+  /*! \ingroup smear */
   typedef SingletonHolder< 
     ObjectFactory<QuarkSmearing<LatticeColorVector>, 
 		  std::string,
