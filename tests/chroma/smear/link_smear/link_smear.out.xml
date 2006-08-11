@@ -39,7 +39,7 @@ Stout smear task
         <num_smear>1</num_smear>
         <no_smear_dir>3</no_smear_dir>
         <BlkMax>100</BlkMax>
-        <BlkAccu>1.0e-6</BlkAccu>
+        <BlkAccu>5.0e-6</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -71,14 +71,31 @@ Stout smear task
       <Name>LINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>3</version>
         <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
         <link_smear_fact>0.15625</link_smear_fact>
         <link_smear_num>16</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
+        <smear_dirs>1 1 1 0</smear_dirs>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <linksmear_id>stout</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>3</version>
+        <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+        <link_smear_fact>0.15625</link_smear_fact>
+        <link_smear_num>16</link_smear_num>
+        <smear_dirs>1 1 0 0</smear_dirs>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <linksmear_id>stout2</linksmear_id>
       </NamedObject>
     </elem>
 
@@ -94,10 +111,10 @@ Stout smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.3</chroma>
-      <qdp>1.20.5</qdp>
+      <chroma>3.10.2</chroma>
+      <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>17 Jun 06 14:23:57 EDT</run_date>
+    <run_date>11 Aug 06 14:08:10 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -126,26 +143,26 @@ Stout smear task
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994765</w_plaq>
-    <s_plaq>0.994801</s_plaq>
-    <t_plaq>0.994729</t_plaq>
-    <link>0.379318</link>
+    <w_plaq>0.994764814567235</w_plaq>
+    <s_plaq>0.994800872583356</s_plaq>
+    <t_plaq>0.994728756551113</t_plaq>
+    <link>0.379317687901979</link>
     <pollp>
       <elem>
-        <re>0.967223</re>
-        <im>-0.00121316</im>
+        <re>0.96722258204439</re>
+        <im>-0.00121316457792394</im>
       </elem>
       <elem>
-        <re>0.967032</re>
-        <im>-0.00129617</im>
+        <re>0.967032070271671</re>
+        <im>-0.0012961704569534</im>
       </elem>
       <elem>
-        <re>0.967468</re>
-        <im>-0.00114548</im>
+        <re>0.967467518639751</re>
+        <im>-0.00114548282075096</im>
       </elem>
       <elem>
-        <re>0.879539</re>
-        <im>-0.0104403</im>
+        <re>0.879538946435787</re>
+        <im>-0.0104402832973089</im>
       </elem>
     </pollp>
   </Observables>
@@ -179,50 +196,50 @@ Stout smear task
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <link>0.379317687901979</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.997762</w_plaq>
-          <s_plaq>0.999363</s_plaq>
-          <t_plaq>0.996162</t_plaq>
-          <link>0.379494</link>
+          <w_plaq>0.997762419464481</w_plaq>
+          <s_plaq>0.999362542190485</s_plaq>
+          <t_plaq>0.996162296738476</t_plaq>
+          <link>0.379493533148586</link>
           <pollp>
             <elem>
-              <re>0.970947</re>
-              <im>-0.00117951</im>
+              <re>0.970946714980528</re>
+              <im>-0.001179509783924</im>
             </elem>
             <elem>
-              <re>0.970609</re>
-              <im>-0.00126162</im>
+              <re>0.970608588851367</re>
+              <im>-0.0012616176748755</im>
             </elem>
             <elem>
-              <re>0.971031</re>
-              <im>-0.00113731</im>
+              <re>0.971031137315246</re>
+              <im>-0.00113730578535372</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Link_observables>
@@ -240,7 +257,7 @@ Stout smear task
       <num_smear>1</num_smear>
       <no_smear_dir>3</no_smear_dir>
       <BlkMax>100</BlkMax>
-      <BlkAccu>1.0e-6</BlkAccu>
+      <BlkAccu>5.0e-6</BlkAccu>
     </Param>
 
           <NamedObject>
@@ -259,50 +276,50 @@ Stout smear task
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <link>0.379317687901979</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.997954</w_plaq>
-          <s_plaq>0.999668</s_plaq>
-          <t_plaq>0.996241</t_plaq>
-          <link>0.379506</link>
+          <w_plaq>0.997954031271446</w_plaq>
+          <s_plaq>0.999667561199102</s_plaq>
+          <t_plaq>0.99624050134379</t_plaq>
+          <link>0.379505481629167</link>
           <pollp>
             <elem>
-              <re>0.971071</re>
-              <im>-0.00117993</im>
+              <re>0.971072023850866</re>
+              <im>-0.0011797827699714</im>
             </elem>
             <elem>
-              <re>0.970741</re>
-              <im>-0.00125955</im>
+              <re>0.970740408364994</re>
+              <im>-0.00125959808368255</im>
             </elem>
             <elem>
-              <re>0.971185</re>
-              <im>-0.00113507</im>
+              <re>0.971184657071717</re>
+              <im>-0.00113508939618138</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Link_observables>
@@ -339,50 +356,50 @@ Stout smear task
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <link>0.379317687901979</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.999751</w_plaq>
-          <s_plaq>0.999752</s_plaq>
-          <t_plaq>0.99975</t_plaq>
-          <link>0.379593</link>
+          <w_plaq>0.999750844358156</w_plaq>
+          <s_plaq>0.999751803620408</s_plaq>
+          <t_plaq>0.999749885095904</t_plaq>
+          <link>0.379593360548218</link>
           <pollp>
             <elem>
-              <re>0.971713</re>
-              <im>-0.00117274</im>
+              <re>0.971713355742395</re>
+              <im>-0.00117274037756943</im>
             </elem>
             <elem>
-              <re>0.971272</re>
-              <im>-0.00125116</im>
+              <re>0.971272478811443</re>
+              <im>-0.00125116186609375</im>
             </elem>
             <elem>
-              <re>0.971794</re>
-              <im>-0.00113034</im>
+              <re>0.971793867376012</re>
+              <im>-0.00113033732244124</im>
             </elem>
             <elem>
-              <re>0.887504</re>
-              <im>-0.010265</im>
+              <re>0.887504141001652</re>
+              <im>-0.0102650023109163</im>
             </elem>
           </pollp>
         </Link_observables>
@@ -392,10 +409,11 @@ Stout smear task
       <linksmear>
         <update_no>0</update_no>
         <Input><Param>
+      <version>3</version>
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.15625</link_smear_fact>
       <link_smear_num>16</link_smear_num>
-      <no_smear_dir>3</no_smear_dir>
+      <smear_dirs>1 1 1 0</smear_dirs>
     </Param>
 
           <NamedObject>
@@ -414,50 +432,126 @@ Stout smear task
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <link>0.379317687901979</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.998191</w_plaq>
-          <s_plaq>0.999997</s_plaq>
-          <t_plaq>0.996384</t_plaq>
-          <link>0.379497</link>
+          <w_plaq>0.998190860134653</w_plaq>
+          <s_plaq>0.999997366788901</s_plaq>
+          <t_plaq>0.996384353480405</t_plaq>
+          <link>0.379497392044868</link>
           <pollp>
             <elem>
-              <re>0.971853</re>
-              <im>-0.00117131</im>
+              <re>0.971852938683393</re>
+              <im>-0.00117131229596149</im>
             </elem>
             <elem>
-              <re>0.97149</re>
-              <im>-0.00124695</im>
+              <re>0.971490057340513</re>
+              <im>-0.00124694798826871</im>
             </elem>
             <elem>
-              <re>0.971965</re>
-              <im>-0.0011243</im>
+              <re>0.971965408107887</re>
+              <im>-0.00112429595507516</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
+            </elem>
+          </pollp>
+        </Link_observables>
+      </linksmear>
+    </elem>
+    <elem>
+      <linksmear>
+        <update_no>0</update_no>
+        <Input><Param>
+      <version>3</version>
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.15625</link_smear_fact>
+      <link_smear_num>16</link_smear_num>
+      <smear_dirs>1 1 0 0</smear_dirs>
+    </Param>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <linksmear_id>stout2</linksmear_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <link>0.379317687901979</link>
+          <pollp>
+            <elem>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
+            </elem>
+            <elem>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
+            </elem>
+            <elem>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
+            </elem>
+            <elem>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Link_observables>
+          <w_plaq>0.996436818916764</w_plaq>
+          <s_plaq>0.997343550539679</s_plaq>
+          <t_plaq>0.99553008729385</t_plaq>
+          <link>0.379397424539396</link>
+          <pollp>
+            <elem>
+              <re>0.970974925051754</re>
+              <im>-0.00117840560930442</im>
+            </elem>
+            <elem>
+              <re>0.970710199442692</re>
+              <im>-0.00125807951311193</im>
+            </elem>
+            <elem>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
+            </elem>
+            <elem>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Link_observables>

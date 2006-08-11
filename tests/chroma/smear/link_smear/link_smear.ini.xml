@@ -36,7 +36,7 @@ Stout smear task
         <num_smear>1</num_smear>
         <no_smear_dir>3</no_smear_dir>
         <BlkMax>100</BlkMax>
-        <BlkAccu>1.0e-6</BlkAccu>
+        <BlkAccu>5.0e-6</BlkAccu>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -68,14 +68,31 @@ Stout smear task
       <Name>LINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
+        <version>3</version>
         <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
         <link_smear_fact>0.15625</link_smear_fact>
         <link_smear_num>16</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
+        <smear_dirs>1 1 1 0</smear_dirs>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <linksmear_id>stout</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>3</version>
+        <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+        <link_smear_fact>0.15625</link_smear_fact>
+        <link_smear_num>16</link_smear_num>
+        <smear_dirs>1 1 0 0</smear_dirs>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <linksmear_id>stout2</linksmear_id>
       </NamedObject>
     </elem>
 
