@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: stout_smear.h,v 3.1 2006-08-11 16:13:30 edwards Exp $
+//  $Id: stout_smear.h,v 3.2 2006-08-11 18:12:00 edwards Exp $
 /*! \file
  *  \brief Stout smear a gauge field
  */
@@ -16,14 +16,18 @@ namespace Chroma
    *
    * Arguments:
    *
-   *  \param u		gauge field (Read)
-   *  \param u_smr	"stout-smeared" gauge field (Write)
+   * \param u_smear      smeared gauge field ( Write )
+   * \param u            gauge field ( Read )
+   * \param mu           direction of smeared gauge field ( Read )
+   * \param sm_fact      smearing factor ( Read )
+   * \param smear_dirs	 no staples in these directions (Read)
    */
 
   void stout_smear(LatticeColorMatrix& u_smear,
 		   const multi1d<LatticeColorMatrix>& u,
 		   int mu, 
-		   const Real& sm_fact, int j_decay);
+		   const Real& sm_fact, 
+		   multi1d<bool> smear_dirs);
 
 
 }

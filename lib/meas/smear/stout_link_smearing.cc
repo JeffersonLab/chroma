@@ -1,4 +1,4 @@
-// $Id: stout_link_smearing.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: stout_link_smearing.cc,v 3.1 2006-08-11 18:12:00 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -56,20 +56,34 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-//      int version;
-//      read(paramtop, "version", version);
-//      switch (version) 
-//      {
-//      case 2:
-//	break;
-//      default :
-//	QDPIO::cerr << "Input version " << version << " unsupported." << endl;
-//	QDP_abort(1);
-//      }
+      int version = 2;
+      if (paramtop.count("version") > 0)
+	read(paramtop, "version", version);
+
+      switch (version) 
+      {
+      case 2:
+      {
+	int no_smear_dir;
+	read(paramtop, "no_smear_dir", no_smear_dir);
+	smear_dirs.resize(Nd);
+	smear_dirs = true;
+	smear_dirs[no_smear_dir] = false;
+      }
+      break;
+
+      case 3:
+	read(paramtop, "smear_dirs", smear_dirs);
+	break;
+
+      default:
+	QDPIO::cerr << StoutLinkSmearingEnv::name << ": Input version " << version 
+		    << " unsupported." << endl;
+	QDP_abort(1);
+      }
 
       read(paramtop, "link_smear_num", link_smear_num);
       read(paramtop, "link_smear_fact", link_smear_fact);
-      read(paramtop, "no_smear_dir", no_smear_dir);
     }
 
 
@@ -78,12 +92,12 @@ namespace Chroma
     {
       push(xml, path);
     
-      int version = 2;
+      int version = 3;
       write(xml, "version", version);
       write(xml, "LinkSmearingType", StoutLinkSmearingEnv::name);
       write(xml, "link_smear_num", link_smear_num);
       write(xml, "link_smear_fact", link_smear_fact);
-      write(xml, "no_smear_dir", no_smear_dir);
+      write(xml, "smear_dirs", smear_dirs);
 
       pop(xml);
     }
@@ -101,18 +115,15 @@ namespace Chroma
       {
 	QDPIO::cout << "Stout Smear gauge field" << endl;
 
-	int BlkMax = 100;
-	Real BlkAccu = 1.0e-5;
-
 	for(int i=0; i < params.link_smear_num; ++i)
 	{
 	  multi1d<LatticeColorMatrix> u_tmp(Nd);
 
 	  for(int mu = 0; mu < Nd; ++mu)
-	    if ( mu != params.no_smear_dir )
+	    if ( params.smear_dirs[mu] )
 	      stout_smear(u_tmp[mu], u_stout, mu,
 			  params.link_smear_fact,
-			  params.no_smear_dir);
+			  params.smear_dirs);
 	    else
 	      u_tmp[mu] = u_stout[mu];
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_link_smearing.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: stout_link_smearing.h,v 3.1 2006-08-11 18:12:00 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -29,7 +29,7 @@ namespace Chroma
     
       Real link_smear_fact;		/*!< Smearing parameters */
       int  link_smear_num;              /*!< Number of smearing hits */
-      int  no_smear_dir;		/*!< Decay direction */
+      multi1d<bool> smear_dirs;         /*!< Only allow smearing and staples in these directions */
     };
 
 
