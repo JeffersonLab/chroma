@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.23 2006-08-03 18:54:03 edwards Exp $
+# $Id: Makefile.am,v 3.24 2006-08-11 18:12:23 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -611,10 +611,7 @@ nobase_include_HEADERS += \
 	meas/inline/schrfun/inline_sfpcac_w.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
-	meas/inline/smear/inline_link_smear.h \
-	meas/inline/smear/inline_ape_smear.h \
-	meas/inline/smear/inline_hyp_smear.h \
-	meas/inline/smear/inline_stout_smear.h
+	meas/inline/smear/inline_link_smear.h
 
 # Taken out for now
 #	meas/hadron/multipole_w.h
@@ -1101,10 +1098,7 @@ libchroma_a_SOURCES += \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
-	meas/inline/smear/inline_link_smear.cc \
-	meas/inline/smear/inline_ape_smear.cc \
-	meas/inline/smear/inline_hyp_smear.cc \
-	meas/inline/smear/inline_stout_smear.cc
+	meas/inline/smear/inline_link_smear.cc
 
 # Taken out for now
 #	meas/inline/hadron/inline_multipole_w.cc
