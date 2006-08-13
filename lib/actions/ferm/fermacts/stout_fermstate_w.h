@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.4 2006-08-13 19:30:46 edwards Exp $
+// $Id: stout_fermstate_w.h,v 1.5 2006-08-13 19:34:47 edwards Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -77,12 +77,12 @@ namespace Chroma
 
     //! Given c0 and c1 compute the f-s and b-s
     //! Only compute b-s if do_bs is set to true (default)
-    void StoutFermState::getFsAndBs(const LatticeDouble& c0,
-				    const LatticeDouble& c1,
-				    multi1d<LatticeDComplex>& f,
-				    multi1d<LatticeDComplex>& b1,
-				    multi1d<LatticeDComplex>& b2,
-				    bool do_bs=true) const;
+    void getFsAndBs(const LatticeDouble& c0,
+		    const LatticeDouble& c1,
+		    multi1d<LatticeDComplex>& f,
+		    multi1d<LatticeDComplex>& b1,
+		    multi1d<LatticeDComplex>& b2,
+		    bool do_bs=true) const;
   private:
 
     // Hide default constructor
