@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.4 2006-08-13 01:11:59 bjoo Exp $
+// $Id: stout_fermstate_w.cc,v 1.5 2006-08-13 19:30:46 edwards Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -48,7 +48,7 @@ namespace Chroma
 				  multi1d<LatticeDComplex>& f,
 				  multi1d<LatticeDComplex>& b1,
 				  multi1d<LatticeDComplex>& b2,
-				  const bool dobs) const
+				  bool dobs) const
   {
 
     LatticeBoolean latboo_c0 = (c0 < Double(0));

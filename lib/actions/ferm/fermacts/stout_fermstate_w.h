@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.3 2006-08-13 01:11:59 bjoo Exp $
+// $Id: stout_fermstate_w.h,v 1.4 2006-08-13 19:30:46 edwards Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -82,7 +82,7 @@ namespace Chroma
 				    multi1d<LatticeDComplex>& f,
 				    multi1d<LatticeDComplex>& b1,
 				    multi1d<LatticeDComplex>& b2,
-				    const bool do_bs=true) const;
+				    bool do_bs=true) const;
   private:
 
     // Hide default constructor
