@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.3 2006-08-04 23:52:59 edwards Exp $
+// $Id: stout_fermstate_w.cc,v 1.4 2006-08-13 01:11:59 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -43,7 +43,364 @@ namespace Chroma
     const bool registered = registerAll();
   }
 
+  void StoutFermState::getFsAndBs(const LatticeDouble& c0,
+				  const LatticeDouble& c1,
+				  multi1d<LatticeDComplex>& f,
+				  multi1d<LatticeDComplex>& b1,
+				  multi1d<LatticeDComplex>& b2,
+				  const bool dobs) const
+  {
 
+    LatticeBoolean latboo_c0 = (c0 < Double(0));
+    LatticeDouble c0abs = fabs(c0);
+    LatticeDouble c0max = Double(2)*pow( c1/Double(3), Double(1.5));
+    
+    LatticeDouble theta;
+    LatticeBoolean latboo_c0max =( c0max == 0 );
+    
+    theta = acos( c0abs/c0max );
+  
+    LatticeDouble u = sqrt(c1/Double(3))*cos(theta/Double(3));
+    LatticeDouble w = sqrt(c1)*sin(theta/Double(3));
+    
+    LatticeDouble u_sq = u*u;
+    LatticeDouble w_sq = w*w;
+    
+    LatticeDouble xi0,xi1;
+    {
+      LatticeBoolean latboo_w = (fabs(w) < Double(0.05));
+      xi0 = where( latboo_w,
+		   Double(1) - (Double(1)/Double(6))*w_sq*(Double(1) - (Double(1)/Double(20))*w_sq*(Double(1) - (Double(1)/Double(42))*w_sq)),
+		   (sin(w)/w) );
+
+      if( dobs==true) {
+	xi1 = where( latboo_w,
+		     Double(-1)*((Double(1)/Double(3)) - ( Double(1)/Double(30) )*w_sq*(Double(1) - (Double(1)/Double(28))*w_sq*(Double(1)- (Double(1)/Double(54))*w_sq))),
+		     cos(w)/w_sq - sin(w)/(w_sq*w) );
+      }
+    }
+
+    
+    LatticeDouble cosu = cos(u);
+    LatticeDouble sinu = sin(u);
+    LatticeDouble cosw = cos(w);
+    LatticeDouble sinw = sin(w);
+    LatticeDouble sin2u = sin(2*u);
+    LatticeDouble cos2u = cos(2*u);
+
+    // exp(2iu) and exp(-iu)
+    //LatticeDComplex exp2iu = cmplx(( 2*cosu*cosu - 1), 2*cosu*sinu);
+    LatticeDComplex exp2iu = cmplx( cos2u, sin2u );
+    LatticeDComplex expmiu = cmplx(cosu, -sinu);
+
+    LatticeDouble denum = 9*u_sq - w_sq;
+    f.resize(3);
+
+    // f_i = f_i(c0, c1). Expand f_i by c1, if c1 is small.
+    f[0] = ((u_sq - w_sq) * exp2iu + expmiu * cmplx(8*u_sq*cosw, 2*u*(3*u_sq+w_sq)*xi0))/denum;
+    
+	
+    f[1] = (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (w_sq-3*u_sq)*xi0))/denum;
+    
+    f[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denum;
+
+    if( dobs == true ) {
+      
+      multi1d<LatticeDComplex> r_1(3);
+      multi1d<LatticeDComplex> r_2(3);
+      
+      r_1[0]=Double(2)*cmplx(u, u_sq-w_sq)*exp2iu
+	+ 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*u_sq*cosw)
+		       + cmplx(u*(3.0*u_sq+w_sq),9.0*u_sq+w_sq)*xi0 );
+      
+      r_1[1]=cmplx(2.0, 4.0*u)*exp2iu
+	+ expmiu*cmplx(-2.0*cosw-(w_sq-3.0*u_sq)*xi0,
+		       2.0*u*cosw+6.0*u*xi0);
+      
+      r_1[2]=2.0*timesI(exp2iu)
+	+expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
+      
+      
+      r_2[0]=-2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*u_sq*xi1,
+						     4*u*xi0);
+      
+      r_2[1]= expmiu*cmplx(cosw+xi0-3.0*u_sq*xi1, 2.0*u*xi0);
+      r_2[1] = timesMinusI(r_2[1]);
+      
+      r_2[2]=expmiu*cmplx(xi0, -3.0*u*xi1);
+    
+      b1.resize(3);
+      b2.resize(3);
+      
+      LatticeDouble b_denum=2.0*(9.0*u_sq -w_sq)*(9.0*u_sq-w_sq);
+      
+      for(int j=0; j < 3; j++) { 
+	
+	// This has to be a little more careful
+	
+	b1[j]=( 2.0*u*r_1[j]+(3.0*u_sq-w_sq)*r_2[j]-2.0*(15.0*u_sq+w_sq)*f[j] )/b_denum;
+	b2[j]=( r_1[j]-3.0*u*r_2[j]-24.0*u*f[j] )/b_denum;
+	
+	
+      }
+      
+      b1[0] = where(latboo_c0,
+	 	    conj(b1[0]),
+		    b1[0]);
+      
+      b1[1] = where(latboo_c0,
+		    -1*conj(b1[1]),
+		    b1[1]);
+      
+      b1[2] = where(latboo_c0,
+		    conj(b1[2]),
+		    b1[2]);
+      
+      b2[0] = where(latboo_c0,
+		    -1*conj(b2[0]),
+		    b2[0]);
+      
+      b2[1] = where(latboo_c0,
+		    conj(b2[1]),
+		    b2[1]);
+    
+      b2[2] = where(latboo_c0,
+		    -1*conj(b2[2]),
+		    b2[2]);
+
+    }
+
+    f[0] = where(latboo_c0,
+		 conj(f[0]),
+		 f[0]);
+    
+    f[1] = where(latboo_c0,
+		 -1*conj(f[1]),
+		 f[1]);
+    
+    f[2] = where(latboo_c0,
+		 conj(f[2]),
+		 f[2]);
+  
+
+#if 0
+    
+
+      real_part = (u_sq -w_sq)*cos2u
+	+ 8*u_sq*cosu*cosw
+	+ 2*u*sinu*(3*u_sq+w_sq)*xi0;
+
+
+      imag_part = (u_sq - w_sq)*sin2u
+	-8*u_sq*sinu*cosw
+	+2*u*cosu*(3*u_sq+w_sq)*xi0;
+
+      real_part /= denum;
+      imag_part /= denum;
+
+      f[0] = cmplx(real_part,imag_part);
+
+      
+      real_part = 2*u*cos2u - 2*u*cosu*cosw
+	+ (3*u_sq - w_sq)*sinu*xi0;
+
+      imag_part = 2*u*sin2u + 2*u*sinu*cosw
+	+ (3*u_sq - w_sq)*cosu*xi0;
+
+      real_part /= denum;
+      imag_part /= denum;
+
+      f[1] = cmplx(real_part, imag_part);
+
+      real_part = cos2u - cosu*cosw - 3*u*sinu*xi0;
+      imag_part = sin2u + sinu*cosw - 3*u*cosu*xi0;
+
+      real_part /= denum;
+      imag_part /= denum;
+
+      f[2] = cmplx(real_part, imag_part);    
+    
+    }
+
+    if( dobs == true ) { 
+      multi1d<LatticeDComplex> r1(3);
+      multi1d<LatticeDComplex> r2(3);
+
+
+      real_part = 2*u*cos2u - 2*sin2u*(u_sq - w_sq)
+	+ 2*u*cosu*( 8*cosw + (3*u_sq + w_sq)*xi0 )
+	- 2*sinu*( 4*u_sq*cosw - (9*u_sq  + w_sq)*xi0 );
+
+      imag_part = 2*u*sin2u + 2*cos2u*(u_sq - w_sq)
+	- 2*u*sinu*( 8*cosw + ( 3*u_sq + w_sq )*xi0 )
+	- 2*cosu*  ( 4*u_sq*cosw - (9*u_sq + w_sq)*xi0 );
+
+
+      r1[0] = cmplx(real_part,imag_part);
+
+      
+      real_part = 2*cos2u - 4*u*sin2u - 2*cosu*cosw
+	+ cosu*(3*u_sq - w_sq)*xi0
+	+ 2*u*sinu*( cosw + 3*xi0 );
+
+      imag_part = 2*sin2u + 4*u*cos2u + 2*sinu*cosw
+       	- sinu*(3*u_sq - w_sq)*xi0
+	+ 2*u*cosu*(cosw + 3*xi0);
+
+      r1[1] = cmplx(real_part, imag_part);
+      
+      real_part = -2*sin2u + sinu*cosw - 3*xi0*(sinu - u*cosu);
+      imag_part =  2*cos2u + cosu*cosw - 3*xi0*(cosu - u*sinu );
+
+      r1[2] = cmplx(real_part, imag_part);
+      
+      real_part = -2*cos2u - 2u*( 
+				 4*u*cosu*xi0
+				 - sinu*( cosw + xi0+ 3*u_sq*xi1 ) 
+				 );
+
+      imag_part = -2*sin2u + 2u*(4*u*sinu*xi0 
+				 +cosu*( cosw + xi0 + 3*u_sq*xi1 )
+				 );
+   
+      r2[0] = cmplx(real_part, imag_part);
+      
+      real_part =  2*u*cosu*xi0 - sinu*( cosw + xi0 - 3*u_sq*xi1);
+      imag_part = -2*u*sinu*xi0 - cosu*( cosw + xi0 - 3*u_sq*xi1);
+
+      r2[1] = cmplx(real_part, imag_part);
+      
+      real_part = cosu*xi0 - 3*u*sinu*xi1;
+      imag_part = -sinu*xi0 - 3*u*cosu*xi1;
+
+      r2[2] = cmplx(real_part, imag_part);
+            
+      b1.resize(3);
+      b2.resize(3);
+      for(int i=0; i < 3; i++) { 
+	b1[i] = ( 2*u*r1[i] + 3*(u_sq-w_sq)*r2[i] -2*(15*u_sq+w_sq)*f[i] )/(2*denum*denum);
+	
+	b2[i] = (r1[i] - 3*u*r2[i] - 24*u*f[i]) / (2*denum*denum); 
+      }
+
+      
+
+      b1[0] = where(latboo_c0,
+		    conj(b1[0]),
+		    b1[0]);
+
+      b1[1] = where(latboo_c0,
+		    -1*conj(b1[1]),
+		    b1[1]);
+
+      b1[2] = where(latboo_c0,
+		    conj(b1[2]),
+		    b1[2]);
+
+
+      b2[0] = where(latboo_c0,
+		    -1*conj(b2[0]),
+		    b2[0]);
+
+      b2[1] = where(latboo_c0,
+		    conj(b2[1]),
+		    b2[1]);
+
+      b2[2] = where(latboo_c0,
+		    -1*conj(b2[2]),
+		    b2[2]);
+
+      
+
+    }
+
+    f[0] = where(latboo_c0,
+		 conj(f[0]),
+		 f[0]);
+    
+    f[1] = where(latboo_c0,
+		 -1*conj(f[1]),
+		 f[1]);
+    
+    f[2] = where(latboo_c0,
+		 conj(f[2]),
+		 f[2]);
+
+#endif
+  }
+
+
+  void StoutFermState::getQsandCs(const multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& Q, 
+				  LatticeColorMatrix& QQ,
+				  LatticeColorMatrix& C, 
+				  LatticeDouble& c0, 
+				  LatticeDouble& c1, int mu) const
+  {
+   
+    C = zero;
+
+    // If rho is nonzero in this direction then accumulate the staples
+    for(int nu=0; nu < Nd; nu++) { 
+	
+      // Accumulate mu-nu staple
+      if( mu != nu ) {
+	
+	// Forward staple
+	//             2
+	//       ^ ---------> 
+	//       |          |
+	//    1  |          |  3
+	//       |          |
+	//       |          V
+	//       x          x + mu
+	//
+	C += params.rho(mu, nu)*u[nu] * shift(u[mu], FORWARD, nu) * adj(shift(u[nu], FORWARD, mu));
+	  
+	  
+	// Backward staple
+	//             
+	//       |          ^ 
+	//       |          |
+	//    1  |          |  3
+	//       |     2    |
+	//       V--------->|          
+	//       x-nu        x - nu  + mu
+	//
+	//
+	//  we construct it on x-nu and shift it up to x, 
+	// (with a backward shift)
+	
+	// This is the staple on x-nu:
+	// tmp_1(x) = u_dag(x,nu)*u(x,mu)*u(x+mu,nu)
+	
+	LatticeColorMatrix tmp = adj(u[nu])*u[mu] * shift(u[nu], FORWARD, mu);
+	// and here we shift it 
+	// u_staple(x) += shift(tmp_1_dag(x-nu), BACK, nu)
+	//             += u_dag(x+mu-nu,nu)*u_dag(x-nu,mu)*u(x-nu,nu)
+	C += params.rho(mu,nu)*shift(tmp, BACKWARD, nu);
+
+	}
+      
+      }
+
+      // Now I can form the Q
+      LatticeColorMatrix Omega;
+      Omega = C*adj(u[mu]); // Q_mu is Omega mu here (eq 2 part 2)
+      
+      LatticeColorMatrix tmp2 = adj(Omega) - Omega;
+      LatticeColorMatrix tmp3 = trace(tmp2);
+      tmp3 *= Real(1)/Real(Nc);
+      tmp2 -= tmp3;
+      tmp2 *= Real(0.5);
+      Q = timesI(tmp2);
+      QQ = Q*Q;
+
+      LatticeColorMatrix QQQ=QQ*Q;
+
+      c0    = (Double(1)/Double(3)) * real(trace(QQQ));  // eq 13
+      c1    = (Double(1)/Double(2)) * real(trace(QQ));	 // eq 15 
+      
+  }
 
   // Do the force recursion from level i+1, to level i
   void StoutFermState::deriv_recurse(const multi1d<LatticeColorMatrix>&  F_plus,
@@ -54,426 +411,140 @@ namespace Chroma
 
     // Things I need
     // C_{\mu} = staple multiplied appropriately by the rho
-    // Q_{\mu} = -i taproj( C_mu U_mu^{\dagger} ) 
-    // f coefficients (as per exponentiation)
-    // b_{ij} coefficients -temporary 
-    // B matrices as per eq (69) - temporary 
-    // Gamma_mu as per eq (74) - temporary
     // Lambda matrices asper eq(73) 
-    multi1d<LatticeColorMatrix> C(Nd);
     multi1d<LatticeColorMatrix> Lambda(Nd);
+    multi1d<LatticeColorMatrix> C(Nd);
 
     // The links at this level (unprimed in the paper).
-    const multi1d<LatticeColorMatrix>& u_minus = smeared_links[level];
+    const multi1d<LatticeColorMatrix>& u = smeared_links[level];
 
-    // First we need the C-s from which we make the fattened links.
-    // The C-s are basically the staples
     for(int mu=0; mu < Nd; mu++) 
     {
-      LatticeColorMatrix Q;
+      LatticeColorMatrix Q,QQ;   // This is the C U^{dag}_mu suitably antisymmetrized
+      LatticeDouble c0, c1;
 
-      // If we don't smear in a direction, the rho-s would be zero
-      // so C would be zero -- to save work, we just set C 
-      // to zero here.
-      C[mu] = zero;
+      // Get Q, Q^2, C, c0 and c1 -- this code is the same as used in stout_smear()
+      getQsandCs(u, Q, QQ, C[mu], c0, c1, mu);
 
-      // If rho is nonzero in this direction then accumulate the staples
-      if( params.smear_in_this_dirP[mu] == true ) { 
+      // Now work the f-s and b-s
+      multi1d<LatticeDComplex> f;
+      multi1d<LatticeDComplex> b_1;
+      multi1d<LatticeDComplex> b_2;
 
-	for(int nu=0; nu < Nd; nu++) { 
+      // Get the fs and bs  -- does internal resize to make them arrays of length 3
+      getFsAndBs(c0, c1, f, b_1, b_2, true);
 
-	  // Accumulate mu-nu staple
-	  if( mu != nu && params.smear_in_this_dirP[nu] == true ) {
+ 
+      LatticeColorMatrix B_1 = b_1[0] + b_1[1]*Q + b_1[2]*QQ;
+      LatticeColorMatrix B_2 = b_2[0] + b_2[1]*Q + b_2[2]*QQ;
 
-	    // Forward staple
-	    //             2
-	    //       ^ ---------> 
-            //       |          |
-            //    1  |          |  3
-            //       |          |
-            //       |          V
-	    //       x          x + mu
-	    //
-	    C[mu] += params.rho(mu, nu)*u_minus[nu] * shift(u_minus[mu], FORWARD, nu) * adj(shift(u_minus[nu], FORWARD, mu));
-	    
+      
+      // Construct the Gamma ( eq 74 and 73 )
+      LatticeColorMatrix USigma = u[mu]*F_plus[mu];
+      LatticeColorMatrix Gamma = f[1]*USigma + f[2]*(USigma*Q + Q*USigma)
+	+ trace(B_1*USigma)*Q
+        + trace(B_2*USigma)*QQ;
 
-	    // Backward staple
-	    //             
-	    //       |          ^ 
-            //       |          |
-            //    1  |          |  3
-            //       |     2    |
-            //       V--------->|          
-	    //       x-nu        x - nu  + mu
-	    //
-            //
-            //  we construct it on x-nu and shift it up to x, 
-	    // (with a backward shift)
+      // Take the traceless hermitian part to form Lambda_mu (eq 72)
+      Lambda[mu] = Gamma + adj(Gamma);    // Make it hermitian
+      LatticeColorMatrix tmp3 = (Double(1)/Double(Nc))*trace(Lambda[mu]); // Subtract off the trace
+      Lambda[mu] -= tmp3;
+      Lambda[mu] *= Double(0.5);         // overall factor of 1/2
 
-	    // This is the staple on x-nu:
-	    // tmp_1(x) = u_dag(x,nu)*u(x,mu)*u(x+mu,nu)
-
-	    LatticeColorMatrix tmp_1 = adj(u_minus[nu]) 
-	      * u_minus[mu] * shift(u_minus[nu], FORWARD, mu);
-	    
-	    // and here we shift it 
-	    // u_staple(x) += shift(tmp_1_dag(x-nu), BACK, nu)
-	    //             += u_dag(x+mu-nu,nu)*u_dag(x-nu,mu)*u(x-nu,nu)
-	    C[mu] += params.rho(mu,nu)*shift(tmp_1, BACKWARD, nu);
-	  
-	  }  // end if(smear_in_this_dirP[nu]
-	} // end for nu
-
-	// C_mu is now created
-	// Now I can form the Q[mu]. First I form iQ and multiply by
-	// -i. iQ is formed with taproj()
-	if(params.smear_in_this_dirP[mu]) {
-	
-	  LatticeColorMatrix Omega;
-	  Omega = C[mu]*adj(u_minus[mu]); // Q_mu is Omega mu here (eq 2 part 2)
-
-	  LatticeColorMatrix tmp = adj(Omega) - Omega;
-	  LatticeColorMatrix tmp2 = traceColor(tmp);
-	  tmp2 *= Real(1)/Real(Nc);
-	  tmp -= tmp2;
-	  tmp *= Real(0.5);
-	  Q = timesI(tmp);
-
-	  // Check Q is traceless hermitian.?
-
-	}
-	else { 
-	  Q = 0;
-	}
-
-    
-	// Now I need the c1, c0 etc etc from the exponentiator
-	multi1d<LatticeDComplex> f(3);
-	
-	LatticeColorMatrix QQ = Q*Q;
-
-
-
-     
-	// This is 
-	LatticeDouble c0    = real((1.0/3.0) * trace(Q*QQ));
-	LatticeDouble c1    = real((1.0/2.0) * trace(QQ));
-
-	LatticeDouble c0abs = fabs(c0);
-	LatticeDouble c0max = Double(2) * pow((c1 / Double(3)), Double(1.5));
-	LatticeDouble theta = acos(c0abs/c0max);
-
-	LatticeDouble u     = sqrt(c1 / 3.0) * cos(theta / 3.0);
-	LatticeDouble w     = sqrt(c1) * sin(theta / 3.0);
-
-#if 0
-	XMLFileWriter dummy("./dummy");
-	push(dummy, "crap");
-	write(dummy, "u", u);
-	write(dummy, "w", w);
-#endif
-
-	LatticeDouble uu    = u*u;
-	LatticeDouble ww    = w*w;
-	LatticeDouble cosu  = cos(u);
-	LatticeDouble cosw  = cos(w);
-	LatticeDouble sinu  = sin(u);
-	LatticeDouble sinw  = sin(w);
-	
-	LatticeDouble cos2u = cos(2*u);
-	LatticeDouble sin2u = sin(2*u);
-
-	
-
-	// exp(2iu) and exp(-iu)
-	//LatticeDComplex exp2iu = cmplx(( 2*cosu*cosu - 1), 2*cosu*sinu);
-	LatticeDComplex exp2iu = cmplx( cos2u, sin2u );
-
-	LatticeDComplex expmiu = cmplx(cosu, -sinu);
-
-	// c0 is negative
-	LatticeBoolean latboo_c0 = (c0      <      0);
-	
-	// w is greater than 0.05
-	LatticeBoolean latboo_w  = (fabs(w) >   0.05);
-	
-    
-	LatticeDouble denom = 9 * uu - ww;
-
-	// xi0 = xi0(w).  Expand xi0 if w is small.
-	LatticeDouble xi0 = where(latboo_w, 
-				sinw/w, 
-				1 - (1.0/6.0)*ww*(1-(1.0/20.0)*ww*(1-(1.0/42.0)*ww)));
-	
-	// f_i = f_i(c0, c1). Expand f_i by c1, if c1 is small.
-	f[0] = ((uu - ww) * exp2iu + expmiu * cmplx(8*uu*cosw, 2*u*(3*uu+ww)*xi0))/denom;
-		 
-	
-	f[1] = (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (ww-3*uu)*xi0))/denom;
-	
-	f[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denom;
-
-	
-	// apply everywhere were c0 is negative
-	// f_j(-c0, c1) = (-1)^j f*_j(c0, c1)
-	f[0] = where(latboo_c0,
-		     adj(f[0]),
-		     f[0]);
-	
-	f[1] = where(latboo_c0,
-		     -1.0*adj(f[1]),
-		     f[1]);
-	
-	f[2] = where(latboo_c0,
-		     adj(f[2]),
-		     f[2]);
-	
-	// xi1 = xi1(w) = cos(w)/w^2 - sin(w)/w^3  
-	// Expand xi1 if w is small.
-	// Not in paper but maple tells me 12th order expansion is
-	// xi1= (-1/3)+ (w^2/30)*(1-(w^2/28)*(1-w^2/54));
-	LatticeDouble xi1;
-	{
-	  LatticeDouble www = ww*w;
-	  xi1 = where(latboo_w, 
-		      cosw/ww-sinw/www, 
-		      -((1 - ww*(1-ww*(1-ww/54.0)/28.0)/10.0)/3.0));
-	}
-
-
-	
-	multi1d<LatticeDComplex> r_1(3);
-	multi1d<LatticeDComplex> r_2(3);
-
-	r_1[0]=Double(2)*cmplx(u, uu-ww)*exp2iu
-	  + 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*uu*cosw)
-			 + cmplx(u*(3.0*uu+ww),9.0*uu+ww)*xi0 );
-	
-	r_1[1]=cmplx(2.0, 4.0*u)*exp2iu
-	  + expmiu*cmplx(-2.0*cosw-(ww-3.0*uu)*xi0,
-			 2.0*u*cosw+6.0*u*xi0);
-
-	r_1[2]=2.0*timesI(exp2iu)
-	  +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
-
-
-	r_2[0]=-2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*uu*xi1,
-						       4*u*xi0);
-	
-	r_2[1]= expmiu*cmplx(cosw+xi0-3.0*uu*xi1, 2.0*u*xi0);
-	r_2[1] = timesMinusI(r_2[1]);
-
-	r_2[2]=expmiu*cmplx(xi0, -3.0*u*xi1);
-       
-
-	multi1d<LatticeDComplex> b_1(3);
-	multi1d<LatticeDComplex> b_2(3);
-
-	LatticeDouble b_denom=2.0*(9.0*uu -ww)*(9.0*uu-ww);
-
-	for(int j=0; j < 3; j++) { 
-
-	  // This has to be a little more careful
-	  b_1[j]=( 2.0*u*r_1[j]+(3.0*uu-ww)*r_2[j]-2.0*(15.0*uu+ww)*f[j] )/b_denom;
-	  b_2[j]=( r_1[j]-3.0*u*r_2[j]-24.0*u*f[j] )/b_denom;
-
-
-	}
-	 
-	// Now take care of the fact that 
-	// c_0 could be negative (a la eq 70)
-	//
-	// c_0 is negative where latboo_c0 is true
-	//
-	// where c_0 is negative we just do a 
-	// 
-	//    b_{i,j}(-c_0, c_1) = (-)^{i+j+1} adj( b_{i,j}(c0, c1) ) 
-	
-	//i=1, j=0, i+j+1 = 1+0+1=2  (-)^{i+j+1} = (-)^2 = +1
-	b_1[0] = where(latboo_c0, 
-		       adj(b_1[0]),
-		       b_1[0]);
-
-	//i=2, j=0, i+j+1 = 2+0+1=3, (-)^{i+j+1}= (-)^3 = -1
-	b_2[0] = where(latboo_c0,
-		       -1.0*adj(b_2[0]), 
-		       b_2[0]);
-	
-	//i=1, j=1, i+j+1 = 1+1+1=3  (-)^{i+j+1} = (-)^3= -1
-	b_1[1] = where(latboo_c0,
-		       -1.0*adj(b_1[1]), 
-		       b_1[1]);
-	
-	//i=2, j=1, i+j+1 = 2+1+1=4  (-)^{i+j+1} = (-)^4= +1
-	b_2[1] = where(latboo_c0, 
-		       adj(b_2[1]),
-		       b_2[1]);
-	
-	//i=1, j=2, i+j+1 = 1+2+1=4  (-)^{i+j+1} = (-)^4 = +1
-	b_1[2] = where(latboo_c0, 
-		       adj(b_1[2]),
-		       b_1[2]);
-
-	//i=2, j=2, i+j+1 = 1+2+1=5  (-)^{i+j+1} = (-)^5 = -1
-	b_2[2] = where(latboo_c0,
-		       -1.0*adj(b_2[2]), 
-		       b_2[2]);
-   
-
-	LatticeColorMatrix B_1 = b_1[0] + b_1[1]*Q + b_1[2]*QQ;
-	LatticeColorMatrix B_2 = b_2[0] + b_2[1]*Q + b_2[2]*QQ;
-
-	LatticeDComplex g1=trace(F_plus[mu]*B_1*u_minus[mu]);
-	LatticeDComplex g2=trace(F_plus[mu]*B_2*u_minus[mu]);
-
-	LatticeColorMatrix Gamma=g1*Q + g2*QQ + f[1]*u_minus[mu]*F_plus[mu]
-	  + f[2]*Q*u_minus[mu]*F_plus[mu] + f[2]*u_minus[mu]*F_plus[mu]*Q;
-
-	Lambda[mu] = Gamma + adj(Gamma);
-	LatticeColorMatrix tmp = traceColor(Lambda[mu]);
-	tmp *= (Real(1)/Real(Nc));
-	Lambda[mu] -= tmp;
-	Lambda[mu] *= Real(0.5);
-
-	F_minus[mu] = F_plus[mu]*(f[0] + f[1]*Q + f[2]*QQ);
-	F_minus[mu] += timesI(adj(C[mu])*Lambda[mu]);
-      }
-      else {
-	// If there is no smearing, copy the previous force.
-	F_minus[mu] = F_plus[mu];
-      }
+      // The first 3 terms of eq 75
+      // Now the Fat force * the exp(iQ)
+      F_minus[mu]  = F_plus[mu]*(f[0] + f[1]*Q + f[2]*QQ);
+           
     }
-
-
+    
+    // At this point we should have 
+    //
+    //  F_minus[mu] = F_plus[mu]*exp(iQ) 
+    //
+    //  We need the 8 staple terms left in dOmega/dU (last 6 terms in eq 75 + the iC{+}Lambda
+    //  term in eq 75 which in reality just covers 2 staples.
+ 
+    //  We have to make this a separate loop from the above, because we need to know the 
+    //  Lambda[mu] and [nu] for all the avaliable mu-nu combinations
     for(int mu = 0; mu < Nd; mu++) { 
-
-      if( params.smear_in_this_dirP[mu] ) { 
-	// All the staple terms go here
-	// There are six staple terms
-	LatticeColorMatrix staple_sum = zero;
-
-	for(int nu = 0; nu < Nd; nu++) { 
-	  if( params.smear_in_this_dirP[nu] == true && nu != mu ) {
-
-
-	    // Staple 1
-	    //
-	    // U_nu(x+mu) * U^+_mu(x+nu) U^+_nu(x) Lambda_nu(x)
-	    //               2
-	    //     ^    <---------^
-	    //     ||   |         |                      ^nu
-	    //   4 ||   |3        |1                     |
-	    //     ||   |         |                       -> mu
-	    //          V
-	    staple_sum += params.rho(nu,mu)*shift(u_minus[nu],FORWARD,mu)*adj(shift(u_minus[mu],FORWARD,nu))*adj(u_minus[nu])*Lambda[nu];
-	    
+      LatticeColorMatrix staple_sum = zero;
+      LatticeColorMatrix staple_sum_dag = adj(C[mu])*Lambda[mu];
+      for(int nu = 0; nu < Nd; nu++) { 
+	if(mu != nu) { 
+	  // Staple 1
+	  //
+	  // rho_nu_mu* U_nu(x+mu) * U^+_mu(x+nu) U^+_nu(x) Lambda_nu(x)
+	  staple_sum += params.rho(nu,mu)  
+	    *shift(u[nu],FORWARD,mu)              //   U_nu(x+mu)     
+	    *shift(adj(u[mu]),FORWARD,nu)         //   U^+_mu(x+nu)
+	    *adj(u[nu])                           //   U^+_nu(x)
+	    *Lambda[nu];                                //   Lambda_nu(x)
+	  
 	
+	  
+	  // Staple 2
+	  //
+	  // rho_mu_nu * U^{+}_nu(x-nu+mu) U^+_mu(x-nu) Lambda_mu(x-nu) U_nu(x-nu)
+	  staple_sum += params.rho(mu,nu)
+	    *shift(shift(adj(u[nu]), BACKWARD,nu), FORWARD,mu) //  U^{+}_nu(x-nu+mu)
+	    *shift(adj(u[mu]), BACKWARD, nu)                   //  U^{+}_mu(x-nu)
+	    *shift(Lambda[mu],  BACKWARD, nu)                        //  Lambda_mu(x-nu)
+	    *shift(u[nu], BACKWARD, nu);                       //  U_nu(x-nu)
 
-	    // Staple 2
-	    //
-	    // U^{+}_nu(x-nu+mu) U^+_mu(x-nu) Lambda_mu(x-nu) U_nu(x-nu)
-	    //
-	    //           x    ^           | 
-	    //                |           | 1
-	    //              4 |           |
-	    //                |     2     |
-	    //        x-nu    <---------- V x-nu+mu
-	    //                 ==========>                  
-	    //                      3
-	    // 
-	    //  Construct on x-nu and then shift
+	  
+	  // Staple 3
+	  // 
+	  // rho_nu_mu * U^{+}_nu(x-nu+mu) Lambda_nu(x-nu+mu) U^{+}_mu(x-nu )U_{nu}(x-nu)
+	  staple_sum += params.rho(nu,mu)
+	    *shift( shift( adj(u[nu]), BACKWARD, nu), FORWARD, mu)   // U^{+}_nu(x-nu+mu)
+	    *shift( shift( Lambda[nu], BACKWARD, nu), FORWARD, mu)         // Lambda_nu (x -nu + mu)
+	    *shift( adj(u[mu]), BACKWARD, nu)                        // U^{+}_mu(x-nu)
+	    *shift( u[nu], BACKWARD, nu);                            // U_nu(x-nu)
+	  
+	  
+	  
+	  // Staple 4
+	  //
+	  // - rho_nu_mu U^{+}_nu(x-nu+mu)U^{+}_mu(x-nu) Lambda_nu(x-nu) U_nu(x-nu)
+	  staple_sum_dag += params.rho(nu,mu)
+	    *shift( shift( adj(u[nu]), BACKWARD, nu), FORWARD, mu) // U^{+}_nu(x-nu+mu)
+	    *shift( adj(u[mu]), BACKWARD, nu)                       // U^{+}_mu(x-nu)
+	    *shift( Lambda[nu], BACKWARD, nu )                            // Lambda_nu(x-nu) 
+	    *shift( u[nu], BACKWARD, nu);                           // U_nu(x-nu)
+	  
+	  
+	  // Staple 5 
+	  //
+	  // - rho(nu,mu) * Lambda_nu(x+mu)*U_nu(x+mu)U^{+}_mu(x+nu)U^{+}_nu(x)
+	  //
+	  // 			       
+	  //   Construct on x
+	  //   Fuse 1 and 2
+	  // 
+	  staple_sum_dag += params.rho(nu,mu)
+	    * shift( Lambda[nu], FORWARD, mu)                     // Lambda_nu( x + mu )
+	    * shift( u[nu], FORWARD, mu)                    // U_nu(x + mu)
+	    * shift(adj(u[mu]), FORWARD, nu)              // U^{+}_mu(x+nu)
+	    * adj( u[nu] );                                 // U^{+}_nu(x)
 
-       
-	    
-	    LatticeColorMatrix st_tmp = adj(shift(u_minus[nu],FORWARD,mu))
-	      * adj(u_minus[mu])*Lambda[mu]*u_minus[nu];
-	    
-	    staple_sum  += params.rho(mu,nu)*shift(st_tmp, BACKWARD, nu);
-	    
-	    
-	    // Staple 3
-	    //
-	    // U^{+}_nu(x-nu+mu) Lamnda_nu(x-nu+mu) U^{+}_mu(x-nu)U_{nu}(x-nu)
-	    //
-	    // 
-	    //
-	    //           x    ^          ^   | 
-	    //                |        2 ||  | 1
-	    //              4 |          ||  |
-	    //                |     3    ||  |
-	    //        x-nu    <----------||  V x-nu+mu
-	    //                                   
-	    //  Construct on x-nu, but first do multiplies of 1 and 2 on 
-	    //  every site
-	    // 
-	    LatticeColorMatrix st_tmp2 = adj(u_minus[nu])*Lambda[nu];
-	    st_tmp  = shift(st_tmp2, FORWARD, mu)*adj(u_minus[mu])*u_minus[nu];
-	    staple_sum  += params.rho(nu,mu)*shift(st_tmp, BACKWARD, nu);
-	    
-	    
-	    
-	    // Staple 4
-	    //
-	    // U^{+}_nu(x-nu+mu)U^{+}_mu(x-nu) Lambda_nu(x-nu)U_nu(x-nu)
-	    //
-	    //                   ^
-	    //           x    ^  ||           | 
-	    //                |  ||3          | 1
-	    //              4 |  ||           |
-	    //                |  ||    2      |
-	    //             x-nu    <----------V x-nu+mu
-	    //                                   
-	    // Construct on x-nu
-	    //
-
-	    st_tmp = adj(shift(u_minus[nu], FORWARD, mu))
-	      * adj(u_minus[mu])
-	      * Lambda[nu]
-	      * u_minus[nu];
-	    
-	    staple_sum  -= params.rho(nu,mu)*shift(st_tmp, BACKWARD, nu);
-	    
-	    
-	    // Staple 5 
-	    //
-	    // Lambda_nu(x+mu)*U_nu(x+mu)U^{+}_mu(x+nu)U^{+}_nu(x)
-	    //
-	    //                           3
-	    //             x+nu     <---------^  ^
-	    //                      |         |  ||
-	    //                   4  |         |  || 1
-	    //                      |      2  |  ||
-	    //              x       V         |  ||  x + mu
-	    // 			       
-	    //   Construct on x
-	    //   Fuse 1 and 2
-	    // 
-	    st_tmp = Lambda[nu]*u_minus[nu];
-	    staple_sum -= params.rho(nu,mu)*shift(st_tmp,FORWARD, mu)*adj(shift(u_minus[mu],FORWARD, nu))*adj(u_minus[nu]);
-	    
-	    // Finally staple 6
-	    //
-	    // Lambda_nu(x+mu)*U_nu(x+mu)U^{+}_mu(x+nu)U^{+}_nu(x)
-	    //
-	    //                           2
-	    //             x+nu     <---------^  
-	    //                      =========>|
-	    //                   4  |    3    | 1
-	    //                      |         |  
-	    //              x       V         |   x + mu
-	    // 			       
-	    //   Construct on x
-	    //   Fuse 2 and 3
-	    // 
-	    st_tmp  = adj(u_minus[mu])*Lambda[mu];
-	    staple_sum += params.rho(mu,nu)*shift(u_minus[nu],FORWARD, mu)*shift(st_tmp, FORWARD, nu)*adj(u_minus[nu]);
-	    
-	  } // smear in nu dir
-	} // end nu loop
-    
-	F_minus[mu] -= timesI(staple_sum);
-      }
+	  // Finally staple 6
+	  //
+	  // rho(mu,nu) * U_nu(x + mu) U^{+}_mu(x+nu) Lambda_mu(x + nu) U^{+}_nu(x)
+	  //
+	  staple_sum += params.rho(mu,nu)
+	    * shift( u[nu], FORWARD, mu)         //  U_nu(x + mu)
+	    * shift( adj(u[mu]), FORWARD, nu)    //  U^{+}_mu(x+nu)
+	    * shift( Lambda[mu], FORWARD, nu)          //  Lambda_mu(x + nu)
+	    * adj( u[nu] );                      //  U^{+}_nu(x)
+	}  
+      } // end nu loop
+	
+      // The siz terms from staple sum
+      F_minus[mu] += timesI( staple_sum_dag );
+      F_minus[mu] -= timesI(staple_sum);
+     
     }
+  
 
     // Done
     END_CODE();
@@ -487,25 +558,25 @@ namespace Chroma
     START_CODE();
     multi1d<LatticeColorMatrix> F_minus(Nd); // Force at one level lower
 
-    if( params.n_smear == 0 ) {
-      F_minus = F;
-    }
-    
-    for(int level=params.n_smear-1; level >= 0; level--) {
-	
-      // Take the current force, and compute force one level down 
-      // Level is index into smeared link array
-      deriv_recurse(F,F_minus,level);
-      
-      F = F_minus;
-      
-    }
-    
+    F_minus = F;
 
+    for(int level=params.n_smear; level > 0; level--) {
+	// Take the current force, and compute force one level down 
+	// Level is index into smeared link array
+        // level is always one less than our level. So if we have 1 smearing
+        // level starts at 0 (ie the thin links).
+        // If level is 0 to start with, this loop is not entered
+      deriv_recurse(F,F_minus,level-1);
+
+      F = F_minus;
+    }
+
+    // Multiply in by the final U term to close off the links
     for(int mu=0; mu < Nd; mu++) { 
       F[mu] = (smeared_links[0])[mu]*F_minus[mu];
     }
-    
+
+
     END_CODE();
   }
 
@@ -515,51 +586,29 @@ namespace Chroma
   {
     START_CODE();
 
-    // Construct and add the staples, where smear_this_dirP[mu] is true
-    
+
     for(int mu = 0; mu < Nd; mu++) { 
 
-      if( params.smear_in_this_dirP[mu] == true ) { 
+      LatticeColorMatrix Q, QQ;
+      LatticeColorMatrix C; // Dummy - not used here
+      LatticeDouble c0, c1;
 
-	// Do smear
-	LatticeColorMatrix u_staple = zero;
-	for(int nu = 0; nu < Nd; ++nu) {
-	  
-	  if( nu != mu && params.smear_in_this_dirP[nu] == true ) {
-	    
-	    // Forward staple
-	    u_staple += params.rho(mu,nu)* (current[nu] * shift(current[mu], FORWARD, nu) * adj(shift(current[nu], FORWARD, mu)));
-	    
-	    // Backward staple
-	    // tmp_1(x) = u_dag(x,nu)*u(x,mu)*u(x+mu,nu)
-	    LatticeColorMatrix tmp_1 = ( adj(current[nu]) * current[mu] * shift(current[nu], FORWARD, mu) );
-	    
-	    // u_staple(x) += tmp_1_dag(x-nu)
-	    //             += u_dag(x+mu-nu,nu)*u_dag(x-nu,mu)*u(x-nu,nu)
-	    u_staple += params.rho(mu,nu)*shift(tmp_1, BACKWARD, nu);
-	  }
-	}
+      // Q contains the staple term. C is a throwaway
+      getQsandCs(current, Q, QQ, C, c0, c1, mu);
 
-	// The proto smeared link
-	LatticeColorMatrix u_tmp = u_staple * adj(current[mu]);
-	
-	// Take the trace-less anti-hermitian projection of the staple
-	taproj(u_tmp);
-	
-	// Exactly exponentiate the Lie Algebra matrix
-	// Now u_tmp = exp(iQ)
-	expmat(u_tmp,EXP_EXACT);
-	
-	next[mu]=u_tmp*current[mu];
+      // Now compute the f's -- use the same function as for computing the fs, bs etc in derivative
+      // but don't compute the b-'s
+      multi1d<LatticeDComplex> f;   // routine will resize these
+      multi1d<LatticeDComplex> b_1; // Dummy - not used      -- throwaway -- won't even get resized
+      multi1d<LatticeDComplex> b_2; // Dummy - not used here -- throwaway -- won't even get resized
 
 
-      }
-      else { 
-	next[mu]=current[mu]; // No smearing in this dir. Just copyq
-      }
-
+      getFsAndBs(c0,c1,f,b_1,b_2,false);   // This routine computes the f-s
+      
+      // Assemble the stout links exp(iQ)U_{mu} 
+      next[mu]=(f[0] + f[1]*Q + f[2]*QQ)*current[mu];      
     }
-
+    
     END_CODE();
   }
 
@@ -576,170 +625,6 @@ namespace Chroma
     QDPIO::cout << __func__ << ": exiting" << endl;
     END_CODE();
   }
-
-
-
-#if 0
-// Get rid of this stuff - all folded to something simple
-//
-//  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-//				 const multi1d<LatticeColorMatrix>& u_,
-//				 const multi2d<Real>& sm_fact_,
-//				 const int n_smear_, 
-//				 const multi1d<bool>& smear_in_this_dirP_)
-//  {
-//    START_CODE();
-//    create(fbc_, u_, sm_fact_, n_smear_, smear_in_this_dirP_);
-//    END_CODE();
-//  }
-//
-//
-//  //! Explicitly specify smearing factor tensor
-//  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-//				 const multi1d<LatticeColorMatrix>& u_,
-//				 const multi2d<Real>& sm_fact_,
-//				 const int n_smear_) 
-//  {
-//    START_CODE();
-//    // Specify all smearings but no mask. Assume 
-//    // smearing desired in all directions
-//    multi1d<bool> smear_in_this_dirP_aux(Nd);
-//    for(int mu=0; mu < Nd; mu++) { 
-//      smear_in_this_dirP_aux[mu] = true;
-//    }
-//    
-//    create(fbc_, u_, sm_fact_, n_smear_, smear_in_this_dirP_aux);
-//    END_CODE();
-//  }
-//
-//  //! Construct isotropic smearing in all 4 directions
-//  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-//				 const multi1d<LatticeColorMatrix>& u_, 
-//				 const Real& sm_fact_, 
-//				 const int   n_smear_) 
-//  { 
-//    START_CODE();
-//
-//    multi2d<Real> sm_fact_array(Nd, Nd);
-//    multi1d<bool> smear_in_this_dirP_aux(Nd);
-//    
-//    // For each (mu,nu) set sm_fact_array(mu,nu)=sm_fact
-//    // (Isotropy). Since mu != nu ever, we set those
-//    // to zero for safety
-//    for(int mu=0; mu < Nd; mu++) { 
-//      
-//      for(int nu=0; nu < Nd; nu++) { 
-//	
-//	if( mu==nu ) { 
-//	  sm_fact_array[mu][nu] = 0;
-//	}
-//	else { 
-//	  sm_fact_array[mu][nu] = sm_fact_;
-//	}
-//	
-//      }
-//      
-//      // smearing in all 4 directions
-//      smear_in_this_dirP_aux[mu]=true;
-//    }
-//    
-//    // call the create
-//    create(fbc_, u_, sm_fact_array, n_smear_, smear_in_this_dirP_aux);
-//    END_CODE();
-//  }
-//
-//  //! Construct isotopic smearing in directions orthogonal to orthog dir
-//  StoutFermState::StoutFermState(Handle< FermBC<T,P,Q> > fbc_, 
-//				 const multi1d<LatticeColorMatrix>& u_,
-//				 const Real& sm_fact_, 
-//				 const int   n_smear_,
-//				 const int   orthog_dir) 
-//  {
-//    START_CODE();
-//    fbc = fbc_;
-//    multi2d<Real> sm_fact_array(Nd, Nd);
-//    multi1d<bool> smear_in_this_dirP_aux(Nd);
-//    
-//    // For each (mu,nu) set sm_fact_array(mu,nu)=sm_fact
-//    // (Isotropy). Since mu != nu ever, we set those
-//    // to zero for safety
-//    for(int mu=0; mu < Nd; mu++) { 
-//      
-//      for(int nu=0; nu < Nd; nu++) { 
-//	if( mu != nu ) {
-//	  sm_fact_array[mu][nu] = sm_fact_;
-//	}
-//	else {
-//	  // Set the rho to 0 if mu==nu
-//	  sm_fact_array[mu][nu] = 0;
-//	}
-//      }
-//      
-//      // Mask out the orthog dir
-//      if( mu == orthog_dir ) {  // Direction is same as orthog dir
-//	smear_in_this_dirP_aux[mu]=false;
-//      }
-//      else {                    // Direction orthogonal to orthog dir
-//	smear_in_this_dirP_aux[mu]=true;
-//      }
-//
-//#if 0
-//      QDPIO::cout << "Smearing in direction " << mu << " ? ";
-//      if ( smear_in_this_dirP_aux[mu] == true ) { 
-//	QDPIO::cout << " yes" << endl;
-//      }
-//      else {
-//	QDPIO::cout << " no" << endl;
-//      }
-//#endif 
-// 
-//    }
-//      
-//    // call the create
-//    create(fbc_, u_, sm_fact_array, n_smear_, smear_in_this_dirP_aux);
-//    END_CODE();
-//  }
-//
-//
-//  // create function
-//  void StoutFermState::create(Handle< FermBC<T,P,Q> > fbc_, 
-//			      const multi1d<LatticeColorMatrix>& u_,
-//			      const multi2d<Real>& sm_fact_,
-//			      const int n_smear_, 
-//			      const multi1d<bool>& smear_in_this_dirP_) 
-//  { 
-//    START_CODE();
-//
-//    // Copy smearing factors
-//    rho.resize(Nd, Nd);
-//    rho = sm_fact_;
-//    
-//    // set n_smear
-//    n_smear = n_smear_;
-//
-//    // Copy the direction maske
-//    smear_in_this_dirP.resize(Nd);
-//    smear_in_this_dirP = smear_in_this_dirP_;
-//
-//    // Allocate smeared links
-//    smeared_links.resize(n_smear + 1);
-//    for(int i=0; i <= n_smear; i++) { 
-//      smeared_links[i].resize(Nd);
-//    }
-//    
-//
-//    // Copy thin links into smeared_links[0]
-//    for(int mu=0; mu < Nd; mu++) { 
-//      smeared_links[0][mu] = u_[mu];
-//    }
-//
-//    // Iterate up the smearings
-//    for(int i=1; i <= n_smear; i++) { 
-//      smear_links(smeared_links[i-1], smeared_links[i]);
-//    }
-//    END_CODE();
-//  }
-#endif
 
 
   // create function
@@ -760,8 +645,9 @@ namespace Chroma
 
     // Copy thin links into smeared_links[0]
     for(int mu=0; mu < Nd; mu++) { 
-      smeared_links[0][mu] = u_[mu];
+      (smeared_links[0])[mu] = u_[mu];
     }
+
 
     // Iterate up the smearings
     for(int i=1; i <= params.n_smear; i++) { 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.2 2006-08-03 21:14:36 edwards Exp $
+// $Id: stout_fermstate_w.h,v 1.3 2006-08-13 01:11:59 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -61,22 +61,28 @@ namespace Chroma
 	return smeared_links[params.n_smear];
       }
 
-    //! Return Links at smearing level n (n=0 is thin, n=n_smear fattest)
-    const multi1d<LatticeColorMatrix>& getLinks(int smear_level) const 
-      {
-	return smeared_links[smear_level];
-      }
-
-    //! Convenience function 
-    const multi1d<LatticeColorMatrix>& getThinLinks() const {       
-      return smeared_links[0];      
-    }
-    
 
     //! derivative of a force with respect to thin links. Recursive procedure
     void deriv(multi1d<LatticeColorMatrix>& F) const; 
 
+    //! given field U, construct the staples into C, form Q and Q^2 and compute
+    //  c0 and c1
+    void getQsandCs(const multi1d<LatticeColorMatrix>& u, 
+		    LatticeColorMatrix& Q, 
+		    LatticeColorMatrix& QQ,
+		    LatticeColorMatrix& C, 
+		    LatticeDouble& c0,
+		    LatticeDouble& c1,
+		    int mu) const;
 
+    //! Given c0 and c1 compute the f-s and b-s
+    //! Only compute b-s if do_bs is set to true (default)
+    void StoutFermState::getFsAndBs(const LatticeDouble& c0,
+				    const LatticeDouble& c1,
+				    multi1d<LatticeDComplex>& f,
+				    multi1d<LatticeDComplex>& b1,
+				    multi1d<LatticeDComplex>& b2,
+				    const bool do_bs=true) const;
   private:
 
     // Hide default constructor
@@ -92,16 +98,6 @@ namespace Chroma
 		       multi1d<LatticeColorMatrix>& F_minus,
 		       const int level) const;
 
-#if 0
-// Get rid of this
-
-    // create function
-    void create(Handle< FermBC<T,P,Q> > fbc_,
-		const multi1d<LatticeColorMatrix>& u_,
-		const multi2d<Real>& sm_fact_,
-		const int n_smear_, 
-		const multi1d<bool>& smear_in_this_dirP_);
-#endif
 
     // create function
     void create(Handle< FermBC<T,P,Q> > fbc_,
