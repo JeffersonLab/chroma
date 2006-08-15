@@ -1,18 +1,13 @@
-// $Id: t_stout_state.cc,v 3.4 2006-08-15 13:17:25 bjoo Exp $
+// $Id: t_stout_state.cc,v 3.5 2006-08-15 15:40:07 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
-<<<<<<< t_stout_state.cc
+
 #include "actions/ferm/fermacts/stout_fermstate_params.h"
 #include "actions/ferm/fermacts/stout_fermstate_w.h"
 #include "actions/ferm/invert/invcg2.h"
-=======
-#include "actions/ferm/fermacts/stout_fermstate_w.h"
-#include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermbcs/periodic_fermbc.h"
->>>>>>> 3.3
 
 using namespace Chroma;
 
@@ -31,8 +26,8 @@ int main(int argc, char *argv[])
   nrow = foo;  // Use only Nd elements
 
 
-  Real rho=12.2;
-  int  n_smear=3;
+  Real rho=0.22;
+  int  n_smear=1;
   int orthog_dir=15;
 
   Layout::setLattSize(nrow);
@@ -84,12 +79,22 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u_smear(Nd);
   multi1d<LatticeColorMatrix> u_tmp(Nd);
 
+  multi1d<bool> smear_dirs(Nd);
+  for(int mu=0; mu < Nd; mu++) {
+    if( mu == orthog_dir ) { 
+      smear_dirs[mu] = false;
+    }
+    else {
+      smear_dirs[mu] = true;
+    }
+  }
+
   // Get the unsmeared fields into u_tmp
   u_tmp = u;
   for(int i=0; i < n_smear; i++) {
     for(int mu=0; mu < Nd; mu++){
       if( mu != orthog_dir) { 
-	stout_smear(u_smear[mu], u_tmp, mu, rho, orthog_dir);
+	stout_smear(u_smear[mu], u_tmp, mu, rho, smear_dirs);
       }
       else {
 	u_smear[mu] = u_tmp[mu];
@@ -122,8 +127,7 @@ int main(int argc, char *argv[])
   // Setup stout state smearing params.
   StoutFermStateParams s_p;
   s_p.orthog_dir = orthog_dir;
-  s_p.n_smear = 1;
-  rho = 0.22;
+  s_p.n_smear = n_smear;
   s_p.rho.resize(Nd, Nd);
   s_p.smear_in_this_dirP.resize(Nd);
 
@@ -140,13 +144,13 @@ int main(int argc, char *argv[])
     s_p.smear_in_this_dirP[mu] = true;
   }
 
-  Handle< FermState<T,P,Q> > s_state1((*cfs)(u));
-  Handle< FermState<T,P,Q> > s_state2((*cfs)(u_rg));
+  typedef LatticeFermion T;
+  typedef multi1d<LatticeColorMatrix> P;
+  typedef multi1d<LatticeColorMatrix> Q;
 
-  // Create  Periodic FermBC
   Handle< FermBC<T,P,Q> > fbc( new PeriodicFermBC<T,P,Q>() );
-
-
+  // Create  Periodic FermBC
+ 
   Handle< StoutFermState  > s_state( new StoutFermState(fbc, s_p, u) );
   Handle< StoutFermState > s_state2( new StoutFermState(fbc, s_p, u_rg) );
 
@@ -205,9 +209,9 @@ int main(int argc, char *argv[])
 		<< norm2(rg_stout_link- s_state2->getLinks()[mu]) << endl;
 
     LatticeColorMatrix stout_smeared;
-    stout_smear(stout_smeared, u, mu, rho, orthog_dir);
+    stout_smear(stout_smeared, u, mu, rho, smear_dirs);
     LatticeColorMatrix rg_stout_smeared;
-    stout_smear(rg_stout_smeared, u_rg, mu, rho, orthog_dir);
+    stout_smear(rg_stout_smeared, u_rg, mu, rho, smear_dirs);
 
     QDPIO::cout << "NonStateStoutSmear - StateStoutSmear: " << norm2(stout_smeared - s_state->getLinks()[mu]) << endl;
     QDPIO::cout << "RG: NOnStateStoutSmeared -StateStoutSmeared: " <<norm2( rg_stout_smeared - s_state2->getLinks()[mu]) << endl;
