@@ -1,4 +1,4 @@
-// $Id: expmat.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: expmat.cc,v 3.1 2006-08-15 13:17:24 bjoo Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -15,6 +15,15 @@
 
 
 namespace Chroma { 
+
+  namespace ExpMatEnv {
+    static double time_spent = 0;
+
+    double getTime() { return time_spent ; }
+
+  };
+
+
 //! Exponentiate a SU(n) lie algebra element by some method.
 /*!
  * \ingroup gauge
@@ -32,6 +41,9 @@ void expmat(LatticeColorMatrix& a,
 	    enum ExpMat_t opt)
 {
   START_CODE();
+  QDP::StopWatch swatch;
+  swatch.reset();
+  swatch.start();
 
   switch (Nc)
   {
@@ -79,6 +91,8 @@ void expmat(LatticeColorMatrix& a,
     }
   }
 
+  swatch.stop();
+  ExpMatEnv::time_spent += swatch.getTimeInSeconds();
   END_CODE();
 }
 

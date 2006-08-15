@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.5 2006-08-13 19:30:46 edwards Exp $
+// $Id: stout_fermstate_w.cc,v 1.6 2006-08-15 13:17:24 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -181,152 +181,7 @@ namespace Chroma
     f[2] = where(latboo_c0,
 		 conj(f[2]),
 		 f[2]);
-  
-
-#if 0
     
-
-      real_part = (u_sq -w_sq)*cos2u
-	+ 8*u_sq*cosu*cosw
-	+ 2*u*sinu*(3*u_sq+w_sq)*xi0;
-
-
-      imag_part = (u_sq - w_sq)*sin2u
-	-8*u_sq*sinu*cosw
-	+2*u*cosu*(3*u_sq+w_sq)*xi0;
-
-      real_part /= denum;
-      imag_part /= denum;
-
-      f[0] = cmplx(real_part,imag_part);
-
-      
-      real_part = 2*u*cos2u - 2*u*cosu*cosw
-	+ (3*u_sq - w_sq)*sinu*xi0;
-
-      imag_part = 2*u*sin2u + 2*u*sinu*cosw
-	+ (3*u_sq - w_sq)*cosu*xi0;
-
-      real_part /= denum;
-      imag_part /= denum;
-
-      f[1] = cmplx(real_part, imag_part);
-
-      real_part = cos2u - cosu*cosw - 3*u*sinu*xi0;
-      imag_part = sin2u + sinu*cosw - 3*u*cosu*xi0;
-
-      real_part /= denum;
-      imag_part /= denum;
-
-      f[2] = cmplx(real_part, imag_part);    
-    
-    }
-
-    if( dobs == true ) { 
-      multi1d<LatticeDComplex> r1(3);
-      multi1d<LatticeDComplex> r2(3);
-
-
-      real_part = 2*u*cos2u - 2*sin2u*(u_sq - w_sq)
-	+ 2*u*cosu*( 8*cosw + (3*u_sq + w_sq)*xi0 )
-	- 2*sinu*( 4*u_sq*cosw - (9*u_sq  + w_sq)*xi0 );
-
-      imag_part = 2*u*sin2u + 2*cos2u*(u_sq - w_sq)
-	- 2*u*sinu*( 8*cosw + ( 3*u_sq + w_sq )*xi0 )
-	- 2*cosu*  ( 4*u_sq*cosw - (9*u_sq + w_sq)*xi0 );
-
-
-      r1[0] = cmplx(real_part,imag_part);
-
-      
-      real_part = 2*cos2u - 4*u*sin2u - 2*cosu*cosw
-	+ cosu*(3*u_sq - w_sq)*xi0
-	+ 2*u*sinu*( cosw + 3*xi0 );
-
-      imag_part = 2*sin2u + 4*u*cos2u + 2*sinu*cosw
-       	- sinu*(3*u_sq - w_sq)*xi0
-	+ 2*u*cosu*(cosw + 3*xi0);
-
-      r1[1] = cmplx(real_part, imag_part);
-      
-      real_part = -2*sin2u + sinu*cosw - 3*xi0*(sinu - u*cosu);
-      imag_part =  2*cos2u + cosu*cosw - 3*xi0*(cosu - u*sinu );
-
-      r1[2] = cmplx(real_part, imag_part);
-      
-      real_part = -2*cos2u - 2u*( 
-				 4*u*cosu*xi0
-				 - sinu*( cosw + xi0+ 3*u_sq*xi1 ) 
-				 );
-
-      imag_part = -2*sin2u + 2u*(4*u*sinu*xi0 
-				 +cosu*( cosw + xi0 + 3*u_sq*xi1 )
-				 );
-   
-      r2[0] = cmplx(real_part, imag_part);
-      
-      real_part =  2*u*cosu*xi0 - sinu*( cosw + xi0 - 3*u_sq*xi1);
-      imag_part = -2*u*sinu*xi0 - cosu*( cosw + xi0 - 3*u_sq*xi1);
-
-      r2[1] = cmplx(real_part, imag_part);
-      
-      real_part = cosu*xi0 - 3*u*sinu*xi1;
-      imag_part = -sinu*xi0 - 3*u*cosu*xi1;
-
-      r2[2] = cmplx(real_part, imag_part);
-            
-      b1.resize(3);
-      b2.resize(3);
-      for(int i=0; i < 3; i++) { 
-	b1[i] = ( 2*u*r1[i] + 3*(u_sq-w_sq)*r2[i] -2*(15*u_sq+w_sq)*f[i] )/(2*denum*denum);
-	
-	b2[i] = (r1[i] - 3*u*r2[i] - 24*u*f[i]) / (2*denum*denum); 
-      }
-
-      
-
-      b1[0] = where(latboo_c0,
-		    conj(b1[0]),
-		    b1[0]);
-
-      b1[1] = where(latboo_c0,
-		    -1*conj(b1[1]),
-		    b1[1]);
-
-      b1[2] = where(latboo_c0,
-		    conj(b1[2]),
-		    b1[2]);
-
-
-      b2[0] = where(latboo_c0,
-		    -1*conj(b2[0]),
-		    b2[0]);
-
-      b2[1] = where(latboo_c0,
-		    conj(b2[1]),
-		    b2[1]);
-
-      b2[2] = where(latboo_c0,
-		    -1*conj(b2[2]),
-		    b2[2]);
-
-      
-
-    }
-
-    f[0] = where(latboo_c0,
-		 conj(f[0]),
-		 f[0]);
-    
-    f[1] = where(latboo_c0,
-		 -1*conj(f[1]),
-		 f[1]);
-    
-    f[2] = where(latboo_c0,
-		 conj(f[2]),
-		 f[2]);
-
-#endif
   }
 
 
@@ -403,8 +258,8 @@ namespace Chroma
   }
 
   // Do the force recursion from level i+1, to level i
-  void StoutFermState::deriv_recurse(const multi1d<LatticeColorMatrix>&  F_plus,
-				     multi1d<LatticeColorMatrix>& F_minus,
+  // The input fat_force F is modified.
+  void StoutFermState::deriv_recurse(multi1d<LatticeColorMatrix>& F,
 				     const int level ) const
   {
     START_CODE();
@@ -412,6 +267,12 @@ namespace Chroma
     // Things I need
     // C_{\mu} = staple multiplied appropriately by the rho
     // Lambda matrices asper eq(73) 
+    multi1d<LatticeColorMatrix> F_plus(Nd);
+
+    // Save the fat force
+    F_plus = F;
+
+
     multi1d<LatticeColorMatrix> Lambda(Nd);
     multi1d<LatticeColorMatrix> C(Nd);
 
@@ -453,13 +314,13 @@ namespace Chroma
 
       // The first 3 terms of eq 75
       // Now the Fat force * the exp(iQ)
-      F_minus[mu]  = F_plus[mu]*(f[0] + f[1]*Q + f[2]*QQ);
+      F[mu]  = F_plus[mu]*(f[0] + f[1]*Q + f[2]*QQ);
            
     }
     
     // At this point we should have 
     //
-    //  F_minus[mu] = F_plus[mu]*exp(iQ) 
+    //  F[mu] = F_plus[mu]*exp(iQ) 
     //
     //  We need the 8 staple terms left in dOmega/dU (last 6 terms in eq 75 + the iC{+}Lambda
     //  term in eq 75 which in reality just covers 2 staples.
@@ -540,8 +401,8 @@ namespace Chroma
       } // end nu loop
 	
       // The siz terms from staple sum
-      F_minus[mu] += timesI( staple_sum_dag );
-      F_minus[mu] -= timesI(staple_sum);
+      F[mu] += timesI( staple_sum_dag );
+      F[mu] -= timesI(staple_sum);
      
     }
   
@@ -553,27 +414,20 @@ namespace Chroma
 
   //! Drive the recursion for the force term
   //  Parameters: F is the force computed with the FAT Links
-  void StoutFermState::deriv(multi1d<LatticeColorMatrix>& F) const
+  void StoutFermState::fatForceToThin(const multi1d<LatticeColorMatrix>& F_fat, multi1d<LatticeColorMatrix>& F_thin) const
   {
     START_CODE();
-    multi1d<LatticeColorMatrix> F_minus(Nd); // Force at one level lower
+    
+    F_thin.resize(Nd);
 
-    F_minus = F;
+    F_thin = F_fat;
+    fbc->zero(F_thin);
+
+    // Now if the state is smeared recurse down.
 
     for(int level=params.n_smear; level > 0; level--) {
-	// Take the current force, and compute force one level down 
-	// Level is index into smeared link array
-        // level is always one less than our level. So if we have 1 smearing
-        // level starts at 0 (ie the thin links).
-        // If level is 0 to start with, this loop is not entered
-      deriv_recurse(F,F_minus,level-1);
-
-      F = F_minus;
-    }
-
-    // Multiply in by the final U term to close off the links
-    for(int mu=0; mu < Nd; mu++) { 
-      F[mu] = (smeared_links[0])[mu]*F_minus[mu];
+      deriv_recurse(F_thin,level-1);
+      fbc->zero(F_thin);
     }
 
 
@@ -637,22 +491,38 @@ namespace Chroma
     fbc = fbc_;
     params = p_;
 
-    // Allocate smeared links
+    // Allocate smeared and thin links
     smeared_links.resize(params.n_smear + 1);
     for(int i=0; i <= params.n_smear; i++) { 
       smeared_links[i].resize(Nd);
     }
+    
 
     // Copy thin links into smeared_links[0]
     for(int mu=0; mu < Nd; mu++) { 
       (smeared_links[0])[mu] = u_[mu];
     }
-
+    fbc->modify( smeared_links[0] );    
+    
 
     // Iterate up the smearings
     for(int i=1; i <= params.n_smear; i++) { 
+
+
       smear_links(smeared_links[i-1], smeared_links[i]);
+      // If the fermbc-s are nontrivial 
+      // ie the underlying gauge fields are nontrivial
+      // such as SF BC-s then apply them at every level
+      fbc->modify( smeared_links[i] );
     }
+
+    // Always apply at the top level 
+    // (essentially what this does is it takes care
+    //  where modify only cares about fermion bc-s
+    //  and assumes an underlying trivially periodic gauge bc)
+ 
+    
+
     END_CODE();
   }
 

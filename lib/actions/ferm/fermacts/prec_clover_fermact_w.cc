@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 3.2 2006-08-04 23:54:49 edwards Exp $
+// $Id: prec_clover_fermact_w.cc,v 3.3 2006-08-15 13:17:24 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -34,7 +34,7 @@ namespace Chroma
       Handle< CreateFermState<LatticeFermion,
 	multi1d<LatticeColorMatrix>,
 	multi1d<LatticeColorMatrix> > > cfs(
-	  new CreateStoutFermState(WilsonTypeFermBCEnv::reader(xml_in, path + "/FermState/FermionBC"),
+	  new CreateStoutFermState(WilsonTypeFermBCEnv::reader(xml_in, path + "/FermState"),
 				   StoutFermStateParams(xml_in, path + "/FermState")));
       
       return new EvenOddPrecCloverFermAct(cfs,

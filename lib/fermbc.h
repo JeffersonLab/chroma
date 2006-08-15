@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 3.0 2006-04-03 04:58:43 edwards Exp $
+// $Id: fermbc.h,v 3.1 2006-08-15 13:17:24 bjoo Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -45,6 +45,7 @@ namespace Chroma
 
     //! Says if there are fermion non-trivial 
     virtual bool nontrivialP() const = 0;
+
   };
 
 }

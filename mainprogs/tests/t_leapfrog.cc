@@ -132,11 +132,39 @@ int main(int argc, char *argv[])
   // Do a trajectory
   (*MD)(gauge_state);
   swatch.stop();
-  QDPIO::cout << "Trajectory took: " << swatch.getTimeInSeconds() << " sec" <<endl;
-  QDPIO::cout << "Rect force took: " << RectGaugeActEnv::getTime() << " sec" << endl;
-  QDPIO::cout << "Other force took: " << PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime() << " sec" << endl;
+  double total_time = swatch.getTimeInSeconds();
+  QDPIO::cout << "Trajectory took: " << total_time << " sec" <<endl;
 
-  QDPIO::cout << "Time deficit : " << swatch.getTimeInSeconds() - RectGaugeActEnv::getTime() -  PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime() << " sec" << endl;
+  QDPIO::cout << "Rect force took: " << RectGaugeActEnv::getTime() 
+	      << " sec.  " << Real(100)*RectGaugeActEnv::getTime()/total_time 
+	      << " % of total" << endl;
+
+  QDPIO::cout << "Other force took: "
+	      << PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime() << " sec.   " 
+	      << Real(100)*PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime()/total_time 
+	      << " % of total" << endl;
+
+  QDPIO::cout << "Expmat took: "<< ExpMatEnv::getTime()  << " sec.   " 
+	      << Real(100)*ExpMatEnv::getTime()/total_time
+	      << " % of total" << endl;
+
+  QDPIO::cout << "Reunit took: "<< ReunitEnv::getTime()  << " sec.   " 
+	      << Real(100)*ReunitEnv::getTime()/total_time
+	      << " % of total" << endl;
+
+  QDPIO::cout << "Taproj took: "<< TaprojEnv::getTime()  << " sec.   " 
+	      << Real(100)*TaprojEnv::getTime()/total_time
+	      << " % of total" << endl;
+
+  double deficit = swatch.getTimeInSeconds() 
+    - RectGaugeActEnv::getTime() 
+    - PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime() 
+    - ExpMatEnv::getTime() 
+    - ReunitEnv::getTime() 
+    - TaprojEnv::getTime();
+  QDPIO::cout << "Time deficit : " << deficit << " sec.  "<< Real(100)*deficit/ total_time << " % of total" << endl;
+
+  
   Double KE_new, PE_new;
   H_exact.mesE(gauge_state, KE_new, PE_new);
   QDPIO::cout << "Final energies: KE =" << KE_new << " PE = " << PE_new <<endl;

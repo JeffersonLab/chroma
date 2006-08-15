@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: expmat.h,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: expmat.h,v 3.1 2006-08-15 13:17:24 bjoo Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -27,6 +27,9 @@ enum ExpMat_t {EXP_EXACT, EXP_TWELFTH_ORDER};
 void expmat(LatticeColorMatrix& a,
 	    ExpMat_t opt);
 
+  namespace ExpMatEnv {
+    extern double getTime();
+  };
 };
 
 #endif

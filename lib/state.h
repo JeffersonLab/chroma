@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: state.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: state.h,v 3.1 2006-08-15 13:17:24 bjoo Exp $
 
 /*! @file
  * @brief Support class for fermion actions and linear operators
@@ -104,6 +104,7 @@ namespace Chroma
     //! Return the ferm BC object for this state
     /*! This is to help the optimized linops */
     virtual Handle< FermBC<T,P,Q> > getFermBC() const = 0;
+   
   };
 
 }

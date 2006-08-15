@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.24 2006-08-11 18:12:23 edwards Exp $
+# $Id: Makefile.am,v 3.25 2006-08-15 13:17:23 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -476,6 +476,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/prec_logdet_ee_monomial_w.h \
+	update/molecdyn/monomial/fixed_random_ferm_monomial.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
         util/ferm/paulitodr.h \
@@ -1010,6 +1011,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
 	update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc \
+	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
 	util/ferm/gammasgn_w.cc \
         util/ferm/antisymtensor.cc \
         util/ferm/etensor.cc \

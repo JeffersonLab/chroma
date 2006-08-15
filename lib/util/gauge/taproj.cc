@@ -1,4 +1,4 @@
-// $Id: taproj.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
+// $Id: taproj.cc,v 3.1 2006-08-15 13:17:24 bjoo Exp $
 // TAPROJ
 
 /*! \file
@@ -9,6 +9,12 @@
 #include "util/gauge/taproj.h"
 
 namespace Chroma {
+
+
+  namespace TaprojEnv {
+    static double time_spent =0;
+    double getTime() { return time_spent; }
+  };
 
 //! Take the traceless antihermitian projection of a color matrix
 /*!
@@ -26,6 +32,9 @@ namespace Chroma {
 void taproj(LatticeColorMatrix& a)
 {
   START_CODE();
+  QDP::StopWatch swatch;
+  swatch.reset();
+  swatch.start();
 
   // a = a - a_dagger  --- a -> antihermitian matrix
   LatticeColorMatrix aux_1 = a;
@@ -45,7 +54,9 @@ void taproj(LatticeColorMatrix& a)
 
   // Normalisation to make taproj idempotent
   a *= (Real(1)/Real(2));
-  
+
+  swatch.stop();
+  TaprojEnv::time_spent+=swatch.getTimeInSeconds();
   END_CODE();
 }
 

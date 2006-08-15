@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: taproj.h,v 3.0 2006-04-03 04:59:13 edwards Exp $
+// $Id: taproj.h,v 3.1 2006-08-15 13:17:24 bjoo Exp $
 /*! \file
  *  \brief Take the traceless antihermitian projection of a color matrix
  */
@@ -23,6 +23,10 @@ namespace Chroma {
  */
 
 void taproj(LatticeColorMatrix& a);
+
+  namespace TaprojEnv {
+    extern double getTime();
+  };
 
 }  // end namespace Chroma
 

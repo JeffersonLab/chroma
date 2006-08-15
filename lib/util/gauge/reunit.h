@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reunit.h,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: reunit.h,v 3.1 2006-08-15 13:17:24 bjoo Exp $
 
 /*! \file
  *  \ingroup gauge
@@ -23,6 +23,9 @@
 #define __reunit_h__
 
 namespace Chroma {
+  namespace ReunitEnv {
+    extern double getTime();
+  };
 
   enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
   

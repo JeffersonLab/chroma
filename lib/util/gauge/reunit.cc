@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reunit.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: reunit.cc,v 3.1 2006-08-15 13:17:24 bjoo Exp $
 
 /*! \file
  *  \ingroup gauge
@@ -25,6 +25,12 @@
 
 namespace Chroma {
 
+
+  namespace ReunitEnv {
+    static double time_spent =0;
+    double getTime() { return time_spent; }
+  };
+
   template<typename S>
   inline
   void reunit_t(LatticeColorMatrix& xa, 
@@ -33,6 +39,10 @@ namespace Chroma {
 		enum Reunitarize ruflag,
 		const S& mstag)
   {
+    QDP::StopWatch swatch;
+    swatch.reset();
+    swatch.start();
+
     multi2d<LatticeComplex> a(Nc, Nc);
     multi2d<LatticeComplex> b(Nc, Nc);
     LatticeReal t1;
@@ -435,6 +445,9 @@ namespace Chroma {
 	pokeColor(xa[mstag], a[i][j], i, j);
     
     END_CODE();
+    swatch.stop();
+    ReunitEnv::time_spent += swatch.getTimeInSeconds();
+
   }
   
   // Overloaded definitions
