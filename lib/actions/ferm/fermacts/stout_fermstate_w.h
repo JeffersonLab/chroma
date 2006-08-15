@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.6 2006-08-15 13:17:24 bjoo Exp $
+// $Id: stout_fermstate_w.h,v 1.7 2006-08-15 21:45:50 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -88,7 +88,8 @@ namespace Chroma
 
       // Function resizes F_tmp
       fatForceToThin(F,F_tmp);
-      
+
+
       // Multiply in by the final U term to close off the links
       for(int mu=0; mu < Nd; mu++) { 
 	F[mu] = (smeared_links[0])[mu]*F_tmp[mu];

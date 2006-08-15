@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: simple_fermbc.h,v 3.1 2006-08-15 21:45:50 bjoo Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -89,11 +89,10 @@ namespace Chroma
       {
 	gbc->modify(u);   // first modify the U fields
 
-	if (nontrivialP())
-	{
-	  // phases for all the directions
-	  for(int m = 0; m < Nd; ++m)
-	  {
+	// phases for all the directions
+	for(int m = 0; m < Nd; ++m) { 
+       
+	  if( boundary[m] != 1 ) { 
 	    /* u[m] *=  (coord(m) == nrow(m)-1 ) ? boundary[m] : 1 */
 	    u[m] *= where(Layout::latticeCoordinate(m) == (Layout::lattSize()[m]-1),
 			  Integer(boundary[m]), Integer(1));
@@ -121,16 +120,12 @@ namespace Chroma
     void zero(P& ds_u) const {}
 
     //! Says if there are non-trivial BC links
-    bool nontrivialP() const {return nontriv;}
+    bool nontrivialP() const {return false;}
 
   protected:
     void init()
       {
-	// Check triviality of boundary
-	nontriv = false;
-	for(int m = 0; m < Nd; ++m)
-	  if (boundary[m] != 1)
-	    nontriv |= true;
+
       }
 
   private:

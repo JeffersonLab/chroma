@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.6 2006-08-15 13:17:24 bjoo Exp $
+// $Id: stout_fermstate_w.cc,v 1.7 2006-08-15 21:45:50 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -421,6 +421,11 @@ namespace Chroma
     F_thin.resize(Nd);
 
     F_thin = F_fat;
+
+    // Undo antiperiodic BC-s / force fixed BCs
+    fbc->modify(F_thin);
+
+    // Zero out fixed BCs
     fbc->zero(F_thin);
 
     // Now if the state is smeared recurse down.
@@ -502,24 +507,21 @@ namespace Chroma
     for(int mu=0; mu < Nd; mu++) { 
       (smeared_links[0])[mu] = u_[mu];
     }
-    fbc->modify( smeared_links[0] );    
     
 
     // Iterate up the smearings
     for(int i=1; i <= params.n_smear; i++) { 
+ 
+      if( fbc->nontrivialP() ) {
+	fbc->modify( smeared_links[i-1] );    
+      }
 
 
       smear_links(smeared_links[i-1], smeared_links[i]);
-      // If the fermbc-s are nontrivial 
-      // ie the underlying gauge fields are nontrivial
-      // such as SF BC-s then apply them at every level
-      fbc->modify( smeared_links[i] );
     }
 
-    // Always apply at the top level 
-    // (essentially what this does is it takes care
-    //  where modify only cares about fermion bc-s
-    //  and assumes an underlying trivially periodic gauge bc)
+    // ANTIPERIODIC BCs only -- modify only top level smeared thing
+    fbc->modify(smeared_links[params.n_smear]);
  
     
 
