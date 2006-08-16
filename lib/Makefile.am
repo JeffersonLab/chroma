@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.25 2006-08-15 13:17:23 bjoo Exp $
+# $Id: Makefile.am,v 3.26 2006-08-16 17:10:25 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -290,6 +290,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
+	actions/ferm/fermacts/prec_slic_fermact_w.h \
 	actions/ferm/fermacts/extfield_factory_w.h \
 	actions/ferm/fermacts/extfield_aggregate_w.h \
 	actions/ferm/fermacts/extfield_fermstate_w.h \
@@ -397,6 +398,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/ovlap_contfrac5d_w.h \
 	actions/ferm/linop/polynomial_op.h \
 	actions/ferm/linop/polprec_op.h \
+	actions/ferm/linop/prec_slic_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
@@ -877,6 +879,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/prec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/prec_slic_fermact_w.cc \
 	actions/ferm/fermacts/extfield_aggregate_w.cc \
 	actions/ferm/fermacts/extfield_fermstate_w.cc \
 	actions/ferm/fermacts/extfield_aggregate_w.cc \
@@ -950,6 +953,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/prec_clover_linop_w.cc \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
 	actions/ferm/linop/prec_clover_extfield_linop_w.cc \
+	actions/ferm/linop/prec_slic_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \

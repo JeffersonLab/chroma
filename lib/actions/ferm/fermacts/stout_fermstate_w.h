@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.7 2006-08-15 21:45:50 bjoo Exp $
+// $Id: stout_fermstate_w.h,v 1.8 2006-08-16 17:10:27 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -53,18 +53,17 @@ namespace Chroma
     Handle< FermBC<T,P,Q> > getFermBC() const {return fbc;}
 
     //! Destructor is automagic
-    ~StoutFermState() {}
+    virtual ~StoutFermState() {}
 
     //! Return FAT Linke
     const multi1d<LatticeColorMatrix>& getLinks() const 
     {
       // This has BC-s applied already in the construction
-      return smeared_links[params.n_smear];
+      return fat_links_with_bc;
     }
 
     const multi1d<LatticeColorMatrix>& getThinLinks() const 
     {
-      // This has the BC-s applied already
       return smeared_links[0];
     }
 
@@ -82,10 +81,9 @@ namespace Chroma
        and this thing can be pulled out into the dsdq methods.
        For now, the default behaviour is to recurse the force down 
        here but I am planning ahead to a refactor. */
-    void deriv(multi1d<LatticeColorMatrix>& F) const {
+    virtual void deriv(multi1d<LatticeColorMatrix>& F) const {
 
-      multi1d<LatticeColorMatrix> F_tmp;
-
+      multi1d<LatticeColorMatrix> F_tmp(Nd);
       // Function resizes F_tmp
       fatForceToThin(F,F_tmp);
 
@@ -142,11 +140,11 @@ namespace Chroma
     // smeared_links[0] are the thin links smeared_links[params.n_smear] 
     // are the smeared links.
     multi1d< multi1d<LatticeColorMatrix> > smeared_links;
+    multi1d<LatticeColorMatrix> fat_links_with_bc;
 
 
     StoutFermStateParams  params;
   }; // End class
-
 
 
   //! Create a stout ferm connection state
@@ -163,21 +161,21 @@ namespace Chroma
     typedef LatticeFermion               T;
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
-
+    
     //! Full constructor
     CreateStoutFermState(Handle< FermBC<T,P,Q> > fbc_,
 			 const StoutFermStateParams& p_) : 
       fbc(fbc_), params(p_) {}
-
+    
     //! Destructor
     ~CreateStoutFermState() {}
-   
+    
     //! Construct a ConnectState
     StoutFermState* operator()(const Q& q) const
-      {
-	return new StoutFermState(fbc, params, q);
-      }
-
+    {
+      return new StoutFermState(fbc, params, q);
+    }
+    
     //! Return the ferm BC object for this state
     const FermBC<T,P,Q>& getBC() const {return *fbc;}
 
@@ -187,6 +185,95 @@ namespace Chroma
   private:
     CreateStoutFermState() {}  // hide default constructur
     void operator=(const CreateStoutFermState&) {} // hide =
+
+  private:
+    Handle< FermBC<T,P,Q> >  fbc;
+    StoutFermStateParams  params;
+  };
+
+
+  /* SLIC Fermions */
+
+  /*! @ingroup fermacts */
+  namespace CreateSLICFermStateEnv 
+  { 
+    extern const std::string name;
+    extern const bool registered;
+  }
+
+  //! SLIC (Stout Link Irrelevant Clover ferm connection state
+  /*! @ingroup fermacts
+   *
+   * This ferm state is for use in SLIC Fermions ONLY (or their ilk)
+   * It inherits directly from stout ferm state and overrides the 
+   * deriv function. In the SLIC case it is the duty of the linop 
+   * to thin the fat links, so here the deriv() only multiplies by 
+   * the thin links. CAVEAT: The way stout links currently work
+   * The fermion force for the stout part must remove the fermionic
+   * boundaries - as the thin links don't have these applied. THe 
+   * thin links do have gauge boundaries (a la schroedinger) applied 
+   * 
+   *  - NB This state inherits data from its super. This is not necessarily 
+   *    a good thing. However we don't have private data of our own that is 
+   *    not in the superclass and I only access this read only in deriv()
+   *    using a public function.
+   */
+  class SLICFermState : public StoutFermState {
+  public:
+    // Initialise the super
+    SLICFermState(Handle< FermBC<T,P,Q> > fbc_, 
+		  const StoutFermStateParams& p_,
+		  const multi1d<LatticeColorMatrix>& u_) : StoutFermState(fbc_,p_, u_) {}
+
+    ~SLICFermState() {}
+   
+    void deriv(multi1d<LatticeColorMatrix>& F) const {
+
+      // Multiply in by the final U term to close off the links
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] = getThinLinks()[mu]*F[mu];
+      }
+    }
+  };
+
+  //! Create a SLIC ferm connection state
+  /*! @ingroup fermacts
+   *
+   * This is a factory class for producing a connection state
+   */
+  class CreateSLICFermState : public CreateFermState<LatticeFermion,
+			      multi1d<LatticeColorMatrix>,
+			      multi1d<LatticeColorMatrix> >
+  {
+  public: 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
+    //! Full constructor
+    CreateSLICFermState(Handle< FermBC<T,P,Q> > fbc_,
+			const StoutFermStateParams& p_) : 
+      fbc(fbc_), params(p_) {}
+
+    //! Destructor
+    ~CreateSLICFermState() {}
+   
+    //! Construct a ConnectState
+    StoutFermState* operator()(const Q& q) const
+      {
+	return new SLICFermState(fbc, params, q);
+      }
+
+    //! Return the ferm BC object for this state
+    const FermBC<T,P,Q>& getBC() const {return *fbc;}
+
+    //! Return the ferm BC object for this state
+    Handle< FermBC<T,P,Q> > getFermBC() const {return fbc;}
+
+  private:
+    CreateSLICFermState() {}  // hide default constructur
+    void operator=(const CreateSLICFermState&) {} // hide =
 
   private:
     Handle< FermBC<T,P,Q> >  fbc;

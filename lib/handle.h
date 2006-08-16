@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: handle.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: handle.h,v 3.1 2006-08-16 17:10:26 bjoo Exp $
 /*! @file
  * @brief  Class for counted reference semantics
  *
@@ -16,6 +16,12 @@
 
 #ifndef __handle_h__
 #define __handle_h__
+
+#include "chromabase.h"
+#include <iostream>
+
+using namespace QDP;
+using namespace std;
 
 namespace Chroma
 {
@@ -58,6 +64,12 @@ namespace Chroma
       {
 	Handle<Q> q;
 	q.ptr = dynamic_cast<Q*>(ptr);
+	if( q.ptr == 0x0 ) { 
+	  QDPIO::cerr << "Dynamic cast failed in Handle::cast()" <<endl;
+	  QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << endl;
+	  QDP_abort(1);
+	}
+
 	q.count = count;
 	++*count;
 	return q;

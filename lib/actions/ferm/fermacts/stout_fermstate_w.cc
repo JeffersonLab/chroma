@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.7 2006-08-15 21:45:50 bjoo Exp $
+// $Id: stout_fermstate_w.cc,v 1.8 2006-08-16 17:10:27 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -30,6 +30,31 @@ namespace Chroma
     }
 
     const std::string name = "STOUT_FERM_STATE";
+
+    //! Register all the factories
+    bool registerAll()
+    {
+      bool foo = true;
+      foo &= Chroma::TheCreateFermStateFactory::Instance().registerObject(name, 
+									  createFerm);
+      return foo;
+    }
+
+    const bool registered = registerAll();
+  }
+  /*! \ingroup fermacts */
+  namespace CreateSLICFermStateEnv 
+  { 
+    CreateFermState<LatticeFermion,
+		    multi1d<LatticeColorMatrix>, 
+		    multi1d<LatticeColorMatrix> >* createFerm(XMLReader& xml, 
+							      const std::string& path) 
+    {
+      return new CreateSLICFermState(WilsonTypeFermBCEnv::reader(xml, path),
+				     StoutFermStateParams(xml, path));
+    }
+
+    const std::string name = "SLIC_FERM_STATE";
 
     //! Register all the factories
     bool registerAll()
@@ -419,10 +444,10 @@ namespace Chroma
     START_CODE();
     
     F_thin.resize(Nd);
-
     F_thin = F_fat;
 
-    // Undo antiperiodic BC-s / force fixed BCs
+    // Undo antiperiodic BC-s / force fixed BCs - this should really be unmodify
+    // but essentially it works OK for everything except maybe twisted bc-s
     fbc->modify(F_thin);
 
     // Zero out fixed BCs
@@ -432,6 +457,7 @@ namespace Chroma
 
     for(int level=params.n_smear; level > 0; level--) {
       deriv_recurse(F_thin,level-1);
+
       fbc->zero(F_thin);
     }
 
@@ -479,9 +505,7 @@ namespace Chroma
 				 const multi1d<LatticeColorMatrix>& u_)
   {
     START_CODE();
-    QDPIO::cout << __func__ << ": entering" << endl;
     create(fbc_, p_, u_);
-    QDPIO::cout << __func__ << ": exiting" << endl;
     END_CODE();
   }
 
@@ -508,23 +532,27 @@ namespace Chroma
       (smeared_links[0])[mu] = u_[mu];
     }
     
+    if( fbc->nontrivialP() ) {
+      fbc->modify( smeared_links[0] );    
+    }
 
     // Iterate up the smearings
     for(int i=1; i <= params.n_smear; i++) { 
  
-      if( fbc->nontrivialP() ) {
-	fbc->modify( smeared_links[i-1] );    
-      }
-
+ 
 
       smear_links(smeared_links[i-1], smeared_links[i]);
+      if( fbc->nontrivialP() ) {
+	fbc->modify( smeared_links[i] );    
+      }
+
     }
 
     // ANTIPERIODIC BCs only -- modify only top level smeared thing
-    fbc->modify(smeared_links[params.n_smear]);
+    fat_links_with_bc.resize(Nd);
+    fat_links_with_bc = smeared_links[params.n_smear];
+    fbc->modify(fat_links_with_bc);
  
-    
-
     END_CODE();
   }
 

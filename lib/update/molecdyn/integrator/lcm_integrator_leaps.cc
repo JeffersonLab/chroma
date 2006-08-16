@@ -27,7 +27,7 @@ namespace Chroma {
       
       // Compute the force 
       H.dsdq(dsdQ, s);
-     
+      
       // Zero boundaries ? -- where would this be done then?
       // There is a zero boundary in GaugeBC?
       // H.zero(s.getP());

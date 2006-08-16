@@ -1,4 +1,4 @@
-// $Id: simple_baryon_operator_w.cc,v 1.3 2006-06-12 02:13:47 edwards Exp $
+// $Id: simple_baryon_operator_w.cc,v 1.4 2006-08-16 17:10:27 bjoo Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */
@@ -13,6 +13,7 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
 
+using namespace std;
 namespace Chroma 
 {
 

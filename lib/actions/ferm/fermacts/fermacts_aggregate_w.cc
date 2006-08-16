@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.2 2006-07-20 20:06:52 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.3 2006-08-16 17:10:26 bjoo Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -17,6 +17,7 @@
 #include "actions/ferm/fermacts/prec_clover_extfield_fermact_w.h"
 #include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
+#include "actions/ferm/fermacts/prec_slic_fermact_w.h"
 
 #include "actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h"
 
@@ -39,18 +40,13 @@
 #include "actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h"
 #include "actions/ferm/fermacts/prec_ovext_fermact_array_w.h"
 
+
 #include "actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h"
 
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
 
-#if 0
-#include "actions/ferm/fermacts/unprec_stout_fermact_w.h"
-#include "actions/ferm/fermacts/prec_stout_fermact_w.h"
-#include "actions/ferm/fermacts/unprec_stout_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_stout_fermact_array_w.h"
-#endif 
 
 namespace Chroma
 {
@@ -79,6 +75,7 @@ namespace Chroma
 
       success &= EvenOddPrecCloverFermActEnv::registered;
       success &= UnprecCloverFermActEnv::registered;
+      success &= EvenOddPrecSLICFermActEnv::registered;
 
       success &= EvenOddPrecCloverExtFieldFermActEnv::registered;
 

@@ -1,4 +1,4 @@
-// $Id: ferm_createstate_aggregate_w.cc,v 3.1 2006-08-03 21:12:13 edwards Exp $
+// $Id: ferm_createstate_aggregate_w.cc,v 3.2 2006-08-16 17:10:26 bjoo Exp $
 /*! \file
  *  \brief All ferm create-state method
  */
@@ -21,6 +21,7 @@ namespace Chroma
 
       success &= CreateSimpleFermStateEnv::registered;
       success &= CreateStoutFermStateEnv::registered;
+      success &= CreateSLICFermStateEnv::registered;
 
       return success;
     }
