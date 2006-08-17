@@ -16,10 +16,10 @@
     </RNG>
 
     <StartUpdateNum>0</StartUpdateNum>
-    <NWarmUpUpdates>3</NWarmUpUpdates>  
+    <NWarmUpUpdates>2</NWarmUpUpdates>  
     <NProductionUpdates>1000</NProductionUpdates>
-    <NUpdatesThisRun>10</NUpdatesThisRun>
-    <SaveInterval>5</SaveInterval>
+    <NUpdatesThisRun>4</NUpdatesThisRun>
+    <SaveInterval>2</SaveInterval>
     <SavePrefix>dummy_run</SavePrefix>
     <SaveVolfmt>SINGLEFILE</SaveVolfmt>
   </MCControl>
