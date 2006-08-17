@@ -156,12 +156,27 @@ int main(int argc, char *argv[])
 	      << Real(100)*TaprojEnv::getTime()/total_time
 	      << " % of total" << endl;
 
+  QDPIO::cout << "Stout Smearing Took:"<< StoutLinkTimings::getSmearingTime() << " secs.  "
+	      << Real(100)*StoutLinkTimings::getSmearingTime()/total_time
+	      <<" % of total " << endl;
+
+  QDPIO::cout << "Stout Force Recursion Took:"<< StoutLinkTimings::getForceTime() << " secs.  "
+	      << Real(100)*StoutLinkTimings::getForceTime()/total_time
+	      <<" % of total " << endl;
+
+  QDPIO::cout << "Stout Force Functions Took:" << StoutLinkTimings::getFunctionsTime() << " secs   "
+	      << Real(100)*StoutLinkTimings::getFunctionsTime()/total_time
+	      <<" % of total " << endl;
+
   double deficit = swatch.getTimeInSeconds() 
     - RectGaugeActEnv::getTime() 
     - PlaqPlusSpatialTwoPlaqGaugeActEnv::getTime() 
     - ExpMatEnv::getTime() 
     - ReunitEnv::getTime() 
-    - TaprojEnv::getTime();
+    - TaprojEnv::getTime()
+    - StoutLinkTimings::getSmearingTime()
+    - StoutLinkTimings::getForceTime();
+
   QDPIO::cout << "Time deficit : " << deficit << " sec.  "<< Real(100)*deficit/ total_time << " % of total" << endl;
 
   
