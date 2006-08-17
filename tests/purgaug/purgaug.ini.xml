@@ -16,10 +16,10 @@
     </RNG>
 
     <StartUpdateNum>0</StartUpdateNum>
-    <NWarmUpUpdates>1</NWarmUpUpdates>  
+    <NWarmUpUpdates>3</NWarmUpUpdates>  
     <NProductionUpdates>1000</NProductionUpdates>
-    <NUpdatesThisRun>2</NUpdatesThisRun>
-    <SaveInterval>2</SaveInterval>
+    <NUpdatesThisRun>10</NUpdatesThisRun>
+    <SaveInterval>5</SaveInterval>
     <SavePrefix>dummy_run</SavePrefix>
     <SaveVolfmt>SINGLEFILE</SaveVolfmt>
   </MCControl>
@@ -35,7 +35,7 @@
 
     <elem>
       <Name>WILSLP</Name>
-      <Frequency>1</Frequency>
+      <Frequency>2</Frequency>
       <Param>
         <version>2</version>
         <kind>7</kind>

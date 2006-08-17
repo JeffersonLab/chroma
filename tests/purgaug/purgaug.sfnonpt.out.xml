@@ -86,10 +86,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.9.0</chroma>
-      <qdp>1.20.5</qdp>
+      <chroma>3.10.3</chroma>
+      <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>11 Jul 06 00:20:11 EDT</run_date>
+    <run_date>16 Aug 06 21:41:31 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -110,7 +110,7 @@
     </config_xml>
   </Config_info>
   <doHB>
-    <MCUpdates>
+    <WarmUpdates>
       <elem>
         <Update>
           <update_no>1</update_no>
@@ -119,11 +119,114 @@
             <elem>
               <Plaquette>
                 <update_no>1</update_no>
-                <w_plaq>0.808067</w_plaq>
-                <s_plaq>0.816189</s_plaq>
-                <t_plaq>0.799944</t_plaq>
-                <link>0.375684</link>
+                <w_plaq>0.808066671594538</w_plaq>
+                <s_plaq>0.816189478300253</s_plaq>
+                <t_plaq>0.799943864888822</t_plaq>
+                <link>0.375684457828356</link>
               </Plaquette>
+            </elem>
+          </InlineObservables>
+        </Update>
+      </elem>
+    </WarmUpdates>
+    <MCUpdates>
+      <elem>
+        <Update>
+          <update_no>1</update_no>
+          <WarmUpP>false</WarmUpP>
+          <InlineObservables>
+            <elem>
+              <Plaquette>
+                <update_no>1</update_no>
+                <w_plaq>0.761150751188527</w_plaq>
+                <s_plaq>0.716130783218735</s_plaq>
+                <t_plaq>0.806170719158318</t_plaq>
+                <link>0.275217612994008</link>
+              </Plaquette>
+            </elem>
+            <elem>
+              <PolyakovLoop>
+                <update_no>1</update_no>
+                <poly_loop>
+                  <elem>
+                    <re>0.291654507505882</re>
+                    <im>0.0908565942566687</im>
+                  </elem>
+                  <elem>
+                    <re>0.32509737151122</re>
+                    <im>0.0821443359382101</im>
+                  </elem>
+                  <elem>
+                    <re>0.195370582183386</re>
+                    <im>0.105263638373193</im>
+                  </elem>
+                  <elem>
+                    <re>-0.0388252552647828</re>
+                    <im>-0.0225306997211495</im>
+                  </elem>
+                </poly_loop>
+              </PolyakovLoop>
+            </elem>
+            <elem>
+              <WilsonLoop>
+                <update_no>1</update_no>
+                <decay_dir>3</decay_dir>
+                <t_dir>3</t_dir>
+                <wils_loop1>
+                  <lengthr>2</lengthr>
+                  <wloop1>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.466130924247813 0.337887542618167</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.332372209398373 0.223961215110547</loop>
+                    </elem>
+                  </wloop1>
+                </wils_loop1>
+                <wils_loop2>
+                  <lengthr>2</lengthr>
+                  <lengtht>4</lengtht>
+                  <wloop2>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.509384956495422 0.350886334710392 0.232567082320909 0.135099973985537</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.419645404032457 0.256602250362953 0.155018524338731 0.0811014700553238</loop>
+                    </elem>
+                  </wloop2>
+                </wils_loop2>
+                <wils_loop3>
+                  <lengthr>2</lengthr>
+                  <lengtht>4</lengtht>
+                  <length>5</length>
+                  <wloop3>
+                    <elem>
+                      <r>0</r>
+                      <loop>0.393966261103439 0.261815770807314 0.166798681243058 0.0937906701971466</loop>
+                    </elem>
+                    <elem>
+                      <r>1</r>
+                      <loop>0.25304123034261 0.141282075342234 0.0776306695976624 0.0374446451488539</loop>
+                    </elem>
+                    <elem>
+                      <r>2</r>
+                      <loop>0.303549194393175 0.185517472977962 0.109619335222002 0.0563840989589153</loop>
+                    </elem>
+                    <elem>
+                      <r>3</r>
+                      <loop>0.296097231650492 0.194613649068439 0.120506301262746 0.0657199155296742</loop>
+                    </elem>
+                    <elem>
+                      <r>4</r>
+                      <loop>0.142313609372953 0.0768032122315769 0.0404055057638288 0.0197264699618245</loop>
+                    </elem>
+                  </wloop3>
+                </wils_loop3>
+              </WilsonLoop>
             </elem>
           </InlineObservables>
         </Update>
@@ -136,10 +239,10 @@
             <elem>
               <Plaquette>
                 <update_no>2</update_no>
-                <w_plaq>0.761151</w_plaq>
-                <s_plaq>0.716131</s_plaq>
-                <t_plaq>0.806171</t_plaq>
-                <link>0.275218</link>
+                <w_plaq>0.747915922390853</w_plaq>
+                <s_plaq>0.692233882220333</s_plaq>
+                <t_plaq>0.803597962561374</t_plaq>
+                <link>0.219694973179079</link>
               </Plaquette>
             </elem>
             <elem>
@@ -147,20 +250,20 @@
                 <update_no>2</update_no>
                 <poly_loop>
                   <elem>
-                    <re>0.291655</re>
-                    <im>0.0908565</im>
+                    <re>0.26543151920608</re>
+                    <im>0.111449260584777</im>
                   </elem>
                   <elem>
-                    <re>0.325097</re>
-                    <im>0.0821443</im>
+                    <re>0.231099313982365</re>
+                    <im>0.101253389688888</im>
                   </elem>
                   <elem>
-                    <re>0.195371</re>
-                    <im>0.105264</im>
+                    <re>0.224824317033684</re>
+                    <im>0.088396780260761</im>
                   </elem>
                   <elem>
-                    <re>-0.0388252</re>
-                    <im>-0.0225305</im>
+                    <re>-0.0438834232093844</re>
+                    <im>0.134187221391282</im>
                   </elem>
                 </poly_loop>
               </PolyakovLoop>
@@ -175,11 +278,11 @@
                   <wloop1>
                     <elem>
                       <r>0</r>
-                      <loop>0.466131 0.337887</loop>
+                      <loop>0.442234002023017 0.314950145588631</loop>
                     </elem>
                     <elem>
                       <r>1</r>
-                      <loop>0.332372 0.223961</loop>
+                      <loop>0.318996130169075 0.213404407450677</loop>
                     </elem>
                   </wloop1>
                 </wils_loop1>
@@ -189,11 +292,11 @@
                   <wloop2>
                     <elem>
                       <r>0</r>
-                      <loop>0.509385 0.350886 0.232567 0.1351</loop>
+                      <loop>0.503043084508843 0.340416840807949 0.221287094599878 0.129606113432803</loop>
                     </elem>
                     <elem>
                       <r>1</r>
-                      <loop>0.419645 0.256602 0.155019 0.0811015</loop>
+                      <loop>0.408677983256186 0.24028811338293 0.135789710549741 0.0684156465083813</loop>
                     </elem>
                   </wloop2>
                 </wils_loop2>
@@ -204,23 +307,23 @@
                   <wloop3>
                     <elem>
                       <r>0</r>
-                      <loop>0.393966 0.261816 0.166799 0.0937907</loop>
+                      <loop>0.374954472748666 0.241616929871573 0.151010074740447 0.0856941650272347</loop>
                     </elem>
                     <elem>
                       <r>1</r>
-                      <loop>0.253041 0.141282 0.0776307 0.0374446</loop>
+                      <loop>0.229839313744984 0.120671380107524 0.0640768530117081 0.0293502167666399</loop>
                     </elem>
                     <elem>
                       <r>2</r>
-                      <loop>0.303549 0.185517 0.109619 0.0563841</loop>
+                      <loop>0.286326123820294 0.165356790212981 0.0930929929087748 0.0462966625477242</loop>
                     </elem>
                     <elem>
                       <r>3</r>
-                      <loop>0.296097 0.194614 0.120506 0.0657199</loop>
+                      <loop>0.270738735700434 0.171521115999591 0.104087504306032 0.0571459506897251</loop>
                     </elem>
                     <elem>
                       <r>4</r>
-                      <loop>0.142314 0.0768032 0.0404055 0.0197265</loop>
+                      <loop>0.120225026413512 0.0612489306106075 0.0305763716669389 0.0140507010275239</loop>
                     </elem>
                   </wloop3>
                 </wils_loop3>
