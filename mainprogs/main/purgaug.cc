@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.3 2006-04-22 21:35:14 edwards Exp $
+// $Id: purgaug.cc,v 3.4 2006-08-17 01:47:42 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -55,7 +55,7 @@ namespace Chroma
     catch(const std::string& e ) { 
       QDPIO::cerr << "Caught Exception reading HBParams: " << e << endl;
       QDP_abort(1);
-     }
+    }
   }
 
   //! Writer
@@ -95,6 +95,9 @@ namespace Chroma
       read(paramtop, "./SaveInterval", p.save_interval);
       read(paramtop, "./SavePrefix", p.save_prefix);
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
+
+      if (p.n_updates_this_run % p.save_interval != 0)
+	throw string("UpdateThisRun not a multiple of SaveInterval");
     }
     catch(const std::string& e ) { 
       QDPIO::cerr << "Caught Exception reading MCControl: " << e << endl;
@@ -228,9 +231,11 @@ namespace Chroma
     // Set the current traj number
     p_new.start_update_num = update_no;
     
+    // Reset the warmups
+    p_new.n_warm_up_updates = 0;
+    
     // Set the num_updates_this_run
-    unsigned long total = mc_control.n_warm_up_updates 
-      + mc_control.n_production_updates ;
+    unsigned long total = mc_control.n_production_updates;
 
     if ( total < mc_control.n_updates_this_run + update_no ) { 
       p_new.n_updates_this_run = total - update_no;
@@ -247,7 +252,6 @@ namespace Chroma
   void saveState(const HBItrParams& update_params, 
 		 MCControl& mc_control,
 		 unsigned long update_no,
-		 bool  checkpoint,
 		 const string& inline_measurement_xml,
 		 const multi1d<LatticeColorMatrix>& u)
   {
@@ -257,16 +261,9 @@ namespace Chroma
     std::ostringstream restart_data_filename;
     std::ostringstream restart_config_filename;
 
-    if (checkpoint)
-    {
-      restart_data_filename << mc_control.save_prefix << "_restart_" << update_no << ".xml";
-      restart_config_filename << mc_control.save_prefix << "_restart_" << update_no << ".lime";
-    }
-    else
-    {
-      restart_data_filename << mc_control.save_prefix << ".ini.xml" << update_no;
-      restart_config_filename << mc_control.save_prefix << ".lime" << update_no;
-    }
+    unsigned long save_num = update_no / mc_control.save_interval;
+    restart_data_filename << mc_control.save_prefix << ".ini.xml" << save_num;
+    restart_config_filename << mc_control.save_prefix << ".lime" << save_num;
     
     {
       HBControl hb;
@@ -311,10 +308,184 @@ namespace Chroma
     }
   }
 
+
   //--------------------------------------------------------------------------
- 
+  void doMeas(XMLWriter& xml_out,
+	      multi1d<LatticeColorMatrix>& u,
+	      HBControl& hb_control, 
+	      bool warm_up_p,
+	      unsigned long cur_update,
+	      const multi1d< Handle< AbsInlineMeasurement > >& default_measurements,
+	      const multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
+  {
+    // Create a gauge header for inline measurements.
+    // Since there are defaults always measured, we must always
+    // create a header.
+    //
+    // NOTE: THIS HEADER STUFF NEEDS A LOT MORE THOUGHT
+    //
+    MCControl mc_new = newMCHeader(hb_control.hbitr_params, hb_control.mc_control, cur_update);
+
+    XMLBufferWriter gauge_xml;
+    push(gauge_xml, "ChromaHB");
+    write(gauge_xml, "MCControl", mc_new);
+    write(gauge_xml, "HBItr", hb_control.hbitr_params);
+    pop(gauge_xml);
+
+    // Reset and set the default gauge field
+    InlineDefaultGaugeField::reset();
+    InlineDefaultGaugeField::set(u, gauge_xml);
+
+    // Measure inline observables 
+    push(xml_out, "InlineObservables");
+
+    // Always measure defaults
+    for(int m=0; m < default_measurements.size(); m++) 
+    {
+      // Caller writes elem rule 
+      AbsInlineMeasurement& the_meas = *(default_measurements[m]);
+      push(xml_out, "elem");
+      the_meas(cur_update, xml_out);
+      pop(xml_out);
+    }
+	
+    // Only measure user measurements after warm up
+    if( ! warm_up_p ) 
+    {
+      QDPIO::cout << "Doing " << user_measurements.size() 
+		  <<" user measurements" << endl;
+      for(int m=0; m < user_measurements.size(); m++) 
+      {
+	AbsInlineMeasurement& the_meas = *(user_measurements[m]);
+	if( cur_update % the_meas.getFrequency() == 0 ) 
+	{ 
+	  // Caller writes elem rule
+	  push(xml_out, "elem");
+	  the_meas(cur_update, xml_out );
+	  pop(xml_out); 
+	}
+      }
+    }
+    pop(xml_out); // pop("InlineObservables");
+
+    // Reset the default gauge field
+    InlineDefaultGaugeField::reset();
+  }
+  
 
 
+  //--------------------------------------------------------------------------
+  void doWarmUp(XMLWriter& xml_out,
+		multi1d<LatticeColorMatrix>& u,
+		const WilsonGaugeAct& S_g,
+		HBControl& hb_control,
+		const multi1d< Handle< AbsInlineMeasurement > >& default_measurements,
+		const multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
+  {
+    // Set the update number
+    unsigned long cur_update = 0;
+      
+    // Compute how many updates to do
+    unsigned long to_do = hb_control.mc_control.n_warm_up_updates;
+      
+    QDPIO::cout << "WarmUp Control: About to do " << to_do << " updates" << endl;
+
+    // XML Output
+    push(xml_out, "WarmUpdates");
+
+    for(int i=0; i < to_do; i++) 
+    {
+      push(xml_out, "elem"); // Caller writes elem rule
+
+      push(xml_out, "Update");
+      // Increase current update counter
+      cur_update++;
+	
+      // Log
+      write(xml_out, "update_no", cur_update);
+      write(xml_out, "WarmUpP", true);
+
+      // Do the update, but with no measurements
+      mciter(u, S_g, hb_control.hbitr_params.hb_params); //one hb sweep
+
+      // Do measurements
+      doMeas(xml_out, u, hb_control, true, cur_update,
+	     default_measurements, user_measurements);
+
+      pop(xml_out); // pop("Update");
+      pop(xml_out); // pop("elem");
+    }
+
+    pop(xml_out); // pop("WarmUpdates")
+  }
+  
+
+  //--------------------------------------------------------------------------
+  void doProd(XMLWriter& xml_out,
+	      multi1d<LatticeColorMatrix>& u,
+	      const WilsonGaugeAct& S_g,
+	      HBControl& hb_control, 
+	      const multi1d< Handle< AbsInlineMeasurement > >& default_measurements,
+	      const multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
+  {
+    // Set the update number
+    unsigned long cur_update = hb_control.mc_control.start_update_num;
+      
+    // Compute how many updates to do
+    unsigned long total_updates = hb_control.mc_control.n_production_updates;
+      
+    unsigned long to_do = 0;
+    if ( total_updates > hb_control.mc_control.n_updates_this_run + cur_update +1 ) {
+      to_do = hb_control.mc_control.n_updates_this_run;
+    }
+    else {
+      to_do = total_updates - cur_update ;
+    }
+      
+    QDPIO::cout << "MC Control: About to do " << to_do << " updates" << endl;
+
+    // XML Output
+    push(xml_out, "MCUpdates");
+
+    for(int i=0; i < to_do; i++) 
+    {
+      push(xml_out, "elem"); // Caller writes elem rule
+
+      push(xml_out, "Update");
+      // Increase current update counter
+      cur_update++;
+	
+      // Decide if the next update is a warm up or not
+      QDPIO::cout << "Doing Update: " << cur_update << " warm_up_p = " << false << endl;
+
+      // Log
+      write(xml_out, "update_no", cur_update);
+      write(xml_out, "WarmUpP", false);
+
+      // Do the update
+      mciter(u, S_g, hb_control.hbitr_params.hb_params); //one hb sweep
+
+      // Do measurements
+      doMeas(xml_out, u, hb_control, false, cur_update,
+	     default_measurements, user_measurements);
+
+      // Save if needed
+      if( cur_update % hb_control.mc_control.save_interval == 0 ) 
+      {
+	saveState(hb_control.hbitr_params, hb_control.mc_control, 
+		  cur_update,
+		  hb_control.inline_measurement_xml, u);
+      }
+
+      pop(xml_out); // pop("Update");
+      pop(xml_out); // pop("elem");
+    }
+
+    pop(xml_out); // pop("MCUpdates")
+  }
+  
+
+  //--------------------------------------------------------------------------
   void doHB(multi1d<LatticeColorMatrix>& u,
 	    const WilsonGaugeAct& S_g,
 	    HBControl& hb_control, 
@@ -334,134 +505,15 @@ namespace Chroma
       // Initialise the RNG
       QDP::RNG::setrn(hb_control.mc_control.rng_seed);
       
-      // Set the update number
-      unsigned long cur_update = hb_control.mc_control.start_update_num;
-      
-      // Compute how many updates to do
-      unsigned long total_updates = hb_control.mc_control.n_warm_up_updates
-	+ hb_control.mc_control.n_production_updates;
-      
-      unsigned long to_do = 0;
-      if ( total_updates > hb_control.mc_control.n_updates_this_run + cur_update +1 ) {
-	to_do = hb_control.mc_control.n_updates_this_run;
-      }
-      else {
-	to_do = total_updates - cur_update ;
-      }
-      
-      QDPIO::cout << "MC Control: About to do " << to_do << " updates" << endl;
-
-      // XML Output
-      push(xml_out, "MCUpdates");
-
-      for(int i=0; i < to_do; i++) 
+      // If warmups are required, do them first
+      if (hb_control.mc_control.n_warm_up_updates > 0)
       {
-	push(xml_out, "elem"); // Caller writes elem rule
-
-	push(xml_out, "Update");
-	// Increase current update counter
-	cur_update++;
-	
- 	// Decide if the next update is a warm up or not
-	bool warm_up_p = cur_update  <= hb_control.mc_control.n_warm_up_updates;
-	QDPIO::cout << "Doing Update: " << cur_update << " warm_up_p = " << warm_up_p << endl;
-
-	// Log
-	write(xml_out, "update_no", cur_update);
-	write(xml_out, "WarmUpP", warm_up_p);
-
-	// Do the trajectory without accepting 
-//	theHBItr( u, warm_up_p );
-	mciter(u, S_g, hb_control.hbitr_params.hb_params); //one hb sweep
-
-
-	// Create a gauge header for inline measurements.
-	// Since there are defaults always measured, we must always
-	// create a header.
-	//
-	// NOTE: THIS HEADER STUFF NEEDS A LOT MORE THOUGHT
-	//
-	{
-	  MCControl mc_new = newMCHeader(hb_control.hbitr_params, hb_control.mc_control, cur_update);
-
-	  XMLBufferWriter gauge_xml;
-	  push(gauge_xml, "ChromaHB");
-	  write(gauge_xml, "MCControl", mc_new);
-	  write(gauge_xml, "HBItr", hb_control.hbitr_params);
-	  pop(gauge_xml);
-
-	  // Reset and set the default gauge field
-	  InlineDefaultGaugeField::reset();
-	  InlineDefaultGaugeField::set(u, gauge_xml);
-
-	  // Measure inline observables 
-	  push(xml_out, "InlineObservables");
-
-	  // Always measure defaults
-	  for(int m=0; m < default_measurements.size(); m++) 
-	  {
-	    // Caller writes elem rule 
-	    AbsInlineMeasurement& the_meas = *(default_measurements[m]);
-	    push(xml_out, "elem");
-	    the_meas(cur_update, xml_out);
-	    pop(xml_out);
-	  }
-	
-	  // Only measure user measurements after warm up
-	  if( ! warm_up_p ) 
-	  {
-	    QDPIO::cout << "Doing " << user_measurements.size() 
-			<<" user measurements" << endl;
-	    for(int m=0; m < user_measurements.size(); m++) 
-	    {
-	      AbsInlineMeasurement& the_meas = *(user_measurements[m]);
-	      if( cur_update % the_meas.getFrequency() == 0 ) 
-	      { 
-		// Caller writes elem rule
-		push(xml_out, "elem");
-		the_meas(cur_update, xml_out );
-		pop(xml_out); 
-	      }
-	    }
-	  }
-	  pop(xml_out); // pop("InlineObservables");
-
-	  // Reset the default gauge field
-	  InlineDefaultGaugeField::reset();
-	}
-
-	if( cur_update % hb_control.mc_control.save_interval == 0 ) 
-	{
-	  bool checkpoint;
-	  unsigned long save_num;
-	  
-	  if (warm_up_p)
-	  {
-	    checkpoint = true;
-	    save_num = cur_update;
-	  }
-	  else
-	  {
-	    checkpoint = false;
-	    save_num = cur_update / hb_control.mc_control.save_interval;
-	  }
-
-	  // Save state
-	  saveState(hb_control.hbitr_params, hb_control.mc_control, 
-		    save_num, checkpoint, 
-		    hb_control.inline_measurement_xml, u);
-	}
-
-	pop(xml_out); // pop("Update");
-	pop(xml_out); // pop("elem");
+	doWarmUp(xml_out, u, S_g, hb_control, default_measurements, user_measurements);
+	hb_control.mc_control.n_warm_up_updates = 0;  // reset
       }
-      
-      // Save state
-      saveState(hb_control.hbitr_params, hb_control.mc_control, 
-		cur_update, true, 
-		hb_control.inline_measurement_xml, u);
-      
-      pop(xml_out); // pop("MCUpdates")
+
+      // Do the production updates
+      doProd(xml_out, u, S_g, hb_control, default_measurements, user_measurements);
     }
     catch( const std::string& e) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
