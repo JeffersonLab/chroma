@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.8 2006-08-16 17:10:27 bjoo Exp $
+// $Id: stout_fermstate_w.h,v 1.9 2006-08-17 20:45:33 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -23,7 +23,12 @@ namespace Chroma
     extern const std::string name;
     extern const bool registered;
   }
-
+  
+  namespace StoutLinkTimings { 
+    double getForceTime();
+    double getSmearingTime();
+    double getFunctionsTime();
+  };
 
   //! Stout field state
   /*! @ingroup fermacts
@@ -81,33 +86,21 @@ namespace Chroma
        and this thing can be pulled out into the dsdq methods.
        For now, the default behaviour is to recurse the force down 
        here but I am planning ahead to a refactor. */
-    virtual void deriv(multi1d<LatticeColorMatrix>& F) const {
+    virtual void deriv(multi1d<LatticeColorMatrix>& F) const;
 
-      multi1d<LatticeColorMatrix> F_tmp(Nd);
-      // Function resizes F_tmp
-      fatForceToThin(F,F_tmp);
-
-
-      // Multiply in by the final U term to close off the links
-      for(int mu=0; mu < Nd; mu++) { 
-	F[mu] = (smeared_links[0])[mu]*F_tmp[mu];
-      }
-    }
-
+   
     //! given field U, construct the staples into C, form Q and Q^2 and compute
     //  c0 and c1
     void getQsandCs(const multi1d<LatticeColorMatrix>& u, 
 		    LatticeColorMatrix& Q, 
 		    LatticeColorMatrix& QQ,
 		    LatticeColorMatrix& C, 
-		    LatticeDouble& c0,
-		    LatticeDouble& c1,
 		    int mu) const;
 
     //! Given c0 and c1 compute the f-s and b-s
     //! Only compute b-s if do_bs is set to true (default)
-    void getFsAndBs(const LatticeDouble& c0,
-		    const LatticeDouble& c1,
+    void getFsAndBs(const LatticeColorMatrix& Q,
+		    const LatticeColorMatrix& QQ,
 		    multi1d<LatticeDComplex>& f,
 		    multi1d<LatticeDComplex>& b1,
 		    multi1d<LatticeDComplex>& b2,

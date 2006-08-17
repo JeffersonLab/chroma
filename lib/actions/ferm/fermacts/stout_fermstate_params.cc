@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_params.cc,v 1.4 2006-08-07 18:13:28 edwards Exp $
+// $Id: stout_fermstate_params.cc,v 1.5 2006-08-17 20:45:33 bjoo Exp $
 
 #include "actions/ferm/fermacts/stout_fermstate_params.h"
 
@@ -65,6 +65,8 @@ namespace Chroma
       
       // Mask out the orthog dir
       if( mu == orthog_dir ) {  // Direction is same as orthog dir
+
+	// Mask out with zeros
 	smear_in_this_dirP[mu]=false;
       }
       else 
