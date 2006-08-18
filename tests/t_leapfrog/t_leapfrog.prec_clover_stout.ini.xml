@@ -27,7 +27,7 @@
             <decay_dir>3</decay_dir>
             <theta>0 0 0</theta>
           </FermionBC>
-
+          </FermState>
 	  <ChronologicalPredictor>
 	    <Name>ZERO_SOLUTION_4D_PREDICTOR</Name>
 	  </ChronologicalPredictor>
@@ -38,11 +38,11 @@
    </Hamiltonian>
    <MDIntegrator>
 	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<n_steps>80</n_steps>
+	<n_steps>5</n_steps>
 	<tau0>1</tau0>
    </MDIntegrator>
    <GaugeStartup>
-	<cfg_type>WEAK_FIELD</cfg_type>
+	<cfg_type>DISORDERED</cfg_type>
 	<cfg_file>DUMMY</cfg_file>
    </GaugeStartup>
    <nrow>4 4 4 4</nrow>
