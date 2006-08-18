@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.8 2006-07-21 02:33:50 edwards Exp $
+#  $Id: regres.pl,v 3.9 2006-08-18 21:50:19 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -208,5 +208,21 @@
 	 output      => "t_leapfrog.aniso_spectrum.candidate.xml",
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.aniso_spectrum.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.aniso_spectrum.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.fixed_X_action_stout.ini.xml" , 
+	 output      => "t_leapfrog.fixed_X_action_stout.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.fixed_X_action_stout.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.fixed_X_action_stout.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout.ini.xml" , 
+	 output      => "t_leapfrog.prec_clover_stout.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout.out.xml" ,
      },
      );
