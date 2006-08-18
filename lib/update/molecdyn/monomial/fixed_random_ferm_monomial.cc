@@ -59,11 +59,21 @@ namespace Chroma {
     F = X;
     
     state->deriv(F);
-     
+
+    XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+
+    push(xml_out, "FixedRandomFermMonomial4D"); 
+    Double F_sq = norm2(F);
+    write(xml_out, "F_sq", F_sq);
+    pop(xml_out);
+
   }
 
   Double  FixedRandomFermMonomial4D::S(const AbsFieldState<P,Q>& s)
   {
+    XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+    push(xml_out, "FixedRandomFermMonomial4D");
+
     Handle< StoutFermState > state = (*cfs)(s.getQ()); // Create a 
     const Q& u = state->getLinks();
     
@@ -71,8 +81,11 @@ namespace Chroma {
     for(int mu=1; mu < Nd; mu++) { 
       ret_val += sum(real(trace(u[mu]*X[mu])));
     }
-    
-    return Double(2)*ret_val;
+    ret_val *= Double(2);
+    write(xml_out, "S", ret_val);
+    pop(xml_out);
+
+    return ret_val;
   }
 
 };
