@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 3.2 2006-08-15 13:17:24 bjoo Exp $
+// $Id: prec_wilson_fermact_w.cc,v 3.3 2006-08-18 21:16:59 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -13,7 +13,6 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"
 
-#include "actions/ferm/fermacts/stout_fermstate_w.h"
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 namespace Chroma
