@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.9 2006-08-17 20:45:33 bjoo Exp $
+// $Id: stout_fermstate_w.cc,v 1.10 2006-08-18 20:17:22 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -122,133 +122,164 @@ namespace Chroma
       Boolean c0_negativeP = c0 < Double(0);
       Double c0abs = fabs(c0);
       Double c0max = Double(2)*pow( c1/Double(3), Double(1.5));
-    
 
       Double theta;
-      Boolean c0max_is_zeroP  =( c0max == 0 );
-
-      theta = acos( c0abs/c0max );
-      
-
-      Double u = sqrt(c1/Double(3))*cos(theta/Double(3));
-      Double w = sqrt(c1)*sin(theta/Double(3));
-    
-      Double u_sq = u*u;
-      Double w_sq = w*w;
-    
-      Double xi0,xi1;
-      {
-	Boolean w_smallP  = fabs(w) < Double(0.05);
-	if( toBool( w_smallP ) ) { 
-	  xi0 = Double(1) - (Double(1)/Double(6))*w_sq*(Double(1) - (Double(1)/Double(20))*w_sq*(Double(1) - (Double(1)/Double(42))*w_sq));
-	}
-	else {
-	  xi0 = sin(w)/w;
-	}
-
-	if( dobs==true) {
-
-	  if( toBool( w_smallP ) ) { 
-	    xi1 = Double(-1)*((Double(1)/Double(3)) - ( Double(1)/Double(30) )*w_sq*(Double(1) - (Double(1)/Double(28))*w_sq*(Double(1)- (Double(1)/Double(54))*w_sq)));
-	  }
-	  else { 
-	    xi1 = cos(w)/w_sq - sin(w)/(w_sq*w);
-	  }
-	}
-      }
-      
-    
-      Double cosu = cos(u);
-      Double sinu = sin(u);
-      Double cosw = cos(w);
-      Double sinw = sin(w);
-      Double sin2u = sin(2*u);
-      Double cos2u = cos(2*u);
-
-    // exp(2iu) and exp(-iu)
-    //LatticeDComplex exp2iu = cmplx(( 2*cosu*cosu - 1), 2*cosu*sinu);
-      DComplex exp2iu = cmplx( cos2u, sin2u );
-      DComplex expmiu = cmplx(cosu, -sinu);
-
-      Double denum = 9*u_sq - w_sq;
-      
       multi1d<DComplex> f_site(3);
+      multi1d<DComplex> b1_site(3);
+      multi1d<DComplex> b2_site(3);
 
-      // f_i = f_i(c0, c1). Expand f_i by c1, if c1 is small.
-      f_site[0] = ((u_sq - w_sq) * exp2iu + expmiu * cmplx(8*u_sq*cosw, 2*u*(3*u_sq+w_sq)*xi0))/denum;
-      
-      
-      f_site[1] = (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (w_sq-3*u_sq)*xi0))/denum;
-      
-      f_site[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denum;
+      // Here we have the case that c0max is close to 0
+      // and we run the risk of trouble since it means u=0 and w=0
+      // and so the denominator pieces in both the acos, the f-s and 
+      // the b-s can cause NaN's to appear. The cutoff is arbitrary
+      // but I think 1.0e-6 is not unreasonable. 
+      Boolean c0max_too_small = ( fabs(c0max) < 1.0e-12 );
+      if ( toBool( c0max_too_small ) ) {
 
+	// c0max is too small case:
+	// 
+	// Essentially this means that the tr(Q) = tr(Q^2) = tr(Q^3) = 0
+	// This can happen only if Q is 0. Which can happen if U is entirely
+	// real or 0. Then Omega = real and has no antihermitean part or 0,
+	// so Q=0. This can arise if rho(mu,nu)=0 (ie no smearing in one 
+	// direction) or if we have a unit gauge. In all these cases
+	// exp(iQ) = 1 and Fat_force = thin_force
+	f_site[0] = Double(1);
+	f_site[1] = Double(0);
+	f_site[2] = Double(0);
 
-      if( dobs == true ) {
-	
-	multi1d<DComplex> r_1(3);
-	multi1d<DComplex> r_2(3);
-      
-	r_1[0]=Double(2)*cmplx(u, u_sq-w_sq)*exp2iu
-	  + 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*u_sq*cosw)
-			 + cmplx(u*(3.0*u_sq+w_sq),9.0*u_sq+w_sq)*xi0 );
-	
-	r_1[1]=cmplx(2.0, 4.0*u)*exp2iu
-	  + expmiu*cmplx(-2.0*cosw-(w_sq-3.0*u_sq)*xi0,
-			 2.0*u*cosw+6.0*u*xi0);
-	
-	r_1[2]=2.0*timesI(exp2iu)
-	  +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
-	
-	
-	r_2[0]=-2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*u_sq*xi1,
-						       4*u*xi0);
-	
-	r_2[1]= expmiu*cmplx(cosw+xi0-3.0*u_sq*xi1, 2.0*u*xi0);
-	r_2[1] = timesMinusI(r_2[1]);
-	
-	r_2[2]=expmiu*cmplx(xi0, -3.0*u*xi1);
-    
-	multi1d<DComplex> b1_site(3);
-	multi1d<DComplex> b2_site(3);
-
-      
-	Double b_denum=2.0*(9.0*u_sq -w_sq)*(9.0*u_sq-w_sq);
-      
 	for(int j=0; j < 3; j++) { 
-	
-	  // This has to be a little more careful	
-	  b1_site[j]=( 2.0*u*r_1[j]+(3.0*u_sq-w_sq)*r_2[j]-2.0*(15.0*u_sq+w_sq)*f_site[j] )/b_denum;
-	  b2_site[j]=( r_1[j]-3.0*u*r_2[j]-24.0*u*f_site[j] )/b_denum;
-		
+	  f[j].elem(site).elem().elem() = f_site[j].elem().elem().elem();
 	}
-      
+
+	if( dobs ) { 
+	  for(int j=0; j < 3; j++) { 
+	    b1_site[j] = Double(0);
+	    b2_site[j] = Double(0);
+	    b1[j].elem(site).elem().elem()  = b1_site[j].elem().elem().elem(); 
+	    b2[j].elem(site).elem().elem() = b2_site[j].elem().elem().elem();
+	  }
+	}
+      }
+      else { 
+	
+	theta = acos( c0abs/c0max );
+	
+	Double u = sqrt(c1/Double(3))*cos(theta/Double(3));
+	Double w = sqrt(c1)*sin(theta/Double(3));
+	
+	Double u_sq = u*u;
+	Double w_sq = w*w;
+	
+	Double xi0,xi1;
+	{
+	  Boolean w_smallP  = fabs(w) < Double(0.05);
+	  if( toBool( w_smallP ) ) { 
+	    xi0 = Double(1) - (Double(1)/Double(6))*w_sq*(Double(1) - (Double(1)/Double(20))*w_sq*(Double(1) - (Double(1)/Double(42))*w_sq));
+	  }
+	  else {
+	    xi0 = sin(w)/w;
+	  }
+	  
+	  if( dobs==true) {
+	    
+	    if( toBool( w_smallP ) ) { 
+	      xi1 = Double(-1)*((Double(1)/Double(3)) - ( Double(1)/Double(30) )*w_sq*(Double(1) - (Double(1)/Double(28))*w_sq*(Double(1)- (Double(1)/Double(54))*w_sq)));
+	    }
+	    else { 
+	      xi1 = cos(w)/w_sq - sin(w)/(w_sq*w);
+	    }
+	  }
+	}
+	
+	Double cosu = cos(u);
+	Double sinu = sin(u);
+	Double cosw = cos(w);
+	Double sinw = sin(w);
+	Double sin2u = sin(2*u);
+	Double cos2u = cos(2*u);
+	
+	// exp(2iu) and exp(-iu)
+	//LatticeDComplex exp2iu = cmplx(( 2*cosu*cosu - 1), 2*cosu*sinu);
+	DComplex exp2iu = cmplx( cos2u, sin2u );
+	DComplex expmiu = cmplx(cosu, -sinu);
+	
+	Double denum = 9*u_sq - w_sq;
+	
+	
+	
+	// f_i = f_i(c0, c1). Expand f_i by c1, if c1 is small.
+	f_site[0] = ((u_sq - w_sq) * exp2iu + expmiu * cmplx(8*u_sq*cosw, 2*u*(3*u_sq+w_sq)*xi0))/denum;
+	
+	
+	f_site[1] = (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (w_sq-3*u_sq)*xi0))/denum;
+	
+	f_site[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denum;
+	
+	
+	if( dobs == true ) {
+	  
+	  multi1d<DComplex> r_1(3);
+	  multi1d<DComplex> r_2(3);
+	  
+	  r_1[0]=Double(2)*cmplx(u, u_sq-w_sq)*exp2iu
+	    + 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*u_sq*cosw)
+			   + cmplx(u*(3.0*u_sq+w_sq),9.0*u_sq+w_sq)*xi0 );
+	  
+	  r_1[1]=cmplx(2.0, 4.0*u)*exp2iu
+	    + expmiu*cmplx(-2.0*cosw-(w_sq-3.0*u_sq)*xi0,
+			   2.0*u*cosw+6.0*u*xi0);
+	  
+	  r_1[2]=2.0*timesI(exp2iu)
+	    +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
+	  
+	  
+	  r_2[0]=-2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*u_sq*xi1,
+							 4*u*xi0);
+	  
+	  r_2[1]= expmiu*cmplx(cosw+xi0-3.0*u_sq*xi1, 2.0*u*xi0);
+	  r_2[1] = timesMinusI(r_2[1]);
+	  
+	  r_2[2]=expmiu*cmplx(xi0, -3.0*u*xi1);
+	  
+	  
+	  Double b_denum=2.0*(9.0*u_sq -w_sq)*(9.0*u_sq-w_sq);
+	  
+	  for(int j=0; j < 3; j++) { 
+	    
+	    // This has to be a little more careful	
+	    b1_site[j]=( 2.0*u*r_1[j]+(3.0*u_sq-w_sq)*r_2[j]-2.0*(15.0*u_sq+w_sq)*f_site[j] )/b_denum;
+	    b2_site[j]=( r_1[j]-3.0*u*r_2[j]-24.0*u*f_site[j] )/b_denum;
+	    
+	  }
+	  
+	  if( toBool(c0_negativeP) ) { 
+	    b1_site[0] = conj(b1_site[0]);
+	    b1_site[1] = -conj(b1_site[1]);
+	    b1_site[2] = conj(b1_site[2]);
+	    b2_site[0] = -conj(b2_site[0]);
+	    b2_site[1] = conj(b2_site[1]);
+	    b2_site[2] = -conj(b2_site[2]);
+	  }
+	  
+	  for(int j=0; j < 3; j++) { 
+	    b1[j].elem(site).elem().elem()  = b1_site[j].elem().elem().elem();	  
+	    b2[j].elem(site).elem().elem() = b2_site[j].elem().elem().elem();
+	  }
+	  
+	}
+	
 	if( toBool(c0_negativeP) ) { 
-	  b1_site[0] = conj(b1_site[0]);
-	  b1_site[1] = -conj(b1_site[1]);
-	  b1_site[2] = conj(b1_site[2]);
-	  b2_site[0] = -conj(b2_site[0]);
-	  b2_site[1] = conj(b2_site[1]);
-	  b2_site[2] = -conj(b2_site[2]);
+	  f_site[0] = conj(f_site[0]);
+	  f_site[1] = -conj(f_site[1]);
+	  f_site[2] = conj(f_site[2]);
 	}
 
 	for(int j=0; j < 3; j++) { 
-	  b1[j].elem(site).elem().elem()  = b1_site[j].elem().elem().elem();	  
-	  b2[j].elem(site).elem().elem() = b2_site[j].elem().elem().elem();
+	  f[j].elem(site).elem().elem() = f_site[j].elem().elem().elem();
 	}
-
-      }
-
-      if( toBool(c0_negativeP) ) { 
-	f_site[0] = conj(f_site[0]);
-	f_site[1] = -conj(f_site[1]);
-	f_site[2] = conj(f_site[2]);
-      }
-
-      for(int j=0; j < 3; j++) { 
-	f[j].elem(site).elem().elem() = f_site[j].elem().elem().elem();
-      }
+      } // End of if ( c0max_too_small ) else {}
     }
-    
     swatch.stop();
     StoutLinkTimings::functions_secs += swatch.getTimeInSeconds();
     END_CODE();
