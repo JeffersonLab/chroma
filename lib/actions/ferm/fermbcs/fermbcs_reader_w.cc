@@ -1,4 +1,4 @@
-// $Id: fermbcs_reader_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: fermbcs_reader_w.cc,v 3.1 2006-08-18 15:52:43 edwards Exp $
 /*! \file
  *  \brief Fermionic BC reader
  */

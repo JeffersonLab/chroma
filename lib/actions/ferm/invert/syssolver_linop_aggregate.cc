@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.2 2006-08-18 15:52:43 edwards Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */

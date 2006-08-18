@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.5 2006-07-21 18:39:11 bjoo Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.6 2006-08-18 15:53:14 edwards Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */

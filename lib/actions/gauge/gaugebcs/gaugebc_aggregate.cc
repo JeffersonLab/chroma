@@ -1,4 +1,4 @@
-// $Id: gaugebc_aggregate.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: gaugebc_aggregate.cc,v 3.1 2006-08-18 15:53:14 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */
