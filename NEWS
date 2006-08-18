@@ -1,9 +1,12 @@
+08/17/2006 -- Balint Joo
+	Version 3.10.4. Fixed stout fermstate to support smear_dir.
+        New form of purgaug input/output.
+	
 08/15/2006 -- Balint Joo
 	Version 3.10.3. Stout Fermstate rides. Reinterpret nontrivialP() flag to mean
 	underlying gauge boundaries are trivial in FermBC-s only (ie still old meaning
 	in GaugeBC-s for now). Stout Fermstate tested for SF, periodic, antiperiodic, 
 	and Dirichlet fermion BCs. Twisted Ferm BC_s are not expected to work.
-
 	
 07/27/2006 -- Balint Joo
 	Version 3.10.2. Patches to SSE DWF CG to support double-prec sums.
