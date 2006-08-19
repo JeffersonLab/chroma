@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
-      <qdp>1.20.5</qdp>
+      <chroma>3.11.0</chroma>
+      <qdp>1.20.9</qdp>
     </code_version>
-    <run_date>10 Jun 06 20:41:40 EDT</run_date>
+    <run_date>19 Aug 06 03:44:37 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -47,10 +47,10 @@
 
   </Config_info>
   <Observables>
-    <ave_plaq>0.994737</ave_plaq>
-    <ave_spacelike_plaq>0.994879</ave_spacelike_plaq>
-    <ave_timelike_plaq>0.994595</ave_timelike_plaq>
-    <ave_link_trace>0.379316</ave_link_trace>
+    <ave_plaq>0.994737201137468</ave_plaq>
+    <ave_spacelike_plaq>0.994879270438105</ave_spacelike_plaq>
+    <ave_timelike_plaq>0.994595131836832</ave_timelike_plaq>
+    <ave_link_trace>0.379315779769968</ave_link_trace>
   </Observables>
   <ForwardProp>
     <FrwdPropId>nprop_1</FrwdPropId>
@@ -81,11 +81,8 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -116,7 +113,7 @@
     </Propagator>
 
     </FrwdPropRecordXML>
-    <FrwdPropCheck>0 0 0 0 0 0 0 0</FrwdPropCheck>
+    <FrwdPropCheck>43.4014818628661 2.11952973669689 0.4206566073077 0.138716794220212 0.0531565680781847 0.0210718466886981 0.00843050671376195 0.00338871581700247</FrwdPropCheck>
   </ForwardProp>
   <NoisySource>
     <NoisySrcId>nsrc_1</NoisySrcId>
@@ -152,6 +149,6 @@
     </MakeSource>
 
     </NoisySrcRecordXML>
-    <NoisySrcCheck>768 0 0 0 0 0 0 0</NoisySrcCheck>
+    <NoisySrcCheck>767.999973712481 0 0 0 0 0 0 0</NoisySrcCheck>
   </NoisySource>
 </ExampleBuildingBlocks>

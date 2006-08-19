@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.3 2006-08-19 19:29:33 flemingg Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -366,7 +366,7 @@ namespace Chroma
 
     // Derived from input prop
     int j_decay = source_header[0].j_decay;
-    //multi1d<int> t_source = source_header[0].t_source;
+    multi1d<int> t_srce = source_header[0].getTSrce();
     //int t0     = t_source[j_decay];
     int t_source = source_header[0].t_source;
     int t0 = t_source ;
@@ -389,7 +389,7 @@ namespace Chroma
   
 
     // phases with  momenta
-    SftMom phases(params.param.max_p2, false, j_decay);
+    SftMom phases(params.param.max_p2, t_srce, false, j_decay);
     
     
     push(xml_out,"Propagator_info") ;

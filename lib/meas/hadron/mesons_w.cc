@@ -1,6 +1,21 @@
-//  $Id: mesons_w.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
+//  $Id: mesons_w.cc,v 3.1 2006-08-19 19:29:33 flemingg Exp $
 //  $Log: mesons_w.cc,v $
-//  Revision 3.0  2006-04-03 04:59:00  edwards
+//  Revision 3.1  2006-08-19 19:29:33  flemingg
+//  Changed the interface of the slow Fourier transform (SftMom) class to allow
+//  for any lattice point to be chosen as the spatial origin.  Previously, this
+//  meant that the origin was always implicitly (0,0,0,0), which lead to
+//  various phase problems.  One example is 2pt correlation functions between a
+//  point source not at the origin and a sink at non-zero momentum: the overall
+//  phase depends upon the location of the source.  Using the new interface,
+//  the phase can be made independent of the location of the source by choosing
+//  the origin of the Fourier transform to be the location of the source.
+//  Several things remain to be fixed:
+//    (1) sequential sources at non-zero sink momentum,
+//    (2) building blocks with link paths which cross boundaries,
+//    (3) baryonic sequential sources where t_source > t_sink,
+//        i.e. the boundary is between the source and sink.
+//
+//  Revision 3.0  2006/04/03 04:59:00  edwards
 //  Major overhaul of fermion and gauge action interface. Basically,
 //  all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
 //  the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
@@ -153,11 +168,11 @@ void mesons(const LatticePropagator& quark_prop_1,
       write(xml_sink_mom, "sink_mom_num", sink_mom_num);
       write(xml_sink_mom, "sink_mom", phases.numToMom(sink_mom_num));
 
-      multi1d<Real> mesprop(length);
+      multi1d<Complex> mesprop(length);
       for (int t=0; t < length; ++t) 
       {
         int t_eff = (t - t0 + length) % length;
-	mesprop[t_eff] = real(hsum[sink_mom_num][t]);
+	mesprop[t_eff] = hsum[sink_mom_num][t];
       }
 
       write(xml_sink_mom, "mesprop", mesprop);

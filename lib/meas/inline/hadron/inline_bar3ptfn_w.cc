@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 3.3 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 3.4 2006-08-19 19:29:33 flemingg Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -339,6 +339,7 @@ namespace Chroma
     QDPIO::cout << "Forward propagator successfully parsed" << endl;
 
     // Derived from input prop
+    multi1d<int> t_srce = source_header.getTSrce() ;
     int j_decay  = params.param.j_decay;
     int t_source = source_header.t_source;
 
@@ -460,7 +461,7 @@ namespace Chroma
 	
 
       // Now the 3pt contractions
-      SftMom phases(params.param.mom2_max, sink_mom, false, j_decay);
+      SftMom phases(params.param.mom2_max, t_srce, sink_mom, false, j_decay);
       FormFac(bar3pt.bar.seqsrc[seq_src_ctr].formFacs, 
 	      u, quark_propagator, seq_quark_prop, gamma_insertion,
 	      phases, t_source);

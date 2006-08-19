@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>2.15.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.11.0</chroma>
+      <qdp>1.20.9</qdp>
     </code_version>
-    <run_date>20 Mar 06 00:10:25 EST</run_date>
+    <run_date>19 Aug 06 02:01:14 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -136,10 +136,10 @@
 
   </Config_info>
   <Observables>
-    <ave_plaq>0.994804</ave_plaq>
-    <ave_spacelike_plaq>0.994798</ave_spacelike_plaq>
-    <ave_timelike_plaq>0.99481</ave_timelike_plaq>
-    <ave_link_trace>0.379449</ave_link_trace>
+    <ave_plaq>0.994803997506905</ave_plaq>
+    <ave_spacelike_plaq>0.994798443435381</ave_spacelike_plaq>
+    <ave_timelike_plaq>0.994809551578429</ave_timelike_plaq>
+    <ave_link_trace>0.379449337626284</ave_link_trace>
   </Observables>
   <ForwardProp>
     <FrwdPropId>sh_prop_0</FrwdPropId>
@@ -150,9 +150,10 @@
     </FrwdPropXML>
     <FrwdPropRecordXML><Propagator>
       <ForwardProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -169,11 +170,8 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </ForwardProp>
       <StateInfo>
@@ -220,7 +218,7 @@
     </Propagator>
 
     </FrwdPropRecordXML>
-    <FrwdPropCheck>0.195057 0.0165113 0.00626269 0.00253901 0.00103327 0.000420642 0.000171402 6.99144e-05</FrwdPropCheck>
+    <FrwdPropCheck>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</FrwdPropCheck>
   </ForwardProp>
   <SequentialSource>
     <elem>
@@ -236,9 +234,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -255,17 +254,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>SHELL_SINK</SinkType>
         <Sink>
           <version>2</version>
           <SinkType>SHELL_SINK</SinkType>
@@ -304,7 +299,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>SHELL_SINK</SinkType>
             <Sink>
               <version>2</version>
               <SinkType>SHELL_SINK</SinkType>
@@ -329,9 +323,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -348,11 +343,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -391,7 +383,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>5.15427e-08 1.25997e-07 3.08484e-07 7.55719e-07 1.85145e-06 4.53983e-06 1.11341e-05 2.70418e-05</BkwdPropCheck>
+        <BkwdPropCheck>5.15427283575108e-08 1.25997229727477e-07 3.08484321325396e-07 7.55719005158532e-07 1.8514479313068e-06 4.53983299007375e-06 1.11341130398361e-05 2.70417878114381e-05</BkwdPropCheck>
       </BackwardProp>
       <seq_src>PION</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -413,9 +405,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -432,17 +425,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -465,7 +454,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -474,9 +462,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -493,11 +482,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -532,7 +518,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -541,9 +526,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -560,11 +546,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -603,7 +586,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>1.35818e-12 3.33402e-12 8.20029e-12 2.01811e-11 4.96735e-11 1.22366e-10 3.01408e-10 7.38793e-10</BkwdPropCheck>
+        <BkwdPropCheck>1.35818428862508e-12 3.33401923829157e-12 8.20029408001019e-12 2.01811319741705e-11 4.96735087371204e-11 1.22365521849243e-10 3.01407564563869e-10 7.38792971465155e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -625,9 +608,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -644,17 +628,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -677,7 +657,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -686,9 +665,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -705,11 +685,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -748,7 +725,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.39134e-13 8.32594e-13 2.0481e-12 5.04109e-12 1.24097e-11 3.05741e-11 7.53187e-11 1.84055e-10</BkwdPropCheck>
+        <BkwdPropCheck>3.39134040889646e-13 8.32593955588438e-13 2.04810148505712e-12 5.04109402759551e-12 1.24097334471523e-11 3.05741281041051e-11 7.53186599526682e-11 1.84054947747028e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -770,9 +747,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -789,17 +767,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -822,7 +796,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -831,9 +804,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -850,11 +824,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -889,7 +860,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -898,9 +868,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -917,11 +888,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -960,7 +928,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>6.04139e-13 1.48293e-12 3.64716e-12 8.97518e-12 2.20899e-11 5.44128e-11 1.3402e-10 3.29075e-10</BkwdPropCheck>
+        <BkwdPropCheck>6.0413890342196e-13 1.48293068804408e-12 3.64715928755865e-12 8.97517907212373e-12 2.20899236199487e-11 5.44127618178917e-11 1.34020189520319e-10 3.29075030594633e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_POL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -982,9 +950,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1001,17 +970,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -1034,7 +999,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1043,9 +1007,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1062,11 +1027,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1105,7 +1067,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.76809e-14 9.2509e-14 2.27563e-13 5.60115e-13 1.37885e-12 3.3971e-12 8.36868e-12 2.0451e-11</BkwdPropCheck>
+        <BkwdPropCheck>3.76809475396247e-14 9.25090451359561e-14 2.27563493203048e-13 5.60114715494612e-13 1.37884539402964e-12 3.39709523251255e-12 8.36867501103299e-12 2.04510317805642e-11</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_POL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1127,9 +1089,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1146,17 +1109,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -1179,7 +1138,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1188,9 +1146,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1207,11 +1166,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1246,7 +1202,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1255,9 +1210,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1274,11 +1230,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1317,7 +1270,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>9.15926e-12 2.24852e-11 5.53082e-11 1.36124e-10 3.35076e-10 8.25482e-10 2.03345e-09 4.99475e-09</BkwdPropCheck>
+        <BkwdPropCheck>9.15925927447982e-12 2.24852089994323e-11 5.53081739685418e-11 1.36124276054298e-10 3.35076007081479e-10 8.25482158090273e-10 2.03345481872091e-09 4.99474549585627e-09</BkwdPropCheck>
       </BackwardProp>
       <seq_src>DELTA_U_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1339,9 +1292,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1358,17 +1312,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -1391,7 +1341,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1400,9 +1349,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1419,11 +1369,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1462,7 +1409,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>2.28981e-12 5.6213e-12 1.3827e-11 3.40311e-11 8.3769e-11 2.06371e-10 5.08364e-10 1.24869e-09</BkwdPropCheck>
+        <BkwdPropCheck>2.289814872878e-12 5.6213024067414e-12 1.38270440144087e-11 3.40310705040665e-11 8.37690040635074e-11 2.06370543965273e-10 5.08363712598599e-10 1.24868639670642e-09</BkwdPropCheck>
       </BackwardProp>
       <seq_src>DELTA_D_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1484,9 +1431,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1503,17 +1451,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -1536,7 +1480,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1545,9 +1488,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1564,11 +1508,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1603,7 +1544,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1612,9 +1552,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1631,11 +1572,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1674,7 +1612,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>1.34864e-12 3.31081e-12 8.14377e-12 2.00435e-11 4.93382e-11 1.21549e-10 2.99418e-10 7.36715e-10</BkwdPropCheck>
+        <BkwdPropCheck>1.34863938033009e-12 3.31080551355789e-12 8.14377448654876e-12 2.00434538319497e-11 4.93382310727881e-11 1.21548512160471e-10 2.99418079132968e-10 7.36714718981977e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_UNPOL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1696,9 +1634,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1715,17 +1654,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -1748,7 +1683,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1757,9 +1691,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1776,11 +1711,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1819,7 +1751,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.37163e-13 8.27708e-13 2.03596e-12 5.01089e-12 1.23346e-11 3.03872e-11 7.48547e-11 1.84178e-10</BkwdPropCheck>
+        <BkwdPropCheck>3.3716291311094e-13 8.27707922737952e-13 2.03595677178988e-12 5.01088920569349e-12 1.23346132358372e-11 3.03872261504276e-11 7.48546813027418e-11 1.8417755086242e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_UNPOL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1841,9 +1773,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1860,17 +1793,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -1893,7 +1822,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1902,9 +1830,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1921,11 +1850,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -1960,7 +1886,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -1969,9 +1894,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1988,11 +1914,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -2031,7 +1954,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>5.99394e-13 1.47147e-12 3.61945e-12 8.90819e-12 2.19281e-11 5.40215e-11 1.33075e-10 3.27431e-10</BkwdPropCheck>
+        <BkwdPropCheck>5.9939374915079e-13 1.47146595810547e-12 3.61945010685798e-12 8.90819218545629e-12 2.19280807161567e-11 5.40215372585084e-11 1.3307475520722e-10 3.27430512304776e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_POL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -2053,9 +1976,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2072,17 +1996,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -2105,7 +2025,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -2114,9 +2033,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2133,11 +2053,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -2176,7 +2093,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.74623e-14 9.1967e-14 2.26216e-13 5.56763e-13 1.37051e-12 3.37636e-12 8.31719e-12 2.04644e-11</BkwdPropCheck>
+        <BkwdPropCheck>3.74622502343349e-14 9.19669436912683e-14 2.26216025272567e-13 5.56763423663051e-13 1.37051075255561e-12 3.37635822611707e-12 8.31719384967492e-12 2.04643678306209e-11</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_POL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -2198,9 +2115,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2217,17 +2135,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -2250,7 +2164,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -2259,9 +2172,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2278,11 +2192,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -2317,7 +2228,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -2326,9 +2236,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2345,11 +2256,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -2388,7 +2296,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>1.94803e-12 4.78225e-12 1.17632e-11 2.89517e-11 7.12662e-11 1.7557e-10 4.32492e-10 1.06414e-09</BkwdPropCheck>
+        <BkwdPropCheck>1.94802541189872e-12 4.78225306234086e-12 1.17632107003285e-11 2.89516655843147e-11 7.1266159157684e-11 1.75569602603361e-10 4.32492405423593e-10 1.06414195261306e-09</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_MIXED_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -2410,9 +2318,10 @@
         </BkwdPropXML>
         <BkwdPropRecordXML><SequentialProp>
       <SeqProp>
-        <version>9</version>
+        <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2429,17 +2338,13 @@
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1e-12</RsdCG>
+          <RsdCG>1.0e-12</RsdCG>
           <MaxCG>1000</MaxCG>
-          <MROver>1</MROver>
-          <RsdCGPrec>1e-12</RsdCGPrec>
-          <MaxCGPrec>1000</MaxCGPrec>
         </InvertParam>
       </SeqProp>
       <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
-        <SinkType>POINT_SINK</SinkType>
         <Sink>
           <version>1</version>
           <SinkType>POINT_SINK</SinkType>
@@ -2462,7 +2367,6 @@
           <version>1</version>
           <PropSinkSmear>
             <version>5</version>
-            <SinkType>POINT_SINK</SinkType>
             <Sink>
               <version>1</version>
               <SinkType>POINT_SINK</SinkType>
@@ -2471,9 +2375,10 @@
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
+            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2490,11 +2395,8 @@
             </FermionAction>
             <InvertParam>
               <invType>CG_INVERTER</invType>
-              <RsdCG>1e-12</RsdCG>
+              <RsdCG>1.0e-12</RsdCG>
               <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-12</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
             </InvertParam>
           </ForwardProp>
           <PropSource>
@@ -2533,7 +2435,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.74618e-13 9.19658e-13 2.26213e-12 5.56754e-12 1.37049e-11 3.3763e-11 8.31702e-11 2.04638e-10</BkwdPropCheck>
+        <BkwdPropCheck>3.7461851780074e-13 9.19658481410492e-13 2.2621295547284e-12 5.56753992765685e-12 1.37048707593915e-11 3.37629671258993e-11 8.31702469403852e-11 2.0463819120497e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_MIXED_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>

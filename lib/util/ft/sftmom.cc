@@ -1,6 +1,21 @@
-//  $Id: sftmom.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
+//  $Id: sftmom.cc,v 3.1 2006-08-19 19:29:33 flemingg Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.0  2006-04-03 04:59:12  edwards
+//  Revision 3.1  2006-08-19 19:29:33  flemingg
+//  Changed the interface of the slow Fourier transform (SftMom) class to allow
+//  for any lattice point to be chosen as the spatial origin.  Previously, this
+//  meant that the origin was always implicitly (0,0,0,0), which lead to
+//  various phase problems.  One example is 2pt correlation functions between a
+//  point source not at the origin and a sink at non-zero momentum: the overall
+//  phase depends upon the location of the source.  Using the new interface,
+//  the phase can be made independent of the location of the source by choosing
+//  the origin of the Fourier transform to be the location of the source.
+//  Several things remain to be fixed:
+//    (1) sequential sources at non-zero sink momentum,
+//    (2) building blocks with link paths which cross boundaries,
+//    (3) baryonic sequential sources where t_source > t_sink,
+//        i.e. the boundary is between the source and sink.
+//
+//  Revision 3.0  2006/04/03 04:59:12  edwards
 //  Major overhaul of fermion and gauge action interface. Basically,
 //  all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
 //  the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
@@ -102,6 +117,23 @@ namespace Chroma
 
   SftMom::SftMom(int mom2_max, bool avg_mom, int j_decay)
   {
+    multi1d<int> origin_off(Nd);
+    multi1d<int> mom_off;
+
+    if ((j_decay<0)||(j_decay>=Nd)) {
+      mom_off.resize(Nd) ;
+    } else {
+      mom_off.resize(Nd-1) ;
+    }
+    origin_off = 0 ;
+    mom_off = 0 ;
+
+    init(mom2_max, origin_off, mom_off, avg_mom, j_decay) ;
+  }
+
+  SftMom::SftMom(int mom2_max, multi1d<int> origin_offset_, bool avg_mom,
+                 int j_decay)
+  {
     multi1d<int> mom_off;
 
     if ((j_decay<0)||(j_decay>=Nd)) {
@@ -111,7 +143,7 @@ namespace Chroma
     }
     mom_off = 0 ;
 
-    init(mom2_max, mom_off, avg_mom, j_decay) ;
+    init(mom2_max, origin_offset_, mom_off, avg_mom, j_decay) ;
   }
 
   int
@@ -132,17 +164,26 @@ namespace Chroma
 
 
   void
-  SftMom::init(int mom2_max, multi1d<int> mom_off,
+  SftMom::init(int mom2_max, multi1d<int> origin_off, multi1d<int> mom_off,
 	       bool avg_mom, int j_decay)
   {
-    decay_dir = j_decay;     // private copy
-    mom_offset = mom_off;    // private copy
-    avg_equiv_mom = avg_mom; // private copy
+    decay_dir     = j_decay;    // private copy
+    origin_offset = origin_off; // private copy
+    mom_offset    = mom_off;    // private copy
+    avg_equiv_mom = avg_mom;    // private copy
+
+    // GTF: this is fixable.
 
     // Averaging over equivalent momenta is only allowed if 
     // mom_offset is zero.
     if (avg_equiv_mom) {
       bool zero_offset = true ;
+
+      for (int mu=0; mu < origin_offset.size(); ++mu) {
+	if (origin_offset[mu] != 0) {
+	  zero_offset = false ;
+	}
+      }
 
       for (int mu=0; mu < mom_offset.size(); ++mu) {
 	if (mom_offset[mu] != 0) {
@@ -349,8 +390,8 @@ namespace Chroma
 
 	if (mu == j_decay) continue ;
 
-	p_dot_x += LatticeReal(my_coord[mu]) * twopi * Real(mom[j]) /
-	  Layout::lattSize()[mu];
+	p_dot_x += LatticeReal(my_coord[mu] - origin_offset[mu]) * twopi *
+          Real(mom[j]) / Layout::lattSize()[mu];
 	++j ;
       } // end for(mu)
 

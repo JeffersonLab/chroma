@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_spectrumOct_w.cc,v 3.3 2006-08-19 19:29:33 flemingg Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -400,6 +400,8 @@ namespace Chroma
       QDPIO::cout << "Mass = " << Mass[loop] << endl;
     }
     // Derived from input prop
+    multi1d<int> t_srce
+                = source_header[0].getTSrce();
     int j_decay = source_header[0].j_decay;
     int t0      = source_header[0].t_source;
     int bc_spec = bc[0][j_decay] ;
@@ -421,7 +423,8 @@ namespace Chroma
     }
   
     // Initialize the slow Fourier transform phases
-    SftMom phases(params.param.mom2_max, params.param.avg_equiv_mom, j_decay);
+    SftMom phases(params.param.mom2_max, t_srce, params.param.avg_equiv_mom,
+                  j_decay);
 
     // Keep a copy of the phases with NO momenta
     SftMom phases_nomom(0, true, j_decay);

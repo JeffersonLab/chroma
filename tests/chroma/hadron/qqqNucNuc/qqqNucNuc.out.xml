@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: qqqNucNuc.out.xml,v 3.0 2006-04-03 04:59:27 edwards Exp $
+; $Id: qqqNucNuc.out.xml,v 3.1 2006-08-19 19:29:34 flemingg Exp $
 ;
 ; Test input for the qqqNucNuc program
 ;
@@ -38,17 +38,20 @@
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>source_0</source_id>
       </NamedObject>
     </elem>
+
     <elem>
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <FermTypeP>WILSON</FermTypeP>
         <quarkSpinType>FULL</quarkSpinType> 
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>DWF</FermAct>
          <N5>4</N5>
@@ -73,18 +76,21 @@
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>source_0</source_id>
         <prop_id>propagator_0</prop_id>
       </NamedObject>
     </elem>
+
     <elem>
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>9</version>
+        <version>10</version>
         <FermTypeP>WILSON</FermTypeP>
         <quarkSpinType>FULL</quarkSpinType> 
         <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>DWF</FermAct>
          <N5>4</N5>
@@ -109,10 +115,12 @@
         <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <source_id>source_0</source_id>
         <prop_id>propagator_1</prop_id>
       </NamedObject>
     </elem>
+
     <elem>
       <Name>QQQ_NUCNUC</Name>
       <Frequency>1</Frequency>
@@ -126,6 +134,7 @@
  	<max_p2>1</max_p2>	
        </Param>
        <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
         <prop_ids>
     	  <elem>propagator_0</elem>
     	  <elem>propagator_1</elem>
@@ -134,6 +143,7 @@
       <qqq_file>qqq.dat</qqq_file>
       <qqbar_file>qqbar.dat</qqbar_file>
     </elem>
+
    </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
@@ -146,10 +156,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>2.15.0</chroma>
-      <qdp>1.20.1</qdp>
+      <chroma>3.11.0</chroma>
+      <qdp>1.20.9</qdp>
     </code_version>
-    <run_date>19 Mar 06 23:39:33 EST</run_date>
+    <run_date>19 Aug 06 14:21:34 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -178,26 +188,26 @@
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994765</w_plaq>
-    <s_plaq>0.994801</s_plaq>
-    <t_plaq>0.994729</t_plaq>
-    <link>0.379318</link>
+    <w_plaq>0.994764814463755</w_plaq>
+    <s_plaq>0.994800871962474</s_plaq>
+    <t_plaq>0.994728756965034</t_plaq>
+    <link>0.379317688059624</link>
     <pollp>
       <elem>
-        <re>0.967223</re>
-        <im>-0.00121316</im>
+        <re>0.967222581617534</re>
+        <im>-0.00121316458201666</im>
       </elem>
       <elem>
-        <re>0.967032</re>
-        <im>-0.00129617</im>
+        <re>0.967032070310476</re>
+        <im>-0.00129617050743036</im>
       </elem>
       <elem>
-        <re>0.967468</re>
-        <im>-0.00114548</im>
+        <re>0.967467519299438</re>
+        <im>-0.00114548285447806</im>
       </elem>
       <elem>
-        <re>0.879539</re>
-        <im>-0.0104403</im>
+        <re>0.879538947173084</re>
+        <im>-0.0104402833220168</im>
       </elem>
     </pollp>
   </Observables>
@@ -207,10 +217,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:39:33 EST</run_date>
+          <run_date>19 Aug 06 14:21:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -266,31 +276,31 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>6.64553 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.64552842259264 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -299,10 +309,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:39:33 EST</run_date>
+          <run_date>19 Aug 06 14:21:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -313,9 +323,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>DWF</FermAct>
       <N5>4</N5>
       <OverMass>1.4</OverMass>
@@ -331,16 +342,12 @@
         <nu>1.0</nu>
       </AnisoParam>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-07</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-07</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-7</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -360,26 +367,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
@@ -430,51 +437,99 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.64553 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.64552842259264 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.043512e-06</resid>
           </Qprop>
           <Qprop>
-            <n_count>53</n_count>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
+            <n_count>52</n_count>
+            <resid>1.3286e-06</resid>
           </Qprop>
           <Qprop>
-            <n_count>53</n_count>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
+            <n_count>52</n_count>
+            <resid>1.361798e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.113751e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.145237e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.111865e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.048363e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.096504e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.061833e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.102432e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.126298e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>53</n_count>
+            <resid>1.048118e-06</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>636</ncg_had>
+          <ncg_had>634</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0128703 0.0765743 0.0356602 0.0321864 0.0303823 0.0322051 0.0356734 0.0765951</prop_corr>
+          <prop_corr>0.0128702898101547 0.0765743177743854 0.0356602366768536 0.0321863884306009 0.0303823045831262 0.0322051214457099 0.0356734058987996 0.0765950723664305</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -483,10 +538,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:39:40 EST</run_date>
+          <run_date>19 Aug 06 14:21:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -497,9 +552,10 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>9</version>
+            <version>10</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP><FermionAction>
+            <obsvP>false</obsvP>
+            <numRetries>1</numRetries><FermionAction>
       <FermAct>DWF</FermAct>
       <N5>4</N5>
       <OverMass>1.4</OverMass>
@@ -515,16 +571,12 @@
         <nu>1.0</nu>
       </AnisoParam>
     </FermionAction>
-
-            <InvertParam>
-              <invType>CG_INVERTER</invType>
-              <RsdCG>1e-07</RsdCG>
-              <MaxCG>1000</MaxCG>
-              <MROver>1</MROver>
-              <RsdCGPrec>1e-07</RsdCGPrec>
-              <MaxCGPrec>1000</MaxCGPrec>
-            </InvertParam>
-          </Param><StateInfo>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-7</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
 </StateInfo>
 
           <NamedObject>
@@ -544,26 +596,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
@@ -614,51 +666,99 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.64553 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.64552842259264 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.328514e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.297242e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.28304e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>44</n_count>
+            <resid>1.379138e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.063536e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.124508e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.107691e-06</resid>
           </Qprop>
           <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.2008e-06</resid>
           </Qprop>
           <Qprop>
-            <n_count>44</n_count>
-          </Qprop>
-          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.11641e-06</resid>
           </Qprop>
           <Qprop>
-            <n_count>44</n_count>
-          </Qprop>
-          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <ntry>0</ntry>
             <n_count>45</n_count>
+            <resid>1.07885e-06</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <ntry>0</ntry>
+            <n_count>45</n_count>
+            <resid>1.05602e-06</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <ntry>0</ntry>
+            <n_count>45</n_count>
+            <resid>1.204944e-06</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>534</ncg_had>
+          <ncg_had>536</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0358872 0.0659524 0.0227143 0.0153887 0.0133288 0.0153978 0.0227211 0.0659673</prop_corr>
+          <prop_corr>0.0358872076282364 0.0659523603032903 0.0227142807187206 0.015388660953145 0.0133288211418458 0.015397837210313 0.0227210672584744 0.0659673136290509</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -667,10 +767,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>2.15.0</chroma>
-            <qdp>1.20.1</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>19 Mar 06 23:39:46 EST</run_date>
+          <run_date>19 Aug 06 14:21:46 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -710,26 +810,26 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994765</w_plaq>
-          <s_plaq>0.994801</s_plaq>
-          <t_plaq>0.994729</t_plaq>
-          <link>0.379318</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.967223</re>
-              <im>-0.00121316</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032</re>
-              <im>-0.00129617</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967468</re>
-              <im>-0.00114548</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879539</re>
-              <im>-0.0104403</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
@@ -738,9 +838,10 @@
           <t_source>0</t_source>
           <Propagator>
             <ForwardProp>
-              <version>9</version>
+              <version>10</version>
               <quarkSpinType>FULL</quarkSpinType>
-              <obsvP>false</obsvP><FermionAction>
+              <obsvP>false</obsvP>
+              <numRetries>1</numRetries><FermionAction>
       <FermAct>DWF</FermAct>
       <N5>4</N5>
       <OverMass>1.4</OverMass>
@@ -756,16 +857,12 @@
         <nu>1.0</nu>
       </AnisoParam>
     </FermionAction>
-
-              <InvertParam>
-                <invType>CG_INVERTER</invType>
-                <RsdCG>1e-07</RsdCG>
-                <MaxCG>1000</MaxCG>
-                <MROver>1</MROver>
-                <RsdCGPrec>1e-07</RsdCGPrec>
-                <MaxCGPrec>1000</MaxCGPrec>
-              </InvertParam>
-            </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-7</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
             <PropSource>
               <version>6</version><Source>
       <version>1</version>
@@ -792,14 +889,15 @@
               <t_source>0</t_source>
             </PropSource>
             <Qprop_correlator>
-              <qp_corr>0.0128703 0.0765743 0.0356602 0.0321864 0.0303823 0.0322051 0.0356734 0.0765951</qp_corr>
+              <qp_corr>0.0128702898101547 0.0765743177743854 0.0356602366768536 0.0321863884306009 0.0303823045831262 0.0322051214457099 0.0356734058987996 0.0765950723664305</qp_corr>
             </Qprop_correlator>
           </Propagator>
           <Propagator>
             <ForwardProp>
-              <version>9</version>
+              <version>10</version>
               <quarkSpinType>FULL</quarkSpinType>
-              <obsvP>false</obsvP><FermionAction>
+              <obsvP>false</obsvP>
+              <numRetries>1</numRetries><FermionAction>
       <FermAct>DWF</FermAct>
       <N5>4</N5>
       <OverMass>1.4</OverMass>
@@ -815,16 +913,12 @@
         <nu>1.0</nu>
       </AnisoParam>
     </FermionAction>
-
-              <InvertParam>
-                <invType>CG_INVERTER</invType>
-                <RsdCG>1e-07</RsdCG>
-                <MaxCG>1000</MaxCG>
-                <MROver>1</MROver>
-                <RsdCGPrec>1e-07</RsdCGPrec>
-                <MaxCGPrec>1000</MaxCGPrec>
-              </InvertParam>
-            </ForwardProp>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-7</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
             <PropSource>
               <version>6</version><Source>
       <version>1</version>
@@ -851,7 +945,7 @@
               <t_source>0</t_source>
             </PropSource>
             <Qprop_correlator>
-              <qp_corr>0.0358872 0.0659524 0.0227143 0.0153887 0.0133288 0.0153978 0.0227211 0.0659673</qp_corr>
+              <qp_corr>0.0358872076282364 0.0659523603032903 0.0227142807187206 0.015388660953145 0.0133288211418458 0.015397837210313 0.0227210672584744 0.0659673136290509</qp_corr>
             </Qprop_correlator>
           </Propagator>
         </Propagator_info>

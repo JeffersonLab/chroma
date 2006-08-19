@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.0 2006-04-03 04:59:12 edwards Exp $
+//  $Id: sftmom.h,v 3.1 2006-08-19 19:29:33 flemingg Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -19,10 +19,14 @@ public:
   //! Constructor about origin
   SftMom(int mom2_max, bool avg_equiv_mom_=false, int j_decay=-1);
 
-  //! Construct around some fixed mom_offset
-  SftMom(int mom2_max, multi1d<int> mom_offset_,
+  //! Construct around some fixed origin_offset
+  SftMom(int mom2_max, multi1d<int> origin_offset_,
+         bool avg_equiv_mom_=false, int j_decay=-1) ;
+
+  //! Construct around some fixed origin_offset and mom_offset
+  SftMom(int mom2_max, multi1d<int> origin_offset_, multi1d<int> mom_offset_,
          bool avg_equiv_mom_=false, int j_decay=-1) 
-  { init(mom2_max, mom_offset_, avg_equiv_mom_, j_decay); }
+  { init(mom2_max, origin_offset_, mom_offset_, avg_equiv_mom_, j_decay); }
 
   //! The set to be used in sumMulti
   const UnorderedSet& getSet() const { return sft_set; }
@@ -69,13 +73,14 @@ public:
 private:
   SftMom() {} // hide default constructor
 
-  void init(int mom2_max, multi1d<int> mom_offset,
+  void init(int mom2_max, multi1d<int> origin_offset, multi1d<int> mom_offset,
             bool avg_mom_=false, int j_decay=-1);
 
   multi2d<int> mom_list;
   bool         avg_equiv_mom;
   int          decay_dir;
   int          num_mom;
+  multi1d<int> origin_offset;
   multi1d<int> mom_offset;
   multi1d<LatticeComplex> phases;
   UnorderedSet sft_set;

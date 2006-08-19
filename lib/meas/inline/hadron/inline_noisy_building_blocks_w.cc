@@ -1,4 +1,4 @@
-// $Id: inline_noisy_building_blocks_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_noisy_building_blocks_w.cc,v 3.3 2006-08-19 19:29:33 flemingg Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -527,8 +527,11 @@ namespace Chroma
 //  else
       SnkMom = 0;
 
-    SftMom Phases( params.param.mom2_max, SnkMom, false, j_decay );
-    SftMom PhasesCanonical( params.param.mom2_max, SnkMom,
+    multi1d<int> t_srce(Nd);
+    t_srce = 0;
+
+    SftMom Phases( params.param.mom2_max, t_srce, SnkMom, false, j_decay );
+    SftMom PhasesCanonical( params.param.mom2_max, t_srce, SnkMom,
                             params.param.canonical, j_decay );
 
     //######################################################################//

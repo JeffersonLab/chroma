@@ -1,3 +1,19 @@
+08/19/2006 -- George T. Fleming
+	Version 3.11.0.  Changed the interface of the slow Fourier transform
+        (SftMom) class to allow for any lattice point to be chosen as the
+        spatial origin.  Previously, this meant that the origin was always
+        implicitly (0,0,0,0), which lead to various phase problems.
+        One example is 2pt correlation functions between a point
+        source not at the origin and a sink at non-zero momentum: the overall
+        phase depends upon the location of the source.  Using the new
+        interface, the phase can be made independent of the location
+        of the source by choosing the origin of the Fourier transform
+        to be the location of the source.  Several things remain to be
+        fixed:  (1) sequential sources at non-zero sink momentum,
+        (2) building blocks with link paths which cross boundaries,
+        (3) baryonic sequential sources where t_source > t_sink,
+        i.e. the boundary is between the source and sink.
+	
 08/17/2006 -- Balint Joo
 	Version 3.10.4. Fixed stout fermstate to support smear_dir.
         New form of purgaug input/output.

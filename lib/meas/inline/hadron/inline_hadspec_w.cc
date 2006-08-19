@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.4 2006-07-11 03:51:51 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.5 2006-08-19 19:29:33 flemingg Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -409,6 +409,8 @@ namespace Chroma
       readAllSinks(all_sinks, named_obj);
 
       // Derived from input prop
+      multi1d<int> t_srce
+                  = all_sinks.sink_prop_1.prop_header.source_header.getTSrce();
       int j_decay = all_sinks.sink_prop_1.prop_header.source_header.j_decay;
       int t0      = all_sinks.sink_prop_1.prop_header.source_header.t_source;
       int bc_spec = all_sinks.sink_prop_1.bc[j_decay] ;
@@ -445,7 +447,8 @@ namespace Chroma
 
 
       // Initialize the slow Fourier transform phases
-      SftMom phases(params.param.mom2_max, params.param.avg_equiv_mom, j_decay);
+      SftMom phases(params.param.mom2_max, t_srce, params.param.avg_equiv_mom,
+                    j_decay);
 
       // Keep a copy of the phases with NO momenta
       SftMom phases_nomom(0, true, j_decay);
