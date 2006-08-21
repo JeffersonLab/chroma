@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 3.3 2006-08-15 13:17:24 bjoo Exp $
+// $Id: prec_clover_fermact_w.cc,v 3.4 2006-08-21 07:32:36 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -11,7 +11,6 @@
 #include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/fermacts/ferm_createstate_aggregate_w.h"
-#include "actions/ferm/fermacts/stout_fermstate_w.h"
 
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
@@ -27,19 +26,8 @@ namespace Chroma
 		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
 								     const std::string& path)
     {
-#if 1
       return new EvenOddPrecCloverFermAct(CreateFermStateEnv::reader(xml_in, path), 
 					  CloverFermActParams(xml_in, path));
-#else 
-      Handle< CreateFermState<LatticeFermion,
-	multi1d<LatticeColorMatrix>,
-	multi1d<LatticeColorMatrix> > > cfs(
-	  new CreateStoutFermState(WilsonTypeFermBCEnv::reader(xml_in, path + "/FermState"),
-				   StoutFermStateParams(xml_in, path + "/FermState")));
-      
-      return new EvenOddPrecCloverFermAct(cfs,
-					  CloverFermActParams(xml_in, path));
-#endif
     }
 
     //! Callback function
