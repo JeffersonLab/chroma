@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.26 2006-08-16 17:10:25 bjoo Exp $
+# $Id: Makefile.am,v 3.27 2006-08-24 02:37:26 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -150,6 +150,7 @@ nobase_include_HEADERS = \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
         meas/glue/mesplq.h meas/glue/polylp.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
+        meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
         meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h \
 	meas/hadron/hadron_seqsource.h \
@@ -218,7 +219,8 @@ nobase_include_HEADERS = \
 	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
 	util/gauge/hotst.h util/gauge/reunit.h \
-	util/gauge/rgauge.h util/gauge/su2extract.h util/gauge/su3proj.h \
+	util/gauge/rgauge.h util/gauge/shift2.h \
+        util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
@@ -761,6 +763,7 @@ libchroma_a_SOURCES = \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
         meas/glue/mesplq.cc meas/glue/polylp.cc \
 	meas/glue/wilslp.cc \
+        meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/hadron_seqsource.cc \
 	meas/hadron/mesQl_w.cc \
 	meas/hadron/barQll_w.cc \
@@ -806,6 +809,7 @@ libchroma_a_SOURCES = \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
 	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
 	util/gauge/reunit.cc util/gauge/rgauge.cc \
+	util/gauge/shift2.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
