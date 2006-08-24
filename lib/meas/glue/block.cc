@@ -1,4 +1,4 @@
-// $Id: block.cc,v 3.2 2006-08-24 03:14:54 edwards Exp $
+// $Id: block.cc,v 3.3 2006-08-24 03:18:41 edwards Exp $
 /*! \file
  *  \brief Construct "block" links
  */
@@ -60,20 +60,8 @@ namespace Chroma
     /* u_block = u(x,mu) * tmp_1 */
     u_block = u[mu] * tmp_1;
 
-    /* For blocking level zero, do it also for the other checkerboard */
-    if( bl_level == 0 )
-    {
-      /* tmp_1(x) = u(x+mu*2^bl_level,mu) */
-      tmp_1 = shift2(u[mu], FORWARD, mu, bl_level);
-
-      /* u_dble = u(x,mu) * tmp_1 */
-      u_dble = u[mu] * tmp_1;
-    }
-    /* For higher blocking levels, just _copy over */
-    else
-    {
-      u_dble = u_block;
-    }
+    /* A copy */
+    u_dble = u_block;
 
     /* Now construct and add the staples, except in direction j_decay */
     for(int nu = 0; nu < Nd; ++nu)
