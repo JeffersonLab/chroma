@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.56 2006-08-19 19:29:31 flemingg Exp $
+# $Id: Makefile.in,v 3.57 2006-08-24 02:37:45 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -213,7 +213,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
-	meas/glue/polylp.cc meas/glue/wilslp.cc \
+	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/block.cc \
+	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/mesQl_w.cc \
 	meas/hadron/barQll_w.cc \
 	meas/hadron/spin_insertion_aggregate.cc \
@@ -251,7 +252,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
 	util/gauge/expmat.cc util/gauge/expsu3.cc \
 	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
-	util/gauge/reunit.cc util/gauge/rgauge.cc \
+	util/gauge/reunit.cc util/gauge/rgauge.cc util/gauge/shift2.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
@@ -610,7 +611,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
 	mesplq.$(OBJEXT) polylp.$(OBJEXT) wilslp.$(OBJEXT) \
-	hadron_seqsource.$(OBJEXT) mesQl_w.$(OBJEXT) \
+	block.$(OBJEXT) fuzglue.$(OBJEXT) gluecor.$(OBJEXT) \
+	polycor.$(OBJEXT) hadron_seqsource.$(OBJEXT) mesQl_w.$(OBJEXT) \
 	barQll_w.$(OBJEXT) spin_insertion_aggregate.$(OBJEXT) \
 	no_spin_insertion.$(OBJEXT) stoch_var.$(OBJEXT) \
 	pt_sink_smearing.$(OBJEXT) sh_sink_smearing.$(OBJEXT) \
@@ -637,12 +639,13 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	transf.$(OBJEXT) sftmom.$(OBJEXT) eesu3.$(OBJEXT) \
 	eeu1.$(OBJEXT) expm12.$(OBJEXT) expmat.$(OBJEXT) \
 	expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) hotst.$(OBJEXT) \
-	reunit.$(OBJEXT) rgauge.$(OBJEXT) su2extract.$(OBJEXT) \
-	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
-	taproj.$(OBJEXT) unit_check.$(OBJEXT) conjgauge.$(OBJEXT) \
-	constgauge.$(OBJEXT) weak_field.$(OBJEXT) printgeom.$(OBJEXT) \
-	proginfo.$(OBJEXT) su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) \
-	mciter.$(OBJEXT) gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
+	reunit.$(OBJEXT) rgauge.$(OBJEXT) shift2.$(OBJEXT) \
+	su2extract.$(OBJEXT) su3proj.$(OBJEXT) sunfill.$(OBJEXT) \
+	sun_proj.$(OBJEXT) taproj.$(OBJEXT) unit_check.$(OBJEXT) \
+	conjgauge.$(OBJEXT) constgauge.$(OBJEXT) weak_field.$(OBJEXT) \
+	printgeom.$(OBJEXT) proginfo.$(OBJEXT) su3over.$(OBJEXT) \
+	su2_hb_update.$(OBJEXT) mciter.$(OBJEXT) \
+	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
 	integrator_aggregate.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
 	lcm_pqp_leapfrog.$(OBJEXT) lcm_sexton_weingarten.$(OBJEXT) \
 	lcm_minimum_norm2_integrator.$(OBJEXT) \
@@ -976,10 +979,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
-	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/hadron/hadron.h \
-	meas/hadron/baryon_operator.h meas/hadron/hadron_seqsource.h \
-	meas/hadron/mesQl_w.h meas/hadron/barQll_w.h \
-	meas/hadron/spin_insertion.h \
+	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/block.h \
+	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
+	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
+	meas/hadron/hadron_seqsource.h meas/hadron/mesQl_w.h \
+	meas/hadron/barQll_w.h meas/hadron/spin_insertion.h \
 	meas/hadron/spin_insertion_factory.h \
 	meas/hadron/spin_insertion_aggregate.h \
 	meas/hadron/no_spin_insertion.h meas/hadron/stoch_var.h \
@@ -1029,7 +1033,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
 	util/gauge/eesu3.h util/gauge/gauge.h \
 	util/gauge/gauge_startup.h util/gauge/hotst.h \
-	util/gauge/reunit.h util/gauge/rgauge.h \
+	util/gauge/reunit.h util/gauge/rgauge.h util/gauge/shift2.h \
 	util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
@@ -1643,10 +1647,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
-	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/hadron/hadron.h \
-	meas/hadron/baryon_operator.h meas/hadron/hadron_seqsource.h \
-	meas/hadron/mesQl_w.h meas/hadron/barQll_w.h \
-	meas/hadron/spin_insertion.h \
+	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/block.h \
+	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
+	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
+	meas/hadron/hadron_seqsource.h meas/hadron/mesQl_w.h \
+	meas/hadron/barQll_w.h meas/hadron/spin_insertion.h \
 	meas/hadron/spin_insertion_factory.h \
 	meas/hadron/spin_insertion_aggregate.h \
 	meas/hadron/no_spin_insertion.h meas/hadron/stoch_var.h \
@@ -1696,7 +1701,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
 	util/gauge/eesu3.h util/gauge/gauge.h \
 	util/gauge/gauge_startup.h util/gauge/hotst.h \
-	util/gauge/reunit.h util/gauge/rgauge.h \
+	util/gauge/reunit.h util/gauge/rgauge.h util/gauge/shift2.h \
 	util/gauge/su2extract.h util/gauge/su3proj.h \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
@@ -2188,7 +2193,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
-	meas/glue/polylp.cc meas/glue/wilslp.cc \
+	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/block.cc \
+	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/mesQl_w.cc \
 	meas/hadron/barQll_w.cc \
 	meas/hadron/spin_insertion_aggregate.cc \
@@ -2226,7 +2232,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc util/gauge/expm12.cc \
 	util/gauge/expmat.cc util/gauge/expsu3.cc \
 	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
-	util/gauge/reunit.cc util/gauge/rgauge.cc \
+	util/gauge/reunit.cc util/gauge/rgauge.cc util/gauge/shift2.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
 	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
@@ -2612,6 +2618,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_operator_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/block.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cfgtype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chroma_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clover_fermact_params_w.Po@am__quote@
@@ -2677,6 +2684,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fixed_random_ferm_monomial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzglue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzz_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamma_displacement_w.Po@am__quote@
@@ -2691,6 +2699,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genapprox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_metropolis_accrej.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gluecor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grelax.Po@am__quote@
@@ -2867,6 +2876,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plaq_plus_spatial_two_plaq_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poly_cheb_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polycor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_clover_extfield_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/prec_clover_extfield_linop_w.Po@am__quote@
@@ -2966,6 +2976,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sh_sink_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sh_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sh_source_smearing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shift2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_baryon_operator_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermbc_s.Po@am__quote@
@@ -4910,6 +4921,62 @@ wilslp.obj: meas/glue/wilslp.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilslp.obj `if test -f 'meas/glue/wilslp.cc'; then $(CYGPATH_W) 'meas/glue/wilslp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/wilslp.cc'; fi`
 
+block.o: meas/glue/block.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT block.o -MD -MP -MF "$(DEPDIR)/block.Tpo" -c -o block.o `test -f 'meas/glue/block.cc' || echo '$(srcdir)/'`meas/glue/block.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/block.Tpo" "$(DEPDIR)/block.Po"; else rm -f "$(DEPDIR)/block.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/block.cc' object='block.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o block.o `test -f 'meas/glue/block.cc' || echo '$(srcdir)/'`meas/glue/block.cc
+
+block.obj: meas/glue/block.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT block.obj -MD -MP -MF "$(DEPDIR)/block.Tpo" -c -o block.obj `if test -f 'meas/glue/block.cc'; then $(CYGPATH_W) 'meas/glue/block.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/block.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/block.Tpo" "$(DEPDIR)/block.Po"; else rm -f "$(DEPDIR)/block.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/block.cc' object='block.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o block.obj `if test -f 'meas/glue/block.cc'; then $(CYGPATH_W) 'meas/glue/block.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/block.cc'; fi`
+
+fuzglue.o: meas/glue/fuzglue.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fuzglue.o -MD -MP -MF "$(DEPDIR)/fuzglue.Tpo" -c -o fuzglue.o `test -f 'meas/glue/fuzglue.cc' || echo '$(srcdir)/'`meas/glue/fuzglue.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fuzglue.Tpo" "$(DEPDIR)/fuzglue.Po"; else rm -f "$(DEPDIR)/fuzglue.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/fuzglue.cc' object='fuzglue.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o fuzglue.o `test -f 'meas/glue/fuzglue.cc' || echo '$(srcdir)/'`meas/glue/fuzglue.cc
+
+fuzglue.obj: meas/glue/fuzglue.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fuzglue.obj -MD -MP -MF "$(DEPDIR)/fuzglue.Tpo" -c -o fuzglue.obj `if test -f 'meas/glue/fuzglue.cc'; then $(CYGPATH_W) 'meas/glue/fuzglue.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/fuzglue.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fuzglue.Tpo" "$(DEPDIR)/fuzglue.Po"; else rm -f "$(DEPDIR)/fuzglue.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/fuzglue.cc' object='fuzglue.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o fuzglue.obj `if test -f 'meas/glue/fuzglue.cc'; then $(CYGPATH_W) 'meas/glue/fuzglue.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/fuzglue.cc'; fi`
+
+gluecor.o: meas/glue/gluecor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gluecor.o -MD -MP -MF "$(DEPDIR)/gluecor.Tpo" -c -o gluecor.o `test -f 'meas/glue/gluecor.cc' || echo '$(srcdir)/'`meas/glue/gluecor.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gluecor.Tpo" "$(DEPDIR)/gluecor.Po"; else rm -f "$(DEPDIR)/gluecor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/gluecor.cc' object='gluecor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gluecor.o `test -f 'meas/glue/gluecor.cc' || echo '$(srcdir)/'`meas/glue/gluecor.cc
+
+gluecor.obj: meas/glue/gluecor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gluecor.obj -MD -MP -MF "$(DEPDIR)/gluecor.Tpo" -c -o gluecor.obj `if test -f 'meas/glue/gluecor.cc'; then $(CYGPATH_W) 'meas/glue/gluecor.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/gluecor.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gluecor.Tpo" "$(DEPDIR)/gluecor.Po"; else rm -f "$(DEPDIR)/gluecor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/gluecor.cc' object='gluecor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gluecor.obj `if test -f 'meas/glue/gluecor.cc'; then $(CYGPATH_W) 'meas/glue/gluecor.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/gluecor.cc'; fi`
+
+polycor.o: meas/glue/polycor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT polycor.o -MD -MP -MF "$(DEPDIR)/polycor.Tpo" -c -o polycor.o `test -f 'meas/glue/polycor.cc' || echo '$(srcdir)/'`meas/glue/polycor.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/polycor.Tpo" "$(DEPDIR)/polycor.Po"; else rm -f "$(DEPDIR)/polycor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/polycor.cc' object='polycor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o polycor.o `test -f 'meas/glue/polycor.cc' || echo '$(srcdir)/'`meas/glue/polycor.cc
+
+polycor.obj: meas/glue/polycor.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT polycor.obj -MD -MP -MF "$(DEPDIR)/polycor.Tpo" -c -o polycor.obj `if test -f 'meas/glue/polycor.cc'; then $(CYGPATH_W) 'meas/glue/polycor.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/polycor.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/polycor.Tpo" "$(DEPDIR)/polycor.Po"; else rm -f "$(DEPDIR)/polycor.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/polycor.cc' object='polycor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o polycor.obj `if test -f 'meas/glue/polycor.cc'; then $(CYGPATH_W) 'meas/glue/polycor.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/polycor.cc'; fi`
+
 hadron_seqsource.o: meas/hadron/hadron_seqsource.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hadron_seqsource.o -MD -MP -MF "$(DEPDIR)/hadron_seqsource.Tpo" -c -o hadron_seqsource.o `test -f 'meas/hadron/hadron_seqsource.cc' || echo '$(srcdir)/'`meas/hadron/hadron_seqsource.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hadron_seqsource.Tpo" "$(DEPDIR)/hadron_seqsource.Po"; else rm -f "$(DEPDIR)/hadron_seqsource.Tpo"; exit 1; fi
@@ -5707,6 +5774,20 @@ rgauge.obj: util/gauge/rgauge.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/rgauge.cc' object='rgauge.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rgauge.obj `if test -f 'util/gauge/rgauge.cc'; then $(CYGPATH_W) 'util/gauge/rgauge.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/rgauge.cc'; fi`
+
+shift2.o: util/gauge/shift2.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT shift2.o -MD -MP -MF "$(DEPDIR)/shift2.Tpo" -c -o shift2.o `test -f 'util/gauge/shift2.cc' || echo '$(srcdir)/'`util/gauge/shift2.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/shift2.Tpo" "$(DEPDIR)/shift2.Po"; else rm -f "$(DEPDIR)/shift2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/shift2.cc' object='shift2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o shift2.o `test -f 'util/gauge/shift2.cc' || echo '$(srcdir)/'`util/gauge/shift2.cc
+
+shift2.obj: util/gauge/shift2.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT shift2.obj -MD -MP -MF "$(DEPDIR)/shift2.Tpo" -c -o shift2.obj `if test -f 'util/gauge/shift2.cc'; then $(CYGPATH_W) 'util/gauge/shift2.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/shift2.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/shift2.Tpo" "$(DEPDIR)/shift2.Po"; else rm -f "$(DEPDIR)/shift2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/shift2.cc' object='shift2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o shift2.obj `if test -f 'util/gauge/shift2.cc'; then $(CYGPATH_W) 'util/gauge/shift2.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/shift2.cc'; fi`
 
 su2extract.o: util/gauge/su2extract.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT su2extract.o -MD -MP -MF "$(DEPDIR)/su2extract.Tpo" -c -o su2extract.o `test -f 'util/gauge/su2extract.cc' || echo '$(srcdir)/'`util/gauge/su2extract.cc; \
