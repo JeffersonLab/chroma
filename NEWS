@@ -1,3 +1,10 @@
+08/24/2006 -- Robert Edwards
+	Version 3.11.1. Fixed regression metric in mesons from v3.11.0 . 
+        Rearranged mesplq and added measurements of all plaquette planes.
+        Regenerated all regression output since they depend on the
+        plaquette output. Fully converted the block-ing code along
+        with fuzglue, polycor and gluecor.
+
 08/19/2006 -- George T. Fleming
 	Version 3.11.0.  Changed the interface of the slow Fourier transform
         (SftMom) class to allow for any lattice point to be chosen as the
