@@ -1,4 +1,4 @@
-//  $Id: ape_smear.cc,v 3.1 2006-08-11 16:13:29 edwards Exp $
+//  $Id: ape_smear.cc,v 3.2 2006-08-24 02:34:18 edwards Exp $
 /*! \file
  *  \brief APE-smearing of the gauge configuration
  */
@@ -7,35 +7,10 @@
 #include "meas/smear/ape_smear.h"
 #include "util/gauge/reunit.h"
 #include "util/gauge/su3proj.h"
+#include "util/gauge/shift2.h"
 
 namespace Chroma 
 { 
-  //! A simple not-fancy power of 2 shift
-  LatticeColorMatrix shift2(const LatticeColorMatrix& s1, int isign, int dir, int level)
-  {
-    LatticeColorMatrix d;
-
-    if (level == 0)
-    {
-      d = shift(s1,isign,dir);
-    }
-    else
-    {
-      LatticeColorMatrix tmp = shift(s1,isign,dir);
-      d = shift(tmp,isign,dir);
-
-      int cnt = 1 << (level -1);
-      for (; cnt-- > 0; )
-      {
-	tmp = shift(d,isign,dir);
-	d   = shift(tmp,isign,dir);
-      }
-    }
-
-    return d;
-  }
-
-
   //! Construct APE smeared links from:
   /*!
    * \ingroup smear
