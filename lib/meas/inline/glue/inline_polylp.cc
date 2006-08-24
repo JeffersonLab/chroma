@@ -80,10 +80,8 @@ namespace Chroma {
     push(xml_out, "PolyakovLoop");
     write(xml_out, "update_no", update_no);
 
-    multi1d<DComplex> polyloop(Nd);
-    for(int mu=0; mu < Nd; mu++) {
-      polylp(u, polyloop[mu], mu);
-    }
+    multi1d<DComplex> polyloop;
+    polylp(u, polyloop);
 
     write(xml_out, "poly_loop", polyloop);
 

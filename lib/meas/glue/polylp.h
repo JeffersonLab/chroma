@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polylp.h,v 3.0 2006-04-03 04:58:58 edwards Exp $
+// $Id: polylp.h,v 3.1 2006-08-24 21:04:31 edwards Exp $
 /*! \file
  *  \brief Calculate the global normalized sum of the Polyakov loop
  */
@@ -7,18 +7,30 @@
 #ifndef __polylp_h__
 #define __polylp_h__
 
-namespace Chroma {
+namespace Chroma 
+{
 
-//! Return the value of the average plaquette normalized to 1
-/*!
- * \ingroup glue
- *
- * \param u          gauge field (Read)
- * \param poly_loop  Polyakov loop average in direction mu (Write) 
- * \param mu         direction of Polyakov loop (Read)
- */
+  //! Compute Polyakov loop
+  /*!
+   * \ingroup glue
+   *
+   * \param u          gauge field (Read)
+   * \param poly_loop  Polyakov loop average in direction mu (Write) 
+   * \param mu         direction of Polyakov loop (Read)
+   */
 
-void polylp(const multi1d<LatticeColorMatrix>& u, DComplex& poly_loop, int mu);
+  void polylp(const multi1d<LatticeColorMatrix>& u, DComplex& poly_loop, int mu);
+
+
+  //! Compute Polyakov loop
+  /*!
+   * \ingroup glue
+   *
+   * \param u          gauge field (Read)
+   * \param poly_loop  Polyakov loop average (Write) 
+   */
+
+  void polylp(const multi1d<LatticeColorMatrix>& u, multi1d<DComplex>& poly_loop);
 
 }  // end namespace Chroma
 
