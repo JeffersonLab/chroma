@@ -1091,9 +1091,9 @@ Calculate building blocks - insertions in 3-pt functions
   <ProgramInfo>
     <code_version>
       <chroma>3.11.0</chroma>
-      <qdp>1.20.9</qdp>
+      <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>19 Aug 06 02:01:05 EDT</run_date>
+    <run_date>24 Aug 06 15:22:19 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1122,26 +1122,32 @@ Calculate building blocks - insertions in 3-pt functions
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994803997506905</w_plaq>
-    <s_plaq>0.994798443435381</s_plaq>
-    <t_plaq>0.994809551578429</t_plaq>
-    <link>0.379449337626284</link>
+    <w_plaq>0.994803997558645</w_plaq>
+    <s_plaq>0.99479844317668</s_plaq>
+    <t_plaq>0.99480955194061</t_plaq>
+    <plane_01_plaq>0.994703591490785</plane_01_plaq>
+    <plane_02_plaq>0.99492682578663</plane_02_plaq>
+    <plane_12_plaq>0.994764912252625</plane_12_plaq>
+    <plane_03_plaq>0.994693187996745</plane_03_plaq>
+    <plane_13_plaq>0.994853910369178</plane_13_plaq>
+    <plane_23_plaq>0.994881557455907</plane_23_plaq>
+    <link>0.379449337740274</link>
     <pollp>
       <elem>
-        <re>0.966585880688702</re>
-        <im>-0.00132088747318448</im>
+        <re>0.96658587983499</re>
+        <im>-0.00132088747583718</im>
       </elem>
       <elem>
-        <re>0.966365773618842</re>
-        <im>-0.00123499087385426</im>
+        <re>0.966365774977021</re>
+        <im>-0.00123499089295365</im>
       </elem>
       <elem>
-        <re>0.967146154958755</re>
-        <im>-0.00112309937897711</im>
+        <re>0.967146154221458</re>
+        <im>-0.00112309936806317</im>
       </elem>
       <elem>
-        <re>0.87876926199533</re>
-        <im>-0.00991386472378508</im>
+        <re>0.878769261723695</re>
+        <im>-0.00991386471347747</im>
       </elem>
     </pollp>
   </Observables>
@@ -1152,9 +1158,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:05 EDT</run_date>
+          <run_date>24 Aug 06 15:22:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1212,26 +1218,32 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -1246,9 +1258,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:05 EDT</run_date>
+          <run_date>24 Aug 06 15:22:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1301,26 +1313,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -1381,91 +1399,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.100793e-07</resid>
+            <resid>1.217252e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.188862e-07</resid>
+            <resid>1.191992e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.219988e-07</resid>
+            <resid>1.34222e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>9.307875e-08</resid>
+            <resid>1.15865e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.180794e-07</resid>
+            <resid>1.28108e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.008679e-07</resid>
+            <resid>1.022034e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.270495e-07</resid>
+            <resid>1.334593e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.126479e-07</resid>
+            <resid>1.203311e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.303056e-07</resid>
+            <resid>1.12479e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.476189e-07</resid>
+            <resid>1.411983e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.21516e-07</resid>
+            <resid>1.165652e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.068298e-07</resid>
+            <resid>1.091628e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>564</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</prop_corr>
+          <prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1475,9 +1493,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:06 EDT</run_date>
+          <run_date>24 Aug 06 15:22:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1540,26 +1558,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -1639,11 +1663,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.57714738030978e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.57714756692367e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1653,9 +1677,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:06 EDT</run_date>
+          <run_date>24 Aug 06 15:22:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1708,26 +1732,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -1863,7 +1893,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 6.57714738030978e-05</source_corr>
+          <source_corr>0 0 0 0 0 0 0 6.57714756692367e-05</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -1871,91 +1901,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>48</n_count>
-            <resid>4.413662e-07</resid>
+            <resid>4.497289e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>48</n_count>
-            <resid>4.521204e-07</resid>
+            <resid>4.488101e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>48</n_count>
-            <resid>4.275741e-07</resid>
+            <resid>4.496969e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>48</n_count>
-            <resid>4.562539e-07</resid>
+            <resid>4.481016e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>48</n_count>
-            <resid>4.491841e-07</resid>
+            <resid>4.407933e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.221695e-07</resid>
+            <resid>4.169228e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>48</n_count>
-            <resid>4.497835e-07</resid>
+            <resid>4.137866e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>48</n_count>
-            <resid>4.255687e-07</resid>
+            <resid>4.343402e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.074623e-07</resid>
+            <resid>4.00175e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.097413e-07</resid>
+            <resid>4.062141e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.152865e-07</resid>
+            <resid>4.002689e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.364857e-07</resid>
+            <resid>4.061033e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>581</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>5.15427283575108e-08 1.25997229727477e-07 3.08484321325396e-07 7.55719005158532e-07 1.8514479313068e-06 4.53983299007375e-06 1.11341130398361e-05 2.70417878114381e-05</prop_corr>
+          <prop_corr>5.15427289770428e-08 1.25997230598747e-07 3.08484326949813e-07 7.55719028164784e-07 1.85144800868928e-06 4.53983314261592e-06 1.11341131833244e-05 2.70417883164229e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1965,9 +1995,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:06 EDT</run_date>
+          <run_date>24 Aug 06 15:22:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2015,26 +2045,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -2186,14 +2222,14 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 1.79414541233061e-09</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 1.79414553045861e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2203,9 +2239,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:07 EDT</run_date>
+          <run_date>24 Aug 06 15:22:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2258,26 +2294,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -2445,7 +2487,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 1.79414541233061e-09</source_corr>
+          <source_corr>0 0 0 0 0 0 0 1.79414553045861e-09</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -2453,91 +2495,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.406203e-07</resid>
+            <resid>4.237311e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.373211e-07</resid>
+            <resid>4.372812e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.357256e-07</resid>
+            <resid>4.425254e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.593224e-07</resid>
+            <resid>4.49365e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.468903e-07</resid>
+            <resid>4.461214e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.382449e-07</resid>
+            <resid>4.472238e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.403207e-07</resid>
+            <resid>4.372392e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.713765e-07</resid>
+            <resid>4.433191e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.341831e-07</resid>
+            <resid>4.28695e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.658602e-07</resid>
+            <resid>4.370771e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.57057e-07</resid>
+            <resid>4.242675e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.47812e-07</resid>
+            <resid>4.46109e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.35818428862508e-12 3.33401923829157e-12 8.20029408001019e-12 2.01811319741705e-11 4.96735087371204e-11 1.22365521849243e-10 3.01407564563869e-10 7.38792971465155e-10</prop_corr>
+          <prop_corr>1.35818432703945e-12 3.33401929253049e-12 8.2002941529754e-12 2.01811321202201e-11 4.96735091328461e-11 1.22365525111535e-10 3.01407573547299e-10 7.38793007710464e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2547,9 +2589,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:07 EDT</run_date>
+          <run_date>24 Aug 06 15:22:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2596,26 +2638,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -2695,11 +2743,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 4.47703378079269e-10</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.47703409386938e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2709,9 +2757,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:07 EDT</run_date>
+          <run_date>24 Aug 06 15:22:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2764,26 +2812,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -2887,7 +2941,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 4.47703378079269e-10</source_corr>
+          <source_corr>0 0 0 0 0 0 0 4.47703409386938e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -2895,91 +2949,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.347246e-07</resid>
+            <resid>4.326091e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.467071e-07</resid>
+            <resid>4.185936e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.305546e-07</resid>
+            <resid>4.286255e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.107314e-07</resid>
+            <resid>4.488607e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.523799e-07</resid>
+            <resid>4.312218e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.372756e-07</resid>
+            <resid>4.277462e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.478253e-07</resid>
+            <resid>3.961235e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.375782e-07</resid>
+            <resid>4.539761e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.533916e-07</resid>
+            <resid>4.444438e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.13703e-07</resid>
+            <resid>4.287787e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.583983e-07</resid>
+            <resid>4.485344e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.302795e-07</resid>
+            <resid>4.296525e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.39134040889646e-13 8.32593955588438e-13 2.04810148505712e-12 5.04109402759551e-12 1.24097334471523e-11 3.05741281041051e-11 7.53186599526682e-11 1.84054947747028e-10</prop_corr>
+          <prop_corr>3.39134067106671e-13 8.32594017032929e-13 2.04810165706591e-12 5.04109449125555e-12 1.24097344372185e-11 3.05741306242801e-11 7.53186650084556e-11 1.8405496109667e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2989,9 +3043,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:08 EDT</run_date>
+          <run_date>24 Aug 06 15:22:24 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3039,26 +3093,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -3210,14 +3270,14 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 7.98520604319891e-10</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 7.98520660513248e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -3227,9 +3287,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:08 EDT</run_date>
+          <run_date>24 Aug 06 15:22:25 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3282,26 +3342,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -3469,7 +3535,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 7.98520604319891e-10</source_corr>
+          <source_corr>0 0 0 0 0 0 0 7.98520660513248e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -3477,91 +3543,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.223777e-07</resid>
+            <resid>4.235909e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.379386e-07</resid>
+            <resid>4.15044e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.052715e-07</resid>
+            <resid>4.166692e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.197763e-07</resid>
+            <resid>4.222208e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.415579e-07</resid>
+            <resid>4.24052e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.319084e-07</resid>
+            <resid>3.977219e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.097433e-07</resid>
+            <resid>4.108324e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.335022e-07</resid>
+            <resid>4.324133e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.478254e-07</resid>
+            <resid>4.204332e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.470066e-07</resid>
+            <resid>4.343754e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.4832e-07</resid>
+            <resid>4.771771e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.272255e-07</resid>
+            <resid>4.122815e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>6.0413890342196e-13 1.48293068804408e-12 3.64715928755865e-12 8.97517907212373e-12 2.20899236199487e-11 5.44127618178917e-11 1.34020189520319e-10 3.29075030594633e-10</prop_corr>
+          <prop_corr>6.04138946482098e-13 1.48293080528589e-12 3.64715963440496e-12 8.97517972114442e-12 2.20899253411136e-11 5.44127656921205e-11 1.34020198833371e-10 3.29075055558896e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3571,9 +3637,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:08 EDT</run_date>
+          <run_date>24 Aug 06 15:22:26 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3620,26 +3686,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -3719,11 +3791,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 4.9747051442836e-11</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.97470553387873e-11</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -3733,9 +3805,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:08 EDT</run_date>
+          <run_date>24 Aug 06 15:22:26 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3788,26 +3860,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -3911,7 +3989,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 4.9747051442836e-11</source_corr>
+          <source_corr>0 0 0 0 0 0 0 4.97470553387873e-11</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -3919,91 +3997,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.481973e-07</resid>
+            <resid>4.270098e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.489889e-07</resid>
+            <resid>4.183625e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.452853e-07</resid>
+            <resid>4.199023e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.491563e-07</resid>
+            <resid>4.422239e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.270662e-07</resid>
+            <resid>4.043169e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.656659e-07</resid>
+            <resid>4.387969e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.716644e-07</resid>
+            <resid>4.526757e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.517028e-07</resid>
+            <resid>4.437989e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.396107e-07</resid>
+            <resid>4.498538e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.511652e-07</resid>
+            <resid>4.258222e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.239844e-07</resid>
+            <resid>4.344786e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.404152e-07</resid>
+            <resid>4.466098e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.76809475396247e-14 9.25090451359561e-14 2.27563493203048e-13 5.60114715494612e-13 1.37884539402964e-12 3.39709523251255e-12 8.36867501103299e-12 2.04510317805642e-11</prop_corr>
+          <prop_corr>3.76809508891268e-14 9.2509053773887e-14 2.27563514779444e-13 5.60114757987184e-13 1.37884551156243e-12 3.39709550871888e-12 8.36867564047892e-12 2.04510332312587e-11</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -4013,9 +4091,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:09 EDT</run_date>
+          <run_date>24 Aug 06 15:22:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4063,26 +4141,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -4234,14 +4318,14 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 1.21206580648866e-08</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 1.21206585962658e-08</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -4251,9 +4335,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:09 EDT</run_date>
+          <run_date>24 Aug 06 15:22:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4306,26 +4390,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -4493,7 +4583,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 1.21206580648866e-08</source_corr>
+          <source_corr>0 0 0 0 0 0 0 1.21206585962658e-08</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -4501,91 +4591,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.404737e-07</resid>
+            <resid>4.443632e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.465582e-07</resid>
+            <resid>4.259959e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.404737e-07</resid>
+            <resid>4.443632e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.404086e-07</resid>
+            <resid>4.571828e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.536217e-07</resid>
+            <resid>4.516852e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.280115e-07</resid>
+            <resid>4.12391e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.536217e-07</resid>
+            <resid>4.516852e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.2802e-07</resid>
+            <resid>4.513949e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.33551e-07</resid>
+            <resid>4.518249e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.298336e-07</resid>
+            <resid>4.112897e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.33551e-07</resid>
+            <resid>4.518249e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.217596e-07</resid>
+            <resid>4.366043e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>9.15925927447982e-12 2.24852089994323e-11 5.53081739685418e-11 1.36124276054298e-10 3.35076007081479e-10 8.25482158090273e-10 2.03345481872091e-09 4.99474549585627e-09</prop_corr>
+          <prop_corr>9.15926016602266e-12 2.2485210787294e-11 5.53081791691961e-11 1.36124289300313e-10 3.3507604175256e-10 8.25482234459415e-10 2.03345498120166e-09 4.99474586894987e-09</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -4595,9 +4685,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:10 EDT</run_date>
+          <run_date>24 Aug 06 15:22:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4644,26 +4734,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -4743,11 +4839,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 3.03016452413813e-09</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 3.03016463941577e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -4757,9 +4853,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:10 EDT</run_date>
+          <run_date>24 Aug 06 15:22:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4812,26 +4908,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -4935,7 +5037,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 3.03016452413813e-09</source_corr>
+          <source_corr>0 0 0 0 0 0 0 3.03016463941577e-09</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -4943,91 +5045,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.475345e-07</resid>
+            <resid>4.52601e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.359268e-07</resid>
+            <resid>4.1978e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.475345e-07</resid>
+            <resid>4.52601e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.338263e-07</resid>
+            <resid>4.486945e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.364908e-07</resid>
+            <resid>4.199566e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.11074e-07</resid>
+            <resid>4.37894e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.364908e-07</resid>
+            <resid>4.199566e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.253323e-07</resid>
+            <resid>4.454575e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.320593e-07</resid>
+            <resid>4.405454e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.606289e-07</resid>
+            <resid>4.455677e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.320593e-07</resid>
+            <resid>4.405454e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.219814e-07</resid>
+            <resid>4.195722e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>2.289814872878e-12 5.6213024067414e-12 1.38270440144087e-11 3.40310705040665e-11 8.37690040635074e-11 2.06370543965273e-10 5.08363712598599e-10 1.24868639670642e-09</prop_corr>
+          <prop_corr>2.28981495323717e-12 5.62130260027832e-12 1.38270443054706e-11 3.40310709790866e-11 8.37690071341243e-11 2.06370551808978e-10 5.08363734042846e-10 1.24868644306125e-09</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -5037,9 +5139,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:10 EDT</run_date>
+          <run_date>24 Aug 06 15:22:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5087,26 +5189,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -5258,14 +5366,14 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 1.7864106737511e-09</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 1.78641080507006e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -5275,9 +5383,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:10 EDT</run_date>
+          <run_date>24 Aug 06 15:22:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5330,26 +5438,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -5517,7 +5631,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 1.7864106737511e-09</source_corr>
+          <source_corr>0 0 0 0 0 0 0 1.78641080507006e-09</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -5525,91 +5639,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.530442e-07</resid>
+            <resid>4.417604e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.282384e-07</resid>
+            <resid>4.075099e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.530442e-07</resid>
+            <resid>4.417604e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.282384e-07</resid>
+            <resid>4.075099e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.513397e-07</resid>
+            <resid>4.222074e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.372985e-07</resid>
+            <resid>4.371515e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.513397e-07</resid>
+            <resid>4.222074e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.372985e-07</resid>
+            <resid>4.371515e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.341876e-07</resid>
+            <resid>4.237352e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.332608e-07</resid>
+            <resid>4.279165e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.341876e-07</resid>
+            <resid>4.237352e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.332608e-07</resid>
+            <resid>4.279165e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.34863938033009e-12 3.31080551355789e-12 8.14377448654876e-12 2.00434538319497e-11 4.93382310727881e-11 1.21548512160471e-10 2.99418079132968e-10 7.36714718981977e-10</prop_corr>
+          <prop_corr>1.34863944409722e-12 3.31080564952835e-12 8.14377491113995e-12 2.0043454903844e-11 4.93382335856225e-11 1.21548517274333e-10 2.99418096454651e-10 7.3671475814843e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -5619,9 +5733,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:11 EDT</run_date>
+          <run_date>24 Aug 06 15:22:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5668,26 +5782,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -5767,11 +5887,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 4.46592462882471e-10</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.46592496391974e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -5781,9 +5901,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:11 EDT</run_date>
+          <run_date>24 Aug 06 15:22:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5836,26 +5956,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -5959,7 +6085,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 4.46592462882471e-10</source_corr>
+          <source_corr>0 0 0 0 0 0 0 4.46592496391974e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -5967,91 +6093,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.084972e-07</resid>
+            <resid>4.052947e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.392403e-07</resid>
+            <resid>4.245375e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.084972e-07</resid>
+            <resid>4.052947e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.392403e-07</resid>
+            <resid>4.245375e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.193286e-07</resid>
+            <resid>4.237045e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.162063e-07</resid>
+            <resid>4.267796e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.193286e-07</resid>
+            <resid>4.237045e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.162063e-07</resid>
+            <resid>4.267796e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.342111e-07</resid>
+            <resid>4.35709e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.114254e-07</resid>
+            <resid>4.185225e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.342111e-07</resid>
+            <resid>4.35709e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.114254e-07</resid>
+            <resid>4.185225e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.3716291311094e-13 8.27707922737952e-13 2.03595677178988e-12 5.01088920569349e-12 1.23346132358372e-11 3.03872261504276e-11 7.48546813027418e-11 1.8417755086242e-10</prop_corr>
+          <prop_corr>3.37162947449312e-13 8.27708012885674e-13 2.03595697983963e-12 5.01088969576649e-12 1.23346143532082e-11 3.03872292596646e-11 7.4854688438673e-11 1.8417756926439e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -6061,9 +6187,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:11 EDT</run_date>
+          <run_date>24 Aug 06 15:22:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6111,26 +6237,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -6282,14 +6414,14 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 7.93974751762263e-10</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 7.93974812838147e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -6299,9 +6431,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:11 EDT</run_date>
+          <run_date>24 Aug 06 15:22:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6354,26 +6486,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -6541,7 +6679,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 7.93974751762263e-10</source_corr>
+          <source_corr>0 0 0 0 0 0 0 7.93974812838147e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -6549,91 +6687,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.204711e-07</resid>
+            <resid>4.161049e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.249917e-07</resid>
+            <resid>4.234958e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.204711e-07</resid>
+            <resid>4.161049e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.249917e-07</resid>
+            <resid>4.234958e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.417606e-07</resid>
+            <resid>4.434929e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.122929e-07</resid>
+            <resid>4.083947e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.417606e-07</resid>
+            <resid>4.434929e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.122929e-07</resid>
+            <resid>4.083947e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.430713e-07</resid>
+            <resid>4.387412e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.361913e-07</resid>
+            <resid>4.524952e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.430713e-07</resid>
+            <resid>4.387412e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.361913e-07</resid>
+            <resid>4.524952e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>5.9939374915079e-13 1.47146595810547e-12 3.61945010685798e-12 8.90819218545629e-12 2.19280807161567e-11 5.40215372585084e-11 1.3307475520722e-10 3.27430512304776e-10</prop_corr>
+          <prop_corr>5.99393791369814e-13 1.47146604138326e-12 3.61945036378045e-12 8.90819259209909e-12 2.19280817637197e-11 5.40215411148989e-11 1.33074764110811e-10 3.27430532152038e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -6643,9 +6781,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:12 EDT</run_date>
+          <run_date>24 Aug 06 15:22:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6692,26 +6830,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -6791,11 +6935,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 4.9623210002598e-11</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.96232138494687e-11</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -6805,9 +6949,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:12 EDT</run_date>
+          <run_date>24 Aug 06 15:22:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6860,26 +7004,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -6983,7 +7133,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 4.9623210002598e-11</source_corr>
+          <source_corr>0 0 0 0 0 0 0 4.96232138494687e-11</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -6991,91 +7141,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.309974e-07</resid>
+            <resid>4.450644e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.188991e-07</resid>
+            <resid>4.338501e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.309974e-07</resid>
+            <resid>4.450644e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.188991e-07</resid>
+            <resid>4.338501e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.388179e-07</resid>
+            <resid>4.374863e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.363268e-07</resid>
+            <resid>4.461481e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.388179e-07</resid>
+            <resid>4.374863e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.363268e-07</resid>
+            <resid>4.461481e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.226685e-07</resid>
+            <resid>4.181646e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.324073e-07</resid>
+            <resid>4.69632e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.226685e-07</resid>
+            <resid>4.181646e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.324073e-07</resid>
+            <resid>4.69632e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.74622502343349e-14 9.19669436912683e-14 2.26216025272567e-13 5.56763423663051e-13 1.37051075255561e-12 3.37635822611707e-12 8.31719384967492e-12 2.04643678306209e-11</prop_corr>
+          <prop_corr>3.74622544219516e-14 9.19669523876999e-14 2.26216046617263e-13 5.56763479138602e-13 1.37051085785922e-12 3.3763584975625e-12 8.31719453696258e-12 2.04643694738141e-11</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -7085,9 +7235,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:12 EDT</run_date>
+          <run_date>24 Aug 06 15:22:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7135,26 +7285,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -7306,14 +7462,14 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 2.5803829604863e-09</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 2.5803831468939e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -7323,9 +7479,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:13 EDT</run_date>
+          <run_date>24 Aug 06 15:22:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7378,26 +7534,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -7565,7 +7727,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 2.5803829604863e-09</source_corr>
+          <source_corr>0 0 0 0 0 0 0 2.5803831468939e-09</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -7573,91 +7735,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.347205e-07</resid>
+            <resid>4.408061e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.498941e-07</resid>
+            <resid>4.229345e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.347205e-07</resid>
+            <resid>4.408061e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.498941e-07</resid>
+            <resid>4.229345e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.474689e-07</resid>
+            <resid>4.672931e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.279961e-07</resid>
+            <resid>4.564282e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.474689e-07</resid>
+            <resid>4.672931e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.279961e-07</resid>
+            <resid>4.564282e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.676561e-07</resid>
+            <resid>4.551489e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.496791e-07</resid>
+            <resid>4.447477e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.676561e-07</resid>
+            <resid>4.551489e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.496791e-07</resid>
+            <resid>4.447477e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.94802541189872e-12 4.78225306234086e-12 1.17632107003285e-11 2.89516655843147e-11 7.1266159157684e-11 1.75569602603361e-10 4.32492405423593e-10 1.06414195261306e-09</prop_corr>
+          <prop_corr>1.9480256066354e-12 4.78225345539889e-12 1.17632117232614e-11 2.8951667936762e-11 7.12661651060695e-11 1.75569618090971e-10 4.32492439673748e-10 1.06414205128563e-09</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -7667,9 +7829,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:13 EDT</run_date>
+          <run_date>24 Aug 06 15:22:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7716,26 +7878,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -7815,11 +7983,11 @@ Calculate building blocks - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150521123 0.0165113005119434 0.00626269129047522 0.00253901398145872 0.00103327026124465 0.000420641962332369 0.000171401928821638 6.99144228202034e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 4.96205783106654e-10</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.96205808952893e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -7829,9 +7997,9 @@ Calculate building blocks - insertions in 3-pt functions
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 02:01:13 EDT</run_date>
+          <run_date>24 Aug 06 15:22:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7884,26 +8052,32 @@ Calculate building blocks - insertions in 3-pt functions
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
             </elem>
           </pollp>
         </Observables>
@@ -8007,7 +8181,7 @@ Calculate building blocks - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 4.96205783106654e-10</source_corr>
+          <source_corr>0 0 0 0 0 0 0 4.96205808952893e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -8015,91 +8189,91 @@ Calculate building blocks - insertions in 3-pt functions
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.353405e-07</resid>
+            <resid>4.236876e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.326236e-07</resid>
+            <resid>4.158353e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.353405e-07</resid>
+            <resid>4.236876e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.326236e-07</resid>
+            <resid>4.158353e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.65617e-07</resid>
+            <resid>4.517603e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.271969e-07</resid>
+            <resid>4.31832e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.65617e-07</resid>
+            <resid>4.517603e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.271969e-07</resid>
+            <resid>4.31832e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.761249e-07</resid>
+            <resid>4.260093e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.257234e-07</resid>
+            <resid>4.176042e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.761249e-07</resid>
+            <resid>4.260093e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>49</n_count>
-            <resid>4.257234e-07</resid>
+            <resid>4.176042e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>588</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.7461851780074e-13 9.19658481410492e-13 2.2621295547284e-12 5.56753992765685e-12 1.37048707593915e-11 3.37629671258993e-11 8.31702469403852e-11 2.0463819120497e-10</prop_corr>
+          <prop_corr>3.74618521712026e-13 9.19658496680348e-13 2.26212967880966e-12 5.56754010656408e-12 1.37048710983566e-11 3.37629689092573e-11 8.31702490866958e-11 2.04638200342617e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

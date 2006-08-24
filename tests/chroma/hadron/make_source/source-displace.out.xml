@@ -112,10 +112,10 @@ Make a propagator source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.8.0</chroma>
-      <qdp>1.20.5</qdp>
+      <chroma>3.11.0</chroma>
+      <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>03 Jul 06 10:57:55 EDT</run_date>
+    <run_date>24 Aug 06 15:23:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -144,26 +144,32 @@ Make a propagator source
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>-0.00379757</w_plaq>
-    <s_plaq>-0.00327781</s_plaq>
-    <t_plaq>-0.00431733</t_plaq>
-    <link>0.104803</link>
+    <w_plaq>-0.00379757117560884</w_plaq>
+    <s_plaq>-0.00327781411599264</s_plaq>
+    <t_plaq>-0.00431732823522503</t_plaq>
+    <plane_01_plaq>0.00678453616274055</plane_01_plaq>
+    <plane_02_plaq>-0.0144243001413997</plane_02_plaq>
+    <plane_12_plaq>-0.00219367836931876</plane_12_plaq>
+    <plane_03_plaq>0.000596277743170504</plane_03_plaq>
+    <plane_13_plaq>-0.00482085921733718</plane_13_plaq>
+    <plane_23_plaq>-0.00872740323150841</plane_23_plaq>
+    <link>0.104803482135443</link>
     <pollp>
       <elem>
-        <re>0.040209</re>
-        <im>-0.0193806</im>
+        <re>0.0402090458555904</re>
+        <im>-0.0193805963208433</im>
       </elem>
       <elem>
-        <re>0.0258227</re>
-        <im>0.031735</im>
+        <re>0.0258227002996136</re>
+        <im>0.0317349850714284</im>
       </elem>
       <elem>
-        <re>-0.000155886</re>
-        <im>0.00880705</im>
+        <re>-0.000155884566387006</re>
+        <im>0.00880705229913777</im>
       </elem>
       <elem>
-        <re>0.0281716</re>
-        <im>-0.0108408</im>
+        <re>0.0281715633755084</re>
+        <im>-0.0108408529631561</im>
       </elem>
     </pollp>
   </Observables>
@@ -173,10 +179,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:56 EDT</run_date>
+          <run_date>24 Aug 06 15:23:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -237,31 +243,37 @@ Make a propagator source
 
         </Config_info>
         <Observables>
-          <w_plaq>-0.00379757</w_plaq>
-          <s_plaq>-0.00327781</s_plaq>
-          <t_plaq>-0.00431733</t_plaq>
-          <link>0.104803</link>
+          <w_plaq>-0.00379757117560884</w_plaq>
+          <s_plaq>-0.00327781411599264</s_plaq>
+          <t_plaq>-0.00431732823522503</t_plaq>
+          <plane_01_plaq>0.00678453616274055</plane_01_plaq>
+          <plane_02_plaq>-0.0144243001413997</plane_02_plaq>
+          <plane_12_plaq>-0.00219367836931876</plane_12_plaq>
+          <plane_03_plaq>0.000596277743170504</plane_03_plaq>
+          <plane_13_plaq>-0.00482085921733718</plane_13_plaq>
+          <plane_23_plaq>-0.00872740323150841</plane_23_plaq>
+          <link>0.104803482135443</link>
           <pollp>
             <elem>
-              <re>0.040209</re>
-              <im>-0.0193806</im>
+              <re>0.0402090458555904</re>
+              <im>-0.0193805963208433</im>
             </elem>
             <elem>
-              <re>0.0258227</re>
-              <im>0.031735</im>
+              <re>0.0258227002996136</re>
+              <im>0.0317349850714284</im>
             </elem>
             <elem>
-              <re>-0.000155886</re>
-              <im>0.00880705</im>
+              <re>-0.000155884566387006</re>
+              <im>0.00880705229913777</im>
             </elem>
             <elem>
-              <re>0.0281716</re>
-              <im>-0.0108408</im>
+              <re>0.0281715633755084</re>
+              <im>-0.0108408529631561</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 3.24636 0 0 0 0 0</source_corr>
+          <source_corr>0 0 3.24635687235858 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -270,10 +282,10 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:57:57 EDT</run_date>
+          <run_date>24 Aug 06 15:23:48 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -334,31 +346,37 @@ Make a propagator source
 
         </Config_info>
         <Observables>
-          <w_plaq>-0.00379757</w_plaq>
-          <s_plaq>-0.00327781</s_plaq>
-          <t_plaq>-0.00431733</t_plaq>
-          <link>0.104803</link>
+          <w_plaq>-0.00379757117560884</w_plaq>
+          <s_plaq>-0.00327781411599264</s_plaq>
+          <t_plaq>-0.00431732823522503</t_plaq>
+          <plane_01_plaq>0.00678453616274055</plane_01_plaq>
+          <plane_02_plaq>-0.0144243001413997</plane_02_plaq>
+          <plane_12_plaq>-0.00219367836931876</plane_12_plaq>
+          <plane_03_plaq>0.000596277743170504</plane_03_plaq>
+          <plane_13_plaq>-0.00482085921733718</plane_13_plaq>
+          <plane_23_plaq>-0.00872740323150841</plane_23_plaq>
+          <link>0.104803482135443</link>
           <pollp>
             <elem>
-              <re>0.040209</re>
-              <im>-0.0193806</im>
+              <re>0.0402090458555904</re>
+              <im>-0.0193805963208433</im>
             </elem>
             <elem>
-              <re>0.0258227</re>
-              <im>0.031735</im>
+              <re>0.0258227002996136</re>
+              <im>0.0317349850714284</im>
             </elem>
             <elem>
-              <re>-0.000155886</re>
-              <im>0.00880705</im>
+              <re>-0.000155884566387006</re>
+              <im>0.00880705229913777</im>
             </elem>
             <elem>
-              <re>0.0281716</re>
-              <im>-0.0108408</im>
+              <re>0.0281715633755084</re>
+              <im>-0.0108408529631561</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 2.74813 0 0 0 0</source_corr>
+          <source_corr>0 0 0 2.74813084658506 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>

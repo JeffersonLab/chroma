@@ -226,9 +226,9 @@ Calculate noisy building blocks - insertions in traces
   <ProgramInfo>
     <code_version>
       <chroma>3.11.0</chroma>
-      <qdp>1.20.9</qdp>
+      <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>19 Aug 06 03:44:35 EDT</run_date>
+    <run_date>24 Aug 06 15:24:21 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -257,26 +257,32 @@ Calculate noisy building blocks - insertions in traces
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994737201137468</w_plaq>
-    <s_plaq>0.994879270438105</s_plaq>
-    <t_plaq>0.994595131836832</t_plaq>
-    <link>0.379315779769968</link>
+    <w_plaq>0.994737200542457</w_plaq>
+    <s_plaq>0.994879270127664</s_plaq>
+    <t_plaq>0.994595130957249</t_plaq>
+    <plane_01_plaq>0.994740712922066</plane_01_plaq>
+    <plane_02_plaq>0.995027526126554</plane_02_plaq>
+    <plane_12_plaq>0.994869571334372</plane_12_plaq>
+    <plane_03_plaq>0.994667024196436</plane_03_plaq>
+    <plane_13_plaq>0.994264754621933</plane_13_plaq>
+    <plane_23_plaq>0.994853614053378</plane_23_plaq>
+    <link>0.379315779583218</link>
     <pollp>
       <elem>
         <re>0.967072525178082</re>
-        <im>-0.00120949521590319</im>
+        <im>-0.00120949516561571</im>
       </elem>
       <elem>
-        <re>0.965753540125055</re>
-        <im>-0.00129494637909981</im>
+        <re>0.965753540707131</re>
+        <im>-0.0012949463083108</im>
       </elem>
       <elem>
-        <re>0.967362507052409</re>
-        <im>-0.00118264995876416</im>
+        <re>0.967362507246435</re>
+        <im>-0.00118264995914312</im>
       </elem>
       <elem>
-        <re>0.880593161176269</re>
-        <im>-0.00972810021721671</im>
+        <re>0.880593160671803</re>
+        <im>-0.00972810027027056</im>
       </elem>
     </pollp>
   </Observables>
@@ -287,9 +293,9 @@ Calculate noisy building blocks - insertions in traces
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 03:44:35 EDT</run_date>
+          <run_date>24 Aug 06 15:24:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -331,26 +337,32 @@ Calculate noisy building blocks - insertions in traces
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994737201137468</w_plaq>
-          <s_plaq>0.994879270438105</s_plaq>
-          <t_plaq>0.994595131836832</t_plaq>
-          <link>0.379315779769968</link>
+          <w_plaq>0.994737200542457</w_plaq>
+          <s_plaq>0.994879270127664</s_plaq>
+          <t_plaq>0.994595130957249</t_plaq>
+          <plane_01_plaq>0.994740712922066</plane_01_plaq>
+          <plane_02_plaq>0.995027526126554</plane_02_plaq>
+          <plane_12_plaq>0.994869571334372</plane_12_plaq>
+          <plane_03_plaq>0.994667024196436</plane_03_plaq>
+          <plane_13_plaq>0.994264754621933</plane_13_plaq>
+          <plane_23_plaq>0.994853614053378</plane_23_plaq>
+          <link>0.379315779583218</link>
           <pollp>
             <elem>
               <re>0.967072525178082</re>
-              <im>-0.00120949521590319</im>
+              <im>-0.00120949516561571</im>
             </elem>
             <elem>
-              <re>0.965753540125055</re>
-              <im>-0.00129494637909981</im>
+              <re>0.965753540707131</re>
+              <im>-0.0012949463083108</im>
             </elem>
             <elem>
-              <re>0.967362507052409</re>
-              <im>-0.00118264995876416</im>
+              <re>0.967362507246435</re>
+              <im>-0.00118264995914312</im>
             </elem>
             <elem>
-              <re>0.880593161176269</re>
-              <im>-0.00972810021721671</im>
+              <re>0.880593160671803</re>
+              <im>-0.00972810027027056</im>
             </elem>
           </pollp>
         </Observables>
@@ -365,9 +377,9 @@ Calculate noisy building blocks - insertions in traces
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 03:44:36 EDT</run_date>
+          <run_date>24 Aug 06 15:24:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -420,26 +432,32 @@ Calculate noisy building blocks - insertions in traces
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994737201137468</w_plaq>
-          <s_plaq>0.994879270438105</s_plaq>
-          <t_plaq>0.994595131836832</t_plaq>
-          <link>0.379315779769968</link>
+          <w_plaq>0.994737200542457</w_plaq>
+          <s_plaq>0.994879270127664</s_plaq>
+          <t_plaq>0.994595130957249</t_plaq>
+          <plane_01_plaq>0.994740712922066</plane_01_plaq>
+          <plane_02_plaq>0.995027526126554</plane_02_plaq>
+          <plane_12_plaq>0.994869571334372</plane_12_plaq>
+          <plane_03_plaq>0.994667024196436</plane_03_plaq>
+          <plane_13_plaq>0.994264754621933</plane_13_plaq>
+          <plane_23_plaq>0.994853614053378</plane_23_plaq>
+          <link>0.379315779583218</link>
           <pollp>
             <elem>
               <re>0.967072525178082</re>
-              <im>-0.00120949521590319</im>
+              <im>-0.00120949516561571</im>
             </elem>
             <elem>
-              <re>0.965753540125055</re>
-              <im>-0.00129494637909981</im>
+              <re>0.965753540707131</re>
+              <im>-0.0012949463083108</im>
             </elem>
             <elem>
-              <re>0.967362507052409</re>
-              <im>-0.00118264995876416</im>
+              <re>0.967362507246435</re>
+              <im>-0.00118264995914312</im>
             </elem>
             <elem>
-              <re>0.880593161176269</re>
-              <im>-0.00972810021721671</im>
+              <re>0.880593160671803</re>
+              <im>-0.00972810027027056</im>
             </elem>
           </pollp>
         </Observables>
@@ -484,91 +502,91 @@ Calculate noisy building blocks - insertions in traces
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.51832e-07</resid>
+            <resid>1.421856e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.467295e-07</resid>
+            <resid>1.402749e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>45</n_count>
-            <resid>1.414866e-07</resid>
+            <resid>1.384465e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>46</n_count>
-            <resid>1.442147e-07</resid>
+            <resid>1.57627e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.562665e-07</resid>
+            <resid>1.44111e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.265433e-07</resid>
+            <resid>1.277172e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>46</n_count>
-            <resid>1.413267e-07</resid>
+            <resid>1.510222e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>46</n_count>
-            <resid>1.636087e-07</resid>
+            <resid>1.560072e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.578053e-07</resid>
+            <resid>1.628448e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.361957e-07</resid>
+            <resid>1.381863e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>46</n_count>
-            <resid>1.583757e-07</resid>
+            <resid>1.643273e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>47</n_count>
-            <resid>1.471827e-07</resid>
+            <resid>1.453097e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>558</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>49.5044946042472 3.29052843075982 0.863153124909176 0.316279434866839 0.126202775920874 0.0513243914175411 0.0209790344936902 0.00860027704484833</prop_corr>
+          <prop_corr>49.5044946272639 3.29052842332979 0.863153121687505 0.316279433326844 0.126202776089663 0.0513243919366526 0.0209790346606248 0.00860027705497469</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -596,9 +614,9 @@ Calculate noisy building blocks - insertions in traces
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 03:44:37 EDT</run_date>
+          <run_date>24 Aug 06 15:24:24 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -640,26 +658,32 @@ Calculate noisy building blocks - insertions in traces
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994737201137468</w_plaq>
-          <s_plaq>0.994879270438105</s_plaq>
-          <t_plaq>0.994595131836832</t_plaq>
-          <link>0.379315779769968</link>
+          <w_plaq>0.994737200542457</w_plaq>
+          <s_plaq>0.994879270127664</s_plaq>
+          <t_plaq>0.994595130957249</t_plaq>
+          <plane_01_plaq>0.994740712922066</plane_01_plaq>
+          <plane_02_plaq>0.995027526126554</plane_02_plaq>
+          <plane_12_plaq>0.994869571334372</plane_12_plaq>
+          <plane_03_plaq>0.994667024196436</plane_03_plaq>
+          <plane_13_plaq>0.994264754621933</plane_13_plaq>
+          <plane_23_plaq>0.994853614053378</plane_23_plaq>
+          <link>0.379315779583218</link>
           <pollp>
             <elem>
               <re>0.967072525178082</re>
-              <im>-0.00120949521590319</im>
+              <im>-0.00120949516561571</im>
             </elem>
             <elem>
-              <re>0.965753540125055</re>
-              <im>-0.00129494637909981</im>
+              <re>0.965753540707131</re>
+              <im>-0.0012949463083108</im>
             </elem>
             <elem>
-              <re>0.967362507052409</re>
-              <im>-0.00118264995876416</im>
+              <re>0.967362507246435</re>
+              <im>-0.00118264995914312</im>
             </elem>
             <elem>
-              <re>0.880593161176269</re>
-              <im>-0.00972810021721671</im>
+              <re>0.880593160671803</re>
+              <im>-0.00972810027027056</im>
             </elem>
           </pollp>
         </Observables>
@@ -674,9 +698,9 @@ Calculate noisy building blocks - insertions in traces
         <ProgramInfo>
           <code_version>
             <chroma>3.11.0</chroma>
-            <qdp>1.20.9</qdp>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>19 Aug 06 03:44:37 EDT</run_date>
+          <run_date>24 Aug 06 15:24:24 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -729,26 +753,32 @@ Calculate noisy building blocks - insertions in traces
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994737201137468</w_plaq>
-          <s_plaq>0.994879270438105</s_plaq>
-          <t_plaq>0.994595131836832</t_plaq>
-          <link>0.379315779769968</link>
+          <w_plaq>0.994737200542457</w_plaq>
+          <s_plaq>0.994879270127664</s_plaq>
+          <t_plaq>0.994595130957249</t_plaq>
+          <plane_01_plaq>0.994740712922066</plane_01_plaq>
+          <plane_02_plaq>0.995027526126554</plane_02_plaq>
+          <plane_12_plaq>0.994869571334372</plane_12_plaq>
+          <plane_03_plaq>0.994667024196436</plane_03_plaq>
+          <plane_13_plaq>0.994264754621933</plane_13_plaq>
+          <plane_23_plaq>0.994853614053378</plane_23_plaq>
+          <link>0.379315779583218</link>
           <pollp>
             <elem>
               <re>0.967072525178082</re>
-              <im>-0.00120949521590319</im>
+              <im>-0.00120949516561571</im>
             </elem>
             <elem>
-              <re>0.965753540125055</re>
-              <im>-0.00129494637909981</im>
+              <re>0.965753540707131</re>
+              <im>-0.0012949463083108</im>
             </elem>
             <elem>
-              <re>0.967362507052409</re>
-              <im>-0.00118264995876416</im>
+              <re>0.967362507246435</re>
+              <im>-0.00118264995914312</im>
             </elem>
             <elem>
-              <re>0.880593161176269</re>
-              <im>-0.00972810021721671</im>
+              <re>0.880593160671803</re>
+              <im>-0.00972810027027056</im>
             </elem>
           </pollp>
         </Observables>
@@ -793,91 +823,91 @@ Calculate noisy building blocks - insertions in traces
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>45</n_count>
-            <resid>1.390986e-07</resid>
+            <resid>1.283283e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>45</n_count>
-            <resid>1.315353e-07</resid>
+            <resid>1.462266e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>44</n_count>
-            <resid>1.290779e-07</resid>
+            <resid>1.368025e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>44</n_count>
-            <resid>1.325357e-07</resid>
+            <resid>1.356131e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>45</n_count>
-            <resid>1.32235e-07</resid>
+            <resid>1.282412e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>45</n_count>
-            <resid>1.416247e-07</resid>
+            <resid>1.362148e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>44</n_count>
-            <resid>1.288458e-07</resid>
+            <resid>1.336722e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>44</n_count>
-            <resid>1.466907e-07</resid>
+            <resid>1.458366e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>45</n_count>
-            <resid>1.467596e-07</resid>
+            <resid>1.347706e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>46</n_count>
-            <resid>1.410317e-07</resid>
+            <resid>1.311835e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>44</n_count>
-            <resid>1.365154e-07</resid>
+            <resid>1.48575e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>44</n_count>
-            <resid>1.304849e-07</resid>
+            <resid>1.249175e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>535</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>43.4014818628661 2.11952973669689 0.4206566073077 0.138716794220212 0.0531565680781847 0.0210718466886981 0.00843050671376195 0.00338871581700247</prop_corr>
+          <prop_corr>43.4014819714741 2.11952977476093 0.420656622643426 0.138716799780034 0.0531565696857044 0.0210718473815854 0.00843050698215458 0.0033887159364484</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

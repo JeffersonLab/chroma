@@ -80,10 +80,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.10.3</chroma>
+      <chroma>3.11.0</chroma>
       <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>17 Aug 06 13:15:38 EDT</run_date>
+    <run_date>24 Aug 06 16:58:25 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -131,7 +131,7 @@
               <Plaquette>
                 <update_no>2</update_no>
                 <w_plaq>0.840926557533547</w_plaq>
-                <s_plaq>0.785868141153413</s_plaq>
+                <s_plaq>0.785868141153414</s_plaq>
                 <t_plaq>0.895984973913679</t_plaq>
                 <link>0.225859248516523</link>
               </Plaquette>
@@ -190,7 +190,7 @@
               <Plaquette>
                 <update_no>2</update_no>
                 <w_plaq>0.755298963590273</w_plaq>
-                <s_plaq>0.660514534704917</s_plaq>
+                <s_plaq>0.660514534704918</s_plaq>
                 <t_plaq>0.850083392475628</t_plaq>
                 <link>0.0323103517013502</link>
               </Plaquette>

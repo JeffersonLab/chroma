@@ -4,14 +4,14 @@
 <t_leapfrog>
   <mesE>
     <mesKE>
-      <KE>4.13650548017618348239921e+03</KE>
+      <KE>4136.50547846263</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <FixedRandomFermMonomial4D>
-            <S>-2.57936602385429409878270e+01</S>
+            <S>-25.7936625099305</S>
           </FixedRandomFermMonomial4D>
         </elem>
       </PEByMonomials>
@@ -19,20 +19,20 @@
   </mesE>
   <PQPLeapfrogIntegrator>
     <n_steps>20</n_steps>
-    <dt>5.00000007451e-02</dt>
-    <dtby2>2.50000003725e-02</dtby2>
-    <tau0>1.00000000000e+00</tau0>
+    <dt>0.05</dt>
+    <dtby2>0.025</dtby2>
+    <tau0>1</tau0>
     <MDSteps>
       <elem>
-        <t>0.00000000000e+00</t>
+        <t>0</t>
         <leapP>
-          <dt>2.50000003725e-02</dt>
+          <dt>0.025</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.53658143095662217092467e+03</F_sq>
+                  <F_sq>1536.58142931801</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -40,21 +40,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.00000000000e+00</t>
+        <t>0</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.50000003725e-02</t>
+        <t>0.025</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.54304358621958999719936e+03</F_sq>
+                  <F_sq>1543.04357466751</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -62,21 +62,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.00000007451e-02</t>
+        <t>0.05</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.50000029802e-02</t>
+        <t>0.075</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.55321524792194873043627e+03</F_sq>
+                  <F_sq>1553.21525589388</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -84,21 +84,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.00000001490e-01</t>
+        <t>0.1</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.25000000000e-01</t>
+        <t>0.125</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.56530233340755876270123e+03</F_sq>
+                  <F_sq>1565.30232268857</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -106,21 +106,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.50000005960e-01</t>
+        <t>0.15</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.74999997020e-01</t>
+        <t>0.175</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.57762783990898356023536e+03</F_sq>
+                  <F_sq>1577.62783924597</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -128,21 +128,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.00000002980e-01</t>
+        <t>0.2</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.24999994040e-01</t>
+        <t>0.225</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.58905126828705033403821e+03</F_sq>
+                  <F_sq>1589.05125332083</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -150,21 +150,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.50000000000e-01</t>
+        <t>0.25</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.75000005960e-01</t>
+        <t>0.275</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.59896860991228118109575e+03</F_sq>
+                  <F_sq>1598.96861728511</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -172,21 +172,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.00000011921e-01</t>
+        <t>0.3</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.25000017881e-01</t>
+        <t>0.325</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.60718599815833954380651e+03</F_sq>
+                  <F_sq>1607.1859867841</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -194,21 +194,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.50000023842e-01</t>
+        <t>0.35</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.75000029802e-01</t>
+        <t>0.375</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.61400957837452801868494e+03</F_sq>
+                  <F_sq>1614.00959004916</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -216,21 +216,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.00000035763e-01</t>
+        <t>0.4</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.25000041723e-01</t>
+        <t>0.425</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.62067884851323537986900e+03</F_sq>
+                  <F_sq>1620.67887140217</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -238,21 +238,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.50000047684e-01</t>
+        <t>0.45</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.75000053644e-01</t>
+        <t>0.4750001</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.63000281712602964034886e+03</F_sq>
+                  <F_sq>1630.00283326132</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -260,21 +260,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.00000059605e-01</t>
+        <t>0.5000001</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.25000035763e-01</t>
+        <t>0.525</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.64679427891072441525466e+03</F_sq>
+                  <F_sq>1646.79428899588</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -282,21 +282,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.50000071526e-01</t>
+        <t>0.5500001</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.75000047684e-01</t>
+        <t>0.575</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.67738233068028284833417e+03</F_sq>
+                  <F_sq>1677.38233986915</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -304,21 +304,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.00000083447e-01</t>
+        <t>0.6000001</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.25000059605e-01</t>
+        <t>0.6250001</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.72746863462833107405459e+03</F_sq>
+                  <F_sq>1727.46864650344</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -326,21 +326,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.50000095367e-01</t>
+        <t>0.6500001</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.75000071526e-01</t>
+        <t>0.6750001</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.79868396128491440322250e+03</F_sq>
+                  <F_sq>1798.68394528283</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -348,21 +348,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.00000107288e-01</t>
+        <t>0.7000001</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.25000083447e-01</t>
+        <t>0.7250001</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.88608734353933368765865e+03</F_sq>
+                  <F_sq>1886.08736693255</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -370,21 +370,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.50000119209e-01</t>
+        <t>0.7500001</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.75000095367e-01</t>
+        <t>0.7750001</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>1.97940780918412201572210e+03</F_sq>
+                  <F_sq>1979.40782050989</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -392,21 +392,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.00000131130e-01</t>
+        <t>0.8000001</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.25000107288e-01</t>
+        <t>0.8250001</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>2.06714667878181990090525e+03</F_sq>
+                  <F_sq>2067.14673144428</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -414,21 +414,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.50000143051e-01</t>
+        <t>0.8500001</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.75000119209e-01</t>
+        <t>0.8750001</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>2.13936855593951486298465e+03</F_sq>
+                  <F_sq>2139.36858624186</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -436,21 +436,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.00000154972e-01</t>
+        <t>0.9000002</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.25000131130e-01</t>
+        <t>0.9250001</t>
         <leapP>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>2.19080862696223130114959e+03</F_sq>
+                  <F_sq>2190.80866528962</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -458,21 +458,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.50000166893e-01</t>
+        <t>0.9500002</t>
         <leapQ>
-          <dt>5.00000007451e-02</dt>
+          <dt>0.05</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.75000143051e-01</t>
+        <t>0.9750001</t>
         <leapP>
-          <dt>2.50000003725e-02</dt>
+          <dt>0.025</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <FixedRandomFermMonomial4D>
-                  <F_sq>2.22299971570901561790379e+03</F_sq>
+                  <F_sq>2222.99973536306</F_sq>
                 </FixedRandomFermMonomial4D>
               </elem>
             </ForcesByMonomial>
@@ -480,21 +480,21 @@
         </leapP>
       </elem>
       <EndOfTraj>
-        <t>1.00000011921e+00</t>
-        <t_mom>1.00000011921e+00</t_mom>
+        <t>1</t>
+        <t_mom>1</t_mom>
       </EndOfTraj>
     </MDSteps>
   </PQPLeapfrogIntegrator>
   <mesE>
     <mesKE>
-      <KE>4.54730834657066134241177e+03</KE>
+      <KE>4547.30831738785</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <FixedRandomFermMonomial4D>
-            <S>-4.37016288144192287745682e+02</S>
+            <S>-437.016293076605</S>
           </FixedRandomFermMonomial4D>
         </elem>
       </PEByMonomials>

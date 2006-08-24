@@ -4,7 +4,7 @@
 <t_leapfrog>
   <mesE>
     <mesKE>
-      <KE>267.951</KE>
+      <KE>267.951372707274</KE>
     </mesKE>
     <mesPE>
       <num_terms>2</num_terms>
@@ -13,14 +13,14 @@
           <TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial>
             <S_odd_odd>
               <n_count>3</n_count>
-              <S_oo>110.227</S_oo>
+              <S_oo>110.226988473837</S_oo>
             </S_odd_odd>
-            <S>110.227</S>
+            <S>110.226988473837</S>
           </TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial>
         </elem>
         <elem>
           <GaugeMonomial>
-            <S>-716.313</S>
+            <S>-716.313068389893</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>
@@ -42,12 +42,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>3</n_count>
-                  <F_sq>46.0725</F_sq>
+                  <F_sq>46.0724780584437</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>12522.3</F_sq>
+                  <F_sq>12522.3402599645</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -70,12 +70,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>46.1058</F_sq>
+                  <F_sq>46.105788139685</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>12508</F_sq>
+                  <F_sq>12508.0311456303</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -98,12 +98,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>6</n_count>
-                  <F_sq>46.1472</F_sq>
+                  <F_sq>46.1472270261779</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>12465.4</F_sq>
+                  <F_sq>12465.4365102106</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -126,12 +126,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>46.1957</F_sq>
+                  <F_sq>46.1957456056223</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>12395.7</F_sq>
+                  <F_sq>12395.6954307553</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -145,7 +145,7 @@
         </leapQ>
       </elem>
       <elem>
-        <t>0.07</t>
+        <t>0.06999999</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -154,12 +154,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>46.2498</F_sq>
+                  <F_sq>46.2498019083656</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>12300.7</F_sq>
+                  <F_sq>12300.7007015724</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -173,7 +173,7 @@
         </leapQ>
       </elem>
       <elem>
-        <t>0.09</t>
+        <t>0.08999999</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -182,12 +182,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>46.3074</F_sq>
+                  <F_sq>46.3074349202454</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>12183</F_sq>
+                  <F_sq>12183.0030712708</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -195,7 +195,7 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.1</t>
+        <t>0.09999999</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
@@ -210,12 +210,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>7</n_count>
-                  <F_sq>46.3663</F_sq>
+                  <F_sq>46.3663395262606</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>12045.7</F_sq>
+                  <F_sq>12045.678541448</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -238,12 +238,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>8</n_count>
-                  <F_sq>46.424</F_sq>
+                  <F_sq>46.423964327925</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>11892.2</F_sq>
+                  <F_sq>11892.1797924394</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -266,12 +266,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>8</n_count>
-                  <F_sq>46.4776</F_sq>
+                  <F_sq>46.4775738599501</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>11726.2</F_sq>
+                  <F_sq>11726.1749341843</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -294,12 +294,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>8</n_count>
-                  <F_sq>46.5244</F_sq>
+                  <F_sq>46.5244040427436</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>11551.4</F_sq>
+                  <F_sq>11551.4086506707</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -322,12 +322,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>8</n_count>
-                  <F_sq>46.5617</F_sq>
+                  <F_sq>46.5617388275714</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>11371.6</F_sq>
+                  <F_sq>11371.5651853378</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -350,12 +350,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>8</n_count>
-                  <F_sq>46.587</F_sq>
+                  <F_sq>46.5870111888519</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>11190.1</F_sq>
+                  <F_sq>11190.1434615879</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -378,12 +378,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>8</n_count>
-                  <F_sq>46.5979</F_sq>
+                  <F_sq>46.5979292269956</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>11010.4</F_sq>
+                  <F_sq>11010.3896868542</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -406,12 +406,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>46.5925</F_sq>
+                  <F_sq>46.592522405179</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10835.2</F_sq>
+                  <F_sq>10835.2241088453</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -434,12 +434,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>46.5692</F_sq>
+                  <F_sq>46.5692222631047</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10667.2</F_sq>
+                  <F_sq>10667.2027194571</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -462,12 +462,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>46.5269</F_sq>
+                  <F_sq>46.526940481979</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10508.5</F_sq>
+                  <F_sq>10508.5041510746</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -490,12 +490,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>46.4651</F_sq>
+                  <F_sq>46.4650496323323</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10360.9</F_sq>
+                  <F_sq>10360.9266185793</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -518,12 +518,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>46.3834</F_sq>
+                  <F_sq>46.3834425466811</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10225.9</F_sq>
+                  <F_sq>10225.9014313504</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -546,12 +546,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>46.2825</F_sq>
+                  <F_sq>46.2825051496826</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10104.5</F_sq>
+                  <F_sq>10104.5128376614</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -574,12 +574,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>46.1631</F_sq>
+                  <F_sq>46.1630825059087</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9997.52</F_sq>
+                  <F_sq>9997.51973127017</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -602,12 +602,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>46.0265</F_sq>
+                  <F_sq>46.0264698170853</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9905.39</F_sq>
+                  <F_sq>9905.3909306282</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -630,12 +630,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>45.8743</F_sq>
+                  <F_sq>45.8743332367045</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9828.32</F_sq>
+                  <F_sq>9828.31944226717</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -658,12 +658,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>45.7086</F_sq>
+                  <F_sq>45.7086455780667</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9766.26</F_sq>
+                  <F_sq>9766.26273717387</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -671,7 +671,7 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.44</t>
+        <t>0.4400001</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
@@ -686,12 +686,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>45.5316</F_sq>
+                  <F_sq>45.5316401594628</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9718.96</F_sq>
+                  <F_sq>9718.95877091812</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -699,13 +699,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.46</t>
+        <t>0.4600001</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.47</t>
+        <t>0.4700001</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -714,12 +714,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>45.3457</F_sq>
+                  <F_sq>45.3456944455401</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9685.95</F_sq>
+                  <F_sq>9685.94758822414</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -727,13 +727,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.48</t>
+        <t>0.4800001</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.49</t>
+        <t>0.4900001</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -742,12 +742,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>45.1533</F_sq>
+                  <F_sq>45.1533007666323</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9666.6</F_sq>
+                  <F_sq>9666.59900463094</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -755,13 +755,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.5</t>
+        <t>0.5000001</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.51</t>
+        <t>0.5100001</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -770,12 +770,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>44.9569</F_sq>
+                  <F_sq>44.9569241081247</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9660.13</F_sq>
+                  <F_sq>9660.12476561333</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -798,12 +798,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>44.759</F_sq>
+                  <F_sq>44.759002264982</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9665.6</F_sq>
+                  <F_sq>9665.60543115206</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -826,12 +826,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>44.5618</F_sq>
+                  <F_sq>44.5618083192473</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9682</F_sq>
+                  <F_sq>9681.99896003493</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -854,12 +854,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>44.3675</F_sq>
+                  <F_sq>44.3674821390215</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9708.18</F_sq>
+                  <F_sq>9708.17622373852</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -882,12 +882,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>44.1779</F_sq>
+                  <F_sq>44.1778812428839</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9742.93</F_sq>
+                  <F_sq>9742.93020445908</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -910,12 +910,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>43.9946</F_sq>
+                  <F_sq>43.9946074874863</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9785</F_sq>
+                  <F_sq>9785.00448415437</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -923,13 +923,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.62</t>
+        <t>0.6199999</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.63</t>
+        <t>0.6299999</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -938,12 +938,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>43.819</F_sq>
+                  <F_sq>43.8189627339402</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9833.11</F_sq>
+                  <F_sq>9833.109735354</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -951,13 +951,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.64</t>
+        <t>0.6399999</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.65</t>
+        <t>0.6499999</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -966,12 +966,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>43.6519</F_sq>
+                  <F_sq>43.651925500684</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9885.96</F_sq>
+                  <F_sq>9885.95978254528</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -979,13 +979,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.66</t>
+        <t>0.6599999</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.67</t>
+        <t>0.6699999</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -994,12 +994,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>43.4942</F_sq>
+                  <F_sq>43.4941606495191</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9942.28</F_sq>
+                  <F_sq>9942.2763170395</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1007,13 +1007,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.68</t>
+        <t>0.6799999</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.69</t>
+        <t>0.6899999</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1022,12 +1022,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>43.346</F_sq>
+                  <F_sq>43.3459791863355</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10000.8</F_sq>
+                  <F_sq>10000.8273647687</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1035,13 +1035,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.7</t>
+        <t>0.6999999</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.71</t>
+        <t>0.7099999</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1050,12 +1050,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>43.2074</F_sq>
+                  <F_sq>43.2073888657972</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10060.4</F_sq>
+                  <F_sq>10060.4391041787</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1063,13 +1063,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.72</t>
+        <t>0.7199998</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.73</t>
+        <t>0.7299998</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1078,12 +1078,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>43.0781</F_sq>
+                  <F_sq>43.0781024590576</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10120</F_sq>
+                  <F_sq>10120.0111448251</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1091,13 +1091,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.74</t>
+        <t>0.7399998</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.75</t>
+        <t>0.7499998</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1106,12 +1106,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.9575</F_sq>
+                  <F_sq>42.9575155608283</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10178.5</F_sq>
+                  <F_sq>10178.5357953873</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1119,13 +1119,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.76</t>
+        <t>0.7599998</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.77</t>
+        <t>0.7699998</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1134,12 +1134,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.8448</F_sq>
+                  <F_sq>42.8448096969904</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10235.1</F_sq>
+                  <F_sq>10235.103910942</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1147,13 +1147,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.78</t>
+        <t>0.7799998</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.79</t>
+        <t>0.7899998</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1162,12 +1162,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.7389</F_sq>
+                  <F_sq>42.7388911921588</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10288.9</F_sq>
+                  <F_sq>10288.906998069</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1175,13 +1175,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.8</t>
+        <t>0.7999998</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.81</t>
+        <t>0.8099998</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1190,12 +1190,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.6385</F_sq>
+                  <F_sq>42.6385398062519</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10339.3</F_sq>
+                  <F_sq>10339.256438358</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1203,13 +1203,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.82</t>
+        <t>0.8199998</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.83</t>
+        <t>0.8299997</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1218,12 +1218,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.5423</F_sq>
+                  <F_sq>42.5423199089128</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10385.6</F_sq>
+                  <F_sq>10385.5575338374</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1231,13 +1231,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.84</t>
+        <t>0.8399997</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.85</t>
+        <t>0.8499997</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1246,12 +1246,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.4488</F_sq>
+                  <F_sq>42.448754279208</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10427.3</F_sq>
+                  <F_sq>10427.3241674314</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1259,13 +1259,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.86</t>
+        <t>0.8599997</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.87</t>
+        <t>0.8699997</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1274,12 +1274,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.3563</F_sq>
+                  <F_sq>42.3562799227501</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10464.2</F_sq>
+                  <F_sq>10464.1623628573</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1287,13 +1287,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.88</t>
+        <t>0.8799997</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.89</t>
+        <t>0.8899997</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1302,12 +1302,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.2634</F_sq>
+                  <F_sq>42.2633543428842</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10495.8</F_sq>
+                  <F_sq>10495.7662934132</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1315,13 +1315,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.9</t>
+        <t>0.8999997</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.91</t>
+        <t>0.9099997</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1330,12 +1330,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.1685</F_sq>
+                  <F_sq>42.1684767268664</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10521.9</F_sq>
+                  <F_sq>10521.9005245703</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1343,13 +1343,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.92</t>
+        <t>0.9199997</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.93</t>
+        <t>0.9299996</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1358,12 +1358,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>42.0703</F_sq>
+                  <F_sq>42.0702637122154</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10542.4</F_sq>
+                  <F_sq>10542.4001275248</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1371,13 +1371,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.94</t>
+        <t>0.9399996</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.95</t>
+        <t>0.9499996</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1386,12 +1386,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>41.9675</F_sq>
+                  <F_sq>41.9674862395177</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10557.2</F_sq>
+                  <F_sq>10557.1525414339</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1399,13 +1399,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.96</t>
+        <t>0.9599996</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.97</t>
+        <t>0.9699996</t>
         <leapP>
           <dt>0.02</dt>
           <ExactAbsHamiltonianForce>
@@ -1414,12 +1414,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>41.8591</F_sq>
+                  <F_sq>41.8591247060528</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10566.1</F_sq>
+                  <F_sq>10566.0939336504</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1427,13 +1427,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.98</t>
+        <t>0.9799996</t>
         <leapQ>
           <dt>0.02</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.99</t>
+        <t>0.9899996</t>
         <leapP>
           <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
@@ -1442,12 +1442,12 @@
               <elem>
                 <TwoFlavorExactWilsonTypeFermMonomial>
                   <n_count>9</n_count>
-                  <F_sq>41.7444</F_sq>
+                  <F_sq>41.7444071296177</F_sq>
                 </TwoFlavorExactWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>10569.2</F_sq>
+                  <F_sq>10569.2068994492</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1455,14 +1455,14 @@
         </leapP>
       </elem>
       <EndOfTraj>
-        <t>1</t>
-        <t_mom>1</t_mom>
+        <t>0.9999996</t>
+        <t_mom>0.9999996</t_mom>
       </EndOfTraj>
     </MDSteps>
   </PQPLeapfrogIntegrator>
   <mesE>
     <mesKE>
-      <KE>171.655</KE>
+      <KE>171.654591019962</KE>
     </mesKE>
     <mesPE>
       <num_terms>2</num_terms>
@@ -1471,14 +1471,14 @@
           <TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial>
             <S_odd_odd>
               <n_count>9</n_count>
-              <S_oo>107.297</S_oo>
+              <S_oo>107.297387953578</S_oo>
             </S_odd_odd>
-            <S>107.297</S>
+            <S>107.297387953578</S>
           </TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial>
         </elem>
         <elem>
           <GaugeMonomial>
-            <S>-616.992</S>
+            <S>-616.991539110312</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>

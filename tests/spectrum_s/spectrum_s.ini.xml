@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.xml,v 3.0 2006-04-03 04:59:34 edwards Exp $
+; $Id: spectrum_s.ini.xml,v 3.1 2006-08-24 21:07:11 edwards Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -23,7 +23,7 @@
  <singletPs_Conn_local>true</singletPs_Conn_local>
  <eight_pions>true</eight_pions>
  <eight_scalars>true</eight_scalars>
- <eight_rhos>true</eight_rhos>
+ <eight_rhos>false</eight_rhos>
 <LocalPion_vary>true</LocalPion_vary>
 
 <fuzz_width>2</fuzz_width>
@@ -50,9 +50,13 @@
 <t_srce> 0 0 0 0 </t_srce>
 </Param>
 
+<NamedObject>
+ <gauge_id>default_gauge_field</gauge_id>
+</NamedObject>
+
 <Cfg>
- <cfg_type>NERSC</cfg_type>
- <cfg_file>../../tests/t_asqtad_prop/t_nersc.cfg</cfg_file>
+ <cfg_type>DISORDERED</cfg_type>
+ <cfg_file>dummy</cfg_file>
 </Cfg>
 
 <Inversion>

@@ -43,10 +43,10 @@ Write a nersc config
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.7.0</chroma>
-      <qdp>1.20.5</qdp>
+      <chroma>3.11.0</chroma>
+      <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>11 Jun 06 01:34:04 EDT</run_date>
+    <run_date>24 Aug 06 15:34:48 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -75,26 +75,32 @@ Write a nersc config
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994765</w_plaq>
-    <s_plaq>0.994801</s_plaq>
-    <t_plaq>0.994729</t_plaq>
-    <link>0.379318</link>
+    <w_plaq>0.994764814567235</w_plaq>
+    <s_plaq>0.994800872583356</s_plaq>
+    <t_plaq>0.994728756551113</t_plaq>
+    <plane_01_plaq>0.994752409557501</plane_01_plaq>
+    <plane_02_plaq>0.995051670198639</plane_02_plaq>
+    <plane_12_plaq>0.994598537993928</plane_12_plaq>
+    <plane_03_plaq>0.994927928006897</plane_03_plaq>
+    <plane_13_plaq>0.994742137845606</plane_13_plaq>
+    <plane_23_plaq>0.994516203800837</plane_23_plaq>
+    <link>0.379317687901979</link>
     <pollp>
       <elem>
-        <re>0.967223</re>
-        <im>-0.00121316</im>
+        <re>0.96722258204439</re>
+        <im>-0.00121316457792394</im>
       </elem>
       <elem>
-        <re>0.967032</re>
-        <im>-0.00129617</im>
+        <re>0.967032070271671</re>
+        <im>-0.0012961704569534</im>
       </elem>
       <elem>
-        <re>0.967468</re>
-        <im>-0.00114548</im>
+        <re>0.967467518639751</re>
+        <im>-0.00114548282075096</im>
       </elem>
       <elem>
-        <re>0.879539</re>
-        <im>-0.0104403</im>
+        <re>0.879538946435787</re>
+        <im>-0.0104402832973089</im>
       </elem>
     </pollp>
   </Observables>

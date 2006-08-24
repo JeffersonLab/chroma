@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_dwf.out.xml,v 3.7 2006-07-21 02:31:52 edwards Exp $
+; $Id: prec_dwf.out.xml,v 3.8 2006-08-24 21:07:08 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -108,10 +108,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.10.0</chroma>
+      <chroma>3.11.0</chroma>
       <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>20 Jul 06 22:21:09 EDT</run_date>
+    <run_date>24 Aug 06 15:24:40 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -143,6 +143,12 @@
     <w_plaq>0.994803997558645</w_plaq>
     <s_plaq>0.99479844317668</s_plaq>
     <t_plaq>0.99480955194061</t_plaq>
+    <plane_01_plaq>0.994703591490785</plane_01_plaq>
+    <plane_02_plaq>0.99492682578663</plane_02_plaq>
+    <plane_12_plaq>0.994764912252625</plane_12_plaq>
+    <plane_03_plaq>0.994693187996745</plane_03_plaq>
+    <plane_13_plaq>0.994853910369178</plane_13_plaq>
+    <plane_23_plaq>0.994881557455907</plane_23_plaq>
     <link>0.379449337740274</link>
     <pollp>
       <elem>
@@ -169,10 +175,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.10.0</chroma>
+            <chroma>3.11.0</chroma>
             <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>20 Jul 06 22:21:09 EDT</run_date>
+          <run_date>24 Aug 06 15:24:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -233,6 +239,12 @@
           <w_plaq>0.994803997558645</w_plaq>
           <s_plaq>0.99479844317668</s_plaq>
           <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
           <link>0.379449337740274</link>
           <pollp>
             <elem>
@@ -263,10 +275,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.10.0</chroma>
+            <chroma>3.11.0</chroma>
             <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>20 Jul 06 22:21:10 EDT</run_date>
+          <run_date>24 Aug 06 15:24:41 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -324,6 +336,12 @@
           <w_plaq>0.994803997558645</w_plaq>
           <s_plaq>0.99479844317668</s_plaq>
           <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
           <link>0.379449337740274</link>
           <pollp>
             <elem>
@@ -564,7 +582,7 @@
             <n_count>4</n_count>
             <resid>9.317846e-08</resid>
           </Qprop>
-          <bulk_norm2>0.231882059948927 0.0153737386068259 0.0518879595565787 0.520837513118108</bulk_norm2>
+          <bulk_norm2>0.231882059948927 0.0153737386068259</bulk_norm2>
           <time_direction>
             <t_dir>3</t_dir>
           </time_direction>

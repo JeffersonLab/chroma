@@ -4,14 +4,14 @@
 <t_leapfrog>
   <mesE>
     <mesKE>
-      <KE>8.20890473865915919304825e+03</KE>
+      <KE>8208.9047295884</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <GaugeMonomial>
-            <S>2.26376178105672215679078e+03</S>
+            <S>2263.76184240977</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>
@@ -19,20 +19,20 @@
   </mesE>
   <PQPLeapfrogIntegrator>
     <n_steps>100</n_steps>
-    <dt>9.99999977648e-03</dt>
-    <dtby2>4.99999988824e-03</dtby2>
-    <tau0>1.00000000000e+00</tau0>
+    <dt>0.01</dt>
+    <dtby2>0.005</dtby2>
+    <tau0>1</tau0>
     <MDSteps>
       <elem>
-        <t>0.00000000000e+00</t>
+        <t>0</t>
         <leapP>
-          <dt>4.99999988824e-03</dt>
+          <dt>0.005</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.73921194076344545464963e+03</F_sq>
+                  <F_sq>4739.21194240538</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -40,21 +40,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.00000000000e+00</t>
+        <t>0</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.99999988824e-03</t>
+        <t>0.005</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.73682565893960600078572e+03</F_sq>
+                  <F_sq>4736.82567384541</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -62,21 +62,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.99999977648e-03</t>
+        <t>0.01</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.49999996647e-02</t>
+        <t>0.015</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.72910233565078488027211e+03</F_sq>
+                  <F_sq>4729.10230804302</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -84,21 +84,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.99999995530e-02</t>
+        <t>0.02</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.49999985099e-02</t>
+        <t>0.025</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.71606793573326285695657e+03</F_sq>
+                  <F_sq>4716.06795884482</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -106,21 +106,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.99999993294e-02</t>
+        <t>0.03</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.49999964237e-02</t>
+        <t>0.035</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.69775729102532568504103e+03</F_sq>
+                  <F_sq>4697.75732417703</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -128,21 +128,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.99999991059e-02</t>
+        <t>0.04</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.49999943376e-02</t>
+        <t>0.04499999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.67422086815078728250228e+03</F_sq>
+                  <F_sq>4674.22089416308</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -150,21 +150,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.99999970198e-02</t>
+        <t>0.05</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.49999922514e-02</t>
+        <t>0.05499999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.64552411292919714469463e+03</F_sq>
+                  <F_sq>4645.52414722699</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -172,21 +172,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.99999949336e-02</t>
+        <t>0.05999999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.49999901652e-02</t>
+        <t>0.06499999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.61174686408841535012471e+03</F_sq>
+                  <F_sq>4611.74688311756</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -194,21 +194,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.99999928474e-02</t>
+        <t>0.06999999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.49999880791e-02</t>
+        <t>0.07499999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.57298415072612806397956e+03</F_sq>
+                  <F_sq>4572.98411540576</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -216,21 +216,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.99999907613e-02</t>
+        <t>0.07999999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.49999859929e-02</t>
+        <t>0.08499999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.52934501464344884880120e+03</F_sq>
+                  <F_sq>4529.34496121384</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -238,21 +238,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.99999886751e-02</t>
+        <t>0.08999999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.49999839067e-02</t>
+        <t>0.09499998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.48095287129288044525310e+03</F_sq>
+                  <F_sq>4480.95290339206</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -260,21 +260,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.99999865890e-02</t>
+        <t>0.09999999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.04999981821e-01</t>
+        <t>0.105</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.42794470615456339146476e+03</F_sq>
+                  <F_sq>4427.94467558743</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -282,21 +282,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.09999984503e-01</t>
+        <t>0.11</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.14999979734e-01</t>
+        <t>0.115</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.37047137419504360877909e+03</F_sq>
+                  <F_sq>4370.47142547644</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -304,21 +304,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.19999982417e-01</t>
+        <t>0.12</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.24999977648e-01</t>
+        <t>0.125</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.30869669791209526010789e+03</F_sq>
+                  <F_sq>4308.69670087107</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -326,21 +326,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.29999980330e-01</t>
+        <t>0.13</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.34999975562e-01</t>
+        <t>0.135</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.24279710272462307329988e+03</F_sq>
+                  <F_sq>4242.79714413669</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -348,21 +348,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.39999985695e-01</t>
+        <t>0.14</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.44999980927e-01</t>
+        <t>0.145</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.17296143446250789565966e+03</F_sq>
+                  <F_sq>4172.96148352847</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -370,21 +370,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.49999991059e-01</t>
+        <t>0.15</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.54999986291e-01</t>
+        <t>0.155</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.09938962173520485521294e+03</F_sq>
+                  <F_sq>4099.38970932275</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -392,21 +392,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.59999996424e-01</t>
+        <t>0.16</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.64999991655e-01</t>
+        <t>0.165</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.02229326851733094372321e+03</F_sq>
+                  <F_sq>4022.29325095216</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -414,21 +414,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.70000001788e-01</t>
+        <t>0.17</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.74999997020e-01</t>
+        <t>0.175</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.94189353763134567998350e+03</F_sq>
+                  <F_sq>3941.89357787122</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -436,21 +436,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.80000007153e-01</t>
+        <t>0.18</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.85000002384e-01</t>
+        <t>0.185</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.85842182927813701098785e+03</F_sq>
+                  <F_sq>3858.42176059153</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -458,21 +458,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>1.90000012517e-01</t>
+        <t>0.19</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>1.95000007749e-01</t>
+        <t>0.195</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.77211748138307711997186e+03</F_sq>
+                  <F_sq>3772.1175218</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -480,21 +480,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.00000017881e-01</t>
+        <t>0.2</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.05000013113e-01</t>
+        <t>0.205</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.68322862233120486052940e+03</F_sq>
+                  <F_sq>3683.22858439632</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -502,21 +502,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.10000023246e-01</t>
+        <t>0.21</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.15000018477e-01</t>
+        <t>0.215</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.59200941635897379455855e+03</F_sq>
+                  <F_sq>3592.00930683993</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -524,21 +524,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.20000028610e-01</t>
+        <t>0.22</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.25000023842e-01</t>
+        <t>0.225</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.49872050271759144379757e+03</F_sq>
+                  <F_sq>3498.72043139941</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -546,21 +546,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.30000033975e-01</t>
+        <t>0.23</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.35000029206e-01</t>
+        <t>0.235</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.40362710204338645780808e+03</F_sq>
+                  <F_sq>3403.62700671612</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -568,21 +568,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.40000039339e-01</t>
+        <t>0.24</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.45000034571e-01</t>
+        <t>0.245</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.30699837953376390942140e+03</F_sq>
+                  <F_sq>3306.99833096345</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -590,21 +590,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.50000029802e-01</t>
+        <t>0.25</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.55000025034e-01</t>
+        <t>0.255</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.20910601164981608235394e+03</F_sq>
+                  <F_sq>3209.1059754513</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -612,21 +612,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.60000020266e-01</t>
+        <t>0.26</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.65000015497e-01</t>
+        <t>0.265</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.11022298345347417125595e+03</F_sq>
+                  <F_sq>3110.22300957133</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -634,21 +634,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.70000010729e-01</t>
+        <t>0.27</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.75000005960e-01</t>
+        <t>0.275</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.01062266040913436881965e+03</F_sq>
+                  <F_sq>3010.62263989896</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -656,21 +656,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.80000001192e-01</t>
+        <t>0.28</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.84999996424e-01</t>
+        <t>0.285</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.91057708710244514804799e+03</F_sq>
+                  <F_sq>2910.57714484532</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -678,21 +678,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.89999991655e-01</t>
+        <t>0.29</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>2.94999986887e-01</t>
+        <t>0.295</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.81035599626231532965903e+03</F_sq>
+                  <F_sq>2810.3559244962</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -700,21 +700,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>2.99999982119e-01</t>
+        <t>0.3</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.04999977350e-01</t>
+        <t>0.305</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.71022565362574641767424e+03</F_sq>
+                  <F_sq>2710.22566023955</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -722,21 +722,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.09999972582e-01</t>
+        <t>0.31</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.14999967813e-01</t>
+        <t>0.315</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.61044705438392747964826e+03</F_sq>
+                  <F_sq>2610.44702225226</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -744,21 +744,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.19999963045e-01</t>
+        <t>0.32</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.24999958277e-01</t>
+        <t>0.325</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.51127509462148100283230e+03</F_sq>
+                  <F_sq>2511.2750473727</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -766,21 +766,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.29999953508e-01</t>
+        <t>0.33</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.34999948740e-01</t>
+        <t>0.3349999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.41295725804244693790679e+03</F_sq>
+                  <F_sq>2412.95720767404</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -788,21 +788,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.39999943972e-01</t>
+        <t>0.3399999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.44999939203e-01</t>
+        <t>0.3449999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.31573214743366906986921e+03</F_sq>
+                  <F_sq>2315.73209403864</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -810,21 +810,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.49999934435e-01</t>
+        <t>0.3499999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.54999929667e-01</t>
+        <t>0.3549999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.21982858256961162624066e+03</F_sq>
+                  <F_sq>2219.82862650745</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -832,21 +832,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.59999924898e-01</t>
+        <t>0.3599999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.64999920130e-01</t>
+        <t>0.3649999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.12546446785236594223534e+03</F_sq>
+                  <F_sq>2125.46444486046</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -854,21 +854,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.69999915361e-01</t>
+        <t>0.3699999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.74999910593e-01</t>
+        <t>0.3749999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>2.03284552298407652415335e+03</F_sq>
+                  <F_sq>2032.84556111122</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -876,21 +876,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.79999905825e-01</t>
+        <t>0.3799999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.84999901056e-01</t>
+        <t>0.3849999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.94216458012558541668113e+03</F_sq>
+                  <F_sq>1942.16458833913</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -898,21 +898,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.89999896288e-01</t>
+        <t>0.3899999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>3.94999891520e-01</t>
+        <t>0.3949999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.85360060446582724580367e+03</F_sq>
+                  <F_sq>1853.60063366589</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -920,21 +920,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>3.99999886751e-01</t>
+        <t>0.3999999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.04999881983e-01</t>
+        <t>0.4049999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.76731803107113182704779e+03</F_sq>
+                  <F_sq>1767.31795737604</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -942,21 +942,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.09999877214e-01</t>
+        <t>0.4099999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.14999872446e-01</t>
+        <t>0.4149999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.68346580788720098098565e+03</F_sq>
+                  <F_sq>1683.46572307896</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -964,21 +964,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.19999867678e-01</t>
+        <t>0.4199999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.24999862909e-01</t>
+        <t>0.4249999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.60217733968453717352531e+03</F_sq>
+                  <F_sq>1602.17732807695</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -986,21 +986,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.29999858141e-01</t>
+        <t>0.4299999</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.34999853373e-01</t>
+        <t>0.4349999</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.52356991976419544698729e+03</F_sq>
+                  <F_sq>1523.56990216425</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1008,21 +1008,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.39999848604e-01</t>
+        <t>0.4399998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.44999843836e-01</t>
+        <t>0.4449998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.44774425373777808090381e+03</F_sq>
+                  <F_sq>1447.7442207924</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1030,21 +1030,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.49999839067e-01</t>
+        <t>0.4499998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.54999834299e-01</t>
+        <t>0.4549998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.37478441500594249191636e+03</F_sq>
+                  <F_sq>1374.7843763092</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1052,21 +1052,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.59999829531e-01</t>
+        <t>0.4599998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.64999824762e-01</t>
+        <t>0.4649998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.30475813764667896066385e+03</F_sq>
+                  <F_sq>1304.75816435321</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1074,21 +1074,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.69999819994e-01</t>
+        <t>0.4699998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.74999815226e-01</t>
+        <t>0.4749998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.23771661442778668060782e+03</F_sq>
+                  <F_sq>1237.71660081655</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1096,21 +1096,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.79999810457e-01</t>
+        <t>0.4799998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.84999805689e-01</t>
+        <t>0.4849998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.17369482642748039324943e+03</F_sq>
+                  <F_sq>1173.69479022916</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1118,21 +1118,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.89999800920e-01</t>
+        <t>0.4899998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>4.94999796152e-01</t>
+        <t>0.4949998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.11271205633155318537320e+03</F_sq>
+                  <F_sq>1112.71202636915</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1140,21 +1140,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>4.99999791384e-01</t>
+        <t>0.4999998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.04999816418e-01</t>
+        <t>0.5049998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>1.05477226086418636441522e+03</F_sq>
+                  <F_sq>1054.77221368232</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1162,21 +1162,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.09999811649e-01</t>
+        <t>0.5099998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.14999806881e-01</t>
+        <t>0.5149998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9.99864854205495134920056e+02</F_sq>
+                  <F_sq>999.864853586023</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1184,21 +1184,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.19999802113e-01</t>
+        <t>0.5199998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.24999797344e-01</t>
+        <t>0.5249998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>9.47965263694366740310215e+02</F_sq>
+                  <F_sq>947.965257353866</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1206,21 +1206,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.29999792576e-01</t>
+        <t>0.5299998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.34999787807e-01</t>
+        <t>0.5349998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>8.99035891521648181878845e+02</F_sq>
+                  <F_sq>899.035867447784</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1228,21 +1228,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.39999783039e-01</t>
+        <t>0.5399998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.44999778271e-01</t>
+        <t>0.5449998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>8.53026867877621157276735e+02</F_sq>
+                  <F_sq>853.026878554715</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1250,21 +1250,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.49999773502e-01</t>
+        <t>0.5499998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.54999768734e-01</t>
+        <t>0.5549998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>8.09877245200684455994633e+02</F_sq>
+                  <F_sq>809.87722220851</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1272,21 +1272,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.59999763966e-01</t>
+        <t>0.5599998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.64999759197e-01</t>
+        <t>0.5649998</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>7.69515729442163774365326e+02</F_sq>
+                  <F_sq>769.515731068513</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1294,21 +1294,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.69999754429e-01</t>
+        <t>0.5699998</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.74999749660e-01</t>
+        <t>0.5749997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>7.31862069967222964805842e+02</F_sq>
+                  <F_sq>731.862074671517</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1316,21 +1316,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.79999744892e-01</t>
+        <t>0.5799997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.84999740124e-01</t>
+        <t>0.5849997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>6.96827850136635333910817e+02</F_sq>
+                  <F_sq>696.82785334765</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1338,21 +1338,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.89999735355e-01</t>
+        <t>0.5899997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>5.94999730587e-01</t>
+        <t>0.5949997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>6.64317810375472959094623e+02</F_sq>
+                  <F_sq>664.317810147434</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1360,21 +1360,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>5.99999725819e-01</t>
+        <t>0.5999997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.04999721050e-01</t>
+        <t>0.6049997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>6.34230880202700291192741e+02</F_sq>
+                  <F_sq>634.230850046846</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1382,21 +1382,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.09999716282e-01</t>
+        <t>0.6099997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.14999711514e-01</t>
+        <t>0.6149997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>6.06461194887782767182216e+02</F_sq>
+                  <F_sq>606.461195516465</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1404,21 +1404,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.19999706745e-01</t>
+        <t>0.6199997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.24999701977e-01</t>
+        <t>0.6249997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5.80899395245742425686331e+02</F_sq>
+                  <F_sq>580.899379655827</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1426,21 +1426,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.29999697208e-01</t>
+        <t>0.6299997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.34999692440e-01</t>
+        <t>0.6349997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5.57433379280703661606822e+02</F_sq>
+                  <F_sq>557.433374581797</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1448,21 +1448,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.39999687672e-01</t>
+        <t>0.6399997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.44999682903e-01</t>
+        <t>0.6449997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5.35949508054822899794090e+02</F_sq>
+                  <F_sq>535.949489818287</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1470,21 +1470,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.49999678135e-01</t>
+        <t>0.6499997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.54999673367e-01</t>
+        <t>0.6549997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>5.16333431400439280878345e+02</F_sq>
+                  <F_sq>516.333436777079</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1492,21 +1492,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.59999668598e-01</t>
+        <t>0.6599997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.64999663830e-01</t>
+        <t>0.6649997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.98471080864412158462073e+02</F_sq>
+                  <F_sq>498.471081820757</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1514,21 +1514,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.69999659061e-01</t>
+        <t>0.6699997</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.74999654293e-01</t>
+        <t>0.6749997</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.82249303331829139551701e+02</F_sq>
+                  <F_sq>482.249304374032</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1536,21 +1536,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.79999649525e-01</t>
+        <t>0.6799996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.84999644756e-01</t>
+        <t>0.6849996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.67556756899967354002001e+02</F_sq>
+                  <F_sq>467.556761480322</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1558,21 +1558,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.89999639988e-01</t>
+        <t>0.6899996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>6.94999635220e-01</t>
+        <t>0.6949996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.54284528242033900369279e+02</F_sq>
+                  <F_sq>454.284540669744</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1580,21 +1580,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>6.99999630451e-01</t>
+        <t>0.6999996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.04999625683e-01</t>
+        <t>0.7049996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.42326676253898483537341e+02</F_sq>
+                  <F_sq>442.326672701321</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1602,21 +1602,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.09999620914e-01</t>
+        <t>0.7099996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.14999616146e-01</t>
+        <t>0.7149996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.31580759596919449450070e+02</F_sq>
+                  <F_sq>431.580754846139</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1624,21 +1624,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.19999611378e-01</t>
+        <t>0.7199996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.24999606609e-01</t>
+        <t>0.7249996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.21948280477569426238915e+02</F_sq>
+                  <F_sq>421.948294185624</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1646,21 +1646,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.29999601841e-01</t>
+        <t>0.7299996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.34999597073e-01</t>
+        <t>0.7349996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.13335053254049569204653e+02</F_sq>
+                  <F_sq>413.335058309999</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1668,21 +1668,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.39999592304e-01</t>
+        <t>0.7399996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.44999587536e-01</t>
+        <t>0.7449996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>4.05651405806153206867748e+02</F_sq>
+                  <F_sq>405.651406446275</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1690,21 +1690,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.49999582767e-01</t>
+        <t>0.7499996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.54999577999e-01</t>
+        <t>0.7549996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.98812478565063884161646e+02</F_sq>
+                  <F_sq>398.812484267531</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1712,21 +1712,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.59999573231e-01</t>
+        <t>0.7599996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.64999568462e-01</t>
+        <t>0.7649996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.92738294799511947985593e+02</F_sq>
+                  <F_sq>392.738300403568</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1734,21 +1734,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.69999563694e-01</t>
+        <t>0.7699996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.74999558926e-01</t>
+        <t>0.7749996</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.87353872962906223165191e+02</F_sq>
+                  <F_sq>387.353875191525</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1756,21 +1756,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.79999554157e-01</t>
+        <t>0.7799996</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.84999549389e-01</t>
+        <t>0.7849995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.82589261670605196741235e+02</F_sq>
+                  <F_sq>382.589266215538</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1778,21 +1778,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.89999544621e-01</t>
+        <t>0.7899995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>7.94999539852e-01</t>
+        <t>0.7949995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.78379464668914124558796e+02</F_sq>
+                  <F_sq>378.379457114996</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1800,21 +1800,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>7.99999535084e-01</t>
+        <t>0.7999995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.04999530315e-01</t>
+        <t>0.8049995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.74664386826491067949974e+02</F_sq>
+                  <F_sq>374.664389283914</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1822,21 +1822,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.09999525547e-01</t>
+        <t>0.8099995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.14999520779e-01</t>
+        <t>0.8149995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.71388751349284120806260e+02</F_sq>
+                  <F_sq>371.38875737273</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1844,21 +1844,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.19999516010e-01</t>
+        <t>0.8199995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.24999511242e-01</t>
+        <t>0.8249995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.68501907044504946497909e+02</F_sq>
+                  <F_sq>368.501912769392</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1866,21 +1866,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.29999506474e-01</t>
+        <t>0.8299995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.34999501705e-01</t>
+        <t>0.8349995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.65957695261898038552317e+02</F_sq>
+                  <F_sq>365.957698196335</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1888,21 +1888,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.39999496937e-01</t>
+        <t>0.8399995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.44999492168e-01</t>
+        <t>0.8449995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.63714190416678547990159e+02</F_sq>
+                  <F_sq>363.71420051517</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1910,21 +1910,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.49999487400e-01</t>
+        <t>0.8499995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.54999482632e-01</t>
+        <t>0.8549995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.61733549672142032704869e+02</F_sq>
+                  <F_sq>361.733563624987</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1932,21 +1932,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.59999477863e-01</t>
+        <t>0.8599995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.64999473095e-01</t>
+        <t>0.8649995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.59981740217103435952595e+02</F_sq>
+                  <F_sq>359.981737234434</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1954,21 +1954,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.69999468327e-01</t>
+        <t>0.8699995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.74999463558e-01</t>
+        <t>0.8749995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.58428276122616352949990e+02</F_sq>
+                  <F_sq>358.428284572172</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1976,21 +1976,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.79999458790e-01</t>
+        <t>0.8799995</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.84999454021e-01</t>
+        <t>0.8849995</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.57046074140733821877802e+02</F_sq>
+                  <F_sq>357.046085732264</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -1998,21 +1998,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.89999449253e-01</t>
+        <t>0.8899994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>8.94999444485e-01</t>
+        <t>0.8949994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.55811121441118132224801e+02</F_sq>
+                  <F_sq>355.811131768042</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2020,21 +2020,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>8.99999439716e-01</t>
+        <t>0.8999994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.04999434948e-01</t>
+        <t>0.9049994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.54702236879459178453544e+02</F_sq>
+                  <F_sq>354.702239938515</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2042,21 +2042,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.09999430180e-01</t>
+        <t>0.9099994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.14999425411e-01</t>
+        <t>0.9149994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.53700887951599554526183e+02</F_sq>
+                  <F_sq>353.700908616369</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2064,21 +2064,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.19999420643e-01</t>
+        <t>0.9199994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.24999415874e-01</t>
+        <t>0.9249994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.52790903374997242281097e+02</F_sq>
+                  <F_sq>352.790907942888</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2086,21 +2086,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.29999411106e-01</t>
+        <t>0.9299994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.34999406338e-01</t>
+        <t>0.9349994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.51958303178889138962404e+02</F_sq>
+                  <F_sq>351.958314113816</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2108,21 +2108,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.39999401569e-01</t>
+        <t>0.9399994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.44999396801e-01</t>
+        <t>0.9449994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.51191045507374667522527e+02</F_sq>
+                  <F_sq>351.191052713335</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2130,21 +2130,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.49999392033e-01</t>
+        <t>0.9499994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.54999387264e-01</t>
+        <t>0.9549994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.50478864952085984896257e+02</F_sq>
+                  <F_sq>350.478869274761</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2152,21 +2152,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.59999382496e-01</t>
+        <t>0.9599994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.64999377728e-01</t>
+        <t>0.9649994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.49813033093655405991740e+02</F_sq>
+                  <F_sq>349.813044059202</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2174,21 +2174,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.69999372959e-01</t>
+        <t>0.9699994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.74999368191e-01</t>
+        <t>0.9749994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.49186260790416554300464e+02</F_sq>
+                  <F_sq>349.1862682376</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2196,21 +2196,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.79999363422e-01</t>
+        <t>0.9799994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.84999358654e-01</t>
+        <t>0.9849994</t>
         <leapP>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.48592475924078371463111e+02</F_sq>
+                  <F_sq>348.592499692022</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2218,21 +2218,21 @@
         </leapP>
       </elem>
       <elem>
-        <t>9.89999353886e-01</t>
+        <t>0.9899994</t>
         <leapQ>
-          <dt>9.99999977648e-03</dt>
+          <dt>0.01</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>9.94999349117e-01</t>
+        <t>0.9949993</t>
         <leapP>
-          <dt>4.99999988824e-03</dt>
+          <dt>0.005</dt>
           <ExactAbsHamiltonianForce>
             <num_terms>1</num_terms>
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>3.48026738858424721456686e+02</F_sq>
+                  <F_sq>348.026734393504</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -2240,21 +2240,21 @@
         </leapP>
       </elem>
       <EndOfTraj>
-        <t>9.99999344349e-01</t>
-        <t_mom>9.99999344349e-01</t_mom>
+        <t>0.9999993</t>
+        <t_mom>0.9999993</t_mom>
       </EndOfTraj>
     </MDSteps>
   </PQPLeapfrogIntegrator>
   <mesE>
     <mesKE>
-      <KE>9.48685497192431466828566e+03</KE>
+      <KE>9486.85495796195</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <GaugeMonomial>
-            <S>9.85724037706851959228516e+02</S>
+            <S>985.724104634797</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>

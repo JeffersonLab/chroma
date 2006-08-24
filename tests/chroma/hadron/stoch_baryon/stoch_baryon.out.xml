@@ -1216,10 +1216,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.8.0</chroma>
-      <qdp>1.20.5</qdp>
+      <chroma>3.11.0</chroma>
+      <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>03 Jul 06 11:06:11 EDT</run_date>
+    <run_date>24 Aug 06 15:34:06 EDT</run_date>
     <Setgeom>
       <latt_size>2 2 2 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1248,26 +1248,32 @@
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994775</w_plaq>
-    <s_plaq>0.99505</s_plaq>
-    <t_plaq>0.994501</t_plaq>
-    <link>0.37906</link>
+    <w_plaq>0.994775466207001</w_plaq>
+    <s_plaq>0.995049628118674</s_plaq>
+    <t_plaq>0.994501304295328</t_plaq>
+    <plane_01_plaq>0.995739730695883</plane_01_plaq>
+    <plane_02_plaq>0.99481059362491</plane_02_plaq>
+    <plane_12_plaq>0.994598560035229</plane_12_plaq>
+    <plane_03_plaq>0.993968695402145</plane_03_plaq>
+    <plane_13_plaq>0.995022147893906</plane_13_plaq>
+    <plane_23_plaq>0.994513069589933</plane_23_plaq>
+    <link>0.379059874763091</link>
     <pollp>
       <elem>
-        <re>-0.326031</re>
-        <im>-0.0298152</im>
+        <re>-0.326030723595371</re>
+        <im>-0.0298151803629783</im>
       </elem>
       <elem>
-        <re>-0.325779</re>
-        <im>-0.0289704</im>
+        <re>-0.325779128354043</re>
+        <im>-0.0289703614641136</im>
       </elem>
       <elem>
-        <re>-0.325954</re>
-        <im>-0.0229221</im>
+        <re>-0.325954266823828</re>
+        <im>-0.0229221047678341</im>
       </elem>
       <elem>
-        <re>0.965822</re>
-        <im>-0.00148825</im>
+        <re>0.96582156419754</re>
+        <im>-0.00148824815793584</im>
       </elem>
     </pollp>
   </Observables>
@@ -1277,10 +1283,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:07 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1337,31 +1343,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>96 0 0 0</source_corr>
+          <source_corr>96.0000000000002 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -1370,10 +1382,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:07 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1426,26 +1438,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -1497,13 +1515,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>96 0 0 0</source_corr>
+          <source_corr>96.0000000000002 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>7.2911 0.925316 0.636831 1.0182</prop_corr>
+          <prop_corr>7.29109944922213 0.92531568457033 0.636830795294043 1.01819826292818</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1524,10 +1542,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:07 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1584,31 +1602,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 96 0 0</source_corr>
+          <source_corr>0 96.0000000000002 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -1617,10 +1641,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:07 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1673,26 +1697,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -1744,13 +1774,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 96 0 0</source_corr>
+          <source_corr>0 96.0000000000002 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>21</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.45926 7.66926 0.517326 0.639872</prop_corr>
+          <prop_corr>1.45926324459094 7.66926061109881 0.517325687965785 0.639872079769883</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1771,10 +1801,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:07 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1831,31 +1861,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 96 0</source_corr>
+          <source_corr>0 0 96.0000000000002 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -1864,10 +1900,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:07 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1920,26 +1956,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -1991,13 +2033,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 96 0</source_corr>
+          <source_corr>0 0 96.0000000000002 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.49306 0.785274 6.39054 0.737083</prop_corr>
+          <prop_corr>0.493060412484504 0.785274019576111 6.39054162530798 0.737083611874421</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2018,10 +2060,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:07 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2078,31 +2120,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 96</source_corr>
+          <source_corr>0 0 0 96.0000000000003</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -2111,10 +2159,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2167,26 +2215,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -2238,13 +2292,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 96</source_corr>
+          <source_corr>0 0 0 96.0000000000003</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.769976 0.588673 1.0862 7.70984</prop_corr>
+          <prop_corr>0.769976415879722 0.588672950452566 1.08620470407922 7.70983508313101</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2265,10 +2319,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2325,31 +2379,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>96 0 0 0</source_corr>
+          <source_corr>96.0000000000003 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -2358,10 +2418,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2414,26 +2474,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -2485,13 +2551,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>96 0 0 0</source_corr>
+          <source_corr>96.0000000000003 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>6.5636 0.339244 0.424003 1.04395</prop_corr>
+          <prop_corr>6.56359597141624 0.339243870550824 0.424002735560781 1.04394919460813</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2512,10 +2578,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2572,31 +2638,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 96 0 0</source_corr>
+          <source_corr>0 96.0000000000003 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -2605,10 +2677,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2661,26 +2733,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -2732,13 +2810,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 96 0 0</source_corr>
+          <source_corr>0 96.0000000000003 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.659385 7.00784 0.919203 0.491021</prop_corr>
+          <prop_corr>0.659385383234847 7.00783605776922 0.919203392478294 0.491020906501036</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2759,10 +2837,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2819,31 +2897,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 96 0</source_corr>
+          <source_corr>0 0 96.0000000000002 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -2852,10 +2936,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2908,26 +2992,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -2979,13 +3069,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 96 0</source_corr>
+          <source_corr>0 0 96.0000000000002 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.655657 1.19514 7.58991 0.808384</prop_corr>
+          <prop_corr>0.655656865297714 1.19513533508197 7.58991352135432 0.808384346660431</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3006,10 +3096,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3066,31 +3156,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 96</source_corr>
+          <source_corr>0 0 0 96.0000000000003</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -3099,10 +3195,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3155,26 +3251,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -3226,13 +3328,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 96</source_corr>
+          <source_corr>0 0 0 96.0000000000003</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>21</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.851995 0.424777 0.51543 6.53808</prop_corr>
+          <prop_corr>0.851995257518996 0.424777029824575 0.515429854253146 6.53808220526145</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3253,10 +3355,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3313,31 +3415,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>96 0 0 0</source_corr>
+          <source_corr>96.0000000000002 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -3346,10 +3454,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3402,26 +3510,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -3473,13 +3587,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>96 0 0 0</source_corr>
+          <source_corr>96.0000000000002 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>8.09051 1.15921 0.7265 1.06612</prop_corr>
+          <prop_corr>8.09051076856809 1.15920961360094 0.726500425923133 1.06611985033462</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3500,10 +3614,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3560,31 +3674,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 96 0 0</source_corr>
+          <source_corr>0 96.0000000000002 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -3593,10 +3713,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3649,26 +3769,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -3720,13 +3846,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 96 0 0</source_corr>
+          <source_corr>0 96.0000000000002 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.05608 7.29033 0.620309 0.52639</prop_corr>
+          <prop_corr>1.0560829860316 7.29033232476019 0.620308526210467 0.526389981149792</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3747,10 +3873,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3807,31 +3933,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 96 0</source_corr>
+          <source_corr>0 0 96.0000000000003 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -3840,10 +3972,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3896,26 +4028,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -3967,13 +4105,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 96 0</source_corr>
+          <source_corr>0 0 96.0000000000003 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0829304 0.167 4.56228 0.243476</prop_corr>
+          <prop_corr>0.0829304603005095 0.167000392595377 4.562283901347 0.243475779575428</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3994,10 +4132,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4054,31 +4192,37 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 96</source_corr>
+          <source_corr>0 0 0 96.0000000000002</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -4087,10 +4231,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4143,26 +4287,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>
@@ -4214,13 +4364,13 @@
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 96</source_corr>
+          <source_corr>0 0 0 96.0000000000002</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
           <ncg_had>20</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.314937 0.161971 0.314345 5.03695</prop_corr>
+          <prop_corr>0.31493682574236 0.161970771097834 0.314344794429499 5.03695087327715</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -4241,10 +4391,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 11:06:12 EDT</run_date>
+          <run_date>24 Aug 06 15:34:08 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4302,26 +4452,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994775</w_plaq>
-          <s_plaq>0.99505</s_plaq>
-          <t_plaq>0.994501</t_plaq>
-          <link>0.37906</link>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
           <pollp>
             <elem>
-              <re>-0.326031</re>
-              <im>-0.0298152</im>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
             </elem>
             <elem>
-              <re>-0.325779</re>
-              <im>-0.0289704</im>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
             </elem>
             <elem>
-              <re>-0.325954</re>
-              <im>-0.0229221</im>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
             </elem>
             <elem>
-              <re>0.965822</re>
-              <im>-0.00148825</im>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
             </elem>
           </pollp>
         </Observables>

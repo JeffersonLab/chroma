@@ -4,7 +4,7 @@
 <t_leapfrog>
   <mesE>
     <mesKE>
-      <KE>275.08</KE>
+      <KE>275.079579507893</KE>
     </mesKE>
     <mesPE>
       <num_terms>2</num_terms>
@@ -12,18 +12,18 @@
         <elem>
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <S_even_even>
-              <S_ee>-173.82</S_ee>
+              <S_ee>-173.819555282593</S_ee>
             </S_even_even>
             <S_odd_odd>
               <n_count>24</n_count>
-              <S_oo>114.1</S_oo>
+              <S_oo>114.10019693481</S_oo>
             </S_odd_odd>
-            <S>-59.7194</S>
+            <S>-59.7193583477827</S>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
         <elem>
           <GaugeMonomial>
-            <S>14.3912</S>
+            <S>14.3911643918692</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>
@@ -45,14 +45,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>177.275</F_oo_sq>
-                  <F_logdet_sq>0.971004</F_logdet_sq>
-                  <F_sq>179.331</F_sq>
+                  <F_oo_sq>177.274872520508</F_oo_sq>
+                  <F_logdet_sq>0.971003777066235</F_logdet_sq>
+                  <F_sq>179.33065376549</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>863.065</F_sq>
+                  <F_sq>863.065279215771</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -75,14 +75,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>173.61</F_oo_sq>
-                  <F_logdet_sq>0.96627</F_logdet_sq>
-                  <F_sq>175.56</F_sq>
+                  <F_oo_sq>173.610010581293</F_oo_sq>
+                  <F_logdet_sq>0.966270109170783</F_logdet_sq>
+                  <F_sq>175.560335375649</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>862.469</F_sq>
+                  <F_sq>862.469216933689</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -105,14 +105,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>170.343</F_oo_sq>
-                  <F_logdet_sq>0.961517</F_logdet_sq>
-                  <F_sq>172.206</F_sq>
+                  <F_oo_sq>170.342977566868</F_oo_sq>
+                  <F_logdet_sq>0.961516888142919</F_logdet_sq>
+                  <F_sq>172.206334520579</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>861.736</F_sq>
+                  <F_sq>861.735706917869</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -135,14 +135,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>23</n_count>
-                  <F_oo_sq>167.586</F_oo_sq>
-                  <F_logdet_sq>0.957217</F_logdet_sq>
-                  <F_sq>169.388</F_sq>
+                  <F_oo_sq>167.586142880942</F_oo_sq>
+                  <F_logdet_sq>0.957216610280421</F_logdet_sq>
+                  <F_sq>169.387886518196</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>860.892</F_sq>
+                  <F_sq>860.892284685861</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -165,14 +165,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>23</n_count>
-                  <F_oo_sq>165.431</F_oo_sq>
-                  <F_logdet_sq>0.953811</F_logdet_sq>
-                  <F_sq>167.202</F_sq>
+                  <F_oo_sq>165.43076848735</F_oo_sq>
+                  <F_logdet_sq>0.953810489977378</F_logdet_sq>
+                  <F_sq>167.202234856243</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>859.987</F_sq>
+                  <F_sq>859.986880654277</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -195,14 +195,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>163.949</F_oo_sq>
-                  <F_logdet_sq>0.951682</F_logdet_sq>
-                  <F_sq>165.726</F_sq>
+                  <F_oo_sq>163.948579989899</F_oo_sq>
+                  <F_logdet_sq>0.95168225899968</F_logdet_sq>
+                  <F_sq>165.726089975584</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>859.086</F_sq>
+                  <F_sq>859.086131072999</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -225,14 +225,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>163.195</F_oo_sq>
-                  <F_logdet_sq>0.951142</F_logdet_sq>
-                  <F_sq>165.019</F_sq>
+                  <F_oo_sq>163.195036912563</F_oo_sq>
+                  <F_logdet_sq>0.951141885959719</F_logdet_sq>
+                  <F_sq>165.018837038956</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>858.275</F_sq>
+                  <F_sq>858.275052510644</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -255,14 +255,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>163.211</F_oo_sq>
-                  <F_logdet_sq>0.952411</F_logdet_sq>
-                  <F_sq>165.124</F_sq>
+                  <F_oo_sq>163.210679806484</F_oo_sq>
+                  <F_logdet_sq>0.952411331458117</F_logdet_sq>
+                  <F_sq>165.123736105784</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>857.655</F_sq>
+                  <F_sq>857.65479520745</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -285,14 +285,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>164.021</F_oo_sq>
-                  <F_logdet_sq>0.955617</F_logdet_sq>
-                  <F_sq>166.067</F_sq>
+                  <F_oo_sq>164.020774975061</F_oo_sq>
+                  <F_logdet_sq>0.955617116674684</F_logdet_sq>
+                  <F_sq>166.067315724545</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>857.342</F_sq>
+                  <F_sq>857.341630201474</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -315,14 +315,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>165.631</F_oo_sq>
-                  <F_logdet_sq>0.960787</F_logdet_sq>
-                  <F_sq>167.854</F_sq>
+                  <F_oo_sq>165.63066556037</F_oo_sq>
+                  <F_logdet_sq>0.960787245228315</F_logdet_sq>
+                  <F_sq>167.854292304388</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>857.464</F_sq>
+                  <F_sq>857.463700950821</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -345,14 +345,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>24</n_count>
-                  <F_oo_sq>168.018</F_oo_sq>
-                  <F_logdet_sq>0.967856</F_logdet_sq>
-                  <F_sq>170.459</F_sq>
+                  <F_oo_sq>168.017595132841</F_oo_sq>
+                  <F_logdet_sq>0.967855699137923</F_logdet_sq>
+                  <F_sq>170.458857587897</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>858.159</F_sq>
+                  <F_sq>858.158830044313</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -375,14 +375,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>171.118</F_oo_sq>
-                  <F_logdet_sq>0.976672</F_logdet_sq>
-                  <F_sq>173.812</F_sq>
+                  <F_oo_sq>171.118273988046</F_oo_sq>
+                  <F_logdet_sq>0.976672447523334</F_logdet_sq>
+                  <F_sq>173.811635066939</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>859.571</F_sq>
+                  <F_sq>859.570966288998</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -405,14 +405,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>174.815</F_oo_sq>
-                  <F_logdet_sq>0.987018</F_logdet_sq>
-                  <F_sq>177.785</F_sq>
+                  <F_oo_sq>174.814628273379</F_oo_sq>
+                  <F_logdet_sq>0.987018086571299</F_logdet_sq>
+                  <F_sq>177.784926333799</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>861.846</F_sq>
+                  <F_sq>861.846481458133</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -435,14 +435,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>178.922</F_oo_sq>
-                  <F_logdet_sq>0.998625</F_logdet_sq>
-                  <F_sq>182.181</F_sq>
+                  <F_oo_sq>178.922046533557</F_oo_sq>
+                  <F_logdet_sq>0.998624863802473</F_logdet_sq>
+                  <F_sq>182.180785737999</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>865.129</F_sq>
+                  <F_sq>865.128985614354</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -465,14 +465,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>183.185</F_oo_sq>
-                  <F_logdet_sq>1.0112</F_logdet_sq>
-                  <F_sq>186.727</F_sq>
+                  <F_oo_sq>183.184963640197</F_oo_sq>
+                  <F_logdet_sq>1.01120468185499</F_logdet_sq>
+                  <F_sq>186.726966696796</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>869.555</F_sq>
+                  <F_sq>869.554919903576</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -480,7 +480,7 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.35</t>
+        <t>0.3500001</t>
         <leapQ>
           <dt>0.025</dt>
         </leapQ>
@@ -495,14 +495,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>187.286</F_oo_sq>
-                  <F_logdet_sq>1.02448</F_logdet_sq>
-                  <F_sq>191.087</F_sq>
+                  <F_oo_sq>187.285974450902</F_oo_sq>
+                  <F_logdet_sq>1.02447644949775</F_logdet_sq>
+                  <F_sq>191.087115044579</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>875.246</F_sq>
+                  <F_sq>875.24661026243</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -510,7 +510,7 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.375</t>
+        <t>0.3750001</t>
         <leapQ>
           <dt>0.025</dt>
         </leapQ>
@@ -525,14 +525,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>190.872</F_oo_sq>
-                  <F_logdet_sq>1.0382</F_logdet_sq>
-                  <F_sq>194.889</F_sq>
+                  <F_oo_sq>190.872247627964</F_oo_sq>
+                  <F_logdet_sq>1.03819936868109</F_logdet_sq>
+                  <F_sq>194.889018900659</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>882.306</F_sq>
+                  <F_sq>882.305916400453</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -540,13 +540,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.4</t>
+        <t>0.4000001</t>
         <leapQ>
           <dt>0.025</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.4125</t>
+        <t>0.4125001</t>
         <leapP>
           <dt>0.025</dt>
           <ExactAbsHamiltonianForce>
@@ -555,14 +555,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>193.599</F_oo_sq>
-                  <F_logdet_sq>1.0522</F_logdet_sq>
-                  <F_sq>197.771</F_sq>
+                  <F_oo_sq>193.599456176406</F_oo_sq>
+                  <F_logdet_sq>1.05220236781684</F_logdet_sq>
+                  <F_sq>197.770955880685</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>890.807</F_sq>
+                  <F_sq>890.807371204689</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -570,13 +570,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.425</t>
+        <t>0.4250001</t>
         <leapQ>
           <dt>0.025</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.4375</t>
+        <t>0.4375001</t>
         <leapP>
           <dt>0.025</dt>
           <ExactAbsHamiltonianForce>
@@ -585,14 +585,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>195.185</F_oo_sq>
-                  <F_logdet_sq>1.0664</F_logdet_sq>
-                  <F_sq>199.437</F_sq>
+                  <F_oo_sq>195.184585427382</F_oo_sq>
+                  <F_logdet_sq>1.06640422567605</F_logdet_sq>
+                  <F_sq>199.437077762107</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>900.79</F_sq>
+                  <F_sq>900.790181881393</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -600,13 +600,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.45</t>
+        <t>0.4500001</t>
         <leapQ>
           <dt>0.025</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.4625</t>
+        <t>0.4625001</t>
         <leapP>
           <dt>0.025</dt>
           <ExactAbsHamiltonianForce>
@@ -615,14 +615,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>195.456</F_oo_sq>
-                  <F_logdet_sq>1.08082</F_logdet_sq>
-                  <F_sq>199.71</F_sq>
+                  <F_oo_sq>195.45622549947</F_oo_sq>
+                  <F_logdet_sq>1.08082053837792</F_logdet_sq>
+                  <F_sq>199.709927435471</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>912.252</F_sq>
+                  <F_sq>912.252079233853</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -630,13 +630,13 @@
         </leapP>
       </elem>
       <elem>
-        <t>0.475</t>
+        <t>0.4750001</t>
         <leapQ>
           <dt>0.025</dt>
         </leapQ>
       </elem>
       <elem>
-        <t>0.4875</t>
+        <t>0.4875001</t>
         <leapP>
           <dt>0.0125</dt>
           <ExactAbsHamiltonianForce>
@@ -645,14 +645,14 @@
               <elem>
                 <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
                   <n_count>25</n_count>
-                  <F_oo_sq>194.387</F_oo_sq>
-                  <F_logdet_sq>1.09555</F_logdet_sq>
-                  <F_sq>198.564</F_sq>
+                  <F_oo_sq>194.386640085861</F_oo_sq>
+                  <F_logdet_sq>1.09555005798082</F_logdet_sq>
+                  <F_sq>198.563752468948</F_sq>
                 </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
               </elem>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>925.143</F_sq>
+                  <F_sq>925.143147010024</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -660,14 +660,14 @@
         </leapP>
       </elem>
       <EndOfTraj>
-        <t>0.5</t>
-        <t_mom>0.5</t_mom>
+        <t>0.5000001</t>
+        <t_mom>0.5000001</t_mom>
       </EndOfTraj>
     </MDSteps>
   </PQPLeapfrogIntegrator>
   <mesE>
     <mesKE>
-      <KE>354.973</KE>
+      <KE>354.972706042292</KE>
     </mesKE>
     <mesPE>
       <num_terms>2</num_terms>
@@ -675,18 +675,18 @@
         <elem>
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <S_even_even>
-              <S_ee>-173.558</S_ee>
+              <S_ee>-173.557762145996</S_ee>
             </S_even_even>
             <S_odd_odd>
               <n_count>25</n_count>
-              <S_oo>109.613</S_oo>
+              <S_oo>109.613318073452</S_oo>
             </S_odd_odd>
-            <S>-63.9445</S>
+            <S>-63.9444440725438</S>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
         <elem>
           <GaugeMonomial>
-            <S>-61.3327</S>
+            <S>-61.3327523781915</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>

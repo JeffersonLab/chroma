@@ -86,10 +86,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.10.3</chroma>
+      <chroma>3.11.0</chroma>
       <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>16 Aug 06 21:41:31 EDT</run_date>
+    <run_date>24 Aug 06 16:58:31 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -119,7 +119,7 @@
             <elem>
               <Plaquette>
                 <update_no>1</update_no>
-                <w_plaq>0.808066671594538</w_plaq>
+                <w_plaq>0.808066671594537</w_plaq>
                 <s_plaq>0.816189478300253</s_plaq>
                 <t_plaq>0.799943864888822</t_plaq>
                 <link>0.375684457828356</link>

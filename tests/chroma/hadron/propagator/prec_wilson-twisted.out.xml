@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson-twisted.out.xml,v 3.3 2006-07-03 15:22:26 edwards Exp $
+; $Id: prec_wilson-twisted.out.xml,v 3.4 2006-08-24 21:07:08 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -110,10 +110,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.8.0</chroma>
-      <qdp>1.20.5</qdp>
+      <chroma>3.11.0</chroma>
+      <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>03 Jul 06 10:59:45 EDT</run_date>
+    <run_date>24 Aug 06 15:26:36 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -145,6 +145,12 @@
     <w_plaq>1</w_plaq>
     <s_plaq>1</s_plaq>
     <t_plaq>1</t_plaq>
+    <plane_01_plaq>1</plane_01_plaq>
+    <plane_02_plaq>1</plane_02_plaq>
+    <plane_12_plaq>1</plane_12_plaq>
+    <plane_03_plaq>1</plane_03_plaq>
+    <plane_13_plaq>1</plane_13_plaq>
+    <plane_23_plaq>1</plane_23_plaq>
     <link>1</link>
     <pollp>
       <elem>
@@ -194,10 +200,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:59:45 EDT</run_date>
+          <run_date>24 Aug 06 15:26:37 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -246,6 +252,12 @@
           <w_plaq>1</w_plaq>
           <s_plaq>1</s_plaq>
           <t_plaq>1</t_plaq>
+          <plane_01_plaq>1</plane_01_plaq>
+          <plane_02_plaq>1</plane_02_plaq>
+          <plane_12_plaq>1</plane_12_plaq>
+          <plane_03_plaq>1</plane_03_plaq>
+          <plane_13_plaq>1</plane_13_plaq>
+          <plane_23_plaq>1</plane_23_plaq>
           <link>1</link>
           <pollp>
             <elem>
@@ -276,10 +288,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.8.0</chroma>
-            <qdp>1.20.5</qdp>
+            <chroma>3.11.0</chroma>
+            <qdp>1.20.8</qdp>
           </code_version>
-          <run_date>03 Jul 06 10:59:45 EDT</run_date>
+          <run_date>24 Aug 06 15:26:37 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -333,6 +345,12 @@
           <w_plaq>1</w_plaq>
           <s_plaq>1</s_plaq>
           <t_plaq>1</t_plaq>
+          <plane_01_plaq>1</plane_01_plaq>
+          <plane_02_plaq>1</plane_02_plaq>
+          <plane_12_plaq>1</plane_12_plaq>
+          <plane_03_plaq>1</plane_03_plaq>
+          <plane_13_plaq>1</plane_13_plaq>
+          <plane_23_plaq>1</plane_23_plaq>
           <link>1</link>
           <pollp>
             <elem>
@@ -398,91 +416,91 @@
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>6.30184e-08</resid>
+            <resid>7.607363e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>7.23259e-08</resid>
+            <resid>8.07884e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>5.39377e-08</resid>
+            <resid>7.901558e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>7.21752e-08</resid>
+            <resid>8.396374e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>6.30184e-08</resid>
+            <resid>7.607363e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>7.23259e-08</resid>
+            <resid>8.07884e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>5.39377e-08</resid>
+            <resid>7.901558e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>7.21752e-08</resid>
+            <resid>8.396374e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>6.30184e-08</resid>
+            <resid>7.607363e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>7.23259e-08</resid>
+            <resid>8.07884e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>5.39377e-08</resid>
+            <resid>7.901559e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <ntry>0</ntry>
             <n_count>17</n_count>
-            <resid>7.21752e-08</resid>
+            <resid>8.396374e-08</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>204</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.550448 0.0187777 0.00191304 0.000304755 0.000111619 0.000304755 0.00191304 0.0187777</prop_corr>
+          <prop_corr>0.550448071804462 0.018777679812899 0.00191303580449002 0.000304754988300924 0.000111618747904397 0.000304754993139859 0.00191303589970313 0.0187776801839829</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

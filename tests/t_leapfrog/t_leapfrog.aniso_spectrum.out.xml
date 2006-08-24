@@ -11,7 +11,7 @@
       <PEByMonomials>
         <elem>
           <GaugeMonomial>
-            <S>-19023.5092667929</S>
+            <S>-19023.5088847413</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>
@@ -32,7 +32,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>315993.058137951</F_sq>
+                  <F_sq>315993.063905857</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -54,7 +54,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>303357.85802775</F_sq>
+                  <F_sq>303357.865029547</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -76,7 +76,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>274318.287116277</F_sq>
+                  <F_sq>274318.289991584</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -98,7 +98,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>251319.471005217</F_sq>
+                  <F_sq>251319.472035481</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -120,7 +120,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>248719.565328948</F_sq>
+                  <F_sq>248719.562456276</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -142,7 +142,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>252951.782006959</F_sq>
+                  <F_sq>252951.783984219</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -164,7 +164,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>250147.978123457</F_sq>
+                  <F_sq>250147.977258709</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -186,7 +186,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>242311.557231852</F_sq>
+                  <F_sq>242311.55771604</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -208,7 +208,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>236423.111202979</F_sq>
+                  <F_sq>236423.107170591</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -230,7 +230,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>235420.130513436</F_sq>
+                  <F_sq>235420.127077681</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -252,7 +252,7 @@
             <ForcesByMonomial>
               <elem>
                 <GaugeMonomial>
-                  <F_sq>237761.387410129</F_sq>
+                  <F_sq>237761.381808619</F_sq>
                 </GaugeMonomial>
               </elem>
             </ForcesByMonomial>
@@ -267,14 +267,14 @@
   </PQPLeapfrogIntegrator>
   <mesE>
     <mesKE>
-      <KE>10766.9788387914</KE>
+      <KE>10766.9790314625</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <GaugeMonomial>
-            <S>-21643.7062794842</S>
+            <S>-21643.7058652257</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>

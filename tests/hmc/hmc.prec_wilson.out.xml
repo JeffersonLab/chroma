@@ -108,10 +108,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.9.0</chroma>
+      <chroma>3.11.0</chroma>
       <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>16 Jul 06 15:11:46 EDT</run_date>
+    <run_date>24 Aug 06 16:57:37 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -286,7 +286,7 @@
                   </leapQ>
                 </elem>
                 <elem>
-                  <t>0.07</t>
+                  <t>0.06999999</t>
                   <leapP>
                     <dt>0.02</dt>
                     <ExactAbsHamiltonianForce>
@@ -314,7 +314,7 @@
                   </leapQ>
                 </elem>
                 <elem>
-                  <t>0.09</t>
+                  <t>0.08999999</t>
                   <leapP>
                     <dt>0.02</dt>
                     <ExactAbsHamiltonianForce>
@@ -336,7 +336,7 @@
                   </leapP>
                 </elem>
                 <elem>
-                  <t>0.1</t>
+                  <t>0.09999999</t>
                   <leapQ>
                     <dt>0.02</dt>
                   </leapQ>
@@ -812,7 +812,7 @@
                   </leapP>
                 </elem>
                 <elem>
-                  <t>0.44</t>
+                  <t>0.4400001</t>
                   <leapQ>
                     <dt>0.02</dt>
                   </leapQ>
@@ -840,13 +840,13 @@
                   </leapP>
                 </elem>
                 <elem>
-                  <t>0.46</t>
+                  <t>0.4600001</t>
                   <leapQ>
                     <dt>0.02</dt>
                   </leapQ>
                 </elem>
                 <elem>
-                  <t>0.47</t>
+                  <t>0.4700001</t>
                   <leapP>
                     <dt>0.02</dt>
                     <ExactAbsHamiltonianForce>
@@ -868,13 +868,13 @@
                   </leapP>
                 </elem>
                 <elem>
-                  <t>0.48</t>
+                  <t>0.4800001</t>
                   <leapQ>
                     <dt>0.02</dt>
                   </leapQ>
                 </elem>
                 <elem>
-                  <t>0.49</t>
+                  <t>0.4900001</t>
                   <leapP>
                     <dt>0.01</dt>
                     <ExactAbsHamiltonianForce>
@@ -896,8 +896,8 @@
                   </leapP>
                 </elem>
                 <EndOfTraj>
-                  <t>0.5</t>
-                  <t_mom>0.5</t_mom>
+                  <t>0.5000001</t>
+                  <t_mom>0.5000001</t_mom>
                 </EndOfTraj>
               </MDSteps>
             </PQPLeapfrogIntegrator>
@@ -935,7 +935,7 @@
             <AccProb>0.148077783312972</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>1.875</seconds_for_trajectory>
+          <seconds_for_trajectory>2.103</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
@@ -970,7 +970,7 @@
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.015</seconds_for_measurements>
+          <seconds_for_measurements>0.006</seconds_for_measurements>
         </Update>
       </elem>
     </MCUpdates>

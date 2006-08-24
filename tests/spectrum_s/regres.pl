@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.0 2006-04-03 04:59:33 edwards Exp $
+#  $Id: regres.pl,v 3.1 2006-08-24 21:07:11 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -13,9 +13,9 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "spectrum_s" , 
-	 input       => "$test_dir/spectrum_s/spectrum_s_reg.xml" , 
+	 input       => "$test_dir/spectrum_s/spectrum_s.ini.xml" , 
 	 output      => "spectrum_s.candidate.xml",
 	 metric      => "$test_dir/spectrum_s/spectrum_s.metric.xml" ,
-	 controlfile => "$test_dir/spectrum_s/spectrum_s_reg_test_output.xml" ,
+	 controlfile => "$test_dir/spectrum_s/spectrum_s.out.xml" ,
      }
      );
