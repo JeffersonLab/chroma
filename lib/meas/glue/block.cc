@@ -1,4 +1,4 @@
-// $Id: block.cc,v 3.1 2006-08-24 02:33:52 edwards Exp $
+// $Id: block.cc,v 3.2 2006-08-24 03:14:54 edwards Exp $
 /*! \file
  *  \brief Construct "block" links
  */
@@ -52,18 +52,6 @@ namespace Chroma
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
     LatticeColorMatrix tmp_3;
-    LatticeReal trace_tmp;
-    LatticeBoolean bad;
-
-    int nu;
-    int iter;
-    int su2_index;
-    int n_blk;
-
-    Double old_tr;
-    Double new_tr;
-    Double ddummy;
-    Double conver;
 
     /* Construct straight line segment x------x------x */
     /* tmp_1(x) = u(x+mu*2^bl_level,mu) */
@@ -88,11 +76,10 @@ namespace Chroma
     }
 
     /* Now construct and add the staples, except in direction j_decay */
-    for(nu = 0; nu < Nd; ++nu)
+    for(int nu = 0; nu < Nd; ++nu)
     {
       if( nu != mu && nu != j_decay )
       {
-
 	/* Forward staple */
 	/* tmp_1(x) = u(x+mu*2**(bl_level+1),nu) */
 	tmp_1 = shift2(u[nu], FORWARD, mu, bl_level+1);
@@ -134,35 +121,36 @@ namespace Chroma
     reunit(u_block);
 
     /* The initial trace */
-    trace_tmp = real(trace(u_block * u_unproj));
-    old_tr = sum(trace_tmp);
-
+    Double old_tr = sum(real(trace(u_block * u_unproj)));
     old_tr /= Double(QDP::Layout::vol()*Nc);
-    n_blk = 0;
+
+    int n_blk = 0;
     bool wrswitch = true;		/* Write out iterations? */
-    conver = 1;
+    Double conver = 1;
 
     while ( toBool(conver > BlkAccu)  &&  n_blk < BlkMax )
     {
       n_blk = n_blk + 1;
 
       /* Loop over SU(2) subgroup su2_index */
-      for(su2_index = 0; su2_index < Nc*(Nc-1)/2; ++su2_index)
-	su3proj (u_block, u_unproj, su2_index);
+      for(int su2_index = 0; su2_index < Nc*(Nc-1)/2; ++su2_index)
+	su3proj(u_block, u_unproj, su2_index);
     
       /* Reunitarize */
-      int numbad;
-      reunit(u_block, bad, numbad, REUNITARIZE_LABEL);
-      if ( numbad > 0 )
       {
-	QDPIO::cout << "BLOCK: WARNING unitarity violation\n";
-	QDPIO::cout << "   n_blk= " << n_blk << "  bl_level= " << bl_level << "\n";
-	QDPIO::cout << "   mu= " << mu << "  numbad= " << numbad << endl;
+	LatticeBoolean bad;
+	int numbad;
+	reunit(u_block, bad, numbad, REUNITARIZE_LABEL);
+	if ( numbad > 0 )
+	{
+	  QDPIO::cout << "BLOCK: WARNING unitarity violation\n";
+	  QDPIO::cout << "   n_blk= " << n_blk << "  bl_level= " << bl_level << "\n";
+	  QDPIO::cout << "   mu= " << mu << "  numbad= " << numbad << endl;
+	}
       }
     
       /* Calculate the trace */
-      trace_tmp = real(trace(u_block * u_unproj));
-      new_tr = sum(trace_tmp);
+      Double new_tr = sum(real(trace(u_block * u_unproj)));
       new_tr /= Double(QDP::Layout::vol()*Nc);
 
       if( wrswitch )
@@ -172,26 +160,10 @@ namespace Chroma
       }
 
       /* Normalized convergence criterion: */
-      ddummy = new_tr;
-      ddummy -= old_tr;
-      ddummy = ddummy / old_tr;
-      conver = fabs(ddummy);
+      conver = fabs((new_tr - old_tr) / old_tr);
       old_tr = new_tr;
     }
 
-#if 0
-    if ( wrswitch )
-    {
-      push(xml_out,"Final_blkb");
-
-      write(xml_out, "bl_level", bl_level);
-      write(xml_out, "mu", mu);
-      write(xml_out, "n_blk", n_blk);
-      write(xml_out, "new_tr", new_tr);
-      pop(xml_out);
-    }
-#endif
-      
     END_CODE();
   }
 
