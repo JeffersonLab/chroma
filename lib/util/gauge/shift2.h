@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: shift2.h,v 1.1 2006-08-24 02:34:42 edwards Exp $
+// $Id: shift2.h,v 1.2 2006-08-24 03:14:39 edwards Exp $
 /*! \file
  *  \brief Shift by a power of 2
  */
@@ -11,6 +11,7 @@ namespace Chroma
 {
 
   //! A simple not-fancy power of 2 shift
+  /*! \ingroup gauge */
   LatticeColorMatrix shift2(const LatticeColorMatrix& s1, int isign, int dir, int level);
 
 }
