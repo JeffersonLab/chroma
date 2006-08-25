@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: clover_term_base_w.cc,v 3.1 2006-08-25 23:56:51 edwards Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -26,6 +26,7 @@ namespace Chroma
 			     const LatticeFermion& chi, const LatticeFermion& psi, 
 			     enum PlusMinus isign) const
   {
+    START_CODE();
 
     // base deriv resizes.
     // Even even checkerboard
@@ -36,7 +37,8 @@ namespace Chroma
     deriv(ds_tmp, chi, psi, isign,1);
     
     ds_u += ds_tmp;
-
+    
+    END_CODE();
   }
 
 
@@ -45,6 +47,7 @@ namespace Chroma
 				   LatticeColorMatrix& ds_u,
 				   const LatticeColorMatrix& Lambda) const
   {
+    START_CODE();
 
     const multi1d<LatticeColorMatrix>& u = getU();
 
@@ -218,6 +221,8 @@ namespace Chroma
     //    |       |
     //    <-------V
     ds_u[rb[1-cb]] -= shift(Lambda, FORWARD, mu)*shift(staple_back, BACKWARD, nu);
+
+    END_CODE();
   }
 
 
@@ -234,6 +239,7 @@ namespace Chroma
 			     const LatticeFermion& chi, const LatticeFermion& psi, 
 			     enum PlusMinus isign, int cb) const
   {
+    START_CODE();
     
     // Do I still need to do this?
     if( ds_u.size() != Nd ) { 
@@ -294,6 +300,8 @@ namespace Chroma
 
     // Clear out the deriv on any fixed links
     getFermBC().zero(ds_u);
+
+    END_CODE();
   }
 
 
@@ -309,6 +317,7 @@ namespace Chroma
   void CloverTermBase::derivTrLn(multi1d<LatticeColorMatrix>& ds_u, 
 				 enum PlusMinus isign, int cb) const
   {
+    START_CODE();
     
     // Do I still need to do this?
     if( ds_u.size() != Nd ) { 
@@ -318,7 +327,6 @@ namespace Chroma
     // Force in each direction
     for(int mu=0; mu < Nd; mu++) 
     { 
-
       // I am only computing this checkerboard, so initialise this
       ds_u[mu] = zero;
 
@@ -371,8 +379,9 @@ namespace Chroma
 
     // Not sure this is needed here, but will be sure
     getFermBC().zero(ds_u);
+    
+    END_CODE();
   }
       
-    
 
 } // End Namespace Chroma

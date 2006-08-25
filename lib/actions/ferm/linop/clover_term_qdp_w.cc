@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.2 2006-07-20 20:06:31 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.3 2006-08-25 23:56:51 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -82,6 +82,8 @@ namespace Chroma
   void QDPCloverTerm::create(Handle< FermState<T,P,Q> > fs,
 			     const CloverFermActParams& param_)
   {
+    START_CODE();
+
     u = fs->getLinks();
     fbc = fs->getFermBC();
     param = param_;
@@ -120,6 +122,7 @@ namespace Chroma
       choles_done[i] = false;
     }
     
+    END_CODE();
   }
 
 
@@ -206,7 +209,7 @@ namespace Chroma
    */
   void QDPCloverTerm::makeClov(const multi1d<LatticeColorMatrix>& f, const Real& diag_mass)
   {
-//    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    START_CODE();
 
     LatticeColorMatrix f0;
     LatticeColorMatrix f1;
@@ -402,7 +405,7 @@ namespace Chroma
     }
 #endif
 
-//    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    END_CODE();
   }
   
 
@@ -412,8 +415,12 @@ namespace Chroma
    */
   void QDPCloverTerm::choles(int cb)
   {
+    START_CODE();
+
     // When you are doing the cholesky - also fill out the trace_log_diag piece)
     chlclovms(tr_log_diag_, cb);
+    
+    END_CODE();
   }
 
 
@@ -425,12 +432,16 @@ namespace Chroma
    */
   Double QDPCloverTerm::cholesDet(int cb) const
   {
-    if( choles_done[cb] == false ) { 
+    START_CODE();
+
+    if( choles_done[cb] == false ) 
+    {
       QDPIO::cout << "Error: YOu have not done the Cholesky.on this operator on this subset" << endl;
       QDPIO::cout << "You sure you shouldn't be asking invclov?" << endl;
       QDP_abort(1);
     }
 
+    END_CODE();
 
     return sum(tr_log_diag_, rb[cb]);
   }
@@ -448,8 +459,6 @@ namespace Chroma
    */
   void QDPCloverTerm::chlclovms(LatticeReal& tr_log_diag, int cb)
   {
-//    QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
-
     START_CODE();
 
     if ( 2*Nc < 3 )
@@ -589,8 +598,6 @@ namespace Chroma
 
     choles_done[cb] = true;
     END_CODE();
-
-//    QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
   }
 
 
@@ -998,6 +1005,8 @@ namespace Chroma
   //! Returns the appropriate clover coefficient for indices mu and nu
   Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const 
   { 
+    START_CODE();
+
     if( param.anisoParam.anisoP ) 
     { 
       if (mu==param.anisoParam.t_dir || nu == param.anisoParam.t_dir) { 
@@ -1007,13 +1016,14 @@ namespace Chroma
 	// Otherwise return the spatial coeff
 	return param.clovCoeffR;
       }
-	  
     }
     else { 
       // If there is no anisotropy just return the spatial one, it will
       // be the same as the temporal one
       return param.clovCoeffR; 
     } 
+    
+    END_CODE();
   }
 
 }

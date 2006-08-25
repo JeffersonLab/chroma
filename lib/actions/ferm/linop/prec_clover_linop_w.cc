@@ -1,4 +1,4 @@
-// $Id: prec_clover_linop_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
+// $Id: prec_clover_linop_w.cc,v 3.1 2006-08-25 23:56:51 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -19,6 +19,8 @@ namespace Chroma
   void EvenOddPrecCloverLinOp::create(Handle< FermState<T,P,Q> > fs, 
 				      const CloverFermActParams& param_)
   {
+    START_CODE();
+
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
 
     param = param_;
@@ -31,6 +33,7 @@ namespace Chroma
     D.create(fs, param.anisoParam);
 
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    END_CODE();
   }
 
   //! Apply the the odd-odd block onto a source vector
@@ -38,7 +41,11 @@ namespace Chroma
   EvenOddPrecCloverLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 				      enum PlusMinus isign) const
   {
+    START_CODE();
+
     clov.apply(chi, psi, isign, 1);
+    
+    END_CODE();
   }
 
 
@@ -47,8 +54,12 @@ namespace Chroma
   EvenOddPrecCloverLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					enum PlusMinus isign) const
   {
+    START_CODE();
+
     // Nuke for testing
     clov.apply(chi, psi, isign, 0);
+    
+    END_CODE();
   }
 
   //! Apply the inverse of the even-even block onto a source vector
@@ -56,7 +67,11 @@ namespace Chroma
   EvenOddPrecCloverLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					   enum PlusMinus isign) const
   {
+    START_CODE();
+
     invclov.apply(chi, psi, isign, 0);
+    
+    END_CODE();
   }
   
 
@@ -117,6 +132,7 @@ namespace Chroma
 					  const LatticeFermion& psi, 
 					  enum PlusMinus isign) const
   {
+    START_CODE();
 
     LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
     LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
@@ -130,8 +146,9 @@ namespace Chroma
     //  chi_o  =  A_oo  psi_o  -  tmp1_o
     clov.apply(chi, psi, isign, 1);
 
-
     chi[rb[1]] += mquarter*tmp1;
+    
+    END_CODE();
   }
 
 
@@ -141,7 +158,11 @@ namespace Chroma
 					     const LatticeFermion& chi, const LatticeFermion& psi, 
 					     enum PlusMinus isign) const
   {
+    START_CODE();
+
     clov.deriv(ds_u, chi, psi, isign, 0);
+    
+    END_CODE();
   }
 
   //! Apply the even-even block onto a source vector
@@ -149,9 +170,12 @@ namespace Chroma
   EvenOddPrecCloverLinOp::derivEvenEvenLogDet(multi1d<LatticeColorMatrix>& ds_u,
 					      enum PlusMinus isign) const
   {
-    
+    START_CODE();
+
     // Testing Odd Odd Term - get nothing from even even term
     invclov.derivTrLn(ds_u, isign, 0);
+    
+    END_CODE();
   }
 
   //! Apply the the even-odd block onto a source vector
@@ -175,7 +199,6 @@ namespace Chroma
 					    const LatticeFermion& chi, const LatticeFermion& psi, 
 					    enum PlusMinus isign) const
   {
-
     START_CODE();
     ds_u.resize(Nd);
 
@@ -193,7 +216,11 @@ namespace Chroma
 					   const LatticeFermion& chi, const LatticeFermion& psi, 
 					   enum PlusMinus isign) const
   {   
+    START_CODE();
+
     clov.deriv(ds_u, chi, psi, isign, 1);
+    
+    END_CODE();
   }
 
 

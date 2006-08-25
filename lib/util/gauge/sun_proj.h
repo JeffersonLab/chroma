@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sun_proj.h,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: sun_proj.h,v 3.1 2006-08-25 23:56:51 edwards Exp $
 /*! \file
  *  \ingroup gauge
  *  \author Subsetting added by A. Hart
@@ -16,28 +16,29 @@
 #ifndef __sun_proj_h__
 #define __sun_proj_h__
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-// No subsets 
-void sun_proj(const LatticeColorMatrix& w, 
-		 LatticeColorMatrix& v,
-		 const Real& BlkAccu, 
-		 int BlkMax);
+  // No subsets 
+  void sun_proj(const LatticeColorMatrix& w, 
+		LatticeColorMatrix& v,
+		const Real& BlkAccu, 
+		int BlkMax);
 
-// Ordered subsets
-void sun_proj(const LatticeColorMatrix& w, 
-		 LatticeColorMatrix& v,
-		 const Real& BlkAccu, 
-		 int BlkMax,
-		 const OrderedSubset& mstag);
+  // Ordered subsets
+  void sun_proj(const LatticeColorMatrix& w, 
+		LatticeColorMatrix& v,
+		const Real& BlkAccu, 
+		int BlkMax,
+		const OrderedSubset& mstag);
 
-// Unordered subsets
-void sun_proj(const LatticeColorMatrix& w, 
-		 LatticeColorMatrix& v,
-		 const Real& BlkAccu, 
-		 int BlkMax,
-		 const UnorderedSubset& mstag);
+  // Unordered subsets
+  void sun_proj(const LatticeColorMatrix& w, 
+		LatticeColorMatrix& v,
+		const Real& BlkAccu, 
+		int BlkMax,
+		const UnorderedSubset& mstag);
 
 
-}; // End namespace
+} // End namespace
 #endif

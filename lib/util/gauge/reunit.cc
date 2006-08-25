@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reunit.cc,v 3.1 2006-08-15 13:17:24 bjoo Exp $
+// $Id: reunit.cc,v 3.2 2006-08-25 23:56:51 edwards Exp $
 
 /*! \file
  *  \ingroup gauge
@@ -39,6 +39,8 @@ namespace Chroma {
 		enum Reunitarize ruflag,
 		const S& mstag)
   {
+    START_CODE();
+    
     QDP::StopWatch swatch;
     swatch.reset();
     swatch.start();
@@ -51,8 +53,6 @@ namespace Chroma {
     LatticeReal t4;
     LatticeReal sigmasq = 0;
     multi1d<LatticeComplex> row(Nc);
-    
-    START_CODE();
     
     // The initial number of matrices violating unitarity.
     numbad = 0;
@@ -444,37 +444,48 @@ namespace Chroma {
       for(int j=0; j < Nc; ++j)
 	pokeColor(xa[mstag], a[i][j], i, j);
     
-    END_CODE();
     swatch.stop();
     ReunitEnv::time_spent += swatch.getTimeInSeconds();
-
+    END_CODE();
   }
   
   // Overloaded definitions
   void reunit(LatticeColorMatrix& xa)
   {
+    START_CODE();
+
     LatticeBoolean bad;
     int numbad;
     
     reunit_t(xa, bad, numbad, REUNITARIZE, all);
+    
+    END_CODE();
   }
   
   void reunit(LatticeColorMatrix& xa,
 	      const UnorderedSubset& mstag)
   {
+    START_CODE();
+
     LatticeBoolean bad;
     int numbad;
     
     reunit_t(xa, bad, numbad, REUNITARIZE, mstag);
+    
+    END_CODE();
   }
   
   void reunit(LatticeColorMatrix& xa,
 	      const OrderedSubset& mstag)
   {
+    START_CODE();
+
     LatticeBoolean bad;
     int numbad;
     
     reunit_t(xa, bad, numbad, REUNITARIZE, mstag);
+    
+    END_CODE();
   }
   
   // Overloaded definitions, with numbad and ruflag
@@ -482,9 +493,13 @@ namespace Chroma {
 	      int& numbad, 
 	      enum Reunitarize ruflag)
   {
+    START_CODE();
+
     LatticeBoolean bad;
     
     reunit_t(xa, bad, numbad, REUNITARIZE, all);
+    
+    END_CODE();
   }
   
   void reunit(LatticeColorMatrix& xa,
@@ -492,9 +507,13 @@ namespace Chroma {
 	      enum Reunitarize ruflag,
 	      const UnorderedSubset& mstag)
   {
+    START_CODE();
+
     LatticeBoolean bad;
     
     reunit_t(xa, bad, numbad, REUNITARIZE, mstag);
+    
+    END_CODE();
   }
   
   void reunit(LatticeColorMatrix& xa,
@@ -502,9 +521,13 @@ namespace Chroma {
 	      enum Reunitarize ruflag,
 	      const OrderedSubset& mstag)
   {
+    START_CODE();
+
     LatticeBoolean bad;
     
     reunit_t(xa, bad, numbad, REUNITARIZE, mstag);
+    
+    END_CODE();
   }
   
   // Overloaded definitions, with bad, numbad and ruflag
@@ -534,4 +557,4 @@ namespace Chroma {
     reunit_t(xa, bad, numbad, ruflag, mstag);
   }
   
-}; // End namespace
+} // End namespace

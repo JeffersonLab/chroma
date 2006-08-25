@@ -1,4 +1,4 @@
-//  $Id: sun_proj.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
+//  $Id: sun_proj.cc,v 3.1 2006-08-25 23:56:51 edwards Exp $
 /*! \file
  *  \ingroup gauge
  *  \author Subsetting added by A. Hart
@@ -19,108 +19,109 @@
 #include "util/gauge/reunit.h" 
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-template<typename S>
-inline
-void sun_proj_t(const LatticeColorMatrix& w, 
-		 LatticeColorMatrix& v,
-		 const Real& BlkAccu, 
-		 int BlkMax,
-		 const S& mstag)
-{
-  Double new_tr;
-
-  START_CODE();
-
-  /*
-   * Project back to SU(3) by maximizing tr(v w).
-   * This is done by looping proj_iter times over the 3 SU(2) subgroups.
-   */
-
-  /* I need to get the number of sites in the sublattice. As far as
-   * I know, mstag does not contain information about either the number
-   * of sites it contains, nor of the number of subsets.
-   */
-
-  LatticeInt count;
-  count = 1;
-  Int numSites = sum(count,mstag);
-  Double norm = Double(1)/(Nc*numSites);
-
-  /* The initial trace */
-  Double old_tr = sum(real(trace(v * w)),mstag) * norm;
-
-  int iter = 0;
-  int wrswitch = 0;			// Write out iterations?
-//  Double conver = 1.0;
-  Real conver = 1.0;
-
-  while ( toBool(conver > BlkAccu)  &&  iter < BlkMax )
+  template<typename S>
+  inline
+  void sun_proj_t(const LatticeColorMatrix& w, 
+		  LatticeColorMatrix& v,
+		  const Real& BlkAccu, 
+		  int BlkMax,
+		  const S& mstag)
   {
-    ++iter;
+    START_CODE();
 
-    // Loop over SU(2) subgroup index
-    for(int su2_index = 0; su2_index < Nc*(Nc-1)/2; ++su2_index)
-      su3proj(v, w, su2_index, mstag);
+    Double new_tr;
 
-    // Reunitarize: this is the slow bit of the code...
-    reunit(v,mstag);
+    /*
+     * Project back to SU(3) by maximizing tr(v w).
+     * This is done by looping proj_iter times over the 3 SU(2) subgroups.
+     */
 
-    // Calculate the trace
-    new_tr = sum(real(trace(v * w)), mstag) * norm;
+    /* I need to get the number of sites in the sublattice. As far as
+     * I know, mstag does not contain information about either the number
+     * of sites it contains, nor of the number of subsets.
+     */
 
-    if( wrswitch == 1 )
+    LatticeInt count;
+    count = 1;
+    Int numSites = sum(count,mstag);
+    Double norm = Double(1)/(Nc*numSites);
+
+    /* The initial trace */
+    Double old_tr = sum(real(trace(v * w)),mstag) * norm;
+
+    int iter = 0;
+    int wrswitch = 0;			// Write out iterations?
+//  Double conver = 1.0;
+    Real conver = 1.0;
+
+    while ( toBool(conver > BlkAccu)  &&  iter < BlkMax )
     {
-      QDPIO::cout << "iter =     " << iter << endl;
-      QDPIO::cout << "  old_tr = " << old_tr << endl;
-      QDPIO::cout << "  new_tr = " << new_tr << endl;
+      ++iter;
+
+      // Loop over SU(2) subgroup index
+      for(int su2_index = 0; su2_index < Nc*(Nc-1)/2; ++su2_index)
+	su3proj(v, w, su2_index, mstag);
+
+      // Reunitarize: this is the slow bit of the code...
+      reunit(v,mstag);
+
+      // Calculate the trace
+      new_tr = sum(real(trace(v * w)), mstag) * norm;
+
+      if( wrswitch == 1 )
+      {
+	QDPIO::cout << "iter =     " << iter << endl;
+	QDPIO::cout << "  old_tr = " << old_tr << endl;
+	QDPIO::cout << "  new_tr = " << new_tr << endl;
+      }
+
+      // Normalized convergence criterion:
+      conver = fabs((new_tr - old_tr) / old_tr);
+      old_tr = new_tr;
     }
 
-    // Normalized convergence criterion:
-    conver = fabs((new_tr - old_tr) / old_tr);
-    old_tr = new_tr;
-  }
-
 #if 0
-  if ( wrswitch == 1 )
-  {
+    if ( wrswitch == 1 )
+    {
 //    push(nml,"Final_sun_proj");
 //    write(nml, "iter", iter);
 //    write(nml, "new_tr", new_tr);
 //    pop(nml);
-    QDPIO::cout << "iter = " << iter << endl;
-    QDPIO::cout << "new_tr = " << new_tr << endl;
-  }
+      QDPIO::cout << "iter = " << iter << endl;
+      QDPIO::cout << "new_tr = " << new_tr << endl;
+    }
 #endif
 
-  END_CODE();
-}
+    END_CODE();
+  }
 
-void sun_proj(const LatticeColorMatrix& w, 
-		 LatticeColorMatrix& v,
-		 const Real& BlkAccu, 
-		 int BlkMax)
-{
-  sun_proj_t(w, v, BlkAccu, BlkMax, all);
-}
+  void sun_proj(const LatticeColorMatrix& w, 
+		LatticeColorMatrix& v,
+		const Real& BlkAccu, 
+		int BlkMax)
+  {
+    sun_proj_t(w, v, BlkAccu, BlkMax, all);
+  }
 
-void sun_proj(const LatticeColorMatrix& w, 
-		 LatticeColorMatrix& v,
-		 const Real& BlkAccu, 
-		 int BlkMax,
-		 const UnorderedSubset& mstag)
-{
-  sun_proj_t(w, v, BlkAccu, BlkMax, mstag);
-}
+  void sun_proj(const LatticeColorMatrix& w, 
+		LatticeColorMatrix& v,
+		const Real& BlkAccu, 
+		int BlkMax,
+		const UnorderedSubset& mstag)
+  {
+    sun_proj_t(w, v, BlkAccu, BlkMax, mstag);
+  }
 
-void sun_proj(const LatticeColorMatrix& w, 
-		 LatticeColorMatrix& v,
-		 const Real& BlkAccu, 
-		 int BlkMax,
-		 const OrderedSubset& mstag)
-{
-  sun_proj_t(w, v, BlkAccu, BlkMax, mstag);
-}
+  void sun_proj(const LatticeColorMatrix& w, 
+		LatticeColorMatrix& v,
+		const Real& BlkAccu, 
+		int BlkMax,
+		const OrderedSubset& mstag)
+  {
+    sun_proj_t(w, v, BlkAccu, BlkMax, mstag);
+  }
 
 }
