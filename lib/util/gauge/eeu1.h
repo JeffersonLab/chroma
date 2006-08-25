@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eeu1.h,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: eeu1.h,v 3.1 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a U(1) lie algebra element
  */

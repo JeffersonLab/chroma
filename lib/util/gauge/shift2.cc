@@ -1,4 +1,4 @@
-// $Id: shift2.cc,v 1.1 2006-08-24 02:34:42 edwards Exp $
+// $Id: shift2.cc,v 1.2 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief Shift by a power of 2
  */
@@ -13,6 +13,8 @@ namespace Chroma
   /*! \ingroup gauge */
   LatticeColorMatrix shift2(const LatticeColorMatrix& s1, int isign, int dir, int level)
   {
+    START_CODE();
+
     LatticeColorMatrix d;
 
     if (level == 0)
@@ -31,6 +33,8 @@ namespace Chroma
 	d   = shift(tmp,isign,dir);
       }
     }
+
+    END_CODE();
 
     return d;
   }

@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 3.1 2006-04-16 03:07:14 edwards Exp $
+// $Id: gauge_startup.cc,v 3.2 2006-08-25 23:46:37 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -36,6 +36,8 @@ namespace Chroma
 		    multi1d<LatticeColorMatrix>& u,
 		    Cfg_t& cfg)
   {
+    START_CODE();
+
     u.resize(Nd);
 
     switch (cfg.cfg_type) 
@@ -155,6 +157,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    END_CODE();
   }
 
 }  // end namespace Chroma

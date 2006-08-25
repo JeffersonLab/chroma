@@ -1,4 +1,4 @@
-/*#  $Id: expsu3.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $ ($Date: 2006-04-03 04:59:12 $) */
+/*#  $Id: expsu3.cc,v 3.1 2006-08-25 23:46:37 edwards Exp $ ($Date: 2006-08-25 23:46:37 $) */
 /*#  EXPSU3: */
 /*#  In place  a = 1 + a + (1/2)*a^2 + ...+ (1/n!)*(a)^n  n = 12 */
 /*#  a must be a lattice_complex32_colour_colour  primitive */
@@ -15,6 +15,7 @@ namespace Chroma {
 
 void expsu3(LatticeColorMatrix& a, Reunitarize cflag)
 {
+  START_CODE();
 
   LatticeColorMatrix aux1;
   LatticeColorMatrix aux2;
@@ -296,7 +297,9 @@ void expsu3(LatticeColorMatrix& a, Reunitarize cflag)
     }
   }
   a = aux2;
+
+  END_CODE();
 }
 
 
-}; // End namespace Chroma 
+} // End namespace Chroma 
