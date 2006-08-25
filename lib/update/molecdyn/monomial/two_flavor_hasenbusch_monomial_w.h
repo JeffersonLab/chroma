@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.3 2006-08-25 17:15:59 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -43,6 +43,8 @@ namespace Chroma
     /*! Monomial of the form  chi^dag*M_prec(M^dag*M)^{-1}M^{dag}_prec*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Self Description/Encapsulation Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactHasenbuschWilsonTypeFermMonomial");
@@ -111,11 +113,15 @@ namespace Chroma
       write(xml_out, "n_count", n_count);
       write(xml_out, "F_sq", F_sq);
       pop(xml_out);
+
+      END_CODE();
     }
   
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) 
     {
+      START_CODE();
+
       // Heatbath all the fields
       
       // Get at the fermion action for the expensive matrix
@@ -182,11 +188,15 @@ namespace Chroma
       push(xml_out, "FieldRefreshment");
       write(xml_out, "n_count", res.n_count);
       pop(xml_out);
+
+      END_CODE();
     }				    
   
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) 
     {
+      START_CODE();
+
       try {
 	const TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>& fm = 
 	  dynamic_cast<  const TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>& >(m);
@@ -200,6 +210,8 @@ namespace Chroma
 
       // Resetting pseudofermion fields implies resetting the chrono predictor
       getMDSolutionPredictor().reset();
+
+      END_CODE();
     }
 
 
@@ -207,6 +219,8 @@ namespace Chroma
     // Which is a normal solve on M^dag M X = M^{\dagger}_prec \phi
     virtual int getX( Phi& X, const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Grab the fermact
       const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
       const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getFermActPrec();
@@ -245,6 +259,8 @@ namespace Chroma
 	(getMDSolutionPredictor()).newVector(X);
       }
 
+      END_CODE();
+
       return res.n_count;
     }
 
@@ -267,9 +283,6 @@ namespace Chroma
 
     //! Do an inversion of the type 
     virtual const GroupXML_t& getInvParams(void) const = 0;
-
-
-
   };
 
 
@@ -292,6 +305,8 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Self identification/encapsulation Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial");
@@ -324,6 +339,8 @@ namespace Chroma
       write(xml_out, "n_count", n_count);
       write(xml_out, "S", action);
       pop(xml_out);
+
+      END_CODE();
 
       return action;
     }
@@ -371,6 +388,8 @@ namespace Chroma
     //! Compute the odd odd contribution (eg
     virtual Double S_odd_odd(const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_odd_odd");
 
@@ -405,11 +424,16 @@ namespace Chroma
       write(xml_out, "S_oo", action);
       pop(xml_out);
 
+      END_CODE();
+
       return action;
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s)  {
+    Double S(const AbsFieldState<P,Q>& s)  
+    {
+      START_CODE();
+
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial");
 
@@ -417,8 +441,10 @@ namespace Chroma
 
       write(xml_out, "S", action);
       pop(xml_out);
-      return action;
 
+      END_CODE();
+
+      return action;
     }
 
   protected:
@@ -434,7 +460,6 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
-
 
     //! Get parameters for the inverter
     virtual const GroupXML_t& getInvParams(void) const = 0;

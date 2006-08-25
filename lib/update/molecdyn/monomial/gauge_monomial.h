@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
+// $Id: gauge_monomial.h,v 3.1 2006-08-25 17:15:59 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -56,47 +56,54 @@ namespace Chroma
 
     //! Create a suitable state and compute F
     void dsdq(P& F, const AbsFieldState<P,Q>& s) 
-      {
-	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-	push(xml_out, "GaugeMonomial");
+    {
+      START_CODE();
 
-	// Make a gauge connect state
-	Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "GaugeMonomial");
 
-	getGaugeAct().deriv(F, g_state);
+      // Make a gauge connect state
+      Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
 
-	Double F_sq = norm2(F);
-	write(xml_out, "F_sq", F_sq);
-	pop(xml_out);
-      }
+      getGaugeAct().deriv(F, g_state);
+
+      Double F_sq = norm2(F);
+      write(xml_out, "F_sq", F_sq);
+      pop(xml_out);
+
+      END_CODE();
+    }
 
 
     //! Gauge action value
     Double S(const AbsFieldState<P,Q>& s)  
-      {
+    {
+      START_CODE();
 
-	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-	push(xml_out, "GaugeMonomial");
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "GaugeMonomial");
 
-	Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
-	Double action = getGaugeAct().S(g_state);
+      Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
+      Double action = getGaugeAct().S(g_state);
 
-	write(xml_out, "S", action);
-	pop(xml_out);
+      write(xml_out, "S", action);
+      pop(xml_out);
 
-	return action;
-      }
+      END_CODE();
+
+      return action;
+    }
 	
 	
-      void refreshInternalFields(const AbsFieldState<P,Q>& s) 
-      {
-	//No internal fields to refresh => Nop
-      }
+    void refreshInternalFields(const AbsFieldState<P,Q>& s) 
+    {
+      //No internal fields to refresh => Nop
+    }
 
-      void setInternalFields(const Monomial<P,Q>& m) 
-      {
-	// No internal fields to refresh => Nop
-      }
+    void setInternalFields(const Monomial<P,Q>& m) 
+    {
+      // No internal fields to refresh => Nop
+    }
 
     protected:
       const GaugeAction<P,Q>& getGaugeAct(void) const { 

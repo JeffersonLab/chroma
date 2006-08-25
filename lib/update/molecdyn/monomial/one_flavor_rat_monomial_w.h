@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.3 2006-08-25 17:15:59 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -37,6 +37,8 @@ namespace Chroma
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Self Description/Encapsulation Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "OneFlavorRatExactWilsonTypeFermMonomial");
@@ -130,6 +132,8 @@ namespace Chroma
       write(xml_out, "F_sq", F_sq);
       write(xml_out, "F_sq_tot", F_sq);
       pop(xml_out);
+
+      END_CODE();
     }
 
   
@@ -154,6 +158,8 @@ namespace Chroma
      */
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) 
     {
+      START_CODE();
+
       // Heatbath all the fields
       
       // Self Description/Encapsulation Rule
@@ -201,10 +207,15 @@ namespace Chroma
 
       write(xml_out, "n_count", n_count);
       pop(xml_out);
+
+      END_CODE();
     }				    
   
     //! Copy pseudofermions if any
-    virtual void setInternalFields(const Monomial<P,Q>& m) {
+    virtual void setInternalFields(const Monomial<P,Q>& m) 
+    {
+      START_CODE();
+
       try {
 	const OneFlavorRatExactWilsonTypeFermMonomial<P,Q,Phi>& fm = dynamic_cast<  const OneFlavorRatExactWilsonTypeFermMonomial<P,Q,Phi>& >(m);
 
@@ -214,6 +225,8 @@ namespace Chroma
 	QDPIO::cerr << "Failed to cast input Monomial to OneFlavorRatExactWilsonTypeFermMonomial " << endl;
 	QDP_abort(1);
       }
+
+      END_CODE();
     }
 
 
@@ -234,6 +247,8 @@ namespace Chroma
      */
     virtual Double S_subset(const AbsFieldState<P,Q>& s) const
     {
+      START_CODE();
+
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_subset");
 
@@ -272,6 +287,8 @@ namespace Chroma
       write(xml_out, "S", action);
       pop(xml_out);
 
+      END_CODE();
+
       return action;
     }
 
@@ -307,6 +324,8 @@ namespace Chroma
 		     const Phi& chi, 
 		     const AbsFieldState<P,Q>& s) const
     {
+      START_CODE();
+
       // Grab the fermact
       const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
@@ -319,6 +338,8 @@ namespace Chroma
       // Do the inversion
       SystemSolverResults_t res = (*invMdagM)(X, shifts, chi);
       
+      END_CODE();
+
       return res.n_count;
     }
 
@@ -341,6 +362,8 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Self identification/encapsulation Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "OneFlavorRatExactUnprecWilsonTypeFermMonomial");
@@ -349,6 +372,8 @@ namespace Chroma
 
       write(xml_out, "S", action);
       pop(xml_out);
+
+      END_CODE();
 
       return action;
     }
@@ -406,6 +431,8 @@ namespace Chroma
     //! Compute the total action
     Double S(const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial");
 
@@ -417,6 +444,8 @@ namespace Chroma
       write(xml_out, "S_odd_odd", action_o);
       write(xml_out, "S", action);
       pop(xml_out);
+
+      END_CODE();
 
       return action;
     }

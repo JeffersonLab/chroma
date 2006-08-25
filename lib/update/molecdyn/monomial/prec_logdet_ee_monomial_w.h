@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_logdet_ee_monomial_w.h,v 3.1 2006-07-04 02:55:52 edwards Exp $
+// $Id: prec_logdet_ee_monomial_w.h,v 3.2 2006-08-25 17:15:59 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -29,35 +29,41 @@ namespace Chroma
     virtual ~PrecLogDetEvenEvenMonomial() {}
 
     void dsdq(P& F, const AbsFieldState<P,Q>& s) 
-      {
-	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-	push(xml_out, "PrecLogDetEvenEvenMonomial");
+    {
+      START_CODE();
 
-	// Create FermAct
-	const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "PrecLogDetEvenEvenMonomial");
+
+      // Create FermAct
+      const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
       
-	// Create a state for linop
-	Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
+      // Create a state for linop
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
-	//Create LinOp
-	Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
+      //Create LinOp
+      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
 
-	lin->derivEvenEvenLogDet(F, PLUS);
+      lin->derivEvenEvenLogDet(F, PLUS);
 
-	for(int mu=0; mu < Nd; mu++) { 
-	  F[mu] *= Real(-getNumFlavors());	  
-	}
-	
-	state->deriv(F);
-
-	Double F_sq = norm2(F);
-	write(xml_out, "F_sq", F_sq);
-	pop(xml_out);
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] *= Real(-getNumFlavors());	  
       }
+	
+      state->deriv(F);
+
+      Double F_sq = norm2(F);
+      write(xml_out, "F_sq", F_sq);
+      pop(xml_out);
+
+      END_CODE();
+    }
 
 
     //! Gauge action value
-    Double S(const AbsFieldState<P,Q>& s)  {
+    Double S(const AbsFieldState<P,Q>& s)  
+    {
+      START_CODE();
 
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
 
@@ -71,6 +77,8 @@ namespace Chroma
       Double S_ee =(Double(-getNumFlavors())*lin->LogDetEvenEven());
       write(xml_out, "S", S_ee);
       pop(xml_out);
+
+      END_CODE();
 
       return S_ee;
     }
