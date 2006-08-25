@@ -102,11 +102,32 @@ namespace Chroma {
     push(xml_out, "Plaquette");
     write(xml_out, "update_no", update_no);
 
-    Double w_plaq, s_plaq, t_plaq, link;
-    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+    Double w_plaq, s_plaq, t_plaq, link; 
+    multi2d<Double> plane_plaq;
+
+    MesPlq(u, w_plaq, s_plaq, t_plaq, plane_plaq, link);
     write(xml_out, "w_plaq", w_plaq);
     write(xml_out, "s_plaq", s_plaq);
     write(xml_out, "t_plaq", t_plaq);
+
+    if (Nd >= 2)
+    {
+      write(xml_out, "plane_01_plaq", plane_plaq[0][1]);
+    }
+
+    if (Nd >= 3)
+    {
+      write(xml_out, "plane_02_plaq", plane_plaq[0][2]);
+      write(xml_out, "plane_12_plaq", plane_plaq[1][2]);
+    }
+
+    if (Nd >= 4)
+    {
+      write(xml_out, "plane_03_plaq", plane_plaq[0][3]);
+      write(xml_out, "plane_13_plaq", plane_plaq[1][3]);
+      write(xml_out, "plane_23_plaq", plane_plaq[2][3]);
+    }
+
     write(xml_out, "link", link);
     
     pop(xml_out); // pop("Plaquette");
