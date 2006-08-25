@@ -86,10 +86,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.11.0</chroma>
+      <chroma>3.11.1</chroma>
       <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>24 Aug 06 16:58:31 EDT</run_date>
+    <run_date>25 Aug 06 16:23:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -122,6 +122,12 @@
                 <w_plaq>0.808066671594537</w_plaq>
                 <s_plaq>0.816189478300253</s_plaq>
                 <t_plaq>0.799943864888822</t_plaq>
+                <plane_01_plaq>0.843592446258602</plane_01_plaq>
+                <plane_02_plaq>0.785331453875794</plane_02_plaq>
+                <plane_12_plaq>0.819644534766364</plane_12_plaq>
+                <plane_03_plaq>0.795631227122309</plane_03_plaq>
+                <plane_13_plaq>0.810236732650083</plane_13_plaq>
+                <plane_23_plaq>0.793963634894074</plane_23_plaq>
                 <link>0.375684457828356</link>
               </Plaquette>
             </elem>
@@ -141,6 +147,12 @@
                 <w_plaq>0.761150751188527</w_plaq>
                 <s_plaq>0.716130783218735</s_plaq>
                 <t_plaq>0.806170719158318</t_plaq>
+                <plane_01_plaq>0.729980073859527</plane_01_plaq>
+                <plane_02_plaq>0.700623881188221</plane_02_plaq>
+                <plane_12_plaq>0.717788394608457</plane_12_plaq>
+                <plane_03_plaq>0.804307845809186</plane_03_plaq>
+                <plane_13_plaq>0.812211505292604</plane_13_plaq>
+                <plane_23_plaq>0.801992806373164</plane_23_plaq>
                 <link>0.275217612994008</link>
               </Plaquette>
             </elem>
@@ -242,6 +254,12 @@
                 <w_plaq>0.747915922390853</w_plaq>
                 <s_plaq>0.692233882220333</s_plaq>
                 <t_plaq>0.803597962561374</t_plaq>
+                <plane_01_plaq>0.699141553738931</plane_01_plaq>
+                <plane_02_plaq>0.682731760151607</plane_02_plaq>
+                <plane_12_plaq>0.694828332770461</plane_12_plaq>
+                <plane_03_plaq>0.801654547763368</plane_03_plaq>
+                <plane_13_plaq>0.802521265499915</plane_13_plaq>
+                <plane_23_plaq>0.80661807442084</plane_23_plaq>
                 <link>0.219694973179079</link>
               </Plaquette>
             </elem>

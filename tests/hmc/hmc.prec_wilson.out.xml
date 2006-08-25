@@ -108,10 +108,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.11.0</chroma>
+      <chroma>3.11.1</chroma>
       <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>24 Aug 06 16:57:37 EDT</run_date>
+    <run_date>25 Aug 06 16:23:24 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -935,7 +935,7 @@
             <AccProb>0.148077783312972</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>2.103</seconds_for_trajectory>
+          <seconds_for_trajectory>2.625</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
@@ -943,6 +943,12 @@
                 <w_plaq>0.994841515862693</w_plaq>
                 <s_plaq>0.994947559200227</s_plaq>
                 <t_plaq>0.994735472525159</t_plaq>
+                <plane_01_plaq>0.994833492673934</plane_01_plaq>
+                <plane_02_plaq>0.995013228928049</plane_02_plaq>
+                <plane_12_plaq>0.994995955998699</plane_12_plaq>
+                <plane_03_plaq>0.994785024474064</plane_03_plaq>
+                <plane_13_plaq>0.99484407560279</plane_13_plaq>
+                <plane_23_plaq>0.994577317498624</plane_23_plaq>
                 <link>0.379295116794917</link>
               </Plaquette>
             </elem>
@@ -970,7 +976,7 @@
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.006</seconds_for_measurements>
+          <seconds_for_measurements>0</seconds_for_measurements>
         </Update>
       </elem>
     </MCUpdates>
