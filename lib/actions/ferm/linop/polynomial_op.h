@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 3.3 2006-08-26 05:42:33 edwards Exp $
+// $Id: polynomial_op.h,v 3.4 2006-08-26 05:50:06 edwards Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
  *    to 1/Q^2 in the range \f$[\mu, \lambda_{max}]\f$ with \f$Q = \gamma5 M\f$
@@ -294,7 +294,7 @@ namespace Chroma
     void deriv(P& ds_u, const T& chi, const T& psi, PlusMinus isign) const
       {
 	// There's a problem here. The interface wants to do something like
-	//    chi^dag * \dot(Qsq) \psi
+	//    \f$\chi^\dag * \dot(Qsq) \psi\f$
 	// the derivs all expect to do the derivative on the Qsq leaving
 	// open some color indices. The chi^dag and psi multiplications will
 	// trace over the spin indices.

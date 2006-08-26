@@ -1,4 +1,4 @@
-// $Id: unprec_hamberwu_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_hamberwu_linop_w.cc,v 3.1 2006-08-26 05:50:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu linear operator
  */
@@ -104,7 +104,7 @@ namespace Chroma
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    * \param cb	    Checkerboard of chi vector                  (Read)
    *
-   * \return Computes   chi^dag * \dot(D} * psi  
+   * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */
   void 
   UnprecHamberWuLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,

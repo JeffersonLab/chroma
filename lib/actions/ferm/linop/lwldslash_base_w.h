@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_base_w.h,v 3.1 2006-08-26 05:50:06 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -64,7 +64,7 @@ namespace Chroma
      * \param psi     right vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
-     * \return Computes   \f$ chi^dag * \dot(D} * psi \f$
+     * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */
     virtual void deriv(P& ds_u, 
 		       const T& chi, const T& psi, 
@@ -78,7 +78,7 @@ namespace Chroma
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      * \param cb      Checkerboard of chi vector                  (Read)
      *
-     * \return Computes   \f$ chi^dag * \dot(D} * psi \f$
+     * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */
     virtual void deriv(P& ds_u, 
 		       const T& chi, const T& psi, 

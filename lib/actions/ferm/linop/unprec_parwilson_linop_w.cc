@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_linop_w.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: unprec_parwilson_linop_w.cc,v 3.2 2006-08-26 05:50:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator with parity breaking term
  */
@@ -84,7 +84,7 @@ namespace Chroma
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    * \param cb	    Checkerboard of chi vector                  (Read)
    *
-   * \return Computes   chi^dag * \dot(D} * psi  
+   * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */
   void 
   UnprecParWilsonLinOp::deriv(multi1d<LatticeColorMatrix>& ds_u,

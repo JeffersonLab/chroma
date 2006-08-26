@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_array_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_base_array_w.h,v 3.1 2006-08-26 05:50:06 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -92,7 +92,7 @@ namespace Chroma
      * \param psi     right vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */
     virtual void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 		       const multi1d<LatticeFermion>& chi, 
@@ -107,7 +107,7 @@ namespace Chroma
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      * \param cb      Checkerboard of chi vector                  (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */
     virtual void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 		       const multi1d<LatticeFermion>& chi, 
@@ -121,7 +121,7 @@ namespace Chroma
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      * \param cb      Checkerboard of chi vector                  (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */
     virtual void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 		       const LatticeFermion& chi, 

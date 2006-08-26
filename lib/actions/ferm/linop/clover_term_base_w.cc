@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 3.1 2006-08-25 23:56:51 edwards Exp $
+// $Id: clover_term_base_w.cc,v 3.2 2006-08-26 05:50:06 edwards Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -20,7 +20,7 @@ namespace Chroma
    * \param psi     right vector                                (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    *
-   * \return Computes   chi^dag * \dot(D} * psi  
+   * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */
   void CloverTermBase::deriv(multi1d<LatticeColorMatrix>& ds_u, 
 			     const LatticeFermion& chi, const LatticeFermion& psi, 
@@ -233,7 +233,7 @@ namespace Chroma
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    * \param cb      Checkerboard of chi vector                  (Read)
    *
-   * \return Computes   chi^dag * \dot(D} * psi  
+   * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */
   void CloverTermBase::deriv(multi1d<LatticeColorMatrix>& ds_u, 
 			     const LatticeFermion& chi, const LatticeFermion& psi, 
@@ -312,7 +312,7 @@ namespace Chroma
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    * \param cb      Checkerboard of chi vector                  (Read)
    *
-   * \return Computes   chi^dag * \dot(D} * psi  
+   * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$  
    */
   void CloverTermBase::derivTrLn(multi1d<LatticeColorMatrix>& ds_u, 
 				 enum PlusMinus isign, int cb) const

@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_w.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: lwldslash_base_w.cc,v 3.2 2006-08-26 05:50:06 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -16,7 +16,7 @@ namespace Chroma
    * \param psi     right vector                                (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    *
-   * \return Computes   chi^dag * \dot(D} * psi  
+   * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */
   void
   WilsonDslashBase::deriv(multi1d<LatticeColorMatrix>& ds_u,
@@ -37,7 +37,7 @@ namespace Chroma
 
 
   //! Take deriv of D
-  /*! \return Computes   chi^dag * \dot(D} * psi  */
+  /*! \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$  */
   void 
   WilsonDslashBase::deriv(multi1d<LatticeColorMatrix>& ds_u,
 			  const LatticeFermion& chi, const LatticeFermion& psi, 
