@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: polprec_op.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
+// $Id: polprec_op.h,v 3.1 2006-08-26 05:42:33 edwards Exp $
 /*! \file
  *  \brief Maybe usefull for polynomial preconditioning. It contructs an
- *     operator that is     QP(Q^2)Q, where Q = \gamma_5 M, with M any 4D dirac
+ *     operator that is \f$QP(Q^2)Q\f$, where \f$Q = \gamma_5 M\f$, with M any 4D dirac
  *     operator (including EO preconditioned variants). P(Q^2) is could be any 
  *     function of Q^2.
  *

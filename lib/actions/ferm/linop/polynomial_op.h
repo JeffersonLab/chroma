@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 3.2 2006-06-13 18:16:00 bjoo Exp $
+// $Id: polynomial_op.h,v 3.3 2006-08-26 05:42:33 edwards Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
- *    to 1/Q^2 in the range [\mu, Lambda_max] with Q = \gamma5 M
+ *    to 1/Q^2 in the range \f$[\mu, \lambda_{max}]\f$ with \f$Q = \gamma5 M\f$
  *    where M is a dirac operator of some kind (EO preconditioned is accepted).
  *    Can handle any 4D operator but not 5D since gamma_5 hermiticity is more
  *    involved there. 
