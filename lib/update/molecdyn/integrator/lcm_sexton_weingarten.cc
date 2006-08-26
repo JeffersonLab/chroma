@@ -9,9 +9,11 @@
 #include "util/gauge/expmat.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace LatColMatSextonWeingartenIntegratorEnv {
+  namespace LatColMatSextonWeingartenIntegratorEnv 
+  {
 
     AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
 		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
@@ -66,7 +68,9 @@ namespace Chroma {
   void LatColMatSextonWeingartenIntegrator::leapP(const multi1d<int>& monomial_list,
 						  const Real& dt, 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
-					     multi1d<LatticeColorMatrix> >& s) {
+					     multi1d<LatticeColorMatrix> >& s) 
+  {
+    START_CODE();
 
     AbsHamiltonian<multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >& H = getHamiltonian();
@@ -98,12 +102,17 @@ namespace Chroma {
     }
     
     pop(xml_out); // pop("leapP");
+    
+    END_CODE();
   }
 
   //! Leap with Q
   void LatColMatSextonWeingartenIntegrator::leapQ(const Real& dt, 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
-					     multi1d<LatticeColorMatrix> >& s) {
+					     multi1d<LatticeColorMatrix> >& s) 
+  {
+    START_CODE();
+
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
 
@@ -138,7 +147,9 @@ namespace Chroma {
     }
 
     pop(xml_out);
+    
+    END_CODE();
   }
 #endif
 
-};
+}

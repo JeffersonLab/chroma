@@ -1,4 +1,4 @@
-// $Id: prec_dwf_linop_array_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
+// $Id: prec_dwf_linop_array_w.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned domain-wall linear operator
  */
@@ -350,12 +350,15 @@ namespace Chroma
 					     const multi1d<LatticeFermion>& psi, 
 					     enum PlusMinus isign, int cb) const
   {
+    START_CODE();
+
     D.deriv(ds_u, chi, psi, isign, cb);
     for(int mu(0);mu<Nd;mu++)
       ds_u[mu] *= Real(-0.5);
+    
+    END_CODE();
   }
   
 
-
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

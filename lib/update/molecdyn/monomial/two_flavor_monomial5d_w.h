@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 3.3 2006-08-26 02:08:42 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -41,6 +41,8 @@ namespace Chroma
     /*! Actions of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) 
     {
+      START_CODE();
+
       // SelfIdentification/Encapsultaion Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactWilsonTypeFermMonomial5D");
@@ -126,11 +128,15 @@ namespace Chroma
       write(xml_out, "F_pv_sq", F_pv_sq);
       write(xml_out, "F_sq", F_sq);
       pop(xml_out);
+    
+      END_CODE();
     }
   
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) 
     {
+      START_CODE();
+
       // Heatbath all the fields
       
       // Get at the ferion action for piece i
@@ -172,9 +178,14 @@ namespace Chroma
 
       // Reset the chronological predictor
       getMDSolutionPredictor().reset();
+    
+      END_CODE();
     }				    
 
-    virtual void setInternalFields(const Monomial<P,Q>& m) {
+    virtual void setInternalFields(const Monomial<P,Q>& m) 
+    {
+      START_CODE();
+
       try {
 	const TwoFlavorExactWilsonTypeFermMonomial5D<P,Q,Phi>& fm = dynamic_cast< const TwoFlavorExactWilsonTypeFermMonomial5D<P,Q,Phi>& >(m);
 
@@ -193,6 +204,8 @@ namespace Chroma
 
       // Reset the chronological predictor
       getMDSolutionPredictor().reset();
+    
+      END_CODE();
     }
   
 
@@ -215,6 +228,8 @@ namespace Chroma
     //! Get (M^dagM)^{-1} phi
     virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Grab the fermact
       const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
 
@@ -243,6 +258,8 @@ namespace Chroma
       // Register the new vector
       (getMDSolutionPredictor()).newVector(X);
  
+      END_CODE();
+
       return res.n_count;
     }
 
@@ -250,6 +267,8 @@ namespace Chroma
     //! Get X = (PV^dag*PV)^{-1} eta
     virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const
     {
+      START_CODE();
+
       // Grab the fermact
       const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
 
@@ -266,10 +285,12 @@ namespace Chroma
       // Do the inversion
       SystemSolverResults_t res = (*invMdagM)(X, eta);
 
+      END_CODE();
+
       return res.n_count;
     }
 
-   };
+  };
 
 
   //-------------------------------------------------------------------------------------------
@@ -291,6 +312,8 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) 
     {
+      START_CODE();
+
       // SelfEncapsulation/Identification Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactUnprecWilsonTypeFermMonomial5D");
@@ -329,7 +352,9 @@ namespace Chroma
       write(xml_out, "n_count", n_count);
       write(xml_out, "S", action);
       pop(xml_out);
-
+    
+      END_CODE();
+    
       return action;
     }
 
@@ -372,6 +397,8 @@ namespace Chroma
     //! Compute the odd odd contribution (eg
     virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) 
     {
+      START_CODE();
+
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_odd_odd");
 
@@ -407,12 +434,17 @@ namespace Chroma
       write(xml_out, "n_count", n_count);
       write(xml_out, "S_oo", action);
       pop(xml_out);
+    
+      END_CODE();
 
       return action;
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s)  {
+    Double S(const AbsFieldState<P,Q>& s)  
+    {
+      START_CODE();
+
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial5D");
 
@@ -420,8 +452,10 @@ namespace Chroma
 
       write(xml_out, "S", action);
       pop(xml_out);
-      return action;
+    
+      END_CODE();
 
+      return action;
     }
 
   protected:

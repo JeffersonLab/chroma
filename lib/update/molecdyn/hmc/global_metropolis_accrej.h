@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: global_metropolis_accrej.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: global_metropolis_accrej.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  * \brief Global metropolis
  *
@@ -17,5 +17,5 @@ namespace Chroma
   // Metropolis accept/reject
   /*! @ingroup hmc */
   bool globalMetropolisAcceptReject(const Double& DeltaH);
-};
+}
 #endif

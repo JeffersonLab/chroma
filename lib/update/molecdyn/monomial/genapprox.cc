@@ -1,4 +1,4 @@
-// $Id: genapprox.cc,v 3.0 2006-04-03 04:59:08 edwards Exp $
+// $Id: genapprox.cc,v 3.1 2006-08-26 02:08:42 edwards Exp $
 /*! @file
  * @brief Wrapper for Remez code
  */
@@ -17,6 +17,8 @@ namespace Chroma
 		      int num_frac, int den_frac, int force_degree, int action_degree,
 		      int digit_precision)
   {
+    START_CODE();
+
     unsigned long prec = abs(digit_precision);
     unsigned long power_num = abs(num_frac);
     unsigned long power_den = abs(den_frac);
@@ -77,8 +79,9 @@ namespace Chroma
       sipfe = remez.getPFE();
     }
 
+    END_CODE();
   }
 
-};  //end namespace Chroma
+}  //end namespace Chroma
 
 

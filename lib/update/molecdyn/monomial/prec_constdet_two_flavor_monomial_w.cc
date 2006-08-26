@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_monomial_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
+// $Id: prec_constdet_two_flavor_monomial_w.cc,v 3.2 2006-08-26 02:08:42 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -54,6 +54,8 @@ namespace Chroma
   EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial::EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial(
     const TwoFlavorWilsonTypeFermMonomialParams& param) 
   {
+    START_CODE();
+
     inv_param = param.inv_param;
 
     std::istringstream is(param.fermact.xml);
@@ -102,9 +104,9 @@ namespace Chroma
     }
     chrono_predictor = tmp;
 
-    
+    END_CODE();
   }
   
-}; //end namespace Chroma
+} //end namespace Chroma
 
 

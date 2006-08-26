@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 3.2 2006-04-05 15:30:24 edwards Exp $
+// $Id: lwldslash_array_pab_w.cc,v 3.3 2006-08-26 02:08:40 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -153,6 +153,8 @@ namespace Chroma
 
   PABWilsonDslashArray::~PABWilsonDslashArray(void) 
   {
+    START_CODE();
+
     if( PABDslashEnv::refcount > 0 ) {
 	PABDslashEnv::refcount--;
      
@@ -163,6 +165,8 @@ namespace Chroma
     }
 
     QDP::Allocator::theQDPAllocator::Instance().free(packed_gauge);
+    
+    END_CODE();
   }
 
   //! General Wilson-Dirac dslash
@@ -255,6 +259,5 @@ namespace Chroma
   }
 
 
-
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

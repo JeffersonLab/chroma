@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
+// $Id: md_integrator_factory.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
 /*! \file
  *  \brief Integrator factories
  */
@@ -50,7 +50,7 @@ namespace Chroma
   TheMDIntegratorFactory;
 
 
-}; // End namespace Chroma
+} // End namespace Chroma
 
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: prec_slic_linop_w.cc,v 1.1 2006-08-16 17:10:27 bjoo Exp $
+// $Id: prec_slic_linop_w.cc,v 1.2 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -19,7 +19,7 @@ namespace Chroma
   void EvenOddPrecSLICLinOp::create(Handle< FermState<T,P,Q> > fs, 
 				    const CloverFermActParams& param_)
   {
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    START_CODE();
 
     param = param_;
 
@@ -32,8 +32,8 @@ namespace Chroma
     invclov.choles(0);  // invert the cb=0 part
 
     D.create(thin_fs.cast< FermState<T,P,Q> >(), param_.anisoParam);
-
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    
+    END_CODE();
   }
 
   //! Apply the the odd-odd block onto a source vector
@@ -120,6 +120,7 @@ namespace Chroma
 					  const LatticeFermion& psi, 
 					  enum PlusMinus isign) const
   {
+    START_CODE();
 
     LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
     LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
@@ -133,8 +134,9 @@ namespace Chroma
     //  chi_o  =  A_oo  psi_o  -  tmp1_o
     clov.apply(chi, psi, isign, 1);
 
-
     chi[rb[1]] += mquarter*tmp1;
+    
+    END_CODE();
   }
 
 
@@ -144,6 +146,8 @@ namespace Chroma
 					     const LatticeFermion& chi, const LatticeFermion& psi, 
 					     enum PlusMinus isign) const
   {
+    START_CODE();
+
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     ds_u.resize(Nd);
 
@@ -151,6 +155,8 @@ namespace Chroma
     SLICFermState& sfs = dynamic_cast<SLICFermState&>(*slic_fs);
 
     sfs.fatForceToThin(ds_tmp,ds_u);
+    
+    END_CODE();
   }
 
   //! Apply the even-even block onto a source vector
@@ -158,6 +164,7 @@ namespace Chroma
   EvenOddPrecSLICLinOp::derivEvenEvenLogDet(multi1d<LatticeColorMatrix>& ds_u,
 					      enum PlusMinus isign) const
   {
+    START_CODE();
     
     // Testing Odd Odd Term - get nothing from even even term
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
@@ -167,6 +174,8 @@ namespace Chroma
     SLICFermState& sfs = dynamic_cast<SLICFermState&>(*slic_fs);
 
     sfs.fatForceToThin(ds_tmp,ds_u);
+    
+    END_CODE();
   }
 
   //! Apply the the even-odd block onto a source vector
@@ -176,6 +185,7 @@ namespace Chroma
 					    enum PlusMinus isign) const
   {
     START_CODE();
+
     ds_u.resize(Nd);
     D.deriv(ds_u, chi, psi, isign, 0);
 
@@ -197,7 +207,6 @@ namespace Chroma
 					    const LatticeFermion& chi, const LatticeFermion& psi, 
 					    enum PlusMinus isign) const
   {
-
     START_CODE();
     ds_u.resize(Nd);
 
@@ -222,11 +231,15 @@ namespace Chroma
 					   const LatticeFermion& chi, const LatticeFermion& psi, 
 					   enum PlusMinus isign) const
   {   
+    START_CODE();
+
     ds_u.resize(Nd);
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     clov.deriv(ds_tmp, chi, psi, isign, 1);
     SLICFermState& sfs = dynamic_cast< SLICFermState& >(*slic_fs);
     sfs.fatForceToThin(ds_tmp,ds_u);
+    
+    END_CODE();
   }
 
 

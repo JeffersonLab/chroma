@@ -9,9 +9,11 @@
 #include "util/gauge/expmat.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace LatColMatSexWeinMixedIntegratorEnv {
+  namespace LatColMatSexWeinMixedIntegratorEnv 
+  {
 
     AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
 		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
@@ -24,7 +26,7 @@ namespace Chroma {
 
     const std::string name = "LCM_TWO_SCALE_MINIMUM_NORM_INTEGRATOR";
     const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
-  };
+  }
 
   LatColMatSexWeinMixedIntegratorParams::LatColMatSexWeinMixedIntegratorParams(XMLReader& xml_in, const std::string& path) 
   {
@@ -70,5 +72,4 @@ namespace Chroma {
     pop(xml);
   }
 
-
-};
+}

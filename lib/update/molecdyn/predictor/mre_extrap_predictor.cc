@@ -5,9 +5,11 @@
 #include "update/molecdyn/predictor/lu_solve.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace MinimalResidualExtrapolation4DChronoPredictorEnv {
+  namespace MinimalResidualExtrapolation4DChronoPredictorEnv 
+  {
 
     // Create a new 4D Zero Guess Predictor
     // No params to read -- but preserve form
@@ -33,13 +35,14 @@ namespace Chroma {
     // Register it
     const bool registered = The4DChronologicalPredictorFactory::Instance().registerObject(name, createPredictor);
   
-  };
+  }
 
   void MinimalResidualExtrapolation4DChronoPredictor::operator()(
 								 LatticeFermion& psi,
 								 const LinearOperator<LatticeFermion>& M,
 								 const LatticeFermion& chi) 
   {
+    START_CODE();
 
     int Nvec = chrono_buf->size();
     switch(Nvec) { 
@@ -62,6 +65,8 @@ namespace Chroma {
       }
       break;
     }
+    
+    END_CODE();
   }
 
 
@@ -71,6 +76,8 @@ namespace Chroma {
 					  const LinearOperator<LatticeFermion>& A,
 					  const LatticeFermion& chi) 
   {
+    START_CODE();
+
     const OrderedSubset& s= A.subset();
 
     
@@ -166,20 +173,21 @@ namespace Chroma {
       psi[s] += Complex(a[n])*v[n];
     }
 
+    END_CODE();
   }
 
 
 
 
 
-  namespace MinimalResidualExtrapolation5DChronoPredictorEnv {
+  namespace MinimalResidualExtrapolation5DChronoPredictorEnv 
+  {
     // Create a new 5D Zero Guess Predictor
     // No params to read 
     AbsChronologicalPredictor5D<LatticeFermion>* createPredictor(const int N5,
 								 XMLReader& xml,
-								 const std::string& path) {
-
-
+								 const std::string& path) 
+    {
       unsigned int max_chrono=1;
 
       try { 
@@ -198,7 +206,7 @@ namespace Chroma {
       
       const bool registered = The5DChronologicalPredictorFactory::Instance().registerObject(name, createPredictor);
       
-  };
+  }
 
 
 
@@ -207,6 +215,7 @@ namespace Chroma {
 		    const LinearOperatorArray<LatticeFermion>& M,
 		    const multi1d<LatticeFermion>& chi) 
   {
+    START_CODE();
 
     int Nvec = chrono_buf->size();
     switch(Nvec) { 
@@ -229,6 +238,8 @@ namespace Chroma {
       }
       break;
     }
+    
+    END_CODE();
   }
 
 
@@ -238,8 +249,9 @@ namespace Chroma {
 			  const LinearOperatorArray<LatticeFermion>& A,
 			  const multi1d<LatticeFermion>& chi) 
   {
-    const OrderedSubset& s= A.subset();
+    START_CODE();
 
+    const OrderedSubset& s= A.subset();
     
     int Nvec = chrono_buf->size();
 
@@ -376,6 +388,8 @@ namespace Chroma {
       }
 
     }
+    
+    END_CODE();
   }
     
-};
+}

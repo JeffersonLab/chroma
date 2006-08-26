@@ -1,4 +1,4 @@
-// $Id: lw_tree_gaugeact.cc,v 3.1 2006-04-19 02:29:45 edwards Exp $
+// $Id: lw_tree_gaugeact.cc,v 3.2 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */
@@ -54,6 +54,8 @@ namespace Chroma
   void
   LWTreeGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
   {
+    START_CODE();
+
     // Fold in normalizations and create action
     // NOTE: the 5/3 is folded into beta, hence divided out of c1
     Real c0 = param.beta;
@@ -61,6 +63,8 @@ namespace Chroma
 
     Real c1 = -c0 * (1/(20*param.u0*param.u0));
     rect = new RectGaugeAct(cgs,c1);
+    
+    END_CODE();
   } 
 
 }

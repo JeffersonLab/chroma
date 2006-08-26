@@ -3,9 +3,11 @@
 
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-  namespace LinearExtrapolation4DChronoPredictorEnv {
+  namespace LinearExtrapolation4DChronoPredictorEnv 
+  {
 
     // Create a new 4D Zero Guess Predictor
     // No params to read -- but preserve form
@@ -21,10 +23,11 @@ namespace Chroma {
     // Register it
     const bool registered = The4DChronologicalPredictorFactory::Instance().registerObject(name, createPredictor);
   
-  };
+  }
 
 
-  namespace LinearExtrapolation5DChronoPredictorEnv {
+  namespace LinearExtrapolation5DChronoPredictorEnv 
+  {
     // Create a new 5D Zero Guess Predictor
     // No params to read 
     AbsChronologicalPredictor5D<LatticeFermion>* createPredictor(const int N5,
@@ -37,6 +40,6 @@ namespace Chroma {
 
     const bool registered = The5DChronologicalPredictorFactory::Instance().registerObject(name, createPredictor);
 
-  };
+  }
 
-};
+}

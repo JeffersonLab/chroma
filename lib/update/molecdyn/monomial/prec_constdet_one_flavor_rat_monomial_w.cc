@@ -1,4 +1,4 @@
-// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial_w.cc,v 3.2 2006-08-26 02:08:42 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -49,6 +49,8 @@ namespace Chroma
   EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial::EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(
     const OneFlavorWilsonTypeFermRatMonomialParams& param) 
   {
+    START_CODE();
+
     inv_param = param.inv_param;
     nthRoot   = param.nthRoot;
 
@@ -84,6 +86,8 @@ namespace Chroma
     //*********************************************************************
 
     QDPIO::cout << "DONECONSTRUCTIN " << endl;
+    
+    END_CODE();
   }
 
 } //end namespace Chroma

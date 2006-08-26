@@ -1,4 +1,5 @@
-// $Id: lcm_minimum_norm2_qpq_integrator_mts.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// -*- C++ -*-
+// $Id: lcm_minimum_norm2_qpq_integrator_mts.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
 /*! @file
  * @brief Second order minimal norm (2MN) integrator position version with multiple time scales
  *
@@ -20,13 +21,15 @@ namespace Chroma
 {
 
   /*! @ingroup integrator */
-  namespace LatColMatMinimumNorm2QPQIntegratorMtsEnv {
+  namespace LatColMatMinimumNorm2QPQIntegratorMtsEnv 
+  {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
 
   /*! @ingroup integrator */
-  struct  LatColMatMinimumNorm2QPQIntegratorMtsParams {
+  struct  LatColMatMinimumNorm2QPQIntegratorMtsParams 
+  {
     LatColMatMinimumNorm2QPQIntegratorMtsParams();
     LatColMatMinimumNorm2QPQIntegratorMtsParams(XMLReader& xml, const std::string& path);
 
@@ -55,13 +58,15 @@ namespace Chroma
    */
   class LatColMatMinimumNorm2QPQIntegratorMts 
     : public AbsMDIntegrator<multi1d<LatticeColorMatrix>,
-    multi1d<LatticeColorMatrix> > {
-    
+    multi1d<LatticeColorMatrix> > 
+  {
     public:
     
     // Construct from params struct and Hamiltonian
     LatColMatMinimumNorm2QPQIntegratorMts(const LatColMatMinimumNorm2QPQIntegratorMtsParams& p,
-				  Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : n_steps_list(p.n_steps_list), tau(p.tau), H_MD(H_), monomial_list(p.monomial_list), lambda_list(p.lambda_list), number_of_timescales(p.number_of_timescales) {
+				  Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : n_steps_list(p.n_steps_list), tau(p.tau), H_MD(H_), monomial_list(p.monomial_list), lambda_list(p.lambda_list), number_of_timescales(p.number_of_timescales) 
+    {
+      START_CODE();
       
       // Check the number of timescales
       if(number_of_timescales != monomial_list.size()) {
@@ -148,6 +153,7 @@ namespace Chroma
       //  -- that all the monomials have been marked one way or the other
       //  -- that there are no duplicates between the lists
 
+      END_CODE();
     }
 
     // Copy constructor
@@ -165,19 +171,26 @@ namespace Chroma
 
     //! Do a trajectory
     void operator()(AbsFieldState<multi1d<LatticeColorMatrix>,
-		    multi1d<LatticeColorMatrix> >& s) {
+		    multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
+
       int recursive_seed = number_of_timescales-1;
 
       // Its all recursively
       recursive_integrator(recursive_seed, tau, s);
-
+    
+      END_CODE();
     }
 
     protected:
 
     void recursive_integrator(const int recursion_index, const Real tau0,
 			      AbsFieldState<multi1d<LatticeColorMatrix>,
-			      multi1d<LatticeColorMatrix> >& s) {
+			      multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
+
       Real dtau = tau0/Real(n_steps_list[recursion_index]);
       Real dtauby2 = dtau/Real(2);
       Real lambda = lambda_list[recursion_index];
@@ -204,29 +217,37 @@ namespace Chroma
 	  recursive_integrator(recursion_index-1, lambda*dtau, s);
 	}
       }
+    
+      END_CODE();
     }
 
     //! LeapP for just a selected list of monomials
     void leapP(const multi1d<int>& monomial_list,
 	       const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
       LCMMDIntegratorSteps::leapP(monomial_list, 
 				  dt, 
 				  getHamiltonian(),
 				  s);
+    
+      END_CODE();
     }
 
     //! Leap with Q (with all monomials)
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
+
       LCMMDIntegratorSteps::leapQ(dt,s);
+    
+      END_CODE();
     }
-
-
-
 
     //! Get the trajectory length
     const Real getTrajLength(void) const {
@@ -234,7 +255,7 @@ namespace Chroma
     }
 
 
-    private:
+  private:
     multi1d<int> n_steps_list;
     multi1d<Real> lambda_list;
     multi1d< multi1d<int> > monomial_list;
@@ -246,7 +267,7 @@ namespace Chroma
     
   };
 
-};
+}
 
 
 #endif

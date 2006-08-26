@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_sw_min_mixed.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
+// $Id: lcm_sw_min_mixed.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
 
 /*! @file
  * @brief Sexton Weingarten integrator
@@ -22,13 +22,15 @@ namespace Chroma
 {
 
   /*! @ingroup integrator */
-  namespace LatColMatSexWeinMixedIntegratorEnv {
+  namespace LatColMatSexWeinMixedIntegratorEnv 
+  {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
 
   /*! @ingroup integrator */
-  struct  LatColMatSexWeinMixedIntegratorParams {
+  struct  LatColMatSexWeinMixedIntegratorParams 
+  {
     LatColMatSexWeinMixedIntegratorParams();
     LatColMatSexWeinMixedIntegratorParams(XMLReader& xml, const std::string& path);
 
@@ -61,13 +63,15 @@ namespace Chroma
    */
   class LatColMatSexWeinMixedIntegrator 
     : public AbsMDIntegrator<multi1d<LatticeColorMatrix>,
-                             multi1d<LatticeColorMatrix> > {
-
+                             multi1d<LatticeColorMatrix> > 
+  {
   public:
 
     // Construct from params struct and Hamiltonian
     LatColMatSexWeinMixedIntegrator(const LatColMatSexWeinMixedIntegratorParams& p,
-				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : n_steps(p.n_steps), lambda(p.lambda), tau0(p.tau0), H_MD(H_), n_short_steps(p.n_short_steps), S_short_monomials(p.S_short_monomials), S_long_monomials(p.S_long_monomials) {
+				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : n_steps(p.n_steps), lambda(p.lambda), tau0(p.tau0), H_MD(H_), n_short_steps(p.n_short_steps), S_short_monomials(p.S_short_monomials), S_long_monomials(p.S_long_monomials) 
+    {
+      START_CODE();
 
       // Check for sanity
       int num_ham_monomials = getHamiltonian().numMonomials();
@@ -171,7 +175,7 @@ namespace Chroma
       QDPIO::cout << " n_steps= " << n_steps;
       QDPIO::cout << " n_short_steps= " << n_short_steps;
 
-
+      END_CODE();
     }
 
     // Copy constructor
@@ -189,7 +193,9 @@ namespace Chroma
 
     //! Do a trajectory
     void operator()(AbsFieldState<multi1d<LatticeColorMatrix>,
-		    multi1d<LatticeColorMatrix> >& s) {
+		    multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
       Real dt = getStepSize();      // Overall step size
       Real dtbyN = dt/n_short_steps;  // length of a short step
@@ -233,6 +239,8 @@ namespace Chroma
       }
 
       U_long(lambda_dt, s);      
+    
+      END_CODE();
     }
 
   protected:
@@ -241,28 +249,38 @@ namespace Chroma
     void leapP(const multi1d<int>& monomial_list,
 	       const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
       LCMMDIntegratorSteps::leapP(monomial_list, 
 				  dt, 
 				  getHamiltonian(),
 				  s);
+    
+      END_CODE();
     }
 
     //! Leap with Q (with all monomials)
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
-      LCMMDIntegratorSteps::leapQ(dt,s);
-    }
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
+      LCMMDIntegratorSteps::leapQ(dt,s);
+
+      END_CODE();
+    }
 
 
     //! Does [ U_short(dt/n) ]^n
     inline void U_short_1(const Real& dtbyN, 
 			  int N,
 			  AbsFieldState<multi1d<LatticeColorMatrix>,
-			     multi1d<LatticeColorMatrix> >&  s) {
+			     multi1d<LatticeColorMatrix> >&  s) 
+    {
+      START_CODE();
 
       Real lambda_dtbyN = dtbyN*lambda;
       Real half_dtbyN = Real(0.5)*dtbyN;
@@ -275,13 +293,16 @@ namespace Chroma
   	leapP(S_short_monomials, one_minus_two_lambda_dtbyn, s);
       }
 
+      END_CODE();
     }
 
     //! Does [ U_short(dt/n) ]^n
     inline void U_short_2(const Real& dtbyN, 
 			  int N,
 			  AbsFieldState<multi1d<LatticeColorMatrix>,
-			     multi1d<LatticeColorMatrix> >&  s) {
+			     multi1d<LatticeColorMatrix> >&  s) 
+    {
+      START_CODE();
 
       Real lambda_dtbyN = dtbyN*lambda;
       Real half_dtbyN = Real(0.5)*dtbyN;
@@ -294,16 +315,19 @@ namespace Chroma
 	leapQ(half_dtbyN, s);
 	leapP(S_short_monomials, lambda_dtbyN, s);
       }
+    
+      END_CODE();
     }
 
     inline void U_long(const Real& dt, 
 		AbsFieldState<multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >& s) {
-  
+		multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
       
       leapP(S_long_monomials, dt,s);
 
-
+      END_CODE();
     }
 
 
@@ -330,7 +354,7 @@ namespace Chroma
     
   };
 
-};
+}
 
 
 #endif

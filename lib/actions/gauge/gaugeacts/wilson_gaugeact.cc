@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 3.1 2006-04-19 02:29:45 edwards Exp $
+// $Id: wilson_gaugeact.cc,v 3.2 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -52,9 +52,13 @@ namespace Chroma
   void
   WilsonGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
   {
+    START_CODE();
+
     // Fold in normalizations and create action
     Real coeff = param.beta;
     plaq = new PlaqGaugeAct(cgs,coeff,param.aniso);
+    
+    END_CODE();
   } 
 
 }

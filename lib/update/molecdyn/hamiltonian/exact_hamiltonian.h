@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: exact_hamiltonian.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: exact_hamiltonian.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  * \brief Exact Hamiltonians
  */
@@ -21,27 +21,31 @@ namespace Chroma
   {
   public:
     ExactLatColMatHamiltonian(XMLReader& xml, const std::string path) 
-      {
-	XMLReader paramtop(xml,path);
-	multi1d< Handle< 
-	  ExactMonomial<
-	  multi1d<LatticeColorMatrix>,
-	  multi1d<LatticeColorMatrix> 
-	  > 
-	  > > monomial_array;
+    {
+      START_CODE();
 
-	try { 
-	  read(paramtop, "./Monomials", monomial_array);
-	}
-	catch( const std::string& e ) { 
-	  QDPIO::cerr << "Error Reading Monomials " << e << endl;
-	  QDP_abort(1);
-	}
-      
-	QDPIO::cout << "Read " << monomial_array.size() << " monomials" << endl;
-	monomials = monomial_array;
-	QDPIO::cout << "Leaving function" << endl;
+      XMLReader paramtop(xml,path);
+      multi1d< Handle< 
+	ExactMonomial<
+	multi1d<LatticeColorMatrix>,
+	multi1d<LatticeColorMatrix> 
+	> 
+	> > monomial_array;
+
+      try { 
+	read(paramtop, "./Monomials", monomial_array);
       }
+      catch( const std::string& e ) { 
+	QDPIO::cerr << "Error Reading Monomials " << e << endl;
+	QDP_abort(1);
+      }
+      
+      QDPIO::cout << "Read " << monomial_array.size() << " monomials" << endl;
+      monomials = monomial_array;
+      QDPIO::cout << "Leaving function" << endl;
+    
+      END_CODE();
+    }
 
     // Constructor
     ExactLatColMatHamiltonian( multi1d< Handle< ExactMonomial<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > >& monomials_ ) : monomials(monomials_) {}
@@ -53,21 +57,25 @@ namespace Chroma
     //! The Kinetic Energy
     Double mesKE(const AbsFieldState<multi1d<LatticeColorMatrix>,
 		 multi1d<LatticeColorMatrix> >& s) const 
-      {
-	// Self Description Rule
-	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-	push(xml_out, "mesKE");
+    {
+      START_CODE();
 
-	// may need to loop over the indices of P?
-	Double KE=Double(0);
-	for(int mu=0; mu < s.getP().size(); mu++) { 
-	  KE += norm2((s.getP())[mu]);
-	}
-
-	write(xml_out, "KE", KE);
-	pop(xml_out);
-	return KE;
+      // Self Description Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "mesKE");
+	
+      // may need to loop over the indices of P?
+      Double KE=Double(0);
+      for(int mu=0; mu < s.getP().size(); mu++) { 
+	KE += norm2((s.getP())[mu]);
       }
+
+      write(xml_out, "KE", KE);
+      pop(xml_out);
+    
+      END_CODE();
+      return KE;
+    }
     
   protected:
     ExactMonomial<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMonomial(int i) const {
@@ -84,7 +92,6 @@ namespace Chroma
   };
 
 
-};
-
+}
 
 #endif

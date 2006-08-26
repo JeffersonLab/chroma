@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: abs_integrator.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
 
 /*! @file
  * @brief Integrators
@@ -48,7 +48,9 @@ namespace Chroma
 
 
     //! Perform a trajectory 
-    virtual void operator()(AbsFieldState<P,Q>& s) {
+    virtual void operator()(AbsFieldState<P,Q>& s) 
+    {
+      START_CODE();
 
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       // Self encapsulation rule
@@ -117,6 +119,8 @@ namespace Chroma
 
       pop(xml_out); // pop("MDSteps");
       pop(xml_out); // pop("PQPLeapfrogIntegrator")
+    
+      END_CODE();
     } // end function
 
     //! Get at the MD Hamiltonian
@@ -142,7 +146,6 @@ namespace Chroma
     virtual int getNumSteps(void) const = 0;
   };
 
-
-}; // End namespace Chroma
+} // End namespace Chroma
 
 #endif

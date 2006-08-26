@@ -1,4 +1,4 @@
-// $Id: aniso_spectrum_gaugeact.cc,v 1.4 2006-07-21 18:39:11 bjoo Exp $
+// $Id: aniso_spectrum_gaugeact.cc,v 1.5 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -73,6 +73,8 @@ namespace Chroma
   void
   AnisoSpectrumGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
   {
+    START_CODE();
+
     // Do the plaquette first. Spatial and temporal coeffs
     // anisotropy multiplied in in the terms constructor
 
@@ -111,8 +113,8 @@ namespace Chroma
     Real rect_c_t_1 = 0; // Specify a zero coefficient (skipped anyway)
 
     rect = new RectGaugeAct(cgs, rect_c_s, rect_c_t_1, rect_c_t_2, no_temporal_2link, param.aniso);
-
-
+    
+    END_CODE();
   } 
 
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linear_extrap_predictor.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: linear_extrap_predictor.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
 /*! \file
  * \brief Linear extrapolation predictor
  *
@@ -22,18 +22,17 @@ namespace Chroma
   namespace LinearExtrapolation4DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
 
   //! Last solution predictor
   /*! @ingroup predictor */
   class LinearExtrapolation4DChronoPredictor : 
-    public AbsChronologicalPredictor4D<LatticeFermion> {
-
+    public AbsChronologicalPredictor4D<LatticeFermion> 
+  {
   private:
     Handle< CircularBuffer<LatticeFermion> > chrono_buf;
 
   public:
-
     LinearExtrapolation4DChronoPredictor(void) : chrono_buf(new CircularBuffer<LatticeFermion>((unsigned int)2)) {}
 
     // Destructor is automagic
@@ -42,7 +41,10 @@ namespace Chroma
 
     void operator()(LatticeFermion& psi,
 		    const LinearOperator<LatticeFermion>& A, 
-		    const LatticeFermion& chi) {
+		    const LatticeFermion& chi) 
+    {
+      START_CODE();
+
       switch( chrono_buf->size() ) { 
       case 0:
       {
@@ -78,6 +80,7 @@ namespace Chroma
 	break;
       }
 
+      END_CODE();
     }
     
     // No internal state so reset is a nop
@@ -87,10 +90,15 @@ namespace Chroma
     }
 
     // Ignore new vector
-    void newVector(const LatticeFermion& psi) {
+    void newVector(const LatticeFermion& psi) 
+    {
+      START_CODE();
+
       QDPIO::cout << "LinearExtrapolationPredictor: registering new solution. ";
       chrono_buf->push(psi);
       QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
+    
+      END_CODE();
     }
 
   };
@@ -98,16 +106,17 @@ namespace Chroma
   
 
   /*! @ingroup predictor */
-  namespace LinearExtrapolation5DChronoPredictorEnv {
+  namespace LinearExtrapolation5DChronoPredictorEnv 
+  {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
   
   //! Last solution predictor
   /*! @ingroup predictor */
   class LinearExtrapolation5DChronoPredictor :
-    public AbsChronologicalPredictor5D<LatticeFermion> {
-    
+    public AbsChronologicalPredictor5D<LatticeFermion> 
+  {
   private: 
     Handle< CircularBufferArray<LatticeFermion>  > chrono_buf;
     const int N5;
@@ -124,7 +133,9 @@ namespace Chroma
     // Zero out psi -- it is a zero guess after all
     void operator()(multi1d<LatticeFermion>& psi,
 		    const LinearOperatorArray<LatticeFermion>& A,
-		    const multi1d<LatticeFermion>& chi) { 
+		    const multi1d<LatticeFermion>& chi) 
+    { 
+      START_CODE();
 
       switch( chrono_buf->size() ) { 
       case 0:
@@ -164,7 +175,7 @@ namespace Chroma
 	break;
       }
 
-
+      END_CODE();
     }
     
 
@@ -172,19 +183,23 @@ namespace Chroma
     void reset(void) {
       QDPIO::cout << "Resetting Chrono Predictor" << endl;
       chrono_buf->reset();
-
     }
 
     // Ignore new vector
     // Ignore new vector
-    void newVector(const multi1d<LatticeFermion>& psi) {
+    void newVector(const multi1d<LatticeFermion>& psi) 
+    {
+      START_CODE();
+
       QDPIO::cout << "LinearExtrapolationPredictor: registering new solution. ";
       chrono_buf->push(psi);
       QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
+
+      END_CODE();
     }
     
   };
   
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 #endif 

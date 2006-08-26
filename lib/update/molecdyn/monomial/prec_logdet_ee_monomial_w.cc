@@ -9,10 +9,11 @@
 
 using namespace std;
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-  namespace PrecLogDetEvenEvenMonomial4DEnv {    
-
+  namespace PrecLogDetEvenEvenMonomial4DEnv 
+  {
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
@@ -33,7 +34,7 @@ namespace Chroma {
     }
 
     const bool registered = registerAll();
-  };
+  }
  
 
  
@@ -62,6 +63,8 @@ namespace Chroma {
   PrecLogDetEvenEvenMonomial4D::PrecLogDetEvenEvenMonomial4D(const PrecLogDetEvenEvenMonomialParams& p) : 
     num_flavors(p.num_flavors) 
   {
+    START_CODE();
+
     // Grok the fermact out of the XML
     std::istringstream is(p.fermact.xml);
     XMLReader fermact_reader(is);
@@ -80,7 +83,9 @@ namespace Chroma {
     }
     
     fermact = downcast; 
+    
+    END_CODE();
   }
 
 
-}; // End namespace
+} // End namespace

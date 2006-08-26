@@ -2,9 +2,11 @@
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-  namespace ZeroGuess4DChronoPredictorEnv {
+  namespace ZeroGuess4DChronoPredictorEnv 
+  {
 
     // Create a new 4D Zero Guess Predictor
     // No params to read -- but preserve form
@@ -20,10 +22,11 @@ namespace Chroma {
     // Register it
     const bool registered = The4DChronologicalPredictorFactory::Instance().registerObject(name, createPredictor);
   
-  };
+  }
 
 
-  namespace ZeroGuess5DChronoPredictorEnv {
+  namespace ZeroGuess5DChronoPredictorEnv 
+  {
     // Create a new 5D Zero Guess Predictor
     // No params to read 
     AbsChronologicalPredictor5D<LatticeFermion>* createPredictor(const int N5,
@@ -36,6 +39,6 @@ namespace Chroma {
 
     const bool registered = The5DChronologicalPredictorFactory::Instance().registerObject(name, createPredictor);
 
-  };
+  }
 
-};
+}

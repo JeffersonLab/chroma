@@ -3,11 +3,13 @@
 #include "util/gauge/reunit.h"
 #include "util/gauge/expmat.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-  namespace LCMMDIntegratorSteps { 
+  namespace LCMMDIntegratorSteps 
+  { 
 
-        //! LeapP for just a selected list of monomials
+    //! LeapP for just a selected list of monomials
     void leapP(const Real& dt, 
 
 	       AbsHamiltonian<multi1d<LatticeColorMatrix>,
@@ -16,6 +18,7 @@ namespace Chroma {
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
 	       multi1d<LatticeColorMatrix> >& s) 
     {
+      START_CODE();
 
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       // Self Description rule
@@ -36,7 +39,8 @@ namespace Chroma {
       // a la s.getP() -= eps*dsdQ;
       // doing it in loop for now
       
-      for(int mu =0; mu < Nd; mu++) { 
+      for(int mu =0; mu < Nd; mu++) 
+      {
 	(s.getP())[mu] += dt * dsdQ[mu];
 	
 	// taproj it...
@@ -44,6 +48,8 @@ namespace Chroma {
       }
       
       pop(xml_out); // pop("leapP");
+    
+      END_CODE();
     }
     
     
@@ -55,8 +61,9 @@ namespace Chroma {
 	       multi1d<LatticeColorMatrix> >& H,
 	       
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
-      
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
       
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       // Self Description rule
@@ -77,7 +84,8 @@ namespace Chroma {
       // a la s.getP() -= eps*dsdQ;
       // doing it in loop for now
       
-      for(int mu =0; mu < Nd; mu++) { 
+      for(int mu =0; mu < Nd; mu++) 
+      {
 	(s.getP())[mu] += dt * dsdQ[mu];
 	
 	// taproj it...
@@ -85,12 +93,15 @@ namespace Chroma {
       }
       
       pop(xml_out); // pop("leapP");
+    
+      END_CODE();
     }
 
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
 	       multi1d<LatticeColorMatrix> >& s) 
     {
+      START_CODE();
 
       LatticeColorMatrix tmp_1;
       LatticeColorMatrix tmp_2;
@@ -106,8 +117,8 @@ namespace Chroma {
       // Mutable
       multi1d<LatticeColorMatrix>& u = s.getQ();
       
-      for(int mu = 0; mu < Nd; mu++) { 
-	
+      for(int mu = 0; mu < Nd; mu++) 
+      {
 	//  dt*p[mu]
 	tmp_1 = dt*(s.getP())[mu];
 	
@@ -127,9 +138,9 @@ namespace Chroma {
       }
 
       pop(xml_out);
+    
+      END_CODE();
     }
-    
-    
 
-};
-};
+  }
+}

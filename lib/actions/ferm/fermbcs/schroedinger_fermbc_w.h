@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schroedinger_fermbc_w.h,v 3.1 2006-04-10 21:21:21 edwards Exp $
+// $Id: schroedinger_fermbc_w.h,v 3.2 2006-08-26 02:08:40 edwards Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -29,23 +29,35 @@ namespace Chroma
     //! Modify U fields according to the fermion BC in place
     virtual void modify(multi1d<LatticeColorMatrix>& u) const
     {
+      START_CODE();
+
       for(int mu=0; mu < u.size(); ++mu)
 	copymask(u[mu], lSFmask()[mu], SFBndFld()[mu]);
+    
+      END_CODE();
     }
 
     //! Modify fermion fields in place
     virtual void modifyF(LatticeFermion& psi) const
     {
+      START_CODE();
+
       copymask(psi, lSFmaskF(), LatticeFermion(QDP::zero));
+      
+      END_CODE();
     }
 
     //! Modify fermion fields in place under a subset
     virtual void modifyF(LatticeFermion& psi, 
 			 const OrderedSubset& s) const
     {
+      START_CODE();
+
       // Ooops, this is ignoring the subset!! Need to fix
       // but I don't think this is an error though
       copymask(psi, lSFmaskF(), LatticeFermion(QDP::zero));
+    
+      END_CODE();
     }
 
     //! Modify fermion fields in place
@@ -64,10 +76,14 @@ namespace Chroma
     //! Zero some gauge-like field in place on the masked links
     virtual void zero(multi1d<LatticeColorMatrix>& ds_u) const
     {
+      START_CODE();
+
       LatticeColorMatrix z = QDP::zero;
 
       for(int mu=0; mu < ds_u.size(); ++mu)
 	copymask(ds_u[mu], lSFmask()[mu], z);
+    
+      END_CODE();
     }
 
     //! Says if there are fermion non-trivial 

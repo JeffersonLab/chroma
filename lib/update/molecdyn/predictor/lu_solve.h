@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lu_solve.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: lu_solve.h,v 3.1 2006-08-26 02:08:43 edwards Exp $
 /*! \file
  * \brief LU solver
  *
@@ -22,6 +22,6 @@ namespace Chroma
 		const multi2d<DComplex>& M, 
 		const multi1d<DComplex>& b );
 
-};
+}
 
 #endif

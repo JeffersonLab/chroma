@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_sexton_weingarten.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
+// $Id: lcm_sexton_weingarten.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
 
 /*! @file
  * @brief Sexton Weingarten integrator
@@ -22,13 +22,15 @@ namespace Chroma
 {
 
   /*! @ingroup integrator */
-  namespace LatColMatSextonWeingartenIntegratorEnv {
+  namespace LatColMatSextonWeingartenIntegratorEnv 
+  {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
 
   /*! @ingroup integrator */
-  struct  LatColMatSextonWeingartenIntegratorParams {
+  struct  LatColMatSextonWeingartenIntegratorParams 
+  {
     LatColMatSextonWeingartenIntegratorParams();
     LatColMatSextonWeingartenIntegratorParams(XMLReader& xml, const std::string& path);
 
@@ -60,13 +62,15 @@ namespace Chroma
    */
   class LatColMatSextonWeingartenIntegrator 
     : public AbsMDIntegrator<multi1d<LatticeColorMatrix>,
-                             multi1d<LatticeColorMatrix> > {
-
+                             multi1d<LatticeColorMatrix> > 
+  {
   public:
 
     // Construct from params struct and Hamiltonian
     LatColMatSextonWeingartenIntegrator(const LatColMatSextonWeingartenIntegratorParams& p,
-				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : n_steps(p.n_steps), tau0(p.tau0), H_MD(H_), n_short_steps(p.n_short_steps), S_short_monomials(p.S_short_monomials), S_long_monomials(p.S_long_monomials) {
+				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : n_steps(p.n_steps), tau0(p.tau0), H_MD(H_), n_short_steps(p.n_short_steps), S_short_monomials(p.S_short_monomials), S_long_monomials(p.S_long_monomials) 
+    {
+      START_CODE();
 
       // Check for sanity
       int num_ham_monomials = getHamiltonian().numMonomials();
@@ -151,6 +155,8 @@ namespace Chroma
       //     number of terms
       //  -- that all  the monomials have been marked one way or the other
       //  -- that there are no duplicates between the lists
+    
+      END_CODE();
     }
 
     // Copy constructor
@@ -168,7 +174,9 @@ namespace Chroma
 
     //! Do a trajectory
     void operator()(AbsFieldState<multi1d<LatticeColorMatrix>,
-		    multi1d<LatticeColorMatrix> >& s) {
+		    multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
       Real dt = getStepSize();      // Overall step size
       Real dtby2 = dt/Real(2);      // First and last half steps
@@ -198,6 +206,7 @@ namespace Chroma
       // Finish with last long timescale half step
       U_long(dtby2, s);
 
+      END_CODE();
     }
 
   protected:
@@ -206,19 +215,28 @@ namespace Chroma
     void leapP(const multi1d<int>& monomial_list,
 	       const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
       LCMMDIntegratorSteps::leapP(monomial_list, 
 				  dt, 
 				  getHamiltonian(),
 				  s);
+    
+      END_CODE();
     }
 
     //! Leap with Q (with all monomials)
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
+
       LCMMDIntegratorSteps::leapQ(dt,s);
+    
+      END_CODE();
     }
 
 
@@ -227,8 +245,9 @@ namespace Chroma
     inline void U_short(const Real& dtbyN, 
 			int N,
 			AbsFieldState<multi1d<LatticeColorMatrix>,
-			multi1d<LatticeColorMatrix> >&  s) {
-
+			multi1d<LatticeColorMatrix> >&  s) 
+    {
+      START_CODE();
 
       Real dtby2N=dtbyN/Real(2);
       
@@ -251,17 +270,21 @@ namespace Chroma
       // finish with a last step of length dt/(2N)
       leapP(S_short_monomials, dtby2N, s);
       
+      END_CODE();
     }
 
     inline void U_long(const Real& dt, 
 		AbsFieldState<multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >& s) {
+		multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
       
       // This is just a leapP, with the long step monomials
       leapP(S_long_monomials, 
 	    dt, 
 	    s);
-
+    
+      END_CODE();
     }
 
 
@@ -283,11 +306,9 @@ namespace Chroma
     int n_short_steps;
     multi1d<int> S_short_monomials;
     multi1d<int> S_long_monomials;
-    
-    
   };
 
-};
+}
 
 
 #endif

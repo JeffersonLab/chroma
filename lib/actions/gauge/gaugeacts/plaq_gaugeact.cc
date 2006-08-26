@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.2 2006-07-20 15:52:40 bjoo Exp $
+// $Id: plaq_gaugeact.cc,v 3.3 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -72,6 +72,8 @@ namespace Chroma
   void
   PlaqGaugeAct::init()
   {
+    START_CODE();
+
     coeffs.resize(Nd,Nd);
     coeffs = zero;
 
@@ -100,6 +102,8 @@ namespace Chroma
 	coeffs[nu][mu] = coeffs[mu][nu];
       }
     }
+    
+    END_CODE();
   }
 
 
@@ -115,6 +119,8 @@ namespace Chroma
 		       const Handle< GaugeState<P,Q> >& state,
 		       int mu, int cb) const
   {
+    START_CODE();
+
     // This bit of code was taken from  chroma/lib/update/heatbath/u_staple.cc
     // Supposedly it works.
 
@@ -268,6 +274,8 @@ namespace Chroma
   Double
   PlaqGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
+    START_CODE();
+
     Double S_pg = zero;
 
     // Handle< const GaugeState<P,Q> > u_bc(createState(u));
@@ -291,6 +299,8 @@ namespace Chroma
 
     // Normalize
     S_pg *= Double(-1)/Double(Nc);
+    
+    END_CODE();
 
     return S_pg;
   } 

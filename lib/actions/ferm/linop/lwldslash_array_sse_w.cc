@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_sse_w.cc,v 3.1 2006-04-03 16:58:08 edwards Exp $
+// $Id: lwldslash_array_sse_w.cc,v 3.2 2006-08-26 02:08:40 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -23,6 +23,8 @@ namespace Chroma
   //! Initialization routine
   void SSEWilsonDslashArray::init()
   {
+    START_CODE();
+
     // Initialize internal structures for DSLASH
 #if 0
     QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
@@ -30,6 +32,8 @@ namespace Chroma
 
     // Initialize using the total problem size
     init_sse_su3dslash(Layout::lattSize().slice());
+
+    END_CODE();
   }
 
   //! Empty constructor. Must use create later
@@ -70,6 +74,8 @@ namespace Chroma
   void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
 				    int N5_, const AnisoParam_t& aniso)
   {
+    START_CODE();
+
     N5 = N5_;
     anisoParam = aniso;
 
@@ -111,16 +117,22 @@ namespace Chroma
 #if 0
     QDPIO::cout << "Done" << endl << flush;
 #endif
+    
+    END_CODE();
   }
 
 
   SSEWilsonDslashArray::~SSEWilsonDslashArray() 
   {
+    START_CODE();
+
 #if 0
     QDPIO::cout << "Calling free_sse_su3dslash()... " << endl;
 #endif
 
     free_sse_su3dslash();
+
+    END_CODE();
   }
 
 

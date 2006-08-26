@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mre_extrap_predictor.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: mre_extrap_predictor.h,v 3.1 2006-08-26 02:08:43 edwards Exp $
 /*! \file
  * \brief Minimal residual predictor
  *
@@ -54,10 +54,15 @@ namespace Chroma
     }
 
     // Ignore new vector
-    void newVector(const LatticeFermion& psi) {
+    void newVector(const LatticeFermion& psi) 
+    {
+      START_CODE();
+
       QDPIO::cout << "MREPredictor: registering new solution. " << endl;
       chrono_buf->push(psi);
       QDPIO::cout << "MREPredictor: number of vectors stored is = " << chrono_buf->size() << endl;
+    
+      END_CODE();
     }
 
   };
@@ -106,15 +111,19 @@ namespace Chroma
 
     // Ignore new vector
     // Ignore new vector
-    void newVector(const multi1d<LatticeFermion>& psi) {
+    void newVector(const multi1d<LatticeFermion>& psi) 
+    {
+      START_CODE();
+
       QDPIO::cout << "MRE Predictor: registering new solution. " << endl;
       chrono_buf->push(psi);
       QDPIO::cout << "MRE Predictor: number of vectors stored is = " << chrono_buf->size() << endl;
+    
+      END_CODE();
     }
-
 
   };
   
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 #endif 

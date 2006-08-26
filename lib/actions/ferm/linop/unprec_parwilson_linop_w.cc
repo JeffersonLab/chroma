@@ -1,4 +1,4 @@
-// $Id: unprec_parwilson_linop_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_parwilson_linop_w.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator with parity breaking term
  */
@@ -19,12 +19,16 @@ namespace Chroma
   void UnprecParWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
 				    const Real& Mass_, const Real& H_)
   {
+    START_CODE();
+
     Mass = Mass_;
     H = H_;
 //    u = u_;
     D.create(fs);
 
 //    CoeffWilsr_s = (AnisoP) ? Wilsr_s / xiF_0 : 1;
+    
+    END_CODE();
   }
 
 
@@ -100,6 +104,6 @@ namespace Chroma
   }
 
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 

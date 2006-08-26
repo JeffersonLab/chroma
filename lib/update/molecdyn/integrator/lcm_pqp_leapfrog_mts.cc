@@ -1,4 +1,4 @@
-// $Id: lcm_pqp_leapfrog_mts.cc,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: lcm_pqp_leapfrog_mts.cc,v 3.1 2006-08-26 02:08:42 edwards Exp $
 
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
@@ -11,9 +11,11 @@
 #include "util/gauge/expmat.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace LatColMatPQPLeapfrogIntegratorMtsEnv {
+  namespace LatColMatPQPLeapfrogIntegratorMtsEnv 
+  {
     
     AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
 		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
@@ -66,7 +68,9 @@ namespace Chroma {
   void LatColMatPQPLeapfrogIntegratorMts::leapP(const multi1d<int>& monomial_list,
 						  const Real& dt, 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
-					     multi1d<LatticeColorMatrix> >& s) {
+					     multi1d<LatticeColorMatrix> >& s) 
+  {
+    START_CODE();
 
     AbsHamiltonian<multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >& H = getHamiltonian();
@@ -98,12 +102,17 @@ namespace Chroma {
     }
     
     pop(xml_out); // pop("leapP");
+    
+    END_CODE();
   }
 
   //! Leap with Q
   void LatColMatPQPLeapfrogIntegratorMts::leapQ(const Real& dt, 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
-					     multi1d<LatticeColorMatrix> >& s) {
+					     multi1d<LatticeColorMatrix> >& s) 
+  {
+    START_CODE();
+
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
 
@@ -138,7 +147,9 @@ namespace Chroma {
     }
 
     pop(xml_out);
+    
+    END_CODE();
   }
 #endif
 
-};
+}

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_hmc.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: lcm_hmc.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  * \brief HMC trajectory
  *
@@ -27,7 +27,8 @@ namespace Chroma
   //! HMC trajectory
   /*! @ingroup hmc */
   class LatColMatHMCTrj : public AbsHMCTrj<multi1d<LatticeColorMatrix>, 
-			  multi1d<LatticeColorMatrix> > {
+			  multi1d<LatticeColorMatrix> > 
+  {
   public:
 
     // Destructor
@@ -64,11 +65,13 @@ namespace Chroma
 
 
     void refreshP(AbsFieldState<multi1d<LatticeColorMatrix>, 
-		  multi1d<LatticeColorMatrix> >& s) const {
+		  multi1d<LatticeColorMatrix> >& s) const 
+    {
+      START_CODE();
       
       // Loop over direcsions
-      for(int mu = 0; mu < Nd; mu++) {
-
+      for(int mu = 0; mu < Nd; mu++) 
+      {
 	// Pull the gaussian noise
 	gaussian(s.getP()[mu]);
 
@@ -83,10 +86,11 @@ namespace Chroma
                          
 	// Make traceless and antihermitian
 	taproj(s.getP()[mu]);
-
       }
+    
+      END_CODE();
     }
   };
-};
+}
 
 #endif

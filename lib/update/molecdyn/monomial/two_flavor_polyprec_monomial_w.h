@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_polyprec_monomial_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
+// $Id: two_flavor_polyprec_monomial_w.h,v 3.3 2006-08-26 02:08:42 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials
@@ -42,6 +42,8 @@ namespace Chroma
     /*! Monomial of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Self Description/Encapsulation Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactPolyPrecWilsonTypeFermMonomial");
@@ -87,11 +89,15 @@ namespace Chroma
       write(xml_out, "n_count", n_count);
       write(xml_out, "F_sq", F_sq);
       pop(xml_out);
+    
+      END_CODE();
     }
  
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) 
     {
+      START_CODE();
+
       // Heatbath all the fields
       
       // Get at the ferion action for piece i
@@ -120,10 +126,15 @@ namespace Chroma
       (*H)(tmp, eta, PLUS);
       Poly->applyA(getPhi(), tmp, PLUS);
       getMDSolutionPredictor().reset();
+    
+      END_CODE();
     }				    
   
     //! Copy pseudofermions if any
-    virtual void setInternalFields(const Monomial<P,Q>& m) {
+    virtual void setInternalFields(const Monomial<P,Q>& m) 
+    {
+      START_CODE();
+
       try {
 	const TwoFlavorExactPolyPrecWilsonTypeFermMonomial<P,Q,Phi>& fm = dynamic_cast<  const TwoFlavorExactPolyPrecWilsonTypeFermMonomial<P,Q,Phi>& >(m);
 
@@ -136,7 +147,10 @@ namespace Chroma
 
       // Resetting pseudofermion fields implies resetting the chrono predictor
       getMDSolutionPredictor().reset();
+    
+      END_CODE();
     }
+
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
     virtual const Phi& getPhi(void) const = 0;
@@ -156,6 +170,8 @@ namespace Chroma
     //! Get (Q*P(Q^2)*Q)^{-1} phi
     virtual int getX(Phi& X, const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Grab the fermact
       const PolyWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
@@ -175,6 +191,8 @@ namespace Chroma
       (getMDSolutionPredictor())(X, *M, getPhi());
       SystemSolverResults_t res = (*invPolyPrec)(X, getPhi());
       (getMDSolutionPredictor()).newVector(X);
+
+      END_CODE();
 
       return res.n_count;
     }
@@ -201,6 +219,8 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       // Self identification/encapsulation Rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactPolyPrecUnprecWilsonTypeFermMonomial");
@@ -219,6 +239,8 @@ namespace Chroma
       write(xml_out, "n_count", n_count);
       write(xml_out, "S", action);
       pop(xml_out);
+    
+      END_CODE();
 
       return action;
     }
@@ -262,6 +284,8 @@ namespace Chroma
     //! Compute the odd odd contribution (eg
     virtual Double S_odd_odd(const AbsFieldState<P,Q>& s)
     {
+      START_CODE();
+
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "S_odd_odd");
 
@@ -285,12 +309,17 @@ namespace Chroma
       write(xml_out, "n_count", n_count);
       write(xml_out, "S_oo", action);
       pop(xml_out);
+    
+      END_CODE();
 
       return action;
     }
 
     //! Compute the total action
-    Double S(const AbsFieldState<P,Q>& s)  {
+    Double S(const AbsFieldState<P,Q>& s)  
+    {
+      START_CODE();
+
       XMLWriter& xml_out=TheXMLOutputWriter::Instance();
       push(xml_out, "TwoFlavorExactPolyPrecEvenOddPrecWilsonTypeFermMonomial");
 
@@ -298,8 +327,10 @@ namespace Chroma
 
       write(xml_out, "S", action);
       pop(xml_out);
-      return action;
 
+      END_CODE();
+
+      return action;
     }
 
   protected:

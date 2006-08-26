@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: circular_buffer.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: circular_buffer.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
 /*! \file
  * \brief Circular buffers
  *
@@ -36,7 +36,8 @@ namespace Chroma
    * i=size()-1 // least recent
    */
   template<typename T>
-  class CircularBuffer {
+  class CircularBuffer 
+  {
   public:
     
     // Exception struct 
@@ -86,7 +87,10 @@ namespace Chroma
     }
     
     //! get the ith most recent item
-    void get(const unsigned int i, T& x) const {
+    void get(const unsigned int i, T& x) const 
+    {
+      START_CODE();
+
       if( i >= size_internal ) { 
 	throw OutOfBoundsException(std::string("Index Out of bounds"), i, size_internal);
       }
@@ -95,6 +99,8 @@ namespace Chroma
 	unsigned int index = (start + i) % size_max;
 	x= q[index];
       }
+    
+      END_CODE();
     }
     
     //! Is empty check
@@ -104,7 +110,9 @@ namespace Chroma
     
     
     //! push in an item as most recent.
-    void push(const T& e) {
+    void push(const T& e) 
+    {
+      START_CODE();
       
       if( size_internal == 0 ) { 
 	// First element -- to the end of the list
@@ -175,6 +183,8 @@ namespace Chroma
 	  size_internal++;
 	}
       }
+    
+      END_CODE();
     }
     
     
@@ -191,7 +201,8 @@ namespace Chroma
   //! Circular buffer of arrays
   /*! @ingroup predictor */
   template<typename T>
-  class CircularBufferArray {
+  class CircularBufferArray 
+  {
   public:
     
     // Exception struct 
@@ -248,7 +259,10 @@ namespace Chroma
     }
     
     //! get the ith most recent item
-    void  get(const unsigned int i, multi1d<T>& x) const {
+    void  get(const unsigned int i, multi1d<T>& x) const 
+    {
+      START_CODE();
+
       if( i >= size_internal ) { 
 	throw OutOfBoundsException(std::string("Index Out of bounds"), i, size_internal, N5);
       }
@@ -261,6 +275,8 @@ namespace Chroma
 	  x[s] = q[index][s];
 	}
       }
+    
+      END_CODE();
     }
     
     //! Is empty check
@@ -270,7 +286,9 @@ namespace Chroma
     
     
     //! push in an item as most recent.
-    void push(const multi1d<T>& e) {
+    void push(const multi1d<T>& e) 
+    {
+      START_CODE();
 
       if( e.size() != N5) { 
 	throw SizeMismatchException("Attempting to push vector of wrong size into circular buffer", N5, e.size());
@@ -349,6 +367,8 @@ namespace Chroma
 	  size_internal++;
 	}
       }
+    
+      END_CODE();
     }
     
     
@@ -362,6 +382,5 @@ namespace Chroma
     unsigned int N5;
   };
 
-
-}; // End namespace Chroma 
+} // End namespace Chroma 
 #endif

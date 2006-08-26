@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_one_flavor_rat_monomial_w.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial_w.h,v 3.2 2006-08-26 02:08:42 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -32,70 +32,70 @@ namespace Chroma
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
-    {
-    public: 
-      // Typedefs to save typing
-      typedef LatticeFermion               T;
-      typedef multi1d<LatticeColorMatrix>  P;
-      typedef multi1d<LatticeColorMatrix>  Q;
+  {
+  public: 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
-      // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
-      // Copy Constructor
-      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial& m) 
-	: phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}
+    // Construct out of a parameter struct. Check against the desired FermAct name
+    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
+    // Copy Constructor
+    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial& m) 
+      : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}
 
-    protected:
+  protected:
 
-      multi1d<T>& getPhi(void) {return phi;}
-      const multi1d<T>& getPhi(void) const {return phi;}
+    multi1d<T>& getPhi(void) {return phi;}
+    const multi1d<T>& getPhi(void) const {return phi;}
 
-      const EvenOddPrecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
-	return *fermact;
-      }
+    const EvenOddPrecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
+      return *fermact;
+    }
 
-      //! Get parameters for the inverter
-      const GroupXML_t& getInvParams(void) const { 
-	return inv_param;
-      }
+    //! Get parameters for the inverter
+    const GroupXML_t& getInvParams(void) const { 
+      return inv_param;
+    }
 
-      //! Return number of roots in used
-      int getNthRoot() const {return nthRoot;}
+    //! Return number of roots in used
+    int getNthRoot() const {return nthRoot;}
 
-      //! Return the partial fraction expansion for the force calc
-      const RemezCoeff_t& getFPFE() const {return fpfe;}
+    //! Return the partial fraction expansion for the force calc
+    const RemezCoeff_t& getFPFE() const {return fpfe;}
 
-      //! Return the partial fraction expansion for the action calc
-      const RemezCoeff_t& getSPFE() const {return spfe;}
+    //! Return the partial fraction expansion for the action calc
+    const RemezCoeff_t& getSPFE() const {return spfe;}
 
-      //! Return the partial fraction expansion for the heat-bath
-      const RemezCoeff_t& getSIPFE() const {return sipfe;}
+    //! Return the partial fraction expansion for the heat-bath
+    const RemezCoeff_t& getSIPFE() const {return sipfe;}
 
-    private:
+  private:
  
-      // Hide empty constructor and =
-      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial();
-      void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial&);
+    // Hide empty constructor and =
+    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial();
+    void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial&);
 
-      // Pseudofermion field phi
-      multi1d<T> phi;
+    // Pseudofermion field phi
+    multi1d<T> phi;
 
-      // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecWilsonTypeFermAct<T,P,Q> > fermact;
+    // A handle for the EvenOddPrecWilsonFermAct
+    Handle<const EvenOddPrecWilsonTypeFermAct<T,P,Q> > fermact;
 
-      // The parameters for the inversion
-      GroupXML_t inv_param;
+    // The parameters for the inversion
+    GroupXML_t inv_param;
 
-      // Number of nth-roots
-      int nthRoot;
+    // Number of nth-roots
+    int nthRoot;
 
-      // Coefficients and roots of partial fractions
-      RemezCoeff_t  fpfe;
-      RemezCoeff_t  spfe;
-      RemezCoeff_t  sipfe;
-    };
+    // Coefficients and roots of partial fractions
+    RemezCoeff_t  fpfe;
+    RemezCoeff_t  spfe;
+    RemezCoeff_t  sipfe;
+  };
 
 
-}; //end namespace chroma
+} //end namespace chroma
 
 #endif

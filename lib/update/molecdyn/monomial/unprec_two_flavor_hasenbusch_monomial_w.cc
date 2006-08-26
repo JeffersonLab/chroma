@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_hasenbusch_monomial_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial_w.cc,v 3.2 2006-08-26 02:08:42 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -49,6 +49,8 @@ namespace Chroma
   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial::UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial(
     const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param) 
   {
+    START_CODE();
+
     inv_param = param.inv_param;
 
     std::istringstream is(param.fermact.xml);
@@ -126,7 +128,10 @@ namespace Chroma
     chrono_predictor = tmp;
 
     QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: finished " << param.fermact.id << endl;
+    
+    END_CODE();
   }
-}; //end namespace Chroma
+
+} //end namespace Chroma
 
 

@@ -8,7 +8,9 @@ namespace Chroma {
   //
   void LUSolve( multi1d<DComplex>& a, 
 		const multi2d<DComplex>& M, 
-		const multi1d<DComplex>& b ) {
+		const multi1d<DComplex>& b ) 
+  {
+    START_CODE();
     
     int Nvec1 = M.size1();
     int Nvec2 = M.size2();
@@ -144,7 +146,8 @@ namespace Chroma {
       a[i] = tmpcmpx/M_local(i,i);
     }
   
+    END_CODE();
   }
 
 
-}; // End Namespace
+} // End Namespace

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: last_solution_predictor.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: last_solution_predictor.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
 /*! \file
  * \brief Last solution predictor
  *
@@ -26,8 +26,9 @@ namespace Chroma
   //! Last solution predictor
   /*! @ingroup predictor */
   class LastSolution4DChronoPredictor : 
-    public AbsChronologicalPredictor4D<LatticeFermion> {
-    
+    public AbsChronologicalPredictor4D<LatticeFermion> 
+  {
+   
   public:
 
     // Destructor is automagic
@@ -41,7 +42,10 @@ namespace Chroma
     // Zero out psi -- it is a zero guess after all
     void operator()(LatticeFermion& psi,
 		    const LinearOperator<LatticeFermion>& A,
-		    const LatticeFermion& chi) {
+		    const LatticeFermion& chi) 
+    {
+      START_CODE();
+
       QDPIO::cout << "LastSolution4DChronoPredictor: ";
       if( last_solution_available ) { 
 	QDPIO::cout << "Giving you the last solution" << endl;
@@ -51,22 +55,29 @@ namespace Chroma
 	QDPIO::cout << "No available last guess. Giving you zero" << endl;
 	psi = zero;
       }
+    
+      END_CODE();
     }
     
     // No internal state so reset is a nop
-    void reset(void) {
+    void reset(void) 
+    {
       QDPIO::cout << "Resetting Chrono Predictor" << endl;
-
 
       // Set the dirty bit
       last_solution_available = false;
     }
 
     // Ignore new vector
-    void newVector(const LatticeFermion& psi) {
+    void newVector(const LatticeFermion& psi) 
+    {
+      START_CODE();
+
       QDPIO::cout << "LastSolutionPredictor: registering new solution" << endl;
       last_solution = psi;
       last_solution_available = true;
+    
+      END_CODE();
     }
 
   private:
@@ -81,12 +92,13 @@ namespace Chroma
   namespace LastSolution5DChronoPredictorEnv {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
   
   //! Last solution predictor
   /*! @ingroup predictor */
   class LastSolution5DChronoPredictor :
-    public AbsChronologicalPredictor5D<LatticeFermion> {
+    public AbsChronologicalPredictor5D<LatticeFermion> 
+  {
 
   public:
     ~LastSolution5DChronoPredictor(void) {}
@@ -101,7 +113,9 @@ namespace Chroma
     // Zero out psi -- it is a zero guess after all
     void operator()(multi1d<LatticeFermion>& psi,
 		    const LinearOperatorArray<LatticeFermion>& A,
-		    const multi1d<LatticeFermion>& chi) { 
+		    const multi1d<LatticeFermion>& chi)
+    { 
+      START_CODE();
 
       QDPIO::cout << "LastSolutionPredictor:";
       psi.resize(N5);
@@ -114,6 +128,7 @@ namespace Chroma
 	psi = zero;
       }
 
+      END_CODE();
     }
     
 
@@ -124,7 +139,10 @@ namespace Chroma
     }
 
     // Ignore new vector
-    void newVector(const multi1d<LatticeFermion>& psi) {
+    void newVector(const multi1d<LatticeFermion>& psi) 
+    {
+      START_CODE();
+
       QDPIO::cout << "LastSolutionPredictor: registering new solution" << endl;
 
       if ( psi.size() != N5 ) { 
@@ -135,6 +153,7 @@ namespace Chroma
       last_solution = psi;
       last_solution_available = true;
 
+      END_CODE();
     }
     
   private:
@@ -144,6 +163,6 @@ namespace Chroma
 
   };
   
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 #endif 

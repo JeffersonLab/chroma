@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 3.1 2006-07-04 02:55:52 edwards Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial_w.cc,v 3.2 2006-08-26 02:08:42 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -53,6 +53,8 @@ namespace Chroma
   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial::EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial(
     const TwoFlavorHasenbuschWilsonTypeFermMonomialParams& param) 
   {
+    START_CODE();
+
     inv_param = param.inv_param;
 
     {
@@ -124,6 +126,8 @@ namespace Chroma
     }
 
     chrono_predictor = tmp;
+    
+    END_CODE();
   }
   
 } //end namespace Chroma

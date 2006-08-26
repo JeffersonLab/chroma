@@ -1,4 +1,4 @@
-// $Id: prec_wilson_linop_w.cc,v 3.0 2006-04-03 04:58:51 edwards Exp $
+// $Id: prec_wilson_linop_w.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -32,12 +32,16 @@ namespace Chroma
 				      const Real& Mass_,
 				      const AnisoParam_t& anisoParam)
   {
+    START_CODE();
+
     D.create(fs,anisoParam);
 
     Mass = Mass_;
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
     fact = 1 + (Nd-1)*ff + Mass;
     invfact = 1/fact;
+    
+    END_CODE();
   }
 
 
@@ -94,6 +98,8 @@ namespace Chroma
 					  const LatticeFermion& psi, 
 					  enum PlusMinus isign) const
   {
+    START_CODE();
+
     LatticeFermion tmp1, tmp2, tmp3;  // if an array is used here, 
 
     moveToFastMemoryHint(tmp1);
@@ -127,6 +133,8 @@ namespace Chroma
     chi[rb[1]] = fact*psi + tmp3;
 
     getFermBC().modifyF(chi, rb[1]);
+    
+    END_CODE();
   }
 
 
@@ -175,4 +183,4 @@ namespace Chroma
     return cbsite_flops*(Layout::sitesOnNode()/2);
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma

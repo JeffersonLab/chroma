@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc.h,v 3.1 2006-08-15 21:45:50 bjoo Exp $
+// $Id: simple_fermbc.h,v 3.2 2006-08-26 02:08:40 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -86,19 +86,23 @@ namespace Chroma
 
     //! Modify U fields in place
     void modify(Q& u) const
-      {
-	gbc->modify(u);   // first modify the U fields
+    {
+      START_CODE();
 
-	// phases for all the directions
-	for(int m = 0; m < Nd; ++m) { 
-       
-	  if( boundary[m] != 1 ) { 
-	    /* u[m] *=  (coord(m) == nrow(m)-1 ) ? boundary[m] : 1 */
-	    u[m] *= where(Layout::latticeCoordinate(m) == (Layout::lattSize()[m]-1),
-			  Integer(boundary[m]), Integer(1));
-	  }
+      gbc->modify(u);   // first modify the U fields
+
+      // phases for all the directions
+      for(int m = 0; m < Nd; ++m) 
+      { 
+	if( boundary[m] != 1 ) { 
+	  /* u[m] *=  (coord(m) == nrow(m)-1 ) ? boundary[m] : 1 */
+	  u[m] *= where(Layout::latticeCoordinate(m) == (Layout::lattSize()[m]-1),
+			Integer(boundary[m]), Integer(1));
 	}
       }
+    
+      END_CODE();
+    }
 
     //! Modify fermion fields in place
     /*! NOP */
@@ -123,10 +127,7 @@ namespace Chroma
     bool nontrivialP() const {return false;}
 
   protected:
-    void init()
-      {
-
-      }
+    void init() {}
 
   private:
     // No empty constructor

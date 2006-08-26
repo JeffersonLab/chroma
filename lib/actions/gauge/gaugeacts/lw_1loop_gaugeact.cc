@@ -1,4 +1,4 @@
-// $Id: lw_1loop_gaugeact.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: lw_1loop_gaugeact.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief 1-loop tadpole-improved Luscher-Weisz gauge action
  */
@@ -49,6 +49,8 @@ namespace Chroma
   void
   LW1LoopGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
   {
+    START_CODE();
+
     // Fold in normalizations and create action
     // NOTE: the 5/3 is folded into beta, hence divided out of c1 and c2
     AnisoParam_t aniso;  // empty aniso
@@ -62,6 +64,8 @@ namespace Chroma
 
     Real c2 = -c0 * 0.03325 * alpha_s / (u0*u0);
     pg = new PgGaugeAct(cgs,c2);
+    
+    END_CODE();
   } 
 
 }

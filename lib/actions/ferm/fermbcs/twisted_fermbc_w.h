@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: twisted_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: twisted_fermbc_w.h,v 3.1 2006-08-26 02:08:40 edwards Exp $
 /*! \file
  *  \brief Twisted fermionic BC
  */
@@ -95,25 +95,29 @@ namespace Chroma
 
     //! Modify U fields in place
     void modify(multi1d<LatticeColorMatrix>& u) const
+    {
+      START_CODE();
+
+      // Apply the simple BC's first
+      (*simple_bc_handle).modify(u);
+      const Real twopi = Real(6.283185307179586476925286);
+      const Real onepi = twopi/Real(2);
+
+      const multi1d<int>& nrow = Layout::lattSize();
+
+      // Loop over the three twist angles
+      for(int i=0; i < Nd-1; i++) 
       {
-	// Apply the simple BC's first
-	(*simple_bc_handle).modify(u);
-	const Real twopi = Real(6.283185307179586476925286);
-	const Real onepi = twopi/Real(2);
-
-	const multi1d<int>& nrow = Layout::lattSize();
-
-	// Loop over the three twist angles
-	for(int i=0; i < Nd-1; i++) {
-	  int direction = phases_dir[i]; 
-	  Real arg = phases_by_pi[i]*onepi / Real( nrow[ direction ] );
-	  Real re = cos(arg);
-	  Real im = sin(arg);
-	  Complex phase = cmplx( re, im );
-	  u[ direction ] *= phase;
-
-	}
+	int direction = phases_dir[i]; 
+	Real arg = phases_by_pi[i]*onepi / Real( nrow[ direction ] );
+	Real re = cos(arg);
+	Real im = sin(arg);
+	Complex phase = cmplx( re, im );
+	u[ direction ] *= phase;
       }
+    
+      END_CODE();
+    }
 
     //! Modify fermion fields in place
     /*! NOP */
@@ -144,9 +148,10 @@ namespace Chroma
     TwistedFermBC() {}
 
     void check_arrays( const multi1d<Real> phases_by_pi,
-		       const multi1d<int> phases_dir ) {
-      
-      
+		       const multi1d<int> phases_dir ) 
+    {
+      START_CODE();
+     
       if( phases_by_pi.size() != (Nd-1) ) { 
 	QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_by_pi. Should be " << Nd-1 << "  but is " << phases_by_pi.size() << endl;
 	QDP_abort(1);
@@ -162,7 +167,10 @@ namespace Chroma
 	  QDPIO::cerr << "Invalid value in phases_dir, direction " << i << " should be between 0 and " << Nd-1 << " but is " << phases_dir[i] << endl;
 	}
       }
-    }    
+    
+      END_CODE();
+    }
+   
   private:
     multi1d<Real> phases_by_pi;
     multi1d<int>  phases_dir;

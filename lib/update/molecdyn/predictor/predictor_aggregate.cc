@@ -1,4 +1,4 @@
-// $Id: predictor_aggregate.cc,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: predictor_aggregate.cc,v 3.1 2006-08-26 02:08:43 edwards Exp $
 /*! \file
  *  \brief Chrono predictor aggregator
  */

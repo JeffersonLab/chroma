@@ -1,4 +1,4 @@
-// $Id: spatial_two_plaq_gaugeact.cc,v 1.3 2006-07-21 18:39:11 bjoo Exp $
+// $Id: spatial_two_plaq_gaugeact.cc,v 1.4 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -59,6 +59,7 @@ namespace Chroma
   void
   SpatialTwoPlaqGaugeAct::init()
   {
+    START_CODE();
  
     // THis term is only spatial. Really I just need to divide in the 
     // aniso factors
@@ -66,6 +67,8 @@ namespace Chroma
       param.coeff /= param.aniso.xi_0;
     }
     QDPIO::cout << "aniso.t_dir" << param.aniso.t_dir << endl;
+
+    END_CODE();
   }
 
 
@@ -240,7 +243,6 @@ namespace Chroma
     // Zero the force on any fixed boundaries
     getGaugeBC().zero(ds_u);
     
-
     END_CODE();
   }
 
@@ -258,6 +260,8 @@ namespace Chroma
   Double
   SpatialTwoPlaqGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
+    START_CODE();
+
     Double S_pg = zero;
 
     // Handle< const GaugeState<P,Q> > u_bc(createState(u));
@@ -287,6 +291,8 @@ namespace Chroma
 
     // Normalize -> 1 factor of Nc from each P_munu
     S_pg *= Double(-param.coeff)/Double(2*Nc*Nc);
+
+    END_CODE();
 
     return S_pg;
   } 

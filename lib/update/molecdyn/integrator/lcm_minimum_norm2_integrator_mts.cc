@@ -1,4 +1,4 @@
-// $Id: lcm_minimum_norm2_integrator_mts.cc,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: lcm_minimum_norm2_integrator_mts.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
 
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
@@ -68,7 +68,9 @@ namespace Chroma {
   void LatColMatMinimumNorm2IntegratorMts::leapP(const multi1d<int>& monomial_list,
 						  const Real& dt, 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
-					     multi1d<LatticeColorMatrix> >& s) {
+					     multi1d<LatticeColorMatrix> >& s) 
+  {
+    START_CODE();
 
     AbsHamiltonian<multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >& H = getHamiltonian();
@@ -100,12 +102,17 @@ namespace Chroma {
     }
     
     pop(xml_out); // pop("leapP");
+    
+    END_CODE();
   }
 
   //! Leap with Q
   void LatColMatMinimumNorm2IntegratorMts::leapQ(const Real& dt, 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
-					     multi1d<LatticeColorMatrix> >& s) {
+					     multi1d<LatticeColorMatrix> >& s) 
+  {
+    START_CODE();
+
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
 
@@ -140,7 +147,9 @@ namespace Chroma {
     }
 
     pop(xml_out);
+    
+    END_CODE();
   }
 #endif
 
-};
+}

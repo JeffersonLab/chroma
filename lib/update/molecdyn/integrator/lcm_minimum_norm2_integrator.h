@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_minimum_norm2_integrator.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: lcm_minimum_norm2_integrator.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! @file
  * @brief 2nd order minimum norm intergrator a la 
  * Omelyan adapted to QCD by deForcrand and Takaishi
@@ -23,13 +23,15 @@ namespace Chroma
 {
 
   /*! @ingroup integrator */
-  namespace LatColMatMinimumNorm2IntegratorEnv {
+  namespace LatColMatMinimumNorm2IntegratorEnv 
+  {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
 
   /*! @ingroup integrator */
-  struct  LatColMatMinimumNorm2IntegratorParams {
+  struct  LatColMatMinimumNorm2IntegratorParams 
+  {
     LatColMatMinimumNorm2IntegratorParams();
     LatColMatMinimumNorm2IntegratorParams(XMLReader& xml, const std::string& path);
 
@@ -55,8 +57,8 @@ namespace Chroma
    */
   class LatColMatMinimumNorm2Integrator 
     : public AbsMDIntegrator<multi1d<LatticeColorMatrix>,
-                             multi1d<LatticeColorMatrix> > {
-
+                             multi1d<LatticeColorMatrix> > 
+  {
   public:
 
     // Construct from params struct and Hamiltonian
@@ -80,7 +82,9 @@ namespace Chroma
 
     //! Do a trajectory
     void operator()(AbsFieldState<multi1d<LatticeColorMatrix>,
-		    multi1d<LatticeColorMatrix> >& s) {
+		    multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
       Real dt = getStepSize();      // Overall step size
       Real dtby2 = dt/Real(2);
@@ -99,7 +103,8 @@ namespace Chroma
 		leapQ(dtby2,s);
       }
       leapP(lambdadt,s);
-
+    
+      END_CODE();
     }
 
   protected:
@@ -107,16 +112,26 @@ namespace Chroma
     //! LeapP for just a selected list of monomials
     void leapP(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
+
       LCMMDIntegratorSteps::leapP(dt, getHamiltonian(), s);
+    
+      END_CODE();
     }
 
 
     //! Leap with Q (with all monomials)
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
+    
       LCMMDIntegratorSteps::leapQ(dt, s);
+    
+      END_CODE();
     }
 
 
@@ -140,7 +155,7 @@ namespace Chroma
     
   };
 
-};
+}
 
 
 #endif

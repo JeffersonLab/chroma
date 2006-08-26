@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_one_flavor_rat_monomial5d_w.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
+// $Id: prec_constdet_one_flavor_rat_monomial5d_w.h,v 3.2 2006-08-26 02:08:42 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -19,7 +19,7 @@ namespace Chroma
   {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
 
 
   //! Wrapper class for 5D 2-flavor even-odd prec ferm monomials
@@ -32,104 +32,104 @@ namespace Chroma
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
-    {
-    public: 
-      // Typedefs to save typing
-      typedef LatticeFermion               T;
-      typedef multi1d<LatticeColorMatrix>  P;
-      typedef multi1d<LatticeColorMatrix>  Q;
+  {
+  public: 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
-      // Construct out of a parameter struct. Check against the desired FermAct name
-      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
+    // Construct out of a parameter struct. Check against the desired FermAct name
+    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
+    
+    // Copy Constructor
+    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}
+    
+    //! Even even contribution (eg ln det Clover)
+    Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix> >& s) {
+      return Double(0);
+    }
 
-      // Copy Constructor
-      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}
 
-      //! Even even contribution (eg ln det Clover)
-      Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
-			                     multi1d<LatticeColorMatrix> >& s) {
-	return Double(0);
-      }
+  protected:
 
+    const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>& getFermAct(void) const { 
+      return *fermact;
+    }
 
-    protected:
+    //! Get parameters for the inverter
+    const GroupXML_t& getInvParams(void) const { 
+      return inv_param;
+    }
 
-      const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q>& getFermAct(void) const { 
-	return *fermact;
-      }
+    //! Accessor for pseudofermion (read only)
+    const multi1d< multi1d<T> >& getPhi(void) const {return phi;}
 
-      //! Get parameters for the inverter
-      const GroupXML_t& getInvParams(void) const { 
-	return inv_param;
-      }
+    //! mutator for pseudofermion
+    multi1d< multi1d<T> >& getPhi(void) {return phi;}
 
-      //! Accessor for pseudofermion (read only)
-      const multi1d< multi1d<T> >& getPhi(void) const {return phi;}
+    //! Accessor for PV pseudofermion (read only)
+    const multi1d< multi1d<T> >& getPhiPV(void) const {return phiPV;}
 
-      //! mutator for pseudofermion
-      multi1d< multi1d<T> >& getPhi(void) {return phi;}
+    //! mutator for PV pseudofermion 
+    multi1d< multi1d<T> >& getPhiPV(void) {return phiPV;}
 
-      //! Accessor for PV pseudofermion (read only)
-      const multi1d< multi1d<T> >& getPhiPV(void) const {return phiPV;}
+    //! Return number of roots in used
+    int getNthRoot() const {return nthRoot;}
 
-      //! mutator for PV pseudofermion 
-      multi1d< multi1d<T> >& getPhiPV(void) {return phiPV;}
+    int getNthRootPV() const { return nthRootPV; }
 
-      //! Return number of roots in used
-      int getNthRoot() const {return nthRoot;}
+    //! Return the partial fraction expansion for the action calc
+    const RemezCoeff_t& getSPFE() const {return spfe;}
 
-      int getNthRootPV() const { return nthRootPV; }
+    //! Return the partial fraction expansion for the heat-bath
+    const RemezCoeff_t& getSIPFE() const {return sipfe;}
 
-      //! Return the partial fraction expansion for the action calc
-      const RemezCoeff_t& getSPFE() const {return spfe;}
+    //! Return the partial fraction expansion for the force calc in PV
+    const RemezCoeff_t& getFPVPFE() const {return fpvpfe;}
 
-      //! Return the partial fraction expansion for the heat-bath
-      const RemezCoeff_t& getSIPFE() const {return sipfe;}
+    //! Return the partial fraction expansion for the action calc in PV
+    const RemezCoeff_t& getSPVPFE() const {return spvpfe;}
 
-      //! Return the partial fraction expansion for the force calc in PV
-      const RemezCoeff_t& getFPVPFE() const {return fpvpfe;}
+    //! Return the partial fraction expansion for the heat-bath in PV
+    const RemezCoeff_t& getSIPVPFE() const {return sipvpfe;}
 
-      //! Return the partial fraction expansion for the action calc in PV
-      const RemezCoeff_t& getSPVPFE() const {return spvpfe;}
-
-      //! Return the partial fraction expansion for the heat-bath in PV
-      const RemezCoeff_t& getSIPVPFE() const {return sipvpfe;}
-
-    private:
+  private:
  
-      // Hide empty constructor and =
-      EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D();
-      void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D&);
+    // Hide empty constructor and =
+    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D();
+    void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D&);
 
-      // Pseudofermion field phi
-      multi1d< multi1d<T> > phi;
+    // Pseudofermion field phi
+    multi1d< multi1d<T> > phi;
       
-      // Pseudofermion field phi
-      multi1d< multi1d<T> > phiPV;
+    // Pseudofermion field phi
+    multi1d< multi1d<T> > phiPV;
 
-      // A handle for the EvenOddPrecWilsonFermAct
-      Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q> > fermact;
+    // A handle for the EvenOddPrecWilsonFermAct
+    Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q> > fermact;
 
-      // The parameters for the inversion
-      GroupXML_t  inv_param;
+    // The parameters for the inversion
+    GroupXML_t  inv_param;
 
-      // Number of nth-roots
-      int nthRoot;
+    // Number of nth-roots
+    int nthRoot;
 
-      // Number of PV nth-roots
-      int nthRootPV;
+    // Number of PV nth-roots
+    int nthRootPV;
 
-      //! Return the partial fraction expansion for the force calc
-      const RemezCoeff_t& getFPFE() const {return fpfe;}
-      // Coefficients and roots of partial fractions
-      RemezCoeff_t  fpfe;
-      RemezCoeff_t  spfe;
-      RemezCoeff_t  sipfe;
+    //! Return the partial fraction expansion for the force calc
+    const RemezCoeff_t& getFPFE() const {return fpfe;}
+    // Coefficients and roots of partial fractions
+    RemezCoeff_t  fpfe;
+    RemezCoeff_t  spfe;
+    RemezCoeff_t  sipfe;
 
-      RemezCoeff_t  fpvpfe;
-      RemezCoeff_t  spvpfe;
-      RemezCoeff_t  sipvpfe;
-    };
+    RemezCoeff_t  fpvpfe;
+    RemezCoeff_t  spvpfe;
+    RemezCoeff_t  sipvpfe;
+  };
 
 
 } //end namespace chroma

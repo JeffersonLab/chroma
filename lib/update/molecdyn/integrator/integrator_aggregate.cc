@@ -28,4 +28,4 @@ namespace Chroma {
     const bool registered = registerAll();
   };
 
-};
+}

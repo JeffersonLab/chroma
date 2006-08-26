@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hamiltonian.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: abs_hamiltonian.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  * \brief Abstract Hamiltonian
  *
@@ -37,7 +37,10 @@ namespace Chroma
     //  and sums their contribution
     //
     //  s is the state, F is the computed force
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const {
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const 
+    {
+      START_CODE();
+
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       // Self description rule
       push(xml_out, "AbsHamiltonianForce");
@@ -64,11 +67,16 @@ namespace Chroma
       }
       pop(xml_out); // pop("ForcesByMonomial"
       pop(xml_out); // pop("AbsHamiltonianForce");
+    
+      END_CODE();
     }
 
     virtual void dsdq(P& F, 
 		      const AbsFieldState<P,Q>& s, 
-		      const multi1d<int>& monomial_list) const {
+		      const multi1d<int>& monomial_list) const 
+    {
+      START_CODE();
+
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       // Self description rule
       push(xml_out, "AbsHamiltonianForce");
@@ -98,14 +106,21 @@ namespace Chroma
       }
       pop(xml_out); // pop("ForcesByMonomial"
       pop(xml_out); // pop("AbsHamiltonianForce");
+    
+      END_CODE();
     }
     
     //! Refresh pseudofermsions (if any)
-    virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) {
+    virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) 
+    {
+      START_CODE();
+
       int num_terms = numMonomials();
       for(int i=0; i < num_terms; i++) { 
 	getMonomial(i).refreshInternalFields(s);
       }
+
+      END_CODE();
     }
 
     //! Copy Pseudofermions 
@@ -116,7 +131,10 @@ namespace Chroma
     // number of terms. Also the types need to be the same otherwise
     // an exception will occur. If you don't like this behavior, you
     // should override it in your code.
-    virtual void setInternalFields(const AbsHamiltonian<P,Q>& H_from) {
+    virtual void setInternalFields(const AbsHamiltonian<P,Q>& H_from) 
+    {
+      START_CODE();
+
       int num_terms = numMonomials();
 
       // Minimal sanity checking -- Check the number of terms are the same
@@ -130,6 +148,8 @@ namespace Chroma
       for(int i=0; i < num_terms; i++) { 
 	getMonomial(i).setInternalFields(H_from.getMonomial(i));
       }
+      
+      END_CODE();
     }
 
     //! Get the number of monomials.
@@ -139,8 +159,6 @@ namespace Chroma
     
     //! Get hold of monomial with index i
     virtual Monomial<P,Q>& getMonomial(int i) const = 0;
-    
-    
     
   };
   
@@ -167,7 +185,10 @@ namespace Chroma
     //  and sums their contribution
     //
     //  s is the state, F is the computed force
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const {
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) const 
+    {
+      START_CODE();
+    
       // Self Description rule
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       push(xml_out, "ExactAbsHamiltonianForce");
@@ -193,11 +214,16 @@ namespace Chroma
       }
       pop(xml_out); // Forces by Monomial
       pop(xml_out);  // ExactAbsHamiltonian
+    
+      END_CODE();
     }
 
     virtual void dsdq(P& F, 
 		      const AbsFieldState<P,Q>& s, 
-		      const multi1d<int>& monomial_list) const {
+		      const multi1d<int>& monomial_list) const 
+    {
+      START_CODE();
+
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       // Self description rule
       push(xml_out, "ExactAbsHamiltonianForce");
@@ -227,86 +253,101 @@ namespace Chroma
       }
       pop(xml_out); // pop("ForcesByMonomial"
       pop(xml_out); // pop("AbsHamiltonianForce");
+    
+      END_CODE();
     }
 
 
     //! Refresh pseudofermsions (if any)
-    virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) {
+    virtual void refreshInternalFields(const AbsFieldState<P,Q>& s) 
+    {
+      START_CODE();
+
       int num_terms = numMonomials();
       for(int i=0; i < num_terms; i++) { 
 	getMonomial(i).refreshInternalFields(s);
       }
+    
+      END_CODE();
     }
     
     //! Compute the energies 
     //! The total energy
     virtual void  mesE(const AbsFieldState<P,Q>& s, Double& KE, Double& PE) const 
-      {
+    {
+      START_CODE();
 
-	// Self Description Rule
-	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-	push(xml_out, "mesE");
+      // Self Description Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "mesE");
 
-	KE = mesKE(s);
-	PE = mesPE(s);
+      KE = mesKE(s);
+      PE = mesPE(s);
 
-	pop(xml_out);
+      pop(xml_out);
 
-      }
+      END_CODE();
+    }
     
     //! The Kinetic Energy
     virtual Double mesKE(const AbsFieldState<P,Q>& s) const 
-      {
-	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-	push(xml_out, "mesKE");
+    {
+      START_CODE();
 
-	// Return 1/2 sum pi^2
-	// may need to loop over the indices of P?
-	Double KE=norm2(s.getP());
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "mesKE");
 
-	write(xml_out, "KE", KE);
-	pop(xml_out);  // pop(mesKE);
-	return KE;
-      }
+      // Return 1/2 sum pi^2
+      // may need to loop over the indices of P?
+      Double KE=norm2(s.getP());
+
+      write(xml_out, "KE", KE);
+      pop(xml_out);  // pop(mesKE);
+    
+      END_CODE();
+      return KE;
+    }
     
     //! The Potential Energy 
     virtual Double mesPE(const AbsFieldState<P,Q>& s) const 
-      {
-	// Self Encapsulation Rule
-	XMLWriter& xml_out = TheXMLOutputWriter::Instance();
-	push(xml_out, "mesPE");
-	// Cycle through all the monomials and compute their contribution
-	int num_terms = numMonomials();
+    {
+      START_CODE();
 
-	write(xml_out, "num_terms", num_terms);
-	multi1d<Double> PE_terms(num_terms);
-	Double PE = Double(0);
+      // Self Encapsulation Rule
+      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      push(xml_out, "mesPE");
+      // Cycle through all the monomials and compute their contribution
+      int num_terms = numMonomials();
+
+      write(xml_out, "num_terms", num_terms);
+      multi1d<Double> PE_terms(num_terms);
+      Double PE = Double(0);
       
-	// Caller writes elem rule
-	push(xml_out, "PEByMonomials");
-	for(int i=0; i < num_terms; i++) {
-	  push(xml_out, "elem");
+      // Caller writes elem rule
+      push(xml_out, "PEByMonomials");
+      for(int i=0; i < num_terms; i++) 
+      {
+	push(xml_out, "elem");
 
-	  Double tmp = getMonomial(i).S(s);
-	  PE += tmp;
-	  pop(xml_out);
-	}
-	pop(xml_out); // PEByMonomials
-	pop(xml_out); // pop(mesPE);
-	return PE;
+	Double tmp = getMonomial(i).S(s);
+	PE += tmp;
+	pop(xml_out);
       }
+      pop(xml_out); // PEByMonomials
+      pop(xml_out); // pop(mesPE);
+      
+      END_CODE();
+      return PE;
+    }
     
     //! Get the number of monomials.
     virtual int numMonomials(void) const = 0;
     
   protected:
-    
     //! Get hold of monomial with index i
     virtual ExactMonomial<P,Q>& getMonomial(int i) const = 0;
     
-    
   };
 
-
-}; // End namespace Chroma
+} // End namespace Chroma
 #endif

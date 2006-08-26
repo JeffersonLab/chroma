@@ -1,4 +1,4 @@
-// $Id: plaq_plus_spatial_two_plaq_gaugeact.cc,v 3.3 2006-07-22 00:54:14 bjoo Exp $
+// $Id: plaq_plus_spatial_two_plaq_gaugeact.cc,v 3.4 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -67,6 +67,7 @@ namespace Chroma
   void
   PlaqPlusSpatialTwoPlaqGaugeAct::init()
   {
+    START_CODE();
  
     if ( anisoP() ) { 
       // SPatial guys divided by xi_0
@@ -78,6 +79,8 @@ namespace Chroma
 
     }
     QDPIO::cout << "aniso.t_dir" << param.aniso.t_dir << endl;
+    
+    END_CODE();
   }
 
 
@@ -140,18 +143,14 @@ namespace Chroma
 		      const Handle< GaugeState<P,Q> >& state) const
   {
     START_CODE();
+
     QDP::StopWatch swatch;
     swatch.reset();
     swatch.start();
 
-
-
     ds_u.resize(Nd);
 
-
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
-
-
 
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     LatticeColorMatrix tmp, tmp2;
@@ -353,7 +352,6 @@ namespace Chroma
   Double
   PlaqPlusSpatialTwoPlaqGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
-
     START_CODE();
 
     Double S_pg = zero;
@@ -401,9 +399,9 @@ namespace Chroma
     S_pg *= Double(-1)/Double(Nc);
     S_pg += Double(-param.coeff_plaq_t)/Double(Nc)*S_pg_t;
 
-    return S_pg;
-
     END_CODE();
+
+    return S_pg;
   } 
 
 }

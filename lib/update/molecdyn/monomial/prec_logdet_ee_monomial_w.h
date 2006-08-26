@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_logdet_ee_monomial_w.h,v 3.2 2006-08-25 17:15:59 edwards Exp $
+// $Id: prec_logdet_ee_monomial_w.h,v 3.3 2006-08-26 02:08:42 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -163,6 +163,7 @@ namespace Chroma
     int num_flavors;
     Handle< EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q> > fermact;
   };
-}; //end namespace chroma
+
+} //end namespace chroma
 
 #endif

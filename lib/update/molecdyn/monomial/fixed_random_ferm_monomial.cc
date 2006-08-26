@@ -33,8 +33,10 @@ namespace Chroma {
     const bool registered = registerAll();
   };
 
-  FixedRandomFermMonomial4D::FixedRandomFermMonomial4D(const FixedRandomFermMonomialParams& p){ 
-    
+  FixedRandomFermMonomial4D::FixedRandomFermMonomial4D(const FixedRandomFermMonomialParams& p)
+  { 
+    START_CODE();
+   
     X.resize(Nd);
     for(int mu=0; mu < Nd; mu++) { 
       gaussian(X[mu]);
@@ -49,11 +51,13 @@ namespace Chroma {
     cfs =  new CreateStoutFermState(WilsonTypeFermBCEnv::reader(xml_in, "/FermState"),
 				    StoutFermStateParams(xml_in, "/FermState"));
 
-
+    END_CODE();
   }
 
   void FixedRandomFermMonomial4D::dsdq(P& F, const AbsFieldState<P,Q>& s)
   {
+    START_CODE();
+
     Handle< StoutFermState > state = (*cfs)(s.getQ()); // Create a 
     F.resize(Nd);
     F = X;
@@ -66,11 +70,14 @@ namespace Chroma {
     Double F_sq = norm2(F);
     write(xml_out, "F_sq", F_sq);
     pop(xml_out);
-
+    
+    END_CODE();
   }
 
   Double  FixedRandomFermMonomial4D::S(const AbsFieldState<P,Q>& s)
   {
+    START_CODE();
+
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
     push(xml_out, "FixedRandomFermMonomial4D");
 
@@ -86,7 +93,9 @@ namespace Chroma {
     pop(xml_out);
 
     return ret_val;
+    
+    END_CODE();
   }
 
-};
+}
 

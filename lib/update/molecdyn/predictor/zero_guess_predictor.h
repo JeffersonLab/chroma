@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zero_guess_predictor.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: zero_guess_predictor.h,v 3.1 2006-08-26 02:08:43 edwards Exp $
 /*! \file
  * \brief Zero initial guess predictor
  *
@@ -18,16 +18,17 @@ namespace Chroma
 { 
   
   /*! @ingroup predictor */
-  namespace ZeroGuess4DChronoPredictorEnv {
+  namespace ZeroGuess4DChronoPredictorEnv 
+  {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
 
   //! Zero initial guess predictor
   /*! @ingroup predictor */
   class ZeroGuess4DChronoPredictor : 
-    public AbsChronologicalPredictor4D<LatticeFermion> {
-    
+    public AbsChronologicalPredictor4D<LatticeFermion> 
+  {
   public:
 
     // Destructor is automagic
@@ -36,9 +37,14 @@ namespace Chroma
     // Zero out psi -- it is a zero guess after all
     void operator()(LatticeFermion& psi,
 		    const LinearOperator<LatticeFermion> &A,
-		    const LatticeFermion& chi) {
+		    const LatticeFermion& chi) 
+    {
+      START_CODE();
+
       QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
       psi = zero;
+
+      END_CODE();
     }
     
     // No internal state so reset is a nop
@@ -56,16 +62,17 @@ namespace Chroma
   
 
   /*! @ingroup predictor */
-  namespace ZeroGuess5DChronoPredictorEnv {
+  namespace ZeroGuess5DChronoPredictorEnv 
+  {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
   
   //! Zero initial guess predictor
   /*! @ingroup predictor */
   class ZeroGuess5DChronoPredictor :
-    public AbsChronologicalPredictor5D<LatticeFermion> {
-
+    public AbsChronologicalPredictor5D<LatticeFermion> 
+  {
   public:
     ~ZeroGuess5DChronoPredictor(void) {}
 
@@ -79,13 +86,15 @@ namespace Chroma
     // Zero out psi -- it is a zero guess after all
     void operator()(multi1d<LatticeFermion>& psi,
 		    const LinearOperatorArray<LatticeFermion>& A,
-		    const multi1d<LatticeFermion>& chi) { 
+		    const multi1d<LatticeFermion>& chi) 
+    { 
+      START_CODE();
 
       QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
       psi.resize(N5);
       psi = zero;
-
-
+    
+      END_CODE();
     }
     
 
@@ -103,6 +112,6 @@ namespace Chroma
     const int N5;
   };
   
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
 #endif 

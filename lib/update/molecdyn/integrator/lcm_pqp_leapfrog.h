@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_pqp_leapfrog.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: lcm_pqp_leapfrog.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
 
 /*! @file
  * @brief Leapfrog integrator
@@ -22,13 +22,15 @@ namespace Chroma
 {
 
   /*! @ingroup integrator */
-  namespace LatColMatPQPLeapfrogIntegratorEnv {
+  namespace LatColMatPQPLeapfrogIntegratorEnv 
+  {
     extern const std::string name;
     extern const bool registered;
-  };
+  }
 
   /*! @ingroup integrator */
-  struct  LatColMatPQPLeapfrogIntegratorParams {
+  struct  LatColMatPQPLeapfrogIntegratorParams 
+  {
     LatColMatPQPLeapfrogIntegratorParams();
     LatColMatPQPLeapfrogIntegratorParams(XMLReader& xml, const std::string& path);
 
@@ -52,8 +54,8 @@ namespace Chroma
    */
   class LatColMatPQPLeapfrogIntegrator 
     : public PQPLeapfrogIntegrator<multi1d<LatticeColorMatrix>,
-				   multi1d<LatticeColorMatrix> > {
-
+				   multi1d<LatticeColorMatrix> > 
+  {
   public:
 
     // Simplest Constructor
@@ -83,20 +85,26 @@ namespace Chroma
 
     void leapP(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) {
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
       LCMMDIntegratorSteps::leapP(dt, getHamiltonian(), s);
+    
+      END_CODE();
     }
+
     //! Leap with Q
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-			     multi1d<LatticeColorMatrix> >& s) {
+			     multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
 
       LCMMDIntegratorSteps::leapQ(dt, s);
-
+    
+      END_CODE();
     }
-
- 
 
     //! Get the trajectory length
     const Real getTrajLength(void) const {
@@ -122,7 +130,7 @@ namespace Chroma
     
   };
 
-};
+}
 
 
 #endif

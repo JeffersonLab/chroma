@@ -1,4 +1,4 @@
-// $Id: pg_gaugeact.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: pg_gaugeact.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Parallelogram gauge action
  */
@@ -227,6 +227,8 @@ namespace Chroma
   Double
   PgGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
+    START_CODE();
+
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
     LatticeColorMatrix tmp_0;
@@ -362,6 +364,8 @@ namespace Chroma
     Double S_pg = sum(lgimp);
     S_pg *= -coeff / Real(Nc);      // note sign
   
+    END_CODE();
+
     return S_pg;
   } 
 

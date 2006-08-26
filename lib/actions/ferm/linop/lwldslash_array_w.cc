@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_w.cc,v 3.1 2006-04-03 16:58:08 edwards Exp $
+// $Id: lwldslash_array_w.cc,v 3.2 2006-08-26 02:08:40 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -199,5 +199,5 @@ namespace Chroma
     END_CODE();
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

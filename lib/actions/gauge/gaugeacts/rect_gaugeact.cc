@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.4 2006-07-22 00:54:14 bjoo Exp $
+// $Id: rect_gaugeact.cc,v 3.5 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -111,7 +111,6 @@ namespace Chroma
 		       const Handle< GaugeState<P,Q> >& state,
 		       int mu, int cb) const
   {
-
     START_CODE();
     QDPIO::cerr << "RectGaugeAct::staple() - not converted from szin" << endl;
     QDP_abort(1);
@@ -182,7 +181,7 @@ namespace Chroma
     //                     | 
     //        <----  <---  V
 
-   // = u(x+nu, mu)*u(x+mu+nu, mu)*u^dag(x+2mu, nu)*u^dag(x+mu, mu)*u^dag(x,mu)
+    // = u(x+nu, mu)*u(x+mu+nu, mu)*u^dag(x+2mu, nu)*u^dag(x+mu, mu)*u^dag(x,mu)
 
     ds_u[nu] += adj(from_left_2link*upper_l);
 
@@ -322,7 +321,7 @@ namespace Chroma
   //   = -coeff * (1/(Nc)) * Sum Re Tr Rect
   inline
   void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
-	    const multi1d<LatticeColorMatrix>& u);
+	      const multi1d<LatticeColorMatrix>& u);
   
   Double
   RectGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
@@ -360,110 +359,122 @@ namespace Chroma
 
     Double S_rect = sum(lgimp);
     S_rect *= -Double(1) / Double(Nc);   // note sign here
+
+    END_CODE();
+
     return S_rect;
+  }
+  
+
+  void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
+	      const multi1d<LatticeColorMatrix>& u)
+  {
+    START_CODE();
+
+    LatticeColorMatrix tmp1;
+    LatticeColorMatrix tmp2;
+    LatticeColorMatrix lr_corner;
+    LatticeColorMatrix lower_l;
+    LatticeColorMatrix upper_l;
+    LatticeColorMatrix rectangle_2munu;
+    LatticeColorMatrix rectangle_mu2nu;
+  
+  
+    //                     ^
+    // lr_corner =         |   = u(x, mu) * u(x + mu, nu)
+    //                     |
+    //                ----->
+    //
+  
+    lr_corner = u[mu]*shift(u[nu], FORWARD, mu);
+  
+    //                        ^
+    // lower_l =              |
+    //            -----> ----->
+
+    //
+    //  lower_l = u(x, mu) u(x + mu, mu) * u(x + 2mu, nu)  OK!!
+    lower_l = u[mu]*shift(lr_corner, FORWARD, mu);
+  
+    // Upper L =  <----- <-----
+    //            |
+    //            V
+  
+    // tmp2 = adj(tmp_1)*adj(u[mu]) = u^dag(x + mu, nu) u^dag(x, mu)
+    tmp2 = adj(shift(u[mu], FORWARD, mu))*adj(u[mu]);
+  
+    // tmp1 = tmp2(x+nu) = u^dag(x + mu + nu, mu) * u^dag(x + nu, mu)
+    tmp1 = shift(tmp2, FORWARD, nu);
+  
+    // upper_l =  u^dag(x + mu + nu, mu) * u^dag(x + nu, mu) * u^dag(nu)
+    upper_l = tmp1*adj(u[nu]);
+  
+    //   Loop = Lower_l * upper_l
+    //        =  u(x, mu) u(x + mu, mu) * u(x + 2mu, nu)
+    //         * u^dag(x + mu + nu, mu) * u^dag(x + nu, mu) * u^dag(nu)
+    rectangle_2munu = lower_l*upper_l;
+  
+  
+    lgimp += c * real(trace(rectangle_2munu));
+    // lgimp += c2 * real(trace(rectangle_mu2nu));
 
     END_CODE();
   }
-  
-
-void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
-		     const multi1d<LatticeColorMatrix>& u)
-{
-  START_CODE();
-  LatticeColorMatrix tmp1;
-  LatticeColorMatrix tmp2;
-  LatticeColorMatrix lr_corner;
-  LatticeColorMatrix lower_l;
-  LatticeColorMatrix upper_l;
-  LatticeColorMatrix rectangle_2munu;
-  LatticeColorMatrix rectangle_mu2nu;
-  
-  
-  //                     ^
-  // lr_corner =         |   = u(x, mu) * u(x + mu, nu)
-  //                     |
-  //                ----->
-  //
-  
-  lr_corner = u[mu]*shift(u[nu], FORWARD, mu);
-  
-  //                        ^
-  // lower_l =              |
-  //            -----> ----->
-
-  //
-  //  lower_l = u(x, mu) u(x + mu, mu) * u(x + 2mu, nu)  OK!!
-  lower_l = u[mu]*shift(lr_corner, FORWARD, mu);
-  
-  
-  
-  // Upper L =  <----- <-----
-  //            |
-  //            V
-  
-  // tmp2 = adj(tmp_1)*adj(u[mu]) = u^dag(x + mu, nu) u^dag(x, mu)
-  tmp2 = adj(shift(u[mu], FORWARD, mu))*adj(u[mu]);
-  
-  // tmp1 = tmp2(x+nu) = u^dag(x + mu + nu, mu) * u^dag(x + nu, mu)
-  tmp1 = shift(tmp2, FORWARD, nu);
-  
-  // upper_l =  u^dag(x + mu + nu, mu) * u^dag(x + nu, mu) * u^dag(nu)
-  upper_l = tmp1*adj(u[nu]);
-  
-  //   Loop = Lower_l * upper_l
-  //        =  u(x, mu) u(x + mu, mu) * u(x + 2mu, nu)
-  //         * u^dag(x + mu + nu, mu) * u^dag(x + nu, mu) * u^dag(nu)
-  rectangle_2munu = lower_l*upper_l;
-  
-  
-  lgimp += c * real(trace(rectangle_2munu));
-  // lgimp += c2 * real(trace(rectangle_mu2nu));
-
-  END_CODE();
-}
 
 
 
-// Isotropic case
-RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_,
+  // Isotropic case
+  RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_,
 			     const Real& coeff_s_) : cgs(cgs_)
-{
-  // Setup the params structure
-  params.coeff_s = params.coeff_t1 = params.coeff_t2 = coeff_s_;
-  params.no_temporal_2link = false;
-  params.aniso.anisoP = false;
-  params.aniso.t_dir = Nd -1;
-  params.aniso.xi_0 = 1;
-  params.aniso.nu = 1;    
-}
+  {
+    START_CODE();
 
-// Anisotropic case
-RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_,
-			   const Real& coeff_s_,
-			   const Real& coeff_t1_,
-			   const Real& coeff_t2_,
-			   const bool no_temporal_2link_,
-			   const AnisoParam_t& aniso_) : cgs(cgs_) 
-{
-  // Setup the params structure
-  params.coeff_s = coeff_s_ / aniso_.xi_0 ;
-  params.coeff_t1 = coeff_t1_ * aniso_.xi_0 ;
-  params.coeff_t2 = coeff_t2_ * aniso_.xi_0;
-  params.no_temporal_2link = no_temporal_2link_ ;
-  params.aniso = aniso_ ;          // Rely on struct copy constructor here
-
-}
-
-//! Read rectangle coefficient from a param struct
-RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
-			   const RectGaugeActParams& p) : cgs(cgs_), params(p) {
-  // It is at this point we take into account the anisotropy
-  if( params.aniso.anisoP ) { 
-    params.coeff_s = p.coeff_s / p.aniso.xi_0;
-    params.coeff_t1 = p.coeff_t1 * p.aniso.xi_0;
-    params.coeff_t2 = p.coeff_t2 * p.aniso.xi_0;
+    // Setup the params structure
+    params.coeff_s = params.coeff_t1 = params.coeff_t2 = coeff_s_;
+    params.no_temporal_2link = false;
+    params.aniso.anisoP = false;
+    params.aniso.t_dir = Nd -1;
+    params.aniso.xi_0 = 1;
+    params.aniso.nu = 1;    
+    
+    END_CODE();
   }
-}
+
+  // Anisotropic case
+  RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_,
+			     const Real& coeff_s_,
+			     const Real& coeff_t1_,
+			     const Real& coeff_t2_,
+			     const bool no_temporal_2link_,
+			     const AnisoParam_t& aniso_) : cgs(cgs_) 
+  {
+    START_CODE();
+
+    // Setup the params structure
+    params.coeff_s = coeff_s_ / aniso_.xi_0 ;
+    params.coeff_t1 = coeff_t1_ * aniso_.xi_0 ;
+    params.coeff_t2 = coeff_t2_ * aniso_.xi_0;
+    params.no_temporal_2link = no_temporal_2link_ ;
+    params.aniso = aniso_ ;          // Rely on struct copy constructor here
+    
+    END_CODE();
+  }
+
+  //! Read rectangle coefficient from a param struct
+  RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+			     const RectGaugeActParams& p) : cgs(cgs_), params(p) 
+  {
+    START_CODE();
+
+    // It is at this point we take into account the anisotropy
+    if( params.aniso.anisoP ) { 
+      params.coeff_s = p.coeff_s / p.aniso.xi_0;
+      params.coeff_t1 = p.coeff_t1 * p.aniso.xi_0;
+      params.coeff_t2 = p.coeff_t2 * p.aniso.xi_0;
+    }
+    
+    END_CODE();
+  }
 
 }
 

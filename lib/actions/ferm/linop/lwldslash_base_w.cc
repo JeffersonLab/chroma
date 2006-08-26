@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_w.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_base_w.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -131,5 +131,5 @@ namespace Chroma
   unsigned long 
   WilsonDslashBase::nFlops() const {return 1320;}
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
