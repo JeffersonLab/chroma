@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 3.1 2006-05-30 20:05:57 edwards Exp $
+// $Id: clover_term_base_w.h,v 3.2 2006-08-26 05:44:20 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -47,7 +47,7 @@ namespace Chroma
      * \param psi     right vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
      */
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
@@ -60,7 +60,7 @@ namespace Chroma
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      * \param cb      Checkerboard of chi vector                  (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
      */
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
