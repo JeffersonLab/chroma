@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.2 2006-08-05 23:30:48 edwards Exp $
+// $Id: hmc.cc,v 3.3 2006-08-26 02:12:46 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -8,9 +8,11 @@
 
 using namespace Chroma;
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  struct MCControl {
+  struct MCControl 
+  {
     Cfg_t cfg;
     QDP::Seed rng_seed;
     unsigned long start_update_num;
@@ -21,10 +23,12 @@ namespace Chroma {
     std::string   save_prefix;
     QDP_volfmt_t  save_volfmt;
     std::string   inline_measurement_xml;
-
   };
 
-  void read(XMLReader& xml, const std::string& path, MCControl& p) {
+  void read(XMLReader& xml, const std::string& path, MCControl& p) 
+  {
+    START_CODE();
+
     try { 
       XMLReader paramtop(xml, path);
       read(paramtop, "./Cfg", p.cfg);
@@ -57,9 +61,14 @@ namespace Chroma {
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
+    
+    END_CODE();
   }
 
-  void write(XMLWriter& xml, const std::string& path, const MCControl& p) {
+  void write(XMLWriter& xml, const std::string& path, const MCControl& p) 
+  {
+    START_CODE();
+
     try {
       push(xml, path);
       write(xml, "Cfg", p.cfg);
@@ -80,22 +89,25 @@ namespace Chroma {
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
+    
+    END_CODE();
   }
 
 
-  struct HMCTrjParams { 
-
+  struct HMCTrjParams 
+  { 
     multi1d<int> nrow;
 
     // Polymorphic
     std::string H_MC_xml;
     std::string H_MD_xml;
     std::string Integrator_xml;
-
   };
 
   void write(XMLWriter& xml, const std::string& path, const HMCTrjParams& p)
   {
+    START_CODE();
+
     try { 
       push(xml, path);
       write(xml, "nrow", p.nrow);
@@ -108,11 +120,15 @@ namespace Chroma {
       QDPIO::cerr << "Caught Exception: " << e << endl;
       QDP_abort(1);
     }
+    
+    END_CODE();
   }
 
 
   void read(XMLReader& xml, const std::string& path, HMCTrjParams& p) 
   {
+    START_CODE();
+
     try {
       XMLReader paramtop(xml, path);
       
@@ -163,6 +179,8 @@ namespace Chroma {
       QDPIO::cerr << "Error reading XML : " << e << endl;
       QDP_abort(1);
     }
+    
+    END_CODE();
   }
 
   template<typename UpdateParams>
@@ -180,7 +198,8 @@ namespace Chroma {
 		 unsigned long update_no,
 		 const multi1d<LatticeColorMatrix>& u)
   {
-
+    START_CODE();
+    
     // File names
     std::ostringstream restart_data_filename;
     restart_data_filename << mc_control.save_prefix << "_restart_" << update_no << ".xml" ;
@@ -242,6 +261,8 @@ namespace Chroma {
 	       restart_config_filename.str(),
 	       p_new.save_volfmt,
 	       QDPIO_SERIAL);    
+    
+    END_CODE();
   }
 
  
@@ -252,7 +273,9 @@ namespace Chroma {
 	               multi1d<LatticeColorMatrix> >& theHMCTrj,
 	     MCControl& mc_control, 
 	     const UpdateParams& update_params,
-	     multi1d< Handle<AbsInlineMeasurement> >& user_measurements) {
+	     multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
+  {
+    START_CODE();
 
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
     push(xml_out, "doHMC");
@@ -419,6 +442,8 @@ namespace Chroma {
     }
 
     pop(xml_out);
+    
+    END_CODE();
   }
   
   bool linkageHack(void)
@@ -457,6 +482,8 @@ int main(int argc, char *argv[])
 {
   Chroma::initialize(&argc, &argv);
   
+  START_CODE();
+
   // Chroma Init stuff -- Open DATA and XMLDAT
   QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
@@ -588,6 +615,8 @@ int main(int argc, char *argv[])
   }
 
   pop(xml_out);
+
+  END_CODE();
 
   Chroma::finalize();
   exit(0);

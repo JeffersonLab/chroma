@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 3.3 2006-08-05 23:31:17 edwards Exp $
+// $Id: chroma.cc,v 3.4 2006-08-26 02:12:45 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -82,11 +82,11 @@ bool linkageHack(void)
 
 int main(int argc, char *argv[]) 
 {
-  START_CODE();
-
   // Chroma Init stuff
   Chroma::initialize(&argc, &argv);
   
+  START_CODE();
+
   QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
   XMLReader xml_in;
@@ -216,9 +216,9 @@ int main(int argc, char *argv[])
   }
   pop(xml_out);
 
-  Chroma::finalize();
-
   END_CODE();
+
+  Chroma::finalize();
   exit(0);
 }
 

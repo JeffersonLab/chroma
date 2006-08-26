@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.4 2006-08-17 01:47:42 edwards Exp $
+// $Id: purgaug.cc,v 3.5 2006-08-26 02:12:46 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -255,6 +255,8 @@ namespace Chroma
 		 const string& inline_measurement_xml,
 		 const multi1d<LatticeColorMatrix>& u)
   {
+    START_CODE();
+
     MCControl mc_new = newMCHeader(update_params, mc_control, update_no);
 
     // Files
@@ -306,6 +308,8 @@ namespace Chroma
 		 mc_new.save_volfmt,
 		 QDPIO_SERIAL);    
     }
+    
+    END_CODE();
   }
 
 
@@ -318,6 +322,8 @@ namespace Chroma
 	      const multi1d< Handle< AbsInlineMeasurement > >& default_measurements,
 	      const multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
   {
+    START_CODE();
+
     // Create a gauge header for inline measurements.
     // Since there are defaults always measured, we must always
     // create a header.
@@ -370,6 +376,8 @@ namespace Chroma
 
     // Reset the default gauge field
     InlineDefaultGaugeField::reset();
+    
+    END_CODE();
   }
   
 
@@ -382,6 +390,8 @@ namespace Chroma
 		const multi1d< Handle< AbsInlineMeasurement > >& default_measurements,
 		const multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
   {
+    START_CODE();
+
     // Set the update number
     unsigned long cur_update = 0;
       
@@ -417,6 +427,8 @@ namespace Chroma
     }
 
     pop(xml_out); // pop("WarmUpdates")
+    
+    END_CODE();
   }
   
 
@@ -428,6 +440,8 @@ namespace Chroma
 	      const multi1d< Handle< AbsInlineMeasurement > >& default_measurements,
 	      const multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
   {
+    START_CODE();
+
     // Set the update number
     unsigned long cur_update = hb_control.mc_control.start_update_num;
       
@@ -482,6 +496,8 @@ namespace Chroma
     }
 
     pop(xml_out); // pop("MCUpdates")
+    
+    END_CODE();
   }
   
 
@@ -491,6 +507,8 @@ namespace Chroma
 	    HBControl& hb_control, 
 	    multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
   {
+    START_CODE();
+
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
     push(xml_out, "doHB");
 
@@ -521,6 +539,8 @@ namespace Chroma
     }
 
     pop(xml_out);
+    
+    END_CODE();
   }
   
   bool linkageHack(void)
@@ -551,6 +571,8 @@ int main(int argc, char *argv[])
 {
   Chroma::initialize(&argc, &argv);
   
+  START_CODE();
+
   // Chroma Init stuff -- Open DATA and XMLDAT
   linkageHack();
 
@@ -691,6 +713,8 @@ int main(int argc, char *argv[])
   }
 
   pop(xml_out);
+
+  END_CODE();
 
   Chroma::finalize();
   exit(0);
