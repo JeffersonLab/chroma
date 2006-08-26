@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: state.h,v 3.1 2006-08-15 13:17:24 bjoo Exp $
+// $Id: state.h,v 3.2 2006-08-26 05:40:25 edwards Exp $
 
 /*! @file
  * @brief Support class for fermion actions and linear operators
@@ -40,7 +40,7 @@ namespace Chroma
      *  links is complicated. 
      *  The default implementation just multiplies the accumulated
      *  force by the (thin) links, which works because
-     *  \dot{U} = \pi U
+     *  \f$\dot{U} = \pi U\f$
      * and the pi momenta get factored out 
      * this function modifies the force term 
      */

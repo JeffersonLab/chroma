@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: linearop.h,v 3.1 2006-08-26 05:40:25 edwards Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -394,7 +394,7 @@ namespace Chroma
      * \param psi     right vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$chi^dag * \dot(D} * psi\f$
      */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const
@@ -410,7 +410,7 @@ namespace Chroma
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      * \param cb      Checkerboard of chi vector                  (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$chi^dag * \dot(D} * psi\f$
      */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign, int cb) const
@@ -462,7 +462,7 @@ namespace Chroma
      * \param psi     right vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$chi^dag * \dot(D} * psi\f$
      */
     virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign) const
@@ -478,7 +478,7 @@ namespace Chroma
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      * \param cb      Checkerboard of chi vector                  (Read)
      *
-     * \return Computes   chi^dag * \dot(D} * psi  
+     * \return Computes   \f$chi^dag * \dot(D} * psi\f$
      */
     virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign, int cb) const
