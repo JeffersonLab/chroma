@@ -32,6 +32,8 @@ int main(int argc, char *argv[])
 {
   Chroma::initialize(&argc, &argv);
   
+  START_CODE();
+
   // Chroma Init stuff -- Open DATA and XMLDAT
   QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
@@ -195,6 +197,7 @@ int main(int argc, char *argv[])
   pop(xml_out);
 // xml_out.close();
 
+  END_CODE();
 
   // Finish
   Chroma::finalize();
