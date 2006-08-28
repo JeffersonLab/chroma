@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.10 2006-08-18 20:17:22 bjoo Exp $
+// $Id: stout_fermstate_w.cc,v 1.11 2006-08-28 21:44:43 edwards Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -133,8 +133,20 @@ namespace Chroma
       // and so the denominator pieces in both the acos, the f-s and 
       // the b-s can cause NaN's to appear. The cutoff is arbitrary
       // but I think 1.0e-6 is not unreasonable. 
-      Boolean c0max_too_small = ( fabs(c0max) < 1.0e-12 );
+      Double cutoff = 1.0e-6;
+      Boolean c0max_too_small = ( c0max < cutoff );
+      Boolean c0max_close_c0  = ( fabs(c0max - c0abs) < cutoff );
       if ( toBool( c0max_too_small ) ) {
+
+#if 0
+	{
+	  multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
+	  QMP_fprintf(stdout, 
+		      "%s: c0max=%g too small (cutoff=%g) at site=%d coord=[%d,%d,%d,%d] trQQ=%g",
+		      __func__, toDouble(c0max), toDouble(cutoff), 
+		      site, coord[0], coord[1], coord[2], coord[3], toDouble(trQQ));
+	}
+#endif
 
 	// c0max is too small case:
 	// 
@@ -163,7 +175,14 @@ namespace Chroma
       }
       else { 
 	
-	theta = acos( c0abs/c0max );
+	if ( toBool( c0max_close_c0 ) )
+	{
+	  theta = zero;
+	}
+	else
+	{
+	  theta = acos( c0abs/c0max );
+	}
 	
 	Double u = sqrt(c1/Double(3))*cos(theta/Double(3));
 	Double w = sqrt(c1)*sin(theta/Double(3));
@@ -216,6 +235,23 @@ namespace Chroma
 	
 	f_site[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denum;
 	
+#if 1
+	{
+	  multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
+	  Double rat = c0abs/c0max;
+
+	  QMP_fprintf(stdout, 
+		      "%s: site=%d coord=[%d,%d,%d,%d] f_site[0]=%g f_site[1]=%g f_site[2]=%g denum=%g c0=%g c1=%g c0max=%g rat=%g theta=%g",
+
+		      __func__, site, coord[0], coord[1], coord[2], coord[3],
+		      toDouble(norm2(f_site[0])),
+		      toDouble(norm2(f_site[1])),
+		      toDouble(norm2(f_site[2])), toDouble(denum), 
+		      toDouble(c0), toDouble(c1), toDouble(c0max),
+		      toDouble(rat), toDouble(theta));
+	}
+#endif
+
 	
 	if( dobs == true ) {
 	  
@@ -397,6 +433,7 @@ namespace Chroma
 	multi1d<LatticeDComplex> b_2;
 	
 	// Get the fs and bs  -- does internal resize to make them arrays of length 3
+	QDPIO::cout << __func__ << ": mu=" << mu << endl;
 	getFsAndBs(Q,QQ, f, b_1, b_2, true);
 	
 	
@@ -419,6 +456,17 @@ namespace Chroma
 	// The first 3 terms of eq 75
 	// Now the Fat force * the exp(iQ)
 	F[mu]  = F_plus[mu]*(f[0] + f[1]*Q + f[2]*QQ);
+
+	QDPIO::cout << __func__ << ": F[" << mu << "]= " << norm2(F[mu]) 
+		    << "  F_plus[mu]=" << norm2(F_plus[mu])
+		    << "  f[0]=" << norm2(f[0]) 
+		    << "  f[1]=" << norm2(f[1]) 
+		    << "  f[2]=" << norm2(f[2]) 
+		    << "  B_1=" << norm2(B_1) 
+		    << "  B_2=" << norm2(B_2) 
+		    << "  Q=" << norm2(Q) 
+		    << "  QQ=" << norm2(QQ) 
+		    << endl;
            
       } // End of if( smear_in_this_dirP[mu] )
       // else what is in F_mu is the right force
@@ -523,6 +571,12 @@ namespace Chroma
 	staple_sum -= adj(C[mu])*Lambda[mu];
   
 	F[mu] -= timesI(staple_sum);
+
+	QDPIO::cout << __func__ << ":b,  F[" << mu << "]= " << norm2(F[mu]) 
+		    << "  staple=" << norm2(staple_sum)
+		    << "  Lambda=" << norm2(Lambda[mu]) 
+		    << "  C=" << norm2(C[mu]) 
+		    << endl;
       } // End of if(smear_in_this_dirP[mu]
       // Else nothing needs done to the force
     } // end mu loop
@@ -553,9 +607,23 @@ namespace Chroma
     // Now if the state is smeared recurse down.
 
     for(int level=params.n_smear; level > 0; level--) {
+
+      QDPIO::cout << __func__ << "deriv level=" << level
+		  << "  before norm2(fat)=" << norm2(F_thin)
+		  << endl;
+
       deriv_recurse(F_thin,level-1);
 
+      QDPIO::cout << __func__ << "deriv level=" << level
+		  << "  after norm2(thin)=" << norm2(F_thin)
+		  << endl;
+
       fbc->zero(F_thin);
+
+      QDPIO::cout << __func__ << "deriv level=" << level
+		  << "  after zero norm2(thin)=" << norm2(F_thin)
+		  << endl;
+
     }
 
 
@@ -570,14 +638,26 @@ namespace Chroma
     swatch.start();
 
     multi1d<LatticeColorMatrix> F_tmp(Nd);
+
+
+    QDPIO::cout << __func__ << "  norm2(fat_force)=" << norm2(F)
+		<< endl;
+
     // Function resizes F_tmp
     fatForceToThin(F,F_tmp);
     
+    QDPIO::cout << __func__ << "  norm2(thin)=" << norm2(F_tmp)
+		<< endl;
+
 
     // Multiply in by the final U term to close off the links
     for(int mu=0; mu < Nd; mu++) { 
       F[mu] = (smeared_links[0])[mu]*F_tmp[mu];
     }
+
+    QDPIO::cout << __func__ << "  norm2(final)=" << norm2(F)
+		<< endl;
+
 
     swatch.stop();
     StoutLinkTimings::force_secs += swatch.getTimeInSeconds();
@@ -665,12 +745,19 @@ namespace Chroma
     // Iterate up the smearings
     for(int i=1; i <= params.n_smear; i++) { 
  
- 
+      QDPIO::cout << __func__ << "level=" << i
+		  << "  before: norm2(link)=" << norm2(smeared_links[i-1])
+		  << endl;
+
 
       smear_links(smeared_links[i-1], smeared_links[i]);
       if( fbc->nontrivialP() ) {
 	fbc->modify( smeared_links[i] );    
       }
+
+      QDPIO::cout << __func__ << "level=" << i
+		  << "  after: norm2(link)=" << norm2(smeared_links[i])
+		  << endl;
 
     }
 
