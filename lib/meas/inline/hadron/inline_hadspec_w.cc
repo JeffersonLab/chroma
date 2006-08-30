@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.5 2006-08-19 19:29:33 flemingg Exp $
+// $Id: inline_hadspec_w.cc,v 3.6 2006-08-30 02:57:27 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -17,6 +17,7 @@
 #include "meas/hadron/curcor2_w.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/smear/no_quark_displacement.h"
 
 namespace Chroma 
 { 
@@ -223,15 +224,22 @@ namespace Chroma
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	{
+	  string xpath;
 	  read(prop_record_xml, "/SinkSmear", s.prop_header);
 	  
 	  read(prop_record_xml, "/SinkSmear/PropSource/Source/SourceType", s.source_type);
-	  read(prop_record_xml, "/SinkSmear/PropSource/Source/Displacement/DisplacementType", 
-	       s.source_disp_type);
+	  xpath = "/SinkSmear/PropSource/Source/Displacement/DisplacementType";
+	  if (prop_record_xml.count(xpath) != 0)
+	    read(prop_record_xml, xpath, s.source_disp_type);
+	  else
+	    s.source_disp_type = NoQuarkDisplacementEnv::name;
 
 	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/SinkType", s.sink_type);
-	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/Displacement/DisplacementType", 
-	       s.sink_disp_type);
+	  xpath = "/SinkSmear/PropSink/Sink/Displacement/DisplacementType";
+	  if (prop_record_xml.count(xpath) != 0)
+	    read(prop_record_xml, xpath, s.sink_disp_type);
+	  else
+	    s.sink_disp_type = NoQuarkDisplacementEnv::name;
 	}
       }
       catch( std::bad_cast ) 
