@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.4 2006-08-30 01:44:31 edwards Exp $
+// $Id: qprop_io.cc,v 3.5 2006-08-30 02:56:45 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "io/param_io.h"
 #include "io/qprop_io.h"
+
+#include "meas/smear/simple_quark_displacement.h"
 
 namespace Chroma 
 {
@@ -199,7 +201,7 @@ namespace Chroma
 	  push(xml_tmp, "Param");
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Source");
-	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "version", 2);
 	  write(xml_tmp, "SourceType", header.source.id);
 
 	  {
@@ -211,8 +213,15 @@ namespace Chroma
 	    pop(xml_tmp);
 	  }
 
-	  write(xml_tmp, "disp_length", disp_length);
-	  write(xml_tmp, "disp_dir", disp_dir);
+	  {
+	    push(xml_tmp, "Displacement");
+	    write(xml_tmp, "DisplacementType", SimpleQuarkDisplacementEnv::name);
+
+	    write(xml_tmp, "disp_length", disp_length);
+	    write(xml_tmp, "disp_dir",  disp_dir);
+
+	    pop(xml_tmp);  // Displacement
+	  }
 
 	  {
 	    push(xml_tmp, "LinkSmearing");
@@ -380,7 +389,7 @@ namespace Chroma
 	  push(xml_tmp, "Param");
 	  write(xml_tmp, "version", 6);
 	  push(xml_tmp, "Sink");
-	  write(xml_tmp, "version", 1);
+	  write(xml_tmp, "version", 2);
 	  write(xml_tmp, "SinkType", header.sink.id);
 
 	  {
@@ -392,8 +401,15 @@ namespace Chroma
 	    pop(xml_tmp);
 	  }
 
-	  write(xml_tmp, "disp_length", disp_length);
-	  write(xml_tmp, "disp_dir", disp_dir);
+	  {
+	    push(xml_tmp, "Displacement");
+	    write(xml_tmp, "DisplacementType", SimpleQuarkDisplacementEnv::name);
+
+	    write(xml_tmp, "disp_length", disp_length);
+	    write(xml_tmp, "disp_dir",  disp_dir);
+
+	    pop(xml_tmp);  // Displacement
+	  }
 
 	  {
 	    push(xml_tmp, "LinkSmearing");
