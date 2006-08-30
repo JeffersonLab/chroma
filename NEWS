@@ -1,7 +1,8 @@
 08/28/2006 -- Robert Edwards
 	Version 3.11.2. Small but important edge case in stout_fermstate fixed.
         Bug fix in SftMom handling in test of zero_offset. Small fix in
-        inline_hadspec allowing optional displacement type field.
+        inline_hadspec allowing optional displacement type field. Retooled all
+        important update routines, stouts, fermacts, etc. to use START_CODE/END_CODE.
 
 08/24/2006 -- Robert Edwards
 	Version 3.11.1. Fixed regression metric in mesons from v3.11.0 . 
