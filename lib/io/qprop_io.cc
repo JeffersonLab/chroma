@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.3 2006-07-04 02:55:51 edwards Exp $
+// $Id: qprop_io.cc,v 3.4 2006-08-30 01:44:31 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -741,7 +741,7 @@ namespace Chroma
       pop(xml_out);
 
       XMLReader xml_inn(xml_out);
-      param.fermact = readXMLGroup(xml_inn, "FermionAction", "FermAct");
+      param.fermact = readXMLGroup(xml_inn, "/FermionAction", "FermAct");
     }
     break;
 
@@ -762,7 +762,7 @@ namespace Chroma
       pop(xml_out);
 
       XMLReader xml_inn(xml_out);
-      param.fermact = readXMLGroup(xml_inn, "FermionAction", "FermAct");
+      param.fermact = readXMLGroup(xml_inn, "/FermionAction", "FermAct");
     }
     break;
 
@@ -786,7 +786,7 @@ namespace Chroma
       pop(xml_out);
 
       XMLReader xml_inn(xml_out);
-      param.fermact = readXMLGroup(xml_inn, "FermionAction", "FermAct");
+      param.fermact = readXMLGroup(xml_inn, "/FermionAction", "FermAct");
     }
     break;
 
