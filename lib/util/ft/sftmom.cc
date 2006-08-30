@@ -1,6 +1,10 @@
-//  $Id: sftmom.cc,v 3.1 2006-08-19 19:29:33 flemingg Exp $
+//  $Id: sftmom.cc,v 3.2 2006-08-30 02:10:19 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.1  2006-08-19 19:29:33  flemingg
+//  Revision 3.2  2006-08-30 02:10:19  edwards
+//  Technically a bug fix. The test for a zero_offset should only be in directions
+//  not in the fourier transform. E.g., there was a missing test of mu==decay_dir.
+//
+//  Revision 3.1  2006/08/19 19:29:33  flemingg
 //  Changed the interface of the slow Fourier transform (SftMom) class to allow
 //  for any lattice point to be chosen as the spatial origin.  Previously, this
 //  meant that the origin was always implicitly (0,0,0,0), which lead to
@@ -180,6 +184,8 @@ namespace Chroma
       bool zero_offset = true ;
 
       for (int mu=0; mu < origin_offset.size(); ++mu) {
+	if (mu == decay_dir) continue;        // RGE: I believe this test should be present
+
 	if (origin_offset[mu] != 0) {
 	  zero_offset = false ;
 	}
