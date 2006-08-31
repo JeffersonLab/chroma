@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eesu3.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: eesu3.cc,v 3.1 2006-08-31 01:31:10 bjoo Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(3) lie algebra element
  */
@@ -68,7 +68,7 @@ namespace Chroma
     f1 = where(latboo_c1,
 	       (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (ww-3*uu)*xi0))/denom,
 	       cmplx(c0/24*(1.0-c1/15*(1-3*c1/112)),
-		     1-c1/6*(1-c1/2*(1-c1/42))-c0*c0/5040));
+		     1-c1/6*(1-c1/20*(1-c1/42))-c0*c0/5040));
   
     f2 = where(latboo_c1,
 	       (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denom,
