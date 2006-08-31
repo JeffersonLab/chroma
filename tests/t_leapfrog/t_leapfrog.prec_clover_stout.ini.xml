@@ -42,7 +42,7 @@
 	<tau0>1</tau0>
    </MDIntegrator>
    <GaugeStartup>
-	<cfg_type>DISORDERED</cfg_type>
+	<cfg_type>UNIT</cfg_type>
 	<cfg_file>DUMMY</cfg_file>
    </GaugeStartup>
    <nrow>4 4 4 4</nrow>
