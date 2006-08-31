@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.12 2006-08-29 15:58:19 edwards Exp $
+// $Id: stout_fermstate_w.cc,v 1.13 2006-08-31 16:40:55 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -107,82 +107,158 @@ namespace Chroma
 
     // Drop into a site loop here...
     for(int site=0; site < num_sites; site++) { 
+
+      // Get the traces
       PColorMatrix<QDP::RComplex<REAL>, 3>  Q_site = Q.elem(site).elem();
       PColorMatrix<QDP::RComplex<REAL>, 3>  QQ_site = QQ.elem(site).elem();
       PColorMatrix<QDP::RComplex<REAL>, 3>  QQQ = QQ_site*Q_site;
-    
+      
       Double trQQQ; 
       trQQQ.elem()  = real(trace(QQQ));
       Double trQQ;
       trQQ.elem()   = real(trace(QQ_site));
 			  
-      Double c0    = (Double(1)/Double(3)) * trQQQ;  // eq 13
-      Double c1    = (Double(1)/Double(2)) * trQQ;	 // eq 15 
-
-      Boolean c0_negativeP = c0 < Double(0);
-      Double c0abs = fabs(c0);
-      Double c0max = Double(2)*pow( c1/Double(3), Double(1.5));
-
-      Double theta;
-      multi1d<DComplex> f_site(3);
-      multi1d<DComplex> b1_site(3);
-      multi1d<DComplex> b2_site(3);
-
-      // Here we have the case that c0max is close to 0
-      // and we run the risk of trouble since it means u=0 and w=0
-      // and so the denominator pieces in both the acos, the f-s and 
-      // the b-s can cause NaN's to appear. The cutoff is arbitrary
-      // but I think 1.0e-6 is not unreasonable. 
-      Double cutoff = 1.0e-6;
-      Boolean c0max_too_small = ( c0max < cutoff );
-      Boolean c0max_close_c0  = ( fabs(c0max - c0abs) < cutoff );
-      if ( toBool( c0max_too_small ) ) {
-
-#if 0
-	{
-	  multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-	  QMP_fprintf(stdout, 
-		      "%s: c0max=%g too small (cutoff=%g) at site=%d coord=[%d,%d,%d,%d] trQQ=%g",
-		      __func__, toDouble(c0max), toDouble(cutoff), 
-		      site, coord[0], coord[1], coord[2], coord[3], toDouble(trQQ));
-	}
-#endif
-
-	// c0max is too small case:
+      double c0d    = ((double)1/(double)3) * trQQQ.elem().elem().elem().elem();  // eq 13
+      double c1d    = ((double)1/(double)2) * trQQ.elem().elem().elem().elem();	 // eq 15 
+      
+      Double c0 = Double(c0d);
+      Double c1 = Double(c1d);
+      
+      
+      if( toBool( c1 < 1.0e-4 ) ) {
+	// ================================================================================
 	// 
-	// Essentially this means that the tr(Q) = tr(Q^2) = tr(Q^3) = 0
-	// This can happen only if Q is 0. Which can happen if U is entirely
-	// real or 0. Then Omega = real and has no antihermitean part or 0,
-	// so Q=0. This can arise if rho(mu,nu)=0 (ie no smearing in one 
-	// direction) or if we have a unit gauge. In all these cases
-	// exp(iQ) = 1 and Fat_force = thin_force
-	f_site[0] = Double(1);
-	f_site[1] = Double(0);
-	f_site[2] = Double(0);
+	// Corner Case: if c1 < 1.0e-4 this implies c0max ~ 3x10^-7
+	//    and in this case the division c0/c0max in arccos c0/c0max can be undefined
+	//    and produce NaN's
 
-	for(int j=0; j < 3; j++) { 
-	  f[j].elem(site).elem().elem() = f_site[j].elem().elem().elem();
-	}
+	// In this case what we can do is get the f-s a different way. We go back to basics:
+	//
+	// We solve (using maple) the matrix equations using the eigenvalues 
+	//
+	//  [ 1, q_1, q_1^2 ] [ f_0 ]       [ exp( iq_1 ) ]
+	//  [ 1, q_2, q_2^2 ] [ f_1 ]   =   [ exp( iq_2 ) ]
+	//  [ 1, q_3, q_3^2 ] [ f_2 ]       [ exp( iq_3 ) ]
+	//
+        // with q_1 = 2 u w, q_2 = -u + w, q_3 = - u - w
+	// 
+	// with u and w defined as  u = sqrt( c_1/ 3 ) cos (theta/3)
+	//                     and  w = sqrt( c_1 ) sin (theta/3)
+	//                          theta = arccos ( c0 / c0max )
+	// leaving c0max as a symbol.
+	//
+	//  we then expand the resulting f_i as a series around c0 = 0 and c1 = 0
+	//  and then substitute in c0max = 2 ( c_1/ 3)^(3/2)
+	//  
+	//  we then convert the results to polynomials and take the real and imaginary parts:
+	//  we get at the end of the day (to low order)
+	
+        //                  1    2 
+	//   f0[re] := 1 - --- c0  + h.o.t
+	//                 720     
+        //
+        //	         1       1           1        2 
+	//   f0[im] := - - c0 + --- c0 c1 - ---- c0 c1   + h.o.t
+        //               6      120         5040        
+	//
+	//
+	//             1        1            1        2 
+        //   f1[re] := -- c0 - --- c0 c1 + ----- c0 c1  +  h.o.t
+        //             24      360         13440        f
+	//
+        //                 1       1    2    1     3    1     2
+        //   f1[im] := 1 - - c1 + --- c1  - ---- c1  - ---- c0   + h.o.t
+        //                 6      120       5040       5040
+	//
+	//               1   1        1    2     1     3     1     2
+	//   f2[re] := - - + -- c1 - --- c1  + ----- c1  + ----- c0  + h.o.t
+        //               2   24      720       40320       40320    
+	//
+	//              1        1              1        2
+	//   f2[im] := --- c0 - ---- c0 c1 + ------ c0 c1  + h.o.t
+        //             120      2520         120960
 
-	if( dobs ) { 
-	  for(int j=0; j < 3; j++) { 
-	    b1_site[j] = Double(0);
-	    b2_site[j] = Double(0);
-	    b1[j].elem(site).elem().elem()  = b1_site[j].elem().elem().elem(); 
-	    b2[j].elem(site).elem().elem() = b2_site[j].elem().elem().elem();
-	  }
-	}
+	//  We then express these using Horner's rule for more stable evaluation.
+	// 
+	//  to get the b-s we use the fact that
+	//                                      b2_i = d f_i / d c0
+	//                                 and  b1_i = d f_i / d c1
+	//
+	//  where the derivatives are partial derivativs
+	//
+	//  And we just differentiate the polynomials above (keeping the same level
+	//  of truncation) and reexpress that as Horner's rule
+	// 
+	//  This clearly also handles the case of a unit gauge as no c1, u etc appears in the 
+	//  denominator and the arccos is never taken. In this case, we have the results in 
+	//  the raw c0, c1 form and we don't need to flip signs and take complex conjugates.
+	//
+	//  I checked the expressions below by taking the difference between the Horner forms
+	//  below from the expanded forms (and their derivatives) above and checking for the
+	//  differences to be zero. At this point in time maple seems happy.
+	//  ==================================================================================
+
+	f[0].elem(site).elem().elem().real() = 1-c0d*c0d/720;
+	f[0].elem(site).elem().elem().imag() =  -(c0d/6)*(1-(c1d/20)*(1-(c1d/42))) ;
+
+
+	f[1].elem(site).elem().elem().real() =  c0d/24*(1.0-c1d/15*(1-3*c1d/112)) ;
+	f[1].elem(site).elem().elem().imag() =  1-c1d/6*(1-c1d/20*(1-c1d/42))-c0d*c0d/5040 ;
+
+	f[2].elem(site).elem().elem().real() = 0.5*(-1+c1d/12*(1-c1d/30*(1-c1d/56))+c0d*c0d/20160);
+	f[2].elem(site).elem().elem().imag() = 0.5*(c0d/60*(1-c1d/21*(1-c1d/48)));
+
+
+	if( dobs == true ) { 
+	  //  partial f0/ partial c0
+	  b2[0].elem(site).elem().elem().real() = -c0d/360;
+	  b2[0].elem(site).elem().elem().imag() =  -(1/6)*(1-(c1d/20)*(1-c1d/42));
+
+	  // partial f0 / partial c1
+	  //
+	  b1[0].elem(site).elem().elem().real() = 0;
+	  b1[0].elem(site).elem().elem().imag() =  (c0d/120)*(1-c1d/21);
+
+          // partial f1 / partial c0
+	  //
+	  b2[1].elem(site).elem().elem().real() =(1/24)*(1-c1d/15*(1-3*c1d/112));
+	  b2[1].elem(site).elem().elem().imag() =-c0d/2520;
+
+  
+	  // partial f1 / partial c1
+	  b1[1].elem(site).elem().elem().real() = -c0d/360*(1 - 3*c1d/56 );
+	  b1[1].elem(site).elem().elem().imag() = -1/6*(1-c1d/10*(1-c1d/28));
+
+	  // partial f2/ partial c0
+	  b2[2].elem(site).elem().elem().real() = 0.5*c0d/10080;
+	  b2[2].elem(site).elem().elem().imag() = 0.5*(  1/60*(1-c1d/21*(1-c1d/48)) );
+	    
+	  // partial f2/ partial c1
+	  b1[2].elem(site).elem().elem().real() = 0.5*(  1/12*(1-(2*c1d/30)*(1-3*c1d/112)) ); 
+	  b1[2].elem(site).elem().elem().real() = 0.5*( -c0d/1260*(1-c1d/24) );
+	    
+	} // Dobs==true
+
       }
       else { 
+	// ===================================================================================
+	// Normal case: Do as per paper
+	// ===================================================================================
+	Boolean c0_negativeP = c0 < Double(0);
+	Double c0abs = fabs(c0);
+	Double c0max = Double(2)*pow( c1/Double(3), Double(1.5));
+
+	Double theta;
+	multi1d<DComplex> f_site(3);
+	multi1d<DComplex> b1_site(3);
+	multi1d<DComplex> b2_site(3);
 	
-	if ( toBool( c0max_close_c0 ) )
-	{
-	  theta = zero;
-	}
-	else
-	{
-	  theta = acos( c0abs/c0max );
-	}
+	// Here we have the case that c0max is close to 0
+	// and we run the risk of trouble since it means u=0 and w=0
+	// and so the denominator pieces in both the acos, the f-s and 
+	// the b-s can cause NaN's to appear. The cutoff is arbitrary
+	// but I think 1.0e-6 is not unreasonable. 
+    	theta = acos( c0abs/c0max );
 	
 	Double u = sqrt(c1/Double(3))*cos(theta/Double(3));
 	Double w = sqrt(c1)*sin(theta/Double(3));
@@ -288,7 +364,8 @@ namespace Chroma
 	    b2_site[j]=( r_1[j]-3.0*u*r_2[j]-24.0*u*f_site[j] )/b_denum;
 	    
 	  }
-	  
+
+	  // Now flip the coefficients of the b-s
 	  if( toBool(c0_negativeP) ) { 
 	    b1_site[0] = conj(b1_site[0]);
 	    b1_site[1] = -conj(b1_site[1]);
@@ -298,23 +375,28 @@ namespace Chroma
 	    b2_site[2] = -conj(b2_site[2]);
 	  }
 	  
+	  // Load back into the lattice sized object
 	  for(int j=0; j < 3; j++) { 
 	    b1[j].elem(site).elem().elem()  = b1_site[j].elem().elem().elem();	  
 	    b2[j].elem(site).elem().elem() = b2_site[j].elem().elem().elem();
 	  }
 	  
-	}
+	} // end of if (dobs==true)
+
+	// Now when everything is done flip signs of the b-s (can't do this before
+	// as the unflipped f-s are needed to find the b-s
 	
 	if( toBool(c0_negativeP) ) { 
 	  f_site[0] = conj(f_site[0]);
 	  f_site[1] = -conj(f_site[1]);
 	  f_site[2] = conj(f_site[2]);
 	}
-
+	
+	// Load back into the lattice sized object
 	for(int j=0; j < 3; j++) { 
 	  f[j].elem(site).elem().elem() = f_site[j].elem().elem().elem();
 	}
-      } // End of if ( c0max_too_small ) else {}
+      } // End of if( c1 < 1.0e-4 ) else {}
     }
     swatch.stop();
     StoutLinkTimings::functions_secs += swatch.getTimeInSeconds();
@@ -649,24 +731,24 @@ namespace Chroma
 
     multi1d<LatticeColorMatrix> F_tmp(Nd);
 
-//    QDPIO::cout << __func__ << "  norm2(fat_force)=" << norm2(F)
-//		<< endl;
+    //    QDPIO::cout << __func__ << "  norm2(fat_force)=" << norm2(F)
+    //		<< endl;
 
     // Function resizes F_tmp
     fatForceToThin(F,F_tmp);
     
-//    QDPIO::cout << __func__ << "  norm2(thin)=" << norm2(F_tmp)
-//		<< endl;
+    //    QDPIO::cout << __func__ << "  norm2(thin)=" << norm2(F_tmp)
+    //		<< endl;
 
 
     // Multiply in by the final U term to close off the links
     for(int mu=0; mu < Nd; mu++) { 
       F[mu] = (smeared_links[0])[mu]*F_tmp[mu];
     }
-
-//   QDPIO::cout << __func__ << "  norm2(final)=" << norm2(F)
-//		<< endl;
-
+    
+    //   QDPIO::cout << __func__ << "  norm2(final)=" << norm2(F)
+    //		<< endl;
+    
 
     swatch.stop();
     StoutLinkTimings::force_secs += swatch.getTimeInSeconds();
