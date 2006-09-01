@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.13 2006-08-31 16:40:55 bjoo Exp $
+// $Id: stout_fermstate_w.cc,v 1.14 2006-09-01 19:36:44 edwards Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -125,7 +125,7 @@ namespace Chroma
       Double c1 = Double(c1d);
       
       
-      if( toBool( c1 < 1.0e-4 ) ) {
+      if( toBool( c1 < 4.0e-3 ) ) {    // RGE: set to 4.0e-3 (CM uses this value). I ran into nans with 1.0e-4
 	// ================================================================================
 	// 
 	// Corner Case: if c1 < 1.0e-4 this implies c0max ~ 3x10^-7
@@ -236,6 +236,27 @@ namespace Chroma
 	  // partial f2/ partial c1
 	  b1[2].elem(site).elem().elem().real() = 0.5*(  1/12*(1-(2*c1d/30)*(1-3*c1d/112)) ); 
 	  b1[2].elem(site).elem().elem().real() = 0.5*( -c0d/1260*(1-c1d/24) );
+
+#if 0
+	{
+	  multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
+
+	  QMP_fprintf(stdout, 
+		      "%s: corner; site=%d coord=[%d,%d,%d,%d] f[0]=%g f[1]=%g f[2]=%g b1[0]=%g b1[1]=%g b1[2]=%g b2[0]=%g b2[1]=%g b2[2]=%g c0=%g c1=%g",
+
+		      __func__, site, coord[0], coord[1], coord[2], coord[3],
+		      toDouble(norm2(f[0])),
+		      toDouble(norm2(f[1])),
+		      toDouble(norm2(f[2])),
+		      toDouble(norm2(b1[0])),
+		      toDouble(norm2(b1[1])),
+		      toDouble(norm2(b1[2])),
+		      toDouble(norm2(b2[0])),
+		      toDouble(norm2(b2[1])),
+		      toDouble(norm2(b2[2])),
+		      toDouble(c0), toDouble(c1));
+	}
+#endif
 	    
 	} // Dobs==true
 
@@ -311,22 +332,6 @@ namespace Chroma
 	
 	f_site[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denum;
 	
-#if 0
-	{
-	  multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-	  Double rat = c0abs/c0max;
-
-	  QMP_fprintf(stdout, 
-		      "%s: site=%d coord=[%d,%d,%d,%d] f_site[0]=%g f_site[1]=%g f_site[2]=%g denum=%g c0=%g c1=%g c0max=%g rat=%g theta=%g",
-
-		      __func__, site, coord[0], coord[1], coord[2], coord[3],
-		      toDouble(norm2(f_site[0])),
-		      toDouble(norm2(f_site[1])),
-		      toDouble(norm2(f_site[2])), toDouble(denum), 
-		      toDouble(c0), toDouble(c1), toDouble(c0max),
-		      toDouble(rat), toDouble(theta));
-	}
-#endif
 
 	
 	if( dobs == true ) {
@@ -381,6 +386,29 @@ namespace Chroma
 	    b2[j].elem(site).elem().elem() = b2_site[j].elem().elem().elem();
 	  }
 	  
+#if 0
+	{
+	  multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
+	  Double rat = c0abs/c0max;
+
+	  QMP_fprintf(stdout, 
+		      "%s: site=%d coord=[%d,%d,%d,%d] f_site[0]=%g f_site[1]=%g f_site[2]=%g 1[0]=%g b1[1]=%g b1[2]=%g b2[0]=%g b2[1]=%g b2[2]=%g denum=%g c0=%g c1=%g c0max=%g rat=%g theta=%g",
+
+		      __func__, site, coord[0], coord[1], coord[2], coord[3],
+		      toDouble(norm2(f_site[0])),
+		      toDouble(norm2(f_site[1])),
+		      toDouble(norm2(f_site[2])), 
+		      toDouble(norm2(b1[0])),
+		      toDouble(norm2(b1[1])),
+		      toDouble(norm2(b1[2])),
+		      toDouble(norm2(b2[0])),
+		      toDouble(norm2(b2[1])),
+		      toDouble(norm2(b2[2])),
+                      toDouble(denum), 
+		      toDouble(c0), toDouble(c1), toDouble(c0max),
+		      toDouble(rat), toDouble(theta));
+	}
+#endif
 	} // end of if (dobs==true)
 
 	// Now when everything is done flip signs of the b-s (can't do this before
