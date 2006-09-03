@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.14 2006-09-01 19:36:44 edwards Exp $
+// $Id: stout_fermstate_w.cc,v 1.15 2006-09-03 00:11:08 edwards Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -106,17 +106,17 @@ namespace Chroma
     int num_sites = Layout::sitesOnNode();
 
     // Drop into a site loop here...
-    for(int site=0; site < num_sites; site++) { 
-
+    for(int site=0; site < num_sites; site++) 
+    { 
       // Get the traces
       PColorMatrix<QDP::RComplex<REAL>, 3>  Q_site = Q.elem(site).elem();
       PColorMatrix<QDP::RComplex<REAL>, 3>  QQ_site = QQ.elem(site).elem();
       PColorMatrix<QDP::RComplex<REAL>, 3>  QQQ = QQ_site*Q_site;
       
       Double trQQQ; 
-      trQQQ.elem()  = real(trace(QQQ));
+      trQQQ.elem()  = realTrace(QQQ);
       Double trQQ;
-      trQQ.elem()   = real(trace(QQ_site));
+      trQQ.elem()   = realTrace(QQ_site);
 			  
       double c0d    = ((double)1/(double)3) * trQQQ.elem().elem().elem().elem();  // eq 13
       double c1d    = ((double)1/(double)2) * trQQ.elem().elem().elem().elem();	 // eq 15 
@@ -124,8 +124,8 @@ namespace Chroma
       Double c0 = Double(c0d);
       Double c1 = Double(c1d);
       
-      
-      if( toBool( c1 < 4.0e-3 ) ) {    // RGE: set to 4.0e-3 (CM uses this value). I ran into nans with 1.0e-4
+      if( toBool( c1 < 4.0e-3 ) )  // RGE: set to 4.0e-3 (CM uses this value). I ran into nans with 1.0e-4
+      {
 	// ================================================================================
 	// 
 	// Corner Case: if c1 < 1.0e-4 this implies c0max ~ 3x10^-7
@@ -201,15 +201,14 @@ namespace Chroma
 	f[0].elem(site).elem().elem().real() = 1-c0d*c0d/720;
 	f[0].elem(site).elem().elem().imag() =  -(c0d/6)*(1-(c1d/20)*(1-(c1d/42))) ;
 
-
 	f[1].elem(site).elem().elem().real() =  c0d/24*(1.0-c1d/15*(1-3*c1d/112)) ;
 	f[1].elem(site).elem().elem().imag() =  1-c1d/6*(1-c1d/20*(1-c1d/42))-c0d*c0d/5040 ;
 
 	f[2].elem(site).elem().elem().real() = 0.5*(-1+c1d/12*(1-c1d/30*(1-c1d/56))+c0d*c0d/20160);
 	f[2].elem(site).elem().elem().imag() = 0.5*(c0d/60*(1-c1d/21*(1-c1d/48)));
 
-
-	if( dobs == true ) { 
+	if( dobs == true ) 
+	{
 	  //  partial f0/ partial c0
 	  b2[0].elem(site).elem().elem().real() = -c0d/360;
 	  b2[0].elem(site).elem().elem().imag() =  -(1/6)*(1-(c1d/20)*(1-c1d/42));
@@ -217,12 +216,12 @@ namespace Chroma
 	  // partial f0 / partial c1
 	  //
 	  b1[0].elem(site).elem().elem().real() = 0;
-	  b1[0].elem(site).elem().elem().imag() =  (c0d/120)*(1-c1d/21);
+	  b1[0].elem(site).elem().elem().imag() = (c0d/120)*(1-c1d/21);
 
           // partial f1 / partial c0
 	  //
-	  b2[1].elem(site).elem().elem().real() =(1/24)*(1-c1d/15*(1-3*c1d/112));
-	  b2[1].elem(site).elem().elem().imag() =-c0d/2520;
+	  b2[1].elem(site).elem().elem().real() = (1/24)*(1-c1d/15*(1-3*c1d/112));
+	  b2[1].elem(site).elem().elem().imag() = -c0d/2520;
 
   
 	  // partial f1 / partial c1
@@ -235,33 +234,33 @@ namespace Chroma
 	    
 	  // partial f2/ partial c1
 	  b1[2].elem(site).elem().elem().real() = 0.5*(  1/12*(1-(2*c1d/30)*(1-3*c1d/112)) ); 
-	  b1[2].elem(site).elem().elem().real() = 0.5*( -c0d/1260*(1-c1d/24) );
+	  b1[2].elem(site).elem().elem().imag() = 0.5*( -c0d/1260*(1-c1d/24) );
 
 #if 0
-	{
-	  multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
+	  {
+	    multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
 
-	  QMP_fprintf(stdout, 
-		      "%s: corner; site=%d coord=[%d,%d,%d,%d] f[0]=%g f[1]=%g f[2]=%g b1[0]=%g b1[1]=%g b1[2]=%g b2[0]=%g b2[1]=%g b2[2]=%g c0=%g c1=%g",
+	    QMP_fprintf(stdout, 
+			"%s: corner; site=%d coord=[%d,%d,%d,%d] f[0]=%g f[1]=%g f[2]=%g b1[0]=%g b1[1]=%g b1[2]=%g b2[0]=%g b2[1]=%g b2[2]=%g c0=%g c1=%g",
 
-		      __func__, site, coord[0], coord[1], coord[2], coord[3],
-		      toDouble(norm2(f[0])),
-		      toDouble(norm2(f[1])),
-		      toDouble(norm2(f[2])),
-		      toDouble(norm2(b1[0])),
-		      toDouble(norm2(b1[1])),
-		      toDouble(norm2(b1[2])),
-		      toDouble(norm2(b2[0])),
-		      toDouble(norm2(b2[1])),
-		      toDouble(norm2(b2[2])),
-		      toDouble(c0), toDouble(c1));
-	}
+			__func__, site, coord[0], coord[1], coord[2], coord[3],
+			toDouble(localNorm2(f[0].elem(site))),
+			toDouble(localNorm2(f[1].elem(site))),
+			toDouble(localNorm2(f[2].elem(site))),
+			toDouble(localNorm2(b1[0].elem(site))),
+			toDouble(localNorm2(b1[1].elem(site))),
+			toDouble(localNorm2(b1[2].elem(site))),
+			toDouble(localNorm2(b2[0].elem(site))),
+			toDouble(localNorm2(b2[1].elem(site))),
+			toDouble(localNorm2(b2[2].elem(site))),
+			toDouble(c0), toDouble(c1));
+	  }
 #endif
 	    
 	} // Dobs==true
-
       }
-      else { 
+      else 
+      { 
 	// ===================================================================================
 	// Normal case: Do as per paper
 	// ===================================================================================
@@ -322,42 +321,32 @@ namespace Chroma
 	
 	Double denum = 9*u_sq - w_sq;
 	
-	
-	
 	// f_i = f_i(c0, c1). Expand f_i by c1, if c1 is small.
 	f_site[0] = ((u_sq - w_sq) * exp2iu + expmiu * cmplx(8*u_sq*cosw, 2*u*(3*u_sq+w_sq)*xi0))/denum;
-	
-	
 	f_site[1] = (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (w_sq-3*u_sq)*xi0))/denum;
-	
 	f_site[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denum;
 	
-
-	
-	if( dobs == true ) {
-	  
+	if( dobs == true ) 
+	{
 	  multi1d<DComplex> r_1(3);
 	  multi1d<DComplex> r_2(3);
 	  
-	  r_1[0]=Double(2)*cmplx(u, u_sq-w_sq)*exp2iu
+	  r_1[0] = Double(2)*cmplx(u, u_sq-w_sq)*exp2iu
 	    + 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*u_sq*cosw)
 			   + cmplx(u*(3.0*u_sq+w_sq),9.0*u_sq+w_sq)*xi0 );
 	  
-	  r_1[1]=cmplx(2.0, 4.0*u)*exp2iu
+	  r_1[1] = cmplx(2.0, 4.0*u)*exp2iu
 	    + expmiu*cmplx(-2.0*cosw-(w_sq-3.0*u_sq)*xi0,
 			   2.0*u*cosw+6.0*u*xi0);
 	  
-	  r_1[2]=2.0*timesI(exp2iu)
-	    +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
+	  r_1[2] = 2.0*timesI(exp2iu) +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
 	  
+	  r_2[0] = -2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*u_sq*xi1, 4*u*xi0);
 	  
-	  r_2[0]=-2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*u_sq*xi1,
-							 4*u*xi0);
-	  
-	  r_2[1]= expmiu*cmplx(cosw+xi0-3.0*u_sq*xi1, 2.0*u*xi0);
+	  r_2[1] = expmiu*cmplx(cosw+xi0-3.0*u_sq*xi1, 2.0*u*xi0);
 	  r_2[1] = timesMinusI(r_2[1]);
 	  
-	  r_2[2]=expmiu*cmplx(xi0, -3.0*u*xi1);
+	  r_2[2] = expmiu*cmplx(xi0, -3.0*u*xi1);
 	  
 	  
 	  Double b_denum=2.0*(9.0*u_sq -w_sq)*(9.0*u_sq-w_sq);
@@ -371,7 +360,8 @@ namespace Chroma
 	  }
 
 	  // Now flip the coefficients of the b-s
-	  if( toBool(c0_negativeP) ) { 
+	  if( toBool(c0_negativeP) ) 
+	  {
 	    b1_site[0] = conj(b1_site[0]);
 	    b1_site[1] = -conj(b1_site[1]);
 	    b1_site[2] = conj(b1_site[2]);
@@ -381,7 +371,8 @@ namespace Chroma
 	  }
 	  
 	  // Load back into the lattice sized object
-	  for(int j=0; j < 3; j++) { 
+	  for(int j=0; j < 3; j++) 
+	  { 
 	    b1[j].elem(site).elem().elem()  = b1_site[j].elem().elem().elem();	  
 	    b2[j].elem(site).elem().elem() = b2_site[j].elem().elem().elem();
 	  }
@@ -395,15 +386,15 @@ namespace Chroma
 		      "%s: site=%d coord=[%d,%d,%d,%d] f_site[0]=%g f_site[1]=%g f_site[2]=%g 1[0]=%g b1[1]=%g b1[2]=%g b2[0]=%g b2[1]=%g b2[2]=%g denum=%g c0=%g c1=%g c0max=%g rat=%g theta=%g",
 
 		      __func__, site, coord[0], coord[1], coord[2], coord[3],
-		      toDouble(norm2(f_site[0])),
-		      toDouble(norm2(f_site[1])),
-		      toDouble(norm2(f_site[2])), 
-		      toDouble(norm2(b1[0])),
-		      toDouble(norm2(b1[1])),
-		      toDouble(norm2(b1[2])),
-		      toDouble(norm2(b2[0])),
-		      toDouble(norm2(b2[1])),
-		      toDouble(norm2(b2[2])),
+		      toDouble(localNorm2(f_site[0])),
+		      toDouble(localNorm2(f_site[1])),
+		      toDouble(localNorm2(f_site[2])), 
+		      toDouble(localNorm2(b1[0].elem(site))),
+		      toDouble(localNorm2(b1[1].elem(site))),
+		      toDouble(localNorm2(b1[2].elem(site))),
+		      toDouble(localNorm2(b2[0].elem(site))),
+		      toDouble(localNorm2(b2[1].elem(site))),
+		      toDouble(localNorm2(b2[2].elem(site))),
                       toDouble(denum), 
 		      toDouble(c0), toDouble(c1), toDouble(c0max),
 		      toDouble(rat), toDouble(theta));
@@ -414,7 +405,8 @@ namespace Chroma
 	// Now when everything is done flip signs of the b-s (can't do this before
 	// as the unflipped f-s are needed to find the b-s
 	
-	if( toBool(c0_negativeP) ) { 
+	if( toBool(c0_negativeP) ) 
+	{ 
 	  f_site[0] = conj(f_site[0]);
 	  f_site[1] = -conj(f_site[1]);
 	  f_site[2] = conj(f_site[2]);
@@ -424,7 +416,7 @@ namespace Chroma
 	for(int j=0; j < 3; j++) { 
 	  f[j].elem(site).elem().elem() = f_site[j].elem().elem().elem();
 	}
-      } // End of if( c1 < 1.0e-4 ) else {}
+      } // End of if( c1 < 4.0e-3 ) else {}
     }
     swatch.stop();
     StoutLinkTimings::functions_secs += swatch.getTimeInSeconds();
