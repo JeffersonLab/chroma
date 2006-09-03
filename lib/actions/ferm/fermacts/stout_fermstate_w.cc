@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.15 2006-09-03 00:11:08 edwards Exp $
+// $Id: stout_fermstate_w.cc,v 1.16 2006-09-03 02:26:04 edwards Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -124,7 +124,22 @@ namespace Chroma
       Double c0 = Double(c0d);
       Double c1 = Double(c1d);
       
+      // See if a corner case is met
+      bool corner_caseP = false;
       if( toBool( c1 < 4.0e-3 ) )  // RGE: set to 4.0e-3 (CM uses this value). I ran into nans with 1.0e-4
+      {
+         corner_caseP = true;
+      }
+      else
+      {
+        Double c0abs = fabs(c0);
+        Double c0max = Double(2)*pow( c1/Double(3), Double(1.5));
+        if ( toBool( fabs(c0max - c0abs) < c0max * 1.0e-4 ) )
+          corner_caseP = true;
+      }
+
+      // Big if/else of calculation of fs and bs
+      if( corner_caseP )
       {
 	// ================================================================================
 	// 
@@ -416,7 +431,7 @@ namespace Chroma
 	for(int j=0; j < 3; j++) { 
 	  f[j].elem(site).elem().elem() = f_site[j].elem().elem().elem();
 	}
-      } // End of if( c1 < 4.0e-3 ) else {}
+      } // End of if( corner_caseP ) else {}
     }
     swatch.stop();
     StoutLinkTimings::functions_secs += swatch.getTimeInSeconds();
