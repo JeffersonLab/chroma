@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_pqp_leapfrog_mts.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
+// $Id: lcm_pqp_leapfrog_mts.h,v 3.2 2006-09-06 14:31:36 edwards Exp $
 /*! @file
  * @brief Second order minimal norm (2MN) integrator with multiple time scales
  *
@@ -72,6 +72,14 @@ namespace Chroma
 	QDPIO::cerr << "Error: Wrong number of time scales specified for PQP Leapfrog MTS integrator." << endl;
 	QDPIO::cerr << "Integrator has    " << number_of_timescales << endl;
 	QDPIO::cerr << "Monomial list has " << monomial_list.size() << endl;
+	QDP_abort(1);
+      }
+      
+      // Check the number of steps
+      if(number_of_timescales != n_steps_list.size()) {
+	QDPIO::cerr << "Error: Wrong number of time scales specified for PQP Leapfrog MTS integrator." << endl;
+	QDPIO::cerr << "Integrator has    " << number_of_timescales << endl;
+	QDPIO::cerr << "Number in steps list is " << n_steps_list.size() << endl;
 	QDP_abort(1);
       }
       
