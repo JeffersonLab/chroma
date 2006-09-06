@@ -1,3 +1,10 @@
+// -*- C++ -*-
+// $Id: asqtad_qprop.h,v 3.1 2006-09-06 03:43:22 edwards Exp $
+/*! \file
+ *  \brief Asqtad propagator wrapper
+ *
+ *  \ingroup qprop
+ */
 #ifndef ASQTAD_QPROP_H
 #define ASQTAD_QPROP_H
 

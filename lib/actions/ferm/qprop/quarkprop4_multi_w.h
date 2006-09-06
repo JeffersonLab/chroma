@@ -1,3 +1,4 @@
+// -*- C++ -*-
 #ifndef __quarkprop4_multi_w_h__
 #define __quarkprop4_multi_w_h__
 
