@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.17 2006-09-06 13:18:22 bjoo Exp $
+// $Id: stout_fermstate_w.cc,v 1.18 2006-09-06 13:38:52 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -250,7 +250,7 @@ namespace Chroma
 			toDouble(localNorm2(b2[0].elem(site))),
 			toDouble(localNorm2(b2[1].elem(site))),
 			toDouble(localNorm2(b2[2].elem(site))),
-			toDouble(c0), toDouble(c1));
+			c0, c1);
 	  }
 #endif
 	} // Dobs==true
@@ -279,8 +279,15 @@ namespace Chroma
 	  // This can happen only when there is a rounding error in the ratio, and that the 
 	  // ratio is really 1. This implies theta = 0 which we'll just set.
 	  // ===============================================================================
-	  QDPIO::cout << "Warning: 1-c0abs/c0max < 0 => c0abs > c0max. Assume this is rounding and set ratio to 1 (theta=0" << endl;
+	  {
+	    multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
 
+	    QMP_fprintf(stdout, 
+			"%s: corner2; site=%d coord=[%d,%d,%d,%d] c0max=%g c0abs=%d eps=%g\n Setting theta=0",
+
+			__func__, site, coord[0], coord[1], coord[2], coord[3],
+			c0abs, c0max,eps);
+	  }
 	  theta = 0;
 	}
 	else if ( eps < 1.0e-3 ) {
@@ -492,30 +499,30 @@ namespace Chroma
 	    b2[j].elem(site).elem().elem().real() = b2_site_re[j];
 	    b2[j].elem(site).elem().elem().imag() = b2_site_im[j];
 	  }
-	  
 #if 0
-	{
-	  multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
-	  Double rat = c0abs/c0max;
-
-	  QMP_fprintf(stdout, 
-		      "%s: site=%d coord=[%d,%d,%d,%d] f_site[0]=%g f_site[1]=%g f_site[2]=%g 1[0]=%g b1[1]=%g b1[2]=%g b2[0]=%g b2[1]=%g b2[2]=%g denum=%g c0=%g c1=%g c0max=%g rat=%g theta=%g",
-
-		      __func__, site, coord[0], coord[1], coord[2], coord[3],
-		      toDouble(localNorm2(f_site[0])),
-		      toDouble(localNorm2(f_site[1])),
-		      toDouble(localNorm2(f_site[2])), 
-		      toDouble(localNorm2(b1[0].elem(site))),
-		      toDouble(localNorm2(b1[1].elem(site))),
-		      toDouble(localNorm2(b1[2].elem(site))),
-		      toDouble(localNorm2(b2[0].elem(site))),
-		      toDouble(localNorm2(b2[1].elem(site))),
-		      toDouble(localNorm2(b2[2].elem(site))),
-                      toDouble(denum), 
-		      toDouble(c0), toDouble(c1), toDouble(c0max),
-		      toDouble(rat), toDouble(theta));
-	}
+	  {
+	    multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
+	    REAL rat = c0abs/c0max;
+	    
+	    QMP_fprintf(stdout, 
+			"%s: site=%d coord=[%d,%d,%d,%d] f_site[0]=%g f_site[1]=%g f_site[2]=%g 1[0]=%g b1[1]=%g b1[2]=%g b2[0]=%g b2[1]=%g b2[2]=%g denum=%g c0=%g c1=%g c0max=%g rat=%g theta=%g",
+			
+			__func__, site, coord[0], coord[1], coord[2], coord[3],
+			toDouble(localNorm2(cmplx(Real(f_site_re[0]),Real(f_site_im[0])))),
+			toDouble(localNorm2(cmplx(Real(f_site_re[1]),Real(f_site_im[1])))),
+			toDouble(localNorm2(cmplx(Real(f_site_re[2]),Real(f_site_im[2])))),
+			toDouble(localNorm2(b1[0].elem(site))),
+			toDouble(localNorm2(b1[1].elem(site))),
+			toDouble(localNorm2(b1[2].elem(site))),
+			toDouble(localNorm2(b2[0].elem(site))),
+			toDouble(localNorm2(b2[1].elem(site))),
+			toDouble(localNorm2(b2[2].elem(site))),
+			denum, 
+			c0, c1, c0max,
+			rat, theta);
+	  }
 #endif
+	  
 	} // end of if (dobs==true)
 
 	// Now when everything is done flip signs of the b-s (can't do this before
@@ -539,6 +546,7 @@ namespace Chroma
 	  f[j].elem(site).elem().elem().real() = f_site_re[j];
 	  f[j].elem(site).elem().elem().imag() = f_site_im[j];
 	}
+
       } // End of if( corner_caseP ) else {}
     }
     swatch.stop();
