@@ -48,7 +48,9 @@ namespace Chroma {
     
     XMLReader xml_in(is);
     
-    cfs =  new CreateStoutFermState(WilsonTypeFermBCEnv::reader(xml_in, "/FermState"),
+    cfs =  new CreateStoutFermState<LatticeFermion,
+      multi1d<LatticeColorMatrix>,
+      multi1d<LatticeColorMatrix> >(WilsonTypeFermBCEnv::reader(xml_in, "/FermState"),
 				    StoutFermStateParams(xml_in, "/FermState"));
 
     END_CODE();
@@ -58,7 +60,11 @@ namespace Chroma {
   {
     START_CODE();
 
-    Handle< StoutFermState > state = (*cfs)(s.getQ()); // Create a 
+    Handle< StoutFermState<LatticeFermion,
+      multi1d<LatticeColorMatrix>,
+      multi1d<LatticeColorMatrix> > 
+      > state = (*cfs)(s.getQ()); // Create a
+ 
     F.resize(Nd);
     F = X;
     
@@ -81,7 +87,10 @@ namespace Chroma {
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
     push(xml_out, "FixedRandomFermMonomial4D");
 
-    Handle< StoutFermState > state = (*cfs)(s.getQ()); // Create a 
+    Handle< StoutFermState<LatticeFermion,
+      multi1d<LatticeColorMatrix>,
+      multi1d<LatticeColorMatrix> >
+      > state = (*cfs)(s.getQ()); // Create a 
     const Q& u = state->getLinks();
     
     Double ret_val = sum(real(trace(u[0]*X[0])));

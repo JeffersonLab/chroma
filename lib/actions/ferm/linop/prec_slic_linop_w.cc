@@ -1,4 +1,4 @@
-// $Id: prec_slic_linop_w.cc,v 1.2 2006-08-26 02:08:41 edwards Exp $
+// $Id: prec_slic_linop_w.cc,v 1.3 2006-09-06 19:05:10 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -24,7 +24,7 @@ namespace Chroma
     param = param_;
 
      // Need to make sure that fs is a stout ferm state
-    thin_fs  = new SimpleFermState<T,P,Q>( fs->getFermBC(), (fs.cast<SLICFermState>())->getThinLinks());
+    thin_fs  = new SimpleFermState<T,P,Q>( fs->getFermBC(), (fs.cast<SLICFermState<T, P, Q> >())->getThinLinks());
     clov.create(fs, param_);
  
 
@@ -152,7 +152,7 @@ namespace Chroma
     ds_u.resize(Nd);
 
     clov.deriv(ds_tmp, chi, psi, isign, 0);
-    SLICFermState& sfs = dynamic_cast<SLICFermState&>(*slic_fs);
+    SLICFermState<T, P, Q>& sfs = dynamic_cast<SLICFermState<T,P,Q>& >(*slic_fs);
 
     sfs.fatForceToThin(ds_tmp,ds_u);
     
@@ -171,7 +171,7 @@ namespace Chroma
     ds_u.resize(Nd);
 
     invclov.derivTrLn(ds_tmp, isign, 0);
-    SLICFermState& sfs = dynamic_cast<SLICFermState&>(*slic_fs);
+    SLICFermState<T, P, Q>& sfs = dynamic_cast<SLICFermState<T,P,Q>& >(*slic_fs);
 
     sfs.fatForceToThin(ds_tmp,ds_u);
     
@@ -236,7 +236,7 @@ namespace Chroma
     ds_u.resize(Nd);
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     clov.deriv(ds_tmp, chi, psi, isign, 1);
-    SLICFermState& sfs = dynamic_cast< SLICFermState& >(*slic_fs);
+    SLICFermState<T,P,Q>& sfs = dynamic_cast< SLICFermState<T,P,Q>& >(*slic_fs);
     sfs.fatForceToThin(ds_tmp,ds_u);
     
     END_CODE();

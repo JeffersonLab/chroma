@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 3.6 2006-08-17 20:56:41 bjoo Exp $
+// $Id: t_stout_state.cc,v 3.7 2006-09-06 19:05:10 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -185,8 +185,8 @@ int main(int argc, char *argv[])
 
    
 
-    multi1d<LatticeDComplex> f(3), f_rg(3);
-    multi1d<LatticeDComplex> b_1,b_2;
+    multi1d<LatticeComplex> f(3), f_rg(3);
+    multi1d<LatticeCComplex> b_1,b_2;
     s_state2->getFsAndBs(Q2,QQ2,f_rg,b_1,b_2,false);
     s_state->getFsAndBs(Q1,QQ1,f,b_1,b_2,false);
 

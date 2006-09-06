@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.27 2006-08-24 02:37:26 edwards Exp $
+# $Id: Makefile.am,v 3.28 2006-09-06 19:05:08 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -35,6 +35,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermacts/eigen_state.h \
 	actions/ferm/fermacts/extfield.h \
 	actions/ferm/fermacts/stout_fermstate_params.h \
+	actions/ferm/fermacts/stout_utils.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/periodic_fermbc.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
@@ -867,6 +868,7 @@ libchroma_a_SOURCES += \
         actions/ferm/fermacts/ferm_createstate_reader_w.cc \
         actions/ferm/fermacts/periodic_fermstate_w.cc \
         actions/ferm/fermacts/simple_fermstate_w.cc \
+	actions/ferm/fermacts/stout_utils.cc \
 	actions/ferm/fermacts/stout_fermstate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \

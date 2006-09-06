@@ -62,7 +62,9 @@ namespace Chroma {
 
   private:
     multi1d<LatticeColorMatrix> X;
-    Handle< CreateStoutFermState > cfs;
+    Handle< CreateStoutFermState<LatticeFermion,
+      multi1d<LatticeColorMatrix>, 
+      multi1d<LatticeColorMatrix> > > cfs;
 
   };
 
