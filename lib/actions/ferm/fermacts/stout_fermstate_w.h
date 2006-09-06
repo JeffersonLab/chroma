@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.9 2006-08-17 20:45:33 bjoo Exp $
+// $Id: stout_fermstate_w.h,v 1.10 2006-09-06 13:18:22 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -101,9 +101,9 @@ namespace Chroma
     //! Only compute b-s if do_bs is set to true (default)
     void getFsAndBs(const LatticeColorMatrix& Q,
 		    const LatticeColorMatrix& QQ,
-		    multi1d<LatticeDComplex>& f,
-		    multi1d<LatticeDComplex>& b1,
-		    multi1d<LatticeDComplex>& b2,
+		    multi1d<LatticeComplex>& f,
+		    multi1d<LatticeComplex>& b1,
+		    multi1d<LatticeComplex>& b2,
 		    bool do_bs=true) const;
 
   private:

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.cc,v 1.16 2006-09-03 02:26:04 edwards Exp $
+// $Id: stout_fermstate_w.cc,v 1.17 2006-09-06 13:18:22 bjoo Exp $
 /*! @file 
  *  @brief Connection State for Stout state (.cpp file)
  */
@@ -88,9 +88,9 @@ namespace Chroma
 
   void StoutFermState::getFsAndBs(const LatticeColorMatrix& Q,
 				  const LatticeColorMatrix& QQ,
-				  multi1d<LatticeDComplex>& f,
-				  multi1d<LatticeDComplex>& b1,
-				  multi1d<LatticeDComplex>& b2,
+				  multi1d<LatticeComplex>& f,
+				  multi1d<LatticeComplex>& b1,
+				  multi1d<LatticeComplex>& b2,
 				  bool dobs) const
   {
     START_CODE();
@@ -113,37 +113,19 @@ namespace Chroma
       PColorMatrix<QDP::RComplex<REAL>, 3>  QQ_site = QQ.elem(site).elem();
       PColorMatrix<QDP::RComplex<REAL>, 3>  QQQ = QQ_site*Q_site;
       
-      Double trQQQ; 
+      Real trQQQ; 
       trQQQ.elem()  = realTrace(QQQ);
-      Double trQQ;
+      Real trQQ;
       trQQ.elem()   = realTrace(QQ_site);
 			  
-      double c0d    = ((double)1/(double)3) * trQQQ.elem().elem().elem().elem();  // eq 13
-      double c1d    = ((double)1/(double)2) * trQQ.elem().elem().elem().elem();	 // eq 15 
+      REAL c0    = ((REAL)1/(REAL)3) * trQQQ.elem().elem().elem().elem();  // eq 13
+      REAL c1    = ((REAL)1/(REAL)2) * trQQ.elem().elem().elem().elem();	 // eq 15 
       
-      Double c0 = Double(c0d);
-      Double c1 = Double(c1d);
       
-      // See if a corner case is met
-      bool corner_caseP = false;
-      if( toBool( c1 < 4.0e-3 ) )  // RGE: set to 4.0e-3 (CM uses this value). I ran into nans with 1.0e-4
-      {
-         corner_caseP = true;
-      }
-      else
-      {
-        Double c0abs = fabs(c0);
-        Double c0max = Double(2)*pow( c1/Double(3), Double(1.5));
-        if ( toBool( fabs(c0max - c0abs) < c0max * 1.0e-4 ) )
-          corner_caseP = true;
-      }
-
-      // Big if/else of calculation of fs and bs
-      if( corner_caseP )
-      {
+      if( c1 < 4.0e-3  ) { // RGE: set to 4.0e-3 (CM uses this value). I ran into nans with 1.0e-4
 	// ================================================================================
 	// 
-	// Corner Case: if c1 < 1.0e-4 this implies c0max ~ 3x10^-7
+	// Corner Case 1: if c1 < 1.0e-4 this implies c0max ~ 3x10^-7
 	//    and in this case the division c0/c0max in arccos c0/c0max can be undefined
 	//    and produce NaN's
 
@@ -213,43 +195,43 @@ namespace Chroma
 	//  differences to be zero. At this point in time maple seems happy.
 	//  ==================================================================================
 
-	f[0].elem(site).elem().elem().real() = 1-c0d*c0d/720;
-	f[0].elem(site).elem().elem().imag() =  -(c0d/6)*(1-(c1d/20)*(1-(c1d/42))) ;
+	f[0].elem(site).elem().elem().real() = 1-c0*c0/720;
+	f[0].elem(site).elem().elem().imag() =  -(c0/6)*(1-(c1/20)*(1-(c1/42))) ;
 
-	f[1].elem(site).elem().elem().real() =  c0d/24*(1.0-c1d/15*(1-3*c1d/112)) ;
-	f[1].elem(site).elem().elem().imag() =  1-c1d/6*(1-c1d/20*(1-c1d/42))-c0d*c0d/5040 ;
+	f[1].elem(site).elem().elem().real() =  c0/24*(1.0-c1/15*(1-3*c1/112)) ;
+	f[1].elem(site).elem().elem().imag() =  1-c1/6*(1-c1/20*(1-c1/42))-c0*c0/5040 ;
 
-	f[2].elem(site).elem().elem().real() = 0.5*(-1+c1d/12*(1-c1d/30*(1-c1d/56))+c0d*c0d/20160);
-	f[2].elem(site).elem().elem().imag() = 0.5*(c0d/60*(1-c1d/21*(1-c1d/48)));
+	f[2].elem(site).elem().elem().real() = 0.5*(-1+c1/12*(1-c1/30*(1-c1/56))+c0*c0/20160);
+	f[2].elem(site).elem().elem().imag() = 0.5*(c0/60*(1-c1/21*(1-c1/48)));
 
 	if( dobs == true ) 
 	{
 	  //  partial f0/ partial c0
-	  b2[0].elem(site).elem().elem().real() = -c0d/360;
-	  b2[0].elem(site).elem().elem().imag() =  -(1/6)*(1-(c1d/20)*(1-c1d/42));
+	  b2[0].elem(site).elem().elem().real() = -c0/360;
+	  b2[0].elem(site).elem().elem().imag() =  -(1/6)*(1-(c1/20)*(1-c1/42));
 
 	  // partial f0 / partial c1
 	  //
 	  b1[0].elem(site).elem().elem().real() = 0;
-	  b1[0].elem(site).elem().elem().imag() = (c0d/120)*(1-c1d/21);
+	  b1[0].elem(site).elem().elem().imag() = (c0/120)*(1-c1/21);
 
           // partial f1 / partial c0
 	  //
-	  b2[1].elem(site).elem().elem().real() = (1/24)*(1-c1d/15*(1-3*c1d/112));
-	  b2[1].elem(site).elem().elem().imag() = -c0d/2520;
+	  b2[1].elem(site).elem().elem().real() = (1/24)*(1-c1/15*(1-3*c1/112));
+	  b2[1].elem(site).elem().elem().imag() = -c0/2520;
 
   
 	  // partial f1 / partial c1
-	  b1[1].elem(site).elem().elem().real() = -c0d/360*(1 - 3*c1d/56 );
-	  b1[1].elem(site).elem().elem().imag() = -1/6*(1-c1d/10*(1-c1d/28));
+	  b1[1].elem(site).elem().elem().real() = -c0/360*(1 - 3*c1/56 );
+	  b1[1].elem(site).elem().elem().imag() = -1/6*(1-c1/10*(1-c1/28));
 
 	  // partial f2/ partial c0
-	  b2[2].elem(site).elem().elem().real() = 0.5*c0d/10080;
-	  b2[2].elem(site).elem().elem().imag() = 0.5*(  1/60*(1-c1d/21*(1-c1d/48)) );
+	  b2[2].elem(site).elem().elem().real() = 0.5*c0/10080;
+	  b2[2].elem(site).elem().elem().imag() = 0.5*(  1/60*(1-c1/21*(1-c1/48)) );
 	    
 	  // partial f2/ partial c1
-	  b1[2].elem(site).elem().elem().real() = 0.5*(  1/12*(1-(2*c1d/30)*(1-3*c1d/112)) ); 
-	  b1[2].elem(site).elem().elem().imag() = 0.5*( -c0d/1260*(1-c1d/24) );
+	  b1[2].elem(site).elem().elem().real() = 0.5*(  1/12*(1-(2*c1/30)*(1-3*c1/112)) ); 
+	  b1[2].elem(site).elem().elem().imag() = 0.5*( -c0/1260*(1-c1/24) );
 
 #if 0
 	  {
@@ -271,7 +253,6 @@ namespace Chroma
 			toDouble(c0), toDouble(c1));
 	  }
 #endif
-	    
 	} // Dobs==true
       }
       else 
@@ -279,33 +260,70 @@ namespace Chroma
 	// ===================================================================================
 	// Normal case: Do as per paper
 	// ===================================================================================
-	Boolean c0_negativeP = c0 < Double(0);
-	Double c0abs = fabs(c0);
-	Double c0max = Double(2)*pow( c1/Double(3), Double(1.5));
+	bool c0_negativeP = c0 < 0;
+	REAL c0abs = fabs((double)c0);
+	REAL c0max = 2*pow( (double)(c1/(double)3), (double)1.5);
+	REAL theta;
 
-	Double theta;
-	multi1d<DComplex> f_site(3);
-	multi1d<DComplex> b1_site(3);
-	multi1d<DComplex> b2_site(3);
+	// ======================================================================================
+	// Now work out theta. In the paper the case where c0 -> c0max even when c1 is reasonable 
+	// Has never been considered, even though it can arise and can cause the arccos function
+	// to fail
+	// Here we handle it with series expansion
+	// =====================================================================================
+	REAL eps = (c0max - c0abs)/c0max;
+
+	if( eps < 0 ) {
+	  // ===============================================================================
+	  // Corner Case 2: Handle case when c0abs is bigger than c0max. 
+	  // This can happen only when there is a rounding error in the ratio, and that the 
+	  // ratio is really 1. This implies theta = 0 which we'll just set.
+	  // ===============================================================================
+	  QDPIO::cout << "Warning: 1-c0abs/c0max < 0 => c0abs > c0max. Assume this is rounding and set ratio to 1 (theta=0" << endl;
+
+	  theta = 0;
+	}
+	else if ( eps < 1.0e-3 ) {
+	  // ===============================================================================
+	  // Corner Case 3: c0->c0max even though c1 may be actually quite reasonable.
+	  // The ratio |c0|/c0max -> 1 but is still less than one, so that a 
+	  // series expansion is possible.
+	  // SERIES of acos(1-epsilon): Good to O(eps^6) or with this cutoff to O(10^{-18}) Computed with Maple.
+	  //  BTW: 1-epsilon = 1 - (c0max-c0abs)/c0max = 1-(1 - c0abs/c0max) = +c0abs/c0max
+	  //
+	  // ===============================================================================
+	  REAL sqtwo = sqrt(2);
+
+	  theta = sqtwo*sqrt(eps)*( 1 + ( (1/(REAL)12) + ( (3/(REAL)160) + ( (5/(REAL)896) + ( (35/(REAL)18432) + (63/(REAL)90112)*eps ) *eps) *eps) *eps) *eps);
+	  
+	} 
+	else {  
+	  // 
+	  theta = acos( c0abs/c0max );
+	}
+
+	multi1d<REAL> f_site_re(3);
+	multi1d<REAL> f_site_im(3);
 	
-	// Here we have the case that c0max is close to 0
-	// and we run the risk of trouble since it means u=0 and w=0
-	// and so the denominator pieces in both the acos, the f-s and 
-	// the b-s can cause NaN's to appear. The cutoff is arbitrary
-	// but I think 1.0e-6 is not unreasonable. 
-    	theta = acos( c0abs/c0max );
+	multi1d<REAL> b1_site_re(3);
+	multi1d<REAL> b1_site_im(3);
+
+	multi1d<REAL> b2_site_re(3);
+	multi1d<REAL> b2_site_im(3);
+
 	
-	Double u = sqrt(c1/Double(3))*cos(theta/Double(3));
-	Double w = sqrt(c1)*sin(theta/Double(3));
 	
-	Double u_sq = u*u;
-	Double w_sq = w*w;
+	REAL u = sqrt(c1/3)*cos(theta/3);
+	REAL w = sqrt(c1)*sin(theta/3);
 	
-	Double xi0,xi1;
+	REAL u_sq = u*u;
+	REAL w_sq = w*w;
+	
+	REAL xi0,xi1;
 	{
-	  Boolean w_smallP  = fabs(w) < Double(0.05);
-	  if( toBool( w_smallP ) ) { 
-	    xi0 = Double(1) - (Double(1)/Double(6))*w_sq*(Double(1) - (Double(1)/Double(20))*w_sq*(Double(1) - (Double(1)/Double(42))*w_sq));
+	  bool w_smallP  = fabs(w) < 0.05;
+	  if( w_smallP ) { 
+	    xi0 = (REAL)1 - ((REAL)1/(REAL)6)*w_sq*( 1 - ((REAL)1/(REAL)20)*w_sq*( (REAL)1 - ((REAL)1/(REAL)42)*w_sq ) );
 	  }
 	  else {
 	    xi0 = sin(w)/w;
@@ -313,8 +331,8 @@ namespace Chroma
 	  
 	  if( dobs==true) {
 	    
-	    if( toBool( w_smallP ) ) { 
-	      xi1 = Double(-1)*((Double(1)/Double(3)) - ( Double(1)/Double(30) )*w_sq*(Double(1) - (Double(1)/Double(28))*w_sq*(Double(1)- (Double(1)/Double(54))*w_sq)));
+	    if( w_smallP  ) { 
+	      xi1 = -1*( ((REAL)1/(REAL)3) - ((REAL)1/(REAL)30)*w_sq*( (REAL)1 - ((REAL)1/(REAL)28)*w_sq*( (REAL)1 - ((REAL)1/(REAL)54)*w_sq ) ) );
 	    }
 	    else { 
 	      xi1 = cos(w)/w_sq - sin(w)/(w_sq*w);
@@ -322,74 +340,157 @@ namespace Chroma
 	  }
 	}
 	
-	Double cosu = cos(u);
-	Double sinu = sin(u);
-	Double cosw = cos(w);
-	Double sinw = sin(w);
-	Double sin2u = sin(2*u);
-	Double cos2u = cos(2*u);
-	
-	// exp(2iu) and exp(-iu)
-	//LatticeDComplex exp2iu = cmplx(( 2*cosu*cosu - 1), 2*cosu*sinu);
-	DComplex exp2iu = cmplx( cos2u, sin2u );
-	DComplex expmiu = cmplx(cosu, -sinu);
-	
-	Double denum = 9*u_sq - w_sq;
-	
-	// f_i = f_i(c0, c1). Expand f_i by c1, if c1 is small.
-	f_site[0] = ((u_sq - w_sq) * exp2iu + expmiu * cmplx(8*u_sq*cosw, 2*u*(3*u_sq+w_sq)*xi0))/denum;
-	f_site[1] = (2*u*exp2iu - expmiu * cmplx(2*u*cosw, (w_sq-3*u_sq)*xi0))/denum;
-	f_site[2] = (exp2iu - expmiu * cmplx(cosw, 3*u*xi0))/denum;
-	
+	REAL cosu = cos(u);
+	REAL sinu = sin(u);
+	REAL cosw = cos(w);
+	REAL sinw = sin(w);
+	REAL sin2u = sin(2*u);
+	REAL cos2u = cos(2*u);
+	REAL ucosu = u*cosu;
+	REAL usinu = u*sinu;
+	REAL ucos2u = u*cos2u;
+	REAL usin2u = u*sin2u;
+
+	REAL denum = (REAL)9*u_sq - w_sq;
+
+	{
+	  REAL subexp1 = u_sq - w_sq;
+	  REAL subexp2 = 8*u_sq*cosw;
+	  REAL subexp3 = (3*u_sq + w_sq)*xi0;
+
+	  f_site_re[0] = ( (subexp1)*cos2u + cosu*subexp2 + 2*usinu*subexp3 ) / denum ;
+	  f_site_im[0] = ( (subexp1)*sin2u - sinu*subexp2 + 2*ucosu*subexp3 ) / denum ;
+	}
+	{
+	  REAL subexp = (3*u_sq -w_sq)*xi0;
+
+	  f_site_re[1] = (2*(ucos2u - ucosu*cosw)+subexp*sinu)/denum;
+	  f_site_im[1] = (2*(usin2u + usinu*cosw)+subexp*cosu)/denum;
+	}
+		
+
+	{
+	  REAL subexp=3*xi0;
+
+	  f_site_re[2] = (cos2u - cosu*cosw -usinu*subexp) /denum ;
+	  f_site_im[2] = (sin2u + sinu*cosw -ucosu*subexp) /denum ;
+	}
+
 	if( dobs == true ) 
 	{
-	  multi1d<DComplex> r_1(3);
-	  multi1d<DComplex> r_2(3);
+	  multi1d<REAL> r_1_re(3);
+	  multi1d<REAL> r_1_im(3);
+	  multi1d<REAL> r_2_re(3);
+	  multi1d<REAL> r_2_im(3);
 	  
-	  r_1[0] = Double(2)*cmplx(u, u_sq-w_sq)*exp2iu
-	    + 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*u_sq*cosw)
-			   + cmplx(u*(3.0*u_sq+w_sq),9.0*u_sq+w_sq)*xi0 );
+	  //	  r_1[0]=Double(2)*cmplx(u, u_sq-w_sq)*exp2iu
+	  //          + 2.0*expmiu*( cmplx(8.0*u*cosw, -4.0*u_sq*cosw)
+	  //	      + cmplx(u*(3.0*u_sq+w_sq),9.0*u_sq+w_sq)*xi0 );
+	  {
+	    REAL subexp1 = u_sq - w_sq;
+	    REAL subexp2 =  8*cosw + (3*u_sq + w_sq)*xi0 ;
+	    REAL subexp3 =  4*u_sq*cosw - (9*u_sq + w_sq)*xi0 ;
+
+	    r_1_re[0] = 2*(ucos2u - sin2u *(subexp1)+ucosu*( subexp2 )- sinu*( subexp3 ) );
+	    r_1_im[0] = 2*(usin2u + cos2u *(subexp1)-usinu*( subexp2 )- cosu*( subexp3 ) );
+	  }
 	  
-	  r_1[1] = cmplx(2.0, 4.0*u)*exp2iu
-	    + expmiu*cmplx(-2.0*cosw-(w_sq-3.0*u_sq)*xi0,
-			   2.0*u*cosw+6.0*u*xi0);
+	  // r_1[1]=cmplx(2.0, 4.0*u)*exp2iu + expmiu*cmplx(-2.0*cosw-(w_sq-3.0*u_sq)*xi0,2.0*u*cosw+6.0*u*xi0);
+	  {
+	    REAL subexp1 = cosw+3*xi0;
+	    REAL subexp2 = 2*cosw + xi0*(w_sq - 3*u_sq);
+
+	    r_1_re[1] = 2*((cos2u - 2*usin2u) + usinu*( subexp1 )) - cosu*( subexp2 );
+	    r_1_im[1] = 2*((sin2u + 2*ucos2u) + ucosu*( subexp1 )) + sinu*( subexp2 );
+	  }
+
+
+	  // r_1[2]=2.0*timesI(exp2iu)  +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
+	  {
+	    REAL subexp = cosw - 3*xi0;
+	    r_1_re[2] = -2*sin2u -3*ucosu*xi0 + sinu*( subexp );
+	    r_1_im[2] = 2*cos2u  +3*usinu*xi0 + cosu*( subexp );
+	  }
+
 	  
-	  r_1[2] = 2.0*timesI(exp2iu) +expmiu*cmplx(-3.0*u*xi0, cosw-3*xi0);
+	  //r_2[0]=-2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*u_sq*xi1,
+	  //						 4*u*xi0);
+	  {
+	    REAL subexp = cosw + xi0 + 3*u_sq*xi1;
+	    r_2_re[0] = -2*(cos2u + u*( 4*ucosu*xi0 - sinu*(subexp )) );
+	    r_2_im[0] = -2*(sin2u - u*( 4*usinu*xi0 + cosu*(subexp )) );
+	  }
+				  
+
+	  // r_2[1]= expmiu*cmplx(cosw+xi0-3.0*u_sq*xi1, 2.0*u*xi0);
+	  // r_2[1] = timesMinusI(r_2[1]);
+	  {
+	    REAL subexp =  cosw + xi0 - 3*u_sq*xi1;
+	    r_2_re[1] =  2*ucosu*xi0 - sinu*( subexp ) ;
+	    r_2_im[1] = -2*usinu*xi0 - cosu*( subexp ) ;
+	  }
+
+	  //r_2[2]=expmiu*cmplx(xi0, -3.0*u*xi1);
+	  {
+	    REAL subexp = 3*xi1;
+
+	    r_2_re[2] =    cosu*xi0 - usinu*subexp ;
+	    r_2_im[2] = -( sinu*xi0 + ucosu*subexp ) ;
+	  }      
 	  
-	  r_2[0] = -2.0*exp2iu + 2*cmplx(0,u)*expmiu*cmplx(cosw+xi0+3*u_sq*xi1, 4*u*xi0);
-	  
-	  r_2[1] = expmiu*cmplx(cosw+xi0-3.0*u_sq*xi1, 2.0*u*xi0);
-	  r_2[1] = timesMinusI(r_2[1]);
-	  
-	  r_2[2] = expmiu*cmplx(xi0, -3.0*u*xi1);
-	  
-	  
-	  Double b_denum=2.0*(9.0*u_sq -w_sq)*(9.0*u_sq-w_sq);
+	  REAL b_denum=2*denum*denum;
+
 	  
 	  for(int j=0; j < 3; j++) { 
 	    
-	    // This has to be a little more careful	
-	    b1_site[j]=( 2.0*u*r_1[j]+(3.0*u_sq-w_sq)*r_2[j]-2.0*(15.0*u_sq+w_sq)*f_site[j] )/b_denum;
-	    b2_site[j]=( r_1[j]-3.0*u*r_2[j]-24.0*u*f_site[j] )/b_denum;
-	    
+	    {
+	      REAL subexp1 = 2*u;
+	      REAL subexp2 = 3*u_sq - w_sq;
+	      REAL subexp3 = 2*(15*u_sq + w_sq);
+
+	      b1_site_re[j]=( subexp1*r_1_re[j] + subexp2*r_2_re[j] - subexp3*f_site_re[j] )/b_denum;
+	      b1_site_im[j]=( subexp1*r_1_im[j] + subexp2*r_2_im[j] - subexp3*f_site_im[j] )/b_denum;
+	    }
+
+	    { 
+	      REAL subexp1 = 3*u;
+	      REAL subexp2 = 24*u;
+
+	      b2_site_re[j]=( r_1_re[j]- subexp1*r_2_re[j] - subexp2 * f_site_re[j] )/b_denum;
+	      b2_site_im[j]=( r_1_im[j] -subexp1*r_2_im[j] - subexp2 * f_site_im[j] )/b_denum;
+	    }
 	  }
 
 	  // Now flip the coefficients of the b-s
-	  if( toBool(c0_negativeP) ) 
+	  if( c0_negativeP ) 
 	  {
-	    b1_site[0] = conj(b1_site[0]);
-	    b1_site[1] = -conj(b1_site[1]);
-	    b1_site[2] = conj(b1_site[2]);
-	    b2_site[0] = -conj(b2_site[0]);
-	    b2_site[1] = conj(b2_site[1]);
-	    b2_site[2] = -conj(b2_site[2]);
+	    //b1_site[0] = conj(b1_site[0]);
+	    b1_site_im[0] *= -1;
+
+	    //b1_site[1] = -conj(b1_site[1]);
+	    b1_site_re[1] *= -1;
+
+	    //b1_site[2] = conj(b1_site[2]);
+	    b1_site_im[2] *= -1;
+
+	    //b2_site[0] = -conj(b2_site[0]);
+	    b2_site_re[0] *= -1;
+
+	    //b2_site[1] = conj(b2_site[1]);
+	    b2_site_im[1] *= -1;
+
+	    //b2_site[2] = -conj(b2_site[2]);
+	    b2_site_re[2] *= -1;
 	  }
 	  
 	  // Load back into the lattice sized object
 	  for(int j=0; j < 3; j++) 
 	  { 
-	    b1[j].elem(site).elem().elem()  = b1_site[j].elem().elem().elem();	  
-	    b2[j].elem(site).elem().elem() = b2_site[j].elem().elem().elem();
+	    b1[j].elem(site).elem().elem().real() = b1_site_re[j];
+	    b1[j].elem(site).elem().elem().imag() = b1_site_im[j];
+
+	    b2[j].elem(site).elem().elem().real() = b2_site_re[j];
+	    b2[j].elem(site).elem().elem().imag() = b2_site_im[j];
 	  }
 	  
 #if 0
@@ -420,16 +521,23 @@ namespace Chroma
 	// Now when everything is done flip signs of the b-s (can't do this before
 	// as the unflipped f-s are needed to find the b-s
 	
-	if( toBool(c0_negativeP) ) 
+	if( c0_negativeP ) 
 	{ 
-	  f_site[0] = conj(f_site[0]);
-	  f_site[1] = -conj(f_site[1]);
-	  f_site[2] = conj(f_site[2]);
+	  // f_site[0] = conj(f_site[0]);
+	  f_site_im[0] *= -1;
+
+	  //f_site[1] = -conj(f_site[1]);
+	  f_site_re[1] *= -1;
+
+	  //f_site[2] = conj(f_site[2]);
+	  f_site_im[2] *= -1;
+
 	}
 	
 	// Load back into the lattice sized object
 	for(int j=0; j < 3; j++) { 
-	  f[j].elem(site).elem().elem() = f_site[j].elem().elem().elem();
+	  f[j].elem(site).elem().elem().real() = f_site_re[j];
+	  f[j].elem(site).elem().elem().imag() = f_site_im[j];
 	}
       } // End of if( corner_caseP ) else {}
     }
@@ -545,9 +653,9 @@ namespace Chroma
 	getQsandCs(u, Q, QQ, C[mu], mu);
 	
 	// Now work the f-s and b-s
-	multi1d<LatticeDComplex> f;
-	multi1d<LatticeDComplex> b_1;
-	multi1d<LatticeDComplex> b_2;
+	multi1d<LatticeComplex> f;
+	multi1d<LatticeComplex> b_1;
+	multi1d<LatticeComplex> b_2;
 	
 	// Get the fs and bs  -- does internal resize to make them arrays of length 3
 //	QDPIO::cout << __func__ << ": mu=" << mu << endl;
@@ -808,9 +916,9 @@ namespace Chroma
 	
 	// Now compute the f's -- use the same function as for computing the fs, bs etc in derivative
 	// but don't compute the b-'s
-	multi1d<LatticeDComplex> f;   // routine will resize these
-	multi1d<LatticeDComplex> b_1; // Dummy - not used      -- throwaway -- won't even get resized
-	multi1d<LatticeDComplex> b_2; // Dummy - not used here -- throwaway -- won't even get resized
+	multi1d<LatticeComplex> f;   // routine will resize these
+	multi1d<LatticeComplex> b_1; // Dummy - not used      -- throwaway -- won't even get resized
+	multi1d<LatticeComplex> b_2; // Dummy - not used here -- throwaway -- won't even get resized
 	
 	
 	getFsAndBs(Q,QQ,f,b_1,b_2,false);   // This routine computes the f-s
