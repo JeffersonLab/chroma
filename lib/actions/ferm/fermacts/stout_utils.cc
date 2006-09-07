@@ -506,7 +506,7 @@ namespace Chroma {
 	    //  BTW: 1-epsilon = 1 - (c0max-c0abs)/c0max = 1-(1 - c0abs/c0max) = +c0abs/c0max
 	    //
 	    // ===============================================================================
-	    REAL sqtwo = sqrt(2);
+	    REAL sqtwo = sqrt((REAL)2);
 	    
 	    theta = sqtwo*sqrt(eps)*( 1 + ( (1/(REAL)12) + ( (3/(REAL)160) + ( (5/(REAL)896) + ( (35/(REAL)18432) + (63/(REAL)90112)*eps ) *eps) *eps) *eps) *eps);
 	    
