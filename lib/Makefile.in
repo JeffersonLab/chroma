@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.60 2006-09-06 19:05:08 bjoo Exp $
+# $Id: Makefile.in,v 3.61 2006-09-07 01:26:42 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -185,7 +185,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
-	actions/gauge/gaugeacts/simple_gaugestate.cc io/eigen_io.cc \
+	actions/gauge/gaugeacts/simple_gaugestate.cc \
+	actions/gauge/gaugeacts/stout_gaugestate.cc io/eigen_io.cc \
 	io/enum_io/enum_cfgtype_io.cc io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
@@ -587,10 +588,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) overlap_state.$(OBJEXT) \
 	aniso_spectrum_gaugeact.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
 	lw_tree_gaugeact.$(OBJEXT) lw_1loop_gaugeact.$(OBJEXT) \
 	rbc_gaugeact.$(OBJEXT) rg_gaugeact.$(OBJEXT) \
-	simple_gaugestate.$(OBJEXT) eigen_io.$(OBJEXT) \
-	enum_cfgtype_io.$(OBJEXT) enum_coeffs_io.$(OBJEXT) \
-	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
-	enum_gaugeacttype_io.$(OBJEXT) enum_heatbathtype_io.$(OBJEXT) \
+	simple_gaugestate.$(OBJEXT) stout_gaugestate.$(OBJEXT) \
+	eigen_io.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
+	enum_coeffs_io.$(OBJEXT) enum_eigenvectype_io.$(OBJEXT) \
+	enum_fermtype_io.$(OBJEXT) enum_gaugeacttype_io.$(OBJEXT) \
+	enum_heatbathtype_io.$(OBJEXT) \
 	enum_inner_solver_type_io.$(OBJEXT) \
 	enum_plusminus_io.$(OBJEXT) \
 	enum_md_integrator_type_io.$(OBJEXT) \
@@ -942,6 +944,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
 	actions/gauge/gaugeacts/simple_gaugestate.h \
+	actions/gauge/gaugeacts/stout_gaugestate.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -1611,6 +1614,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
 	actions/gauge/gaugeacts/simple_gaugestate.h \
+	actions/gauge/gaugeacts/stout_gaugestate.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -2169,7 +2173,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
-	actions/gauge/gaugeacts/simple_gaugestate.cc io/eigen_io.cc \
+	actions/gauge/gaugeacts/simple_gaugestate.cc \
+	actions/gauge/gaugeacts/stout_gaugestate.cc io/eigen_io.cc \
 	io/enum_io/enum_cfgtype_io.cc io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
@@ -3009,6 +3014,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoch_var.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_fermstate_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_fermstate_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_gaugestate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_link_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_utils.Po@am__quote@
@@ -4142,6 +4148,20 @@ simple_gaugestate.obj: actions/gauge/gaugeacts/simple_gaugestate.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/simple_gaugestate.cc' object='simple_gaugestate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_gaugestate.obj `if test -f 'actions/gauge/gaugeacts/simple_gaugestate.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/simple_gaugestate.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/simple_gaugestate.cc'; fi`
+
+stout_gaugestate.o: actions/gauge/gaugeacts/stout_gaugestate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_gaugestate.o -MD -MP -MF "$(DEPDIR)/stout_gaugestate.Tpo" -c -o stout_gaugestate.o `test -f 'actions/gauge/gaugeacts/stout_gaugestate.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/stout_gaugestate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stout_gaugestate.Tpo" "$(DEPDIR)/stout_gaugestate.Po"; else rm -f "$(DEPDIR)/stout_gaugestate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/stout_gaugestate.cc' object='stout_gaugestate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_gaugestate.o `test -f 'actions/gauge/gaugeacts/stout_gaugestate.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/stout_gaugestate.cc
+
+stout_gaugestate.obj: actions/gauge/gaugeacts/stout_gaugestate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_gaugestate.obj -MD -MP -MF "$(DEPDIR)/stout_gaugestate.Tpo" -c -o stout_gaugestate.obj `if test -f 'actions/gauge/gaugeacts/stout_gaugestate.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/stout_gaugestate.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/stout_gaugestate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/stout_gaugestate.Tpo" "$(DEPDIR)/stout_gaugestate.Po"; else rm -f "$(DEPDIR)/stout_gaugestate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/stout_gaugestate.cc' object='stout_gaugestate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_gaugestate.obj `if test -f 'actions/gauge/gaugeacts/stout_gaugestate.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/stout_gaugestate.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/stout_gaugestate.cc'; fi`
 
 eigen_io.o: io/eigen_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eigen_io.o -MD -MP -MF "$(DEPDIR)/eigen_io.Tpo" -c -o eigen_io.o `test -f 'io/eigen_io.cc' || echo '$(srcdir)/'`io/eigen_io.cc; \

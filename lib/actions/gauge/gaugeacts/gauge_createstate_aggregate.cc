@@ -1,4 +1,4 @@
-// $Id: gauge_createstate_aggregate.cc,v 3.1 2006-08-18 15:53:14 edwards Exp $
+// $Id: gauge_createstate_aggregate.cc,v 3.2 2006-09-07 01:26:43 bjoo Exp $
 /*! \file
  *  \brief All gauge create-state method
  */
@@ -9,6 +9,7 @@
 #include "actions/gauge/gaugeacts/gauge_createstate_factory.h"
 
 #include "actions/gauge/gaugeacts/simple_gaugestate.h"
+#include "actions/gauge/gaugeacts/stout_gaugestate.h"
 
 namespace Chroma
 {
@@ -21,6 +22,7 @@ namespace Chroma
       bool success = true;
 
       success &= CreateSimpleGaugeStateEnv::registered;
+      success &= CreateStoutGaugeStateEnv::registered;
 
       return success;
     }

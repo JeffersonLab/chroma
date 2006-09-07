@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_gaugebc.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: simple_gaugebc.h,v 3.1 2006-09-07 01:26:43 bjoo Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
@@ -79,7 +79,7 @@ namespace Chroma
      * This is a simple implementation - always do the work. 
      * Could be improved by checking boundary
      */
-    bool nontrivialP() const {return true;}
+    bool nontrivialP() const {return false;}
 
   private:
     // Hide empty constructor

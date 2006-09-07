@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 3.2 2006-07-03 15:26:08 edwards Exp $
+// $Id: invcg2_array.cc,v 3.3 2006-09-07 01:26:43 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -236,7 +236,7 @@ namespace Chroma
 	  }
 	  
 	  res.resid = sqrt(actual_res);
-	  QDPIO::cout << "Actual residual r = " << sqrt(actual_res) << endl;
+	  QDPIO::cout << "Actual residual r = " << sqrt(actual_res) << " Actual relative residual="<< sqrt(actual_res/chi_sq) << endl;
 	}
 
 	END_CODE();
