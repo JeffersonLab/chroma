@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 3.7 2006-09-06 19:05:10 bjoo Exp $
+// $Id: t_stout_state.cc,v 3.8 2006-09-07 13:16:52 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -151,8 +151,8 @@ int main(int argc, char *argv[])
   Handle< FermBC<T,P,Q> > fbc( new PeriodicFermBC<T,P,Q>() );
   // Create  Periodic FermBC
  
-  Handle< StoutFermState  > s_state( new StoutFermState(fbc, s_p, u) );
-  Handle< StoutFermState > s_state2( new StoutFermState(fbc, s_p, u_rg) );
+  Handle< StoutFermState<T,P,Q> > s_state(  new StoutFermState<T,P,Q>(fbc, s_p, u) );
+  Handle< StoutFermState<T,P,Q> > s_state2( new StoutFermState<T,P,Q>(fbc, s_p, u_rg) );
 
   
 
@@ -175,8 +175,8 @@ int main(int argc, char *argv[])
     LatticeColorMatrix C_tmp;
     LatticeDouble c0,c1,c0_rg,c1_rg;
 
-    s_state2->getQsandCs(u_rg, Q2, QQ2, C_tmp, mu);
-    s_state->getQsandCs(u,Q1,QQ1, C_tmp, mu);
+    Stouting::getQsandCs(u_rg, Q2, QQ2, C_tmp, mu, s_p.smear_in_this_dirP, s_p.rho);
+    Stouting::getQsandCs(u,Q1,QQ1, C_tmp, mu, s_p.smear_in_this_dirP, s_p.rho);
 
     QDPIO::cout << "Gauge invatiance check for Q: " << norm2( Q2-g*Q1*adj(g) ) 
 		<< endl;
@@ -186,9 +186,9 @@ int main(int argc, char *argv[])
    
 
     multi1d<LatticeComplex> f(3), f_rg(3);
-    multi1d<LatticeCComplex> b_1,b_2;
-    s_state2->getFsAndBs(Q2,QQ2,f_rg,b_1,b_2,false);
-    s_state->getFsAndBs(Q1,QQ1,f,b_1,b_2,false);
+    multi1d<LatticeComplex> b_1,b_2;
+    Stouting::getFsAndBs(Q2,QQ2,f_rg,b_1,b_2,false);
+    Stouting::getFsAndBs(Q1,QQ1,f,b_1,b_2,false);
 
     LatticeColorMatrix expiQ = (f[0]+f[1]*Q1+f[2]*QQ1);
     LatticeColorMatrix rg_expiQ    = (f_rg[0]+f_rg[1]*Q2+f_rg[2]*QQ2);
