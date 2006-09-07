@@ -1,4 +1,4 @@
-// $Id: ferm_createstate_reader_w.cc,v 3.1 2006-08-18 15:51:55 edwards Exp $
+// $Id: ferm_createstate_reader_w.cc,v 3.2 2006-09-07 04:24:28 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */
@@ -25,8 +25,6 @@ namespace Chroma
 								   const std::string& path)
     {
       XMLReader top(xml_in, path);
-
-      bool success = registered;  // make sure all codes loaded
 
       std::string fermstate;
       std::string fermstate_path;

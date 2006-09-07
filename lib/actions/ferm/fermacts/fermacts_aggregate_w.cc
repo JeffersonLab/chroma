@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.4 2006-08-18 15:51:55 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.5 2006-09-07 04:24:28 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -47,6 +47,8 @@
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
 
+#include "actions/ferm/fermacts/ferm_createstate_aggregate_w.h"
+
 
 namespace Chroma
 {
@@ -65,6 +67,9 @@ namespace Chroma
 
       // All 4D bcs
       success &= WilsonTypeFermBCEnv::registered;
+
+      // All fermstates
+      success &= CreateFermStateEnv::registered;
 
       // 4D actions
       success &= EvenOddPrecWilsonFermActEnv::registered;
@@ -111,6 +116,9 @@ namespace Chroma
       // All 5D bcs
       success &= WilsonTypeFermBCEnv::registered;
 
+      // All fermstates
+      success &= CreateFermStateEnv::registered;
+
       // 5D actions
       success &= EvenOddPrecDWFermActArrayEnv::registered;
       success &= UnprecDWFermActArrayEnv::registered;
@@ -132,11 +140,6 @@ namespace Chroma
       // Tuning Strategies
       success &= OvExtTuningStrategyAggregateEnv::registered;
 
-      // Stouting
-#if 0
-      success &= UnprecStoutWilsonTypeFermAct5DEnv::registered;
-      success &= EvenOddPrecStoutWilsonTypeFermAct5DEnv::registered;
-#endif
       return success;
     }
 

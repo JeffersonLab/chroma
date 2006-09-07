@@ -1,4 +1,4 @@
-// $Id: gauge_createstate_aggregate.cc,v 3.2 2006-09-07 01:26:43 bjoo Exp $
+// $Id: gauge_createstate_aggregate.cc,v 3.3 2006-09-07 04:24:28 edwards Exp $
 /*! \file
  *  \brief All gauge create-state method
  */
@@ -11,6 +11,8 @@
 #include "actions/gauge/gaugeacts/simple_gaugestate.h"
 #include "actions/gauge/gaugeacts/stout_gaugestate.h"
 
+#include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
+
 namespace Chroma
 {
 
@@ -21,6 +23,10 @@ namespace Chroma
     {
       bool success = true;
 
+      // Register all gauge BCs
+      success &= GaugeTypeGaugeBCEnv::registered;
+
+      // Register all gauge states
       success &= CreateSimpleGaugeStateEnv::registered;
       success &= CreateStoutGaugeStateEnv::registered;
 
@@ -37,8 +43,6 @@ namespace Chroma
 								     const std::string& path)
     {
       XMLReader top(xml_in, path);
-
-      bool success = registered;  // make sure all codes loaded
 
       std::string gaugestate;
       std::string gaugestate_path;

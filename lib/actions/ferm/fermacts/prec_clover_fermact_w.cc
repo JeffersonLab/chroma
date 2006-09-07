@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 3.4 2006-08-21 07:32:36 edwards Exp $
+// $Id: prec_clover_fermact_w.cc,v 3.5 2006-09-07 04:24:28 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -9,10 +9,6 @@
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
-
-#include "actions/ferm/fermacts/ferm_createstate_aggregate_w.h"
-
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 namespace Chroma
 {
@@ -47,8 +43,6 @@ namespace Chroma
     bool registerAll()
     {
       bool foo = true;
-      foo &= CreateFermStateEnv::registered;
-
       foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
       foo &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
     }

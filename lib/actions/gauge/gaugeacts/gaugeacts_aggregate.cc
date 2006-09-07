@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.6 2006-08-18 15:53:14 edwards Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.7 2006-09-07 04:24:28 edwards Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */
@@ -20,6 +20,9 @@
 #include "actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h"
 
+#include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
+#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
+
 namespace Chroma
 {
 
@@ -30,6 +33,13 @@ namespace Chroma
     {
       bool success = true;
 
+      // Register all gauge BCs
+      success &= GaugeTypeGaugeBCEnv::registered;
+
+      // Register all gauge states
+      success &= CreateGaugeStateEnv::registered;
+
+      // Register gauge actions
       success &= PlaqGaugeActEnv::registered;
       success &= RectGaugeActEnv::registered;
       success &= PgGaugeActEnv::registered;

@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 3.4 2006-09-07 01:26:43 bjoo Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 3.5 2006-09-07 04:24:28 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -16,7 +16,6 @@
 #include "io/param_io.h"
 
 #include "actions/ferm/qprop/dwf_qpropt_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_aggregate_w.h"
 
 namespace Chroma
 {
@@ -51,8 +50,6 @@ namespace Chroma
     bool registerAll()
     {
       bool foo = true;
-      foo &= CreateFermStateEnv::registered;
- 
       foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
       foo &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
       return foo;
