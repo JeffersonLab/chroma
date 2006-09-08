@@ -10,7 +10,7 @@
 
 # Hardwire MPI for now
 MPI_HOME=/usr/local/mvapich-viapatch-0.9.7
-NODES="qcd6n321 qcd6n322"
+NODES="qcd6n319 qcd6n320"
 # Nex is the name of the program
 PROG=$1
 
