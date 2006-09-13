@@ -49,6 +49,12 @@ AC_ARG_ENABLE(sse_dwf_cg,
     [Build and Use the SSE DWF CG Library])
 )
 
+AC_ARG_ENABLE(cg_dwf, 
+   AC_HELP_STRING(
+	[--enable-cg-dwf],
+	[Build and Use AVPs CG-DWF library])
+)
+
 AC_ARG_ENABLE(altivec_dwf_cg,
   AC_HELP_STRING( 
     [--enable-altivec-dwf-cg],
@@ -170,6 +176,26 @@ AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
 
 
+
+dnl CG DWF stuff
+case "$enable_cg_dwf" in
+  yes) 
+        AC_MSG_NOTICE([Configuring CG DWF])
+	AC_CONFIG_SUBDIRS(other_libs/cg-dwf)
+	AC_SUBST(CG_DWF_DIR, [cg-dwf])
+	AC_DEFINE([BUILD_CG_DWF],[1],[Build CG DWF])
+	;;
+  *)
+	AC_SUBST(CG_DWF_DIR)
+	AC_MSG_NOTICE([Not building CG DWF])
+        ;;
+esac 
+AC_SUBST(CG_DWF_ENABLED,[$enable_cg_dwf])
+
+AM_CONDITIONAL(BUILD_CG_DWF,
+  [test "x${enable_cg_dwf}x" = "xyesx" ])
+
+
 dnl SSE DWF CG stuff
 case "$enable_sse_dwf_cg" in
   yes) 
@@ -187,6 +213,7 @@ AC_SUBST(SSE_DWF_CG_ENABLED,[$enable_sse_dwf_cg])
 
 AM_CONDITIONAL(BUILD_SSE_DWF_CG,
   [test "x${enable_sse_dwf_cg}x" = "xyesx" ])
+
 
 
 dnl ALTIVEC DWF CG stuff

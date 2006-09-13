@@ -20,6 +20,13 @@ AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
 LDADD += -llevel3 @QDPXX_LIBS@
 endif
 
+if BUILD_CG_DWF
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@CG_DWF_DIR@
+AM_CXXFLAGS += -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
+AM_LDFLAGS  += -L$(BUILDDIR)/other_libs/@CG_DWF_DIR@
+LDADD += -lcg-dwf
+endif
+
 if BUILD_SSE_DWF_CG
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include
 AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/lib

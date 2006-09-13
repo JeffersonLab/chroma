@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.29 2006-09-07 01:26:42 bjoo Exp $
+# $Id: Makefile.am,v 3.30 2006-09-13 19:11:57 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -650,6 +650,10 @@ if BUILD_ALTIVEC_DWF_CG
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/include -I$(BUILDDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/include
 endif
 
+if BUILD_CG_DWF
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@CG_DWF_DIR@ -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
+endif
+
 lib_LIBRARIES = libchroma.a
 
 #
@@ -1128,6 +1132,11 @@ nobase_include_HEADERS += \
 libchroma_a_SOURCES += \
         actions/ferm/linop/lwldslash_w_sse.cc \
         actions/ferm/linop/lwldslash_array_sse_w.cc
+endif
+
+if BUILD_CG_DWF
+nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h
+libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.cc
 endif
 
 if BUILD_SSE_DWF_CG

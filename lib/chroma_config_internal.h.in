@@ -6,6 +6,9 @@
 /* Build optimized Continued Frac. (CFZ) LinOp */
 #undef BUILD_CFZ_CFZ_LINOP
 
+/* Build CG DWF */
+#undef BUILD_CG_DWF
+
 /* Build CPS ASQTAD INVERTER */
 #undef BUILD_CPS_ASQTAD_INVERTER
 
