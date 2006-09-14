@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.5 2006-08-30 02:56:45 edwards Exp $
+// $Id: qprop_io.cc,v 3.6 2006-09-14 02:55:30 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -27,7 +27,11 @@ namespace Chroma
 
     try
     {
-      if (top.count("FermionBC/boundary") != 0)
+      if (top.count("FermState/FermionBC/boundary") != 0)
+      {
+	read(top, "FermState/FermionBC/boundary", boundary);
+      }
+      else if (top.count("FermionBC/boundary") != 0)
       {
 	read(top, "FermionBC/boundary", boundary);
       }
