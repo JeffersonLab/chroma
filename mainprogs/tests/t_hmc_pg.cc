@@ -20,9 +20,13 @@ int main(int argc, char *argv[])
   read(xml_in, "/PureGaugeHMC/params", input);
 
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
+  XMLFileWriter& xml_log = Chroma::getXMLLogInstance();
+
   push(xml_out, "PureGaugeHMC");
+  push(xml_log, "PureGaugeHMC");
+
   write(xml_out, "params", input);
-  pop(xml_out);
+  write(xml_log, "params", input);
 
   // Set up the lattice
   Layout::setLattSize(input.MC_iters.nrow);
@@ -97,6 +101,9 @@ int main(int argc, char *argv[])
     QDPIO::cerr << "Restart from saved state not yet implemented" << endl;
     QDP_abort(1);
   }
+
+  pop(xml_log);
+  pop(xml_out);
 
   Chroma::finalize();
   exit(0);

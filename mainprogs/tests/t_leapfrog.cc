@@ -57,7 +57,9 @@ int main(int argc, char *argv[])
 
   // Dump output
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
+  XMLFileWriter& xml_log = Chroma::getXMLLogInstance();
   push(xml_out, "t_leapfrog");
+  push(xml_log, "t_leapfrog");
 
   // Read Parameters
   multi1d<int> boundary(Nd);           // Ferm BC's
@@ -194,7 +196,8 @@ int main(int argc, char *argv[])
   QDPIO::cout << "DeltaKE = " << deltaKE << endl;
 
   QDPIO::cout << "DeltaE = " << deltaKE + deltaPE <<endl;
-  pop(xml_out);
+  pop(xml_log);   // t_leapfrog
+  pop(xml_out);   // t_leapfrog
 // xml_out.close();
 
   END_CODE();

@@ -52,7 +52,9 @@ int main(int argc, char *argv[])
 
   // Dump output
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
+  XMLFileWriter& xml_log = Chroma::getXMLLogInstance();
   push(xml_out, "t_gauge_ferm_monomials");
+  push(xml_log, "t_gauge_ferm_monomials");
 
   // Read Parameters
   multi1d<int> boundary(Nd);           // Ferm BC's
@@ -95,7 +97,7 @@ int main(int argc, char *argv[])
   H_handle->mesE(gauge_state, KE, PE);
   QDPIO::cout << "KE = " << KE << "  PE = " << PE << endl;
 
-
+  pop(xml_log);
   pop(xml_out);
   xml_out.close();
 
