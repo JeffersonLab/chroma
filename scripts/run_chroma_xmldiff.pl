@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 3.2 2006-06-01 15:10:23 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 3.3 2006-09-15 15:28:12 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -80,8 +80,35 @@ for $file (&regresDirs())
     {
 	my($exec_path) =  $h->{"exec_path"} ; 
 	my($execute)   =  $h->{"execute"} ; 
-	my($candidate) =  $h->{"output"} ; 
-	my($outdir)    =  $h->{"output"} ; 
+	my($candidate);
+	my($outdir);
+	my($out_file);
+	my($log_file);
+
+        if ( $h->{"output"} ne "" && $h->{"log"} ne "" )
+        {
+          die "Found both an output and a log entry - need only 1\n";
+        }
+
+        if ( $h->{"output"} ne "" )
+        {
+	  $candidate =  $h->{"output"} ; 
+	  $outdir    =  $h->{"output"} ; 
+	  $out_file  =  $candidate;
+	  $log_file  =  "XMLLOG";
+        }
+        elsif ( $h->{"log"} ne "" )
+        {
+	  $candidate =  $h->{"log"} ; 
+	  $outdir    =  $h->{"log"} ; 
+	  $out_file  =  "XMLDAT";
+	  $log_file  =  $candidate;
+        }
+        else
+        {
+          die "Did not find either an  output or a log entry\n";
+        }
+
 	my($metric)    =  $h->{"metric"} ; 
 	my($control)   =  $h->{"controlfile"} ; 
 	my($input)     =  $h->{"input"} ; 
@@ -113,7 +140,7 @@ for $file (&regresDirs())
 	    
 
 	    my($log) = "$canddir/$execute"  ; 
-	    my($exe) = "$run $exec_path/$execute ".$in_arg." -o $candidate < /dev/null 2>${log}.err > ${log}.out"; 
+	    my($exe) = "$run $exec_path/$execute ".$in_arg." -o $out_file -l $log_file < /dev/null 2>${log}.err > ${log}.out"; 
 #	print $exe;
 	    my($status_tmp) = system("$exe") / 256 ; 
 	    if( $status_tmp != 0  ) 
