@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwf_qpropt_w.h,v 3.2 2006-09-13 19:06:17 bjoo Exp $
+// $Id: dwf_qpropt_w.h,v 3.3 2006-09-15 19:22:26 bjoo Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -18,9 +18,14 @@
 // The following is an ifdef lis that switches in optimised
 // Dslash-es. Currently only optimised inverters are the SSE and ALTICEC 
 #if defined(BUILD_CG_DWF)
-#include "prec_dwf_qprop_array_cg_dwf_w.h"
-namespace Chroma {
-typedef CGDWFQpropT DWFQpropT;
+#include "actions/ferm/qprop/avp_inverter_interface.h"
+#include "actions/ferm/qprop/avp_sse_solver.h"
+#include "actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h"
+
+namespace Chroma { 
+  typedef Chroma::CGDWFQpropT< AVPSolver::SSEDWFSolverF, 
+		       AVPSolver::SSEDWFSolverD
+		     > DWFQpropT;
 }
 
 #elif defined(BUILD_SSE_DWF_CG)
