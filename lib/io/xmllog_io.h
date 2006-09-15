@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: xmllog_io.h,v 3.0 2006-04-03 04:58:56 edwards Exp $
+// $Id: xmllog_io.h,v 3.1 2006-09-15 02:48:21 edwards Exp $
 /*! \file
  * \brief Singleton instances of xml output
  */
@@ -16,9 +16,20 @@ namespace Chroma
 
   /* typedef SingletonHolder< XMLReader > TheXMLInputReader; */
 
-  typedef SingletonHolder< XMLFileWriter > TheXMLOutputWriter;
+  // Create each singleton with a slightly different lifetime policy
+  // This trick is used to disambiguate only
 
-  typedef SingletonHolder< XMLFileWriter > TheXMLLogWriter;
+  //! XML output holder
+  /*! \ingroup io */
+  typedef SingletonHolder<XMLFileWriter, CreateUsingNew,
+			  DefaultLifetime1,
+			  SingleThreaded> TheXMLOutputWriter;
+
+  //! XML log holder
+  /*! \ingroup io */
+  typedef SingletonHolder<XMLFileWriter, CreateUsingNew,
+			  DefaultLifetime2,
+			  SingleThreaded> TheXMLLogWriter;
 
 } // End namespace Chroma
 
