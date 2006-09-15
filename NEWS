@@ -1,3 +1,8 @@
+09/14/2006 -- Robert Edwards
+	Version 3.13.0. New chroma/other_libs/cg-dwf package now included. The DWF
+        QpropT routine reworked to use the new package (double prec. SSE). Changed
+        hmc to split output into XMLLOG and XMLDAT.
+
 09/09/2006 -- Robert Edwards
 	Version 3.12.0. First apparently working version of stout force code for HMC.
         Rearrangements in stouting for gauge and fermion actions.
