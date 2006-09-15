@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.3 2006-08-25 17:15:59 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.4 2006-09-15 02:50:45 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -40,7 +40,7 @@ namespace Chroma
       START_CODE();
 
       // Self Description/Encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "OneFlavorRatExactWilsonTypeFermMonomial");
 
       /**** Identical code for unprec and even-odd prec case *****/
@@ -163,7 +163,7 @@ namespace Chroma
       // Heatbath all the fields
       
       // Self Description/Encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "OneFlavorRatExactWilsonTypeFermMonomial");
 
       // Get at the ferion action for piece i
@@ -249,7 +249,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_subset");
 
       const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
@@ -365,7 +365,7 @@ namespace Chroma
       START_CODE();
 
       // Self identification/encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "OneFlavorRatExactUnprecWilsonTypeFermMonomial");
 
       Double action = S_subset(s);
@@ -433,7 +433,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "OneFlavorRatExactEvenOddPrecWilsonTypeFermMonomial");
 
       Double action_e = S_even_even(s);

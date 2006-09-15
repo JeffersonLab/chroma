@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.3 2006-08-25 17:15:59 edwards Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.4 2006-09-15 02:50:45 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -46,7 +46,7 @@ namespace Chroma
       START_CODE();
 
       // Self Description/Encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactHasenbuschWilsonTypeFermMonomial");
 
       /**** Identical code for unprec and even-odd prec case *****/
@@ -183,7 +183,7 @@ namespace Chroma
 
       // Now invert M_prec^{dagger} on it
       getMDSolutionPredictor().reset();
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
 
       push(xml_out, "FieldRefreshment");
       write(xml_out, "n_count", res.n_count);
@@ -308,7 +308,7 @@ namespace Chroma
       START_CODE();
 
       // Self identification/encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial");
 
       Phi X;
@@ -390,7 +390,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_odd_odd");
 
       const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
@@ -434,7 +434,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out=TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial");
 
       Double action = S_even_even(s) + S_odd_odd(s);

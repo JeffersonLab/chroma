@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.4 2006-08-25 17:15:59 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 3.5 2006-09-15 02:50:45 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -44,7 +44,7 @@ namespace Chroma
       START_CODE();
 
       // Self Description/Encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactWilsonTypeFermMonomial");
 
       /**** Identical code for unprec and even-odd prec case *****/
@@ -227,7 +227,7 @@ namespace Chroma
       START_CODE();
 
       // Self identification/encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactUnprecWilsonTypeFermMonomial");
 
       Phi X;
@@ -291,7 +291,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_odd_odd");
 
       const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
@@ -325,7 +325,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out=TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial");
 
       Double action = S_even_even(s) + S_odd_odd(s);
@@ -410,7 +410,7 @@ namespace Chroma
       Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
       
       Double S_ee =(Double(-2)*lin->LogDetEvenEven());
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_even_even");
       write(xml_out, "S_ee", S_ee);
       pop(xml_out);
@@ -425,7 +425,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out=TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial");
 
       Double S_ee = S_even_even(s);
@@ -449,7 +449,7 @@ namespace Chroma
       START_CODE();
 
       // Self Description/Encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial");
 
       /**** Identical code for unprec and even-odd prec case *****/

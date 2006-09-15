@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 3.1 2006-08-25 17:15:59 edwards Exp $
+// $Id: gauge_monomial.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -59,7 +59,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "GaugeMonomial");
 
       // Make a gauge connect state
@@ -80,7 +80,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "GaugeMonomial");
 
       Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));

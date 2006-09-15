@@ -70,7 +70,7 @@ namespace Chroma {
     
     state->deriv(F);
 
-    XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+    XMLWriter& xml_out = TheXMLLogWriter::Instance();
 
     push(xml_out, "FixedRandomFermMonomial4D"); 
     Double F_sq = norm2(F);
@@ -84,7 +84,7 @@ namespace Chroma {
   {
     START_CODE();
 
-    XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+    XMLWriter& xml_out = TheXMLLogWriter::Instance();
     push(xml_out, "FixedRandomFermMonomial4D");
 
     Handle< StoutFermState<LatticeFermion,

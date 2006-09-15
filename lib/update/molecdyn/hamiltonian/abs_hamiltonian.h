@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hamiltonian.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: abs_hamiltonian.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
 /*! \file
  * \brief Abstract Hamiltonian
  *
@@ -41,7 +41,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self description rule
       push(xml_out, "AbsHamiltonianForce");
 
@@ -77,7 +77,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self description rule
       push(xml_out, "AbsHamiltonianForce");
 
@@ -190,7 +190,7 @@ namespace Chroma
       START_CODE();
     
       // Self Description rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "ExactAbsHamiltonianForce");
 
 
@@ -224,7 +224,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self description rule
       push(xml_out, "ExactAbsHamiltonianForce");
 
@@ -278,7 +278,7 @@ namespace Chroma
       START_CODE();
 
       // Self Description Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "mesE");
 
       KE = mesKE(s);
@@ -294,7 +294,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "mesKE");
 
       // Return 1/2 sum pi^2
@@ -314,7 +314,7 @@ namespace Chroma
       START_CODE();
 
       // Self Encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "mesPE");
       // Cycle through all the monomials and compute their contribution
       int num_terms = numMonomials();

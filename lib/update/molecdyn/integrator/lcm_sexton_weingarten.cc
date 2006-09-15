@@ -75,7 +75,7 @@ namespace Chroma
     AbsHamiltonian<multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >& H = getHamiltonian();
 
-    XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+    XMLWriter& xml_out = TheXMLLogWriter::Instance();
     // Self Description rule
     push(xml_out, "leapP");
     write(xml_out, "dt",dt);
@@ -116,7 +116,7 @@ namespace Chroma
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
 
-    XMLWriter& xml_out= TheXMLOutputWriter::Instance();
+    XMLWriter& xml_out= TheXMLLogWriter::Instance();
     // Self description rule
     push(xml_out, "leapQ");
     write(xml_out, "dt", dt);
@@ -127,8 +127,8 @@ namespace Chroma
     // Mutable
     multi1d<LatticeColorMatrix>& u = s.getQ();
     
-    for(int mu = 0; mu < Nd; mu++) { 
-      
+    for(int mu = 0; mu < Nd; mu++) 
+    { 
       //  dt*p[mu]
       tmp_1 = dt*(s.getP())[mu];
       

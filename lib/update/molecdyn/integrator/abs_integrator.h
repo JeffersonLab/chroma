@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: abs_integrator.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
 
 /*! @file
  * @brief Integrators
@@ -52,7 +52,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self encapsulation rule
       push(xml_out, "PQPLeapfrogIntegrator");
 

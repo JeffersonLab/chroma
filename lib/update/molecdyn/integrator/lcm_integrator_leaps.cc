@@ -20,7 +20,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self Description rule
       push(xml_out, "leapP");
       write(xml_out, "dt",dt);
@@ -65,7 +65,7 @@ namespace Chroma
     {
       START_CODE();
       
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self Description rule
       push(xml_out, "leapP");
       write(xml_out, "dt",dt);
@@ -106,7 +106,7 @@ namespace Chroma
       LatticeColorMatrix tmp_1;
       LatticeColorMatrix tmp_2;
       
-      XMLWriter& xml_out= TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out= TheXMLLogWriter::Instance();
       // Self description rule
       push(xml_out, "leapQ");
       write(xml_out, "dt", dt);

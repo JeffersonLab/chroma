@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: exact_hamiltonian.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: exact_hamiltonian.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
 /*! \file
  * \brief Exact Hamiltonians
  */
@@ -61,7 +61,7 @@ namespace Chroma
       START_CODE();
 
       // Self Description Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "mesKE");
 	
       // may need to loop over the indices of P?

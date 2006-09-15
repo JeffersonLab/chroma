@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hmc.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: abs_hmc.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
 /*! \file
  * \brief Abstract HMC trajectory
  *
@@ -41,11 +41,14 @@ namespace Chroma
       AbsHamiltonian<P,Q>& H_MD = MD.getHamiltonian();
 
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_log = TheXMLLogWriter::Instance();
 
       // Self encapsulation rule 
       push(xml_out, "HMCTrajectory");
-      write(xml_out, "WarmUpP", WarmUpP);
+      push(xml_log, "HMCTrajectory");
 
+      write(xml_out, "WarmUpP", WarmUpP);
+      write(xml_log, "WarmUpP", WarmUpP);
 
       // HMC Algorithm.
       // 1) Refresh momenta
@@ -62,11 +65,17 @@ namespace Chroma
       Double KE_old, PE_old;
 
       push(xml_out, "H_old");
+      push(xml_log, "H_old");
 
       H_MC.mesE(*s_old, KE_old, PE_old);
-      write(xml_out, "KE_old", KE_old);
-      write(xml_out, "PE_old", PE_old);
 
+      write(xml_out, "KE_old", KE_old);
+      write(xml_log, "KE_old", KE_old);
+
+      write(xml_out, "PE_old", PE_old);
+      write(xml_log, "PE_old", PE_old);
+
+      pop(xml_log); // pop H_old
       pop(xml_out); // pop H_old
       
       
@@ -81,9 +90,13 @@ namespace Chroma
 
 
       push(xml_out, "H_new");
+      push(xml_log, "H_new");
       H_MC.mesE(s, KE, PE);
       write(xml_out, "KE_new", KE);
+      write(xml_log, "KE_new", KE);
       write(xml_out, "PE_new", PE);
+      write(xml_log, "PE_new", PE);
+      pop(xml_log);
       pop(xml_out);
 
       // Work out energy differences
@@ -92,26 +105,35 @@ namespace Chroma
       Double DeltaH  = DeltaKE + DeltaPE;
       Double AccProb = where(DeltaH < 0.0, Double(1), exp(-DeltaH));
       write(xml_out, "deltaKE", DeltaKE);
+      write(xml_log, "deltaKE", DeltaKE);
+
       write(xml_out, "deltaPE", DeltaPE);
+      write(xml_log, "deltaPE", DeltaPE);
+
       write(xml_out, "deltaH", DeltaH);
+      write(xml_log, "deltaH", DeltaH);
+
       write(xml_out, "AccProb", AccProb);
+      write(xml_log, "AccProb", AccProb);
 
       QDPIO::cout << "Delta H = " << DeltaH << endl;
       QDPIO::cout << "AccProb = " << AccProb << endl;
 
       // If we intend to do an accept reject step
       // (ie we are not warming up)
-      if( ! WarmUpP ) { 
-	
+      if( ! WarmUpP ) 
+      { 
 	// Measure Acceptance
 	bool acceptTestResult = acceptReject(DeltaH);
 	write(xml_out, "AcceptP", acceptTestResult);
+	write(xml_log, "AcceptP", acceptTestResult);
 
 	QDPIO::cout << "AcceptP = " << acceptTestResult << endl;
 
 	// If rejected restore fields
 	// If accepted no need to do anything
-	if ( ! acceptTestResult ) { 
+	if ( ! acceptTestResult ) 
+	{ 
 	  s.getQ() = s_old->getQ();
 	  
 	  // I am going to refresh these so maybe these copies 
@@ -123,6 +145,7 @@ namespace Chroma
 	}
       }
 
+      pop(xml_log); // HMCTrajectory
       pop(xml_out); // HMCTrajectory
     
       END_CODE();

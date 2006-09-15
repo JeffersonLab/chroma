@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_logdet_ee_monomial_w.h,v 3.3 2006-08-26 02:08:42 edwards Exp $
+// $Id: prec_logdet_ee_monomial_w.h,v 3.4 2006-09-15 02:50:45 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -32,7 +32,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "PrecLogDetEvenEvenMonomial");
 
       // Create FermAct
@@ -65,7 +65,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
 
       push(xml_out, "PrecLogDetEvenEvenMonomial");
       const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_polyprec_monomial_w.h,v 3.3 2006-08-26 02:08:42 edwards Exp $
+// $Id: two_flavor_polyprec_monomial_w.h,v 3.4 2006-09-15 02:50:45 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials
@@ -45,7 +45,7 @@ namespace Chroma
       START_CODE();
 
       // Self Description/Encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactPolyPrecWilsonTypeFermMonomial");
 
       /**** Identical code for unprec and even-odd prec case *****/
@@ -222,7 +222,7 @@ namespace Chroma
       START_CODE();
 
       // Self identification/encapsulation Rule
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactPolyPrecUnprecWilsonTypeFermMonomial");
 
       Phi X;
@@ -286,7 +286,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_odd_odd");
 
       const PolyWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
@@ -320,7 +320,7 @@ namespace Chroma
     {
       START_CODE();
 
-      XMLWriter& xml_out=TheXMLOutputWriter::Instance();
+      XMLWriter& xml_out=TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactPolyPrecEvenOddPrecWilsonTypeFermMonomial");
 
       Double action = S_even_even(s) + S_odd_odd(s);

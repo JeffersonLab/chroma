@@ -1,4 +1,4 @@
-// $Id: lcm_minimum_norm2_integrator_mts.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: lcm_minimum_norm2_integrator_mts.cc,v 3.2 2006-09-15 02:50:45 edwards Exp $
 
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
@@ -75,7 +75,7 @@ namespace Chroma {
     AbsHamiltonian<multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >& H = getHamiltonian();
 
-    XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+    XMLWriter& xml_out = TheXMLLogWriter::Instance();
     // Self Description rule
     push(xml_out, "leapP");
     write(xml_out, "dt",dt);
@@ -116,7 +116,7 @@ namespace Chroma {
     LatticeColorMatrix tmp_1;
     LatticeColorMatrix tmp_2;
 
-    XMLWriter& xml_out= TheXMLOutputWriter::Instance();
+    XMLWriter& xml_out= TheXMLLogWriter::Instance();
     // Self description rule
     push(xml_out, "leapQ");
     write(xml_out, "dt", dt);
