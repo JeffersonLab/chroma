@@ -18,7 +18,7 @@
 
     <StartUpdateNum>0</StartUpdateNum>
     <NWarmUpUpdates>0</NWarmUpUpdates>  
-    <NProductionUpdates>1</NProductionUpdates>
+    <NProductionUpdates>2</NProductionUpdates>
     <NUpdatesThisRun>2</NUpdatesThisRun>
     <SaveInterval>2</SaveInterval>
     <SavePrefix>dummy_run</SavePrefix>
