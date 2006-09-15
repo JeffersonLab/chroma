@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.30 2006-09-13 19:11:57 bjoo Exp $
+# $Id: Makefile.am,v 3.31 2006-09-15 19:21:17 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1135,8 +1135,12 @@ libchroma_a_SOURCES += \
 endif
 
 if BUILD_CG_DWF
-nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h
-libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.cc
+nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h \
+	actions/ferm/qprop/avp_inverter_interface.h \
+	actions/ferm/qprop/avp_sse_solver.h
+
+libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.cc \
+	actions/ferm/qprop/avp_inverter_interface.cc
 endif
 
 if BUILD_SSE_DWF_CG
