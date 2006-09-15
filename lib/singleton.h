@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: singleton.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: singleton.h,v 3.1 2006-09-15 02:46:47 edwards Exp $
 /*! @file
  * @brief Singleton support
  */
@@ -250,6 +250,28 @@ namespace Chroma
 
   template <class T>
   struct DefaultLifetime
+  {
+    static void ScheduleDestruction(T*, void (*pFun)())
+      { std::atexit(pFun); }
+        
+    static void OnDeadReference()
+      { throw std::logic_error("Dead Reference Detected"); }
+  };
+
+  // Copy to help with disambiguation
+  template <class T>
+  struct DefaultLifetime1
+  {
+    static void ScheduleDestruction(T*, void (*pFun)())
+      { std::atexit(pFun); }
+        
+    static void OnDeadReference()
+      { throw std::logic_error("Dead Reference Detected"); }
+  };
+
+  // Copy to help with disambiguation
+  template <class T>
+  struct DefaultLifetime2
   {
     static void ScheduleDestruction(T*, void (*pFun)())
       { std::atexit(pFun); }
