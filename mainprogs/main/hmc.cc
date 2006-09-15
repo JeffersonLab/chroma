@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.3 2006-08-26 02:12:46 edwards Exp $
+// $Id: hmc.cc,v 3.4 2006-09-15 02:51:17 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -278,7 +278,10 @@ namespace Chroma
     START_CODE();
 
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
+    XMLWriter& xml_log = TheXMLLogWriter::Instance();
+
     push(xml_out, "doHMC");
+    push(xml_log, "doHMC");
 
     multi1d< Handle< AbsInlineMeasurement > > default_measurements(1);
     InlinePlaquetteParams plaq_params;
@@ -317,12 +320,15 @@ namespace Chroma
 
       // XML Output
       push(xml_out, "MCUpdates");
+      push(xml_log, "MCUpdates");
 
       for(int i=0; i < to_do; i++) 
       {
 	push(xml_out, "elem"); // Caller writes elem rule
+	push(xml_log, "elem"); // Caller writes elem rule
 
 	push(xml_out, "Update");
+	push(xml_log, "Update");
 	// Increase current update counter
 	cur_update++;
 	
@@ -332,7 +338,10 @@ namespace Chroma
 
 	// Log
 	write(xml_out, "update_no", cur_update);
+	write(xml_log, "update_no", cur_update);
+
 	write(xml_out, "WarmUpP", warm_up_p);
+	write(xml_log, "WarmUpP", warm_up_p);
 
         QDPIO::cout << "Before HMC trajectory call" << endl;
 
@@ -347,6 +356,7 @@ namespace Chroma
 		    << " secs" << endl;
 
 	write(xml_out, "seconds_for_trajectory", swatch.getTimeInSeconds());
+	write(xml_log, "seconds_for_trajectory", swatch.getTimeInSeconds());
 
 	swatch.reset();
 	swatch.start();
@@ -416,6 +426,7 @@ namespace Chroma
 		    << " secs" << endl;
 
 	write(xml_out, "seconds_for_measurements", swatch.getTimeInSeconds());
+	write(xml_log, "seconds_for_measurements", swatch.getTimeInSeconds());
 
 	if( cur_update % mc_control.save_interval == 0 ) 
 	{
@@ -431,17 +442,22 @@ namespace Chroma
 		      << " secs" << endl;
 	}
 
+	pop(xml_log); // pop("Update");
 	pop(xml_out); // pop("Update");
+
+	pop(xml_log); // pop("elem");
 	pop(xml_out); // pop("elem");
       }   
       
       // Save state
       saveState<UpdateParams>(update_params, mc_control, cur_update, gauge_state.getQ());
       
+      pop(xml_log); // pop("MCUpdates")
       pop(xml_out); // pop("MCUpdates")
     }
 
-    pop(xml_out);
+    pop(xml_log); // pop("doHMC")
+    pop(xml_out); // pop("doHMC")
     
     END_CODE();
   }
@@ -476,7 +492,7 @@ using namespace Chroma;
  *  \ingroup main
  *
  * Main program for dynamical fermion generation
- */
+xml */
 
 int main(int argc, char *argv[]) 
 {
@@ -488,7 +504,10 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
+  XMLFileWriter& xml_log = Chroma::getXMLLogInstance();
+
   push(xml_out, "hmc");
+  push(xml_log, "hmc");
 
   HMCTrjParams trj_params;
   MCControl    mc_control;
@@ -503,6 +522,7 @@ int main(int argc, char *argv[])
 
     // Write out the input
     write(xml_out, "Input", xml_in);
+    write(xml_log, "Input", xml_in);
   }
   catch(const std::string& e) {
     QDPIO::cerr << "hmc: Caught Exception while reading file: " << e << endl;
@@ -515,6 +535,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Finished with QDP create layout" << endl;
 
   proginfo(xml_out);    // Print out basic program info
+  proginfo(xml_log);    // Print out basic program info
 
   // Start up the config
   multi1d<LatticeColorMatrix> u(Nd);
@@ -527,10 +548,14 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Finished initializing gauge field" << endl;
 
     // Write out the config header
-    push(xml_out, "Config_info");
-    write(xml_out, "file_xml", file_xml);
-    write(xml_out, "config_xml", config_xml);
-    pop(xml_out);
+    XMLBufferWriter xml_buf;
+    push(xml_buf, "Config_info");
+    write(xml_buf, "file_xml", file_xml);
+    write(xml_buf, "config_xml", config_xml);
+    pop(xml_buf);
+
+    xml_out << xml_buf;
+    xml_log << xml_buf;
   }
   
   // Get the MC_Hamiltonian
@@ -614,7 +639,8 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
 
-  pop(xml_out);
+  pop(xml_log);  // hmc
+  pop(xml_out);  // hmc
 
   END_CODE();
 
