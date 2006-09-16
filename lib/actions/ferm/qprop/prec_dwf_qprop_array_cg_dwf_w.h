@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.3 2006-09-16 03:24:06 bjoo Exp $
+// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.4 2006-09-16 05:01:20 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -11,7 +11,8 @@
 #include "io/aniso_io.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
 
-
+// #define SINGLE_PREC_SOLVER
+#define DOUBLE_PREC_SOLVER
 namespace Chroma
 {
 
@@ -20,7 +21,7 @@ namespace Chroma
    *
    * Propagator solver for DWF fermions
    */
-  template< typename Solver >
+  template< typename SinglePrecSolver, typename DoublePrecSolver >
   class CGDWFQpropT : public SystemSolverArray<LatticeFermion>
   {
   public:
@@ -80,9 +81,14 @@ namespace Chroma
       double rsd_sq = rsd * rsd;
       int    max_iter = invParam.MaxCG;
       double out_eps;
+#ifdef SINGLE_PREC_SOLVER
       single_prec_solver.cgSolver(psi, M5, m_f, 
 		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
-
+#endif
+#ifdef DOUBLE_PREC_SOLVER
+      double_prec_solver.cgSolver(psi, M5, m_f, 
+		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
+#endif
       //    fini();   // only needed because 2 qpropT might be active - SSE CG does not allow this
       
       // Compute residual
@@ -137,15 +143,25 @@ namespace Chroma
 	QDPIO::cerr << "SSE qpropT only N5 that is multiple of 2" << endl;
 	QDP_abort(1);
       }
-      
-      std::string dwf_error_str = "double prec.";
+   
+#ifdef SINGLE_PREC_SOLVER
+      std::string dwf_error_str = "single prec.";
       int stat = single_prec_solver.init(lattice_size.slice(), NULL, NULL);
       if ( stat != 0) {
 	
-	QDPIO::cerr << __func__ << ": error in MIT_ssed_DWF_init: " << dwf_error_str << " error code is " << stat << endl;
+	QDPIO::cerr << __func__ << ": error in SP solver init: " << dwf_error_str << " error code is " << stat << endl;
 	QDP_abort(1);
       }
-
+#endif  
+#ifdef DOUBLE_PREC_SOLVER
+      std::string dwf_error_str2 = "double prec.";
+      int stat2 = double_prec_solver.init(lattice_size.slice(), NULL, NULL);
+      if ( stat2 != 0) {
+	
+	QDPIO::cerr << __func__ << ": error in DP solver init: " << dwf_error_str2 << " error code is " << stat2 << endl;
+	QDP_abort(1);
+      }
+#endif
       // Transform the U fields
       multi1d<LatticeColorMatrix> u = state->getLinks();
       
@@ -165,21 +181,32 @@ namespace Chroma
       multi1d<LatticeColorMatrix> v(Nd);
       for (int i = 0; i < Nd; i++)
 	v[i] = shift(u[i], -1, i); // as viewed from the destination
-      
+#ifdef SINGLE_PREC_SOLVER      
       single_prec_solver.loadGauge(&u, &v);
-      
+#endif 
+#ifdef DOUBLE_PREC_SOLVER
+      double_prec_solver.loadGauge(&u, &v);
+#endif 
       QDPIO::cout << "exiting CGDWFQpropT::init" << endl;
     }
 
     //! Private internal destructor
     void fini() {
       QDPIO::cout << "CGDWFQpropT: calling destructor" << endl;
+#ifdef SINGLE_PREC_SOLVER
       single_prec_solver.deleteGauge();
       single_prec_solver.fini();
+#endif
+
+#ifdef DOUBLE_PREC_SOLVER
+      double_prec_solver.deleteGauge();
+      double_prec_solver.fini();
+#endif 
     }
       
   private:
-    Solver  single_prec_solver;
+    SinglePrecSolver  single_prec_solver;
+    DoublePrecSolver double_prec_solver;
 
     Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
     Real OverMass;
