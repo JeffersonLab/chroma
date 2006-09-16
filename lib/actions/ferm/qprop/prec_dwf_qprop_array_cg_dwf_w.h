@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.2 2006-09-15 19:22:26 bjoo Exp $
+// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.3 2006-09-16 03:24:06 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -20,8 +20,7 @@ namespace Chroma
    *
    * Propagator solver for DWF fermions
    */
-  template< typename SinglePrecSolver,
-	    typename DoublePrecSolver>
+  template< typename Solver >
   class CGDWFQpropT : public SystemSolverArray<LatticeFermion>
   {
   public:
@@ -81,16 +80,8 @@ namespace Chroma
       double rsd_sq = rsd * rsd;
       int    max_iter = invParam.MaxCG;
       double out_eps;
-      single_prec_solver.cgSolver(&psi, 
-				  M5, 
-				  m_f, 
-				  &chi, 
-				  &psi, 
-				  rsd_sq, 
-				  max_iter, 
-				  &out_eps, 
-				  &res.n_count, 
-				  psi.size());
+      single_prec_solver.cgSolver(psi, M5, m_f, 
+		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
 
       //    fini();   // only needed because 2 qpropT might be active - SSE CG does not allow this
       
@@ -148,10 +139,10 @@ namespace Chroma
       }
       
       std::string dwf_error_str = "double prec.";
-      
-      if (single_prec_solver.init(lattice_size.slice(), NULL, NULL) != 0) {
+      int stat = single_prec_solver.init(lattice_size.slice(), NULL, NULL);
+      if ( stat != 0) {
 	
-	QDPIO::cerr << __func__ << ": error in MIT_ssed_DWF_init: " << dwf_error_str << endl;
+	QDPIO::cerr << __func__ << ": error in MIT_ssed_DWF_init: " << dwf_error_str << " error code is " << stat << endl;
 	QDP_abort(1);
       }
 
@@ -188,7 +179,7 @@ namespace Chroma
     }
       
   private:
-    SinglePrecSolver  single_prec_solver;
+    Solver  single_prec_solver;
 
     Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
     Real OverMass;

@@ -1,0 +1,60 @@
+#ifndef AVP_SSED_SOLVER_H
+#define AVP_SSED_SOLVER_H
+
+#include "avp_inverter_interface.h"
+
+extern "C" {
+  struct MIT_ssed_DWF_Gauge;
+  struct MIT_ssed_DWF_Fermion;
+}
+
+using namespace QDP;
+namespace Chroma { 
+  namespace AVPSolver { 
+    
+    class SSEDWFSolverF : public AVPSolverInterface< MIT_ssed_DWF_Gauge, MIT_ssed_DWF_Fermion > {
+public:
+    protected:
+      Fermion* loadFermionRHS(const void* OuterFermion) const; 
+      Fermion* loadFermionGuess(const void *OuterFermion) const;
+      Fermion* allocateFermion(void) const;
+      void saveFermionSolver(void *OuterFermion, 
+		       Fermion* CGFermion) const;
+
+      void saveFermionOperator(void *OuterFermion, 
+			       Fermion* CGFermion) const;
+      void deleteFermion(Fermion* ptr) const;
+      int cgInternal(Fermion       *psi,
+		     double        *out_eps,
+		     int           *out_iter,
+		     double        M,
+		     double        m_f,
+		     const Fermion *x0,
+		     const Fermion *eta,
+		     double        eps,
+		     int           min_iter,
+		     int           max_iter)  const;
+
+    public:
+     void loadGauge(const void *u,
+		    const void *v);
+     
+     void deleteGauge(void);
+
+     int init(const int lattice[5],
+	      void *(*allocator)(size_t size),
+	      void (*deallocator)(void *));
+     
+     // Finalize - destructor call
+     void fini(void);
+    private:
+     Gauge *g;
+    };
+  
+
+
+
+
+};
+
+#endif

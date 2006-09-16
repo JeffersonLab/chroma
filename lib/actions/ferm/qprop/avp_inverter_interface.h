@@ -118,20 +118,19 @@ namespace Chroma {
 
 
       // Call the solver
-      int cgSolver(void          *solution,
-		   double        M5,
-		   double        m_f,
-		   const void    *rhs,
-		   const void    *x0,
-		   double        rsd,
-		   int           max_iter,
-		   double        *out_eps,
-		   int           *out_iter,
-		   int           N5) const
+      int cgSolver(multi1d<LatticeFermion> &solution,    // output
+	      double M5,                            // input
+	      double m_f,                           // input
+	      const multi1d<LatticeFermion> &rhs,   // input
+	      const multi1d<LatticeFermion> &x0,    // input
+	      double rsd,                           // input
+	      int max_iter,                         // input
+	      double& out_eps,                      // output
+	      int &out_iter )       const           // output
       {
-	Fermion *eta = loadFermionRHS(rhs);
+	Fermion *eta = loadFermionRHS(&rhs);
 	
-	Fermion *X0  = loadFermionGuess(x0);
+	Fermion *X0  = loadFermionGuess(&x0);
 	
 	Fermion *res = allocateFermion();
 	
@@ -140,8 +139,8 @@ namespace Chroma {
 		    << endl;
 	
 	double M_0 = -2*M5;
-	*out_eps = 0.0;
-	*out_iter = 0;
+	out_eps = 0.0;
+	out_iter = 0;
 	int min_iter = 0;
 
 	StopWatch swatch;
@@ -149,35 +148,35 @@ namespace Chroma {
 	swatch.start();
 	
 	
-	int status = cgInternal(res, out_eps, out_iter,
+	int status = cgInternal(res, &out_eps, &out_iter,
 			        M_0, m_f, X0, eta, 
 				rsd, min_iter, max_iter);
 	
 	swatch.stop();
 	QDPIO::cout << "CGInternal : status = " << status
-		    << ", iterations = " << *out_iter
-		    << ", resulting epsilon = " << *out_eps
+		    << ", iterations = " << out_iter
+		    << ", resulting epsilon = " << out_eps
 		    << endl;
 	
 	if (status != 0) {
 	  
 	  QDPIO::cerr << "DWF_solver: status = " << status
-		      << ", iterations = " << *out_iter
-		      << ", resulting epsilon = " << *out_eps
+		      << ", iterations = " << out_iter
+		      << ", resulting epsilon = " << out_eps
 		      << endl;
 	  QDP_abort(1);
 	}
 
 	// Flop counting
 	{
-	  unsigned long Ls = N5;
+	  unsigned long Ls = solution.size();
 	  unsigned long Ndiag  = (4*Ls+2)*Nc*Ns; /* This is my count with the blas / chiral proj ops */
 	  unsigned long NdiagInv = (10*Ls-8)*Nc*Ns;
 	  unsigned long Neo    = Ls*(1320+24);
 	  unsigned long N_mpsi = 2*Ndiag + 2*Neo + Ls*24;
 	  unsigned long Nflops_c = (24*Ls + 2*N_mpsi) + (48*Ls);  /* constant term */
 	  unsigned long Nflops_s = (2*N_mpsi + Ls*(2*48+2*24));   /* slope */
-	  unsigned long long Nflops_per_cbsite = Nflops_c + (*out_iter)*Nflops_s;
+	  unsigned long long Nflops_per_cbsite = Nflops_c + ( out_iter)*Nflops_s;
 	  unsigned long long Nflops_total = Nflops_per_cbsite*(Layout::sitesOnNode()/2);
 	  
 	  /* Flop count for inverter */
@@ -187,7 +186,7 @@ namespace Chroma {
 	  flopcount.report("CGDWFQpropT", swatch.getTimeInSeconds());
 	}
 
-	saveFermionSolver(solution,res);
+	saveFermionSolver(&solution,res);
 	deleteFermion(res);
 	deleteFermion(X0);
 	deleteFermion(eta);
