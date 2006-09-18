@@ -141,7 +141,7 @@ namespace Chroma {
 	double M_0 = -2*M5;
 	out_eps = 0.0;
 	out_iter = 0;
-	int min_iter = 5;
+	int min_iter = 0;
 
 	StopWatch swatch;
 	swatch.reset();
