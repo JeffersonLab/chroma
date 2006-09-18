@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.8 2006-09-18 19:30:26 bjoo Exp $
+// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.9 2006-09-18 19:45:48 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -63,6 +63,7 @@ namespace Chroma
      */
     SystemSolverResults_t operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
     {
+      
       QDPIO::cout << "entering CGDWFQpropT::operator()" << endl;
       
       START_CODE();
@@ -81,17 +82,23 @@ namespace Chroma
       double rsd_sq = rsd * rsd;
       int    max_iter = invParam.MaxCG;
       double out_eps;
+      int single_count = 0;
+      int double_count = 0;
 #ifdef SINGLE_PREC_SOLVER
+      QDPIO::cout << "CGDWFQpropT: Beginning Single Precision Solve" << endl;
       single_prec_solver.cgSolver(psi, M5, m_f, 
-		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
+		      chi, psi, rsd_sq, max_iter, out_eps, single_count);
+      res.n_count = single_count;
 #endif
 #ifdef DOUBLE_PREC_SOLVER
+      QDPIO::cout << "CGDWFQpropT: Beginning Double Precision Solve" << endl;
       double_prec_solver.cgSolver(psi, M5, m_f, 
-		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
+		      chi, psi, rsd_sq, max_iter, out_eps, double_count);
+      res.n_count += double_count;
 #endif
-      //    fini();   // only needed because 2 qpropT might be active - SSE CG does not allow this
+      QDPIO::cout << "CGDWFQpropT: Single Prec. Iters = " << single_count << " Double Prec. Iters = " << double_count << " Total Iters = " << res.n_count << endl;
       
-      // Compute residual
+      // Compute actual residual
       {
 	multi1d<LatticeFermion>  r(N5);
 	A->unprecLinOp(r, psi, PLUS);
