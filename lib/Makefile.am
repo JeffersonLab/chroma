@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.32 2006-09-16 03:25:48 bjoo Exp $
+# $Id: Makefile.am,v 3.33 2006-09-18 21:04:33 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1138,14 +1138,28 @@ if BUILD_CG_DWF
 nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h \
 	actions/ferm/qprop/avp_inverter_interface.h \
 	actions/ferm/qprop/avp_ssef_solver.h \
-	actions/ferm/qprop/avp_ssed_solver.h
+	actions/ferm/qprop/avp_ssed_solver.h \
+	actions/ferm/qprop/avp_bglf_solver.h \
+	actions/ferm/qprop/avp_bgld_solver.h \
+	actions/ferm/qprop/avp_altivecf_solver.h
 
 libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.cc \
-	actions/ferm/qprop/avp_inverter_interface.cc \
-	actions/ferm/qprop/avp_ssef_solver.cc \
+	actions/ferm/qprop/avp_inverter_interface.cc
+endif
+
+if BUILD_CG_DWF_SSE
+libchroma_a_SOURCES += actions/ferm/qprop/avp_ssef_solver.cc \
 	actions/ferm/qprop/avp_ssed_solver.cc
 endif
 
+if BUILD_CG_DWF_BLUELIGHT
+libchroma_a_SOURCES += actions/ferm/qprop/avp_bglf_solver.cc \
+	actions/ferm/qprop/avp_bgld_solver.cc
+endif
+
+if BUILD_CG_DWF_ALTIVEC
+libchroma_a_SOURCES += actions/ferm/qprop/avp_altivecf_solver.cc
+endif
 if BUILD_SSE_DWF_CG
 nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
 libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc

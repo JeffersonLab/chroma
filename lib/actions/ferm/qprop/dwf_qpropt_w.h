@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwf_qpropt_w.h,v 3.5 2006-09-16 05:01:20 bjoo Exp $
+// $Id: dwf_qpropt_w.h,v 3.6 2006-09-18 21:04:34 bjoo Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -19,14 +19,49 @@
 // Dslash-es. Currently only optimised inverters are the SSE and ALTICEC 
 #if defined(BUILD_CG_DWF)
 #include "actions/ferm/qprop/avp_inverter_interface.h"
+
+// Internal configuration
+#include <cg-dwf-config.h>
+
+#ifdef CG_DWF_ARCH_SSE
+// SSE architecture
 #include "actions/ferm/qprop/avp_ssef_solver.h"
 #include "actions/ferm/qprop/avp_ssed_solver.h"
 
+// Enable both single and a double prec solver
+#define SINGLE_PREC_SOLVER
+#define DOUBLE_PREC_SOLVER
+
+// Include the qprop file
 #include "actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h"
 
+// Define types 
 namespace Chroma { 
   typedef Chroma::CGDWFQpropT< AVPSolver::SSEDWFSolverF, AVPSolver::SSEDWFSolverD>  DWFQpropT;
 }
+#elif CG_DWF_ARCH_BLUELIGHT // CG_DWF_ARCH_SSE
+#include "actions/ferm/qprop/avp_bglf_solver.h"
+#include "actions/ferm/qprop/avp_bgld_solver.h"
+// Enable both single and a double prec solver
+#define SINGLE_PREC_SOLVER
+#define DOUBLE_PREC_SOLVER
+// Include the qprop file
+#include "actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h"
+namespace Chroma { 
+  typedef Chroma::CGDWFQpropT< AVPSolver::BGLDWFSolverF, AVPSolver::BGLDWFSolverD>  DWFQpropT;
+}
+#elif CG_DWF_ARCH_ALTIVEC
+#include "actions/ferm/qprop/avp_altivecf_solver.h"
+// Enable only single prec solver
+#define SINGLE_PREC_SOLVER
+#include "actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h"
+// To satisfy type requirements pass the type of single prec 
+// as the double prec solver. However this will be turned off by
+// the fact that we have not defined DOUBLE_PREC_SOLVER
+namespace Chroma {
+  typedef Chroma::CGDWFQpropT< AVPSolver::AltiVecDWFSolverF, AVPSolver::AltiVecDWFSolverF>  DWFQpropT;
+}
+#endif
 
 #elif defined(BUILD_SSE_DWF_CG)
 // The file defines the SSE Dslash class

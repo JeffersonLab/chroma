@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.9 2006-09-18 19:45:48 bjoo Exp $
+// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.10 2006-09-18 21:04:34 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -11,8 +11,7 @@
 #include "io/aniso_io.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
 
-#define SINGLE_PREC_SOLVER
-#define DOUBLE_PREC_SOLVER
+
 namespace Chroma
 {
 

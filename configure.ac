@@ -55,6 +55,12 @@ AC_ARG_ENABLE(cg_dwf,
 	[Build and Use AVPs CG-DWF library])
 )
 
+AC_ARG_ENABLE(cg-dwf-cpu-arch,
+	AC_HELP_STRING([--enable-cg-dwf-cpu-arch=cpuarch cpuarc=sse,bluelight,altivec]),
+	[cg_dwf_cpu_arch=${enableval}],
+	[cg_dwf_cpu_arch="sse"]
+)
+
 AC_ARG_ENABLE(altivec_dwf_cg,
   AC_HELP_STRING( 
     [--enable-altivec-dwf-cg],
@@ -97,6 +103,8 @@ AC_ARG_WITH(gmp,
      GMP_HOME=${with_gmp} ],
    [ gmp_enabled="no" ]
 )
+
+
 
 if test "X${QDPXX_HOME}X" = "XX" ; then
   AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
@@ -181,6 +189,22 @@ dnl CG DWF stuff
 case "$enable_cg_dwf" in
   yes) 
         AC_MSG_NOTICE([Configuring CG DWF])
+
+	case ${cg_dwf_cpu_arch} in
+	sse)
+		AC_MSG_NOTICE([Configuring CG-DWF for SSE architecture])
+		;;
+	bluelight)
+		AC_MSG_NOTICE([Configuring CG-DWF for BlueLight architecture])
+		;;
+	altivec)
+		AC_MSG_NOTICE([Configuring CG-DWF for AltiVec architecture])
+		;;
+	*)
+		AC_MSG_ERROR([Unknown cpu architecture. Use --enable-cpu-arch to select a known one])
+		;;
+	esac
+
 	AC_CONFIG_SUBDIRS(other_libs/cg-dwf)
 	AC_SUBST(CG_DWF_DIR, [cg-dwf])
 	AC_DEFINE([BUILD_CG_DWF],[1],[Build CG DWF])
@@ -195,6 +219,14 @@ AC_SUBST(CG_DWF_ENABLED,[$enable_cg_dwf])
 AM_CONDITIONAL(BUILD_CG_DWF,
   [test "x${enable_cg_dwf}x" = "xyesx" ])
 
+AM_CONDITIONAL(BUILD_CG_DWF_SSE,
+  [test "x${cg_dwf_cpu_arch}x" = "xssex" ])
+
+AM_CONDITIONAL(BUILD_CG_DWF_BLUELIGHT,
+  [test "x${cg_dwf_cpu_arch}x" = "xbluelightx" ])
+
+AM_CONDITIONAL(BUILD_CG_DWF_ALTIVEC,
+  [test "x${cg_dwf_cpu_arch}x" = "xaltivecx" ])
 
 dnl SSE DWF CG stuff
 case "$enable_sse_dwf_cg" in

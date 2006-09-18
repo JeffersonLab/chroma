@@ -277,7 +277,7 @@ ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_wilson_dslash"
 ac_subdirs_all="$ac_subdirs_all other_libs/cg-dwf"
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_dwf_cg"
 ac_subdirs_all="$ac_subdirs_all other_libs/altivec_dwf_cg"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB AR ac_ct_AR QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE CG_DWF_DIR CG_DWF_ENABLED BUILD_CG_DWF_TRUE BUILD_CG_DWF_FALSE SSE_DWF_CG_DIR SSE_DWF_CG_ENABLED BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE ALTIVEC_DWF_CG_DIR ALTIVEC_DWF_CG_ENABLED BUILD_ALTIVEC_DWF_CG_TRUE BUILD_ALTIVEC_DWF_CG_FALSE BAGEL_WILSON_DSLASH_CONFIG BAGEL_WILSON_DSLASH_CXXFLAGS BAGEL_WILSON_DSLASH_LDFLAGS BAGEL_WILSON_DSLASH_LIBS BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE BUILD_OPT_CFZ_LINOP_TRUE BUILD_OPT_CFZ_LINOP_FALSE GMP_CXXFLAGS GMP_LDFLAGS GMP_LIBS BUILD_GMP_REMEZ_TRUE BUILD_GMP_REMEZ_FALSE LATEX DVIPS DVIPDF DOXYGEN XMLDIFF LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB AR ac_ct_AR QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE CG_DWF_DIR CG_DWF_ENABLED BUILD_CG_DWF_TRUE BUILD_CG_DWF_FALSE BUILD_CG_DWF_SSE_TRUE BUILD_CG_DWF_SSE_FALSE BUILD_CG_DWF_BLUELIGHT_TRUE BUILD_CG_DWF_BLUELIGHT_FALSE BUILD_CG_DWF_ALTIVEC_TRUE BUILD_CG_DWF_ALTIVEC_FALSE SSE_DWF_CG_DIR SSE_DWF_CG_ENABLED BUILD_SSE_DWF_CG_TRUE BUILD_SSE_DWF_CG_FALSE ALTIVEC_DWF_CG_DIR ALTIVEC_DWF_CG_ENABLED BUILD_ALTIVEC_DWF_CG_TRUE BUILD_ALTIVEC_DWF_CG_FALSE BAGEL_WILSON_DSLASH_CONFIG BAGEL_WILSON_DSLASH_CXXFLAGS BAGEL_WILSON_DSLASH_LDFLAGS BAGEL_WILSON_DSLASH_LIBS BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE BUILD_OPT_CFZ_LINOP_TRUE BUILD_OPT_CFZ_LINOP_FALSE GMP_CXXFLAGS GMP_LDFLAGS GMP_LIBS BUILD_GMP_REMEZ_TRUE BUILD_GMP_REMEZ_FALSE LATEX DVIPS DVIPDF DOXYGEN XMLDIFF LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -827,6 +827,8 @@ Optional Features:
   --enable-sse-dwf-cg     Build and Use the SSE DWF CG Library
 
   --enable-cg-dwf         Build and Use AVPs CG-DWF library
+
+  --enable-cg-dwf-cpu-arch=cpuarch cpuarc=sse
 
   --enable-altivec-dwf-cg Build and Use the altivec DWF CG Library
 
@@ -3298,6 +3300,15 @@ if test "${enable_cg_dwf+set}" = set; then
 
 fi;
 
+# Check whether --enable-cg-dwf-cpu-arch or --disable-cg-dwf-cpu-arch was given.
+if test "${enable_cg_dwf_cpu_arch+set}" = set; then
+  enableval="$enable_cg_dwf_cpu_arch"
+  cg_dwf_cpu_arch=${enableval}
+else
+  cg_dwf_cpu_arch="sse"
+
+fi;
+
 # Check whether --enable-altivec_dwf_cg or --disable-altivec_dwf_cg was given.
 if test "${enable_altivec_dwf_cg+set}" = set; then
   enableval="$enable_altivec_dwf_cg"
@@ -3344,6 +3355,8 @@ else
    gmp_enabled="no"
 
 fi;
+
+
 
 if test "X${QDPXX_HOME}X" = "XX" ; then
   # Extract the first word of "qdp++-config", so it can be a program name with args.
@@ -3644,6 +3657,27 @@ case "$enable_cg_dwf" in
         { echo "$as_me:$LINENO: Configuring CG DWF" >&5
 echo "$as_me: Configuring CG DWF" >&6;}
 
+	case ${cg_dwf_cpu_arch} in
+	sse)
+		{ echo "$as_me:$LINENO: Configuring CG-DWF for SSE architecture" >&5
+echo "$as_me: Configuring CG-DWF for SSE architecture" >&6;}
+		;;
+	bluelight)
+		{ echo "$as_me:$LINENO: Configuring CG-DWF for BlueLight architecture" >&5
+echo "$as_me: Configuring CG-DWF for BlueLight architecture" >&6;}
+		;;
+	altivec)
+		{ echo "$as_me:$LINENO: Configuring CG-DWF for AltiVec architecture" >&5
+echo "$as_me: Configuring CG-DWF for AltiVec architecture" >&6;}
+		;;
+	*)
+		{ { echo "$as_me:$LINENO: error: Unknown cpu architecture. Use --enable-cpu-arch to select a known one" >&5
+echo "$as_me: error: Unknown cpu architecture. Use --enable-cpu-arch to select a known one" >&2;}
+   { (exit 1); exit 1; }; }
+		;;
+	esac
+
+
 
 subdirs="$subdirs other_libs/cg-dwf"
 
@@ -3674,6 +3708,38 @@ else
   BUILD_CG_DWF_FALSE=
 fi
 
+
+
+
+if test "x${cg_dwf_cpu_arch}x" = "xssex" ; then
+  BUILD_CG_DWF_SSE_TRUE=
+  BUILD_CG_DWF_SSE_FALSE='#'
+else
+  BUILD_CG_DWF_SSE_TRUE='#'
+  BUILD_CG_DWF_SSE_FALSE=
+fi
+
+
+
+
+if test "x${cg_dwf_cpu_arch}x" = "xbluelightx" ; then
+  BUILD_CG_DWF_BLUELIGHT_TRUE=
+  BUILD_CG_DWF_BLUELIGHT_FALSE='#'
+else
+  BUILD_CG_DWF_BLUELIGHT_TRUE='#'
+  BUILD_CG_DWF_BLUELIGHT_FALSE=
+fi
+
+
+
+
+if test "x${cg_dwf_cpu_arch}x" = "xaltivecx" ; then
+  BUILD_CG_DWF_ALTIVEC_TRUE=
+  BUILD_CG_DWF_ALTIVEC_FALSE='#'
+else
+  BUILD_CG_DWF_ALTIVEC_TRUE='#'
+  BUILD_CG_DWF_ALTIVEC_FALSE=
+fi
 
 
 case "$enable_sse_dwf_cg" in
@@ -4599,6 +4665,27 @@ echo "$as_me: error: conditional \"BUILD_CG_DWF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${BUILD_CG_DWF_SSE_TRUE}" && test -z "${BUILD_CG_DWF_SSE_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_CG_DWF_SSE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_CG_DWF_SSE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_CG_DWF_BLUELIGHT_TRUE}" && test -z "${BUILD_CG_DWF_BLUELIGHT_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_CG_DWF_BLUELIGHT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_CG_DWF_BLUELIGHT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_CG_DWF_ALTIVEC_TRUE}" && test -z "${BUILD_CG_DWF_ALTIVEC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_CG_DWF_ALTIVEC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_CG_DWF_ALTIVEC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${BUILD_SSE_DWF_CG_TRUE}" && test -z "${BUILD_SSE_DWF_CG_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_SSE_DWF_CG\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -5250,6 +5337,12 @@ s,@CG_DWF_DIR@,$CG_DWF_DIR,;t t
 s,@CG_DWF_ENABLED@,$CG_DWF_ENABLED,;t t
 s,@BUILD_CG_DWF_TRUE@,$BUILD_CG_DWF_TRUE,;t t
 s,@BUILD_CG_DWF_FALSE@,$BUILD_CG_DWF_FALSE,;t t
+s,@BUILD_CG_DWF_SSE_TRUE@,$BUILD_CG_DWF_SSE_TRUE,;t t
+s,@BUILD_CG_DWF_SSE_FALSE@,$BUILD_CG_DWF_SSE_FALSE,;t t
+s,@BUILD_CG_DWF_BLUELIGHT_TRUE@,$BUILD_CG_DWF_BLUELIGHT_TRUE,;t t
+s,@BUILD_CG_DWF_BLUELIGHT_FALSE@,$BUILD_CG_DWF_BLUELIGHT_FALSE,;t t
+s,@BUILD_CG_DWF_ALTIVEC_TRUE@,$BUILD_CG_DWF_ALTIVEC_TRUE,;t t
+s,@BUILD_CG_DWF_ALTIVEC_FALSE@,$BUILD_CG_DWF_ALTIVEC_FALSE,;t t
 s,@SSE_DWF_CG_DIR@,$SSE_DWF_CG_DIR,;t t
 s,@SSE_DWF_CG_ENABLED@,$SSE_DWF_CG_ENABLED,;t t
 s,@BUILD_SSE_DWF_CG_TRUE@,$BUILD_SSE_DWF_CG_TRUE,;t t
