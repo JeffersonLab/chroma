@@ -60,13 +60,18 @@ namespace Chroma {
      
     // Init the system -- Constructor call?
     int SSEDWFSolverD::init(const int lattice[5],
+			    const void *u,
+			    const void *v,
 			    void *(*allocator)(size_t size),
 			    void (*deallocator)(void *)) {
-      return MIT_ssed_DWF_init(lattice, allocator, deallocator);
+      int status= MIT_ssed_DWF_init(lattice, allocator, deallocator);
+      loadGauge(u,v);
+      return status;
     }
      
     // Finalize - destructor call
     void SSEDWFSolverD::fini(void) {
+      deleteGauge();
       MIT_ssed_DWF_fini();
     }
   };

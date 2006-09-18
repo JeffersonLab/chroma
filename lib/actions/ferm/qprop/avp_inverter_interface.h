@@ -99,12 +99,10 @@ namespace Chroma {
 
 
       
-
-      
-    public:
-
       // Init the system -- Constructor call?
-      virtual int init(const int lattice[5],
+      virtual int init(const int* lattice,
+		       const void *u, 
+		       const void *v,
 		       void *(*allocator)(size_t size),
 		       void (*deallocator)(void *)) = 0;
       
@@ -116,6 +114,9 @@ namespace Chroma {
       
       virtual void deleteGauge(void) = 0;
 
+    public:
+      // Virtual destructor
+      virtual ~AVPSolverInterface() {};
 
       // Call the solver
       int cgSolver(multi1d<LatticeFermion> &solution,    // output
@@ -134,7 +135,7 @@ namespace Chroma {
 	
 	Fermion *res = allocateFermion();
 	
-	QDPIO::cout << "Entering MIT_ssed_DWF solver: rsd = " << rsd
+	QDPIO::cout << "Entering Level 3 DWF solver: rsd = " << rsd
 		    << ", max_iterations = " << max_iter
 		    << endl;
 	

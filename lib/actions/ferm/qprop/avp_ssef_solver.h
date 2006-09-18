@@ -35,19 +35,38 @@ public:
 		    double        eps,
 		    int           min_iter,
 		    int           max_iter)  const;
-    public:
+
      void loadGauge(const void *u,
 		    const void *v);
      
      void deleteGauge(void);
      
      // Init the system -- Constructor call?
-     int init(const int lattice[5],
-	       void *(*allocator)(size_t size),
-	       void (*deallocator)(void *));
+     int init(const int* lattice,
+	      const void *u,
+	      const void *v,
+	      void *(*allocator)(size_t size),
+	      void (*deallocator)(void *));
      
      // Finalize - destructor call
      void fini(void);
+    public:
+     SSEDWFSolverF(const int* lattice,
+		   const void *u,
+		   const void *v) 
+     {
+       int status=init(lattice,u,v,NULL, NULL);
+       if( status != 0 ) {
+	 QDPIO::cout << "SSEDWFSolverF: Failed to initialize solver. Status=" << status << endl;
+	 QDP_abort(1);
+       }
+
+     }
+
+     ~SSEDWFSolverF() { 
+       fini();
+     }
+     
     private:
      MIT_ssef_DWF_Gauge *g;
     };
