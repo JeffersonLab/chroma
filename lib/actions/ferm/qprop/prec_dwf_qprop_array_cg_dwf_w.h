@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.6 2006-09-18 17:29:17 bjoo Exp $
+// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.7 2006-09-18 18:23:35 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -82,6 +82,7 @@ namespace Chroma
       int    max_iter = invParam.MaxCG;
       double out_eps;
 
+     
       // Do single prec solve first
       {
 	QDPIO::cout << "CGDWFQpropT: Doing single prec solution" << endl;
@@ -100,9 +101,12 @@ namespace Chroma
 	DoublePrecSolver double_prec_solver(lattice_size.slice(), 
 					    &u,
 					    &v);
-	
+
+	int n_count2;	
 	double_prec_solver.cgSolver(psi, M5, m_f, 
-				    chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
+				    chi, psi, rsd_sq, max_iter, out_eps, n_count2);
+
+	res.n_count += n_count2;
       }
 
       // Compute residual
