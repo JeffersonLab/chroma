@@ -36,35 +36,18 @@ namespace Chroma {
 		     int           min_iter,
 		     int           max_iter)  const;
 
+    public:
      void loadGauge(const void *u,
 		    const void *v);
      
      void deleteGauge(void);
 
-     int init(const int* lattice,
-	      const void *u,
-	      const void *v,
+     int init(const int lattice[5],
 	      void *(*allocator)(size_t size),
 	      void (*deallocator)(void *));
      
      // Finalize - destructor call
      void fini(void);
-    public:
-     SSEDWFSolverD(const int *lattice,
-		   const void *u,
-		   const void *v) {
-       
-       int status = init(lattice, u, v, NULL, NULL);  
-       if( status != 0 ) {
-	 QDPIO::cout << "SSEDWFSolverD: Failed to initialize solver. Status=" << status << endl;
-	 QDP_abort(1);
-       }     
-     }
-
-     ~SSEDWFSolverD(void) { 
-       fini();
-     }
-
     private:
      MIT_ssed_DWF_Gauge *g;
     };

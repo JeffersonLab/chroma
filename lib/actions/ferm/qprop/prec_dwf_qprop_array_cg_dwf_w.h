@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.7 2006-09-18 18:23:35 bjoo Exp $
+// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.8 2006-09-18 19:30:26 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -11,6 +11,8 @@
 #include "io/aniso_io.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
 
+#define SINGLE_PREC_SOLVER
+#define DOUBLE_PREC_SOLVER
 namespace Chroma
 {
 
@@ -64,9 +66,7 @@ namespace Chroma
       QDPIO::cout << "entering CGDWFQpropT::operator()" << endl;
       
       START_CODE();
-
-
-
+      
       SystemSolverResults_t res;
       
       //    init();   // only needed because 2 qpropT might be active - SSE CG does not allow this
@@ -81,34 +81,16 @@ namespace Chroma
       double rsd_sq = rsd * rsd;
       int    max_iter = invParam.MaxCG;
       double out_eps;
-
-     
-      // Do single prec solve first
-      {
-	QDPIO::cout << "CGDWFQpropT: Doing single prec solution" << endl;
-	SinglePrecSolver single_prec_solver(lattice_size.slice(),
-					    &u,
-					    &v);
-	
-	single_prec_solver.cgSolver(psi, M5, m_f, 
-				    chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
-      }
-
-
-      // Do double prec solve second
-      {
-	QDPIO::cout << "CGDWFQpropT: Doing double prec restart" << endl;
-	DoublePrecSolver double_prec_solver(lattice_size.slice(), 
-					    &u,
-					    &v);
-
-	int n_count2;	
-	double_prec_solver.cgSolver(psi, M5, m_f, 
-				    chi, psi, rsd_sq, max_iter, out_eps, n_count2);
-
-	res.n_count += n_count2;
-      }
-
+#ifdef SINGLE_PREC_SOLVER
+      single_prec_solver.cgSolver(psi, M5, m_f, 
+		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
+#endif
+#ifdef DOUBLE_PREC_SOLVER
+      double_prec_solver.cgSolver(psi, M5, m_f, 
+		      chi, psi, rsd_sq, max_iter, out_eps, res.n_count);
+#endif
+      //    fini();   // only needed because 2 qpropT might be active - SSE CG does not allow this
+      
       // Compute residual
       {
 	multi1d<LatticeFermion>  r(N5);
@@ -125,14 +107,9 @@ namespace Chroma
     }
 
   protected:
-    //! Private internal initializer: 
-    //  Parse Params, 
-    //  Prepare U field and V field
-    //  Prepare lattice size
+    //! Private internal initializer
     void init(Handle< FermState<T,P,Q> > state, const GroupXML_t& inv)
     {
-
-      // Parse params an
       QDPIO::cout << "entering CGDWFQpropT::init" << endl;
       
       if (Nd != 4 || Nc != 3) {
@@ -156,8 +133,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-
-      lattice_size.resize(Nd+1);
+      multi1d<int> lattice_size(Nd+1);
       lattice_size[Nd] = N5;
       for(int i=0; i < Nd; ++i)
 	lattice_size[i] = Layout::lattSize()[i];
@@ -167,12 +143,27 @@ namespace Chroma
 	QDPIO::cerr << "SSE qpropT only N5 that is multiple of 2" << endl;
 	QDP_abort(1);
       }
-
+   
+#ifdef SINGLE_PREC_SOLVER
+      std::string dwf_error_str = "single prec.";
+      int stat = single_prec_solver.init(lattice_size.slice(), NULL, NULL);
+      if ( stat != 0) {
+	
+	QDPIO::cerr << __func__ << ": error in SP solver init: " << dwf_error_str << " error code is " << stat << endl;
+	QDP_abort(1);
+      }
+#endif  
+#ifdef DOUBLE_PREC_SOLVER
+      std::string dwf_error_str2 = "double prec.";
+      int stat2 = double_prec_solver.init(lattice_size.slice(), NULL, NULL);
+      if ( stat2 != 0) {
+	
+	QDPIO::cerr << __func__ << ": error in DP solver init: " << dwf_error_str2 << " error code is " << stat2 << endl;
+	QDP_abort(1);
+      }
+#endif
       // Transform the U fields
-      u.resize(Nd);
-      v.resize(Nd);
-
-      u = state->getLinks();
+      multi1d<LatticeColorMatrix> u = state->getLinks();
       
       if (anisoParam.anisoP) {
 	
@@ -187,27 +178,42 @@ namespace Chroma
       }
       
       // Construct shifted gauge field
+      multi1d<LatticeColorMatrix> v(Nd);
       for (int i = 0; i < Nd; i++)
 	v[i] = shift(u[i], -1, i); // as viewed from the destination
+#ifdef SINGLE_PREC_SOLVER      
+      single_prec_solver.loadGauge(&u, &v);
+#endif 
+#ifdef DOUBLE_PREC_SOLVER
+      double_prec_solver.loadGauge(&u, &v);
+#endif 
       QDPIO::cout << "exiting CGDWFQpropT::init" << endl;
     }
 
     //! Private internal destructor
     void fini() {
       QDPIO::cout << "CGDWFQpropT: calling destructor" << endl;
+#ifdef SINGLE_PREC_SOLVER
+      single_prec_solver.deleteGauge();
+      single_prec_solver.fini();
+#endif
+
+#ifdef DOUBLE_PREC_SOLVER
+      double_prec_solver.deleteGauge();
+      double_prec_solver.fini();
+#endif 
     }
       
   private:
+    SinglePrecSolver  single_prec_solver;
+    DoublePrecSolver double_prec_solver;
+
     Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
     Real OverMass;
     Real Mass;
     int  N5;
     AnisoParam_t anisoParam;
     SysSolverCGParams invParam;
-    multi1d<int> lattice_size;
-    multi1d<LatticeColorMatrix> u;
-    multi1d<LatticeColorMatrix> v;
-
   };
 
 }
