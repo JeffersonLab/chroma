@@ -1,4 +1,5 @@
-// $Id: periodic_gaugebc.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// -*- C++ -*-
+// $Id: periodic_gaugebc.h,v 3.1 2006-09-19 01:50:17 edwards Exp $
 /*! \file
  *  \brief Periodic gauge boundary conditions
  */
