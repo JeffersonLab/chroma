@@ -37,16 +37,19 @@
       <Name>WILSLP</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>2</version>
+        <version>3</version>
         <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
-        <GaugeBC>
-          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
-          <SchrPhiMult>2.0</SchrPhiMult>
-          <loop_extent>1</loop_extent>
-          <decay_dir>3</decay_dir>
-        </GaugeBC>
+        <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+            <SchrPhiMult>2.0</SchrPhiMult>
+            <loop_extent>1</loop_extent>
+            <decay_dir>3</decay_dir>
+          </GaugeBC>
+        </GaugeState>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -64,12 +67,15 @@
          <xi_0>2.464</xi_0>
          <nu>1.0</nu>
        </AnisoParam>
-       <GaugeBC>
-         <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
-         <SchrPhiMult>2.0</SchrPhiMult>
-         <loop_extent>1</loop_extent>
-         <decay_dir>3</decay_dir>
-       </GaugeBC>
+       <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+            <SchrPhiMult>2.0</SchrPhiMult>
+            <loop_extent>1</loop_extent>
+            <decay_dir>3</decay_dir>
+          </GaugeBC>
+       </GaugeState>
     </GaugeAction>
     <HBParams>
       <nOver>3</nOver>
