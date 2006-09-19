@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 3.3 2006-07-10 19:04:47 edwards Exp $
+// $Id: inline_wilslp.h,v 3.4 2006-09-19 16:02:24 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -8,6 +8,8 @@
 #define __inline_wilslp_h__
 
 #include "chromabase.h"
+#include "handle.h"
+#include "create_state.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/xml_group_reader.h"
 
@@ -34,7 +36,7 @@ namespace Chroma
       int           kind;
       int           j_decay;
       int           t_dir;
-      GroupXML_t    gaugebc;
+      GroupXML_t    cgs;
     } param;
 
     struct NamedObject_t
@@ -49,9 +51,11 @@ namespace Chroma
   class InlineWilsonLoop : public AbsInlineMeasurement 
   {
   public:
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     ~InlineWilsonLoop() {}
     InlineWilsonLoop(const InlineWilsonLoopParams& p) : params(p) {}
-    InlineWilsonLoop(const InlineWilsonLoop& p) : params(p.params) {}
 
     unsigned long getFrequency(void) const {return params.frequency;}
 

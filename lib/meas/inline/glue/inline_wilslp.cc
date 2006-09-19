@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.3 2006-07-10 19:04:47 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.4 2006-09-19 16:02:24 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -8,8 +8,9 @@
 #include "meas/glue/wilslp.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "actions/gauge/gaugebcs/gaugebc_factory.h"
-#include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
+#include "actions/gauge/gaugeacts/gaugeacts_aggregate.h"
+#include "actions/gauge/gaugeacts/gauge_createstate_factory.h"
+#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
 
 namespace Chroma 
 { 
@@ -26,7 +27,7 @@ namespace Chroma
     bool registerAll()
     {
       bool foo = true;
-      foo &= GaugeTypeGaugeBCEnv::registered;
+      foo &= GaugeActsEnv::registered;
       foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
       return foo;
     }
@@ -46,8 +47,12 @@ namespace Chroma
 
     switch (version) 
     {
-    case 2:
-      param.gaugebc = readXMLGroup(paramtop, "GaugeBC", "Name");
+    case 3:
+      if (paramtop.count("GaugeState") != 0)
+	param.cgs = readXMLGroup(paramtop, "GaugeState", "Name");
+      else
+	param.cgs = CreateGaugeStateEnv::nullXMLGroup();
+
       break;
 
     default:
@@ -66,12 +71,12 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 2;
+    int version = 3;
     write(xml, "version", version);
     write(xml, "kind", param.kind);
     write(xml, "j_decay", param.j_decay);
     write(xml, "t_dir", param.t_dir);
-    xml << param.gaugebc.xml;
+    xml << param.cgs.xml;
 
     pop(xml);
   }
@@ -140,16 +145,36 @@ namespace Chroma
       multi1d<LatticeColorMatrix> u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-      // Set the gaugebc and modify the fields
+      // Set the construct state and modify the fields
       {
-	std::istringstream  xml_s(params.param.gaugebc.xml);
+	std::istringstream  xml_s(params.param.cgs.xml);
 	XMLReader  gaugetop(xml_s);
 
-	Handle<GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
-	  gbc(TheGaugeBCFactory::Instance().createObject(params.param.gaugebc.id,
-							 gaugetop,
-							 params.param.gaugebc.path));
-	gbc->zero(u);
+	Handle<CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	  cgs(TheCreateGaugeStateFactory::Instance().createObject(params.param.cgs.id,
+								  gaugetop,
+								  params.param.cgs.path));
+
+	Handle<GaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	  state((*cgs)(u));
+
+	// Pull the u fields back out from the state since they might have been
+	// munged with gaugeBC's
+	u = state->getLinks();
+
+	// Not sure this is what I really want. Zap the fields on the boundaries
+	// for the measurements. For these measurements, I do not want boundaries
+	// influencing the result. In Schroedinger Func, I correct for the volume
+	// after the fact that include the pads. This is different than HMC, where
+	// for the action I want the total action INCLUDING the boundaries. What's
+	// important there is that when we compute the differences of the action
+	// in the accept/reject step, the boundaries cancel out since they are held
+	// fixed.
+	//
+	// WARNING: this zeroing only works because Q is the same type as P and the
+	// zero takes a P. This equivalence of types is not true in general!!! 
+	//
+	state->getBC().zero(u);
       }
     
       push(xml_out, "WilsonLoop");
