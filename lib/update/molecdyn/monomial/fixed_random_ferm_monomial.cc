@@ -1,3 +1,10 @@
+// -*- C++ -*-
+// $Id: fixed_random_ferm_monomial.cc,v 3.7 2006-09-19 18:38:07 edwards Exp $
+
+/*! @file
+ * @brief Fixed random monomial
+ */
+
 #include "chromabase.h"
 #include "actions/ferm/fermstates/stout_fermstate_w.h"
 #include "actions/ferm/fermbcs/fermbcs.h"

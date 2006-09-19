@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fixed_random_ferm_monomial.h,v 3.3 2006-09-19 18:34:58 edwards Exp $
+// $Id: fixed_random_ferm_monomial.h,v 3.4 2006-09-19 18:38:07 edwards Exp $
 
 /*! @file
  * @brief Fixed random monomial
@@ -13,7 +13,7 @@
 #include "chromabase.h"
 #include "util/gauge/reunit.h"
 #include "io/param_io.h"
-#include "actions/ferm/fermstate/stout_fermstate_w.h"
+#include "actions/ferm/fermstates/stout_fermstate_w.h"
 #include "util/gauge/taproj.h"
 
 using namespace QDP;
