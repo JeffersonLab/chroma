@@ -1,3 +1,10 @@
+// -*- C++ -*-
+// $Id: fixed_random_ferm_monomial.h,v 3.3 2006-09-19 18:34:58 edwards Exp $
+
+/*! @file
+ * @brief Fixed random monomial
+ */
+
 #ifndef FIXED_RANDOM_FERM_MONOMIAL_H
 #define FIXED_RANDOM_FERM_MONOMIAL_H
 
@@ -6,7 +13,7 @@
 #include "chromabase.h"
 #include "util/gauge/reunit.h"
 #include "io/param_io.h"
-#include "actions/ferm/fermacts/stout_fermstate_w.h"
+#include "actions/ferm/fermstate/stout_fermstate_w.h"
 #include "util/gauge/taproj.h"
 
 using namespace QDP;
@@ -29,7 +36,8 @@ namespace Chroma {
      GroupXML_t fermstate;
    };
 
-
+   //! Test monomial
+   /*! @ingroup monomial */
    class FixedRandomFermMonomial4D : public ExactFermMonomial<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,LatticeFermion>
   {
    public:

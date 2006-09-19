@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.4 2006-09-19 16:02:24 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.5 2006-09-19 18:30:52 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -9,8 +9,8 @@
 #include "meas/inline/io/named_objmap.h"
 
 #include "actions/gauge/gaugeacts/gaugeacts_aggregate.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_factory.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
+#include "actions/gauge/gaugestates/gauge_createstate_factory.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 namespace Chroma 
 { 

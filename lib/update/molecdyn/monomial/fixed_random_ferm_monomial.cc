@@ -1,5 +1,5 @@
 #include "chromabase.h"
-#include "actions/ferm/fermacts/stout_fermstate_w.h"
+#include "actions/ferm/fermstates/stout_fermstate_w.h"
 #include "actions/ferm/fermbcs/fermbcs.h"
 #include "update/molecdyn/monomial/fixed_random_ferm_monomial.h"
 #include "update/molecdyn/monomial/monomial_factory.h"
