@@ -1,4 +1,4 @@
-// $Id: prec_wilson_fermact_w.cc,v 3.3 2006-08-18 21:16:59 edwards Exp $
+// $Id: prec_wilson_fermact_w.cc,v 3.4 2006-09-19 18:08:38 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/prec_wilson_linop_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"

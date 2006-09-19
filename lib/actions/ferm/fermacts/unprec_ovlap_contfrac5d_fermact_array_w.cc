@@ -1,4 +1,4 @@
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 3.3 2006-09-19 16:04:23 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.cc,v 3.4 2006-09-19 18:08:39 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -16,7 +16,7 @@
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermstates/simple_fermstate.h"
-//#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+//#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 #include "io/enum_io/enum_io.h"

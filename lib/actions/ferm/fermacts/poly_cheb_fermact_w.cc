@@ -1,4 +1,4 @@
-// $Id: poly_cheb_fermact_w.cc,v 3.2 2006-07-03 15:26:07 edwards Exp $
+// $Id: poly_cheb_fermact_w.cc,v 3.3 2006-09-19 18:08:38 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -9,7 +9,7 @@
 #include "actions/ferm/linop/polynomial_op.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/invert/syssolver_polyprec_factory.h"
 #include "actions/ferm/invert/syssolver_polyprec_aggregate.h"

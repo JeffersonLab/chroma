@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 3.1 2006-07-03 15:26:07 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 3.2 2006-09-19 18:08:38 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -9,7 +9,7 @@
 #include "io/param_io.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include <string>
 

@@ -1,4 +1,4 @@
-// $Id: unprec_nef_fermact_array_w.cc,v 3.3 2006-07-03 15:26:07 edwards Exp $
+// $Id: unprec_nef_fermact_array_w.cc,v 3.4 2006-09-19 18:08:39 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/unprec_nef_linop_array_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/qprop/quarkprop4_w.h"
 #include "actions/ferm/qprop/nef_quarkprop4_w.h"

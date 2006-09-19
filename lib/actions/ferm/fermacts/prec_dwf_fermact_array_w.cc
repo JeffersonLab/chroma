@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 3.5 2006-09-07 04:24:28 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 3.6 2006-09-19 18:08:38 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -9,7 +9,7 @@
 #include "actions/ferm/linop/prec_dwf_linop_array_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/qprop/quarkprop4_w.h"
 #include "actions/ferm/qprop/dwf_quarkprop4_w.h"

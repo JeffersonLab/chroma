@@ -1,4 +1,4 @@
-// $Id: unprec_hamberwu_fermact_w.cc,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_hamberwu_fermact_w.cc,v 3.1 2006-09-19 18:08:38 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Hamber-Wu fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/unprec_hamberwu_linop_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include "io/param_io.h"
 

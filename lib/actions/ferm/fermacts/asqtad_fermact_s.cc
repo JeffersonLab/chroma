@@ -1,4 +1,4 @@
-// $Id: asqtad_fermact_s.cc,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: asqtad_fermact_s.cc,v 3.1 2006-09-19 18:08:38 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -11,7 +11,6 @@
 
 #include "actions/ferm/linop/asqtad_mdagm_s.h"
 #include "actions/ferm/linop/asqtad_linop_s.h"
-#include "actions/ferm/fermacts/asqtad_state.h"
 #include "actions/ferm/fermacts/asqtad_fermact_s.h"
 #include "util/gauge/stag_phases_s.h"
 

@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_fermact_w.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: prec_parwilson_fermact_w.cc,v 3.1 2006-09-19 18:08:38 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/linop/prec_parwilson_linop_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include "io/param_io.h"       // to get kappaToMass
 

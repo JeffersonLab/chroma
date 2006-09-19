@@ -1,4 +1,4 @@
-// $Id: prec_clover_fermact_w.cc,v 3.5 2006-09-07 04:24:28 edwards Exp $
+// $Id: prec_clover_fermact_w.cc,v 3.6 2006-09-19 18:08:38 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -8,7 +8,7 @@
 #include "actions/ferm/fermacts/prec_clover_fermact_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 namespace Chroma
 {
