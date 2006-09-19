@@ -49,16 +49,12 @@ AC_ARG_ENABLE(sse_dwf_cg,
     [Build and Use the SSE DWF CG Library])
 )
 
-AC_ARG_ENABLE(cg_dwf, 
-   AC_HELP_STRING(
-	[--enable-cg-dwf],
-	[Build and Use AVPs CG-DWF library])
-)
-
-AC_ARG_ENABLE(cg-dwf-cpu-arch,
-	AC_HELP_STRING([--enable-cg-dwf-cpu-arch=cpuarch cpuarc=sse,bluelight,altivec]),
-	[cg_dwf_cpu_arch=${enableval}],
-	[cg_dwf_cpu_arch="sse"]
+AC_ARG_ENABLE(cg-dwf,
+	AC_HELP_STRING([--enable-cg-dwf=<cpuarch> <cpuarch>=sse,bluelight,altivec]),
+	[cg_dwf_cpu_arch=${enableval}
+	 build_cg_dwf="yes"],
+	[cg_dwf_cpu_arch="none"
+	 build_cg_dwf="no" ]
 )
 
 AC_ARG_ENABLE(altivec_dwf_cg,
@@ -186,8 +182,8 @@ AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
 
 
 dnl CG DWF stuff
-case "$enable_cg_dwf" in
-  yes) 
+if [ test "x${build_cg_dwf}x" = "xyesx" ];
+then
         AC_MSG_NOTICE([Configuring CG DWF])
 
 	case ${cg_dwf_cpu_arch} in
@@ -208,25 +204,27 @@ case "$enable_cg_dwf" in
 	AC_CONFIG_SUBDIRS(other_libs/cg-dwf)
 	AC_SUBST(CG_DWF_DIR, [cg-dwf])
 	AC_DEFINE([BUILD_CG_DWF],[1],[Build CG DWF])
-	;;
-  *)
+	AC_SUBST(CG_DWF_ENABLED,[$enable_cg_dwf])
+else
 	AC_SUBST(CG_DWF_DIR)
 	AC_MSG_NOTICE([Not building CG DWF])
-        ;;
-esac 
-AC_SUBST(CG_DWF_ENABLED,[$enable_cg_dwf])
+fi
 
 AM_CONDITIONAL(BUILD_CG_DWF,
-  [test "x${enable_cg_dwf}x" = "xyesx" ])
+	[test "x${build_cg_dwf}x" = "xyesx" ])
 
 AM_CONDITIONAL(BUILD_CG_DWF_SSE,
-  [test "x${cg_dwf_cpu_arch}x" = "xssex" ])
+	[test "x${cg_dwf_cpu_arch}x" = "xssex" \
+         -a "x${build_cg_dwf}x"="xyesx"])
 
 AM_CONDITIONAL(BUILD_CG_DWF_BLUELIGHT,
-  [test "x${cg_dwf_cpu_arch}x" = "xbluelightx" ])
+	[test "x${cg_dwf_cpu_arch}x" = "xbluelightx" \
+	 -a "x${build_cg_dwf}x"="xyesx" ])
 
 AM_CONDITIONAL(BUILD_CG_DWF_ALTIVEC,
-  [test "x${cg_dwf_cpu_arch}x" = "xaltivecx" ])
+	[test "x${cg_dwf_cpu_arch}x" = "xaltivecx" \
+	 -a "x${build_cg_dwf}x"="xyesx" ])
+
 
 dnl SSE DWF CG stuff
 case "$enable_sse_dwf_cg" in

@@ -826,9 +826,7 @@ Optional Features:
 
   --enable-sse-dwf-cg     Build and Use the SSE DWF CG Library
 
-  --enable-cg-dwf         Build and Use AVPs CG-DWF library
-
-  --enable-cg-dwf-cpu-arch=cpuarch cpuarc=sse
+  --enable-cg-dwf=<cpuarch> <cpuarch>=sse
 
   --enable-altivec-dwf-cg Build and Use the altivec DWF CG Library
 
@@ -3294,18 +3292,14 @@ if test "${enable_sse_dwf_cg+set}" = set; then
 
 fi;
 
-# Check whether --enable-cg_dwf or --disable-cg_dwf was given.
+# Check whether --enable-cg-dwf or --disable-cg-dwf was given.
 if test "${enable_cg_dwf+set}" = set; then
   enableval="$enable_cg_dwf"
-
-fi;
-
-# Check whether --enable-cg-dwf-cpu-arch or --disable-cg-dwf-cpu-arch was given.
-if test "${enable_cg_dwf_cpu_arch+set}" = set; then
-  enableval="$enable_cg_dwf_cpu_arch"
   cg_dwf_cpu_arch=${enableval}
+	 build_cg_dwf="yes"
 else
-  cg_dwf_cpu_arch="sse"
+  cg_dwf_cpu_arch="none"
+	 build_cg_dwf="no"
 
 fi;
 
@@ -3652,8 +3646,8 @@ fi
 
 
 
-case "$enable_cg_dwf" in
-  yes)
+if  test "x${build_cg_dwf}x" = "xyesx" ;
+then
         { echo "$as_me:$LINENO: Configuring CG DWF" >&5
 echo "$as_me: Configuring CG DWF" >&6;}
 
@@ -3688,19 +3682,17 @@ cat >>confdefs.h <<\_ACEOF
 #define BUILD_CG_DWF 1
 _ACEOF
 
-	;;
-  *)
+	CG_DWF_ENABLED=$enable_cg_dwf
+
+else
 
 	{ echo "$as_me:$LINENO: Not building CG DWF" >&5
 echo "$as_me: Not building CG DWF" >&6;}
-        ;;
-esac
-CG_DWF_ENABLED=$enable_cg_dwf
+fi
 
 
 
-
-if test "x${enable_cg_dwf}x" = "xyesx" ; then
+if test "x${build_cg_dwf}x" = "xyesx" ; then
   BUILD_CG_DWF_TRUE=
   BUILD_CG_DWF_FALSE='#'
 else
@@ -3711,7 +3703,8 @@ fi
 
 
 
-if test "x${cg_dwf_cpu_arch}x" = "xssex" ; then
+if test "x${cg_dwf_cpu_arch}x" = "xssex" \
+         -a "x${build_cg_dwf}x"="xyesx"; then
   BUILD_CG_DWF_SSE_TRUE=
   BUILD_CG_DWF_SSE_FALSE='#'
 else
@@ -3722,7 +3715,8 @@ fi
 
 
 
-if test "x${cg_dwf_cpu_arch}x" = "xbluelightx" ; then
+if test "x${cg_dwf_cpu_arch}x" = "xbluelightx" \
+	 -a "x${build_cg_dwf}x"="xyesx" ; then
   BUILD_CG_DWF_BLUELIGHT_TRUE=
   BUILD_CG_DWF_BLUELIGHT_FALSE='#'
 else
@@ -3733,13 +3727,15 @@ fi
 
 
 
-if test "x${cg_dwf_cpu_arch}x" = "xaltivecx" ; then
+if test "x${cg_dwf_cpu_arch}x" = "xaltivecx" \
+	 -a "x${build_cg_dwf}x"="xyesx" ; then
   BUILD_CG_DWF_ALTIVEC_TRUE=
   BUILD_CG_DWF_ALTIVEC_FALSE='#'
 else
   BUILD_CG_DWF_ALTIVEC_TRUE='#'
   BUILD_CG_DWF_ALTIVEC_FALSE=
 fi
+
 
 
 case "$enable_sse_dwf_cg" in
