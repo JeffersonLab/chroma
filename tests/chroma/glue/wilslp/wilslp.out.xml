@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: wilslp.out.xml,v 3.8 2006-08-24 21:07:06 edwards Exp $
+; $Id: wilslp.out.xml,v 3.9 2006-09-19 16:01:11 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -24,13 +24,18 @@
       <Name>WILSLP</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>2</version>
+        <version>3</version>
         <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
-        <GaugeBC>
-          <Name>PERIODIC_GAUGEBC</Name>
-        </GaugeBC>
+<annotation>
+        <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>PERIODIC_GAUGEBC</Name>
+          </GaugeBC>
+        </GaugeState>
+</annotation>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -42,16 +47,19 @@
       <Name>WILSLP</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>2</version>
+        <version>3</version>
         <kind>7</kind>
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
-        <GaugeBC>
-          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
-          <SchrPhiMult>2.0</SchrPhiMult>
-          <loop_extent>1</loop_extent>
-          <decay_dir>3</decay_dir>
-        </GaugeBC>
+        <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+            <SchrPhiMult>2.0</SchrPhiMult>
+            <loop_extent>1</loop_extent>
+            <decay_dir>3</decay_dir>
+          </GaugeBC>
+        </GaugeState>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -70,10 +78,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.11.0</chroma>
+      <chroma>3.13.0</chroma>
       <qdp>1.20.8</qdp>
     </code_version>
-    <run_date>24 Aug 06 15:21:57 EDT</run_date>
+    <run_date>19 Sep 06 09:57:45 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
