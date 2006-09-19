@@ -1,4 +1,4 @@
-// $Id: lw_1loop_gaugeact.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: lw_1loop_gaugeact.cc,v 3.2 2006-09-19 18:25:40 edwards Exp $
 /*! \file
  *  \brief 1-loop tadpole-improved Luscher-Weisz gauge action
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "actions/gauge/gaugeacts/lw_1loop_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 namespace Chroma
 {

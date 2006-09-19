@@ -1,4 +1,4 @@
-// $Id: rg_gaugeact.cc,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: rg_gaugeact.cc,v 3.2 2006-09-19 18:25:41 edwards Exp $
 /*! \file
  *  \brief Generic RG style plaquette + rectangle gauge action
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "actions/gauge/gaugeacts/rg_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 namespace Chroma
 {

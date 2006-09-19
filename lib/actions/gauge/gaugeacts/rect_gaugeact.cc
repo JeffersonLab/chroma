@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.5 2006-08-26 02:08:41 edwards Exp $
+// $Id: rect_gaugeact.cc,v 3.6 2006-09-19 18:25:41 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 namespace Chroma
 {

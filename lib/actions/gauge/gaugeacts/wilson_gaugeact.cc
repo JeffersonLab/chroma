@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 3.2 2006-08-26 02:08:41 edwards Exp $
+// $Id: wilson_gaugeact.cc,v 3.3 2006-09-19 18:25:41 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -6,7 +6,7 @@
 #include "chromabase.h"
 #include "actions/gauge/gaugeacts/wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 namespace Chroma
 {

@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.3 2006-08-26 02:08:41 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 3.4 2006-09-19 18:25:40 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -6,8 +6,8 @@
 #include "chromabase.h"
 #include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_factory.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
+#include "actions/gauge/gaugestates/gauge_createstate_factory.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 #include "meas/glue/mesplq.h"
 
 
