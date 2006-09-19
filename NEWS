@@ -1,5 +1,9 @@
+09/18/2006 -- Robert Edwards
+	Version 3.14.5. House cleaning. Split off all gauge states and ferm states
+        to their own gaugestates and fermstates directories. Changed all the paths.
+
 09/14/2006 -- Robert Edwards
-	Version 3.13.0. New chroma/other_libs/cg-dwf package now included. The DWF
+	Version 3.14.0. New chroma/other_libs/cg-dwf package now included. The DWF
         QpropT routine reworked to use the new package (double prec. SSE). Changed
         hmc to split output into XMLLOG and XMLDAT.
 
