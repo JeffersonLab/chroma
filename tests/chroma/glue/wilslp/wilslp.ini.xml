@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: wilslp.ini.xml,v 3.6 2006-09-19 16:01:11 edwards Exp $
+; $Id: wilslp.ini.xml,v 3.7 2006-09-19 19:10:07 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -26,7 +26,7 @@
         <j_decay>3</j_decay>
         <t_dir>3</t_dir>
 <annotation>
-<-- One can optionally use a GAUGE_STATE -->
+<!-- One can optionally use a GAUGE_STATE -->
         <GaugeState>
           <Name>SIMPLE_GAUGE_STATE</Name>
           <GaugeBC>
