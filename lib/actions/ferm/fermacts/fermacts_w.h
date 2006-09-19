@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 3.1 2006-08-17 20:45:33 bjoo Exp $
+// $Id: fermacts_w.h,v 3.2 2006-09-19 16:04:22 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -37,7 +37,6 @@
 
 
 #include "overlap_fermact_base_w.h"
-#include "overlap_state.h"
 #include "ovlap_partfrac4d_fermact_w.h"
 #include "unprec_ovlap_contfrac5d_fermact_array_w.h"
 #include "prec_ovlap_contfrac5d_fermact_array_w.h"
@@ -51,16 +50,6 @@
 #include "ovext_constant_strategy.h"
 #include "ovext_const_div_by_resp_strategy.h"
 #include "ovext_neuberger_strategy.h"
-#include "stout_fermstate_w.h"
-
-#if 0
-#include "stout_state.h"
-#include "stout_fermact_params.h"
-#include "unprec_stout_fermact_w.h"
-#include "prec_stout_fermact_w.h"
-#include "unprec_stout_fermact_array_w.h"
-#include "prec_stout_fermact_array_w.h"
-#endif
 
 #endif
 

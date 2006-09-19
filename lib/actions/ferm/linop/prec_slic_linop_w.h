@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_slic_linop_w.h,v 1.1 2006-08-16 17:10:27 bjoo Exp $
+// $Id: prec_slic_linop_w.h,v 1.2 2006-09-19 16:04:23 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -13,8 +13,8 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/clover_term_w.h"
-#include "actions/ferm/fermacts/stout_fermstate_w.h"
-#include "actions/ferm/fermacts/simple_fermstate.h"
+#include "actions/ferm/fermstates/stout_fermstate_w.h"
+#include "actions/ferm/fermstates/simple_fermstate.h"
 
 
 namespace Chroma 

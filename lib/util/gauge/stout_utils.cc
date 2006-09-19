@@ -1,8 +1,17 @@
+// -*- C++ -*-
+// $Id: stout_utils.cc,v 1.1 2006-09-19 16:04:23 edwards Exp $
+/*! \file
+ *  \brief Stout utilities
+ */
+
 #include "chromabase.h"
-#include "actions/ferm/fermacts/stout_utils.h"
+#include "util/gauge/stout_utils.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
+  //! Timings
+  /*! \ingroup gauge */
   namespace StoutLinkTimings { 
     static double smearing_secs = 0;
     double getSmearingTime() { 
@@ -20,10 +29,12 @@ namespace Chroma {
     }
   }
 
-  namespace Stouting {
-    
-    
+  //! Utilities
+  /*! \ingroup gauge */
+  namespace Stouting 
+  {
 
+    /*! \ingroup gauge */
     void getQsandCs(const multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& Q, 
 		    LatticeColorMatrix& QQ,
 		    LatticeColorMatrix& C, 
@@ -36,10 +47,11 @@ namespace Chroma {
       C = zero;
       
       // If rho is nonzero in this direction then accumulate the staples
-      for(int nu=0; nu < Nd; nu++) { 
-	
+      for(int nu=0; nu < Nd; nu++) 
+      { 
 	// Accumulate mu-nu staple
-	if( (mu != nu) && smear_in_this_dirP[nu] ) {
+	if( (mu != nu) && smear_in_this_dirP[nu] ) 
+	{
 	  LatticeColorMatrix U_nu_plus_mu = shift(u[nu], FORWARD, mu);
 	  LatticeColorMatrix tmp_mat;
 	  LatticeColorMatrix tmp_mat2; 
@@ -101,6 +113,7 @@ namespace Chroma {
       END_CODE();
     }
     
+    /*! \ingroup gauge */
     // Do the force recursion from level i+1, to level i
     // The input fat_force F is modified.
     void deriv_recurse(multi1d<LatticeColorMatrix>& F,
@@ -125,8 +138,10 @@ namespace Chroma {
       // The links at this level (unprimed in the paper).
       //const multi1d<LatticeColorMatrix>& u = smeared_links[level];
       
-      for(int mu=0; mu < Nd; mu++) {
-	if( smear_in_this_dirP[mu] ) { 
+      for(int mu=0; mu < Nd; mu++) 
+      {
+	if( smear_in_this_dirP[mu] ) 
+	{ 
 	  LatticeColorMatrix Q,QQ;   // This is the C U^{dag}_mu suitably antisymmetrized
 	  
 	  // Get Q, Q^2, C, c0 and c1 -- this code is the same as used in stout_smear()
@@ -188,9 +203,10 @@ namespace Chroma {
       
       //  We have to make this a separate loop from the above, because we need to know the 
       //  Lambda[mu] and [nu] for all the avaliable mu-nu combinations
-      for(int mu = 0; mu < Nd; mu++) { 
-	if( smear_in_this_dirP[mu] ) { 
-	  
+      for(int mu = 0; mu < Nd; mu++) 
+      { 
+	if( smear_in_this_dirP[mu] ) 
+	{ 
 	  LatticeColorMatrix staple_sum = zero;
 	  // LatticeColorMatrix staple_sum_dag = adj(C[mu])*Lambda[mu];
 	  for(int nu = 0; nu < Nd; nu++) { 
@@ -295,7 +311,8 @@ namespace Chroma {
       // Done
       END_CODE();
     }
-    
+     
+    /*! \ingroup gauge */
     void getFsAndBs(const LatticeColorMatrix& Q,
 		    const LatticeColorMatrix& QQ,
 		    multi1d<LatticeComplex>& f,
@@ -317,7 +334,8 @@ namespace Chroma {
       int num_sites = Layout::sitesOnNode();
       
       // Drop into a site loop here...
-      for(int site=0; site < num_sites; site++)  { 
+      for(int site=0; site < num_sites; site++)  
+      { 
 	// Get the traces
 	PColorMatrix<QDP::RComplex<REAL>, 3>  Q_site = Q.elem(site).elem();
 	PColorMatrix<QDP::RComplex<REAL>, 3>  QQ_site = QQ.elem(site).elem();
@@ -332,7 +350,8 @@ namespace Chroma {
 	REAL c1    = ((REAL)1/(REAL)2) * trQQ.elem().elem().elem().elem();	 // eq 15 
 	
 	
-	if( c1 < 4.0e-3  ) { // RGE: set to 4.0e-3 (CM uses this value). I ran into nans with 1.0e-4
+	if( c1 < 4.0e-3  ) 
+	{ // RGE: set to 4.0e-3 (CM uses this value). I ran into nans with 1.0e-4
 	  // ================================================================================
 	  // 
 	  // Corner Case 1: if c1 < 1.0e-4 this implies c0max ~ 3x10^-7
@@ -464,7 +483,8 @@ namespace Chroma {
 #endif
 	  } // Dobs==true
 	}
-	else { 
+	else 
+	{ 
 	  // ===================================================================================
 	  // Normal case: Do as per paper
 	  // ===================================================================================
@@ -676,8 +696,8 @@ namespace Chroma {
 	      }
 
 	      // Now flip the coefficients of the b-s
-	      if( c0_negativeP ) {
-		
+	      if( c0_negativeP ) 
+	      {
 		//b1_site[0] = conj(b1_site[0]);
 		b1_site_im[0] *= -1;
 		
@@ -761,6 +781,7 @@ namespace Chroma {
       END_CODE();
     }
 
+    /*! \ingroup gauge */
     void smear_links(const multi1d<LatticeColorMatrix>& current, 
 		     multi1d<LatticeColorMatrix>& next,
 		     const multi1d<bool>& smear_in_this_dirP,
@@ -768,10 +789,10 @@ namespace Chroma {
     {
       START_CODE();
       
-      
-      for(int mu = 0; mu < Nd; mu++) { 
-	if( smear_in_this_dirP[mu] ) { 
-	  
+      for(int mu = 0; mu < Nd; mu++) 
+      {
+	if( smear_in_this_dirP[mu] ) 
+	{
 	  LatticeColorMatrix Q, QQ;
 	  LatticeColorMatrix C; // Dummy - not used here
 	  
@@ -799,9 +820,6 @@ namespace Chroma {
       END_CODE();
     }
     
+  }
 
-
-    
-  };
-
-};
+}

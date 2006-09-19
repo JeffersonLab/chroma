@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_s.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: fermacts_s.h,v 3.1 2006-09-19 16:04:22 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -12,7 +12,6 @@
 
 // #include "stag_fermact_s.h"
 #include "asqtad_fermact_s.h"
-#include "asqtad_state.h"
 
 #endif
 

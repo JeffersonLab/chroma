@@ -1,12 +1,12 @@
-// $Id: t_stout_state.cc,v 3.8 2006-09-07 13:16:52 bjoo Exp $
+// $Id: t_stout_state.cc,v 3.9 2006-09-19 16:04:23 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "chroma.h"
 
-#include "actions/ferm/fermacts/stout_fermstate_params.h"
-#include "actions/ferm/fermacts/stout_fermstate_w.h"
+#include "actions/ferm/fermstates/stout_fermstate_params.h"
+#include "actions/ferm/fermstates/stout_fermstate_w.h"
 #include "actions/ferm/invert/invcg2.h"
 
 using namespace Chroma;

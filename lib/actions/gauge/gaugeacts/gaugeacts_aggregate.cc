@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.7 2006-09-07 04:24:28 edwards Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.8 2006-09-19 16:04:23 edwards Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */
@@ -21,7 +21,7 @@
 #include "actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h"
 
 #include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
-#include "actions/gauge/gaugeacts/gauge_createstate_aggregate.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 namespace Chroma
 {

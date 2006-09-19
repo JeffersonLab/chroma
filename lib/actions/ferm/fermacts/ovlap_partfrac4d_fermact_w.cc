@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 3.1 2006-09-19 16:04:22 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -29,9 +29,9 @@
 #include "meas/eig/ischiral_w.h"
 
 
-#include "actions/ferm/fermacts/simple_fermstate.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/simple_fermstate.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 namespace Chroma

@@ -1,11 +1,11 @@
-// $Id: prec_clover_extfield_linop_w.cc,v 1.1 2006-07-20 20:06:52 edwards Exp $
+// $Id: prec_clover_extfield_linop_w.cc,v 1.2 2006-09-19 16:04:23 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator in an external field
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/prec_clover_extfield_linop_w.h"
-#include "actions/ferm/fermacts/extfield_fermstate_w.h"
+#include "actions/ferm/fermstates/extfield_fermstate_w.h"
 
 using namespace QDP::Hints;
 

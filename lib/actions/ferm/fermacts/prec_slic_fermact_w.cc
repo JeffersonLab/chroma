@@ -1,4 +1,4 @@
-// $Id: prec_slic_fermact_w.cc,v 3.1 2006-08-16 17:10:26 bjoo Exp $
+// $Id: prec_slic_fermact_w.cc,v 3.2 2006-09-19 16:04:22 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
@@ -8,10 +8,9 @@
 #include "actions/ferm/fermacts/prec_slic_fermact_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/ferm_createstate_reader_w.h"
-
-#include "actions/ferm/fermacts/ferm_createstate_aggregate_w.h"
-#include "actions/ferm/fermacts/stout_fermstate_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
+#include "actions/ferm/fermstates/stout_fermstate_w.h"
 
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 

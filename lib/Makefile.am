@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.33 2006-09-18 21:04:33 bjoo Exp $
+# $Id: Makefile.am,v 3.34 2006-09-19 16:04:19 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -22,23 +22,24 @@ nobase_include_HEADERS = \
         named_obj.h polyfermact.h polylinop.h tpreclinop.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
-	actions/ferm/ferm.h actions/ferm/fermacts/asqtad_state.h \
+	actions/ferm/ferm.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/bigfloat.h \
 	actions/ferm/fermacts/remez.h \
 	actions/ferm/fermacts/remez_coeff.h \
 	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
-	actions/ferm/fermacts/periodic_fermstate.h \
-	actions/ferm/fermacts/simple_fermstate.h \
-	actions/ferm/fermacts/overlap_state.h \
-	actions/ferm/fermacts/eigen_state.h \
-	actions/ferm/fermacts/extfield.h \
-	actions/ferm/fermacts/stout_fermstate_params.h \
-	actions/ferm/fermacts/stout_utils.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/periodic_fermbc.h \
 	actions/ferm/fermbcs/simple_fermbc.h \
+	actions/ferm/fermstates/fermstates.h \
+        actions/ferm/fermstates/asqtad_state.h \
+	actions/ferm/fermstates/periodic_fermstate.h \
+	actions/ferm/fermstates/simple_fermstate.h \
+	actions/ferm/fermstates/overlap_state.h \
+	actions/ferm/fermstates/eigen_state.h \
+	actions/ferm/fermstates/extfield.h \
+	actions/ferm/fermstates/stout_fermstate_params.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
 	actions/ferm/invert/invcg1_array.h \
@@ -84,8 +85,6 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/gaugeacts.h \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.h \
 	actions/gauge/gaugeacts/gaugeact_factory.h \
-	actions/gauge/gaugeacts/gauge_createstate_aggregate.h \
-	actions/gauge/gaugeacts/gauge_createstate_factory.h \
 	actions/gauge/gaugeacts/plaq_gaugeact.h \
 	actions/gauge/gaugeacts/rect_gaugeact.h \
 	actions/gauge/gaugeacts/pg_gaugeact.h \
@@ -97,8 +96,6 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
-	actions/gauge/gaugeacts/simple_gaugestate.h \
-	actions/gauge/gaugeacts/stout_gaugestate.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -112,6 +109,12 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugebcs/schr_coupling_gaugebc.h \
 	actions/gauge/gaugebcs/schr_chromomag_gaugebc.h \
 	actions/gauge/gaugebcs/schr_dirich_gaugebc.h \
+	actions/gauge/gaugestates/gaugestates.h \
+	actions/gauge/gaugestates/gauge_createstate_aggregate.h \
+	actions/gauge/gaugestates/gauge_createstate_factory.h \
+	actions/gauge/gaugestates/periodic_gaugestate.h \
+	actions/gauge/gaugestates/simple_gaugestate.h \
+	actions/gauge/gaugestates/stout_gaugestate.h \
 	init/chroma_init.h \
 	io/io.h \
 	io/xmllog_io.h \
@@ -226,6 +229,7 @@ nobase_include_HEADERS = \
 	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
+	util/gauge/stout_utils.h \
         util/info/info.h util/info/proginfo.h util/info/printgeom.h \
         util/util.h \
 	update/update.h \
@@ -270,13 +274,6 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
 	update/molecdyn/predictor/lu_solve.h \
 	update/molecdyn/predictor/mre_extrap_predictor.h
-#	actions/ferm/fermacts/stout_state.h
-#	actions/ferm/fermacts/stout_fermact_params.h
-#	actions/ferm/fermacts/unprec_stout_fermact_w.h
-#	actions/ferm/fermacts/prec_stout_fermact_w.h
-#	actions/ferm/fermacts/unprec_stout_fermact_array_w.h
-#	actions/ferm/fermacts/prec_stout_fermact_array_w.h
-#	io/enum_io/enum_gaugebc_io.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -285,19 +282,10 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
-        actions/ferm/fermacts/periodic_fermstate_w.h \
-        actions/ferm/fermacts/simple_fermstate_w.h \
-        actions/ferm/fermacts/ferm_createstate_aggregate_w.h \
-        actions/ferm/fermacts/ferm_createstate_factory_w.h \
-        actions/ferm/fermacts/ferm_createstate_reader_w.h \
-	actions/ferm/fermacts/stout_fermstate_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/prec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/prec_slic_fermact_w.h \
-	actions/ferm/fermacts/extfield_factory_w.h \
-	actions/ferm/fermacts/extfield_aggregate_w.h \
-	actions/ferm/fermacts/extfield_fermstate_w.h \
 	actions/ferm/fermacts/prec_clover_extfield_fermact_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
@@ -346,6 +334,15 @@ nobase_include_HEADERS += \
 	actions/ferm/fermbcs/schr_coupling_fermbc_w.h \
 	actions/ferm/fermbcs/schr_chromomag_fermbc_w.h \
 	actions/ferm/fermbcs/schr_dirich_fermbc_w.h \
+        actions/ferm/fermstates/periodic_fermstate_w.h \
+	actions/ferm/fermstates/extfield_factory_w.h \
+	actions/ferm/fermstates/extfield_aggregate_w.h \
+	actions/ferm/fermstates/extfield_fermstate_w.h \
+        actions/ferm/fermstates/simple_fermstate_w.h \
+        actions/ferm/fermstates/ferm_createstate_aggregate_w.h \
+        actions/ferm/fermstates/ferm_createstate_factory_w.h \
+        actions/ferm/fermstates/ferm_createstate_reader_w.h \
+	actions/ferm/fermstates/stout_fermstate_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/lg5Rherm_w.h \
@@ -499,17 +496,17 @@ nobase_include_HEADERS += \
 # Staggered specific headers
 nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_s.h \
-        actions/ferm/fermacts/ferm_createstate_aggregate_s.h \
-        actions/ferm/fermacts/ferm_createstate_factory_s.h \
-        actions/ferm/fermacts/ferm_createstate_reader_s.h \
-        actions/ferm/fermacts/periodic_fermstate_s.h \
-        actions/ferm/fermacts/simple_fermstate_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
 	actions/ferm/fermbcs/fermbcs_reader_s.h \
 	actions/ferm/fermbcs/fermbc_factory_s.h \
 	actions/ferm/fermbcs/simple_fermbc_s.h \
+        actions/ferm/fermstates/ferm_createstate_aggregate_s.h \
+        actions/ferm/fermstates/ferm_createstate_factory_s.h \
+        actions/ferm/fermstates/ferm_createstate_reader_s.h \
+        actions/ferm/fermstates/periodic_fermstate_s.h \
+        actions/ferm/fermstates/simple_fermstate_s.h \
 	actions/ferm/linop/asqtad_linop_s.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
@@ -664,14 +661,14 @@ lib_LIBRARIES = libchroma.a
 #
 libchroma_a_SOURCES = \
 	actions/boson/operator/klein_gord.cc \
-	actions/ferm/fermacts/overlap_state.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc \
 	actions/ferm/fermacts/ovext_neuberger_strategy.cc \
-	actions/ferm/fermacts/stout_fermstate_params.cc \
 	actions/ferm/fermbcs/simple_fermbc.cc \
+	actions/ferm/fermstates/overlap_state.cc \
+	actions/ferm/fermstates/stout_fermstate_params.cc \
 	actions/ferm/invert/invbicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
 	actions/ferm/invert/invcg1.cc \
@@ -711,19 +708,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/prec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
 	actions/ferm/qprop/asqtad_qprop.cc \
-	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
-	actions/gauge/gaugebcs/periodic_gaugebc.cc \
-	actions/gauge/gaugebcs/simple_gaugebc.cc \
-	actions/gauge/gaugebcs/schroedinger_gaugebc.cc \
-	actions/gauge/gaugebcs/schr_gaugebc_params.cc \
-	actions/gauge/gaugebcs/schr_sf_gaugebc.cc \
-	actions/gauge/gaugebcs/schr_triv_gaugebc.cc \
-	actions/gauge/gaugebcs/schr_nonpert_gaugebc.cc \
-	actions/gauge/gaugebcs/schr_coupling_gaugebc.cc \
-	actions/gauge/gaugebcs/schr_chromomag_gaugebc.cc \
-	actions/gauge/gaugebcs/schr_dirich_gaugebc.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
-	actions/gauge/gaugeacts/gauge_createstate_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
 	actions/gauge/gaugeacts/pg_gaugeact.cc \
@@ -735,8 +720,21 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
-	actions/gauge/gaugeacts/simple_gaugestate.cc \
-	actions/gauge/gaugeacts/stout_gaugestate.cc \
+	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
+	actions/gauge/gaugebcs/periodic_gaugebc.cc \
+	actions/gauge/gaugebcs/simple_gaugebc.cc \
+	actions/gauge/gaugebcs/schroedinger_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_gaugebc_params.cc \
+	actions/gauge/gaugebcs/schr_sf_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_triv_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_nonpert_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_coupling_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_chromomag_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_dirich_gaugebc.cc \
+	actions/gauge/gaugestates/gauge_createstate_aggregate.cc \
+	actions/gauge/gaugestates/periodic_gaugestate.cc \
+	actions/gauge/gaugestates/simple_gaugestate.cc \
+	actions/gauge/gaugestates/stout_gaugestate.cc \
 	io/eigen_io.cc \
         io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
@@ -822,6 +820,7 @@ libchroma_a_SOURCES = \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
 	util/gauge/weak_field.cc \
+	util/gauge/stout_utils.cc \
 	util/info/printgeom.cc util/info/proginfo.cc \
         update/heatbath/su3over.cc \
 	update/heatbath/su2_hb_update.cc \
@@ -848,14 +847,6 @@ libchroma_a_SOURCES = \
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
-#       io/enum_io/enum_gaugebc_io.cc 
-
-#	actions/ferm/fermacts/stout_state.cc 
-# 	actions/ferm/fermacts/stout_fermact_params.cc 
-#	actions/ferm/fermacts/unprec_stout_fermact_w.cc 
-#	actions/ferm/fermacts/prec_stout_fermact_w.cc 
-#	actions/ferm/fermacts/unprec_stout_fermact_array_w.cc 
-#	actions/ferm/fermacts/prec_stout_fermact_array_w.cc 
 
 if BUILD_GMP_REMEZ
 nobase_include_HEADERS += actions/ferm/fermacts/remez_gmp.h
@@ -870,12 +861,6 @@ endif
 # Wilson specific sources
 libchroma_a_SOURCES += \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
-        actions/ferm/fermacts/ferm_createstate_aggregate_w.cc \
-        actions/ferm/fermacts/ferm_createstate_reader_w.cc \
-        actions/ferm/fermacts/periodic_fermstate_w.cc \
-        actions/ferm/fermacts/simple_fermstate_w.cc \
-	actions/ferm/fermacts/stout_utils.cc \
-	actions/ferm/fermacts/stout_fermstate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
@@ -892,9 +877,6 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/prec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/prec_slic_fermact_w.cc \
-	actions/ferm/fermacts/extfield_aggregate_w.cc \
-	actions/ferm/fermacts/extfield_fermstate_w.cc \
-	actions/ferm/fermacts/extfield_aggregate_w.cc \
 	actions/ferm/fermacts/prec_clover_extfield_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
@@ -922,6 +904,14 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermbcs/schr_coupling_fermbc_w.cc \
 	actions/ferm/fermbcs/schr_chromomag_fermbc_w.cc \
 	actions/ferm/fermbcs/schr_dirich_fermbc_w.cc \
+        actions/ferm/fermstates/ferm_createstate_aggregate_w.cc \
+        actions/ferm/fermstates/ferm_createstate_reader_w.cc \
+	actions/ferm/fermstates/stout_fermstate_w.cc \
+	actions/ferm/fermstates/extfield_aggregate_w.cc \
+	actions/ferm/fermstates/extfield_fermstate_w.cc \
+	actions/ferm/fermstates/extfield_aggregate_w.cc \
+        actions/ferm/fermstates/periodic_fermstate_w.cc \
+        actions/ferm/fermstates/simple_fermstate_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
 	actions/ferm/linop/dwffld_w.cc actions/ferm/linop/lDeltaLs_w.cc \
 	actions/ferm/linop/lg5eps_double_pass_w.cc \
@@ -1039,9 +1029,9 @@ libchroma_a_SOURCES += \
 # Stuff not yet incorporated but lying around
 #	meas/pbp/mespbg5p_w.cc meas/pbp/mespbp_w.cc
 #	meas/pbp/ovpbg5p_w.cc meas/pbp/pbg5p_w.cc
-#	actions/ferm/fermacts/flic_fermact_params_w.cc
-#	actions/ferm/fermacts/prec_flic_fermact_w.cc
-#	actions/ferm/fermacts/flic_fermstate_w.cc
+#	actions/ferm/fermstates/flic_fermact_params_w.cc
+#	actions/ferm/fermstates/prec_flic_fermact_w.cc
+#	actions/ferm/fermstates/flic_fermstate_w.cc
 
 
 
@@ -1189,14 +1179,14 @@ endif
 #
 # Staggered specific sources
 libchroma_a_SOURCES += \
-        actions/ferm/fermacts/ferm_createstate_aggregate_s.cc \
-        actions/ferm/fermacts/ferm_createstate_reader_s.cc \
-        actions/ferm/fermacts/periodic_fermstate_s.cc \
-        actions/ferm/fermacts/simple_fermstate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
+        actions/ferm/fermstates/ferm_createstate_aggregate_s.cc \
+        actions/ferm/fermstates/ferm_createstate_reader_s.cc \
+        actions/ferm/fermstates/periodic_fermstate_s.cc \
+        actions/ferm/fermstates/simple_fermstate_s.cc \
 	actions/ferm/linop/asqtad_linop_s.cc \
 	actions/ferm/linop/asqtad_mdagm_s.cc \
 	actions/ferm/linop/asq_dsl_s.cc \

@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.6 2006-09-08 04:34:21 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.7 2006-09-19 16:04:21 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -47,7 +47,7 @@
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
 
-#include "actions/ferm/fermacts/ferm_createstate_aggregate_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
 
 
 namespace Chroma

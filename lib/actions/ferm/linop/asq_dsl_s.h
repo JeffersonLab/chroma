@@ -1,4 +1,4 @@
-//  $Id: asq_dsl_s.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
+//  $Id: asq_dsl_s.h,v 3.1 2006-09-19 16:04:23 edwards Exp $
 /*! \file
  *  \brief The "asq" or "asqtad" dslash operator D'
  */
@@ -7,7 +7,7 @@
 #define __asqdslash_h__
 
 #include "linearop.h"
-#include "actions/ferm/fermacts/asqtad_state.h"
+#include "actions/ferm/fermstates/asqtad_state.h"
 
 
 namespace Chroma 

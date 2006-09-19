@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovext_fermact_array_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
+// $Id: unprec_ovext_fermact_array_w.h,v 3.2 2006-09-19 16:04:23 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -13,7 +13,7 @@
 #include "handle.h"
 #include "linearop.h"
 #include "state.h"
-#include "actions/ferm/fermacts/overlap_state.h"
+#include "actions/ferm/fermstates/overlap_state.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 #include "io/enum_io/enum_coeffs_io.h"
 

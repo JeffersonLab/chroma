@@ -1,10 +1,10 @@
-// $Id: overlap_fermact_base_w.cc,v 3.2 2006-07-03 15:26:07 edwards Exp $
+// $Id: overlap_fermact_base_w.cc,v 3.3 2006-09-19 16:04:22 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
 
 #include "chromabase.h"
-//#include "actions/ferm/fermacts/overlap_state.h"
+//#include "actions/ferm/fermstates/overlap_state.h"
 #include "actions/ferm/fermacts/overlap_fermact_base_w.h"
 #include "actions/ferm/invert/invcg1.h"
 #include "actions/ferm/invert/invcg2.h"

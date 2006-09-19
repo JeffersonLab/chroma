@@ -1,6 +1,6 @@
 #include "chroma.h"
 #include "actions/gauge/gaugebcs/periodic_gaugebc.h"
-#include "actions/gauge/gaugeacts/simple_gaugestate.h"
+#include "actions/gauge/gaugestates/simple_gaugestate.h"
 #include "actions/gauge/gaugeacts/plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"

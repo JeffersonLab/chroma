@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 3.0 2006-04-03 04:58:53 edwards Exp $
+// $Id: gauge.h,v 3.1 2006-09-19 16:04:23 edwards Exp $
 
 /*! \file
  * \brief Gauge action support
@@ -19,6 +19,7 @@
 
 #include "gaugeacts/gaugeacts.h"
 #include "gaugebcs/gaugebcs.h"
+#include "gaugestates/gaugestates.h"
 
 #endif
 

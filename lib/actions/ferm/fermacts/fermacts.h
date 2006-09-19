@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: fermacts.h,v 3.1 2006-09-19 16:04:21 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -18,9 +18,6 @@
 
 #include "fermacts_w.h"
 #include "fermacts_s.h"
-
-#include "periodic_fermstate.h"
-#include "simple_fermstate.h"
 
 #include "remez.h"
 #include "remez_coeff.h"
