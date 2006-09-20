@@ -1,4 +1,4 @@
-// $Id: baryon_operator_aggregate_w.cc,v 1.1 2006-05-12 03:38:01 edwards Exp $
+// $Id: baryon_operator_aggregate_w.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All baryon operators
  */
@@ -14,18 +14,26 @@ namespace Chroma
   //! Registration aggregator
   namespace BaryonOperatorEnv
   {
-    bool registerAll() 
+    namespace
     {
-      bool success = true;
-
-      // Hadron
-      success &= SimpleBaryonOperatorEnv::registered;
-      success &= GroupBaryonOperatorEnv::registered;
-
-      return success;
+      //! Local registration flag
+      bool registered = false;
     }
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	// Hadron
+	success &= SimpleBaryonOperatorEnv::registerAll();
+	success &= GroupBaryonOperatorEnv::registerAll();
+
+	registered = true;
+      }
+      return success;
+    }
   }
 
 }

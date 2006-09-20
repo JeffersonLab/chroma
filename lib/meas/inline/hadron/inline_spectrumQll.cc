@@ -1,4 +1,4 @@
-// $Id: inline_spectrumQll.cc,v 1.4 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_spectrumQll.cc,v 1.5 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of heavy-light baryon spectrum  
  * (infinitely heavy)
@@ -28,15 +28,32 @@ namespace Chroma
 { 
   namespace InlineSpectrumQllEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineSpectrumQll(InlineSpectrumQllParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineSpectrumQll(InlineSpectrumQllParams(xml_in, path));
+      }
+      
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "SPECTRUM_QLL";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
 

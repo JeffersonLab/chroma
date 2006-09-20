@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_minimum_norm2_qpq_integrator_mts.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
+// $Id: lcm_minimum_norm2_qpq_integrator_mts.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
 /*! @file
  * @brief Second order minimal norm (2MN) integrator position version with multiple time scales
  *
@@ -24,7 +24,7 @@ namespace Chroma
   namespace LatColMatMinimumNorm2QPQIntegratorMtsEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   /*! @ingroup integrator */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hadspec_w.h,v 3.2 2006-07-11 03:51:51 edwards Exp $
+// $Id: inline_hadspec_w.h,v 3.3 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline hadron spectrum calculations
  *
@@ -19,7 +19,7 @@ namespace Chroma
   namespace InlineHadSpecEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

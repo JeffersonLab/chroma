@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_smearing.h,v 3.3 2006-06-12 02:13:47 edwards Exp $
+// $Id: pt_source_smearing.h,v 3.4 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace PointQuarkSourceSmearingEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   
 
     //! Point sink parameters

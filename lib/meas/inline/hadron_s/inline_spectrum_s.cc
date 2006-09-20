@@ -128,17 +128,34 @@ namespace Chroma {
 
 /***************************************************************************/
 
-  namespace InlineStaggeredSpectrumEnv { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) {
-      return new InlineStaggeredSpectrum(InlineStaggeredSpectrumParams(xml_in, path));
+  namespace InlineStaggeredSpectrumEnv 
+  { 
+    namespace
+    {
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) {
+	return new InlineStaggeredSpectrum(InlineStaggeredSpectrumParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "SPECTRUM_S";
-    const bool registered = 
-    TheInlineMeasurementFactory::Instance().registerObject(name, 
-							   createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, 
+									  createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 /***************************************************************************/
 

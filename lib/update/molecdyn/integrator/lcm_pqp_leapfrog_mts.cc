@@ -1,4 +1,4 @@
-// $Id: lcm_pqp_leapfrog_mts.cc,v 3.2 2006-09-15 02:50:45 edwards Exp $
+// $Id: lcm_pqp_leapfrog_mts.cc,v 3.3 2006-09-20 20:28:05 edwards Exp $
 
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
@@ -16,19 +16,37 @@ namespace Chroma
   
   namespace LatColMatPQPLeapfrogIntegratorMtsEnv 
   {
-    
-    AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
-		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
-								      XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) {
-      // Read the integrator params
-      LatColMatPQPLeapfrogIntegratorMtsParams p(xml, path);
+    namespace
+    {
+      AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
+		      multi1d<LatticeColorMatrix> >* createMDIntegrator(
+			XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) 
+      {
+	// Read the integrator params
+	LatColMatPQPLeapfrogIntegratorMtsParams p(xml, path);
       
-      return new LatColMatPQPLeapfrogIntegratorMts(p, H);
+	return new LatColMatPQPLeapfrogIntegratorMts(p, H);
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = std::string("LCM_PQP_LEAPFROG_INTEGRATOR_MTS");
-    const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
   LatColMatPQPLeapfrogIntegratorMtsParams::LatColMatPQPLeapfrogIntegratorMtsParams(XMLReader& xml_in, 
 									   const std::string& path) 

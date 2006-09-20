@@ -1,4 +1,4 @@
-// $Id: spin_insertion_aggregate.cc,v 1.1 2006-05-24 21:09:41 edwards Exp $
+// $Id: spin_insertion_aggregate.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All spin insertion constructors
  */
@@ -14,17 +14,24 @@ namespace Chroma
   // Registration aggregator
   namespace SpinInsertionEnv
   {
-    bool registerAll() 
+    namespace
     {
-      bool success = true;
-
-      success &= NoSpinInsertionEnv::registered;
-      success &= SimpleSpinInsertionEnv::registered;
-
-      return success;
+      //! Local registration flag
+      bool registered = false;
     }
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= NoSpinInsertionEnv::registerAll();
+	success &= SimpleSpinInsertionEnv::registerAll();
+	registered = true;
+      }
+      return success;
+    }
   }
 
 }

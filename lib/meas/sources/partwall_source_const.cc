@@ -1,4 +1,4 @@
-// $Id: partwall_source_const.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: partwall_source_const.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Partial wall source construction
  */
@@ -48,26 +48,33 @@ namespace Chroma
   //! Hooks to register the class
   namespace PartialWallQuarkSourceConstEnv
   {
-    //! Callback function
-    QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
-							   const std::string& path)
+    namespace
     {
-      return new SourceConst<LatticePropagator>(Params(xml_in, path));
+      //! Callback function
+      QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
+							     const std::string& path)
+      {
+	return new SourceConst<LatticePropagator>(Params(xml_in, path));
+      }
+      
+      //! Local registration flag
+      bool registered = false;
     }
 
     //! Name to be used
     const std::string name("PARTIAL_WALL_SOURCE");
 
     //! Register all the factories
-    bool registerAll()
+    bool registerAll() 
     {
-      bool foo = true;
-      foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createProp);
-      return foo;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createProp);
+	registered = true;
+      }
+      return success;
     }
-
-    //! Register the source construction
-    const bool registered = registerAll();
 
 
     //! Initialize

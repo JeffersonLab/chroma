@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_pqp_leapfrog_mts.h,v 3.2 2006-09-06 14:31:36 edwards Exp $
+// $Id: lcm_pqp_leapfrog_mts.h,v 3.3 2006-09-20 20:28:05 edwards Exp $
 /*! @file
  * @brief Second order minimal norm (2MN) integrator with multiple time scales
  *
@@ -24,8 +24,9 @@ namespace Chroma
   namespace LatColMatPQPLeapfrogIntegratorMtsEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
+
 
   /*! @ingroup integrator */
   struct  LatColMatPQPLeapfrogIntegratorMtsParams 

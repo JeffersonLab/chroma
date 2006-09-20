@@ -1,4 +1,4 @@
-// $Id: simple_gaugebc.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: simple_gaugebc.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
@@ -20,8 +20,21 @@ namespace Chroma {
     }
 
     const std::string name = "SIMPLE_GAUGEBC";
-    const bool registered = TheGaugeBCFactory::Instance().registerObject(name,
-									 createGaugeBC);
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeBCFactory::Instance().registerObject(name, createGaugeBC);
+	registered = true;
+      }
+      return success;
+    }
   }
 
   SimpleGaugeBCParams::SimpleGaugeBCParams(XMLReader& xml, 

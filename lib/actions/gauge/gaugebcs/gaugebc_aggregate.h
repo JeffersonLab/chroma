@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugebc_aggregate.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: gaugebc_aggregate.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */
@@ -17,7 +17,7 @@ namespace Chroma
   /*! @ingroup gaugebcs */
   namespace GaugeTypeGaugeBCEnv
   {
-    extern const bool registered;
+    bool registerAll();
 
     //! Helper function for the GaugeAction readers
     Handle<GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 

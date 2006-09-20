@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.10 2006-08-19 19:29:33 flemingg Exp $
+// $Id: inline_mesonspec_w.cc,v 3.11 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -23,27 +23,33 @@ namespace Chroma
 { 
   namespace InlineMesonSpecEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineMesonSpec(InlineMesonSpecParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineMesonSpec(InlineMesonSpecParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "MESON_SPECTRUM";
 
     //! Register all the factories
-    bool registerAll()
+    bool registerAll() 
     {
-      bool foo = true;
-      foo &= SpinInsertionEnv::registered;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      return foo;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= SpinInsertionEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
     }
-
-    //! Register the source construction
-    const bool registered = registerAll();
-
-  };
+  }
 
 
 

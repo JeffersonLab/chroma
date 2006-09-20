@@ -1,4 +1,4 @@
-// $Id: inline_qpropadd_w.cc,v 3.0 2006-04-03 04:59:02 edwards Exp $
+// $Id: inline_qpropadd_w.cc,v 3.1 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropadd
  *
@@ -14,15 +14,32 @@ namespace Chroma
 { 
   namespace InlineQpropAddEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineQpropAdd(InlineQpropAddParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineQpropAdd(InlineQpropAddParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "QPROPADD";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   //! Propagator parameters

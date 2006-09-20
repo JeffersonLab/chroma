@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovext_neuberger_strategy.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: ovext_neuberger_strategy.cc,v 3.1 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Ovext Neuberger rescale strategy
  */
@@ -21,7 +21,21 @@ namespace Chroma
     }
     
     const std::string name = "OVEXT_NEUBERGER_STRATEGY";
-    const bool registered = TheAbsOvExtTuningStrategyFactory::Instance().registerObject(name, createStrategy);
-  } // end namespace OvExtTuningStrategy
 
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheAbsOvExtTuningStrategyFactory::Instance().registerObject(name, createStrategy);
+	registered = true;
+      }
+      return success;
+    }
+
+  } // end namespace OvExtTuningStrategy
 } // end namespace Chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ovdwf_fermact_array_w.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.h,v 3.1 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -17,7 +17,7 @@ namespace Chroma
   namespace EvenOddPrecOvDWFermActArrayEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
   
 

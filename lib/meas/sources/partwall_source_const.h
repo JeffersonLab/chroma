@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: partwall_source_const.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: partwall_source_const.h,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Partial wall source construction
  */
@@ -26,7 +26,7 @@ namespace Chroma
   namespace PartialWallQuarkSourceConstEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
 
   
     //! PartialWall source parameters

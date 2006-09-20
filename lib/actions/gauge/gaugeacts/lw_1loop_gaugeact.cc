@@ -1,4 +1,4 @@
-// $Id: lw_1loop_gaugeact.cc,v 3.2 2006-09-19 18:25:40 edwards Exp $
+// $Id: lw_1loop_gaugeact.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief 1-loop tadpole-improved Luscher-Weisz gauge action
  */
@@ -21,9 +21,22 @@ namespace Chroma
     }
 
     const std::string name = "LW_1LOOP_GAUGEACT";
-    const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
-									  createGaugeAct);
-  };
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeActFactory::Instance().registerObject(name, createGaugeAct);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   LW1LoopGaugeActParams::LW1LoopGaugeActParams(XMLReader& xml_in, const std::string& path) {

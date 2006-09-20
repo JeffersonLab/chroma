@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barseqsrc_w.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: barseqsrc_w.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -16,7 +16,7 @@ namespace Chroma
   /*! @ingroup hadron */
   namespace SimpleBaryonSeqSourceEnv
   {
-    extern const bool registered;
+    bool registerAll();
 
   
     //! Simple baryon sequential source parameters

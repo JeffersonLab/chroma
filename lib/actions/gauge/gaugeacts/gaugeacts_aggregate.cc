@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.8 2006-09-19 16:04:23 edwards Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.9 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */
@@ -29,32 +29,38 @@ namespace Chroma
   //! Registration aggregator
   namespace GaugeActsEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// Register all gauge BCs
+	success &= GaugeTypeGaugeBCEnv::registerAll();
 
-      // Register all gauge BCs
-      success &= GaugeTypeGaugeBCEnv::registered;
+	// Register all gauge states
+	success &= CreateGaugeStateEnv::registerAll();
 
-      // Register all gauge states
-      success &= CreateGaugeStateEnv::registered;
+	// Register gauge actions
+	success &= PlaqGaugeActEnv::registerAll();
+	success &= RectGaugeActEnv::registerAll();
+	success &= PgGaugeActEnv::registerAll();
+	success &= WilsonGaugeActEnv::registerAll();
+	success &= LWTreeGaugeActEnv::registerAll();
+	success &= LW1LoopGaugeActEnv::registerAll();
+	success &= RGGaugeActEnv::registerAll();
+	success &= RBCGaugeActEnv::registerAll();
+	success &= SpatialTwoPlaqGaugeActEnv::registerAll();
+	success &= PlaqPlusSpatialTwoPlaqGaugeActEnv::registerAll();
+	success &= AnisoSpectrumGaugeActEnv::registerAll();
 
-      // Register gauge actions
-      success &= PlaqGaugeActEnv::registered;
-      success &= RectGaugeActEnv::registered;
-      success &= PgGaugeActEnv::registered;
-      success &= WilsonGaugeActEnv::registered;
-      success &= LWTreeGaugeActEnv::registered;
-      success &= LW1LoopGaugeActEnv::registered;
-      success &= RGGaugeActEnv::registered;
-      success &= RBCGaugeActEnv::registered;
-      success &= SpatialTwoPlaqGaugeActEnv::registered;
-      success &= PlaqPlusSpatialTwoPlaqGaugeActEnv::registered;
-      success &= AnisoSpectrumGaugeActEnv::registered;
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

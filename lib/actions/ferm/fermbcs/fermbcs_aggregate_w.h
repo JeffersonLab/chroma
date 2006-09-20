@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbcs_aggregate_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: fermbcs_aggregate_w.h,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion boundary conditions
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! \ingroup fermbcs */
   namespace WilsonTypeFermBCEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 
 }

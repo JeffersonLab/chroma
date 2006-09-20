@@ -1,4 +1,4 @@
-// $Id: inline_stoch_meson_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_stoch_meson_w.cc,v 3.3 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic meson operator
  *
@@ -25,24 +25,34 @@ namespace Chroma
 { 
   namespace InlineStochMesonEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineStochMeson(InlineStochMesonParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineStochMeson(InlineStochMesonParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "STOCH_MESON";
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= QuarkSourceSmearingEnv::registered;
-      foo &= QuarkSinkSmearingEnv::registered;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      return foo;
-    }
 
-    const bool registered = registerAll();
-  };
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= QuarkSourceSmearingEnv::registerAll();
+	success &= QuarkSinkSmearingEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
 

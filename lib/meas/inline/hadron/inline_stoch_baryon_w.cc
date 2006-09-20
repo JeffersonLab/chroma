@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.11 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.12 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -23,23 +23,33 @@ namespace Chroma
 { 
   namespace InlineStochBaryonEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineStochBaryon(InlineStochBaryonParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineStochBaryon(InlineStochBaryonParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "STOCH_BARYON";
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= BaryonOperatorEnv::registered;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      return foo;
-    }
 
-    const bool registered = registerAll();
-  };
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= BaryonOperatorEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
 

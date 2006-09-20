@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc_s.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: simple_fermbc_s.h,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -16,7 +16,7 @@ namespace Chroma
   namespace StaggeredTypeSimpleFermBCEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

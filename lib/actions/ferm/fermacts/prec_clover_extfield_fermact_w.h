@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_clover_extfield_fermact_w.h,v 3.3 2006-09-19 16:05:10 edwards Exp $
+// $Id: prec_clover_extfield_fermact_w.h,v 3.4 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action with an external field
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace EvenOddPrecCloverExtFieldFermActEnv
   {
     extern const std::string name;
-    extern const bool registered;   /*!< Name to be used */
+    bool registerAll();
   }
   
 

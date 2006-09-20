@@ -1,4 +1,4 @@
-// $Id: lcm_minimum_norm2_integrator_mts.cc,v 3.2 2006-09-15 02:50:45 edwards Exp $
+// $Id: lcm_minimum_norm2_integrator_mts.cc,v 3.3 2006-09-20 20:28:04 edwards Exp $
 
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
@@ -11,22 +11,42 @@
 #include "util/gauge/expmat.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace LatColMatMinimumNorm2IntegratorMtsEnv {
-    
-    AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
-		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
-								      XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) {
-      // Read the integrator params
-      LatColMatMinimumNorm2IntegratorMtsParams p(xml, path);
+  namespace LatColMatMinimumNorm2IntegratorMtsEnv 
+  {
+    namespace
+    {
+      AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
+		      multi1d<LatticeColorMatrix> >* createMDIntegrator(
+			XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) 
+      {
+	// Read the integrator params
+	LatColMatMinimumNorm2IntegratorMtsParams p(xml, path);
       
-      return new LatColMatMinimumNorm2IntegratorMts(p, H);
+	return new LatColMatMinimumNorm2IntegratorMts(p, H);
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "LCM_MINIMUM_NORM_2ND_ORDER_INTEGRATOR_MTS";
-    const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
   LatColMatMinimumNorm2IntegratorMtsParams::LatColMatMinimumNorm2IntegratorMtsParams(XMLReader& xml_in, 
 									   const std::string& path) 

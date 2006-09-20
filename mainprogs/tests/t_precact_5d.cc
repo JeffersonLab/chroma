@@ -1,4 +1,4 @@
-// $Id: t_precact_5d.cc,v 3.2 2006-07-03 15:26:11 edwards Exp $
+// $Id: t_precact_5d.cc,v 3.3 2006-09-20 20:28:06 edwards Exp $
 /*! \file
  *  \brief Test 5d fermion actions
  */
@@ -19,7 +19,7 @@ bool linkage_hack()
 {
   bool foo = true;
   // All actions
-  foo &= WilsonTypeFermActsEnv::registered;
+  foo &= WilsonTypeFermActsEnv::registerAll();
   return foo;
 }
 

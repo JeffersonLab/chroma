@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_sw_min_mixed.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
+// $Id: lcm_sw_min_mixed.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
 
 /*! @file
  * @brief Sexton Weingarten integrator
@@ -25,8 +25,9 @@ namespace Chroma
   namespace LatColMatSexWeinMixedIntegratorEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
+
 
   /*! @ingroup integrator */
   struct  LatColMatSexWeinMixedIntegratorParams 

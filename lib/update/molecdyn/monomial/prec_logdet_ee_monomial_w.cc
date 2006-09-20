@@ -14,26 +14,34 @@ namespace Chroma
 
   namespace PrecLogDetEvenEvenMonomial4DEnv 
   {
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+    namespace
     {
-      QDPIO::cout << "Create Monomial: " << name << endl;
+      //! Callback function for the factory
+      Monomial< multi1d<LatticeColorMatrix>,
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+      {
+	QDPIO::cout << "Create Monomial: " << name << endl;
 
-      return new PrecLogDetEvenEvenMonomial4D(PrecLogDetEvenEvenMonomialParams(xml, path));
+	return new PrecLogDetEvenEvenMonomial4D(PrecLogDetEvenEvenMonomialParams(xml, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = std::string("N_FLAVOR_LOGDET_EVEN_EVEN_FERM_MONOMIAL");
-
-    bool registerAll()
+ 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool foo = true;
-//      foo &= EvenOddPrecCloverFermActEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
-      return foo;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
+	registered = true;
+      }
+      return success;
     }
-
-    const bool registered = registerAll();
   }
  
 

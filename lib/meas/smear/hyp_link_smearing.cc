@@ -1,4 +1,4 @@
-// $Id: hyp_link_smearing.cc,v 3.1 2006-06-17 18:25:09 edwards Exp $
+// $Id: hyp_link_smearing.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Hyp link smearing
  */
@@ -40,14 +40,20 @@ namespace Chroma
     //! Name to be used
     const std::string name = "HYP_SMEAR";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      return Chroma::TheLinkSmearingFactory::Instance().registerObject(name, createSource);
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the source construction
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheLinkSmearingFactory::Instance().registerObject(name, createSource);
+	registered = true;
+      }
+      return success;
+    }
 
 
     //! Parameters for running code

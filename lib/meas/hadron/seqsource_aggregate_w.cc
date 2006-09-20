@@ -1,4 +1,4 @@
-// $Id: seqsource_aggregate_w.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: seqsource_aggregate_w.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All sequential source constructors
  */
@@ -16,20 +16,28 @@ namespace Chroma
   //! Registration aggregator
   namespace HadronSeqSourceEnv
   {
-    bool registerAll() 
+    namespace
     {
-      bool success = true;
-
-      // Hadron
-      success &= SimpleMesonSeqSourceEnv::registered;
-      success &= SimpleBaryonSeqSourceEnv::registered;
-      success &= DerivMesonSeqSourceEnv::registered;
-      success &= PhotonRhoSeqSourceEnv::registered;
-
-      return success;
+      //! Local registration flag
+      bool registered = false;
     }
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	// Hadron
+	success &= SimpleMesonSeqSourceEnv::registerAll();
+	success &= SimpleBaryonSeqSourceEnv::registerAll();
+	success &= DerivMesonSeqSourceEnv::registerAll();
+	success &= PhotonRhoSeqSourceEnv::registerAll();
+
+	registered = true;
+      }
+      return success;
+    }
   }
 
 }

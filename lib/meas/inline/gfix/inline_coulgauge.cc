@@ -1,4 +1,4 @@
-// $Id: inline_coulgauge.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
+// $Id: inline_coulgauge.cc,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */
@@ -87,10 +87,24 @@ namespace Chroma
       {
 	return new InlineMeas(Params(xml_in, path));
       }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "COULOMB_GAUGEFIX";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
 
 
     // Param stuff

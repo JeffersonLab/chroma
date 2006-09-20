@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.4 2006-07-10 19:44:00 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.5 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -38,45 +38,54 @@ namespace Chroma
   //! Name and registration
   namespace InlineHadronAggregateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
+      if (! registered)
+      {
+	// Grab the fermacts
+	success &= WilsonTypeFermActsEnv::registerAll();
 
-      // Grab the fermacts
-      success &= WilsonTypeFermActsEnv::registered;
+	// Hadron stuff
+	success &= InlineMakeSourceEnv::registerAll();
+	success &= InlinePropagatorEnv::registerAll();
 
-      // Hadron stuff
-      success &= InlineMakeSourceEnv::registered;
-      success &= InlinePropagatorEnv::registered;
+	success &= InlineMakeSourceFermEnv::registerAll();
+	success &= InlinePropagatorFermEnv::registerAll();
 
-      success &= InlineMakeSourceFermEnv::registered;
-      success &= InlinePropagatorFermEnv::registered;
+	success &= InlineMultiPropagatorEnv::registerAll();  // save space
+	success &= InlineSeqSourceEnv::registerAll();
+	success &= InlineHadSpecEnv::registerAll();
+	success &= InlineMesonSpecEnv::registerAll();
+	success &= InlineSpectrumEnv::registerAll();
+	success &= InlineSpectrumOctEnv::registerAll();
+	success &= InlineSinkSmearEnv::registerAll();
+	success &= InlineQQQEnv::registerAll();
+	success &= InlineQQbarEnv::registerAll();
+	success &= InlineBuildingBlocksEnv::registerAll();
+	success &= InlineNoisyBuildingBlocksEnv::registerAll();
+	success &= InlineBar3ptfnEnv::registerAll();
+//      success &= InlineMultipoleEnv::registerAll();  // not being used
+	success &= InlineMresEnv::registerAll();
+	success &= InlineQpropQIOEnv::registerAll();
+	success &= InlineQpropAddEnv::registerAll();
+	success &= InlineQQQNucNucEnv::registerAll();
+	success &= InlineSpectrumQllEnv::registerAll();
+	success &= InlineStochMesonEnv::registerAll();
+	success &= InlineStochBaryonEnv::registerAll();
 
-      success &= InlineMultiPropagatorEnv::registered;  // save space
-      success &= InlineSeqSourceEnv::registered;
-      success &= InlineHadSpecEnv::registered;
-      success &= InlineMesonSpecEnv::registered;
-      success &= InlineSpectrumEnv::registered;
-      success &= InlineSpectrumOctEnv::registered;
-      success &= InlineSinkSmearEnv::registered;
-      success &= InlineQQQEnv::registered;
-      success &= InlineQQbarEnv::registered;
-      success &= InlineBuildingBlocksEnv::registered;
-      success &= InlineNoisyBuildingBlocksEnv::registered;
-      success &= InlineBar3ptfnEnv::registered;
-//      success &= InlineMultipoleEnv::registered;  // not being used
-      success &= InlineMresEnv::registered;
-      success &= InlineQpropQIOEnv::registered;
-      success &= InlineQpropAddEnv::registered;
-      success &= InlineQQQNucNucEnv::registered;
-      success &= InlineSpectrumQllEnv::registered;
-      success &= InlineStochMesonEnv::registered;
-      success &= InlineStochBaryonEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
 
-    const bool registered = registerAll();
   }
 
 }

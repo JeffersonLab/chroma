@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_coulgauge.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_coulgauge.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */
@@ -16,7 +16,7 @@ namespace Chroma
   namespace InlineCoulGaugeEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
 
     //! Parameter structure
     /*! \ingroup inlinegfix */

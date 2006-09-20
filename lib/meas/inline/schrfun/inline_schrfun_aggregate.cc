@@ -1,4 +1,4 @@
-// $Id: inline_schrfun_aggregate.cc,v 1.1 2006-04-10 21:17:05 edwards Exp $
+// $Id: inline_schrfun_aggregate.cc,v 1.2 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline Schroedinger functional measurement aggregator
  */
@@ -16,20 +16,28 @@ namespace Chroma
   //! Name and registration
   namespace InlineSchrFunAggregateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
+      if (! registered)
+      {
+	// Grab the fermacts
+	success &= WilsonTypeFermActsEnv::registerAll();
+	
+	// Schrfun stuff
+	success &= InlineSFpcacEnv::registerAll();
 
-      // Grab the fermacts
-      success &= WilsonTypeFermActsEnv::registered;
-
-      // Schrfun stuff
-      success &= InlineSFpcacEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

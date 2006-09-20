@@ -1,4 +1,4 @@
-// $Id: gaugebc_aggregate.cc,v 3.1 2006-08-18 15:53:14 edwards Exp $
+// $Id: gaugebc_aggregate.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */
@@ -19,20 +19,28 @@ namespace Chroma
   //! Name and registration
   namespace GaugeTypeGaugeBCEnv
   {
-    bool registerAll(void) 
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
     {
       bool success = true; 
-      success &= SimpleGaugeBCEnv::registered;
-      success &= PeriodicGaugeBCEnv::registered;
-      success &= SchrTrivialGaugeBCEnv::registered;
-      success &= SchrNonPertGaugeBCEnv::registered;
-      success &= SchrCouplingGaugeBCEnv::registered;
-      success &= SchrChromoMagGaugeBCEnv::registered;
-      success &= SchrDirichletGaugeBCEnv::registered;
+      if (! registered)
+      {
+	success &= SimpleGaugeBCEnv::registerAll();
+	success &= PeriodicGaugeBCEnv::registerAll();
+	success &= SchrTrivialGaugeBCEnv::registerAll();
+	success &= SchrNonPertGaugeBCEnv::registerAll();
+	success &= SchrCouplingGaugeBCEnv::registerAll();
+	success &= SchrChromoMagGaugeBCEnv::registerAll();
+	success &= SchrDirichletGaugeBCEnv::registerAll();
+
+	registered = true;
+      }
       return success;
     }
 
-    const bool registered = registerAll();
 
     // Helper function for the GaugeAction readers
     Handle<GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 

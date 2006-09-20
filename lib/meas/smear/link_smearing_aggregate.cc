@@ -1,4 +1,4 @@
-// $Id: link_smearing_aggregate.cc,v 3.2 2006-06-10 16:28:19 edwards Exp $
+// $Id: link_smearing_aggregate.cc,v 3.3 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief All link smearing applicators
  */
@@ -16,21 +16,25 @@ namespace Chroma
   // Registration aggregator
   namespace LinkSmearingEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// link smearing
+	success &= APELinkSmearingEnv::registerAll();
+	success &= HypLinkSmearingEnv::registerAll();
+	success &= NoLinkSmearingEnv::registerAll();
+	success &= StoutLinkSmearingEnv::registerAll();
 
-      // link smearing
-      success &= APELinkSmearingEnv::registered;
-      success &= HypLinkSmearingEnv::registered;
-      success &= NoLinkSmearingEnv::registered;
-      success &= StoutLinkSmearingEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
-
 
 
     // Returns a no-smearing group

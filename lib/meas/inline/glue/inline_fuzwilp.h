@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_fuzwilp.h,v 3.1 2006-04-11 04:18:23 edwards Exp $
+// $Id: inline_fuzwilp.h,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  * \brief Inline fuzzed Wilson loops
  */
@@ -16,8 +16,9 @@ namespace Chroma
   namespace InlineFuzzedWilsonLoopEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
+
 
   //! Parameter structure
   /*! \ingroup inlineglue */

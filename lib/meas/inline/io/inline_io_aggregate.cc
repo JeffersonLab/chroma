@@ -1,4 +1,4 @@
-// $Id: inline_io_aggregate.cc,v 3.1 2006-04-27 02:35:38 edwards Exp $
+// $Id: inline_io_aggregate.cc,v 3.2 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */
@@ -24,31 +24,39 @@ namespace Chroma
   //! Name and registration
   namespace InlineIOAggregateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
+      if (! registered)
+      {
+	// Tasks
+	success &= InlineQIOReadNamedObjEnv::registerAll();
+	success &= InlineQIOWriteNamedObjEnv::registerAll();
+	success &= InlineQIOWriteEraseNamedObjEnv::registerAll();
+	success &= InlineEraseNamedObjEnv::registerAll();
+	success &= InlineListNamedObjEnv::registerAll();
 
-      // Tasks
-      success &= InlineQIOReadNamedObjEnv::registered;
-      success &= InlineQIOWriteNamedObjEnv::registered;
-      success &= InlineQIOWriteEraseNamedObjEnv::registered;
-      success &= InlineEraseNamedObjEnv::registered;
-      success &= InlineListNamedObjEnv::registered;
+	success &= InlineGaussianInitNamedObjEnv::registerAll();
 
-      success &= InlineGaussianInitNamedObjEnv::registered;
+	success &= InlineSZINReadNamedObjEnv::registerAll();
+	success &= InlineSZINWriteNamedObjEnv::registerAll();
 
-      success &= InlineSZINReadNamedObjEnv::registered;
-      success &= InlineSZINWriteNamedObjEnv::registered;
+	success &= InlineNERSCReadNamedObjEnv::registerAll();
+	success &= InlineNERSCWriteNamedObjEnv::registerAll();
 
-      success &= InlineNERSCReadNamedObjEnv::registered;
-      success &= InlineNERSCWriteNamedObjEnv::registered;
+	success &= InlineXMLWriteNamedObjEnv::registerAll();
 
-      success &= InlineXMLWriteNamedObjEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

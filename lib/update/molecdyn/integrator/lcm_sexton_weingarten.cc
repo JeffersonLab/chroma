@@ -14,19 +14,37 @@ namespace Chroma
   
   namespace LatColMatSextonWeingartenIntegratorEnv 
   {
-
-    AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
-		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
-								       XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) {
-      // Read the integrator params
-      LatColMatSextonWeingartenIntegratorParams p(xml, path);
+    namespace
+    {
+      AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
+		      multi1d<LatticeColorMatrix> >* createMDIntegrator(
+			XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) 
+      {
+	// Read the integrator params
+	LatColMatSextonWeingartenIntegratorParams p(xml, path);
     
-      return new LatColMatSextonWeingartenIntegrator(p, H);
+	return new LatColMatSextonWeingartenIntegrator(p, H);
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "LCM_SEXTON_WEINGARTEN_INTEGRATOR";
-    const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
   LatColMatSextonWeingartenIntegratorParams::LatColMatSextonWeingartenIntegratorParams(XMLReader& xml_in, const std::string& path) 
   {

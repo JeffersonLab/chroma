@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.3 2006-08-19 19:29:33 flemingg Exp $
+// $Id: inline_building_blocks_w.cc,v 3.4 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -19,15 +19,32 @@ namespace Chroma
 { 
   namespace InlineBuildingBlocksEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineBuildingBlocks(InlineBuildingBlocksParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineBuildingBlocks(InlineBuildingBlocksParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "BUILDING_BLOCKS";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   //! Param input

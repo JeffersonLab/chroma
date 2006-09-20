@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovext_const_div_by_resp_strategy.h,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: ovext_const_div_by_resp_strategy.h,v 3.1 2006-09-20 20:27:58 edwards Exp $
 /*! \file
  *  \brief Ovext rescale strategy
  */
@@ -17,7 +17,7 @@ namespace Chroma
   namespace OvExtConstDivByResPStrategyEnv 
   { 
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
   
   

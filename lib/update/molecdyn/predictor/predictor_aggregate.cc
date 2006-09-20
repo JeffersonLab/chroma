@@ -1,4 +1,4 @@
-// $Id: predictor_aggregate.cc,v 3.1 2006-08-26 02:08:43 edwards Exp $
+// $Id: predictor_aggregate.cc,v 3.2 2006-09-20 20:28:05 edwards Exp $
 /*! \file
  *  \brief Chrono predictor aggregator
  */
@@ -16,22 +16,31 @@ namespace Chroma
   //! Name and registration
   namespace ChronoPredictorAggregrateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
-      success &= ZeroGuess4DChronoPredictorEnv::registered;
-      success &= ZeroGuess5DChronoPredictorEnv::registered;
-      success &= LastSolution4DChronoPredictorEnv::registered;  
-      success &= LastSolution5DChronoPredictorEnv::registered;
-      success &= LinearExtrapolation4DChronoPredictorEnv::registered;
-      success &= LinearExtrapolation5DChronoPredictorEnv::registered;
-      success &= MinimalResidualExtrapolation4DChronoPredictorEnv::registered;
-      success &= MinimalResidualExtrapolation5DChronoPredictorEnv::registered;
+      if (! registered)
+      {
+	success &= ZeroGuess4DChronoPredictorEnv::registerAll();
+	success &= ZeroGuess5DChronoPredictorEnv::registerAll();
+	success &= LastSolution4DChronoPredictorEnv::registerAll();  
+	success &= LastSolution5DChronoPredictorEnv::registerAll();
+	success &= LinearExtrapolation4DChronoPredictorEnv::registerAll();
+	success &= LinearExtrapolation5DChronoPredictorEnv::registerAll();
+	success &= MinimalResidualExtrapolation4DChronoPredictorEnv::registerAll();
+	success &= MinimalResidualExtrapolation5DChronoPredictorEnv::registerAll();
 
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

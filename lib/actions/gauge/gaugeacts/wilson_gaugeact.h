@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: wilson_gaugeact.h,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -15,9 +15,10 @@ namespace Chroma
 {
 
   /*! @ingroup gaugeacts */
-  namespace WilsonGaugeActEnv { 
+  namespace WilsonGaugeActEnv 
+  { 
     extern const string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

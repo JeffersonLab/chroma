@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_plus_spatial_two_plaq_gaugeact.h,v 3.3 2006-07-22 00:54:14 bjoo Exp $
+// $Id: plaq_plus_spatial_two_plaq_gaugeact.h,v 3.4 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace PlaqPlusSpatialTwoPlaqGaugeActEnv 
   { 
     extern const string name;
-    extern const bool registered;
+    bool registerAll();
     extern  double getTime();
   }
 

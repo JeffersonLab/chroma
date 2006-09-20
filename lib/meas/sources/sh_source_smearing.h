@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_smearing.h,v 3.5 2006-06-12 02:13:47 edwards Exp $
+// $Id: sh_source_smearing.h,v 3.6 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Shell source smearing
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace ShellQuarkSourceSmearingEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   
 
     //! Point source parameters

@@ -23,9 +23,21 @@ namespace Chroma
     }
 
     const std::string name = "PERIODIC_GAUGEBC";
-    const bool registered = TheGaugeBCFactory::Instance().registerObject(name,
-									 createGaugeBC);
 
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeBCFactory::Instance().registerObject(name, createGaugeBC);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 } // End namespace Chroma 

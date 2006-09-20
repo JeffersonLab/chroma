@@ -1,3 +1,4 @@
+// $Id: inline_polar_source_w.cc,v 1.3 2006-09-20 20:28:02 edwards Exp $
 // Code for sequential source construction
 
 #error "THIS CODE IS NOT READY YET"

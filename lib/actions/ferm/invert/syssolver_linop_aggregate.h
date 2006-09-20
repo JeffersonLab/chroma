@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_aggregate.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: syssolver_linop_aggregate.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Register linop system solvers that solve  M*psi=chi
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! @ingroup invert */
   namespace LinOpSysSolverEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 
 
@@ -23,7 +23,7 @@ namespace Chroma
   /*! @ingroup invert */
   namespace LinOpSysSolverArrayEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.6 2006-09-19 18:25:41 edwards Exp $
+// $Id: rect_gaugeact.cc,v 3.7 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -24,14 +24,26 @@ namespace Chroma
     }
 
     const std::string name = "RECT_GAUGEACT";
-    const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
-									  createGaugeAct);
 
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeActFactory::Instance().registerObject(name, createGaugeAct);
+	registered = true;
+      }
+      return success;
+    }
 
     static double time_spent = 0;
 
     double getTime(void) { return time_spent; }    
-  };
+  }
 
 
 

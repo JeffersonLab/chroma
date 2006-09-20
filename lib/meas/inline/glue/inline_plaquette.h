@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_plaquette.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_plaquette.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -16,7 +16,7 @@ namespace Chroma
   namespace InlinePlaquetteEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   /*! \ingroup inlineglue */

@@ -1,4 +1,4 @@
-// $Id: simple_gaugestate.cc,v 1.1 2006-09-19 18:21:38 edwards Exp $
+// $Id: simple_gaugestate.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Simple gauge state and a creator
  */
@@ -23,8 +23,21 @@ namespace Chroma
     }
 
     const std::string name = "SIMPLE_GAUGE_STATE";
-    const bool registered = TheCreateGaugeStateFactory::Instance().registerObject(name, 
-										  createCreator);
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheCreateGaugeStateFactory::Instance().registerObject(name, createCreator);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-// $Id: inline_gfix_aggregate.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_gfix_aggregate.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline gauge fixing measurement aggregator
  */
@@ -12,15 +12,23 @@ namespace Chroma
   //! Name and registration
   namespace InlineGFixAggregateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
-      success &= InlineCoulGaugeEnv::registered;
-
+      if (! registered)
+      {
+	success &= InlineCoulGaugeEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

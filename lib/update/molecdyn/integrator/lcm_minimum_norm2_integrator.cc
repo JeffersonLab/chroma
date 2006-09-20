@@ -2,22 +2,42 @@
 #include "update/molecdyn/integrator/md_integrator_factory.h"
 #include "update/molecdyn/integrator/lcm_minimum_norm2_integrator.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace LatColMatMinimumNorm2IntegratorEnv {
-
-    AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
-		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
-								       XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) {
-      // Read the integrator params
-      LatColMatMinimumNorm2IntegratorParams p(xml, path);
+  namespace LatColMatMinimumNorm2IntegratorEnv 
+  {
+    namespace
+    {
+      AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
+		      multi1d<LatticeColorMatrix> >* createMDIntegrator(
+			XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) 
+      {
+	// Read the integrator params
+	LatColMatMinimumNorm2IntegratorParams p(xml, path);
     
-      return new LatColMatMinimumNorm2Integrator(p, H);
+	return new LatColMatMinimumNorm2Integrator(p, H);
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "LCM_MINIMUM_NORM_2ND_ORDER_INTEGRATOR";
-    const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
   LatColMatMinimumNorm2IntegratorParams::LatColMatMinimumNorm2IntegratorParams(XMLReader& xml_in, const std::string& path) 
   {

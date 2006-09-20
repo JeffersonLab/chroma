@@ -1,4 +1,4 @@
-// $Id: spatial_two_plaq_gaugeact.cc,v 1.5 2006-09-19 18:25:41 edwards Exp $
+// $Id: spatial_two_plaq_gaugeact.cc,v 1.6 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -25,9 +25,22 @@ namespace Chroma
     }
 
     const std::string name = "SPATIAL_TWO_PLAQ_GAUGEACT";
-    const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
-									  createGaugeAct);
-  };
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeActFactory::Instance().registerObject(name, createGaugeAct);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   SpatialTwoPlaqGaugeActParams::SpatialTwoPlaqGaugeActParams(XMLReader& xml_in, const std::string& path) 

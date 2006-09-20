@@ -1,9 +1,8 @@
 #include "chromabase.h"
 #include "update/molecdyn/predictor/lu_solve.h"
 
-namespace Chroma {
-
-
+namespace Chroma 
+{
   // Solve M a = b by LU decomposition with partial pivoting
   //
   void LUSolve( multi1d<DComplex>& a, 

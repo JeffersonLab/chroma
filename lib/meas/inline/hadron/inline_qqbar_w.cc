@@ -1,4 +1,4 @@
-// $Id: inline_qqbar_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_qqbar_w.cc,v 3.2 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of qqbar
  *
@@ -18,15 +18,32 @@ namespace Chroma
 { 
   namespace InlineQQbarEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineQQbar(InlineQQbarParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineQQbar(InlineQQbarParams(xml_in, path));
+      }
+      
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "QQBAR";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   //! Param input

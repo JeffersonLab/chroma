@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -74,47 +74,59 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
       }
 
+
+      //! Local registration flag
+      bool registered = false;
+
     }  // end namespace GaussianInitCallMap
 
-
-    bool registerAll(void) 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
-      success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-									GaussianInitLatProp);
-      success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-									GaussianInitMulti1dLatColMat);
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+									  GaussianInitLatProp);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+									  GaussianInitMulti1dLatColMat);
+	registered = true;
+      }
       return success;
     }
-
-    bool registered = registerAll();
   }  // end CallMap namespace
 
 
   namespace InlineGaussianInitNamedObjEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineGaussianInitNamedObj(InlineGaussianInitNamedObjParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineGaussianInitNamedObj(InlineGaussianInitNamedObjParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "GAUSSIAN_INIT_NAMED_OBJECT";
 
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
-
-      // Gaussian init functions
-      success &= GaussianInitObjCallMapEnv::registered;
-
-      // Inline measurement
-      success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-
+      if (! registered)
+      {
+	// Gaussian init functions
+	success &= GaussianInitObjCallMapEnv::registerAll();
+	// Inline measurement
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 

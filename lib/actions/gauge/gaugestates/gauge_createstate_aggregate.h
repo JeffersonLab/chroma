@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_createstate_aggregate.h,v 1.1 2006-09-19 18:21:38 edwards Exp $
+// $Id: gauge_createstate_aggregate.h,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All gauge create-state method
  */
@@ -17,7 +17,7 @@ namespace Chroma
   /*! @ingroup gaugestates */
   namespace CreateGaugeStateEnv
   {
-    extern const bool registered;
+    bool registerAll();
 
     //! Helper function for the CreateGaugeState readers
     Handle< CreateGaugeState< multi1d<LatticeColorMatrix>, 

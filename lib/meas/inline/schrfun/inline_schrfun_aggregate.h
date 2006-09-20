@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_schrfun_aggregate.h,v 1.1 2006-04-10 21:17:05 edwards Exp $
+// $Id: inline_schrfun_aggregate.h,v 1.2 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline schroedinger functional measurement aggregator
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! \ingroup inlineschrfun */
   namespace InlineSchrFunAggregateEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: photon_seqsrc_w.h,v 3.1 2006-05-15 19:54:27 edwards Exp $
+// $Id: photon_seqsrc_w.h,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -16,7 +16,7 @@ namespace Chroma
   /*! @ingroup hadron */
   namespace PhotonRhoSeqSourceEnv
   {
-    extern const bool registered;
+    bool registerAll();
 
   
     //! Construct a photon sequential sources via LSZ reduction

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.6 2006-07-22 19:36:26 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.7 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -16,20 +16,38 @@
 #include "actions/ferm/linop/lopscl.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-  namespace InlineEigBndsMdagMEnv { 
-
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+  namespace InlineEigBndsMdagMEnv 
+  { 
+    namespace
     {
-      return new InlineEigBndsMdagM(InlineEigBndsMdagMParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineEigBndsMdagM(InlineEigBndsMdagMParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "EIGBNDSMDAGM";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, 
-										   createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, 
+									  createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   //! Ritz input

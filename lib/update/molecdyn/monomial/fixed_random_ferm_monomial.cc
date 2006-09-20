@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fixed_random_ferm_monomial.cc,v 3.7 2006-09-19 18:38:07 edwards Exp $
+// $Id: fixed_random_ferm_monomial.cc,v 3.8 2006-09-20 20:28:05 edwards Exp $
 
 /*! @file
  * @brief Fixed random monomial
@@ -13,8 +13,8 @@
 
 namespace Chroma { 
 
-  namespace FixedRandomFermMonomial4DEnv { 
-
+  namespace FixedRandomFermMonomial4DEnv 
+  { 
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
@@ -27,18 +27,22 @@ namespace Chroma {
     
     const std::string name("FIXED_RANDOM_X_FERM_MONOMIAL");
 
-    //! Register all the objects
-    bool registerAll()
-    {
-      bool foo = true;
-      
-      foo &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
-      
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    const bool registered = registerAll();
-  };
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
   FixedRandomFermMonomial4D::FixedRandomFermMonomial4D(const FixedRandomFermMonomialParams& p)
   { 

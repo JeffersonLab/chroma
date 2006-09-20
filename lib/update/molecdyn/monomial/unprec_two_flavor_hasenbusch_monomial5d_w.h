@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.h,v 3.2 2006-07-03 15:26:10 edwards Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.h,v 3.3 2006-09-20 20:28:05 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -18,8 +18,8 @@ namespace Chroma
   namespace UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv 
   {
     extern const std::string name;
-    extern const bool registered;
-  };
+    bool registerAll();
+  }
 
 
   //! Wrapper class for  2-flavor unprec ferm monomials

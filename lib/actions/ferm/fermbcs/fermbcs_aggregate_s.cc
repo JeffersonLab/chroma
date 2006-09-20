@@ -1,4 +1,4 @@
-// $Id: fermbcs_aggregate_s.cc,v 3.1 2006-08-18 15:52:43 edwards Exp $
+// $Id: fermbcs_aggregate_s.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion boundary conditions
  */
@@ -12,14 +12,18 @@ namespace Chroma
   //! Registration aggregator
   namespace StaggeredTypeFermBCEnv
   {
-    bool registerAll(void) 
+    static bool registered = false;
+
+    bool registerAll() 
     {
-      bool success; 
-      success = StaggeredTypeSimpleFermBCEnv::registered;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= StaggeredTypeSimpleFermBCEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

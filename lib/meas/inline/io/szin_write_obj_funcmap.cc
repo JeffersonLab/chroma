@@ -1,4 +1,4 @@
-// $Id: szin_write_obj_funcmap.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: szin_write_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -46,21 +46,28 @@ namespace Chroma
 		       file);
       }
 
+      //! Local registration flag
+      bool registered = false;
 
     }  // end namespace
 
 
-    bool registerAll(void) 
+
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
-      success &= TheSZINWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-								     SZINWriteLatProp);
-      success &= TheSZINWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-								     SZINWriteArrayLatColMat);
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheSZINWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+								       SZINWriteLatProp);
+	success &= TheSZINWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+								       SZINWriteArrayLatColMat);
+
+	registered = true;
+      }
       return success;
     }
-
-    bool registered = registerAll();
   }
 
 }

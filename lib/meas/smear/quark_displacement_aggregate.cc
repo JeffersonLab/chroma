@@ -1,4 +1,4 @@
-// $Id: quark_displacement_aggregate.cc,v 3.2 2006-06-10 16:28:19 edwards Exp $
+// $Id: quark_displacement_aggregate.cc,v 3.3 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief All quark displacements
  */
@@ -16,19 +16,24 @@ namespace Chroma
   // Registration aggregator
   namespace QuarkDisplacementEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= NoQuarkDisplacementEnv::registerAll();
+	success &= SimpleQuarkDisplacementEnv::registerAll();
+	success &= DerivQuarkDisplacementEnv::registerAll();
+	success &= GammaDisplacementEnv::registerAll();
 
-      success &= NoQuarkDisplacementEnv::registered;
-      success &= SimpleQuarkDisplacementEnv::registered;
-      success &= DerivQuarkDisplacementEnv::registered;
-      success &= GammaDisplacementEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
 
 
     // Returns a no-displacement group

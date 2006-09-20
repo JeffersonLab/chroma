@@ -1,4 +1,4 @@
-// $Id: inline_eig_aggregate.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_eig_aggregate.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline eig measurement aggregator
  */
@@ -16,20 +16,29 @@ namespace Chroma
   //! Name and registration
   namespace InlineEigAggregateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
+      if (! registered)
+      {
+	// Grab the fermacts
+	success &= WilsonTypeFermActsEnv::registerAll();
 
-      // Grab the fermacts
-      success &= WilsonTypeFermActsEnv::registered;
+	// Eig stuff
+	success &= InlineEigBndsMdagMEnv::registerAll();
+	success &= InlineRitzEnv::registerAll();
 
-      // Eig stuff
-      success &= InlineEigBndsMdagMEnv::registered;
-      success &= InlineRitzEnv::registered;
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

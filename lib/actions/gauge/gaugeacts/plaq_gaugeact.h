@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 3.2 2006-07-20 15:52:40 bjoo Exp $
+// $Id: plaq_gaugeact.h,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace PlaqGaugeActEnv 
   { 
     extern const string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

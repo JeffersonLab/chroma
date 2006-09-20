@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.6 2006-08-30 02:57:27 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.7 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -23,15 +23,32 @@ namespace Chroma
 { 
   namespace InlineHadSpecEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineHadSpec(InlineHadSpecParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineHadSpec(InlineHadSpecParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "HADRON_SPECTRUM";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
 

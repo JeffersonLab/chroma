@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qio_read_obj_funcmap.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: qio_read_obj_funcmap.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -34,7 +34,7 @@ namespace Chroma
 		  StringFunctionMapError> >
     TheQIOReadObjFuncMap;
 
-    extern bool registered;   // forward decl
+    bool registerAll();
   }
 
 } // end namespace Chroma

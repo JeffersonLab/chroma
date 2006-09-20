@@ -1,4 +1,4 @@
-// $Id: inline_ritz_H_w.cc,v 3.1 2006-04-11 04:18:23 edwards Exp $
+// $Id: inline_ritz_H_w.cc,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -25,23 +25,33 @@ namespace Chroma
 { 
   namespace InlineRitzEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineRitz(InlineRitzParams(xml_in, path));
-    }
-
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      foo &= WilsonTypeFermActsEnv::registered;
-      return foo;
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineRitz(InlineRitzParams(xml_in, path));
+      }
+      
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "RITZ_KS_HERM_WILSON";
-    const bool registered = registerAll();
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= WilsonTypeFermActsEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   //! Eigeninfo input

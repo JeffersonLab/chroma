@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rg_gaugeact.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: rg_gaugeact.h,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Generic RG style plaquette + rectangle gauge action
  */
@@ -16,9 +16,10 @@ namespace Chroma
 {
 
   /*! @ingroup gaugeacts */
-  namespace RGGaugeActEnv { 
+  namespace RGGaugeActEnv 
+  { 
     extern const string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

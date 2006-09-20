@@ -1,4 +1,4 @@
-// $Id: wilson_gaugeact.cc,v 3.3 2006-09-19 18:25:41 edwards Exp $
+// $Id: wilson_gaugeact.cc,v 3.4 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -21,9 +21,22 @@ namespace Chroma
     }
 
     const std::string name = "WILSON_GAUGEACT";
-    const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
-									  createGaugeAct);
-  };
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeActFactory::Instance().registerObject(name, createGaugeAct);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   WilsonGaugeActParams::WilsonGaugeActParams(XMLReader& xml_in, const std::string& path) {

@@ -1,4 +1,4 @@
-// $Id: periodic_fermstate_w.cc,v 1.1 2006-09-19 17:53:37 edwards Exp $
+// $Id: periodic_fermstate_w.cc,v 1.2 2006-09-20 20:31:41 edwards Exp $
 /*! \file
  *  \brief Periodic ferm state and a creator
  */
@@ -26,16 +26,20 @@ namespace Chroma
 
     const std::string name = "PERIODIC_FERM_STATE";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::TheCreateFermStateFactory::Instance().registerObject(name, 
-									  createFerm);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheCreateFermStateFactory::Instance().registerObject(name, createFerm);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_triv_fermbc_w.h,v 3.1 2006-04-10 21:21:21 edwards Exp $
+// $Id: schr_triv_fermbc_w.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional trivial ferm boundary conditions
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace SchrTrivialFermBCEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

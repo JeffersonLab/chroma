@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lw_tree_gaugeact.h,v 3.1 2006-04-19 02:29:45 edwards Exp $
+// $Id: lw_tree_gaugeact.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Tree-level tadpole-improved Luscher-Weisz gauge action
  */
@@ -16,9 +16,10 @@ namespace Chroma
 {
 
   /*! @ingroup gaugeacts */
-  namespace LWTreeGaugeActEnv { 
+  namespace LWTreeGaugeActEnv 
+  { 
     extern const string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

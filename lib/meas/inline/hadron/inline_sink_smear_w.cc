@@ -1,4 +1,4 @@
-// $Id: inline_sink_smear_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_sink_smear_w.cc,v 3.3 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of sink_smear
  *
@@ -18,24 +18,34 @@
 namespace Chroma 
 { 
   namespace InlineSinkSmearEnv 
-  { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+  {
+    namespace
     {
-      return new InlineSinkSmear(InlineSinkSmearParams(xml_in, path));
-    }
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineSinkSmear(InlineSinkSmearParams(xml_in, path));
+      }
 
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= QuarkSinkSmearingEnv::registered;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      return foo;
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "SINK_SMEAR";
-    const bool registered = registerAll();
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= QuarkSinkSmearingEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   //! Propagator input

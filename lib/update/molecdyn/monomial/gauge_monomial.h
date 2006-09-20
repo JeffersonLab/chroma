@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
+// $Id: gauge_monomial.h,v 3.3 2006-09-20 20:28:05 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -17,10 +17,12 @@
 namespace Chroma 
 {
   /*! @ingroup monomial */
-  namespace GaugeMonomialEnv {
+  namespace GaugeMonomialEnv 
+  {
     extern const string name;
-    extern const bool registered;
-  };
+    bool registerAll();
+  }
+
 
   // Parameter structure
   /*! @ingroup monomial */

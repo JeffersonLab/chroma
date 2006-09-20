@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mesonspec_w.h,v 3.3 2006-07-10 19:44:13 edwards Exp $
+// $Id: inline_mesonspec_w.h,v 3.4 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline meson spectrum calculations
  *
@@ -19,7 +19,7 @@ namespace Chroma
   namespace InlineMesonSpecEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

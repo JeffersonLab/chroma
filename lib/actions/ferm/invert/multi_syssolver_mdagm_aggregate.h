@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_aggregate.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: multi_syssolver_mdagm_aggregate.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Register MdagM system solvers
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! @ingroup invert */
   namespace MdagMMultiSysSolverEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 
 
@@ -23,7 +23,7 @@ namespace Chroma
   /*! @ingroup invert */
   namespace MdagMMultiSysSolverArrayEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

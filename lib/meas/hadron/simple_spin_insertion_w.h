@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_spin_insertion_w.h,v 1.1 2006-05-24 21:09:41 edwards Exp $
+// $Id: simple_spin_insertion_w.h,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Gamma insertions
  */
@@ -16,7 +16,7 @@ namespace Chroma
   namespace SimpleSpinInsertionEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   
 
     //! Params for simple spin insertion

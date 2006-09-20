@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hadron_aggregate_s.h,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: inline_hadron_aggregate_s.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! \ingroup inlinehadron */
   namespace InlineStaggeredHadronAggregateEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

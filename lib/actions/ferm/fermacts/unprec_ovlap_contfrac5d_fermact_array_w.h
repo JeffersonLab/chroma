@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 3.2 2006-09-19 16:04:23 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_fermact_array_w.h,v 3.3 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -19,7 +19,7 @@ namespace Chroma
   namespace UnprecOvlapContFrac5DFermActArrayEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 3.2 2006-06-10 16:28:34 edwards Exp $
+// $Id: pt_source_smearing.cc,v 3.3 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -43,29 +43,36 @@ namespace Chroma
   //! Hooks to register the class with the fermact factory
   namespace PointQuarkSourceSmearingEnv
   {
-    //! Callback function
-    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
-						const std::string& path,
-						const multi1d<LatticeColorMatrix>& u)
+    namespace
     {
-      return new SourceSmear<LatticeFermion>(Params(xml_in, path), u);
+      //! Callback function
+      QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
+						  const std::string& path,
+						  const multi1d<LatticeColorMatrix>& u)
+      {
+	return new SourceSmear<LatticeFermion>(Params(xml_in, path), u);
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     //! Name to be used
     const std::string name("POINT_SOURCE");
 
     //! Register all the factories
-    bool registerAll()
+    bool registerAll() 
     {
-      bool foo = true;
-      foo &= LinkSmearingEnv::registered;
-      foo &= QuarkDisplacementEnv::registered;
-      foo &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
-      return true;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= LinkSmearingEnv::registerAll();
+	success &= QuarkDisplacementEnv::registerAll();
+	success &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
+	registered = true;
+      }
+      return success;
     }
-
-    //! Register the source smearing
-    const bool registered = registerAll();
 
 
     //! Read parameters

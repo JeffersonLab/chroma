@@ -1,4 +1,4 @@
-// $Id: rg_gaugeact.cc,v 3.2 2006-09-19 18:25:41 edwards Exp $
+// $Id: rg_gaugeact.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Generic RG style plaquette + rectangle gauge action
  */
@@ -13,17 +13,34 @@ namespace Chroma
  
   namespace RGGaugeActEnv 
   { 
-    GaugeAction< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
-											    const std::string& path) 
+    namespace
     {
-      return new RGGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
-			    RGGaugeActParams(xml, path));
+      GaugeAction< multi1d<LatticeColorMatrix>, 
+		   multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
+								 const std::string& path) 
+      {
+	return new RGGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
+			      RGGaugeActParams(xml, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "RG_GAUGEACT";
-    const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
-									  createGaugeAct);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeActFactory::Instance().registerObject(name, createGaugeAct);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   RGGaugeActParams::RGGaugeActParams(XMLReader& xml_in, const std::string& path) {

@@ -1,4 +1,4 @@
-// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 3.3 2006-09-19 18:08:38 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.cc,v 3.4 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -48,17 +48,22 @@ namespace Chroma
     //! Name to be used
     const std::string name = "HT_CONTINUED_FRACTION_5D";
     
+    //! Local registration flag
+    static bool registered = false;
+
     //! Register all the factories
-    bool registerAll()
+    bool registerAll() 
     {
-      bool foo = true;
-      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
-      foo &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
-      return foo;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+	success &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+	registered = true;
+      }
+      return success;
     }
 
-    //! Register the fermact
-    const bool registered = registerAll();
   } // End Namespace EvenOddPrecHtContFrac5DFermActArrayEnv
 
   

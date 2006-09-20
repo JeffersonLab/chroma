@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.5 2006-08-26 02:12:46 edwards Exp $
+// $Id: purgaug.cc,v 3.6 2006-09-20 20:28:06 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -548,14 +548,14 @@ namespace Chroma
     bool foo = true;
     
     // Gauge actions
-    foo &= GaugeActsEnv::registered;
+    foo &= GaugeActsEnv::registerAll();
 
     // Inline Measurements
-    foo &= InlineAggregateEnv::registered;
+    foo &= InlineAggregateEnv::registerAll();
 
     return foo;
   }
-};
+}
 
 
 using namespace Chroma;

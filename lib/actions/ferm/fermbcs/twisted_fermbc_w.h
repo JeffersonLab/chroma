@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: twisted_fermbc_w.h,v 3.1 2006-08-26 02:08:40 edwards Exp $
+// $Id: twisted_fermbc_w.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Twisted fermionic BC
  */
@@ -33,7 +33,7 @@ namespace Chroma
   namespace WilsonTypeTwistedFermBCEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

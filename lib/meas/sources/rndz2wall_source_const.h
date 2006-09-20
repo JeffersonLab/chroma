@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rndz2wall_source_const.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: rndz2wall_source_const.h,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Random Z2 wall source construction
  */
@@ -17,7 +17,7 @@ namespace Chroma
   namespace RandZ2WallQuarkSourceConstEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
 
 
     //! Random Z2 wall source parameters

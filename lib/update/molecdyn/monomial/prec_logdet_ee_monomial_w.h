@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_logdet_ee_monomial_w.h,v 3.4 2006-09-15 02:50:45 edwards Exp $
+// $Id: prec_logdet_ee_monomial_w.h,v 3.5 2006-09-20 20:28:05 edwards Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -101,10 +101,11 @@ namespace Chroma
 
 
   /*! @ingroup monomial */
-  namespace PrecLogDetEvenEvenMonomial4DEnv {
+  namespace PrecLogDetEvenEvenMonomial4DEnv 
+  {
     extern const std::string name;
-    extern const bool registered;
-  };
+    bool registerAll();
+  }
 
   // Parameter structure
   /*! @ingroup monomial */

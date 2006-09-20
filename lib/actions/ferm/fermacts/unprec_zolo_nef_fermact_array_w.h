@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 3.3 2006-07-03 15:26:08 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 3.4 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace UnprecZoloNEFFermActArrayEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
   
 

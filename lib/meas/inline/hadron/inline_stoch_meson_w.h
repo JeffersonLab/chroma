@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_meson_w.h,v 3.1 2006-05-09 20:32:25 edwards Exp $
+// $Id: inline_stoch_meson_w.h,v 3.2 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic meson operator
  *
@@ -19,7 +19,7 @@ namespace Chroma
   namespace InlineStochMesonEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate_s.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: inline_hadron_aggregate_s.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -12,17 +12,24 @@ namespace Chroma
   //! Name and registration
   namespace InlineStaggeredHadronAggregateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
-
-      // Hadron stuff
-      success &= InlineStaggeredSpectrumEnv::registered;
-
+      if (! registered)
+      {
+	// Hadron stuff
+	success &= InlineStaggeredSpectrumEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

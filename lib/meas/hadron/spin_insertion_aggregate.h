@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: spin_insertion_aggregate.h,v 1.1 2006-05-24 21:09:41 edwards Exp $
+// $Id: spin_insertion_aggregate.h,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All spin insertion constructors
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! \ingroup hadron */
   namespace SpinInsertionEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

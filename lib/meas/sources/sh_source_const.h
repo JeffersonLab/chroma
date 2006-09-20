@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_source_const.h,v 3.3 2006-06-10 16:28:34 edwards Exp $
+// $Id: sh_source_const.h,v 3.4 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -19,7 +19,7 @@ namespace Chroma
   namespace ShellQuarkSourceConstEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
 
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_bar3ptfn_w.h,v 3.1 2006-05-05 03:07:20 edwards Exp $
+// $Id: inline_bar3ptfn_w.h,v 3.2 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -18,8 +18,9 @@ namespace Chroma
   namespace InlineBar3ptfnEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
+
 
   //! Parameter structure
   /*! \ingroup inlinehadron */

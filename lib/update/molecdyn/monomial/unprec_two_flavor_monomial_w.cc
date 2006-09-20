@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial_w.cc,v 3.2 2006-08-26 02:08:42 edwards Exp $
+// $Id: unprec_two_flavor_monomial_w.cc,v 3.3 2006-09-20 20:28:05 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -19,29 +19,34 @@ namespace Chroma
  
   namespace UnprecTwoFlavorWilsonTypeFermMonomialEnv 
   {
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+    namespace
     {
-      return new UnprecTwoFlavorWilsonTypeFermMonomial(
-	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
+      //! Callback function for the factory
+      Monomial< multi1d<LatticeColorMatrix>,
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+      {
+	return new UnprecTwoFlavorWilsonTypeFermMonomial(
+	  TwoFlavorWilsonTypeFermMonomialParams(xml, path));
+      }
+      
+      //! Local registration flag
+      bool registered = false;
     }
- 
+
     const std::string name("TWO_FLAVOR_UNPREC_FERM_MONOMIAL");
 
-    //! Register all the objects
-    bool registerAll()
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool foo = true;
-
-      foo &= WilsonTypeFermActs4DEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
-
-      return foo;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= WilsonTypeFermActs4DEnv::registerAll();
+	success &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
+	registered = true;
+      }
+      return success;
     }
-
-    //! Register the fermact
-    const bool registered = registerAll();
   } //end namespace Unprec TwoFlavorWilsonFermMonomialEnv
 
 

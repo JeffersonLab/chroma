@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
+// $Id: prec_ht_contfrac5d_fermact_array_w.h,v 3.2 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Continued Fraction 5D
  */
@@ -19,7 +19,7 @@ namespace Chroma
   namespace EvenOddPrecHtContFrac5DFermActArrayEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

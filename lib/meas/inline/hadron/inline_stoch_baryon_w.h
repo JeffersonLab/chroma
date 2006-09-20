@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_baryon_w.h,v 3.3 2006-05-21 04:40:21 edwards Exp $
+// $Id: inline_stoch_baryon_w.h,v 3.4 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -19,7 +19,7 @@ namespace Chroma
   namespace InlineStochBaryonEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

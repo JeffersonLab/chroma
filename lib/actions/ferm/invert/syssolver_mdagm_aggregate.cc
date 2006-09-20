@@ -1,4 +1,4 @@
-// $Id: syssolver_mdagm_aggregate.cc,v 3.2 2006-08-18 15:52:43 edwards Exp $
+// $Id: syssolver_mdagm_aggregate.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -14,34 +14,42 @@ namespace Chroma
   //! Registration aggregator
   namespace MdagMSysSolverEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
-
-      // Sources
-      success &= MdagMSysSolverCGEnv::registered;
-
+      bool success = true; 
+      if (! registered)
+      {
+	// Sources
+	success &= MdagMSysSolverCGEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 
   //! Registration aggregator
   namespace MdagMSysSolverArrayEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
-
-      // Sources
-      success &= MdagMSysSolverCGArrayEnv::registered;
-
+      bool success = true; 
+      if (! registered)
+      {
+	// Sources
+	success &= MdagMSysSolverCGArrayEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: szin_write_obj_funcmap.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: szin_write_obj_funcmap.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -35,8 +35,8 @@ namespace Chroma
 		  StringFunctionMapError> >
     TheSZINWriteObjFuncMap;
 
-    extern bool registered;   // forward decl
-  };
+    bool registerAll();
+  }
 
 } // end namespace Chroma
 

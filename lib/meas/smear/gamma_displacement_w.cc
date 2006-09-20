@@ -1,4 +1,4 @@
-// $Id: gamma_displacement_w.cc,v 3.1 2006-04-06 20:14:14 edwards Exp $
+// $Id: gamma_displacement_w.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Gamma insertion/displacement
  */
@@ -45,17 +45,21 @@ namespace Chroma
     //! Name to be used
     const std::string name = "GAMMA_INSERTION";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(name, createProp);
-      foo &= Chroma::TheFermDisplacementFactory::Instance().registerObject(name, createFerm);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the source construction
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheFermDisplacementFactory::Instance().registerObject(name, createFerm);
+	registered = true;
+      }
+      return success;
+    }
 
 
     //! Parameters for running code

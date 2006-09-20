@@ -9,22 +9,42 @@
 #include "util/gauge/expmat.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace LatColMatPQPLeapfrogIntegratorEnv {
-
-    AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
-		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
-								       XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) {
-      // Read the integrator params
-      LatColMatPQPLeapfrogIntegratorParams p(xml, path);
+  namespace LatColMatPQPLeapfrogIntegratorEnv 
+  {
+    namespace
+    {
+      AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
+		      multi1d<LatticeColorMatrix> >* createMDIntegrator(
+			XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) 
+      {
+	// Read the integrator params
+	LatColMatPQPLeapfrogIntegratorParams p(xml, path);
     
-      return new LatColMatPQPLeapfrogIntegrator(p, H);
+	return new LatColMatPQPLeapfrogIntegrator(p, H);
+      }
+      
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "LCM_PQP_LEAPFROG_INTEGRATOR";
-    const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
   LatColMatPQPLeapfrogIntegratorParams::LatColMatPQPLeapfrogIntegratorParams(XMLReader& xml_in, const std::string& path) 
   {

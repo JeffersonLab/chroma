@@ -1,4 +1,4 @@
-// $Id: monomial_aggregate_w.cc,v 3.3 2006-08-26 02:08:42 edwards Exp $
+// $Id: monomial_aggregate_w.cc,v 3.4 2006-09-20 20:28:05 edwards Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -40,50 +40,59 @@ namespace Chroma
   //! Name and registration
   namespace WilsonTypeFermMonomialAggregrateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
-
-      // 4D Ferm Monomials
-      success &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registered;
-      success &= EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv::registered;
-      success &= EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv::registered;
+      if (! registered)
+      {
+	// 4D Ferm Monomials
+	success &= UnprecTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
+	success &= EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
+	success &= EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomialEnv::registerAll();
    
-      // 4D Ferm Monomials
-      success &= UnprecOneFlavorWilsonTypeFermRatMonomialEnv::registered;
-      success &= EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv::registered;
+	// 4D Ferm Monomials
+	success &= UnprecOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
+	success &= EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv::registerAll();
     
-      // 5D Ferm Monomials
-      success &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
-      success &= EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5DEnv::registered;
+	// 5D Ferm Monomials
+	success &= UnprecTwoFlavorWilsonTypeFermMonomial5DEnv::registerAll();
+	success &= EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5DEnv::registerAll();
     
-      // 5D Ferm Monomials
-      success &= UnprecOneFlavorWilsonTypeFermRatMonomial5DEnv::registered;
-      success &= EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5DEnv::registered;
+	// 5D Ferm Monomials
+	success &= UnprecOneFlavorWilsonTypeFermRatMonomial5DEnv::registerAll();
+	success &= EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5DEnv::registerAll();
 
-      // Hasenbusch Monomials
-      success &=   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registered;
-      success &=   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registered;
+	// Hasenbusch Monomials
+	success &=   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registerAll();
+	success &=   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registerAll();
     
-      // Polynomial preconditioning Monomials
-//      success &=   UnprecTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registered;
-      success &=   EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registered;
-//      success &=   UnprecTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registered;
-      success &=   EvenOddPrecConstDetTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registered;
+	// Polynomial preconditioning Monomials
+//      success &=   UnprecTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();
+	success &=   EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();
+//      success &=   UnprecTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registerAll();
+	success &=   EvenOddPrecConstDetTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registerAll();
 
-      // Even Even part of a logdet monomial
-      success &=  PrecLogDetEvenEvenMonomial4DEnv::registered;
+	// Even Even part of a logdet monomial
+	success &=  PrecLogDetEvenEvenMonomial4DEnv::registerAll();
 
-      // 5D Hasenbusch Monomials
-      success &=  EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registered;
+	// 5D Hasenbusch Monomials
+	success &=  EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registerAll();
 
-      success &=  UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registered;
+	success &=  UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registerAll();
 
-      success &= FixedRandomFermMonomial4DEnv::registered;
+	success &= FixedRandomFermMonomial4DEnv::registerAll();
+
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

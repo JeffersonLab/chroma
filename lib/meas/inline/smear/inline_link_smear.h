@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_link_smear.h,v 3.2 2006-06-12 03:37:39 edwards Exp $
+// $Id: inline_link_smear.h,v 3.3 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline link smearing
  */
@@ -17,7 +17,7 @@ namespace Chroma
   namespace InlineLinkSmearEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
 
     
     //! Parameter structure

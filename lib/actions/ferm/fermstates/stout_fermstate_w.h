@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.1 2006-09-19 17:53:37 edwards Exp $
+// $Id: stout_fermstate_w.h,v 1.2 2006-09-20 20:31:41 edwards Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -22,7 +22,7 @@ namespace Chroma
   namespace CreateStoutFermStateEnv 
   { 
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 
@@ -240,7 +240,7 @@ namespace Chroma
   namespace CreateSLICFermStateEnv 
   { 
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! SLIC (Stout Link Irrelevant Clover ferm connection state

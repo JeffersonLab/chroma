@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_quark_displacement_w.h,v 3.1 2006-05-24 21:08:30 edwards Exp $
+// $Id: deriv_quark_displacement_w.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  *
@@ -28,7 +28,7 @@ namespace Chroma
   /*! @ingroup smear */
   namespace DerivQuarkDisplacementEnv
   {
-    extern const bool registered;
+    bool registerAll();
 
   
     //! Params for derivative quark displacement

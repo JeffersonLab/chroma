@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: barseqsrc_w.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -583,70 +583,73 @@ namespace Chroma
 	return new BarDeltaDTsp(Params(xml_in, path), BaryonSpinMats::Tunpol(), BaryonSpinMats::Cgm());
       }
 
+
+      //! Local registration flag
+      bool registered = false;
+
     }  // end anonymous namespace
 
 
-    //! Baryon sequential sources
-    /*! \ingroup hadron */
-    bool registerAll(void) 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	//! Register all the factories
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_UNPOL"), 
+										      barNuclUUnpol);
 
-      //! Register all the factories
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_UNPOL"), 
-										    barNuclUUnpol);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL"), 
-										    barNuclDUnpol);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL"), 
+										      barNuclDUnpol);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL"),
-										    barNuclUPol);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL"),
+										      barNuclUPol);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL"),
-										    barNuclDPol);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL"),
+										      barNuclDPol);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_UNPOL_NONREL"),
-										    barNuclUUnpolNR);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_UNPOL_NONREL"),
+										      barNuclUUnpolNR);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL_NONREL"),
-										    barNuclDUnpolNR);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL_NONREL"),
+										      barNuclDUnpolNR);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL_NONREL"),
-										    barNuclUPolNR);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL_NONREL"),
+										      barNuclUPolNR);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL_NONREL"),
-										    barNuclDPolNR);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL_NONREL"),
+										      barNuclDPolNR);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_MIXED_NONREL"),
-										    barNuclUMixedNR);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_MIXED_NONREL"),
+										      barNuclUMixedNR);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_MIXED_NONREL"),  
-										    barNuclDMixedNR);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_MIXED_NONREL"),  
+										      barNuclDMixedNR);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_MIXED_NONREL_NEGPAR"),
-										    barNuclUMixedNRnegPar);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_MIXED_NONREL_NEGPAR"),
+										      barNuclUMixedNRnegPar);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_MIXED_NONREL_NEGPAR"),
-										    barNuclDMixedNRnegPar);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_MIXED_NONREL_NEGPAR"),
+										      barNuclDMixedNRnegPar);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("XI_D_MIXED_NONREL"),   
-										    barXiDMixedNR);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("XI_D_MIXED_NONREL"),   
+										      barXiDMixedNR);
 
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA_U_UNPOL"),
-										    barDeltaUUnpol);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA_U_UNPOL"),
+										      barDeltaUUnpol);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA_D_UNPOL"),
-										    barDeltaDUnpol);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA_D_UNPOL"),
+										      barDeltaDUnpol);
 
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_PATCH_MIXED_NONREL"),   
-										    barNuclPatchMixedNR);
-
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_PATCH_MIXED_NONREL"),   
+										      barNuclPatchMixedNR);
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
 
   } // namespace BaryonSeqSourceCallMapEnv
 

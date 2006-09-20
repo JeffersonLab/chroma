@@ -1,4 +1,4 @@
-// $Id: periodic_fermbc_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: periodic_fermbc_w.cc,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Periodic fermionic BC
  */
@@ -26,15 +26,20 @@ namespace Chroma
     //! Name to be used
     const std::string name = "PERIODIC_FERMBC";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::TheWilsonTypeFermBCFactory::Instance().registerObject(name, createFermBC);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheWilsonTypeFermBCFactory::Instance().registerObject(name, createFermBC);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 }

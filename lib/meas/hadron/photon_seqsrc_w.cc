@@ -1,4 +1,4 @@
-// $Id: photon_seqsrc_w.cc,v 3.1 2006-05-15 19:54:27 edwards Exp $
+// $Id: photon_seqsrc_w.cc,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -52,6 +52,10 @@ namespace Chroma
       {
 	return new PointSplitPhotonRhoSeqSource(Params(xml_in, path));
       }
+
+
+      //! Local registration flag
+      bool registered = false;
 
     } // end anonymous namespace
 
@@ -336,23 +340,24 @@ namespace Chroma
     }
 
 
-    // Register all the possible simple mesons
-    bool registerAll(void) 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
-
-      //! Register all the factories
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PHOTON"), 
+      bool success = true; 
+      if (! registered)
+      {
+	//! Register all the factories
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PHOTON"), 
 										    mesPionPhotonSeqSrc);
 
-      //! Register all the factories
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-POINT_SPLIT_PHOTON"), 
-										    mesPionPointSplitPhotonSeqSrc);
+	//! Register all the factories
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-POINT_SPLIT_PHOTON"), 
+										      mesPionPointSplitPhotonSeqSrc);
 
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
 
   }  // end namespace PhotonRhoSeqSourceEnv
 

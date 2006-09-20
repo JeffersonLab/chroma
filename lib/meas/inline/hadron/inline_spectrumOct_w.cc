@@ -1,4 +1,4 @@
-// $Id: inline_spectrumOct_w.cc,v 3.3 2006-08-19 19:29:33 flemingg Exp $
+// $Id: inline_spectrumOct_w.cc,v 3.4 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of Octet spectrum
  *
@@ -28,15 +28,32 @@ namespace Chroma
 { 
   namespace InlineSpectrumOctEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineSpectrumOct(InlineSpectrumOctParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineSpectrumOct(InlineSpectrumOctParams(xml_in, path));
+      }
+      
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "SPECTRUM_OCT";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
 

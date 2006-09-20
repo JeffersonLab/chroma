@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schr_coupling_gaugebc.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: schr_coupling_gaugebc.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - use for coupling determinations
  */
@@ -17,7 +17,7 @@ namespace Chroma
   namespace SchrCouplingGaugeBCEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

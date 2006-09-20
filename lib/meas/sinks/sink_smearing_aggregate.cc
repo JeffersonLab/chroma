@@ -1,4 +1,4 @@
-// $Id: sink_smearing_aggregate.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: sink_smearing_aggregate.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief All make sink constructors
  */
@@ -14,18 +14,23 @@ namespace Chroma
   //! Registration aggregator
   namespace QuarkSinkSmearingEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// Sinks
+	success &= PointQuarkSinkSmearingEnv::registerAll();
+	success &= ShellQuarkSinkSmearingEnv::registerAll();
 
-      // Sinks
-      success &= PointQuarkSinkSmearingEnv::registered;
-      success &= ShellQuarkSinkSmearingEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

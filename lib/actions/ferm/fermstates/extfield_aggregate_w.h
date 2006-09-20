@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_aggregate_w.h,v 1.1 2006-09-19 17:53:36 edwards Exp $
+// $Id: extfield_aggregate_w.h,v 1.2 2006-09-20 20:31:40 edwards Exp $
 /*! \file
  *  \brief External field functions
  */
@@ -16,7 +16,7 @@ namespace Chroma
   /*! @ingroup fermstates */
   namespace ExternalFieldEnv
   {
-    extern const bool registered;
+    bool registerAll();
 
   
     //! Construct zero field

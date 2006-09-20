@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_source_const.h,v 3.1 2006-06-10 16:28:34 edwards Exp $
+// $Id: pt_source_const.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace PointQuarkSourceConstEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
 
   
     //! Point source parameters

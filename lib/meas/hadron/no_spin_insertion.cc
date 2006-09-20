@@ -1,4 +1,4 @@
-// $Id: no_spin_insertion.cc,v 1.1 2006-05-24 21:09:41 edwards Exp $
+// $Id: no_spin_insertion.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief No spin insertion
  */
@@ -28,34 +28,41 @@ namespace Chroma
   //! Hooks to register the class
   namespace NoSpinInsertionEnv
   {
-    //! Callback function
-    SpinInsertion<LatticePropagator>* createProp(XMLReader& xml_in,
-						 const std::string& path)
+    namespace
     {
-      return new SpinInsert<LatticePropagator>(Params(xml_in, path));
+      //! Callback function
+      SpinInsertion<LatticePropagator>* createProp(XMLReader& xml_in,
+						   const std::string& path)
+      {
+	return new SpinInsert<LatticePropagator>(Params(xml_in, path));
+      }
+
+      //! Callback function
+      SpinInsertion<LatticeFermion>* createFerm(XMLReader& xml_in,
+						const std::string& path)
+      {
+	return new SpinInsert<LatticeFermion>(Params(xml_in, path));
+      }
+    
+      //! Local registration flag
+      bool registered = false;
     }
 
-    //! Callback function
-    SpinInsertion<LatticeFermion>* createFerm(XMLReader& xml_in,
-					      const std::string& path)
-    {
-      return new SpinInsert<LatticeFermion>(Params(xml_in, path));
-    }
-    
     //! Name to be used
     const std::string name = "NONE";
 
     //! Register all the factories
-    bool registerAll()
+    bool registerAll() 
     {
-      bool foo = true;
-      foo &= Chroma::ThePropSpinInsertionFactory::Instance().registerObject(name, createProp);
-      foo &= Chroma::TheFermSpinInsertionFactory::Instance().registerObject(name, createFerm);
-      return foo;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::ThePropSpinInsertionFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheFermSpinInsertionFactory::Instance().registerObject(name, createFerm);
+	registered = true;
+      }
+      return success;
     }
-
-    //! Register the source construction
-    const bool registered = registerAll();
 
 
     //! Parameters for running code

@@ -1,4 +1,4 @@
-// $Id: pt_sink_smearing.cc,v 3.1 2006-06-10 16:28:52 edwards Exp $
+// $Id: pt_sink_smearing.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Point sink construction
  */
@@ -55,19 +55,23 @@ namespace Chroma
     //! Name to be used
     const std::string name("POINT_SINK");
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= LinkSmearingEnv::registered;
-      foo &= QuarkDisplacementEnv::registered;
-      foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
-      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
-      return true;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the sink smearing
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= LinkSmearingEnv::registerAll();
+	success &= QuarkDisplacementEnv::registerAll();
+	success &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
+	registered = true;
+      }
+      return success;
+    }
 
 
     //! Initialize

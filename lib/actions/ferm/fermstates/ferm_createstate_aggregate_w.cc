@@ -1,4 +1,4 @@
-// $Id: ferm_createstate_aggregate_w.cc,v 1.1 2006-09-19 17:53:36 edwards Exp $
+// $Id: ferm_createstate_aggregate_w.cc,v 1.2 2006-09-20 20:31:41 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */
@@ -18,23 +18,28 @@ namespace Chroma
   //! Registration aggregator
   namespace CreateFermStateEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// All ferm bcs
+	success &= WilsonTypeFermBCEnv::registerAll();
 
-      // All ferm bcs
-      success &= WilsonTypeFermBCEnv::registered;
+	// All fermstates
+	success &= CreatePeriodicFermStateEnv::registerAll();
+	success &= CreateSimpleFermStateEnv::registerAll();
+	success &= CreateStoutFermStateEnv::registerAll();
+	success &= CreateSLICFermStateEnv::registerAll();
 
-      // All fermstates
-      success &= CreatePeriodicFermStateEnv::registered;
-      success &= CreateSimpleFermStateEnv::registered;
-      success &= CreateStoutFermStateEnv::registered;
-      success &= CreateSLICFermStateEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
 
 
     // Returns a periodic group

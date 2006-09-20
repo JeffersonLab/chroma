@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_glue_aggregate.h,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_glue_aggregate.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline glue measurement aggregator
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! \ingroup inlineglue */
   namespace InlineGlueAggregateEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

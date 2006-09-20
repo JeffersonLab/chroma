@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeacts_aggregate.h,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: gaugeacts_aggregate.h,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All gauge actions
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace GaugeActsEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 
 }

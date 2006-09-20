@@ -1,4 +1,4 @@
-// $Id: periodic_gaugestate.cc,v 1.1 2006-09-19 18:21:38 edwards Exp $
+// $Id: periodic_gaugestate.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Periodic gauge state and a creator
  */
@@ -23,16 +23,20 @@ namespace Chroma
 
     const std::string name = "PERIODIC_GAUGE_STATE";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::TheCreateGaugeStateFactory::Instance().registerObject(name, 
-									   createCreator);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheCreateGaugeStateFactory::Instance().registerObject(name, createCreator);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 }

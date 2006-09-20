@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovext_const_div_by_resp_strategy.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: ovext_const_div_by_resp_strategy.cc,v 3.1 2006-09-20 20:27:58 edwards Exp $
 /*! \file
  *  \brief Ovext rescale strategy
  */
@@ -29,6 +29,21 @@ namespace Chroma {
     }
     
     const std::string name = "OVEXT_DIVIDE_BY_CONSTANT_TIMES_RESP_STRATEGY";
-    const bool registered = TheAbsOvExtTuningStrategyFactory::Instance().registerObject(name, createStrategy);
-  }; // end namespace OvExtTuningStrategy
-}; // end namespace Chroma
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheAbsOvExtTuningStrategyFactory::Instance().registerObject(name, createStrategy);
+	registered = true;
+      }
+      return success;
+    }
+
+  } // end namespace OvExtTuningStrategy
+} // end namespace Chroma

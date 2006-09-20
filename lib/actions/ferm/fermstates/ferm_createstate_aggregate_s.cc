@@ -1,4 +1,4 @@
-// $Id: ferm_createstate_aggregate_s.cc,v 1.1 2006-09-19 17:53:36 edwards Exp $
+// $Id: ferm_createstate_aggregate_s.cc,v 1.2 2006-09-20 20:31:41 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */
@@ -15,17 +15,21 @@ namespace Chroma
   //! Registration aggregator
   namespace StaggeredCreateFermStateEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
-
-      success &= StaggeredCreatePeriodicFermStateEnv::registered;
-      success &= StaggeredCreateSimpleFermStateEnv::registered;
-
+      bool success = true; 
+      if (! registered)
+      {
+	success &= StaggeredCreatePeriodicFermStateEnv::registerAll();
+	success &= StaggeredCreateSimpleFermStateEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
 
 
     // Returns a periodic group

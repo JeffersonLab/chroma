@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_minimum_norm2_integrator.h,v 3.1 2006-08-26 02:08:41 edwards Exp $
+// $Id: lcm_minimum_norm2_integrator.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! @file
  * @brief 2nd order minimum norm intergrator a la 
  * Omelyan adapted to QCD by deForcrand and Takaishi
@@ -26,7 +26,7 @@ namespace Chroma
   namespace LatColMatMinimumNorm2IntegratorEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   /*! @ingroup integrator */

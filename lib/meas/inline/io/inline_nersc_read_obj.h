@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_nersc_read_obj.h,v 3.1 2006-04-27 02:35:38 edwards Exp $
+// $Id: inline_nersc_read_obj.h,v 3.2 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -19,7 +19,7 @@ namespace Chroma
   namespace InlineNERSCReadNamedObjEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

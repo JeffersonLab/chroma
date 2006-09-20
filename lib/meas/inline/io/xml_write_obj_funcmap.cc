@@ -1,4 +1,4 @@
-// $Id: xml_write_obj_funcmap.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: xml_write_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -101,25 +101,31 @@ namespace Chroma
 	to.close();
       }
 
+      //! Local registration flag
+      bool registered = false;
+
     }  // end anonymous namespace
 
 
-    bool registerAll(void) 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
-      success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-								    XMLWriteLatProp);
-      success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
-								    XMLWriteLatFerm);
-      success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
-								    XMLWriteLatStagProp);
-      success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-								    XMLWriteArrayLatColMat);
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+								      XMLWriteLatProp);
+	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+								      XMLWriteLatFerm);
+	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
+								      XMLWriteLatStagProp);
+	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+								      XMLWriteArrayLatColMat);
 
+	registered = true;
+      }
       return success;
     }
-
-    bool registered = registerAll();
   }
 
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fixed_random_ferm_monomial.h,v 3.4 2006-09-19 18:38:07 edwards Exp $
+// $Id: fixed_random_ferm_monomial.h,v 3.5 2006-09-20 20:28:05 edwards Exp $
 
 /*! @file
  * @brief Fixed random monomial
@@ -20,63 +20,67 @@ using namespace QDP;
 
 namespace Chroma { 
 
-  namespace FixedRandomFermMonomial4DEnv {
-     extern const std::string name;
-     extern const bool registered;
-   }
-
-   struct FixedRandomFermMonomialParams {
-     FixedRandomFermMonomialParams();
-
-     FixedRandomFermMonomialParams(XMLReader& in, const std::string& path) {
-       XMLReader paramtop(in, path);
-       fermstate = readXMLGroup(paramtop, "FermState", "Name");
-     }
-
-     GroupXML_t fermstate;
-   };
-
-   //! Test monomial
-   /*! @ingroup monomial */
-   class FixedRandomFermMonomial4D : public ExactFermMonomial<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,LatticeFermion>
+  /*! @ingroup monomial */
+  namespace FixedRandomFermMonomial4DEnv 
   {
-   public:
+    extern const std::string name;
+    bool registerAll();
+  }
 
-     typedef multi1d<LatticeColorMatrix> P;
-     typedef multi1d<LatticeColorMatrix> Q;
-     typedef LatticeFermion Phi;
+  /*! @ingroup monomial */
+  struct FixedRandomFermMonomialParams 
+  {
+    FixedRandomFermMonomialParams();
 
-     ~FixedRandomFermMonomial4D() {} // Destructor is automatic
+    FixedRandomFermMonomialParams(XMLReader& in, const std::string& path) {
+      XMLReader paramtop(in, path);
+      fermstate = readXMLGroup(paramtop, "FermState", "Name");
+    }
 
-     FixedRandomFermMonomial4D(const FixedRandomFermMonomialParams& p_);
-     FixedRandomFermMonomial4D(const FixedRandomFermMonomial4D& m) : cfs(m.cfs) {
-       X.resize(Nd);
-       X = m.X;
-     }
+    GroupXML_t fermstate;
+  };
 
-     void dsdq(P& F, const AbsFieldState<P,Q>& s);
 
-     Double S(const AbsFieldState<P,Q>& s);
+  //! Test monomial
+  /*! @ingroup monomial */
+  class FixedRandomFermMonomial4D : public ExactFermMonomial<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,LatticeFermion>
+  {
+  public:
+    typedef multi1d<LatticeColorMatrix> P;
+    typedef multi1d<LatticeColorMatrix> Q;
+    typedef LatticeFermion Phi;
 
-     //! Refresh pseudofermions
-     void refreshInternalFields(const AbsFieldState<P,Q>& field_state) {
-       // No Internal fields
-     }
+    ~FixedRandomFermMonomial4D() {} // Destructor is automatic
+
+    FixedRandomFermMonomial4D(const FixedRandomFermMonomialParams& p_);
+    FixedRandomFermMonomial4D(const FixedRandomFermMonomial4D& m) : cfs(m.cfs) {
+      X.resize(Nd);
+      X = m.X;
+    }
+
+    void dsdq(P& F, const AbsFieldState<P,Q>& s);
+
+    Double S(const AbsFieldState<P,Q>& s);
+
+    //! Refresh pseudofermions
+    void refreshInternalFields(const AbsFieldState<P,Q>& field_state) {
+      // No Internal fields
+    }
      
-     //! Copy pseudofermions if any
-     virtual void setInternalFields(const Monomial<P,Q>& m) {
-       // No Internal Fields
-     }
+    //! Copy pseudofermions if any
+    virtual void setInternalFields(const Monomial<P,Q>& m) {
+      // No Internal Fields
+    }
 
   private:
     multi1d<LatticeColorMatrix> X;
     Handle< CreateStoutFermState<LatticeFermion,
-      multi1d<LatticeColorMatrix>, 
-      multi1d<LatticeColorMatrix> > > cfs;
+				 multi1d<LatticeColorMatrix>, 
+				 multi1d<LatticeColorMatrix> > > cfs;
 
   };
 
-};
+}
 
 #endif
 

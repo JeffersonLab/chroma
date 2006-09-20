@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quark_smearing_aggregate.h,v 3.1 2006-06-10 16:28:19 edwards Exp $
+// $Id: quark_smearing_aggregate.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief All quark smearing constructors
  */
@@ -16,7 +16,7 @@ namespace Chroma
   /*! \ingroup smear */
   namespace QuarkSmearingEnv
   {
-    extern const bool registered;
+    bool registerAll();
 
     //! Returns a no-smearing group
     GroupXML_t   nullXMLGroup();

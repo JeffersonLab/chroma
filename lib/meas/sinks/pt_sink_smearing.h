@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pt_sink_smearing.h,v 3.2 2006-06-12 02:13:47 edwards Exp $
+// $Id: pt_sink_smearing.h,v 3.3 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Point sink smearing
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace PointQuarkSinkSmearingEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
 
 
     //! Point sink parameters

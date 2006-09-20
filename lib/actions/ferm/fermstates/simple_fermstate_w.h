@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermstate_w.h,v 1.1 2006-09-19 17:53:37 edwards Exp $
+// $Id: simple_fermstate_w.h,v 1.2 2006-09-20 20:31:41 edwards Exp $
 
 /*! @file
  * @brief Simple ferm state and a creator
@@ -16,7 +16,7 @@ namespace Chroma
   namespace CreateSimpleFermStateEnv 
   { 
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 }

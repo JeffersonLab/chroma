@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -314,46 +314,52 @@ namespace Chroma
 	close(to);
       }
 
+      //! Local registration flag
+      bool registered = false;
+
     }  // end namespace WriteObjCallMap
 
 
-
-    bool registerAll(void) 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-								    QIOWriteLatProp);
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagatorF"), 
-								    QIOWriteLatPropF);
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagatorD"), 
-								    QIOWriteLatPropD);
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+								      QIOWriteLatProp);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagatorF"), 
+								      QIOWriteLatPropF);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagatorD"), 
+								      QIOWriteLatPropD);
 
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
-								    QIOWriteLatFerm);
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfo"), 
-								    QIOWriteEigenInfo);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+								      QIOWriteLatFerm);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfo"), 
+								      QIOWriteEigenInfo);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
 //								    QIOWriteLatFermF);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
 //								 QIOWriteLatFermD);
 
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
-								    QIOWriteLatStagProp);
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagatorF"), 
-								    QIOWriteLatStagPropF);
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagatorD"), 
-								    QIOWriteLatStagPropD);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
+								      QIOWriteLatStagProp);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagatorF"), 
+								      QIOWriteLatStagPropF);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagatorD"), 
+								      QIOWriteLatStagPropD);
 
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-								    QIOWriteArrayLatColMat);
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixF"), 
-								    QIOWriteArrayLatColMatF);
-      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixD"), 
-								    QIOWriteArrayLatColMatD);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+								      QIOWriteArrayLatColMat);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixF"), 
+								      QIOWriteArrayLatColMatF);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixD"), 
+								      QIOWriteArrayLatColMatD);
+
+	registered = true;
+      }
       return success;
     }
-
-    bool registered = registerAll();
   }
 
 }

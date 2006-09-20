@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_gaugebc.h,v 3.1 2006-09-07 01:26:43 bjoo Exp $
+// $Id: simple_gaugebc.h,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
@@ -13,13 +13,15 @@ namespace Chroma
 { 
   
   /*! @ingroup gaugebcs */
-  namespace SimpleGaugeBCEnv { 
+  namespace SimpleGaugeBCEnv 
+  { 
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   /*! @ingroup gaugebcs */
-  struct SimpleGaugeBCParams { 
+  struct SimpleGaugeBCParams 
+  { 
     SimpleGaugeBCParams();
     SimpleGaugeBCParams(XMLReader& xml, const std::string& path);
     multi1d<Complex> boundary;

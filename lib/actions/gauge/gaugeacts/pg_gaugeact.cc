@@ -1,4 +1,4 @@
-// $Id: pg_gaugeact.cc,v 3.2 2006-09-19 18:25:40 edwards Exp $
+// $Id: pg_gaugeact.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Parallelogram gauge action
  */
@@ -22,9 +22,22 @@ namespace Chroma
     }
 
     const std::string name = "PG_GAUGEACT";
-    const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
-									  createGaugeAct);
-  };
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeActFactory::Instance().registerObject(name, createGaugeAct);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   // Param constructor/reader

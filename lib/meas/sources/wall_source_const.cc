@@ -1,4 +1,4 @@
-// $Id: wall_source_const.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: wall_source_const.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -39,16 +39,20 @@ namespace Chroma
     //! Name to be used
     const std::string name("WALL_SOURCE");
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createProp);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the source construction
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createProp);
+	registered = true;
+      }
+      return success;
+    }
 
 
     //! Initialize

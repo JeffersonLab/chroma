@@ -11,19 +11,19 @@ bool linkageHack(void)
   bool foo = true;
     
   // Gauge Monomials
-  foo &= GaugeMonomialEnv::registered;
+  foo &= GaugeMonomialEnv::registerAll();
     
   // Ferm Monomials
-  foo &= WilsonTypeFermMonomialAggregrateEnv::registered;
+  foo &= WilsonTypeFermMonomialAggregrateEnv::registerAll();
     
   // MD Integrators
-  foo &= LCMMDIntegratorAggregateEnv::registered;
+  foo &= LCMMDIntegratorAggregateEnv::registerAll();
     
   // Chrono predictor
-  foo &= ChronoPredictorAggregrateEnv::registered;
+  foo &= ChronoPredictorAggregrateEnv::registerAll();
 
   // Inline Measurements
-  foo &= InlineAggregateEnv::registered;
+  foo &= InlineAggregateEnv::registerAll();
 
   return foo;
 }

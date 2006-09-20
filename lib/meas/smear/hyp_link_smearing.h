@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hyp_link_smearing.h,v 3.1 2006-06-17 18:25:09 edwards Exp $
+// $Id: hyp_link_smearing.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief HYP link smearing
  */
@@ -16,7 +16,8 @@ namespace Chroma
   namespace HypLinkSmearingEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
+
 
   
     //! Params for Hyp link smearing

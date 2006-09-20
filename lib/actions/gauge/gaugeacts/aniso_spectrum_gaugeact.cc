@@ -1,4 +1,4 @@
-// $Id: aniso_spectrum_gaugeact.cc,v 1.6 2006-09-19 18:25:40 edwards Exp $
+// $Id: aniso_spectrum_gaugeact.cc,v 1.7 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -25,9 +25,23 @@ namespace Chroma
     }
 
     const std::string name = "ANISO_SPECTRUM_GAUGEACT";
-    const bool registered = TheGaugeActFactory::Instance().registerObject(name, 
-									  createGaugeAct);
-  };
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeActFactory::Instance().registerObject(name, createGaugeAct);
+	registered = true;
+      }
+      return success;
+    }
+
+  }
 
 
   AnisoSpectrumGaugeActParams::AnisoSpectrumGaugeActParams(XMLReader& xml_in, const std::string& path) 

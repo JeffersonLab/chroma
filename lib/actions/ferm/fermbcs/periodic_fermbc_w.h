@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: periodic_fermbc_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: periodic_fermbc_w.h,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Periodic fermionic BC
  */
@@ -16,7 +16,7 @@ namespace Chroma
   namespace WilsonTypePeriodicFermBCEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 }

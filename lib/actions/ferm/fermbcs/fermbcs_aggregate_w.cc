@@ -1,4 +1,4 @@
-// $Id: fermbcs_aggregate_w.cc,v 3.1 2006-08-18 15:52:43 edwards Exp $
+// $Id: fermbcs_aggregate_w.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion boundary conditions
  */
@@ -19,23 +19,25 @@ namespace Chroma
   //! Registration aggregator
   namespace WilsonTypeFermBCEnv
   {
+    static bool registered = false;
+
     bool registerAll() 
     {
-      bool success = true;
-
-      success &= WilsonTypeSimpleFermBCEnv::registered;
-      success &= WilsonTypePeriodicFermBCEnv::registered;
-      success &= WilsonTypeTwistedFermBCEnv::registered;
-      success &= SchrTrivialFermBCEnv::registered;
-      success &= SchrNonPertFermBCEnv::registered;
-      success &= SchrCouplingFermBCEnv::registered;
-      success &= SchrChromoMagFermBCEnv::registered;
-      success &= SchrDirichletFermBCEnv::registered;
-
+      bool success = true; 
+      if (! registered)
+      {
+	success &= WilsonTypeSimpleFermBCEnv::registerAll();
+	success &= WilsonTypePeriodicFermBCEnv::registerAll();
+	success &= WilsonTypeTwistedFermBCEnv::registerAll();
+	success &= SchrTrivialFermBCEnv::registerAll();
+	success &= SchrNonPertFermBCEnv::registerAll();
+	success &= SchrCouplingFermBCEnv::registerAll();
+	success &= SchrChromoMagFermBCEnv::registerAll();
+	success &= SchrDirichletFermBCEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.5 2006-09-19 18:30:52 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.6 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -16,24 +16,32 @@ namespace Chroma
 { 
   namespace InlineWilsonLoopEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineWilsonLoop(InlineWilsonLoopParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineWilsonLoop(InlineWilsonLoopParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "WILSLP";
 
-    bool registerAll()
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool foo = true;
-      foo &= GaugeActsEnv::registered;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      return foo;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
     }
-
-    const bool registered = registerAll();
-  };
+  }
 
 
 

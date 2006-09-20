@@ -7,25 +7,35 @@
 #include "update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h"
 #include "update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h"
 
-namespace Chroma {
+namespace Chroma 
+{
 
-  namespace LCMMDIntegratorAggregateEnv {
-
-    bool registerAll()
+  namespace LCMMDIntegratorAggregateEnv 
+  {
+    namespace
     {
-      bool success = true; 
-
-      success &= LatColMatPQPLeapfrogIntegratorEnv::registered;
-      success &= LatColMatSextonWeingartenIntegratorEnv::registered;
-      success &= LatColMatMinimumNorm2IntegratorEnv::registered;
-      success &= LatColMatSexWeinMixedIntegratorEnv::registered;
-      success &= LatColMatMinimumNorm2IntegratorMtsEnv::registered;
-      success &= LatColMatMinimumNorm2QPQIntegratorMtsEnv::registered;
-      success &= LatColMatPQPLeapfrogIntegratorMtsEnv::registered;
-      return success;
+      //! Local registration flag
+      bool registered = false;
     }
 
-    const bool registered = registerAll();
-  };
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= LatColMatPQPLeapfrogIntegratorEnv::registerAll();
+	success &= LatColMatSextonWeingartenIntegratorEnv::registerAll();
+	success &= LatColMatMinimumNorm2IntegratorEnv::registerAll();
+	success &= LatColMatSexWeinMixedIntegratorEnv::registerAll();
+	success &= LatColMatMinimumNorm2IntegratorMtsEnv::registerAll();
+	success &= LatColMatMinimumNorm2QPQIntegratorMtsEnv::registerAll();
+	success &= LatColMatPQPLeapfrogIntegratorMtsEnv::registerAll();
+
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 }

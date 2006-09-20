@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -236,36 +236,43 @@ namespace Chroma
 	// Done - That too was unnecessarily painful
 	close(to);
       }
+
+      //! Local registration flag
+      bool registered = false;
+
     }  // end namespace
 
 
-    bool registerAll(void) 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
-      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-								   QIOReadLatProp);
-      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagatorF"), 
-								   QIOReadLatPropF);
-      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagatorD"), 
-								   QIOReadLatPropD);
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+								     QIOReadLatProp);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagatorF"), 
+								     QIOReadLatPropF);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticePropagatorD"), 
+								     QIOReadLatPropD);
 
-      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
 								   QIOReadLatFerm);
 //      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
 //								   QIOReadLatFermF);
 //      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
 //								   QIOReadLatFermD);
 
-      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-								   QIOReadArrayLatColMat);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+								     QIOReadArrayLatColMat);
 
-      success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfo"),
-								   QIOReadEigenInfo);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfo"),
+								     QIOReadEigenInfo);
 
+	registered = true;
+      }
       return success;
     }
-
-    bool registered = registerAll();
   }
 
 }

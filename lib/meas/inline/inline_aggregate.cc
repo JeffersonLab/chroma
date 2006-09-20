@@ -1,4 +1,4 @@
-// $Id: inline_aggregate.cc,v 3.1 2006-04-10 21:17:05 edwards Exp $
+// $Id: inline_aggregate.cc,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline measurement aggregator
  */
@@ -20,23 +20,32 @@ namespace Chroma
   //! Name and registration
   namespace InlineAggregateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
-      success &= InlineEigAggregateEnv::registered;
-      success &= InlineGFixAggregateEnv::registered;
-      success &= InlineGlueAggregateEnv::registered;
-      success &= InlineHadronAggregateEnv::registered;
-      success &= InlineSchrFunAggregateEnv::registered;
-      success &= InlineSmearAggregateEnv::registered;
-      success &= InlineIOAggregateEnv::registered;
+      if (! registered)
+      {
+	success &= InlineEigAggregateEnv::registerAll();
+	success &= InlineGFixAggregateEnv::registerAll();
+	success &= InlineGlueAggregateEnv::registerAll();
+	success &= InlineHadronAggregateEnv::registerAll();
+	success &= InlineSchrFunAggregateEnv::registerAll();
+	success &= InlineSmearAggregateEnv::registerAll();
+	success &= InlineIOAggregateEnv::registerAll();
 
-      success &= InlineStaggeredHadronAggregateEnv::registered;
+	success &= InlineStaggeredHadronAggregateEnv::registerAll();
 
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

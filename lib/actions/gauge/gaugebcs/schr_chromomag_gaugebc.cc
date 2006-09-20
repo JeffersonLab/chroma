@@ -1,4 +1,4 @@
-// $Id: schr_chromomag_gaugebc.cc,v 3.0 2006-04-03 04:58:54 edwards Exp $
+// $Id: schr_chromomag_gaugebc.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - chromo-magnetic gauge BC
  */
@@ -19,8 +19,21 @@ namespace Chroma
     }
 
     const std::string name = "SCHROEDINGER_CHROMOMAG_GAUGEBC";
-    const bool registered = TheGaugeBCFactory::Instance().registerObject(name,
-									 createGaugeBC);
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheGaugeBCFactory::Instance().registerObject(name, createGaugeBC);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 

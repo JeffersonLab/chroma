@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
+// $Id: unprec_ht_contfrac5d_fermact_array_w.h,v 3.2 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned H_T kernel continued fraction (5D) action
  */
@@ -17,7 +17,7 @@ namespace Chroma
   namespace UnprecHTContFrac5DFermActArrayEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

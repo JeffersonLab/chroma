@@ -1,4 +1,4 @@
-// $Id: prec_constdet_two_flavor_polynomial_monomial_w.cc,v 3.2 2006-08-26 02:08:42 edwards Exp $
+// $Id: prec_constdet_two_flavor_polynomial_monomial_w.cc,v 3.3 2006-09-20 20:28:05 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -19,33 +19,38 @@ namespace Chroma
  
   namespace EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv 
   {
-    //! Callback function for the factory
-    Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+    namespace
     {
-      QDPIO::cout << "Create Monomial: " << name << endl;
+      //! Callback function for the factory
+      Monomial< multi1d<LatticeColorMatrix>,
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+      {
+	QDPIO::cout << "Create Monomial: " << name << endl;
 
-      return new EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomial(
-	TwoFlavorWilsonTypeFermMonomialParams(xml, path));
-    }
+	return new EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomial(
+	  TwoFlavorWilsonTypeFermMonomialParams(xml, path));
+      }
 
-    //! Register all the objects
-    bool registerAll()
-    {
-      bool foo = true;
-
-      foo &= WilsonTypeFermActs4DEnv::registered;
-      foo &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
-
-      return foo;
+      //! Local registration flag
+      bool registered = false;
     }
 
     //! Identifier
     const std::string name = "TWO_FLAVOR_EOPREC_CONSTDET_POLYNOMIAL_FERM_MONOMIAL";
 
-    //! Register the fermact
-    const bool registered = registerAll();
-  }; //end namespace EvenOddPrec TwoFlavorWilsonFermMonomialEnv
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= WilsonTypeFermActs4DEnv::registerAll();
+	success &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
+	registered = true;
+      }
+      return success;
+    }
+  } //end namespace EvenOddPrec TwoFlavorWilsonFermMonomialEnv
 
 
   // Constructor

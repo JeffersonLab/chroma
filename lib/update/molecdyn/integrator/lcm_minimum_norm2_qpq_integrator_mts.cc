@@ -1,4 +1,4 @@
-// $Id: lcm_minimum_norm2_qpq_integrator_mts.cc,v 3.2 2006-09-15 02:50:45 edwards Exp $
+// $Id: lcm_minimum_norm2_qpq_integrator_mts.cc,v 3.3 2006-09-20 20:28:05 edwards Exp $
 
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
@@ -11,22 +11,42 @@
 #include "util/gauge/expmat.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace LatColMatMinimumNorm2QPQIntegratorMtsEnv {
-    
-    AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
-		    multi1d<LatticeColorMatrix> >* createMDIntegrator(
-								      XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) {
-      // Read the integrator params
-      LatColMatMinimumNorm2QPQIntegratorMtsParams p(xml, path);
+  namespace LatColMatMinimumNorm2QPQIntegratorMtsEnv 
+  {
+    namespace
+    {
+      AbsMDIntegrator<multi1d<LatticeColorMatrix>, 
+		      multi1d<LatticeColorMatrix> >* createMDIntegrator(
+			XMLReader& xml, const std::string& path,  Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H) 
+      {
+	// Read the integrator params
+	LatColMatMinimumNorm2QPQIntegratorMtsParams p(xml, path);
       
-      return new LatColMatMinimumNorm2QPQIntegratorMts(p, H);
+	return new LatColMatMinimumNorm2QPQIntegratorMts(p, H);
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "LCM_MINIMUM_NORM_2ND_ORDER_QPQ_INTEGRATOR_MTS";
-    const bool registered = TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMDIntegratorFactory::Instance().registerObject(name, createMDIntegrator); 
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
   LatColMatMinimumNorm2QPQIntegratorMtsParams::LatColMatMinimumNorm2QPQIntegratorMtsParams(XMLReader& xml_in, 
 									   const std::string& path) 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_partfrac4d_fermact_w.h,v 3.2 2006-09-19 16:04:22 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.h,v 3.3 2006-09-20 20:27:59 edwards Exp $
 
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
@@ -23,7 +23,7 @@ namespace Chroma
   namespace OvlapPartFrac4DFermActEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

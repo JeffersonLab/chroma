@@ -14,8 +14,9 @@ namespace Chroma
   namespace InlinePolyakovLoopEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
+
 
   /*! \ingroup inlineglue */
   struct InlinePolyakovLoopParams 

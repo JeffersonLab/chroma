@@ -1,4 +1,4 @@
-// $Id: schr_chromomag_fermbc_w.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: schr_chromomag_fermbc_w.cc,v 3.1 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - chromo-magnetic ferm BC
  */
@@ -21,8 +21,19 @@ namespace Chroma
     }
 
     const std::string name = "SCHROEDINGER_CHROMOMAG_FERMBC";
-    const bool registered = TheWilsonTypeFermBCFactory::Instance().registerObject(name,
-										  createFermBC);
+
+    static bool registered = false;
+
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &=  TheWilsonTypeFermBCFactory::Instance().registerObject(name, createFermBC);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 }

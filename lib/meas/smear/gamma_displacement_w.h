@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gamma_displacement_w.h,v 3.1 2006-04-06 20:14:15 edwards Exp $
+// $Id: gamma_displacement_w.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Gamma insertions
  */
@@ -16,7 +16,7 @@ namespace Chroma
   namespace GammaDisplacementEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   
 
     //! Params for simple quark displacement

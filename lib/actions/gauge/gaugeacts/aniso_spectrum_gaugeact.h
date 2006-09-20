@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: aniso_spectrum_gaugeact.h,v 1.4 2006-07-21 18:39:11 bjoo Exp $
+// $Id: aniso_spectrum_gaugeact.h,v 1.5 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -24,7 +24,7 @@ namespace Chroma
   namespace AnisoSpectrumGaugeActEnv 
   {
     extern const string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

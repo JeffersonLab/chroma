@@ -1,4 +1,4 @@
-// $Id: simple_baryon_operator_w.cc,v 1.4 2006-08-16 17:10:27 bjoo Exp $
+// $Id: simple_baryon_operator_w.cc,v 1.5 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */
@@ -251,25 +251,27 @@ namespace Chroma
 	return new BarNuclCg5(Params(xml_in, path), u);
       }
 
+
+      //! Local registration flag
+      bool registered = false;
+
     }  // end anonymous namespace
 
 
-    //! Baryon operators
-    /*! \ingroup hadron */
-    bool registerAll(void) 
-    {
-      bool success = true;
-
-      //! Register all the factories
-      success &= Chroma::TheWilsonBaryonOperatorFactory::Instance().registerObject(name,
-										   barNuclCg5);
-
-      return success;
-    }
-
+    //! Name
     const std::string name = "NUCLEON";
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheWilsonBaryonOperatorFactory::Instance().registerObject(name, barNuclCg5);
+	registered = true;
+      }
+      return success;
+    }
 
   } // namespace BaryonOperatorCallMapEnv
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_gaugestate.h,v 1.1 2006-09-19 18:21:38 edwards Exp $
+// $Id: stout_gaugestate.h,v 1.2 2006-09-20 20:28:01 edwards Exp $
 
 /*! @file
  * @brief Stout gauge state and a creator
@@ -22,7 +22,7 @@ namespace Chroma
   namespace CreateStoutGaugeStateEnv 
   { 
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

@@ -1,4 +1,4 @@
-// $Id: mesonseqsrc_w.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: mesonseqsrc_w.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -279,6 +279,10 @@ namespace Chroma
 	return new SimpleMesonSeqSource(Params(xml_in, path), 15);   // pion_1 = gamma_5
       }
 
+
+      //! Local registration flag
+      bool registered = false;
+
     } // end anonymous namespace
 
 
@@ -344,70 +348,71 @@ namespace Chroma
     }
 
 
-    // Register all the possible simple mesons
-    bool registerAll(void) 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	//! Register all the factories
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_1"), 
+										      mesPionA01SeqSrc);
 
-      //! Register all the factories
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_1"), 
-										    mesPionA01SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_X_1"), 
+										      mesPionRhoX1SeqSrc);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_X_1"), 
-										    mesPionRhoX1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_Y_1"),
-										    mesPionRhoY1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_Y_1"),
+										      mesPionRhoY1SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1_Z_1"),
-										    mesPionB1Z1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1_Z_1"),
+										      mesPionB1Z1SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_Z_1"),
-										    mesPionRhoZ1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_Z_1"),
+										      mesPionRhoZ1SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1_Y_1"),
-										    mesPion1B1Y1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1_Y_1"),
+										      mesPion1B1Y1SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1_X_1"),
-										    mesPion1B1X1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1_X_1"),
+										      mesPion1B1X1SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PION_2"),
-										    mesPion1Pion2SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PION_2"),
+										      mesPion1Pion2SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_2"),
-										    mesPionA02SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_2"),
+										      mesPionA02SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_X_2"),
-										    mesPionRhoX2SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_X_2"),
+										      mesPionRhoX2SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_Y_2"),
-										    mesPionRhoY2SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_Y_2"),
+										      mesPionRhoY2SeqSrc);
       
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1_Z_1"),
-										    mesPionA1Z1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1_Z_1"),
+										      mesPionA1Z1SeqSrc);
        
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_Z_2"),
-										    mesPionRhoZ2SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHO_Z_2"),
+										      mesPionRhoZ2SeqSrc);
        
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1_Y_1"),
-										    mesPionA1Y1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1_Y_1"),
+										      mesPionA1Y1SeqSrc);
        
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1_X_1"),
-										    mesPionA1X1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1_X_1"),
+										      mesPionA1X1SeqSrc);
        
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION"),
-										    mesPion1Pion1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION"),
+										      mesPion1Pion1SeqSrc);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION_1"), // same as PION
-										    mesPion1Pion1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION_1"), // same as PION
+										      mesPion1Pion1SeqSrc);
 
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PION_1"), // same as PION
-										    mesPion1Pion1SeqSrc);
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PION_1"), // same as PION
+										      mesPion1Pion1SeqSrc);
 
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
 
   }  // end namespace SimpleMesonSeqSourceEnv
 

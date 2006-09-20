@@ -4,20 +4,38 @@
 #include "meas/inline/io/named_objmap.h"
 
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-  namespace InlinePolyakovLoopEnv { 
-
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					   const std::string& path)
+  namespace InlinePolyakovLoopEnv 
+  { 
+    namespace
     {
-      InlinePolyakovLoopParams p(xml_in, path);
-      return new InlinePolyakovLoop(p);
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path)
+      {
+	InlinePolyakovLoopParams p(xml_in, path);
+	return new InlinePolyakovLoop(p);
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "POLYAKOV_LOOP";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-  };
+  
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
  
   //! PolyakovLoop input

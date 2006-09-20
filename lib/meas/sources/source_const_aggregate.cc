@@ -1,4 +1,4 @@
-// $Id: source_const_aggregate.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: source_const_aggregate.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief All make source constructors
  */
@@ -19,22 +19,27 @@ namespace Chroma
   //! Registration aggregator
   namespace QuarkSourceConstructionEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// Sources
+	success &= PointQuarkSourceConstEnv::registerAll();
+	success &= ShellQuarkSourceConstEnv::registerAll();
+	success &= RandZ2WallQuarkSourceConstEnv::registerAll();
+	success &= WallQuarkSourceConstEnv::registerAll();
+	success &= PartialWallQuarkSourceConstEnv::registerAll();
+	success &= DiluteZNQuarkSourceConstEnv::registerAll();
 
-      // Sources
-      success &= PointQuarkSourceConstEnv::registered;
-      success &= ShellQuarkSourceConstEnv::registered;
-      success &= RandZ2WallQuarkSourceConstEnv::registered;
-      success &= WallQuarkSourceConstEnv::registered;
-      success &= PartialWallQuarkSourceConstEnv::registered;
-      success &= DiluteZNQuarkSourceConstEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

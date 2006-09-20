@@ -1,4 +1,4 @@
-// $Id: prec_clover_extfield_fermact_w.cc,v 3.3 2006-09-19 16:05:10 edwards Exp $
+// $Id: prec_clover_extfield_fermact_w.cc,v 3.4 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action with an external field
  */
@@ -8,12 +8,11 @@
 #include "actions/ferm/fermacts/prec_clover_extfield_fermact_w.h"
 
 #include "actions/ferm/fermacts/fermact_factory_w.h"
-//#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/fermstates/extfield_fermstate_w.h"
 #include "actions/ferm/fermstates/extfield_factory_w.h"
 #include "actions/ferm/fermstates/extfield_aggregate_w.h"
-#include "actions/ferm/fermbcs/fermbcs_reader_w.h"
 
 
 namespace Chroma
@@ -22,6 +21,7 @@ namespace Chroma
   //! Hooks to register the class with the fermact factory
   namespace EvenOddPrecCloverExtFieldFermActEnv
   {
+#if 0
     // Helper function for the FermAction readers
     Handle< CreateFermState<LatticeFermion,
 			    multi1d<LatticeColorMatrix>, 
@@ -77,7 +77,7 @@ namespace Chroma
 	multi1d<LatticeColorMatrix> >(WilsonTypeFermBCEnv::reader(paramtop, "FermionBC"),
 				      ext_field);
     }
-
+#endif
 
     //! Callback function
     WilsonTypeFermAct<LatticeFermion,
@@ -85,7 +85,7 @@ namespace Chroma
 		      multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
 								     const std::string& path)
     {
-      return new EvenOddPrecCloverExtFieldFermAct(reader(xml_in, path), 
+      return new EvenOddPrecCloverExtFieldFermAct(CreateFermStateEnv::reader(xml_in, path),
 						  CloverFermActParams(xml_in, path));
     }
 
@@ -102,17 +102,22 @@ namespace Chroma
     //! Name to be used
     const std::string name = "CLOVER_EXTERNAL_FIELD";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= ExternalFieldEnv::registered;
-      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
-      foo &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the fermact
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= ExternalFieldEnv::registerAll();
+	success &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+	success &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+	registered = true;
+      }
+      return success;
+    }
   }
 
   //! Produce a linear operator for this action

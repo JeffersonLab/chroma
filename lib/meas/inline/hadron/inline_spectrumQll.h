@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrumQll.h,v 1.1 2006-05-10 03:58:06 kostas Exp $
+// $Id: inline_spectrumQll.h,v 1.2 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
@@ -19,7 +19,7 @@ namespace Chroma
   namespace InlineSpectrumQllEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

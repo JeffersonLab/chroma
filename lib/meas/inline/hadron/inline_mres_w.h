@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 3.1 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_mres_w.h,v 3.2 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *
@@ -18,7 +18,7 @@ namespace Chroma
   namespace InlineMresEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

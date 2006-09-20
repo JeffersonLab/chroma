@@ -1,4 +1,4 @@
-// $Id: syssolver_polyprec_aggregate.cc,v 3.2 2006-08-18 15:52:43 edwards Exp $
+// $Id: syssolver_polyprec_aggregate.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All PolyPrec system solver constructors
  */
@@ -13,17 +13,21 @@ namespace Chroma
   //! Registration aggregator
   namespace PolyPrecSysSolverEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
-
-      // Sources
-      success &= PolyPrecSysSolverCGEnv::registered;
-
+      bool success = true; 
+      if (! registered)
+      {
+	// Sources
+	success &= PolyPrecSysSolverCGEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_szin_write_obj.h,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: inline_szin_write_obj.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
@@ -19,7 +19,7 @@ namespace Chroma
   namespace InlineSZINWriteNamedObjEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

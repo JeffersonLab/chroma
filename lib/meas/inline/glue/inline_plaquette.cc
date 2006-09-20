@@ -5,22 +5,39 @@
 
 #include "meas/inline/io/default_gauge_field.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
 
-  namespace InlinePlaquetteEnv { 
+  namespace InlinePlaquetteEnv 
+  { 
+    namespace
+    {
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) {
+	
+	InlinePlaquetteParams p(xml_in, path);
+	return new InlinePlaquette(p);
+      }
 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					   const std::string& path) {
-
-      InlinePlaquetteParams p(xml_in, path);
-      return new InlinePlaquette(p);
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "PLAQUETTE";
 
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
 
-  };
+  }
 
 
   //! Plaquette input

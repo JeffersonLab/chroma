@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_smear_aggregate.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: inline_smear_aggregate.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline smearing measurement aggregator
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! \ingroup inlinesmear */
   namespace InlineSmearAggregateEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

@@ -1,4 +1,4 @@
-// $Id: inline_link_smear.cc,v 3.3 2006-06-12 03:37:09 edwards Exp $
+// $Id: inline_link_smear.cc,v 3.4 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Inline Link smearing
  */
@@ -36,14 +36,31 @@ namespace Chroma
 
   namespace InlineLinkSmearEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineMeas(Params(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineMeas(Params(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "LINK_SMEAR";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
 
 
     // Param stuff

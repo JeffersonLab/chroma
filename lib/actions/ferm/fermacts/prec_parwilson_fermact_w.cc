@@ -1,4 +1,4 @@
-// $Id: prec_parwilson_fermact_w.cc,v 3.1 2006-09-19 18:08:38 edwards Exp $
+// $Id: prec_parwilson_fermact_w.cc,v 3.2 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action with parity breaking term
  */
@@ -40,15 +40,21 @@ namespace Chroma
     //! Name to be used
     const std::string name = "PARWILSON";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the fermact
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+	success &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 

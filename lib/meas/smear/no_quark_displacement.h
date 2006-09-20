@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: no_quark_displacement.h,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: no_quark_displacement.h,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief No quark displacement
  */
@@ -17,7 +17,7 @@ namespace Chroma
   namespace NoQuarkDisplacementEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   
 
     //! Params for no quark displacement

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: predictor_aggregate.h,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: predictor_aggregate.h,v 3.1 2006-09-20 20:28:05 edwards Exp $
 /*! \file
  *  \brief Chrono predictor aggregator
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! @ingroup predictor */
   namespace ChronoPredictorAggregrateEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.8 2006-09-16 16:55:41 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.9 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -473,30 +473,31 @@ namespace Chroma
 	return new GroupBaryon(Params(xml_in, path), u);
       }
 
+      //! Local registration flag
+      bool registered = false;
+
     }  // end anonymous namespace
-
-
-    //! Baryon operators
-    /*! \ingroup hadron */
-    bool registerAll(void) 
-    {
-      bool success = true;
-
-      // Required stuff
-      success &= LinkSmearingEnv::registered;
-      success &= QuarkSmearingEnv::registered;
-
-      //! Register all the factories
-      success &= Chroma::TheWilsonBaryonOperatorFactory::Instance().registerObject(name, 
-										   groupBaryon);
-
-      return success;
-    }
 
     const std::string name = "GROUP_BARYON";
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	// Required stuff
+	success &= LinkSmearingEnv::registerAll();
+	success &= QuarkSmearingEnv::registerAll();
 
+	//! Register all the factories
+	success &= Chroma::TheWilsonBaryonOperatorFactory::Instance().registerObject(name, 
+										     groupBaryon);
+
+	registered = true;
+      }
+      return success;
+    }
   } // namespace BaryonOperatorCallMapEnv
 
 

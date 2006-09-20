@@ -1,4 +1,4 @@
-// $Id: deriv_quark_displacement_w.cc,v 3.1 2006-05-24 21:08:30 edwards Exp $
+// $Id: deriv_quark_displacement_w.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -1294,114 +1294,117 @@ namespace Chroma
     }
 
 
-    // Register all the possible deriv mesons
-    bool registerAll(void) 
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the possible deriv mesons
+    bool registerAll() 
     {
-      bool foo = true;
+      bool success = true; 
+      if (! registered)
+      {
+	//! Register all the factories
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("NABLA-DERIV"),
+									     rightNablaDisplace);
 
-      //! Register all the factories
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("NABLA-DERIV"),
-									   rightNablaDisplace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("D-DERIV"),
+									     rightDDisplace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("D-DERIV"),
-									   rightDDisplace);
-
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B-DERIV"),
-									   rightBDisplace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B-DERIV"),
+									     rightBDisplace);
 
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxNABLA_T1-DERIV"),
-									   mesPionxNablaT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxNABLA_T1-DERIV"),
+									     mesPionxNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0xNABLA_T1-DERIV"),
-									   mesA0xNablaT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0xNABLA_T1-DERIV"),
+									     mesA0xNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0_2xNABLA_T1-DERIV"),
-									   mesA02xNablaT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0_2xNABLA_T1-DERIV"),
+									     mesA02xNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_A1-DERIV"),
-									   mesRhoxNablaA1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_A1-DERIV"),
+									     mesRhoxNablaA1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_T1-DERIV"),
-									   mesRhoxNablaT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_T1-DERIV"),
+									     mesRhoxNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_T2-DERIV"),
-									   mesRhoxNablaT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_T2-DERIV"),
+									     mesRhoxNablaT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_A1-DERIV"),
-									   mesA1xNablaA1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_A1-DERIV"),
+									     mesA1xNablaA1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_T2-DERIV"),
-									   mesA1xNablaT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_T2-DERIV"),
+									     mesA1xNablaT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_E-DERIV"),
-									   mesA1xNablaEDisplace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_E-DERIV"),
+									     mesA1xNablaEDisplace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xNABLA_T1-DERIV"),
-									   mesB1xNablaT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xNABLA_T1-DERIV"),
+									     mesB1xNablaT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0_2xD_T2-DERIV"),
-									   mesA02xDT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0_2xD_T2-DERIV"),
+									     mesA02xDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_A2-DERIV"),
-									   mesA1xDA2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_A2-DERIV"),
+									     mesA1xDA2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_E-DERIV"),
-									   mesA1xDEDisplace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_E-DERIV"),
+									     mesA1xDEDisplace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_T1-DERIV"),
-									   mesA1xDT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_T1-DERIV"),
+									     mesA1xDT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_T2-DERIV"),
-									   mesA1xDT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_T2-DERIV"),
+									     mesA1xDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_A2-DERIV"),
-									   mesB1xDA2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_A2-DERIV"),
+									     mesB1xDA2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_E-DERIV"),
-									   mesB1xDEDisplace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_E-DERIV"),
+									     mesB1xDEDisplace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_T1-DERIV"),
-									   mesB1xDT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_T1-DERIV"),
+									     mesB1xDT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_T2-DERIV"),
-									   mesB1xDT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_T2-DERIV"),
+									     mesB1xDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_A2-DERIV"),
-									   mesRhoxDA2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_A2-DERIV"),
+									     mesRhoxDA2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_T1-DERIV"),
-									   mesRhoxDT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_T1-DERIV"),
+									     mesRhoxDT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_T2-DERIV"),
-									   mesRhoxDT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_T2-DERIV"),
+									     mesRhoxDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxD_T2-DERIV"),
-									   mesPionxDT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxD_T2-DERIV"),
+									     mesPionxDT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxB_T1-DERIV"),
-									   mesPionxBT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxB_T1-DERIV"),
+									     mesPionxBT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxB_T1-DERIV"),
-									   mesRhoxBT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxB_T1-DERIV"),
+									     mesRhoxBT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxB_T2-DERIV"),
-									   mesRhoxBT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxB_T2-DERIV"),
+									     mesRhoxBT2Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_A1-DERIV"),
-									   mesA1xBA1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_A1-DERIV"),
+									     mesA1xBA1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_T1-DERIV"),
-									   mesA1xBT1Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_T1-DERIV"),
+									     mesA1xBT1Displace);
 
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_T2-DERIV"),
-									   mesA1xBT2Displace);
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_T2-DERIV"),
+									     mesA1xBT2Displace);
 
-      return foo;
+	registered = true;
+      }
+      return success;
     }
-
-    const bool registered = registerAll();
-
   }  // end namespace DerivQuarkDisplacementEnv
 
 }  // end namespace Chroma

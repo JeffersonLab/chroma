@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovext_tuning_strategy_aggregate.cc,v 3.0 2006-04-03 04:58:45 edwards Exp $
+// $Id: ovext_tuning_strategy_aggregate.cc,v 3.1 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Ovext tuning strategy
  */
@@ -13,15 +13,21 @@ namespace Chroma
 { 
   namespace OvExtTuningStrategyAggregateEnv 
   {
-    bool registerAll()
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
-      success &= OvExtConstantStrategyEnv::registered;
-      success &= OvExtConstDivByResPStrategyEnv::registered;
-      success &= OvExtNeubergerStrategyEnv::registered;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= OvExtConstantStrategyEnv::registerAll();
+	success &= OvExtConstDivByResPStrategyEnv::registerAll();
+	success &= OvExtNeubergerStrategyEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-    
-    const bool registered = registerAll();
-  };
+  }
 }

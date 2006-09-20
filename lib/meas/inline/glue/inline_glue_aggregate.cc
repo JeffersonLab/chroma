@@ -1,4 +1,4 @@
-// $Id: inline_glue_aggregate.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: inline_glue_aggregate.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Inline glue measurement aggregator
  */
@@ -15,18 +15,27 @@ namespace Chroma
   //! Name and registration
   namespace InlineGlueAggregateEnv
   {
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
-      success &= InlinePlaquetteEnv::registered;
-      success &= InlinePolyakovLoopEnv::registered;
-      success &= InlineWilsonLoopEnv::registered;
-      success &= InlineFuzzedWilsonLoopEnv::registered;
+      if (! registered)
+      {
+	success &= InlinePlaquetteEnv::registerAll();
+	success &= InlinePolyakovLoopEnv::registerAll();
+	success &= InlineWilsonLoopEnv::registerAll();
+	success &= InlineFuzzedWilsonLoopEnv::registerAll();
 
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

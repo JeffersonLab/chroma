@@ -1,4 +1,4 @@
-// $Id: t_mres_4d.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
+// $Id: t_mres_4d.cc,v 3.1 2006-09-20 20:28:06 edwards Exp $
 
 #include "chroma.h"
 
@@ -25,7 +25,7 @@ bool linkage_hack()
   bool foo = true;
 
   // All actions
-  foo &= WilsonTypeFermActsEnv::registered;
+  foo &= WilsonTypeFermActsEnv::registerAll();
 
   return foo;
 }

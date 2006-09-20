@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 3.4 2006-06-10 16:28:52 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 3.5 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -62,20 +62,25 @@ namespace Chroma
     //! Name to be used
     const std::string name("SHELL_SINK");
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= LinkSmearingEnv::registered;
-      foo &= QuarkSmearingEnv::registered;
-      foo &= QuarkDisplacementEnv::registered;
-      foo &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
-      foo &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the sink smearing
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= LinkSmearingEnv::registerAll();
+	success &= QuarkSmearingEnv::registerAll();
+	success &= QuarkDisplacementEnv::registerAll();
+	success &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
+
+	registered = true;
+      }
+      return success;
+    }
 
 
     //! Initialize

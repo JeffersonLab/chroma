@@ -1,4 +1,4 @@
-// $Id: derivmesonseqsrc_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: derivmesonseqsrc_w.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -1261,103 +1261,110 @@ namespace Chroma
     }
 
 
-    // Register all the possible deriv mesons
-    bool registerAll(void) 
+    namespace
     {
-      bool success = true;
-
-      //! Register all the factories
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PIONxNABLA_T2"),
-										    mesPionA1xDT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0xNABLA_T1"),
-										    mesPionA0xNablaT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_2xNABLA_T1"),
-										    mesPionA02xNablaT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxNABLA_A1"),
-										    mesPionRhoxNablaA1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxNABLA_T1"),
-										    mesPionRhoxNablaT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxNABLA_T2"),
-										    mesPionRhoxNablaT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xNABLA_A1"),
-										    mesPionA1xNablaA1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xNABLA_T2"),
-										    mesPionA1xNablaT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xNABLA_E"),
-										    mesPionA1xNablaESeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xNABLA_T1"),
-										    mesPionB1xNablaT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_2xD_T2"),
-										    mesPionA02xDT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_A2"),
-										    mesPionA1xDA2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_E"),
-										    mesPionA1xDESeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_T1"),
-										    mesPionA1xDT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_T2"),
-										    mesPionA1xDT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xD_A2"),
-										    mesPionB1xDA2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xD_E"),
-										    mesPionB1xDESeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xD_T1"),
-										    mesPionB1xDT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xD_T2"),
-										    mesPionB1xDT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxD_A2"),
-										    mesPionRhoxDA2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxD_T1"),
-										    mesPionRhoxDT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxD_T2"),
-										    mesPionRhoxDT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PIONxD_T2"),
-										    mesPionPionxDT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PIONxB_T1"),
-										    mesPionPionxBT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxB_T1"),
-										    mesPionRhoxBT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxB_T2"),
-										    mesPionRhoxBT2SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xB_A1"),
-										    mesPionA1xBA1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xB_T1"),
-										    mesPionA1xBT1SeqSrc);
-
-      success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xB_T2"),
-										    mesPionA1xBT2SeqSrc);
-
-      return success;
+      //! Local registration flag
+      bool registered = false;
     }
 
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	//! Register all the factories
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PIONxNABLA_T2"),
+										      mesPionA1xDT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0xNABLA_T1"),
+										      mesPionA0xNablaT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_2xNABLA_T1"),
+										      mesPionA02xNablaT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxNABLA_A1"),
+										      mesPionRhoxNablaA1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxNABLA_T1"),
+										      mesPionRhoxNablaT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxNABLA_T2"),
+										      mesPionRhoxNablaT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xNABLA_A1"),
+										      mesPionA1xNablaA1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xNABLA_T2"),
+										      mesPionA1xNablaT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xNABLA_E"),
+										      mesPionA1xNablaESeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xNABLA_T1"),
+										      mesPionB1xNablaT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A0_2xD_T2"),
+										      mesPionA02xDT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_A2"),
+										      mesPionA1xDA2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_E"),
+										      mesPionA1xDESeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_T1"),
+										      mesPionA1xDT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xD_T2"),
+										      mesPionA1xDT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xD_A2"),
+										      mesPionB1xDA2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xD_E"),
+										      mesPionB1xDESeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xD_T1"),
+										      mesPionB1xDT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-B1xD_T2"),
+										      mesPionB1xDT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxD_A2"),
+										      mesPionRhoxDA2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxD_T1"),
+										      mesPionRhoxDT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxD_T2"),
+										      mesPionRhoxDT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PIONxD_T2"),
+										      mesPionPionxDT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PIONxB_T1"),
+										      mesPionPionxBT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxB_T1"),
+										      mesPionRhoxBT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-RHOxB_T2"),
+										      mesPionRhoxBT2SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xB_A1"),
+										      mesPionA1xBA1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xB_T1"),
+										      mesPionA1xBT1SeqSrc);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-A1xB_T2"),
+										      mesPionA1xBT2SeqSrc);
+
+	registered = true;
+      }
+      return success;
+    }
 
   }  // end namespace DerivMesonSeqSourceEnv
 

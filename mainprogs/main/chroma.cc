@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 3.4 2006-08-26 02:12:45 edwards Exp $
+// $Id: chroma.cc,v 3.5 2006-09-20 20:28:06 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -68,7 +68,7 @@ bool linkageHack(void)
   bool foo = true;
 
   // Inline Measurements
-  foo &= InlineAggregateEnv::registered;
+  foo &= InlineAggregateEnv::registerAll();
 
   return foo;
 }

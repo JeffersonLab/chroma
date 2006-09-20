@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.1 2006-07-03 15:26:10 edwards Exp $
+// $Id: inline_spectrum_s.h,v 3.2 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -20,7 +20,7 @@ namespace Chroma
   namespace InlineStaggeredSpectrumEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

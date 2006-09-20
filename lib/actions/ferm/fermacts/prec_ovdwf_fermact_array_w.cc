@@ -1,4 +1,4 @@
-// $Id: prec_ovdwf_fermact_array_w.cc,v 3.1 2006-09-19 18:08:38 edwards Exp $
+// $Id: prec_ovdwf_fermact_array_w.cc,v 3.2 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned Overlap-DWF (Borici) action
  */
@@ -39,15 +39,21 @@ namespace Chroma
     //! Name to be used
     const std::string name = "OVDWF"; 
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the fermact
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+	success &= Chroma::TheWilsonTypeFermAct5DFactory::Instance().registerObject(name, createFermAct5D);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 

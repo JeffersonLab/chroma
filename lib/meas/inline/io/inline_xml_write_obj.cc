@@ -1,4 +1,4 @@
-// $Id: inline_xml_write_obj.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: inline_xml_write_obj.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
@@ -14,29 +14,37 @@ namespace Chroma
 { 
   namespace InlineXMLWriteNamedObjEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineXMLWriteNamedObj(InlineXMLWriteNamedObjParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineXMLWriteNamedObj(InlineXMLWriteNamedObjParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "XML_WRITE_NAMED_OBJECT";
 
+    //! Register all the factories
     bool registerAll() 
     {
       bool success = true; 
+      if (! registered)
+      {
+	// Datatype writer
+	success &= XMLWriteObjCallMapEnv::registerAll();
 
-      // Datatype writer
-      success &= XMLWriteObjCallMapEnv::registered;
+	// Inline measurement
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 
-      // Inline measurement
-      success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
-  };
+  }
 
 
   //! Object buffer

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: seqsource_aggregate_w.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: seqsource_aggregate_w.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All sequential source constructors
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! @ingroup hadron */
   namespace HadronSeqSourceEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

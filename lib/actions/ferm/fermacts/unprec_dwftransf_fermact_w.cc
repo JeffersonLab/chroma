@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_fermact_w.cc,v 3.2 2006-09-19 18:08:38 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.cc,v 3.3 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -43,17 +43,21 @@ namespace Chroma
     //! Name to be used
     const std::string name = "UNPRECONDITIONED_DWFTRANSF";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
-      foo &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the fermact
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+	success &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 

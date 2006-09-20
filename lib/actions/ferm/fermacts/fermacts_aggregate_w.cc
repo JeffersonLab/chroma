@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.7 2006-09-19 16:04:21 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.8 2006-09-20 20:27:58 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -56,94 +56,99 @@ namespace Chroma
   //! Registration aggregator
   namespace WilsonTypeFermActs4DEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// All system solvers
+	success &= LinOpSysSolverEnv::registerAll();
+	success &= MdagMSysSolverEnv::registerAll();
+	success &= MdagMMultiSysSolverEnv::registerAll();
 
-      // All system solvers
-      success &= LinOpSysSolverEnv::registered;
-      success &= MdagMSysSolverEnv::registered;
-      success &= MdagMMultiSysSolverEnv::registered;
+	// All 4D bcs
+	success &= WilsonTypeFermBCEnv::registerAll();
 
-      // All 4D bcs
-      success &= WilsonTypeFermBCEnv::registered;
+	// All fermstates
+	success &= CreateFermStateEnv::registerAll();
 
-      // All fermstates
-      success &= CreateFermStateEnv::registered;
+	// 4D actions
+	success &= EvenOddPrecWilsonFermActEnv::registerAll();
+	success &= UnprecWilsonFermActEnv::registerAll();
+	success &= OvlapPartFrac4DFermActEnv::registerAll();
+	success &= EvenOddPrecParWilsonFermActEnv::registerAll();
+	success &= UnprecParWilsonFermActEnv::registerAll();
 
-      // 4D actions
-      success &= EvenOddPrecWilsonFermActEnv::registered;
-      success &= UnprecWilsonFermActEnv::registered;
-      success &= OvlapPartFrac4DFermActEnv::registered;
-      success &= EvenOddPrecParWilsonFermActEnv::registered;
-      success &= UnprecParWilsonFermActEnv::registered;
+	success &= EvenOddPrecCloverFermActEnv::registerAll();
+	success &= UnprecCloverFermActEnv::registerAll();
+	success &= EvenOddPrecSLICFermActEnv::registerAll();
 
-      success &= EvenOddPrecCloverFermActEnv::registered;
-      success &= UnprecCloverFermActEnv::registered;
-      success &= EvenOddPrecSLICFermActEnv::registered;
+//      success &= EvenOddPrecCloverExtFieldFermActEnv::registerAll();
 
-//    success &= EvenOddPrecCloverExtFieldFermActEnv::registered;
+	success &= UnprecHamberWuFermActEnv::registerAll();
+//      success &= UnprecW12FermActEnv::registerAll();
 
-      success &= UnprecHamberWuFermActEnv::registered;
-//      success &= UnprecW12FermActEnv::registered;
+	success &= PolyChebFermActEnv::registerAll();
 
-      success &= PolyChebFermActEnv::registered;
-
-      // Stouting
-#if 0
-      success &= UnprecStoutWilsonTypeFermActEnv::registered;
-      success &= EvenOddPrecStoutWilsonTypeFermActEnv::registered;
-#endif
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 
   //! Registration aggregator
   namespace WilsonTypeFermActs5DEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// All 5D system solvers
+	success &= LinOpSysSolverArrayEnv::registerAll();
+	success &= MdagMSysSolverArrayEnv::registerAll();
+	success &= MdagMMultiSysSolverArrayEnv::registerAll();
 
-      // All 5D system solvers
-      success &= LinOpSysSolverArrayEnv::registered;
-      success &= MdagMSysSolverArrayEnv::registered;
-      success &= MdagMMultiSysSolverArrayEnv::registered;
+	// All 5D bcs
+	success &= WilsonTypeFermBCEnv::registerAll();
 
-      // All 5D bcs
-      success &= WilsonTypeFermBCEnv::registered;
+	// All fermstates
+	success &= CreateFermStateEnv::registerAll();
 
-      // All fermstates
-      success &= CreateFermStateEnv::registered;
-
-      // 5D actions
-      success &= EvenOddPrecDWFermActArrayEnv::registered;
-      success &= UnprecDWFermActArrayEnv::registered;
-      success &= EvenOddPrecNEFFermActArrayEnv::registered;
-      success &= UnprecNEFFermActArrayEnv::registered;
-      success &= UnprecOvlapContFrac5DFermActArrayEnv::registered;
-      success &= UnprecHTContFrac5DFermActArrayEnv::registered;
-      success &= EvenOddPrecHtContFrac5DFermActArrayEnv::registered;
-      success &= EvenOddPrecOvlapContFrac5DFermActArrayEnv::registered;
-      success &= UnprecOvDWFermActArrayEnv::registered;
-      success &= EvenOddPrecOvDWFermActArrayEnv::registered;
-      success &= UnprecOvExtFermActArrayEnv::registered;
-      success &= EvenOddPrecOvExtFermActArrayEnv::registered;
-      success &= UnprecZoloNEFFermActArrayEnv::registered;
-      success &= EvenOddPrecZoloNEFFermActArrayEnv::registered;
-      success &= EvenOddPrecKNOFermActArrayEnv::registered;
-      success &= UnprecDWFTransfFermActEnv::registered;
+	// 5D actions
+	success &= EvenOddPrecDWFermActArrayEnv::registerAll();
+	success &= UnprecDWFermActArrayEnv::registerAll();
+	success &= EvenOddPrecNEFFermActArrayEnv::registerAll();
+	success &= UnprecNEFFermActArrayEnv::registerAll();
+	success &= UnprecOvlapContFrac5DFermActArrayEnv::registerAll();
+	success &= UnprecHTContFrac5DFermActArrayEnv::registerAll();
+	success &= EvenOddPrecHtContFrac5DFermActArrayEnv::registerAll();
+	success &= EvenOddPrecOvlapContFrac5DFermActArrayEnv::registerAll();
+	success &= UnprecOvDWFermActArrayEnv::registerAll();
+	success &= EvenOddPrecOvDWFermActArrayEnv::registerAll();
+	success &= UnprecOvExtFermActArrayEnv::registerAll();
+	success &= EvenOddPrecOvExtFermActArrayEnv::registerAll();
+	success &= UnprecZoloNEFFermActArrayEnv::registerAll();
+	success &= EvenOddPrecZoloNEFFermActArrayEnv::registerAll();
+	success &= EvenOddPrecKNOFermActArrayEnv::registerAll();
+	success &= UnprecDWFTransfFermActEnv::registerAll();
     
-      // Tuning Strategies
-      success &= OvExtTuningStrategyAggregateEnv::registered;
+	// Tuning Strategies
+	success &= OvExtTuningStrategyAggregateEnv::registerAll();
 
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 
@@ -151,20 +156,25 @@ namespace Chroma
   /*! All Wilson-like 4D and 5D actions */
   namespace WilsonTypeFermActsEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// All 4D actions
+	success &= WilsonTypeFermActs4DEnv::registerAll();
 
-      // All 4D actions
-      success &= WilsonTypeFermActs4DEnv::registered;
+	// 5D actions
+	success &= WilsonTypeFermActs5DEnv::registerAll();
 
-      // 5D actions
-      success &= WilsonTypeFermActs5DEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

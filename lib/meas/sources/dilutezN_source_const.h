@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilutezN_source_const.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: dilutezN_source_const.h,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Random Z(N) source construction using dilution
  *
@@ -19,7 +19,7 @@ namespace Chroma
   namespace DiluteZNQuarkSourceConstEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
 
   
     //! Random complex Z(N) sources using dilution

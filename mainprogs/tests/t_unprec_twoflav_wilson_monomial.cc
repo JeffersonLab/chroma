@@ -9,10 +9,10 @@ bool linkage_hack()
   bool foo = true;
 
   // 4D actions
-  foo &= UnprecWilsonFermActEnv::registered;
+  foo &= UnprecWilsonFermActEnv::registerAll();
  
   // 4D Monomials
-  foo &= UnprecTwoFlavorWilsonFermMonomialEnv::registered;
+  foo &= UnprecTwoFlavorWilsonFermMonomialEnv::registerAll();
   return foo;
 }
 

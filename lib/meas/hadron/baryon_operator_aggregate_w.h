@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: baryon_operator_aggregate_w.h,v 1.1 2006-05-12 03:38:01 edwards Exp $
+// $Id: baryon_operator_aggregate_w.h,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All baryon operators
  */
@@ -15,7 +15,7 @@ namespace Chroma
   /*! @ingroup hadron */
   namespace BaryonOperatorEnv
   {
-    extern const bool registered;
+    bool registerAll();
   }
 }
 

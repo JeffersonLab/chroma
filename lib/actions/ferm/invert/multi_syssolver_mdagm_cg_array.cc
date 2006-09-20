@@ -1,4 +1,4 @@
-// $Id: multi_syssolver_mdagm_cg_array.cc,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: multi_syssolver_mdagm_cg_array.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by multi-shift CG
  */
@@ -25,15 +25,19 @@ namespace Chroma
     //! Name to be used
     const std::string name("CG_INVERTER");
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::TheMdagMFermMultiSystemSolverArrayFactory::Instance().registerObject(name, createFerm);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the source construction
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheMdagMFermMultiSystemSolverArrayFactory::Instance().registerObject(name, createFerm);
+	registered = true;
+      }
+      return success;
+    }
   }
 }

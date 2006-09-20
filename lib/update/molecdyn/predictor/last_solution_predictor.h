@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: last_solution_predictor.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
+// $Id: last_solution_predictor.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
 /*! \file
  * \brief Last solution predictor
  *
@@ -18,10 +18,12 @@ namespace Chroma
 { 
   
   /*! @ingroup predictor */
-  namespace LastSolution4DChronoPredictorEnv {
+  namespace LastSolution4DChronoPredictorEnv 
+  {
     extern const std::string name;
-    extern const bool registered;
-  };
+    bool registerAll();
+  }
+
 
   //! Last solution predictor
   /*! @ingroup predictor */
@@ -89,9 +91,10 @@ namespace Chroma
   
 
   /*! @ingroup predictor */
-  namespace LastSolution5DChronoPredictorEnv {
+  namespace LastSolution5DChronoPredictorEnv 
+  {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
   
   //! Last solution predictor

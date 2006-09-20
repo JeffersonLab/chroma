@@ -10,20 +10,20 @@ bool linkage_hack()
 
 
   // GaugeBC's
-  foo &= SimpleGaugeBCEnv::registered;
-  foo &= PeriodicGaugeBCEnv::registered;
+  foo &= SimpleGaugeBCEnv::registerAll();
+  foo &= PeriodicGaugeBCEnv::registerAll();
 
   // GaugeActs
-  foo &= WilsonGaugeActEnv::registered;
+  foo &= WilsonGaugeActEnv::registerAll();
 
   // Gauge Monomials
-  foo &= WilsonGaugeMonomialEnv::registered;
+  foo &= WilsonGaugeMonomialEnv::registerAll();
 
   // 4D Ferm actions
-  foo &= EvenOddPrecWilsonFermActEnv::registered;
+  foo &= EvenOddPrecWilsonFermActEnv::registerAll();
  
   // 4D Ferm Monomials
-  foo &= EvenOddPrecTwoFlavorWilsonFermMonomialEnv::registered;
+  foo &= EvenOddPrecTwoFlavorWilsonFermMonomialEnv::registerAll();
   return foo;
 }
 

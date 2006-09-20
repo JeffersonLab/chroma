@@ -1,4 +1,4 @@
-// $Id: inline_multipole_w.cc,v 3.1 2006-04-11 04:18:24 edwards Exp $
+// $Id: inline_multipole_w.cc,v 3.2 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurement
  */
@@ -17,15 +17,32 @@ namespace Chroma
 { 
   namespace InlineMultipoleEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineMultipole(InlineMultipoleParams(xml_in, path));
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineMultipole(InlineMultipoleParams(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "MULTIPOLE";
-    const bool registered = TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   // Reader for input parameters

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_baryon_operator_w.h,v 1.3 2006-06-12 02:13:47 edwards Exp $
+// $Id: simple_baryon_operator_w.h,v 1.4 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */
@@ -19,8 +19,8 @@ namespace Chroma
   /*! @ingroup hadron */
   namespace SimpleBaryonOperatorEnv
   {
-    extern const bool registered;
     extern const std::string name;
+    bool registerAll();
 
   
     //! Simple baryon operator

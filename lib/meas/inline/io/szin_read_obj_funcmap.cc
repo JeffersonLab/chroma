@@ -1,4 +1,4 @@
-// $Id: szin_read_obj_funcmap.cc,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: szin_read_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -58,20 +58,26 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
       }
 
+      //! Local registration flag
+      bool registered = false;
+
     }  // end anonymous namespace
 
 
-    bool registerAll(void) 
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool success = true;
-      success &= TheSZINReadObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-								    SZINReadLatProp);
-      success &= TheSZINReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheSZINReadObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+								      SZINReadLatProp);
+	success &= TheSZINReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
 								    SZINReadArrayLatColMat);
+	registered = true;
+      }
       return success;
     }
-
-    bool registered = registerAll();
   }
 
 }

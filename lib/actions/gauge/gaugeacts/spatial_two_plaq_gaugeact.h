@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: spatial_two_plaq_gaugeact.h,v 1.1 2006-07-19 21:42:06 bjoo Exp $
+// $Id: spatial_two_plaq_gaugeact.h,v 1.2 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -18,7 +18,7 @@ namespace Chroma
   namespace SpatialTwoPlaqGaugeActEnv 
   { 
     extern const string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Parameter structure

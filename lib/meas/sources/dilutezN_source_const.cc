@@ -1,4 +1,4 @@
-// $Id: dilutezN_source_const.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: dilutezN_source_const.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
@@ -39,20 +39,25 @@ namespace Chroma
 	return new SourceConst<LatticeFermion>(Params(xml_in, path));
       }
 
-      //! Register all the factories
-      bool registerAll()
-      {
-	bool foo = true;
-	foo &= Chroma::TheFermSourceConstructionFactory::Instance().registerObject(name, createFerm);
-	return foo;
-      }
+      //! Local registration flag
+      bool registered = false;
+
     }  // end namespace
 
     //! Name to be used
     const std::string name("RAND_DILUTE_ZN_SOURCE");
 
-    //! Register the source construction
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheFermSourceConstructionFactory::Instance().registerObject(name, createFerm);
+	registered = true;
+      }
+      return success;
+    }
 
 
     //! Initialize

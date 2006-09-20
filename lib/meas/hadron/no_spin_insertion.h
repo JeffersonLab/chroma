@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: no_spin_insertion.h,v 1.1 2006-05-24 21:09:41 edwards Exp $
+// $Id: no_spin_insertion.h,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief No spin insertion
  */
@@ -16,7 +16,7 @@ namespace Chroma
   namespace NoSpinInsertionEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   
 
     //! Params for no spin insertion

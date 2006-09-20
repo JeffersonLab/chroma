@@ -1,4 +1,4 @@
-// $Id: inline_sfpcac_w.cc,v 1.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_sfpcac_w.cc,v 1.3 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline Schroedinger functional measurements
  */
@@ -21,22 +21,32 @@ namespace Chroma
 { 
   namespace InlineSFpcacEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineSFpcac(InlineSFpcacParams(xml_in, path));
-    }
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineSFpcac(InlineSFpcacParams(xml_in, path));
+      }
 
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= WilsonTypeFermActsEnv::registered;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      return foo;
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "SCHROEDINGER_FUNCTIONAL_PCAC";
-    const bool registered = registerAll();
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= WilsonTypeFermActsEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_constdet_two_flavor_hasenbusch_monomial5d_w.h,v 3.3 2006-08-26 02:08:42 edwards Exp $
+// $Id: prec_constdet_two_flavor_hasenbusch_monomial5d_w.h,v 3.4 2006-09-20 20:28:05 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -18,8 +18,8 @@ namespace Chroma
   namespace EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv 
   {
     extern const std::string name;
-    extern const bool registered;
-  };
+    bool registerAll();
+  }
 
 
   //! Wrapper class for  2-flavor even-odd prec ferm monomials

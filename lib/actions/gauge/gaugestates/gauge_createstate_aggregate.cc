@@ -1,4 +1,4 @@
-// $Id: gauge_createstate_aggregate.cc,v 1.1 2006-09-19 18:21:38 edwards Exp $
+// $Id: gauge_createstate_aggregate.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief All gauge create-state method
  */
@@ -20,23 +20,27 @@ namespace Chroma
   //! Registration aggregator
   namespace CreateGaugeStateEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
+      bool success = true; 
+      if (! registered)
+      {
+	// Register all gauge BCs
+	success &= GaugeTypeGaugeBCEnv::registerAll();
 
-      // Register all gauge BCs
-      success &= GaugeTypeGaugeBCEnv::registered;
+	// Register all gauge states
+	success &= CreatePeriodicGaugeStateEnv::registerAll();
+	success &= CreateSimpleGaugeStateEnv::registerAll();
+	success &= CreateStoutGaugeStateEnv::registerAll();
 
-      // Register all gauge states
-      success &= CreatePeriodicGaugeStateEnv::registered;
-      success &= CreateSimpleGaugeStateEnv::registered;
-      success &= CreateStoutGaugeStateEnv::registered;
-
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
-
 
 
     // Helper function for the GaugeAction readers

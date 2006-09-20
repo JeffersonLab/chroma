@@ -1,4 +1,4 @@
-// $Id: inline_make_source_ferm_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_make_source_ferm_w.cc,v 3.3 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source for lattice fermions
  *
@@ -22,23 +22,33 @@ namespace Chroma
 { 
   namespace InlineMakeSourceFermEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineMakeSourceFerm(InlineMakeSourceFermParams(xml_in, path));
-    }
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineMakeSourceFerm(InlineMakeSourceFermParams(xml_in, path));
+      }
 
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= QuarkSourceConstructionEnv::registered;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      return foo;
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "MAKE_SOURCE_FERM";
-    const bool registered = registerAll();
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= QuarkSourceConstructionEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   //! MakeSourceFerm input

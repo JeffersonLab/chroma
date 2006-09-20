@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_fermact_array_w.h,v 3.3 2006-07-03 15:26:07 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.h,v 3.4 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -17,7 +17,7 @@ namespace Chroma
   namespace EvenOddPrecDWFermActArrayEnv
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
   
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zero_guess_predictor.h,v 3.1 2006-08-26 02:08:43 edwards Exp $
+// $Id: zero_guess_predictor.h,v 3.2 2006-09-20 20:28:06 edwards Exp $
 /*! \file
  * \brief Zero initial guess predictor
  *
@@ -21,7 +21,7 @@ namespace Chroma
   namespace ZeroGuess4DChronoPredictorEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
   //! Zero initial guess predictor
@@ -65,7 +65,7 @@ namespace Chroma
   namespace ZeroGuess5DChronoPredictorEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
   
   //! Zero initial guess predictor

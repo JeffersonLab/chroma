@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_fermact_array_w.h,v 3.0 2006-04-03 04:58:47 edwards Exp $
+// $Id: unprec_ovdwf_fermact_array_w.h,v 3.1 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) action
  */
@@ -17,8 +17,7 @@ namespace Chroma
   namespace UnprecOvDWFermActArrayEnv
   {
     extern const std::string name;
-    extern const bool registered;
-    //! Name to be used
+    bool registerAll();
   }
   
 

@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.4 2006-09-15 02:51:17 edwards Exp $
+// $Id: hmc.cc,v 3.5 2006-09-20 20:28:06 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -467,19 +467,19 @@ namespace Chroma
     bool foo = true;
     
     // Gauge Monomials
-    foo &= GaugeMonomialEnv::registered;
+    foo &= GaugeMonomialEnv::registerAll();
     
     // Ferm Monomials
-    foo &= WilsonTypeFermMonomialAggregrateEnv::registered;
+    foo &= WilsonTypeFermMonomialAggregrateEnv::registerAll();
     
     // MD Integrators
-    foo &= LCMMDIntegratorAggregateEnv::registered;
+    foo &= LCMMDIntegratorAggregateEnv::registerAll();
 
     // Chrono predictor
-    foo &= ChronoPredictorAggregrateEnv::registered;
+    foo &= ChronoPredictorAggregrateEnv::registerAll();
 
     // Inline Measurements
-    foo &= InlineAggregateEnv::registered;
+    foo &= InlineAggregateEnv::registerAll();
 
     return foo;
   }

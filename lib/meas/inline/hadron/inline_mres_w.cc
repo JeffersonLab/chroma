@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 3.2 2006-07-04 02:55:51 edwards Exp $
+// $Id: inline_mres_w.cc,v 3.3 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -23,23 +23,33 @@ namespace Chroma
 { 
   namespace InlineMresEnv 
   { 
-    AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					    const std::string& path) 
+    namespace
     {
-      return new InlineMres(InlineMresParams(xml_in, path));
-    }
+      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					      const std::string& path) 
+      {
+	return new InlineMres(InlineMresParams(xml_in, path));
+      }
 
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-      foo &= WilsonTypeFermActsEnv::registered;
-      return foo;
+      //! Local registration flag
+      bool registered = false;
     }
 
     const std::string name = "MRES";
-    const bool registered = registerAll();
-  };
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= WilsonTypeFermActsEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 
   // Reader

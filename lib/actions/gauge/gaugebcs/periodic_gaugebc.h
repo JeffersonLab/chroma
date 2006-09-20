@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: periodic_gaugebc.h,v 3.1 2006-09-19 01:50:17 edwards Exp $
+// $Id: periodic_gaugebc.h,v 3.2 2006-09-20 20:28:01 edwards Exp $
 /*! \file
  *  \brief Periodic gauge boundary conditions
  */
@@ -13,9 +13,10 @@
 namespace Chroma {
 
   /*! @ingroup gaugebcs */
-  namespace PeriodicGaugeBCEnv { 
+  namespace PeriodicGaugeBCEnv 
+  { 
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   };
 
   //! Periodic gauge

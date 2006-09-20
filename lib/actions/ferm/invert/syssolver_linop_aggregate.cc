@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.2 2006-08-18 15:52:43 edwards Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -14,34 +14,42 @@ namespace Chroma
   //! Registration aggregator
   namespace LinOpSysSolverEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
-
-      // 4D system solvers
-      success &= LinOpSysSolverCGEnv::registered;
-
+      bool success = true; 
+      if (! registered)
+      {
+	// 4D system solvers
+	success &= LinOpSysSolverCGEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 
   //! Registration aggregator
   namespace LinOpSysSolverArrayEnv
   {
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
     bool registerAll() 
     {
-      bool success = true;
-
-      // 5D system solvers
-      success &= LinOpSysSolverCGArrayEnv::registered;
-
+      bool success = true; 
+      if (! registered)
+      {
+	// 5D system solvers
+	success &= LinOpSysSolverCGArrayEnv::registerAll();
+	registered = true;
+      }
       return success;
     }
-
-    const bool registered = registerAll();
   }
 
 }

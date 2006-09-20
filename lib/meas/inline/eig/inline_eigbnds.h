@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 3.2 2006-07-22 17:44:34 edwards Exp $
+// $Id: inline_eigbnds.h,v 3.3 2006-09-20 20:28:01 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -21,7 +21,7 @@ namespace Chroma
   namespace InlineEigBndsMdagMEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
 
 

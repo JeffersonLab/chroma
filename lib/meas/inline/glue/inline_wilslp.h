@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 3.4 2006-09-19 16:02:24 edwards Exp $
+// $Id: inline_wilslp.h,v 3.5 2006-09-20 20:28:02 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -19,8 +19,9 @@ namespace Chroma
   namespace InlineWilsonLoopEnv 
   {
     extern const std::string name;
-    extern const bool registered;
+    bool registerAll();
   }
+
 
   //! Parameter structure
   /*! \ingroup inlineglue */

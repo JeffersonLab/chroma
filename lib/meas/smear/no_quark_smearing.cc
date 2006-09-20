@@ -1,4 +1,4 @@
-// $Id: no_quark_smearing.cc,v 3.1 2006-05-19 15:05:01 edwards Exp $
+// $Id: no_quark_smearing.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief No quark smearing
  */
@@ -52,18 +52,22 @@ namespace Chroma
     //! Name to be used
     const std::string name = "NONE";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::ThePropSmearingFactory::Instance().registerObject(name, createProp);
-      foo &= Chroma::TheFermSmearingFactory::Instance().registerObject(name, createFerm);
-      foo &= Chroma::TheColorVecSmearingFactory::Instance().registerObject(name, createColorVec);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the source construction
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::ThePropSmearingFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheFermSmearingFactory::Instance().registerObject(name, createFerm);
+	success &= Chroma::TheColorVecSmearingFactory::Instance().registerObject(name, createColorVec);
+	registered = true;
+      }
+      return success;
+    }
 
 
     //! Parameters for running code

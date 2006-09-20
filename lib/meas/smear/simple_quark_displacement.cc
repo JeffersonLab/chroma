@@ -1,4 +1,4 @@
-// $Id: simple_quark_displacement.cc,v 3.0 2006-04-03 04:59:05 edwards Exp $
+// $Id: simple_quark_displacement.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Simple quark displacement
  */
@@ -52,18 +52,22 @@ namespace Chroma
     //! Name to be used
     const std::string name = "SIMPLE_DISPLACEMENT";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      bool foo = true;
-      foo &= Chroma::ThePropDisplacementFactory::Instance().registerObject(name, createProp);
-      foo &= Chroma::TheFermDisplacementFactory::Instance().registerObject(name, createFerm);
-      foo &= Chroma::TheColorVecDisplacementFactory::Instance().registerObject(name, createColorVec);
-      return foo;
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the source construction
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheFermDisplacementFactory::Instance().registerObject(name, createFerm);
+	success &= Chroma::TheColorVecDisplacementFactory::Instance().registerObject(name, createColorVec);
+	registered = true;
+      }
+      return success;
+    }
 
 
     //! Parameters for running code

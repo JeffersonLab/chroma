@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 3.7 2006-06-12 02:13:47 edwards Exp $
+// $Id: sh_source_const.cc,v 3.8 2006-09-20 20:28:04 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -43,30 +43,37 @@ namespace Chroma
   //! Hooks to register the class
   namespace ShellQuarkSourceConstEnv
   {
-    //! Callback function
-    QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
-							   const std::string& path)
+    namespace
     {
-      return new SourceConst<LatticePropagator>(Params(xml_in, path));
+      //! Callback function
+      QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
+							     const std::string& path)
+      {
+	return new SourceConst<LatticePropagator>(Params(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
     }
 
     //! Name to be used
     const std::string name("SHELL_SOURCE");
 
     //! Register all the factories
-    bool registerAll()
+    bool registerAll() 
     {
-      bool foo = true;
-      foo &= LinkSmearingEnv::registered;
-      foo &= QuarkSmearingEnv::registered;
-      foo &= QuarkDisplacementEnv::registered;
-      foo &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createProp);
-      return foo;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= LinkSmearingEnv::registerAll();
+	success &= QuarkSmearingEnv::registerAll();
+	success &= QuarkDisplacementEnv::registerAll();
+	success &= Chroma::ThePropSourceConstructionFactory::Instance().registerObject(name, createProp);
+
+	registered = true;
+      }
+      return success;
     }
-
-    //! Register the source construction
-    const bool registered = registerAll();
-
 
 
     //! Read parameters

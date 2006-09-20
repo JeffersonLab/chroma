@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.1 2006-09-19 17:53:36 edwards Exp $
+// $Id: extfield_aggregate_w.cc,v 1.2 2006-09-20 20:31:40 edwards Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -160,25 +160,24 @@ namespace Chroma
 
 
 
-    // Register all the possible external field funcs
-    bool registerAll(void) 
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
     {
-      bool foo = true;
-
-      //! Register all the factories
-      foo &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("ZERO"),
-									zeroFunc);
-      fprintf(stderr,"registered ZERO\n");
+      bool success = true; 
+      if (! registered)
+      {
+	//! Register all the factories
+	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("ZERO"),
+									      zeroFunc);
+	fprintf(stderr,"registered ZERO\n");
       
-//      //! Register all the factories
-//      foo &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("LINEAR"),
-//									linearFunc);
-      
-      return foo;
+	registered = true;
+      }
+      return success;
     }
-
-    const bool registered = registerAll();
-
   }  // end namespace ExternalFieldEnv
 
 }  // end namespace Chroma

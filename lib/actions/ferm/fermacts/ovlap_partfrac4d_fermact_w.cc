@@ -1,4 +1,4 @@
-// $Id: ovlap_partfrac4d_fermact_w.cc,v 3.1 2006-09-19 16:04:22 edwards Exp $
+// $Id: ovlap_partfrac4d_fermact_w.cc,v 3.2 2006-09-20 20:27:59 edwards Exp $
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
@@ -63,15 +63,21 @@ namespace Chroma
     //! Name to be used
     const std::string name ="OVERLAP_PARTIAL_FRACTION_4D";
 
-    //! Register all the factories
-    bool registerAll()
-    {
-      return Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct)
-	   & Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
-    }
+    //! Local registration flag
+    static bool registered = false;
 
-    //! Register the fermact
-    const bool registered = registerAll();
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheFermionActionFactory::Instance().registerObject(name, createFermAct);
+	success &= Chroma::TheWilsonTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+	registered = true;
+      }
+      return success;
+    }
   }
 
 
