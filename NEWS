@@ -1,4 +1,7 @@
 09/21/2006 -- Robert Edwards
+	Version 3.14.7. Added a registration in inline_wilslp
+
+09/21/2006 -- Robert Edwards
 	Version 3.14.6. Major housecleaning. Changed all the uses of the
 	registration method to now be **runtime**. The "registerAll()"
 	function is exposed that will register the thingy. There is a
