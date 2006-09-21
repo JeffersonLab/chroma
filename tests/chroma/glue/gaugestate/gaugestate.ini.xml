@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: gaugestate.ini.xml,v 1.1 2006-09-21 20:18:15 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>APPLY_GAUGE_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+           <Name>PERIODIC_GAUGE_STATE</Name>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>out_1</output_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>APPLY_GAUGE_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+           <Name>SIMPLE_GAUGE_STATE</Name>
+           <GaugeBC>
+             <Name>SIMPLE_GAUGEBC</Name>
+             <boundary>
+               <elem>
+                 <re>1</re>
+                 <im>0</im>
+               </elem>
+               <elem>
+                 <re>1</re>
+                 <im>0</im>
+               </elem>
+               <elem>
+                 <re>1</re>
+                 <im>0</im>
+               </elem>
+               <elem>
+                 <re>0</re>
+                 <im>0</im>
+               </elem>
+             </boundary>
+           </GaugeBC>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>out_2</output_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>APPLY_GAUGE_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+           <Name>STOUT_GAUGE_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <GaugeBC>
+             <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+             <SchrPhiMult>2.0</SchrPhiMult>
+             <loop_extent>1</loop_extent>
+             <decay_dir>3</decay_dir>
+           </GaugeBC>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>out_3</output_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>APPLY_GAUGE_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+           <Name>STOUT_GAUGE_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <GaugeBC>
+             <Name>SCHROEDINGER_ZERO_GAUGEBC</Name>
+             <SchrPhiMult>2.0</SchrPhiMult>
+             <loop_extent>1</loop_extent>
+             <decay_dir>3</decay_dir>
+           </GaugeBC>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>out_4</output_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+

@@ -1,0 +1,582 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+; $Id: gaugestate.out.xml,v 1.1 2006-09-21 20:18:15 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>APPLY_GAUGE_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+           <Name>PERIODIC_GAUGE_STATE</Name>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>out_1</output_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>APPLY_GAUGE_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+           <Name>SIMPLE_GAUGE_STATE</Name>
+           <GaugeBC>
+             <Name>SIMPLE_GAUGEBC</Name>
+             <boundary>
+               <elem>
+                 <re>1</re>
+                 <im>0</im>
+               </elem>
+               <elem>
+                 <re>1</re>
+                 <im>0</im>
+               </elem>
+               <elem>
+                 <re>1</re>
+                 <im>0</im>
+               </elem>
+               <elem>
+                 <re>0</re>
+                 <im>0</im>
+               </elem>
+             </boundary>
+           </GaugeBC>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>out_2</output_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>APPLY_GAUGE_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+           <Name>STOUT_GAUGE_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <GaugeBC>
+             <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+             <SchrPhiMult>2.0</SchrPhiMult>
+             <loop_extent>1</loop_extent>
+             <decay_dir>3</decay_dir>
+           </GaugeBC>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>out_3</output_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>APPLY_GAUGE_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+           <Name>STOUT_GAUGE_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <GaugeBC>
+             <Name>SCHROEDINGER_ZERO_GAUGEBC</Name>
+             <SchrPhiMult>2.0</SchrPhiMult>
+             <loop_extent>1</loop_extent>
+             <decay_dir>3</decay_dir>
+           </GaugeBC>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>out_4</output_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.15.0</chroma>
+      <qdp>1.20.8</qdp>
+    </code_version>
+    <run_date>21 Sep 06 16:17:25 EDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
+
+    </file_xml>
+    <gauge_xml><weak_field>
+</weak_field>
+
+    </gauge_xml>
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994803997558645</w_plaq>
+    <s_plaq>0.99479844317668</s_plaq>
+    <t_plaq>0.99480955194061</t_plaq>
+    <plane_01_plaq>0.994703591490785</plane_01_plaq>
+    <plane_02_plaq>0.99492682578663</plane_02_plaq>
+    <plane_12_plaq>0.994764912252625</plane_12_plaq>
+    <plane_03_plaq>0.994693187996745</plane_03_plaq>
+    <plane_13_plaq>0.994853910369178</plane_13_plaq>
+    <plane_23_plaq>0.994881557455907</plane_23_plaq>
+    <link>0.379449337740274</link>
+    <pollp>
+      <elem>
+        <re>0.96658587983499</re>
+        <im>-0.00132088747583718</im>
+      </elem>
+      <elem>
+        <re>0.966365774977021</re>
+        <im>-0.00123499089295365</im>
+      </elem>
+      <elem>
+        <re>0.967146154221458</re>
+        <im>-0.00112309936806317</im>
+      </elem>
+      <elem>
+        <re>0.878769261723695</re>
+        <im>-0.00991386471347747</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <apply_gauge_state>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>2</version><GaugeState>
+      <Name>PERIODIC_GAUGE_STATE</Name>
+    </GaugeState>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <output_id>out_1</output_id>
+          </NamedObject>
+        </Input>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Link_observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Link_observables>
+      </apply_gauge_state>
+    </elem>
+    <elem>
+      <apply_gauge_state>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>2</version><GaugeState>
+      <Name>SIMPLE_GAUGE_STATE</Name>
+      <GaugeBC>
+        <Name>SIMPLE_GAUGEBC</Name>
+        <boundary>
+          <elem>
+            <re>1</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>1</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>1</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>0</re>
+            <im>0</im>
+          </elem>
+        </boundary>
+      </GaugeBC>
+    </GaugeState>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <output_id>out_2</output_id>
+          </NamedObject>
+        </Input>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Link_observables>
+          <w_plaq>0.932637075324439</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.870475707472198</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.870423434767872</plane_03_plaq>
+          <plane_13_plaq>0.870466279486815</plane_13_plaq>
+          <plane_23_plaq>0.870537408161908</plane_23_plaq>
+          <link>0.367591215472203</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Link_observables>
+      </apply_gauge_state>
+    </elem>
+    <elem>
+      <apply_gauge_state>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>2</version><GaugeState>
+      <Name>STOUT_GAUGE_STATE</Name>
+      <rho>0.22</rho>
+      <n_smear>2</n_smear>
+      <orthog_dir>3</orthog_dir>
+      <GaugeBC>
+        <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+        <SchrPhiMult>2.0</SchrPhiMult>
+        <loop_extent>1</loop_extent>
+        <decay_dir>3</decay_dir>
+      </GaugeBC>
+    </GaugeState>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <output_id>out_3</output_id>
+          </NamedObject>
+        </Input>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Link_observables>
+          <w_plaq>0.894747584453499</w_plaq>
+          <s_plaq>0.99760200905924</s_plaq>
+          <t_plaq>0.791893159847758</t_plaq>
+          <plane_01_plaq>0.997547420983513</plane_01_plaq>
+          <plane_02_plaq>0.997607085853815</plane_02_plaq>
+          <plane_12_plaq>0.997651520340393</plane_12_plaq>
+          <plane_03_plaq>0.791245076436705</plane_03_plaq>
+          <plane_13_plaq>0.792453569786934</plane_13_plaq>
+          <plane_23_plaq>0.791980833319637</plane_23_plaq>
+          <link>0.476643211790361</link>
+          <pollp>
+            <elem>
+              <re>0.769887396483682</re>
+              <im>0.0711733798182953</im>
+            </elem>
+            <elem>
+              <re>0.770217666480069</re>
+              <im>0.0712786434578447</im>
+            </elem>
+            <elem>
+              <re>0.770480738021433</re>
+              <im>0.0713475323548967</im>
+            </elem>
+            <elem>
+              <re>0.017588261020137</re>
+              <im>-0.082591950391361</im>
+            </elem>
+          </pollp>
+        </Link_observables>
+      </apply_gauge_state>
+    </elem>
+    <elem>
+      <apply_gauge_state>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>2</version><GaugeState>
+      <Name>STOUT_GAUGE_STATE</Name>
+      <rho>0.22</rho>
+      <n_smear>2</n_smear>
+      <orthog_dir>3</orthog_dir>
+      <GaugeBC>
+        <Name>SCHROEDINGER_ZERO_GAUGEBC</Name>
+        <SchrPhiMult>2.0</SchrPhiMult>
+        <loop_extent>1</loop_extent>
+        <decay_dir>3</decay_dir>
+      </GaugeBC>
+    </GaugeState>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <output_id>out_4</output_id>
+          </NamedObject>
+        </Input>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Link_observables>
+          <w_plaq>0.684978365561821</w_plaq>
+          <s_plaq>0.74760200905924</s_plaq>
+          <t_plaq>0.622354722064402</t_plaq>
+          <plane_01_plaq>0.747547420983513</plane_01_plaq>
+          <plane_02_plaq>0.747607085853815</plane_02_plaq>
+          <plane_12_plaq>0.747651520340393</plane_12_plaq>
+          <plane_03_plaq>0.622341859775285</plane_03_plaq>
+          <plane_13_plaq>0.622310949644695</plane_13_plaq>
+          <plane_23_plaq>0.622411356773227</plane_23_plaq>
+          <link>0.296524379053153</link>
+          <pollp>
+            <elem>
+              <re>0.728220718641145</re>
+              <im>-0.000995382666890994</im>
+            </elem>
+            <elem>
+              <re>0.728550988637532</re>
+              <im>-0.000890119027341522</im>
+            </elem>
+            <elem>
+              <re>0.728814060178896</re>
+              <im>-0.000821230130289526</im>
+            </elem>
+            <elem>
+              <re>0</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Link_observables>
+      </apply_gauge_state>
+    </elem>
+  </InlineObservables>
+</chroma>

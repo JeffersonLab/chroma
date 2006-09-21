@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.12 2006-08-16 15:44:25 edwards Exp $
+#  $Id: regres.pl,v 3.13 2006-09-21 20:18:15 edwards Exp $
 #
 #  This is the top-level script used by chroma/scripts/run_chroma_xmldiff.pl
 #
@@ -26,9 +26,11 @@ sub regresDirs
 	    "$test_dir/chroma/io/nersc_write_obj/regres.pl",
 	    "$test_dir/chroma/io/nersc_read_obj/regres.pl",
 	    "$test_dir/chroma/gfix/coulgauge/regres.pl",
+	    "$test_dir/chroma/glue/gaugestate/regres.pl",
 	    "$test_dir/chroma/glue/fuzwilp/regres.pl",
 	    "$test_dir/chroma/glue/wilslp/regres.pl",
 	    "$test_dir/chroma/eig/regres.pl",
+	    "$test_dir/chroma/hadron/fermstate/regres.pl",
 	    "$test_dir/chroma/hadron/make_source/regres.pl",
 	    "$test_dir/chroma/hadron/propagator/regres.pl",
 	    "$test_dir/chroma/hadron/sink_smear/regres.pl",
