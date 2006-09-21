@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.5 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.6 2006-09-21 19:42:07 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -61,6 +61,8 @@ namespace Chroma
     input.use_sink_offset = false;
     input.canonical = false;
 
+    input.cfs = CreateFermStateEnv::nullXMLGroup();
+
     switch (version) 
     {
     case 1:
@@ -81,8 +83,6 @@ namespace Chroma
 
       if (paramtop.count("FermState") != 0)
 	input.cfs = readXMLGroup(paramtop, "FermState", "Name");
-      else
-	input.cfs = CreateFermStateEnv::nullXMLGroup();
       break;
 
     default :
@@ -338,6 +338,7 @@ namespace Chroma
 
       // Set the construct state and modify the fields
       {
+QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 	std::istringstream  xml_s(params.param.cfs.xml);
 	XMLReader  fermtop(xml_s);
 
@@ -367,7 +368,12 @@ namespace Chroma
 		  << endl;
       QDP_abort(1);
     }
-
+    catch( ... )
+    {
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught generic exception "
+		  << endl;
+      QDP_abort(1);
+    }
 
     // Write out the input
     params.write(XmlOut, "Input");
@@ -709,4 +715,4 @@ namespace Chroma
     END_CODE();
   } 
 
-};
+}

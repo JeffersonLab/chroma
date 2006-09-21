@@ -1,4 +1,4 @@
-// $Id: gauge_createstate_aggregate.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: gauge_createstate_aggregate.cc,v 1.3 2006-09-21 19:42:07 edwards Exp $
 /*! \file
  *  \brief All gauge create-state method
  */
@@ -80,6 +80,7 @@ namespace Chroma
     {
       GroupXML_t nope;
       nope.id = CreatePeriodicGaugeStateEnv::name;
+      nope.path = "GaugeState";
 
       XMLBufferWriter xml_tmp;
       push(xml_tmp, "GaugeState");

@@ -1,4 +1,4 @@
-// $Id: ferm_createstate_aggregate_w.cc,v 1.2 2006-09-20 20:31:41 edwards Exp $
+// $Id: ferm_createstate_aggregate_w.cc,v 1.3 2006-09-21 19:42:07 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */
@@ -47,6 +47,7 @@ namespace Chroma
     {
       GroupXML_t nope;
       nope.id = CreatePeriodicFermStateEnv::name;
+      nope.path = "FermState";
 
       XMLBufferWriter xml_tmp;
       push(xml_tmp, "FermState");

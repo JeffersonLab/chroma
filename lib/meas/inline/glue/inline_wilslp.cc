@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.8 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.9 2006-09-21 19:42:07 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -53,14 +53,13 @@ namespace Chroma
     int version;
     read(paramtop, "version", version);
 
+    param.cgs = CreateGaugeStateEnv::nullXMLGroup();
+
     switch (version) 
     {
     case 3:
       if (paramtop.count("GaugeState") != 0)
 	param.cgs = readXMLGroup(paramtop, "GaugeState", "Name");
-      else
-	param.cgs = CreateGaugeStateEnv::nullXMLGroup();
-
       break;
 
     default:
