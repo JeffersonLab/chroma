@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.34 2006-09-19 16:04:19 edwards Exp $
+# $Id: Makefile.am,v 3.35 2006-09-21 18:40:49 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -105,6 +105,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugebcs/schr_gaugebc_params.h \
 	actions/gauge/gaugebcs/schr_sf_gaugebc.h \
 	actions/gauge/gaugebcs/schr_triv_gaugebc.h \
+	actions/gauge/gaugebcs/schr_sf_zero_gaugebc.h \
 	actions/gauge/gaugebcs/schr_nonpert_gaugebc.h \
 	actions/gauge/gaugebcs/schr_coupling_gaugebc.h \
 	actions/gauge/gaugebcs/schr_chromomag_gaugebc.h \
@@ -558,12 +559,14 @@ nobase_include_HEADERS += \
 	meas/inline/gfix/inline_coulgauge.h \
 	meas/inline/glue/glue.h \
 	meas/inline/glue/inline_glue_aggregate.h \
+	meas/inline/glue/inline_apply_gaugestate.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
+	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
 	meas/inline/hadron/inline_propagator_w.h \
@@ -727,6 +730,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugebcs/schr_gaugebc_params.cc \
 	actions/gauge/gaugebcs/schr_sf_gaugebc.cc \
 	actions/gauge/gaugebcs/schr_triv_gaugebc.cc \
+	actions/gauge/gaugebcs/schr_sf_zero_gaugebc.cc \
 	actions/gauge/gaugebcs/schr_nonpert_gaugebc.cc \
 	actions/gauge/gaugebcs/schr_coupling_gaugebc.cc \
 	actions/gauge/gaugebcs/schr_chromomag_gaugebc.cc \
@@ -1048,11 +1052,13 @@ libchroma_a_SOURCES += \
 	meas/inline/gfix/inline_gfix_aggregate.cc \
 	meas/inline/gfix/inline_coulgauge.cc \
 	meas/inline/glue/inline_glue_aggregate.cc \
+	meas/inline/glue/inline_apply_gaugestate.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
+	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
 	meas/inline/hadron/inline_propagator_w.cc \
