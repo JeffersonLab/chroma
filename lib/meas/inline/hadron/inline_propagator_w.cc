@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 3.5 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_propagator_w.cc,v 3.6 2006-09-21 18:43:27 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -122,18 +122,18 @@ namespace Chroma
 
 
   void
-  InlinePropagatorParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlinePropagatorParams::writeXML(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
-    Chroma::write(xml_out, "Param", param);
+    write(xml_out, "Param", param);
     {
       //QDP::write(xml_out, "StateInfo", stateInfo);
       istringstream header_is(stateInfo);
       XMLReader xml_header(header_is);
       xml_out << xml_header;
     }
-    Chroma::write(xml_out, "NamedObject", named_obj);
+    write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
@@ -205,7 +205,7 @@ namespace Chroma
     proginfo(xml_out);    // Print out basic program info
 
     // Write out the input
-    params.write(xml_out, "Input");
+    params.writeXML(xml_out, "Input");
 
     // Write out the config header
     write(xml_out, "Config_info", gauge_xml);

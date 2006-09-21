@@ -1,7 +1,15 @@
+// $Id: inline_polylp.cc,v 3.5 2006-09-21 18:43:27 edwards Exp $
+/*! \file
+ *  \brief Inline polyakov loop
+ */
+
 #include "meas/inline/glue/inline_polylp.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/polylp.h"
 #include "meas/inline/io/named_objmap.h"
+
+#include "actions/gauge/gaugestates/gauge_createstate_factory.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 
 namespace Chroma 
@@ -30,6 +38,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	success &= CreateGaugeStateEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
       }
@@ -38,6 +47,44 @@ namespace Chroma
   }
 
  
+
+  //! PolyakovLoop input
+  void read(XMLReader& xml, const string& path, InlinePolyakovLoopParams::Param_t& param)
+  {
+    XMLReader paramtop(xml, path);
+
+    int version;
+    read(paramtop, "version", version);
+
+    switch (version) 
+    {
+    case 2:
+      if (paramtop.count("GaugeState") != 0)
+	param.cgs = readXMLGroup(paramtop, "GaugeState", "Name");
+      else
+	param.cgs = CreateGaugeStateEnv::nullXMLGroup();
+      break;
+
+    default:
+      QDPIO::cerr << "InlinePolyakovLoopParams::Param_t: " << version 
+		  << " unsupported." << endl;
+      QDP_abort(1);
+    }
+  }
+
+  //! PolyakovLoop output
+  void write(XMLWriter& xml, const string& path, const InlinePolyakovLoopParams::Param_t& param)
+  {
+    push(xml, path);
+
+    int version = 2;
+    write(xml, "version", version);
+    xml << param.cgs.xml;
+
+    pop(xml);
+  }
+
+
   //! PolyakovLoop input
   void read(XMLReader& xml, const string& path, InlinePolyakovLoopParams::NamedObject_t& input)
   {
@@ -61,6 +108,7 @@ namespace Chroma
   InlinePolyakovLoopParams::InlinePolyakovLoopParams()
   { 
     frequency = 0; 
+    param.cgs = CreateGaugeStateEnv::nullXMLGroup();
   }
 
   InlinePolyakovLoopParams::InlinePolyakovLoopParams(XMLReader& xml_in, const std::string& path) 
@@ -73,6 +121,9 @@ namespace Chroma
 	read(paramtop, "Frequency", frequency);
       else
 	frequency = 1;
+
+      // Params
+      read(paramtop, "Param", param);
 
       // Ids
       read(paramtop, "NamedObject", named_obj);

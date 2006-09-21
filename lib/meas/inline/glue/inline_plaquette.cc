@@ -1,9 +1,17 @@
+// $Id: inline_plaquette.cc,v 3.5 2006-09-21 18:43:27 edwards Exp $
+/*! \file
+ *  \brief Inline plaquette
+ */
+
 #include "meas/inline/glue/inline_plaquette.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "meas/inline/io/named_objmap.h"
 
 #include "meas/inline/io/default_gauge_field.h"
+
+#include "actions/gauge/gaugestates/gauge_createstate_factory.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 namespace Chroma 
 { 
@@ -31,12 +39,50 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	success &= CreateGaugeStateEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
       }
       return success;
     }
 
+  }
+
+
+  //! Plaquette input
+  void read(XMLReader& xml, const string& path, InlinePlaquetteParams::Param_t& param)
+  {
+    XMLReader paramtop(xml, path);
+
+    int version;
+    read(paramtop, "version", version);
+
+    switch (version) 
+    {
+    case 2:
+      if (paramtop.count("GaugeState") != 0)
+	param.cgs = readXMLGroup(paramtop, "GaugeState", "Name");
+      else
+	param.cgs = CreateGaugeStateEnv::nullXMLGroup();
+      break;
+
+    default:
+      QDPIO::cerr << "InlinePlaquetteParams::Param_t: " << version 
+		  << " unsupported." << endl;
+      QDP_abort(1);
+    }
+  }
+
+  //! Plaquette output
+  void write(XMLWriter& xml, const string& path, const InlinePlaquetteParams::Param_t& param)
+  {
+    push(xml, path);
+
+    int version = 2;
+    write(xml, "version", version);
+    xml << param.cgs.xml;
+
+    pop(xml);
   }
 
 
@@ -63,6 +109,7 @@ namespace Chroma
   InlinePlaquetteParams::InlinePlaquetteParams() 
   { 
     frequency = 0; 
+    param.cgs          = CreateGaugeStateEnv::nullXMLGroup();
     named_obj.gauge_id = InlineDefaultGaugeField::getId();
   }
 
@@ -76,6 +123,9 @@ namespace Chroma
 	read(paramtop, "Frequency", frequency);
       else
 	frequency = 1;
+
+      // Params
+      read(paramtop, "Param", param);
 
       // Ids
       read(paramtop, "NamedObject", named_obj);
@@ -95,11 +145,31 @@ namespace Chroma
     START_CODE();
     
     // Test and grab a reference to the gauge field
+    multi1d<LatticeColorMatrix> u;
     XMLBufferWriter gauge_xml;
+
     try
     {
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
       TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+
+      // Set the construct state and modify the fields
+      {
+	std::istringstream  xml_s(params.param.cgs.xml);
+	XMLReader  gaugetop(xml_s);
+
+	Handle<CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	  cgs(TheCreateGaugeStateFactory::Instance().createObject(params.param.cgs.id,
+								  gaugetop,
+								  params.param.cgs.path));
+
+	Handle<GaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	  state((*cgs)(u));
+
+	// Pull the u fields back out from the state since they might have been
+	// munged with gaugeBC's
+	u = state->getLinks();
+      }
     }
     catch( std::bad_cast ) 
     {
@@ -113,8 +183,6 @@ namespace Chroma
 		  << endl;
       QDP_abort(1);
     }
-    const multi1d<LatticeColorMatrix>& u = 
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     push(xml_out, "Plaquette");
     write(xml_out, "update_no", update_no);

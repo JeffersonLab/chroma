@@ -1,9 +1,10 @@
-// $Id: inline_hadron_aggregate.cc,v 3.5 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.6 2006-09-21 18:43:27 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
 
 #include "meas/inline/hadron/inline_hadron_aggregate.h"
+#include "meas/inline/hadron/inline_apply_fermstate_w.h"
 #include "meas/inline/hadron/inline_spectrumQll.h"
 #include "meas/inline/hadron/inline_make_source_w.h"
 #include "meas/inline/hadron/inline_make_source_ferm_w.h"
@@ -54,6 +55,8 @@ namespace Chroma
 	success &= WilsonTypeFermActsEnv::registerAll();
 
 	// Hadron stuff
+	success &= InlineFermStateEnv::registerAll();
+
 	success &= InlineMakeSourceEnv::registerAll();
 	success &= InlinePropagatorEnv::registerAll();
 

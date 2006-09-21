@@ -1,12 +1,15 @@
 // -*- C++ -*-
+// $Id: inline_polylp.h,v 3.2 2006-09-21 18:43:27 edwards Exp $
+/*! \file
+ *  \brief Inline polyakov loop
+ */
 
 #ifndef INLINE_POLYLOOP_LOOP_H
 #define INLINE_POLYAKOV_LOOP_H
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-
-
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -25,6 +28,11 @@ namespace Chroma
     InlinePolyakovLoopParams(XMLReader& xml_in, const std::string& path);
 
     unsigned long frequency;
+
+    struct Param_t
+    {
+      GroupXML_t    cgs;      /*!< Gauge State */
+    } param;
 
     struct NamedObject_t
     {

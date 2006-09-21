@@ -1,4 +1,4 @@
-// $Id: gaugebc_aggregate.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
+// $Id: gaugebc_aggregate.cc,v 3.3 2006-09-21 18:43:26 edwards Exp $
 /*! \file
  *  \brief Gauge boundary condition aggregator
  */
@@ -12,6 +12,7 @@
 #include "actions/gauge/gaugebcs/schr_coupling_gaugebc.h"
 #include "actions/gauge/gaugebcs/schr_chromomag_gaugebc.h"
 #include "actions/gauge/gaugebcs/schr_dirich_gaugebc.h"
+#include "actions/gauge/gaugebcs/schr_sf_zero_gaugebc.h"
 
 namespace Chroma
 {
@@ -35,6 +36,7 @@ namespace Chroma
 	success &= SchrCouplingGaugeBCEnv::registerAll();
 	success &= SchrChromoMagGaugeBCEnv::registerAll();
 	success &= SchrDirichletGaugeBCEnv::registerAll();
+	success &= SchrSFZeroGaugeBCEnv::registerAll();
 
 	registered = true;
       }
@@ -43,8 +45,9 @@ namespace Chroma
 
 
     // Helper function for the GaugeAction readers
-    Handle<GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 
-											const std::string& path)
+    Handle<GaugeBC< multi1d<LatticeColorMatrix>, 
+		    multi1d<LatticeColorMatrix> > > reader(XMLReader& xml_in, 
+							   const std::string& path)
     {
       XMLReader top(xml_in, path);
 

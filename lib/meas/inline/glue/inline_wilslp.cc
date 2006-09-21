@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.7 2006-09-21 18:33:06 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.8 2006-09-21 18:43:27 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -8,7 +8,6 @@
 #include "meas/glue/wilslp.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "actions/gauge/gaugeacts/gaugeacts_aggregate.h"
 #include "actions/gauge/gaugestates/gauge_createstate_factory.h"
 #include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
@@ -36,7 +35,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-  	success &= CreateGaugeStateEnv::registerAll();
+	success &= CreateGaugeStateEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
       }
@@ -170,20 +169,6 @@ namespace Chroma
 	// Pull the u fields back out from the state since they might have been
 	// munged with gaugeBC's
 	u = state->getLinks();
-
-	// Not sure this is what I really want. Zap the fields on the boundaries
-	// for the measurements. For these measurements, I do not want boundaries
-	// influencing the result. In Schroedinger Func, I correct for the volume
-	// after the fact that include the pads. This is different than HMC, where
-	// for the action I want the total action INCLUDING the boundaries. What's
-	// important there is that when we compute the differences of the action
-	// in the accept/reject step, the boundaries cancel out since they are held
-	// fixed.
-	//
-	// WARNING: this zeroing only works because Q is the same type as P and the
-	// zero takes a P. This equivalence of types is not true in general!!! 
-	//
-	state->getBC().zero(u);
       }
     
       push(xml_out, "WilsonLoop");

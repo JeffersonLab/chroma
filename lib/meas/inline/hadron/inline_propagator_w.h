@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_propagator_w.h,v 3.2 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_propagator_w.h,v 3.3 2006-09-21 18:43:27 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -28,7 +28,7 @@ namespace Chroma
   {
     InlinePropagatorParams();
     InlinePropagatorParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
+    void writeXML(XMLWriter& xml_out, const std::string& path);
 
     unsigned long     frequency;
 

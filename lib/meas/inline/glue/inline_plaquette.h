@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_plaquette.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
+// $Id: inline_plaquette.h,v 3.2 2006-09-21 18:43:27 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -9,6 +9,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -26,6 +27,11 @@ namespace Chroma
     InlinePlaquetteParams(XMLReader& xml_in, const std::string& path);
 
     unsigned long frequency;
+
+    struct Param_t
+    {
+      GroupXML_t    cgs;      /*!< Gauge State */
+    } param;
 
     struct NamedObject_t
     {

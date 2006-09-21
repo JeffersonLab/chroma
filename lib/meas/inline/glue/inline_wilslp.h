@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 3.5 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_wilslp.h,v 3.6 2006-09-21 18:43:27 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -37,7 +37,7 @@ namespace Chroma
       int           kind;
       int           j_decay;
       int           t_dir;
-      GroupXML_t    cgs;
+      GroupXML_t    cgs;      /*!< Gauge State */
     } param;
 
     struct NamedObject_t

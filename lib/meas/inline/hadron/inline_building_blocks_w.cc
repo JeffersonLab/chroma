@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.4 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.5 2006-09-21 18:43:27 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -14,6 +14,9 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
+
+#include "actions/ferm/fermstates/ferm_createstate_factory_w.h"
+#include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
 
 namespace Chroma 
 { 
@@ -39,6 +42,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	success &= CreateFermStateEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
       }
@@ -71,6 +75,16 @@ namespace Chroma
       read(paramtop, "canonical", input.canonical);
       break;
 
+    case 4:
+      read(paramtop, "use_sink_offset", input.use_sink_offset);
+      read(paramtop, "canonical", input.canonical);
+
+      if (paramtop.count("FermState") != 0)
+	input.cfs = readXMLGroup(paramtop, "FermState", "Name");
+      else
+	input.cfs = CreateFermStateEnv::nullXMLGroup();
+      break;
+
     default :
       QDPIO::cerr << InlineBuildingBlocksEnv::name << ": input parameter version " 
 		  << version << " unsupported." << endl;
@@ -79,7 +93,6 @@ namespace Chroma
     
     read(paramtop, "links_max", input.links_max);
     read(paramtop, "mom2_max", input.mom2_max);
-    read(paramtop, "nrow", input.nrow);
   }
 
 
@@ -88,12 +101,12 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 3;
+    int version = 4;
     write(xml, "version", version);
     write(xml, "links_max", input.links_max);
     write(xml, "mom2_max", input.mom2_max);
     write(xml, "canonical", input.canonical);
-    write(xml, "nrow", input.nrow);
+    xml << input.cfs.xml;
 
     pop(xml);
   }
@@ -247,35 +260,13 @@ namespace Chroma
     snoop.reset();
     snoop.start();
 
-    // Test and grab a reference to the gauge field
-    XMLBufferWriter gauge_xml;
-    try
-    {
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.bb.GaugeId);
-      TheNamedObjMap::Instance().get(params.bb.GaugeId).getRecordXML(gauge_xml);
-    }
-    catch( std::bad_cast ) 
-    {
-      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught dynamic cast error" 
-		  << endl;
-      QDP_abort(1);
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": map call failed: " << e 
-		  << endl;
-      QDP_abort(1);
-    }
-    const multi1d<LatticeColorMatrix>& U = 
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.bb.GaugeId);
-
     push(XmlOut, "ExampleBuildingBlocks");
     write(XmlOut, "update_no", update_no);
 
     QDPIO::cout << " ExampleBuildingBlocks" << endl;
-    QDPIO::cout << "     volume: " << params.param.nrow[0];
+    QDPIO::cout << "     volume: " << QDP::Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
-      QDPIO::cout << " x " << params.param.nrow[i];
+      QDPIO::cout << " x " << QDP::Layout::lattSize()[i];
     }
     QDPIO::cout << endl;
 
@@ -287,10 +278,10 @@ namespace Chroma
     TextWriter Out( params.bb.OutFileName );
 
     Out <<                                                                      "\n";
-    Out << "  NX                                  = " << params.param.nrow[0] << "\n";
-    Out << "  NY                                  = " << params.param.nrow[1] << "\n";
-    Out << "  NZ                                  = " << params.param.nrow[2] << "\n";
-    Out << "  NT                                  = " << params.param.nrow[3] << "\n";
+    Out << "  NX                                  = " << QDP::Layout::lattSize()[0] << "\n";
+    Out << "  NY                                  = " << QDP::Layout::lattSize()[1] << "\n";
+    Out << "  NZ                                  = " << QDP::Layout::lattSize()[2] << "\n";
+    Out << "  NT                                  = " << QDP::Layout::lattSize()[3] << "\n";
     Out << "  Forward Propagator                  = " << params.bb.FrwdPropId << "\n";
     Out <<                                                                       "\n";
     for(int loop=0; loop < params.bb.BkwdProps.size(); ++loop)
@@ -335,6 +326,48 @@ namespace Chroma
     //###############################################################################//
 
     Out << "Attempt to initialize the gauge field" << "\n";  Out.flush();
+
+    // Grab the gauge field
+    multi1d<LatticeColorMatrix> U;
+    XMLBufferWriter gauge_xml;
+
+    try
+    {
+      U = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.bb.GaugeId);
+      TheNamedObjMap::Instance().get(params.bb.GaugeId).getRecordXML(gauge_xml);
+
+      // Set the construct state and modify the fields
+      {
+	std::istringstream  xml_s(params.param.cfs.xml);
+	XMLReader  fermtop(xml_s);
+
+	Handle<CreateFermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	  cfs(TheCreateFermStateFactory::Instance().createObject(params.param.cfs.id,
+								 fermtop,
+								 params.param.cfs.path));
+
+	Handle<FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	  state((*cfs)(U));
+
+	// Pull the u fields back out from the state since they might have been
+	// munged with fermBC's
+	U = state->getLinks();
+      }
+    
+    }
+    catch( std::bad_cast ) 
+    {
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught dynamic cast error" 
+		  << endl;
+      QDP_abort(1);
+    }
+    catch (const string& e) 
+    {
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": map call failed: " << e 
+		  << endl;
+      QDP_abort(1);
+    }
+
 
     // Write out the input
     params.write(XmlOut, "Input");
@@ -637,7 +670,7 @@ namespace Chroma
       QDPIO::cout << "calculating building blocks" << endl;
 
       const signed short int T1 = 0;
-      const signed short int T2 = params.param.nrow[j_decay] - 1;
+      const signed short int T2 = QDP::Layout::lattSize()[j_decay] - 1;
       const signed short int DecayDir = j_decay;
 
       swatch.start();
