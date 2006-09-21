@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwf_qpropt_w.h,v 3.6 2006-09-18 21:04:34 bjoo Exp $
+// $Id: dwf_qpropt_w.h,v 3.7 2006-09-21 20:38:59 bjoo Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -39,7 +39,7 @@
 namespace Chroma { 
   typedef Chroma::CGDWFQpropT< AVPSolver::SSEDWFSolverF, AVPSolver::SSEDWFSolverD>  DWFQpropT;
 }
-#elif CG_DWF_ARCH_BLUELIGHT // CG_DWF_ARCH_SSE
+#elif defined CG_DWF_ARCH_BLUELIGHT // CG_DWF_ARCH_SSE
 #include "actions/ferm/qprop/avp_bglf_solver.h"
 #include "actions/ferm/qprop/avp_bgld_solver.h"
 // Enable both single and a double prec solver
@@ -50,7 +50,7 @@ namespace Chroma {
 namespace Chroma { 
   typedef Chroma::CGDWFQpropT< AVPSolver::BGLDWFSolverF, AVPSolver::BGLDWFSolverD>  DWFQpropT;
 }
-#elif CG_DWF_ARCH_ALTIVEC
+#elif defined CG_DWF_ARCH_ALTIVEC
 #include "actions/ferm/qprop/avp_altivecf_solver.h"
 // Enable only single prec solver
 #define SINGLE_PREC_SOLVER
