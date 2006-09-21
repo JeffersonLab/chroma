@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>3.11.0</chroma>
+      <chroma>3.15.0</chroma>
       <qdp>1.20.9</qdp>
     </code_version>
-    <run_date>19 Aug 06 02:01:14 EDT</run_date>
+    <run_date>21 Sep 06 15:37:46 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -22,12 +22,16 @@
   </Output_version>
   <Input>
     <Param>
-      <version>3</version>
+      <version>4</version>
       <links_max>1</links_max>
       <mom2_max>3</mom2_max>
-      <canonical>false</canonical>
-      <nrow>4 4 4 8</nrow>
-    </Param>
+      <canonical>false</canonical><?xml version="1.0"?>
+
+
+<FermState>
+  <Name>PERIODIC_FERM_STATE</Name>
+</FermState>
+</Param>
     <BuildingBlocks>
       <OutFileName>./examplebb_v1.out</OutFileName>
       <GaugeId>default_gauge_field</GaugeId>
@@ -218,7 +222,7 @@
     </Propagator>
 
     </FrwdPropRecordXML>
-    <FrwdPropCheck>0.195057150580713 0.0165113003918827 0.00626269119040293 0.00253901393865789 0.0010332702399969 0.000420641953339668 0.000171401922922786 6.99144202762103e-05</FrwdPropCheck>
+    <FrwdPropCheck>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</FrwdPropCheck>
   </ForwardProp>
   <SequentialSource>
     <elem>
@@ -383,7 +387,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>5.15427283575108e-08 1.25997229727477e-07 3.08484321325396e-07 7.55719005158532e-07 1.8514479313068e-06 4.53983299007375e-06 1.11341130398361e-05 2.70417878114381e-05</BkwdPropCheck>
+        <BkwdPropCheck>5.15427295541361e-08 1.25997232162932e-07 3.0848432704864e-07 7.55719024759674e-07 1.85144798712108e-06 4.53983310305765e-06 1.11341132834331e-05 2.70417885804534e-05</BkwdPropCheck>
       </BackwardProp>
       <seq_src>PION</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -586,7 +590,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>1.35818428862508e-12 3.33401923829157e-12 8.20029408001019e-12 2.01811319741705e-11 4.96735087371204e-11 1.22365521849243e-10 3.01407564563869e-10 7.38792971465155e-10</BkwdPropCheck>
+        <BkwdPropCheck>1.35818433361393e-12 3.33401930253611e-12 8.20029429357145e-12 2.01811322997246e-11 4.96735095303093e-11 1.22365525050059e-10 3.01407571893002e-10 7.38792996089284e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -725,7 +729,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.39134040889646e-13 8.32593955588438e-13 2.04810148505712e-12 5.04109402759551e-12 1.24097334471523e-11 3.05741281041051e-11 7.53186599526682e-11 1.84054947747028e-10</BkwdPropCheck>
+        <BkwdPropCheck>3.39134057372427e-13 8.32593989001908e-13 2.04810157391996e-12 5.04109428875935e-12 1.24097341514128e-11 3.05741296803632e-11 7.53186630808887e-11 1.84054957529245e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -928,7 +932,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>6.0413890342196e-13 1.48293068804408e-12 3.64715928755865e-12 8.97517907212373e-12 2.20899236199487e-11 5.44127618178917e-11 1.34020189520319e-10 3.29075030594633e-10</BkwdPropCheck>
+        <BkwdPropCheck>6.04138925587759e-13 1.48293074946785e-12 3.64715948560794e-12 8.97517952304965e-12 2.20899244645311e-11 5.44127642127159e-11 1.34020196351298e-10 3.29075046050761e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_POL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1067,7 +1071,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.76809475396247e-14 9.25090451359561e-14 2.27563493203048e-13 5.60114715494612e-13 1.37884539402964e-12 3.39709523251255e-12 8.36867501103299e-12 2.04510317805642e-11</BkwdPropCheck>
+        <BkwdPropCheck>3.76809495483974e-14 9.25090498961032e-14 2.27563504979916e-13 5.60114741883109e-13 1.37884547887215e-12 3.39709545104285e-12 8.36867542550315e-12 2.04510327643664e-11</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_POL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1270,7 +1274,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>9.15925927447982e-12 2.24852089994323e-11 5.53081739685418e-11 1.36124276054298e-10 3.35076007081479e-10 8.25482158090273e-10 2.03345481872091e-09 4.99474549585627e-09</BkwdPropCheck>
+        <BkwdPropCheck>9.159259756515e-12 2.24852102890067e-11 5.53081770557059e-11 1.36124283132929e-10 3.35076027645362e-10 8.25482195639301e-10 2.03345490524256e-09 4.99474569620653e-09</BkwdPropCheck>
       </BackwardProp>
       <seq_src>DELTA_U_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1409,7 +1413,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>2.289814872878e-12 5.6213024067414e-12 1.38270440144087e-11 3.40310705040665e-11 8.37690040635074e-11 2.06370543965273e-10 5.08363712598599e-10 1.24868639670642e-09</BkwdPropCheck>
+        <BkwdPropCheck>2.2898149869557e-12 5.62130261736748e-12 1.38270442677678e-11 3.40310712987359e-11 8.37690079846733e-11 2.06370553541185e-10 5.08363734413827e-10 1.24868642355386e-09</BkwdPropCheck>
       </BackwardProp>
       <seq_src>DELTA_D_UNPOL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1612,7 +1616,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>1.34863938033009e-12 3.31080551355789e-12 8.14377448654876e-12 2.00434538319497e-11 4.93382310727881e-11 1.21548512160471e-10 2.99418079132968e-10 7.36714718981977e-10</BkwdPropCheck>
+        <BkwdPropCheck>1.34863944119011e-12 3.31080561725987e-12 8.14377493736502e-12 2.00434550295373e-11 4.93382340458817e-11 1.2154851838998e-10 2.99418093191673e-10 7.36714742779804e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_UNPOL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1751,7 +1755,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.3716291311094e-13 8.27707922737952e-13 2.03595677178988e-12 5.01088920569349e-12 1.23346132358372e-11 3.03872261504276e-11 7.48546813027418e-11 1.8417755086242e-10</BkwdPropCheck>
+        <BkwdPropCheck>3.37162944998062e-13 8.27707991540738e-13 2.03595691776872e-12 5.01088958883952e-12 1.23346141693904e-11 3.03872287035224e-11 7.48546875883081e-11 1.84177568282617e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_UNPOL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -1954,7 +1958,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>5.9939374915079e-13 1.47146595810547e-12 3.61945010685798e-12 8.90819218545629e-12 2.19280807161567e-11 5.40215372585084e-11 1.3307475520722e-10 3.27430512304776e-10</BkwdPropCheck>
+        <BkwdPropCheck>5.99393772838758e-13 1.47146599983753e-12 3.61945021993892e-12 8.90819239260231e-12 2.19280812373339e-11 5.40215391839833e-11 1.33074759007278e-10 3.27430518322957e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_POL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -2093,7 +2097,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.74622502343349e-14 9.19669436912683e-14 2.26216025272567e-13 5.56763423663051e-13 1.37051075255561e-12 3.37635822611707e-12 8.31719384967492e-12 2.04643678306209e-11</BkwdPropCheck>
+        <BkwdPropCheck>3.7462252871979e-14 9.19669506689734e-14 2.26216041615861e-13 5.56763463994696e-13 1.3705108159297e-12 3.37635842231446e-12 8.31719428937355e-12 2.04643689267388e-11</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_POL_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -2296,7 +2300,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>1.94802541189872e-12 4.78225306234086e-12 1.17632107003285e-11 2.89516655843147e-11 7.1266159157684e-11 1.75569602603361e-10 4.32492405423593e-10 1.06414195261306e-09</BkwdPropCheck>
+        <BkwdPropCheck>1.94802549685885e-12 4.78225319938703e-12 1.17632111412149e-11 2.89516663573113e-11 7.12661618234313e-11 1.75569613581784e-10 4.32492430380698e-10 1.06414202774556e-09</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_U_MIXED_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>
@@ -2435,7 +2439,7 @@
     </SequentialProp>
 
         </BkwdPropRecordXML>
-        <BkwdPropCheck>3.7461851780074e-13 9.19658481410492e-13 2.2621295547284e-12 5.56753992765685e-12 1.37048707593915e-11 3.37629671258993e-11 8.31702469403852e-11 2.0463819120497e-10</BkwdPropCheck>
+        <BkwdPropCheck>3.74618532410004e-13 9.19658525479844e-13 2.26212968280395e-12 5.56754020613976e-12 1.37048712712031e-11 3.37629683669547e-11 8.31702490778653e-11 2.04638199146426e-10</BkwdPropCheck>
       </BackwardProp>
       <seq_src>NUCL_D_MIXED_NONREL</seq_src>
       <gamma_insertion>0</gamma_insertion>

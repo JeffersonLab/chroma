@@ -957,12 +957,18 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>BUILDING_BLOCKS</Name>
       <Frequency>1</Frequency>
       <Param>
-       <version>3</version>
-       <use_sink_offset>true</use_sink_offset>
-       <mom2_max>3</mom2_max>
-       <links_max>1</links_max>
-       <canonical>false</canonical>
-       <nrow>4 4 4 8</nrow>
+        <version>4</version>
+        <use_sink_offset>true</use_sink_offset>
+        <mom2_max>3</mom2_max>
+        <links_max>1</links_max>
+        <canonical>false</canonical>
+        <FermState>
+          <Name>SIMPLE_FERM_STATE</Name>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermState>
       </Param>
       <BuildingBlocks>
        <OutFileName>./examplebb_v1.out</OutFileName>
