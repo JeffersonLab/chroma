@@ -1,4 +1,9 @@
 09/21/2006 -- Robert Edwards
+	Version 3.15.0. Added new ferm and gauge create state inlines.
+        Changed some inlines to now use the ferm or gauge state, or at
+        least the param group.
+
+09/21/2006 -- Robert Edwards
 	Version 3.14.7. Added a registration in inline_wilslp
 
 09/21/2006 -- Robert Edwards
