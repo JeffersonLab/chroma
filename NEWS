@@ -1,59 +1,71 @@
+09/21/2006 -- Robert Edwards
+	Version 3.14.6. Major housecleaning. Changed all the uses of the
+	registration method to now be **runtime**. The "registerAll()"
+	function is exposed that will register the thingy. There is a
+	private "registered" flag that is initially false and then set
+	to true upon registration done at runtime.
+
 09/18/2006 -- Robert Edwards
-	Version 3.14.5. House cleaning. Split off all gauge states and ferm states
-        to their own gaugestates and fermstates directories. Changed all the paths.
+	Version 3.14.5. House cleaning. Split off all gauge states
+	and ferm states to their own gaugestates and fermstates
+	directories. Changed all the paths.
 
 09/14/2006 -- Robert Edwards
-	Version 3.14.0. New chroma/other_libs/cg-dwf package now included. The DWF
-        QpropT routine reworked to use the new package (double prec. SSE). Changed
-        hmc to split output into XMLLOG and XMLDAT.
+	Version 3.14.0. New chroma/other_libs/cg-dwf package now
+	included. The DWF QpropT routine reworked to use the new package
+	(double prec. SSE). Changed hmc to split output into XMLLOG
+	and XMLDAT.
 
 09/09/2006 -- Robert Edwards
-	Version 3.12.0. First apparently working version of stout force code for HMC.
-        Rearrangements in stouting for gauge and fermion actions.
+	Version 3.12.0. First apparently working version of stout force
+	code for HMC.  Rearrangements in stouting for gauge and fermion
+	actions.
 
 08/28/2006 -- Robert Edwards
-	Version 3.11.2. Small but important edge case in stout_fermstate fixed.
-        Bug fix in SftMom handling in test of zero_offset. Small fix in
-        inline_hadspec allowing optional displacement type field. Retooled all
-        important update routines, stouts, fermacts, etc. to use START_CODE/END_CODE.
+	Version 3.11.2. Small but important edge case in stout_fermstate
+	fixed.	Bug fix in SftMom handling in test of zero_offset. Small
+	fix in inline_hadspec allowing optional displacement type
+	field. Retooled all important update routines, stouts, fermacts,
+	etc. to use START_CODE/END_CODE.
 
 08/24/2006 -- Robert Edwards
-	Version 3.11.1. Fixed regression metric in mesons from v3.11.0 . 
-        Rearranged mesplq and added measurements of all plaquette planes.
-        Regenerated all regression output since they depend on the
-        plaquette output. Fully converted the block-ing code along
-        with fuzglue, polycor and gluecor.
+	Version 3.11.1. Fixed regression metric in mesons from v3.11.0 .
+	Rearranged mesplq and added measurements of all plaquette planes.
+	Regenerated all regression output since they depend on the
+	plaquette output. Fully converted the block-ing code along with
+	fuzglue, polycor and gluecor.
 
 08/19/2006 -- George T. Fleming
-	Version 3.11.0.  Changed the interface of the slow Fourier transform
-        (SftMom) class to allow for any lattice point to be chosen as the
-        spatial origin.  Previously, this meant that the origin was always
-        implicitly (0,0,0,0), which lead to various phase problems.
-        One example is 2pt correlation functions between a point
-        source not at the origin and a sink at non-zero momentum: the overall
-        phase depends upon the location of the source.  Using the new
-        interface, the phase can be made independent of the location
-        of the source by choosing the origin of the Fourier transform
-        to be the location of the source.  Several things remain to be
-        fixed:  (1) sequential sources at non-zero sink momentum,
-        (2) building blocks with link paths which cross boundaries,
-        (3) baryonic sequential sources where t_source > t_sink,
-        i.e. the boundary is between the source and sink.
-	
+	Version 3.11.0.  Changed the interface of the slow Fourier
+	transform (SftMom) class to allow for any lattice point to be
+	chosen as the spatial origin.  Previously, this meant that the
+	origin was always implicitly (0,0,0,0), which lead to various
+	phase problems.  One example is 2pt correlation functions between
+	a point source not at the origin and a sink at non-zero momentum:
+	the overall phase depends upon the location of the source.
+	Using the new interface, the phase can be made independent of
+	the location of the source by choosing the origin of the Fourier
+	transform to be the location of the source.  Several things remain
+	to be fixed:  (1) sequential sources at non-zero sink momentum,
+	(2) building blocks with link paths which cross boundaries, (3)
+	baryonic sequential sources where t_source > t_sink, i.e. the
+	boundary is between the source and sink.
+
 08/17/2006 -- Balint Joo
 	Version 3.10.4. Fixed stout fermstate to support smear_dir.
-        New form of purgaug input/output.
-	
+	New form of purgaug input/output.
+
 08/15/2006 -- Balint Joo
-	Version 3.10.3. Stout Fermstate rides. Reinterpret nontrivialP() flag to mean
-	underlying gauge boundaries are trivial in FermBC-s only (ie still old meaning
-	in GaugeBC-s for now). Stout Fermstate tested for SF, periodic, antiperiodic, 
-	and Dirichlet fermion BCs. Twisted Ferm BC_s are not expected to work.
-	
+	Version 3.10.3. Stout Fermstate rides. Reinterpret nontrivialP()
+	flag to mean underlying gauge boundaries are trivial in FermBC-s
+	only (ie still old meaning in GaugeBC-s for now). Stout Fermstate
+	tested for SF, periodic, antiperiodic, and Dirichlet fermion
+	BCs. Twisted Ferm BC_s are not expected to work.
+
 07/27/2006 -- Balint Joo
 	Version 3.10.2. Patches to SSE DWF CG to support double-prec sums.
-        Added more optimized plaq+two_plaq gauge monomial. Added profiling
-        to inline_eigbnds in 5D case.
+	Added more optimized plaq+two_plaq gauge monomial. Added profiling
+	to inline_eigbnds in 5D case.
 
 07/21/2006 -- Balint Joo
 	Version 3.10.1. Added two_plaq monomials.
