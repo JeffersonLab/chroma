@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.6 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.7 2006-09-21 18:33:06 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -36,6 +36,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+  	success &= CreateGaugeStateEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
       }
