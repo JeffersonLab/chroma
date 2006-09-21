@@ -31,6 +31,9 @@
       <elem>
         <Name>POLYAKOV_LOOP</Name>
         <Frequency>1</Frequency>
+        <Param>
+          <version>2</version>
+        </Param>
         <NamedObject>
           <gauge_id>default_gauge_field</gauge_id>
         </NamedObject>
@@ -108,10 +111,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.12.0</chroma>
-      <qdp>1.20.8</qdp>
+      <chroma>3.15.0</chroma>
+      <qdp>1.20.9</qdp>
     </code_version>
-    <run_date>14 Sep 06 22:33:37 EDT</run_date>
+    <run_date>21 Sep 06 15:19:51 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -141,34 +144,34 @@
           <HMCTrajectory>
             <WarmUpP>false</WarmUpP>
             <H_old>
-              <KE_old>4086.02502353545</KE_old>
-              <PE_old>-7175.06637458828</PE_old>
+              <KE_old>4086.02502725233</KE_old>
+              <PE_old>-7175.06635855508</PE_old>
             </H_old>
             <H_new>
-              <KE_new>1635.99640608409</KE_new>
-              <PE_new>-4723.12776053613</PE_new>
+              <KE_new>1635.99641997402</KE_new>
+              <PE_new>-4723.12775741598</PE_new>
             </H_new>
-            <deltaKE>-2450.02861745136</deltaKE>
-            <deltaPE>2451.93861405215</deltaPE>
-            <deltaH>1.90999660078705</deltaH>
-            <AccProb>0.148080889953085</AccProb>
+            <deltaKE>-2450.02860727831</deltaKE>
+            <deltaPE>2451.93860113909</deltaPE>
+            <deltaH>1.90999386077692</deltaH>
+            <AccProb>0.14808129569678</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>2.62</seconds_for_trajectory>
+          <seconds_for_trajectory>0.682755</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
                 <update_no>1</update_no>
-                <w_plaq>0.994841515862693</w_plaq>
-                <s_plaq>0.994947559200227</s_plaq>
-                <t_plaq>0.994735472525159</t_plaq>
-                <plane_01_plaq>0.994833492673934</plane_01_plaq>
+                <w_plaq>0.994841514362229</w_plaq>
+                <s_plaq>0.994947557648023</s_plaq>
+                <t_plaq>0.994735471076436</t_plaq>
+                <plane_01_plaq>0.994833490811288</plane_01_plaq>
                 <plane_02_plaq>0.995013228928049</plane_02_plaq>
-                <plane_12_plaq>0.994995955998699</plane_12_plaq>
-                <plane_03_plaq>0.994785024474064</plane_03_plaq>
-                <plane_13_plaq>0.99484407560279</plane_13_plaq>
-                <plane_23_plaq>0.994577317498624</plane_23_plaq>
-                <link>0.379295116794917</link>
+                <plane_12_plaq>0.994995953204731</plane_12_plaq>
+                <plane_03_plaq>0.994785024163624</plane_03_plaq>
+                <plane_13_plaq>0.994844072498381</plane_13_plaq>
+                <plane_23_plaq>0.994577316567302</plane_23_plaq>
+                <link>0.379295116751261</link>
               </Plaquette>
             </elem>
             <elem>
@@ -176,26 +179,26 @@
                 <update_no>1</update_no>
                 <poly_loop>
                   <elem>
-                    <re>0.967503896215931</re>
-                    <im>-0.00128192720270211</im>
+                    <re>0.967503897147253</re>
+                    <im>-0.00128192715116408</im>
                   </elem>
                   <elem>
-                    <re>0.967023838621875</re>
-                    <im>-0.00132621676190562</im>
+                    <re>0.967023838311434</re>
+                    <im>-0.00132621675205276</im>
                   </elem>
                   <elem>
-                    <re>0.967051551289236</re>
-                    <im>-0.00132321839070452</im>
+                    <re>0.967051552065338</re>
+                    <im>-0.00132321832794939</im>
                   </elem>
                   <elem>
-                    <re>0.965941917694484</re>
-                    <im>-0.00130774374459482</im>
+                    <re>0.965941917539264</re>
+                    <im>-0.00130774368335551</im>
                   </elem>
                 </poly_loop>
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.037</seconds_for_measurements>
+          <seconds_for_measurements>0.002788</seconds_for_measurements>
         </Update>
       </elem>
       <elem>
@@ -205,34 +208,34 @@
           <HMCTrajectory>
             <WarmUpP>false</WarmUpP>
             <H_old>
-              <KE_old>4031.65326281266</KE_old>
-              <PE_old>-7195.7907343165</PE_old>
+              <KE_old>4031.65326984215</KE_old>
+              <PE_old>-7195.79073129406</PE_old>
             </H_old>
             <H_new>
-              <KE_new>1620.65290180108</KE_new>
-              <PE_new>-4782.88904713703</PE_new>
+              <KE_new>1620.6529129014</KE_new>
+              <PE_new>-4782.8890703152</PE_new>
             </H_new>
-            <deltaKE>-2411.00036101158</deltaKE>
-            <deltaPE>2412.90168717946</deltaPE>
-            <deltaH>1.90132616788833</deltaH>
-            <AccProb>0.149370397589354</AccProb>
+            <deltaKE>-2411.00035694075</deltaKE>
+            <deltaPE>2412.90166097887</deltaPE>
+            <deltaH>1.90130403811509</deltaH>
+            <AccProb>0.149373703158958</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>1.462</seconds_for_trajectory>
+          <seconds_for_trajectory>0.684784</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
                 <update_no>2</update_no>
-                <w_plaq>0.994841515862693</w_plaq>
-                <s_plaq>0.994947559200227</s_plaq>
-                <t_plaq>0.994735472525159</t_plaq>
-                <plane_01_plaq>0.994833492673934</plane_01_plaq>
+                <w_plaq>0.994841514362229</w_plaq>
+                <s_plaq>0.994947557648023</s_plaq>
+                <t_plaq>0.994735471076436</t_plaq>
+                <plane_01_plaq>0.994833490811288</plane_01_plaq>
                 <plane_02_plaq>0.995013228928049</plane_02_plaq>
-                <plane_12_plaq>0.994995955998699</plane_12_plaq>
-                <plane_03_plaq>0.994785024474064</plane_03_plaq>
-                <plane_13_plaq>0.99484407560279</plane_13_plaq>
-                <plane_23_plaq>0.994577317498624</plane_23_plaq>
-                <link>0.379295116794917</link>
+                <plane_12_plaq>0.994995953204731</plane_12_plaq>
+                <plane_03_plaq>0.994785024163624</plane_03_plaq>
+                <plane_13_plaq>0.994844072498381</plane_13_plaq>
+                <plane_23_plaq>0.994577316567302</plane_23_plaq>
+                <link>0.379295116751261</link>
               </Plaquette>
             </elem>
             <elem>
@@ -240,26 +243,26 @@
                 <update_no>2</update_no>
                 <poly_loop>
                   <elem>
-                    <re>0.967503896215931</re>
-                    <im>-0.00128192720270211</im>
+                    <re>0.967503897147253</re>
+                    <im>-0.00128192715116408</im>
                   </elem>
                   <elem>
-                    <re>0.967023838621875</re>
-                    <im>-0.00132621676190562</im>
+                    <re>0.967023838311434</re>
+                    <im>-0.00132621675205276</im>
                   </elem>
                   <elem>
-                    <re>0.967051551289236</re>
-                    <im>-0.00132321839070452</im>
+                    <re>0.967051552065338</re>
+                    <im>-0.00132321832794939</im>
                   </elem>
                   <elem>
-                    <re>0.965941917694484</re>
-                    <im>-0.00130774374459482</im>
+                    <re>0.965941917539264</re>
+                    <im>-0.00130774368335551</im>
                   </elem>
                 </poly_loop>
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.011</seconds_for_measurements>
+          <seconds_for_measurements>0.002749</seconds_for_measurements>
         </Update>
       </elem>
     </MCUpdates>

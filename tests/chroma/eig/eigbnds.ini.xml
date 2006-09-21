@@ -1,21 +1,13 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: eigbnds-v1.ini.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
+; $Id: eigbnds.ini.xml,v 3.1 2006-09-21 19:45:55 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
 </annotation>
 <Param> 
   <InlineMeasurements>
-    <elem>
-      <Name>POLYAKOV_LOOP</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-      </NamedObject>
-    </elem>
-
     <elem>
       <!-- This measures lowest/highest ev of prec. Wilson -->
       <Name>EIGBNDSMDAGM</Name>

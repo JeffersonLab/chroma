@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.0 2006-04-03 04:59:24 edwards Exp $
+#  $Id: regres.pl,v 3.1 2006-09-21 19:45:55 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -10,6 +10,14 @@
 #
 @regres_list = 
     (
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/eig/eigbnds.ini.xml" , 
+	 output      => "eigbnds.candidate.xml",
+	 metric      => "$test_dir/chroma/eig/eigbnds.metric.xml" ,
+	 controlfile => "$test_dir/chroma/eig/eigbnds.out.xml" ,
+     },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 

@@ -4,21 +4,13 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: eigbnds-v1.out.xml,v 3.3 2006-07-22 19:35:50 edwards Exp $
+; $Id: eigbnds.out.xml,v 3.1 2006-09-21 19:45:55 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
 </annotation>
 <Param> 
   <InlineMeasurements>
-    <elem>
-      <Name>POLYAKOV_LOOP</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-      </NamedObject>
-    </elem>
-
     <elem>
       <!-- This measures lowest/highest ev of prec. Wilson -->
       <Name>EIGBNDSMDAGM</Name>
@@ -192,10 +184,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.10.0</chroma>
-      <qdp>1.20.8</qdp>
+      <chroma>3.15.0</chroma>
+      <qdp>1.20.9</qdp>
     </code_version>
-    <run_date>22 Jul 06 15:32:25 EDT</run_date>
+    <run_date>21 Sep 06 15:13:01 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -224,53 +216,36 @@
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994764814567235</w_plaq>
-    <s_plaq>0.994800872583356</s_plaq>
-    <t_plaq>0.994728756551113</t_plaq>
-    <link>0.379317687901979</link>
+    <w_plaq>0.994764814463755</w_plaq>
+    <s_plaq>0.994800871962474</s_plaq>
+    <t_plaq>0.994728756965034</t_plaq>
+    <plane_01_plaq>0.994752408626179</plane_01_plaq>
+    <plane_02_plaq>0.995051671285182</plane_02_plaq>
+    <plane_12_plaq>0.994598535976062</plane_12_plaq>
+    <plane_03_plaq>0.994927926144252</plane_03_plaq>
+    <plane_13_plaq>0.994742138621708</plane_13_plaq>
+    <plane_23_plaq>0.994516206129144</plane_23_plaq>
+    <link>0.379317688059624</link>
     <pollp>
       <elem>
-        <re>0.96722258204439</re>
-        <im>-0.00121316457792394</im>
+        <re>0.967222581617534</re>
+        <im>-0.00121316458201666</im>
       </elem>
       <elem>
-        <re>0.967032070271671</re>
-        <im>-0.0012961704569534</im>
+        <re>0.967032070310476</re>
+        <im>-0.00129617050743036</im>
       </elem>
       <elem>
-        <re>0.967467518639751</re>
-        <im>-0.00114548282075096</im>
+        <re>0.967467519299438</re>
+        <im>-0.00114548285447806</im>
       </elem>
       <elem>
-        <re>0.879538946435787</re>
-        <im>-0.0104402832973089</im>
+        <re>0.879538947173084</re>
+        <im>-0.0104402833220168</im>
       </elem>
     </pollp>
   </Observables>
   <InlineObservables>
-    <elem>
-      <PolyakovLoop>
-        <update_no>0</update_no>
-        <poly_loop>
-          <elem>
-            <re>0.96722258204439</re>
-            <im>-0.00121316457792394</im>
-          </elem>
-          <elem>
-            <re>0.967032070271671</re>
-            <im>-0.0012961704569534</im>
-          </elem>
-          <elem>
-            <re>0.967467518639751</re>
-            <im>-0.00114548282075096</im>
-          </elem>
-          <elem>
-            <re>0.879538946435787</re>
-            <im>-0.0104402832973089</im>
-          </elem>
-        </poly_loop>
-      </PolyakovLoop>
-    </elem>
     <elem>
       <EigBndsMdagM>
         <update_no>0</update_no>
@@ -356,9 +331,9 @@
             <n_cg_tot>71</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.611783936030406 0.0758369891164534 0.00947774541361923 0.00487684002558808 0.0328488588235132 0.26517552274403</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.00131696928777661 8.80185835114902e-05 0.000477091668453997 0.00396069916404737 0.0328171516679276 0.263901406661528</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.610466969857774 0.0757489707149059 0.00900065374513816 0.000916140860103932 3.17071630312573e-05 0.00127411594674132</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.61178397584581 0.0758369904304459 0.00947774559864456 0.00487683954182216 0.0328488558277993 0.265175490456912</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.00131696862133913 8.8018572947278e-05 0.000477091683789436 0.00396069882246169 0.0328171486865701 0.263901373936093</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.610467007914395 0.0757489719655094 0.00900065391522001 0.000916140721879706 3.17071317045927e-05 0.00127411639872049</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
@@ -409,9 +384,9 @@
             <n_cg_tot>68</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.170013833241683 0.173843058239072 0.170576572965729 0.163550066306925 0.159427699816661 0.162588735828649</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.0671322497376306 0.0339848154610441 0.0313689068777413 0.0616881760749474 0.0946451157945374 0.0974607529525467</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.102881583444925 0.139858243415727 0.139207666040037 0.101861890271409 0.0647825840888273 0.0651279833434999</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.170013791384918 0.173843095119082 0.170576661155792 0.163550119803404 0.159427661154041 0.16258865393138</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.0671322274906643 0.0339847906784236 0.0313688500468526 0.0616880780567405 0.0946450073250234 0.0974606854601169</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.102881563832051 0.139858304694695 0.139207811284897 0.101862042042578 0.0647826536459324 0.0651279688996449</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
@@ -462,9 +437,9 @@
             <n_cg_tot>67</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.204800286339378 0.269853794532537 0.231821240624413 0.128519413445247 0.0633396728358093 0.101665688489447</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.131801502058821 0.144407265044937 0.109938919905644 0.0625556368699986 0.0500332922449787 0.0848764400599825</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.0729987844880744 0.125446529813226 0.121882320714189 0.0659637769190381 0.0133063808577852 0.0167892486256045</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.20480031403531 0.269853744379361 0.231821155735815 0.128519373479321 0.0633397086862715 0.101665754586975</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.131801471947698 0.144407148796282 0.10993880428103 0.0625556080638515 0.0500333497884899 0.0848764969976017</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.0729988418387483 0.12544659542802 0.12188235141366 0.0659637653601859 0.0133063588349189 0.0167892579603578</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
@@ -519,16 +494,16 @@
             <n_cg_tot>137</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.0127825272560358 0.102682447845837 0.208646481727556 0.265392819081171 0.175014041682516 0.0738367879712314 0.16164486557318</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.00364586297325306 0.0221932127662984 0.0585056768524893 0.0581293340172764 0.0472513693206569 0.0168840433711128 0.0426618931326847</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.00913666427981347 0.0804892350850697 0.150140804759116 0.207263484703694 0.127762672675018 0.0569527446837149 0.118982972716662</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.0127825273596045 0.102682448286032 0.20864648227689 0.265392810382764 0.175014039477901 0.073836786757056 0.16164486690468</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.00364586549726983 0.0221932224210551 0.0585057178078371 0.0581293590853146 0.0472513997769358 0.016884051262836 0.0426619208196339</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.00913666185064954 0.0804892260099183 0.150140764184585 0.207263451101051 0.127762640115537 0.0569527355037368 0.118982946429443</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
               <n_count>18</n_count>
             </eval1>
             <eValues>
-              <lambda>-6.494352</lambda>
+              <lambda>-6.494353</lambda>
             </eValues>
             <n_cg_tot>18</n_cg_tot>
           </EigSpecRitzCG>
@@ -576,9 +551,9 @@
             <n_cg_tot>113</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.380087689180073 0.445407673552836 0.00621032529483045 0.145464001209803 3.15003522937118e-05 0.02279877136084 4.53957524882318e-08</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.191089669961691 0.207868818945965 0.00312092827573072 0.0678848065519907 1.58279769520597e-05 0.0106396288482499 2.32005563515465e-08</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.1889980192116 0.237538855426525 0.00308939702630439 0.077579194767686 1.56723752649698e-05 0.0121591425034373 2.21951961080767e-08</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.380087869001727 0.445407579733001 0.00621032849835501 0.145463967491196 3.15003691890858e-05 0.0227987653806849 4.5398290787345e-08</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.191089810248877 0.207868776202711 0.00312093074539589 0.0678847907597366 1.58279892365841e-05 0.0106396261260273 2.32018497405421e-08</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.188998057428176 0.237538803220288 0.00308939776163233 0.0775791770389705 1.56723799496541e-05 0.0121591392635376 2.21964411100288e-08</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>

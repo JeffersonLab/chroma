@@ -29,8 +29,8 @@
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-      <Param>
+        <version>2</version>
+      </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
       </NamedObject>

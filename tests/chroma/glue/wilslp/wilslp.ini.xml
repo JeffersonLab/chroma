@@ -1,24 +1,13 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: wilslp.ini.xml,v 3.8 2006-09-21 18:43:47 edwards Exp $
+; $Id: wilslp.ini.xml,v 3.9 2006-09-21 19:45:55 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
 </annotation>
 <Param> 
   <InlineMeasurements>
-    <elem>
-      <Name>POLYAKOV_LOOP</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-      </NamedObject>
-    </elem>
-
     <elem>
       <!-- Wilson loops -->
       <Name>WILSLP</Name>
