@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: wilslp.ini.xml,v 3.7 2006-09-19 19:10:07 edwards Exp $
+; $Id: wilslp.ini.xml,v 3.8 2006-09-21 18:43:47 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -11,6 +11,9 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+      </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
       </NamedObject>
@@ -52,7 +55,7 @@
         <GaugeState>
           <Name>SIMPLE_GAUGE_STATE</Name>
           <GaugeBC>
-            <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+            <Name>SCHROEDINGER_ZERO_GAUGEBC</Name>
             <SchrPhiMult>2.0</SchrPhiMult>
             <loop_extent>1</loop_extent>
             <decay_dir>3</decay_dir>

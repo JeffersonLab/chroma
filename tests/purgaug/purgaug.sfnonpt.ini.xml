@@ -28,6 +28,18 @@
     <elem>
       <Name>POLYAKOV_LOOP</Name>
       <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>SCHROEDINGER_ZERO_GAUGEBC</Name>
+            <SchrPhiMult>2.0</SchrPhiMult>
+            <loop_extent>1</loop_extent>
+            <decay_dir>3</decay_dir>
+          </GaugeBC>
+        </GaugeState>
+      <Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
       </NamedObject>
@@ -44,7 +56,7 @@
         <GaugeState>
           <Name>SIMPLE_GAUGE_STATE</Name>
           <GaugeBC>
-            <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+            <Name>SCHROEDINGER_ZERO_GAUGEBC</Name>
             <SchrPhiMult>2.0</SchrPhiMult>
             <loop_extent>1</loop_extent>
             <decay_dir>3</decay_dir>
