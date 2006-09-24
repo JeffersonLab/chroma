@@ -1,4 +1,4 @@
-// $Id: plaq_plus_spatial_two_plaq_gaugeact.cc,v 3.6 2006-09-20 20:28:00 edwards Exp $
+// $Id: plaq_plus_spatial_two_plaq_gaugeact.cc,v 3.7 2006-09-24 20:58:30 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -212,7 +212,7 @@ namespace Chroma
 	  LatticeColorMatrix u_mu_plus_nu = shift(u[mu], FORWARD, nu);
 	  LatticeColorMatrix u_nu_plus_mu = shift(u[nu], FORWARD, mu);
 
-	  tmp = adj(u[nu]*u_mu_plus_nu);
+	  tmp = adj(u_mu_plus_nu)*adj(u[nu]);
 
 	  // Now we do 
 	  //
@@ -220,7 +220,7 @@ namespace Chroma
 	  //           |  (we'll use this for (2) and (3)
 	  //           |
 	  //   <-------v
-	  tmp2 = adj(u[mu]*u_nu_plus_mu);
+	  tmp2 = adj(u_nu_plus_mu)*adj(u[mu]);
 
 
 	  // Make munu plaquette which is just adj(tmp2)*tmp1
@@ -296,7 +296,7 @@ namespace Chroma
       //   |
       //   |           (we'll use this for (1) and (4))
       //   V
-      tmp = adj(u[nu]*u_t_plus_nu);
+      tmp = adj(u_t_plus_nu)*adj(u[nu]);
       
       // Now we do 
       //
@@ -305,7 +305,7 @@ namespace Chroma
       //           |
       //   <-------v
       
-      tmp2 = adj(u[t_dir]*u_nu_plus_t);
+      tmp2 = adj(u_nu_plus_t)*adj(u[t_dir]);
       
 
       // Now Term (1)

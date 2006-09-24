@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.7 2006-09-20 20:28:00 edwards Exp $
+// $Id: rect_gaugeact.cc,v 3.8 2006-09-24 20:58:30 edwards Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -195,7 +195,7 @@ namespace Chroma
 
     // = u(x+nu, mu)*u(x+mu+nu, mu)*u^dag(x+2mu, nu)*u^dag(x+mu, mu)*u^dag(x,mu)
 
-    ds_u[nu] += adj(from_left_2link*upper_l);
+    ds_u[nu] += adj(upper_l)*adj(from_left_2link);
 
     
 
@@ -213,7 +213,7 @@ namespace Chroma
     //          x   <----- <---- V x + 2mu
 
     //  u^dag(x+2mu,nu) U^dag(x+mu,mu) U^dag(x,mu) U(x,nu)
-    tmp = adj(from_left_2link*tmp2);
+    tmp = adj(tmp2)*adj(from_left_2link);
       
     LatticeColorMatrix down_staple = tmp*u[nu];
 
