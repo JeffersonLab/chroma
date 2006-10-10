@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_seqsource.h,v 3.3 2006-10-10 18:32:06 edwards Exp $ 
+// $Id: hadron_seqsource.h,v 3.4 2006-10-10 21:01:08 edwards Exp $ 
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -39,15 +39,11 @@ namespace Chroma
 		      const multi1d<int>& sink_mom, 
 		      int t_sink, int j_decay) const;
 
-    //! Time-ordering phase of source and sink hadron states
-    /*! Default is 1 */
-    virtual Complex timeOrder(const multi1d<int>& t_srce, int t_sink, int j_decay) const
-    {
-      return Real(1);
-    }
-
     //! Convenience function to yank the source location from the forward prop headers
     virtual multi1d<int> getTSrce(const multi1d<ForwardProp_t>& forward_headers) const;
+
+    //! Convenience function to yank the boundary condition from the forward prop headers
+    virtual multi1d<int> getBC(const multi1d<ForwardProp_t>& forward_headers) const;
   };
 
 }

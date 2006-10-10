@@ -1,4 +1,4 @@
-// $Id: hadron_seqsource.cc,v 3.3 2006-10-10 18:32:06 edwards Exp $
+// $Id: hadron_seqsource.cc,v 3.4 2006-10-10 21:01:08 edwards Exp $
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -45,7 +45,7 @@ namespace Chroma
 	  if (sink_mom[j] != 0)
 	  {
 	    nonzeroP = true;
-	    p_dot_x += Layout::latticeCoordinate(mu) * sink_mom[j] 
+	    p_dot_x += (Layout::latticeCoordinate(mu) - t_srce[mu]) * sink_mom[j] 
 	      * twopi / Real(Layout::lattSize()[mu]);
 	  }
 	  j++;
@@ -73,14 +73,13 @@ namespace Chroma
   multi1d<int>
   hadSeqSourceGetTSrce(const multi1d<ForwardProp_t>& forward_headers)
   {
-    // Lazy - just get the first location
     multi1d<int> t_srce = forward_headers[0].source_header.getTSrce();
 
     for(int loop=1; loop < forward_headers.size(); ++loop)
     {
       multi1d<int> t_srce_b = forward_headers[loop].source_header.getTSrce();
 
-      // Bummer, I wish qdp++ had an multi1d.operator!=()
+      // Bummer, I wish qdp++ had a multi1d.operator!=()
       bool same = true;
       for(int i=0; i < t_srce.size(); ++i)
       {
@@ -97,6 +96,36 @@ namespace Chroma
     }
 
     return t_srce;
+  }
+
+
+  //! Get fermion bc
+  multi1d<int>
+  hadSeqSourceGetBC(const multi1d<ForwardProp_t>& forward_headers)
+  {
+    multi1d<int> bc = getFermActBoundary(forward_headers[0].prop_header.fermact);
+
+    for(int loop=1; loop < forward_headers.size(); ++loop)
+    {
+      multi1d<int> bc_b = getFermActBoundary(forward_headers[loop].prop_header.fermact);
+    
+      // Bummer, I wish qdp++ had a multi1d.operator!=()
+      bool same = true;
+      for(int i=0; i < bc.size(); ++i)
+      {
+	if (bc_b[i] != bc[i]) 
+	  same = false;
+      }
+      
+      if (! same)
+      {
+	QDPIO::cerr << __func__ << ": the bc in the forward props are not all equal"
+		    << endl;
+	QDP_abort(1);
+      }
+    }
+
+    return bc;
   }
 
 
@@ -122,6 +151,14 @@ namespace Chroma
   HadronSeqSource<LatticePropagator>::getTSrce(const multi1d<ForwardProp_t>& forward_headers) const
   {
     return hadSeqSourceGetTSrce(forward_headers);
+  }
+
+
+  // Default versions
+  multi1d<int>
+  HadronSeqSource<LatticePropagator>::getBC(const multi1d<ForwardProp_t>& forward_headers) const
+  {
+    return hadSeqSourceGetBC(forward_headers);
   }
 
 

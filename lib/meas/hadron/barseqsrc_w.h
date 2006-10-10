@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barseqsrc_w.h,v 3.3 2006-10-10 18:27:25 edwards Exp $
+// $Id: barseqsrc_w.h,v 3.4 2006-10-10 21:01:08 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -42,9 +42,14 @@ namespace Chroma
       virtual ~BaryonSeqSourceBase() {}
 
     protected:
+      //! Combine projection with time-ordering
+      virtual LatticePropagator projectBaryon(const LatticePropagator& src_prop_tmp,
+					      const multi1d<ForwardProp_t>& forward_headers,
+					      const multi1d<int>& sink_mom, 
+					      int t_sink, int j_decay) const;
+
       //! Time-ordering phase of source and sink hadron states
-      /*! Override parent method */
-      virtual Complex timeOrder(const multi1d<int>& t_srce, int t_sink, int j_decay) const;
+      virtual Complex timeOrder(int t_source, int t_sink, int bc_spec) const;
     };
 
 

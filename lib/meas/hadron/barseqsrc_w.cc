@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 3.3 2006-10-10 18:27:25 edwards Exp $
+// $Id: barseqsrc_w.cc,v 3.4 2006-10-10 21:01:08 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -116,16 +116,34 @@ namespace Chroma
 
 
 
+    // Combine projection with time-ordering
+    LatticePropagator 
+    BaryonSeqSourceBase::projectBaryon(const LatticePropagator& src_prop_tmp,
+				       const multi1d<ForwardProp_t>& forward_headers,
+				       const multi1d<int>& sink_mom, 
+				       int t_sink, int j_decay) const
+    {
+      // Multiply in time-ordering phase
+      multi1d<int> t_srce = getTSrce(forward_headers);
+      multi1d<int> bc     = getBC(forward_headers);
+      Complex phase = timeOrder(t_srce[j_decay], t_sink, bc[j_decay]);
+
+      return project(LatticePropagator(phase * src_prop_tmp),
+		     t_srce,
+		     sink_mom, t_sink, j_decay);
+
+    }
+
+
     // Time-ordering phase of source and sink hadron states
-    Complex BaryonSeqSourceBase::timeOrder(const multi1d<int>& t_srce, 
-					int t_sink, int j_decay) const
+    Complex BaryonSeqSourceBase::timeOrder(int t_source, int t_sink, int bc_spec) const
     {
       Complex phase;
 
-      if (t_srce[j_decay] <= t_sink)
-	phase = cmplx(Real(1),Real(0));
+      if ( (bc_spec < 0) && (t_source > t_sink) )
+	phase = -1;
       else
-	phase = cmplx(-Real(1),Real(0));
+	phase = 1;
 
       return phase;
     }
@@ -168,15 +186,11 @@ namespace Chroma
 
       src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
-      // Multiply in time-ordering phase
-      multi1d<int> t_srce = getTSrce(forward_headers);
-      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
-
       END_CODE();
 
-      return project(src_prop_tmp,
-		     t_srce,
-		     params.sink_mom, params.t_sink, params.j_decay);
+      return projectBaryon(src_prop_tmp,
+			   forward_headers,
+			   params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
@@ -211,15 +225,11 @@ namespace Chroma
 
       src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
-      // Multiply in time-ordering phase
-      multi1d<int> t_srce = getTSrce(forward_headers);
-      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
-
       END_CODE();
 
-      return project(src_prop_tmp,
-		     t_srce,
-		     params.sink_mom, params.t_sink, params.j_decay);
+      return projectBaryon(src_prop_tmp,
+			   forward_headers,
+			   params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
@@ -257,13 +267,14 @@ namespace Chroma
 
       // Multiply in time-ordering phase
       multi1d<int> t_srce = getTSrce(forward_headers);
-      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
+      multi1d<int> bc     = getBC(forward_headers);
+      src_prop_tmp *= timeOrder(t_srce[params.j_decay], params.t_sink, bc[params.j_decay]);
 
       END_CODE();
 
-      return project(src_prop_tmp,
-		     t_srce,
-		     params.sink_mom, params.t_sink, params.j_decay);
+      return projectBaryon(src_prop_tmp,
+			   forward_headers,
+			   params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
@@ -315,13 +326,14 @@ namespace Chroma
 
       // Multiply in time-ordering phase
       multi1d<int> t_srce = getTSrce(forward_headers);
-      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
+      multi1d<int> bc     = getBC(forward_headers);
+      src_prop_tmp *= timeOrder(t_srce[params.j_decay], params.t_sink, bc[params.j_decay]);
 
       END_CODE();
 
-      return project(src_prop_tmp,
-		     t_srce,
-		     params.sink_mom, params.t_sink, params.j_decay);
+      return projectBaryon(src_prop_tmp,
+			   forward_headers,
+			   params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
@@ -365,13 +377,14 @@ namespace Chroma
 
       // Multiply in time-ordering phase
       multi1d<int> t_srce = getTSrce(forward_headers);
-      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
+      multi1d<int> bc     = getBC(forward_headers);
+      src_prop_tmp *= timeOrder(t_srce[params.j_decay], params.t_sink, bc[params.j_decay]);
 
       END_CODE();
 
-      return project(src_prop_tmp,
-		     t_srce,
-		     params.sink_mom, params.t_sink, params.j_decay);
+      return projectBaryon(src_prop_tmp,
+			   forward_headers,
+			   params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
