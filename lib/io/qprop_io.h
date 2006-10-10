@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.3 2006-07-04 02:55:51 edwards Exp $
+// $Id: qprop_io.h,v 3.4 2006-10-10 17:50:37 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -27,7 +27,7 @@ struct PropSourceConst_t
 {
   PropSourceConst_t();              /*!< default constructor */
 
-  multi1d<int> getTSrce();          /*!< return 4D coords of source (may not exist) */
+  multi1d<int> getTSrce() const;    /*!< return 4D coords of source (may not exist) */
 
   GroupXML_t       source;          /*!< Holds source xml params*/
 

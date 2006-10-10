@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.6 2006-09-14 02:55:30 edwards Exp $
+// $Id: qprop_io.cc,v 3.7 2006-10-10 17:50:37 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -64,7 +64,7 @@ namespace Chroma
   }
 
   // Given a prop source xml in string form, return the t_srce
-  multi1d<int> PropSourceConst_t::getTSrce()
+  multi1d<int> PropSourceConst_t::getTSrce() const
   {
     //
     // Initialize source xml
