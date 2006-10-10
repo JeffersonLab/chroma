@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 3.2 2006-10-10 17:52:43 edwards Exp $
+// $Id: barseqsrc_w.cc,v 3.3 2006-10-10 18:27:25 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -115,6 +115,22 @@ namespace Chroma
     }
 
 
+
+    // Time-ordering phase of source and sink hadron states
+    Complex BaryonSeqSourceBase::timeOrder(const multi1d<int>& t_srce, 
+					int t_sink, int j_decay) const
+    {
+      Complex phase;
+
+      if (t_srce[j_decay] <= t_sink)
+	phase = cmplx(Real(1),Real(0));
+      else
+	phase = cmplx(-Real(1),Real(0));
+
+      return phase;
+    }
+
+
     //! Nucleon-Nucleon U piece with general projector and Cg5
     LatticePropagator
     BarNuclUTCg5::operator()(const multi1d<LatticeColorMatrix>& u,
@@ -152,8 +168,14 @@ namespace Chroma
 
       src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
+      // Multiply in time-ordering phase
+      multi1d<int> t_srce = getTSrce(forward_headers);
+      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
+
+      END_CODE();
+
       return project(src_prop_tmp,
-		     getTSrce(forward_headers),
+		     t_srce,
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -189,10 +211,14 @@ namespace Chroma
 
       src_prop_tmp -= transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
+      // Multiply in time-ordering phase
+      multi1d<int> t_srce = getTSrce(forward_headers);
+      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
+
       END_CODE();
 
       return project(src_prop_tmp,
-		     getTSrce(forward_headers),
+		     t_srce,
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -229,10 +255,14 @@ namespace Chroma
       di_quark = quarkContract12(q2_tmp, q1_tmp);
       src_prop_tmp = di_quark - transposeSpin(di_quark);   // bad guy - good guy
 
+      // Multiply in time-ordering phase
+      multi1d<int> t_srce = getTSrce(forward_headers);
+      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
+
       END_CODE();
 
       return project(src_prop_tmp,
-		     getTSrce(forward_headers),
+		     t_srce,
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -283,10 +313,14 @@ namespace Chroma
       src_prop_tmp += quarkContract14(q1_tmp, q2_tmp) + quarkContract13(q1_tmp, q2_tmp);
       src_prop_tmp *= 2;
 
+      // Multiply in time-ordering phase
+      multi1d<int> t_srce = getTSrce(forward_headers);
+      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
+
       END_CODE();
 
       return project(src_prop_tmp,
-		     getTSrce(forward_headers),
+		     t_srce,
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -329,10 +363,14 @@ namespace Chroma
 
       src_prop_tmp += traceSpin(di_quark) * T;
 
+      // Multiply in time-ordering phase
+      multi1d<int> t_srce = getTSrce(forward_headers);
+      src_prop_tmp *= timeOrder(t_srce, params.t_sink, params.j_decay);
+
       END_CODE();
 
       return project(src_prop_tmp,
-		     getTSrce(forward_headers),
+		     t_srce,
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 

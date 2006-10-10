@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barseqsrc_w.h,v 3.2 2006-10-10 17:52:43 edwards Exp $
+// $Id: barseqsrc_w.h,v 3.3 2006-10-10 18:27:25 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -33,12 +33,28 @@ namespace Chroma
     };
 
 
+    //! Baryon-Baryon seqsources have a time order phase
+    /*! @ingroup hadron */
+    class BaryonSeqSourceBase : public HadronSeqSource<LatticePropagator>
+    {
+    public:
+      //! Virtual destructor to help with cleanup;
+      virtual ~BaryonSeqSourceBase() {}
+
+    protected:
+      //! Time-ordering phase of source and sink hadron states
+      /*! Override parent method */
+      virtual Complex timeOrder(const multi1d<int>& t_srce, int t_sink, int j_decay) const;
+    };
+
+
+
     //! Nucleon-Nucleon U piece with general projector and Cg5
     /*! @ingroup hadron
      *
      * Create a simple baryon sequential propagator source
      */
-    class BarNuclUTCg5 : public HadronSeqSource<LatticePropagator>
+    class BarNuclUTCg5 : public BaryonSeqSourceBase
     {
     public:
       //! Full constructor
@@ -69,7 +85,7 @@ namespace Chroma
      *
      * Create a simple baryon sequential propagator source
      */
-    class BarNuclDTCg5 : public HadronSeqSource<LatticePropagator>
+    class BarNuclDTCg5 : public BaryonSeqSourceBase
     {
     public:
       //! Full constructor
@@ -100,7 +116,7 @@ namespace Chroma
      *
      * Create a simple baryon sequential propagator source
      */
-    class BarNuclPatchMixedNR : public HadronSeqSource<LatticePropagator>
+    class BarNuclPatchMixedNR : public BaryonSeqSourceBase
     {
     public:
       //! Full constructor
@@ -128,7 +144,7 @@ namespace Chroma
      *
      * Create a simple baryon sequential propagator source
      */
-    class BarDeltaUTsp : public HadronSeqSource<LatticePropagator>
+    class BarDeltaUTsp : public BaryonSeqSourceBase
     {
     public:
       //! Full constructor
@@ -158,7 +174,7 @@ namespace Chroma
      *
      * Create a simple baryon sequential propagator source
      */
-    class BarDeltaDTsp : public HadronSeqSource<LatticePropagator>
+    class BarDeltaDTsp : public BaryonSeqSourceBase
     {
     public:
       //! Full constructor
