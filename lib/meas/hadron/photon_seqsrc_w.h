@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: photon_seqsrc_w.h,v 3.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: photon_seqsrc_w.h,v 3.3 2006-10-10 17:52:44 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -54,6 +54,7 @@ namespace Chroma
 
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props) const;
 
     private:
@@ -75,6 +76,7 @@ namespace Chroma
 
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props) const;
 
     private:

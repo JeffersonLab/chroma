@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_seqsource.h,v 3.0 2006-04-03 04:58:59 edwards Exp $ 
+// $Id: hadron_seqsource.h,v 3.1 2006-10-10 17:52:44 edwards Exp $ 
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -8,6 +8,7 @@
 #define __hadron_seqsource_h__
 
 #include "chromabase.h"
+#include "io/qprop_io.h"
 
 namespace Chroma
 {
@@ -25,6 +26,7 @@ namespace Chroma
 
     //! Construct the source
     virtual T operator()(const multi1d<LatticeColorMatrix>& u,
+			 const multi1d<ForwardProp_t>& forward_headers,
 			 const multi1d<T>& forward_props) const = 0;
 
   protected:
@@ -33,9 +35,12 @@ namespace Chroma
      * \param src_prop_tmp     Sequential source before projection to a specific momenta ( Read )
      */
     virtual T project(const T& src_prop_tmp,
+		      const multi1d<int>& t_srce, 
 		      const multi1d<int>& sink_mom, 
 		      int t_sink, int j_decay) const;
 
+    //! Convenience function to yank the source location from the forward prop headers
+    virtual multi1d<int> getTSrce(const multi1d<ForwardProp_t>& forward_headers) const;
   };
 
 }

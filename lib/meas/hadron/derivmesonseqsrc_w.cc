@@ -1,4 +1,4 @@
-// $Id: derivmesonseqsrc_w.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
+// $Id: derivmesonseqsrc_w.cc,v 3.2 2006-10-10 17:52:43 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -495,6 +495,7 @@ namespace Chroma
     // See corresponding .h file for doxygen comments
     LatticePropagator
     MesPionPionxNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					  const multi1d<ForwardProp_t>& forward_headers,
 					  const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -511,7 +512,8 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
@@ -519,6 +521,7 @@ namespace Chroma
     // See corresponding .h file for doxygen comments
     LatticePropagator
     MesPionA0xNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					const multi1d<ForwardProp_t>& forward_headers,
 					const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -534,7 +537,9 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
@@ -542,6 +547,7 @@ namespace Chroma
     // See corresponding .h file for doxygen comments
     LatticePropagator
     MesPionA02xNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					 const multi1d<ForwardProp_t>& forward_headers,
 					 const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -557,13 +563,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     // Construct pion_1-(RhoxNabla_A1) sequential source
     LatticePropagator
     MesPionRhoxNablaA1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					 const multi1d<ForwardProp_t>& forward_headers,
 					 const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -580,13 +589,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     // Construct pion_1-(RhoxNabla_T1) sequential source
     LatticePropagator
     MesPionRhoxNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					 const multi1d<ForwardProp_t>& forward_headers,
 					 const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -607,13 +619,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     // Construct pion_1-(RhoxNabla_T2) sequential source
     LatticePropagator
     MesPionRhoxNablaT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					 const multi1d<ForwardProp_t>& forward_headers,
 					 const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -634,13 +649,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     // Construct pion_1-(A1xNabla_A1) sequential source
     LatticePropagator
     MesPionA1xNablaA1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					const multi1d<ForwardProp_t>& forward_headers,
 					const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -659,6 +677,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -666,6 +685,7 @@ namespace Chroma
     // Construct pion_1-(A1xNabla_T2) sequential source
     LatticePropagator
     MesPionA1xNablaT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					const multi1d<ForwardProp_t>& forward_headers,
 					const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -688,6 +708,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -695,6 +716,7 @@ namespace Chroma
     // Construct pion_1-(A1xNabla_E) sequential source
     LatticePropagator
     MesPionA1xNablaESeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				       const multi1d<ForwardProp_t>& forward_headers,
 				       const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -717,6 +739,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -724,6 +747,7 @@ namespace Chroma
     // Construct pion_1-(B1xNabla_T1) sequential source
     LatticePropagator
     MesPionB1xNablaT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+					const multi1d<ForwardProp_t>& forward_headers,
 					const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -746,6 +770,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -753,6 +778,7 @@ namespace Chroma
     // Construct pion_1-(A0_2xD_T2) sequential source
     LatticePropagator
     MesPionA02xDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
 				     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -768,13 +794,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     // Construct pion_1-(A1xD_A2) sequential source
     LatticePropagator
     MesPionA1xDA2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -793,6 +822,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -800,6 +830,7 @@ namespace Chroma
     // Construct pion_1-(A1xD_E) sequential source
     LatticePropagator
     MesPionA1xDESeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -822,6 +853,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -829,6 +861,7 @@ namespace Chroma
     // Construct pion_1-(A1xD_T1) sequential source
     LatticePropagator
     MesPionA1xDT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -851,6 +884,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -858,6 +892,7 @@ namespace Chroma
     // Construct pion_1-(A1xD_T2) sequential source
     LatticePropagator
     MesPionA1xDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -880,6 +915,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -887,6 +923,7 @@ namespace Chroma
     // Construct pion_1-(B1xD_A2) sequential source
     LatticePropagator
     MesPionB1xDA2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -905,6 +942,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -912,6 +950,7 @@ namespace Chroma
     // Construct pion_1-(B1xD_E) sequential source
     LatticePropagator
     MesPionB1xDESeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -934,6 +973,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -941,6 +981,7 @@ namespace Chroma
     // Construct pion_1-(B1xD_T1) sequential source
     LatticePropagator
     MesPionB1xDT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -963,6 +1004,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -970,6 +1012,7 @@ namespace Chroma
     // Construct pion_1-(B1xD_T2) sequential source
     LatticePropagator
     MesPionB1xDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -992,6 +1035,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(1 << 3) * (Gamma(G5) * fin)), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -999,6 +1043,7 @@ namespace Chroma
     // Construct pion_1-(RhoxD_A2) sequential source
     LatticePropagator
     MesPionRhoxDA2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
 				     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1016,13 +1061,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     //! Construct pion_1-(RhoxD_T1) sequential source
     LatticePropagator
     MesPionRhoxDT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
 				     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1044,13 +1092,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     //! Construct pion_1-(RhoxD_T2) sequential source
     LatticePropagator
     MesPionRhoxDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
 				     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1072,13 +1123,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     // Construct pion_1-(PionxD_T2) sequential source
     LatticePropagator
     MesPionPionxDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				      const multi1d<ForwardProp_t>& forward_headers,
 				      const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1095,13 +1149,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
  
     //! Construct pion_1-(PionxB_T1) sequential source
     LatticePropagator
     MesPionPionxBT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				      const multi1d<ForwardProp_t>& forward_headers,
 				      const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1118,13 +1175,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     //! Construct pion_1-(RhoxB_T1) sequential source
     LatticePropagator
     MesPionRhoxBT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
 				     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1146,13 +1206,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     //! Construct pion_1-(RhoxB_T2) sequential source
     LatticePropagator
     MesPionRhoxBT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
 				     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1174,13 +1237,16 @@ namespace Chroma
       
       END_CODE();
 
-      return project(fin, params.sink_mom, params.t_sink, params.j_decay);
+      return project(fin, 
+		     getTSrce(forward_headers),
+		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
 
     //! Construct pion_1-(A1xB_A1) sequential source
     LatticePropagator
     MesPionA1xBA1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1199,6 +1265,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -1206,6 +1273,7 @@ namespace Chroma
     //! Construct pion_1-(RhoxB_T1) sequential source
     LatticePropagator
     MesPionA1xBT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1228,6 +1296,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -1235,6 +1304,7 @@ namespace Chroma
     //! Construct pion_1-(A1xB_T2) sequential source
     LatticePropagator
     MesPionA1xBT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -1257,6 +1327,7 @@ namespace Chroma
       END_CODE();
 
       return project(LatticePropagator(Gamma(G5) * fin), 
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 

@@ -1,4 +1,4 @@
-// $Id: barseqsrc_w.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
+// $Id: barseqsrc_w.cc,v 3.2 2006-10-10 17:52:43 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -118,6 +118,7 @@ namespace Chroma
     //! Nucleon-Nucleon U piece with general projector and Cg5
     LatticePropagator
     BarNuclUTCg5::operator()(const multi1d<LatticeColorMatrix>& u,
+			     const multi1d<ForwardProp_t>& forward_headers,
 			     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -152,6 +153,7 @@ namespace Chroma
       src_prop_tmp -= quarkContract13(q1_tmp, q2_tmp) + transposeSpin(quarkContract12(q2_tmp, q1_tmp));
 
       return project(src_prop_tmp,
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -159,6 +161,7 @@ namespace Chroma
     //! Nucleon-Nucleon D piece with general projector and Cg5
     LatticePropagator
     BarNuclDTCg5::operator()(const multi1d<LatticeColorMatrix>& u,
+			     const multi1d<ForwardProp_t>& forward_headers,
 			     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -189,6 +192,7 @@ namespace Chroma
       END_CODE();
 
       return project(src_prop_tmp,
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -196,6 +200,7 @@ namespace Chroma
     // Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
     LatticePropagator
     BarNuclPatchMixedNR::operator()(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
 				    const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -227,6 +232,7 @@ namespace Chroma
       END_CODE();
 
       return project(src_prop_tmp,
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -234,6 +240,7 @@ namespace Chroma
     //! Delta+ - Delta+ U piece with general projector and spin matrix
     LatticePropagator
     BarDeltaUTsp::operator()(const multi1d<LatticeColorMatrix>& u,
+			     const multi1d<ForwardProp_t>& forward_headers,
 			     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -279,6 +286,7 @@ namespace Chroma
       END_CODE();
 
       return project(src_prop_tmp,
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 
@@ -286,6 +294,7 @@ namespace Chroma
     //! Delta+ - Delta+ D piece with general projector and spin matrix
     LatticePropagator
     BarDeltaDTsp::operator()(const multi1d<LatticeColorMatrix>& u,
+			     const multi1d<ForwardProp_t>& forward_headers,
 			     const multi1d<LatticePropagator>& quark_propagators) const
     {
       START_CODE();
@@ -323,6 +332,7 @@ namespace Chroma
       END_CODE();
 
       return project(src_prop_tmp,
+		     getTSrce(forward_headers),
 		     params.sink_mom, params.t_sink, params.j_decay);
     }
 

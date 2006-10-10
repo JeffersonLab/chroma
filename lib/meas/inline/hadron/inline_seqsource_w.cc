@@ -1,4 +1,4 @@
-// $Id: inline_seqsource_w.cc,v 3.3 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_seqsource_w.cc,v 3.4 2006-10-10 17:52:44 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
@@ -182,8 +182,7 @@ namespace Chroma
     // Read the quark propagator and extract headers
     //
     multi1d<LatticePropagator> forward_props(params.named_obj.prop_ids.size());
-    multi1d<ChromaProp_t> prop_header(params.named_obj.prop_ids.size());
-    multi1d<PropSourceConst_t> source_header(params.named_obj.prop_ids.size());
+    multi1d<ForwardProp_t> forward_headers(params.named_obj.prop_ids.size());
     push(xml_out, "Forward_prop_infos");
     for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
     {
@@ -202,8 +201,8 @@ namespace Chroma
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	{
-	  read(prop_record_xml, "/Propagator/ForwardProp", prop_header[loop]);
-	  read(prop_record_xml, "/Propagator/PropSource", source_header[loop]);
+	  read(prop_record_xml, "/Propagator/ForwardProp", forward_headers[loop].prop_header);
+	  read(prop_record_xml, "/Propagator/PropSource", forward_headers[loop].source_header);
 	}
 
 	// Save prop input
@@ -228,7 +227,7 @@ namespace Chroma
     QDPIO::cout << "Forward propagator successfully read and parsed" << endl;
 
     // Derived from input prop
-    int j_decay  = source_header[0].j_decay;
+    int j_decay  = forward_headers[0].source_header.j_decay;
 
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, j_decay);
@@ -280,6 +279,7 @@ namespace Chroma
       // Do the sink smearing BEFORE the interpolating operator
       for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
       {
+	forward_headers[loop].sink_header = params.sink_header;
 	(*sinkSmearing)(forward_props[loop]);
       }
     
@@ -300,7 +300,7 @@ namespace Chroma
 
       swatch.reset();
       swatch.start();
-      quark_prop_src = (*hadSeqSource)(u, forward_props);
+      quark_prop_src = (*hadSeqSource)(u, forward_headers, forward_props);
 
       swatch.stop();
     
@@ -350,13 +350,7 @@ namespace Chroma
       SequentialSource_t src;
       src.sink_header = params.sink_header;
       src.seqsource_header = params.param;
-      src.forward_props.resize(params.named_obj.prop_ids.size());
-      for(int loop=0; loop < params.named_obj.prop_ids.size(); ++loop)
-      {
-	src.forward_props[loop].sink_header = params.sink_header;
-	src.forward_props[loop].prop_header = prop_header[loop];
-	src.forward_props[loop].source_header = source_header[loop];
-      }
+      src.forward_props = forward_headers;
 
       XMLBufferWriter record_xml;
       push(record_xml, "SequentialSource");

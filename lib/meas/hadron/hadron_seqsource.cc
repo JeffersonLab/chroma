@@ -1,4 +1,4 @@
-// $Id: hadron_seqsource.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: hadron_seqsource.cc,v 3.1 2006-10-10 17:52:44 edwards Exp $
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -17,6 +17,7 @@ namespace Chroma
     /*! @ingroup hadron */
     template<typename T> 
     T   hadSeqSourceProject(const T& source_prop,
+			    const multi1d<int>& t_srce, 
 			    const multi1d<int>& sink_mom, 
 			    int t_sink, int j_decay)
     {
@@ -68,17 +69,61 @@ namespace Chroma
   }
 
 
+  //! Get source location
+  multi1d<int>
+  hadSeqSourceGetTSrce(const multi1d<ForwardProp_t>& forward_headers)
+  {
+    // Lazy - just get the first location
+    multi1d<int> t_srce = forward_headers[0].source_header.getTSrce();
+
+    for(int loop=1; loop < forward_headers.size(); ++loop)
+    {
+      multi1d<int> t_srce_b = forward_headers[loop].source_header.getTSrce();
+
+      // Bummer, I wish qdp++ had an multi1d.operator!=()
+      bool same = true;
+      for(int i=0; i < t_srce.size(); ++i)
+      {
+	if (t_srce_b[i] != t_srce[i]) 
+	  same = false;
+      }
+      
+      if (! same)
+      {
+	QDPIO::cerr << __func__ << ": the t_srce in the forward props are not all equal"
+		    << endl;
+	QDP_abort(1);
+      }
+    }
+
+    return t_srce;
+  }
+
+
+
+
   // Default versions
   template<>
   LatticePropagator
   HadronSeqSource<LatticePropagator>::project(const LatticePropagator& src_prop_tmp,
+					      const multi1d<int>& t_srce, 
 					      const multi1d<int>& sink_mom, 
 					      int t_sink, int j_decay) const
   {
     return hadSeqSourceProject<LatticePropagator>(src_prop_tmp,
+						  t_srce,
 						  sink_mom,
 						  t_sink, j_decay);
   }
+
+
+  // Default versions
+  multi1d<int>
+  HadronSeqSource<LatticePropagator>::getTSrce(const multi1d<ForwardProp_t>& forward_headers) const
+  {
+    return hadSeqSourceGetTSrce(forward_headers);
+  }
+
 
   // Any other fermion types, like staggered can go here
 
