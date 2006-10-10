@@ -1,4 +1,4 @@
-// $Id: hadron_seqsource.cc,v 3.2 2006-10-10 18:27:25 edwards Exp $
+// $Id: hadron_seqsource.cc,v 3.3 2006-10-10 18:32:06 edwards Exp $
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -114,16 +114,6 @@ namespace Chroma
 						  t_srce,
 						  sink_mom,
 						  t_sink, j_decay);
-  }
-
-
-  // Time-ordering phase of source and sink hadron states
-  /*! Default is nop */
-  Complex
-  HadronSeqSource<LatticePropagator>::timeOrder(const multi1d<int>& t_srce, 
-						int t_sink, int j_decay) const
-  {
-    return Real(1);
   }
 
 
