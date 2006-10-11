@@ -1,4 +1,4 @@
-// $Id: hadron_seqsource.cc,v 3.4 2006-10-10 21:01:08 edwards Exp $
+// $Id: hadron_seqsource.cc,v 3.5 2006-10-11 13:27:07 edwards Exp $
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -147,6 +147,7 @@ namespace Chroma
 
 
   // Default versions
+  template<>
   multi1d<int>
   HadronSeqSource<LatticePropagator>::getTSrce(const multi1d<ForwardProp_t>& forward_headers) const
   {
@@ -155,6 +156,7 @@ namespace Chroma
 
 
   // Default versions
+  template<>
   multi1d<int>
   HadronSeqSource<LatticePropagator>::getBC(const multi1d<ForwardProp_t>& forward_headers) const
   {
