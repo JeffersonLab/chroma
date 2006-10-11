@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.6 2006-09-21 19:42:07 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.7 2006-10-11 13:44:30 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -60,6 +60,7 @@ namespace Chroma
     read(paramtop, "version", version);
     input.use_sink_offset = false;
     input.canonical = false;
+    input.time_reverse = false;
 
     input.cfs = CreateFermStateEnv::nullXMLGroup();
 
@@ -85,6 +86,15 @@ namespace Chroma
 	input.cfs = readXMLGroup(paramtop, "FermState", "Name");
       break;
 
+    case 5:
+      read(paramtop, "use_sink_offset", input.use_sink_offset);
+      read(paramtop, "canonical", input.canonical);
+      read(paramtop, "time_reverse", input.time_reverse);
+
+      if (paramtop.count("FermState") != 0)
+	input.cfs = readXMLGroup(paramtop, "FermState", "Name");
+      break;
+
     default :
       QDPIO::cerr << InlineBuildingBlocksEnv::name << ": input parameter version " 
 		  << version << " unsupported." << endl;
@@ -101,11 +111,12 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 4;
+    int version = 5;
     write(xml, "version", version);
     write(xml, "links_max", input.links_max);
     write(xml, "mom2_max", input.mom2_max);
     write(xml, "canonical", input.canonical);
+    write(xml, "time_reverse", input.time_reverse);
     xml << input.cfs.xml;
 
     pop(xml);
@@ -298,6 +309,7 @@ namespace Chroma
     Out << "  Maximum Number of Links             = " << params.param.links_max              << "\n";
     Out << "  Maximum Spatial Momentum Squared    = " << params.param.mom2_max               << "\n"; 
     Out << "  Filename Canonicalization           = " << params.param.canonical              << "\n"; 
+    Out << "  Time reverse building blocks        = " << params.param.time_reverse           << "\n"; 
 
     Out << "  Text Output File Name               = " << params.bb.OutFileName               << "\n";
     Out <<                                                                                     "\n";
@@ -680,15 +692,15 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       const signed short int DecayDir = j_decay;
 
       swatch.start();
-      BuildingBlocks( B, 
-		      F,
-		      U, GammaInsertions, Flavors,
-		      params.param.links_max, AllLinkPatterns, 
-		      Phases, PhasesCanonical,
-		      Files, T1, T2,
-		      seqsource_header.seqsrc.id, seqsource_header.sink_mom, DecayDir);
+      BuildingBlocks(B, F, U, 
+		     GammaInsertions, Flavors,
+		     params.param.links_max, AllLinkPatterns, 
+		     Phases, PhasesCanonical,
+		     Files, T1, T2,
+		     seqsource_header.seqsrc.id, seqsource_header.sink_mom, DecayDir,
+		     params.param.time_reverse);
       swatch.stop();
-
+      
       Out << "finished calculating building blocks for loop = " << loop << "\n";  Out.flush();
       QDPIO::cout << "finished calculating building blocks for loop = " << loop 
 		  << "  time= "
