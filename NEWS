@@ -1,3 +1,6 @@
+10/11/2006 -- Robert Edwards
+	Version 3.16.1. Small fix in hadron_seqsource to make gcc4 happy.
+
 10/10/2006 -- Robert Edwards
 	Version 3.16.0. Change in seqsource construction. Now pass in full 
         propagator headers as well as props. For baryons, now compensate
