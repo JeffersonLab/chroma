@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.4 2006-10-10 17:50:37 edwards Exp $
+// $Id: qprop_io.h,v 3.5 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -77,7 +77,6 @@ struct ChromaProp_t
   // String holding XML of the FermionAction section
   GroupXML_t      fermact;          /*!< fermion action */
   bool            obsvP;            /*!< measure any observables (like Z_V, or mresP) on 5D prop */
-  int             numRetries;       /*!< number of calls to qprop for each source component */
   
   // String holding XML for auxiliary state information
   GroupXML_t      invParam;         /*!< Inverter parameters */

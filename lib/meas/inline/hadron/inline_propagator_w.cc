@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 3.6 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_propagator_w.cc,v 3.7 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -386,7 +386,6 @@ namespace Chroma
 		       state, 
 		       params.param.invParam, 
 		       params.param.quarkSpinType,
-		       params.param.numRetries,
 		       params.param.obsvP,
 		       ncg_had);
 	swatch.stop();

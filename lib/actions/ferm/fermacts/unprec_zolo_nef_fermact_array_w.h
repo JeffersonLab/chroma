@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 3.4 2006-09-20 20:28:00 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 3.5 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -93,7 +93,6 @@ namespace Chroma
      * \param t_src        time slice of source ( Read )
      * \param j_decay      direction of decay ( Read )
      * \param invParam     inverter parameters ( Read )
-     * \param numRetries   number of retries of qprop calls ( Read )
      * \param ncg_had      number of CG iterations ( Write )
      */
     void quarkProp(LatticePropagator& q_sol,   // Oops, need to make propagator type more general
@@ -103,7 +102,6 @@ namespace Chroma
 		   Handle< FermState<T,P,Q> > state,
 		   const GroupXML_t& invParam,
 		   QuarkSpinType quarkSpinType,
-		   int numRetries,
 		   bool obsvP,
 		   int& ncg_had) const;
       

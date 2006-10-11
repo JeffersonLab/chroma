@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_nef_fermact_array_w.h,v 3.4 2006-09-20 20:27:59 edwards Exp $
+// $Id: prec_nef_fermact_array_w.h,v 3.5 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned NEF fermion action
  */
@@ -103,7 +103,6 @@ namespace Chroma
      * \param t_src         time slice of source ( Read )
      * \param j_decay       direction of decay ( Read )
      * \param invParam      inverter parameters ( Read )
-     * \param numRetries    number of retries of qprop calls ( Read )
      * \param obsvP         compute currents and residual mass ( Read )
      * \param ncg_had       number of CG iterations ( Write )
      */
@@ -114,7 +113,6 @@ namespace Chroma
 		   Handle< FermState<T,P,Q> > state,
 		   const GroupXML_t& invParam,
 		   QuarkSpinType quarkSpinType,
-		   int numRetries,
 		   bool obsvP,
 		   int& ncg_had) const;
 

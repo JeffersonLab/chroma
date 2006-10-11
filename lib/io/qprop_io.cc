@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.7 2006-10-10 17:50:37 edwards Exp $
+// $Id: qprop_io.cc,v 3.8 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -118,7 +118,6 @@ namespace Chroma
   ChromaProp_t::ChromaProp_t()
   {
     obsvP       = true;
-    numRetries  = 1;
     // Create an document with an empty state info tag
   }
 
@@ -741,9 +740,6 @@ namespace Chroma
 
     param.quarkSpinType = QUARK_SPIN_TYPE_FULL;
     param.obsvP = true;
-    param.numRetries = 1;
-
-    QDPIO::cout << __func__ << ": numRetries = " << param.numRetries << endl;
 
     switch (version) 
     {
@@ -855,30 +851,17 @@ namespace Chroma
     break;
 
     case 9:
-    {
-      param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
-
-      read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
-      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
-      read(paramtop, "obsvP", param.obsvP);
-
-      if (paramtop.count("boundary") != 0)
-      {
-	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
-	QDP_abort(1);
-      }
-    }
-    break;
-
     case 10:
     {
+      // NOTE: now version 10 and 9 are identical. Version 10 use to read
+      // numRetries, but that functionality has been removed and the
+      // param is ignored.
       param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
       read(paramtop, "quarkSpinType", param.quarkSpinType); // which quark spins to compute
       param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
       read(paramtop, "obsvP", param.obsvP);
-      read(paramtop, "numRetries", param.numRetries);
-    
+
       if (paramtop.count("boundary") != 0)
       {
 	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
@@ -893,8 +876,6 @@ namespace Chroma
 		  << " unsupported." << endl;
       QDP_abort(1);
     }
-
-    QDPIO::cout << __func__ << ": exiting, param.numRetries = " << param.numRetries << endl;
 
   }
 
@@ -1193,7 +1174,6 @@ namespace Chroma
     write(xml, "version", version);
     write(xml, "quarkSpinType", header.quarkSpinType);
     write(xml, "obsvP", header.obsvP);           // new - measured 5D stuff
-    write(xml, "numRetries", header.numRetries); 
     xml << header.fermact.xml;
     xml << header.invParam.xml;
 

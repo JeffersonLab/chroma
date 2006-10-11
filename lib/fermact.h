@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 3.2 2006-07-03 15:26:06 edwards Exp $
+// $Id: fermact.h,v 3.3 2006-10-11 15:42:26 edwards Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -106,7 +106,6 @@ namespace Chroma
      * \param state         gauge connection state ( Read )
      * \param invParam      inverter parameters ( Read )
      * \param quarkSpinType compute only a non-relativistic prop ( Read )
-     * \param numRetries    number of retries of qprop calls ( Read )
      * \param ncg_had       number of solver iterations ( Write )
      */
     virtual void quarkProp(typename PropTypeTraits<T>::Type_t& q_sol,
@@ -115,7 +114,6 @@ namespace Chroma
 			   Handle< FermState<T,P,Q> > state,
 			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
-			   int numRetries,
 			   int& ncg_had) const = 0;
 
     //! Given a complete propagator as a source, this does all the inversions needed
@@ -128,7 +126,6 @@ namespace Chroma
      * \param state         gauge connection state ( Read )
      * \param invParam      inverter parameters ( Read )
      * \param quarkSpinType compute only a non-relativistic prop ( Read )
-     * \param numRetries    number of retries of qprop calls ( Read )
      * \param ncg_had       number of solver iterations ( Write )
      * \param t_src         time slice of source ( Read )
      * \param j_decay       direction of decay ( Read )
@@ -142,11 +139,10 @@ namespace Chroma
 			   Handle< FermState<T,P,Q> > state,
 			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
-			   int numRetries,
 			   bool obsvP,
 			   int& ncg_had) const
       {
-	quarkProp(q_sol, xml_out, q_src, state, invParam, quarkSpinType, numRetries, ncg_had);
+	quarkProp(q_sol, xml_out, q_src, state, invParam, quarkSpinType, ncg_had);
       }
 
   };
@@ -385,7 +381,6 @@ namespace Chroma
      * \param state         gauge connection state ( Read )
      * \param invParam      inverter parameters ( Read )
      * \param quarkSpinType compute only a non-relativistic prop ( Read )
-     * \param numRetries    number of retries of qprop calls ( Read )
      * \param ncg_had       number of solver iterations ( Write )
      */
     virtual void quarkProp(typename PropTypeTraits<T>::Type_t& q_sol,
@@ -394,7 +389,6 @@ namespace Chroma
 			   Handle< FermState<T,P,Q> > state,
 			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
-			   int numRetries,
 			   int& ncg_had) const;
   };
 
@@ -475,7 +469,6 @@ namespace Chroma
      * \param state         gauge connection state ( Read )
      * \param invParam      inverter parameters ( Read )
      * \param quarkSpinType compute only a non-relativistic prop ( Read )
-     * \param numRetries    number of retries of qprop calls ( Read )
      * \param ncg_had       number of solver iterations ( Write )
      */
     virtual void quarkProp(typename PropTypeTraits<T>::Type_t& q_sol,
@@ -484,7 +477,6 @@ namespace Chroma
 			   Handle< FermState<T,P,Q> > state,
 			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
-			   int numRetries,
 			   int& ncg_had) const;
   };
 
@@ -682,7 +674,6 @@ namespace Chroma
      * \param state         gauge connection state ( Read )
      * \param invParam      inverter parameters ( Read )
      * \param quarkSpinType compute only a non-relativistic prop ( Read )
-     * \param numRetries    number of retries of qprop calls ( Read )
      * \param ncg_had       number of solver iterations ( Write )
      */
     virtual void quarkProp(typename PropTypeTraits<T>::Type_t& q_sol,
@@ -691,7 +682,6 @@ namespace Chroma
 			   Handle< FermState<T,P,Q> > state,
 			   const GroupXML_t& invParam,
 			   QuarkSpinType quarkSpinType,
-			   int numRetries,
 			   int& ncg_had) const;
   };
 

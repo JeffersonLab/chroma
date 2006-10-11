@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwf_quarkprop4_w.h,v 3.2 2006-09-06 03:43:22 edwards Exp $
+// $Id: dwf_quarkprop4_w.h,v 3.3 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -35,7 +35,6 @@ namespace Chroma
 		         multi1d<LatticeColorMatrix>, 
                          multi1d<LatticeColorMatrix> > > state,
 		 const Real& m_q,
-		 int numRetries,
 		 int& ncg_had);
 
 }

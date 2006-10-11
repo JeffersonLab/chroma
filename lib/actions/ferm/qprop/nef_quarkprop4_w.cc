@@ -1,6 +1,11 @@
-// $Id: nef_quarkprop4_w.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
+// $Id: nef_quarkprop4_w.cc,v 3.3 2006-10-11 15:42:26 edwards Exp $
 // $Log: nef_quarkprop4_w.cc,v $
-// Revision 3.2  2006-07-03 15:26:09  edwards
+// Revision 3.3  2006-10-11 15:42:26  edwards
+// Removed use of numRetries !! This was a misguided attempt to get restarts
+// into the code. Will try another way via the system solvers and the
+// InvertParam xml group.
+//
+// Revision 3.2  2006/07/03 15:26:09  edwards
 // Changed FermionAction API to produce system solver classes. No longer have
 // a fixed InvertParam set. Removed old inverter enum and support. Have default
 // creation for inverters to solve M*psi=chi, MdagM*psi=chi, and multi-shift
@@ -113,7 +118,6 @@ namespace Chroma
 		       const C<T,P,Q>& S_f,
 		       Handle< FermState<T,P,Q> > state,
 		       const GroupXML_t& invParam,
-		       int numRetries,
 		       int& ncg_had)
   {
     START_CODE();
@@ -174,7 +178,6 @@ namespace Chroma
 
 	// now we are ready invert
 	// Compute the propagator for given source color/spin.	   
-	for(int ntry=0; ntry < numRetries; ++ntry)
 	{
 	  SystemSolverResults_t result = (*qpropT)(psi,chi);
 	  ncg_had += result.n_count;
@@ -182,7 +185,6 @@ namespace Chroma
 	  push(xml_out,"Qprop");
 	  write(xml_out, "color_source", color_source);
 	  write(xml_out, "spin_source", spin_source);
-	  write(xml_out, "ntry", ntry);
 	  write(xml_out, "n_count", result.n_count);
 	  write(xml_out, "resid", result.resid);
 	  pop(xml_out);
@@ -316,7 +318,6 @@ namespace Chroma
 		      Handle< FermState<LatticeFermion, 
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		      const GroupXML_t& invParam,
-		      int numRetries,
 		      int& ncg_had)
   {
     nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,
@@ -329,7 +330,6 @@ namespace Chroma
 	S_f, 
 	state,
 	invParam,
-	numRetries,
 	ncg_had);
   }
 
@@ -355,7 +355,6 @@ namespace Chroma
 		      Handle< FermState<LatticeFermion,
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		      const GroupXML_t& invParam,
-		      int numRetries,
 		      int& ncg_had)
   {
     nef_quarkProp_a<LatticeFermion,multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix>,
@@ -368,7 +367,6 @@ namespace Chroma
 	S_f, 
 	state,
 	invParam,
-	numRetries,
 	ncg_had);
   }
 

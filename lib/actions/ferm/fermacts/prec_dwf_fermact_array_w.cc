@@ -1,4 +1,4 @@
-// $Id: prec_dwf_fermact_array_w.cc,v 3.7 2006-09-20 20:27:59 edwards Exp $
+// $Id: prec_dwf_fermact_array_w.cc,v 3.8 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -218,20 +218,19 @@ namespace Chroma
 				       Handle< FermState<T,P,Q> > state,
 				       const GroupXML_t& invParam,
 				       QuarkSpinType quarkSpinType,
-				       int numRetries,
 				       bool obsvP,
 				       int& ncg_had) const
   {
-    if (obsvP)
+    if (obsvP && (quarkSpinType == QUARK_SPIN_TYPE_FULL))
     {
       Handle< SystemSolverArray<LatticeFermion> > qpropT(this->qpropT(state, invParam));
       dwf_quarkProp4(q_sol, xml_out, q_src, t_src, j_decay, 
-		     qpropT, state, getQuarkMass(), numRetries, ncg_had);
+		     qpropT, state, getQuarkMass(), ncg_had);
     }
     else
     {
       Handle< SystemSolver<LatticeFermion> > qprop(this->qprop(state,invParam));
-      quarkProp4(q_sol, xml_out, q_src, qprop, quarkSpinType, numRetries, ncg_had);
+      quarkProp4(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
     }
   }
 

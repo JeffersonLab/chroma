@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 3.3 2006-08-18 15:52:43 edwards Exp $
+// $Id: quarkprop4_s.cc,v 3.4 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -37,7 +37,6 @@ namespace Chroma
 		   Handle< FermState<T,P,Q> > state,
 		   const GroupXML_t& invParam,
 		   QuarkSpinType quarkSpinType,
-		   int numRetries,
 		   int& ncg_had)
   {
     START_CODE();
@@ -74,14 +73,12 @@ namespace Chroma
       chi *= fact;
 
       // Compute the propagator for given source color.
-      for(int ntry=0; ntry < numRetries; ++ntry)
       {
 	SystemSolverResults_t result = (*qprop)(psi,chi);
 	ncg_had += result.n_count;
 
 	push(xml_out,"Qprop");
 	write(xml_out, "color_source", color_source);
-	write(xml_out, "ntry", ntry);
 	write(xml_out, "n_count", result.n_count);
 	write(xml_out, "resid", result.resid);
 	pop(xml_out);
@@ -131,13 +128,12 @@ namespace Chroma
 		  multi1d<LatticeColorMatrix> > > state,
 		  const GroupXML_t& invParam,
 		  QuarkSpinType quarkSpinType,
-		  int numRetries,
 		  int& ncg_had)
   {
     quarkProp_a<LatticeStaggeredFermion,
       multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >(q_sol, xml_out, q_src, S_f, state, invParam, 
-				    quarkSpinType, numRetries, ncg_had);
+				    quarkSpinType, ncg_had);
   }
 
 
@@ -165,10 +161,9 @@ namespace Chroma
     multi1d<LatticeColorMatrix> > > state,
     const GroupXML_t& invParam,
     QuarkSpinType quarkSpinType,
-    int numRetries,
     int& ncg_had) const
   {
-    quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, quarkSpinType, numRetries, ncg_had);
+    quarkProp4(q_sol, xml_out, q_src, *this, state, invParam, quarkSpinType, ncg_had);
   }
 
 

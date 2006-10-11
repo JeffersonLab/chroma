@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quarkprop4_w.h,v 3.2 2006-09-06 03:43:22 edwards Exp $
+// $Id: quarkprop4_w.h,v 3.3 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -29,7 +29,6 @@ namespace Chroma
 		  const LatticePropagator& q_src,
 		  Handle< SystemSolver<LatticeFermion> > qprop,
 		  QuarkSpinType quarkSpinType,
-		  int numRetries,
 		  int& ncg_had);
 }
 #endif

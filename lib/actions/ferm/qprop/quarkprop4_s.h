@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quarkprop4_s.h,v 3.3 2006-09-06 03:43:22 edwards Exp $
+// $Id: quarkprop4_s.h,v 3.4 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -34,7 +34,6 @@ namespace Chroma
 		  multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		  const GroupXML_t& invParam,
 		  QuarkSpinType quarkSpinType,
-		  int numRetries,
 		  int& ncg_had);
 
 }

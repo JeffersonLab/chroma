@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
+// $Id: quarkprop4_w.cc,v 3.3 2006-10-11 15:42:26 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -34,7 +34,6 @@ namespace Chroma
 		    const LatticePropagator& q_src,
 		    Handle< SystemSolver<T> > qprop,
 		    QuarkSpinType quarkSpinType,
-		    int numRetries,
 		    int& ncg_had)
   {
     START_CODE();
@@ -93,7 +92,6 @@ namespace Chroma
 	chi *= fact;
 
 	// Compute the propagator for given source color/spin.
-	for(int ntry=0; ntry < numRetries; ++ntry)
 	{
 	  SystemSolverResults_t result = (*qprop)(psi,chi);
 	  ncg_had += result.n_count;
@@ -101,7 +99,6 @@ namespace Chroma
 	  push(xml_out,"Qprop");
 	  write(xml_out, "color_source", color_source);
 	  write(xml_out, "spin_source", spin_source);
-	  write(xml_out, "ntry", ntry);
 	  write(xml_out, "n_count", result.n_count);
 	  write(xml_out, "resid", result.resid);
 	  pop(xml_out);
@@ -210,10 +207,9 @@ namespace Chroma
 		  const LatticePropagator& q_src,
 		  Handle< SystemSolver<LF> > qprop,
 		  QuarkSpinType quarkSpinType,
-		  int numRetries,
 		  int& ncg_had)
   {
-    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, numRetries, ncg_had);
+    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
   }
 
 
@@ -236,11 +232,10 @@ namespace Chroma
     Handle< FermState<LF,LCM,LCM> > state,
     const GroupXML_t& invParam,
     QuarkSpinType quarkSpinType,
-    int numRetries,
     int& ncg_had) const
   {
     Handle< SystemSolver<LF> > qprop(this->qprop(state,invParam));
-    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, numRetries, ncg_had);
+    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
   }
 
 
@@ -264,11 +259,10 @@ namespace Chroma
     Handle< FermState<LF,LCM,LCM> > state,
     const GroupXML_t& invParam,
     QuarkSpinType quarkSpinType,
-    int numRetries,
     int& ncg_had) const
   {
     Handle< SystemSolver<LF> > qprop(this->qprop(state,invParam));
-    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, numRetries, ncg_had);
+    quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
   }
 
 

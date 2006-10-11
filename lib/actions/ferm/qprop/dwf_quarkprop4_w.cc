@@ -1,6 +1,11 @@
-// $Id: dwf_quarkprop4_w.cc,v 3.2 2006-07-20 20:05:50 edwards Exp $
+// $Id: dwf_quarkprop4_w.cc,v 3.3 2006-10-11 15:42:26 edwards Exp $
 // $Log: dwf_quarkprop4_w.cc,v $
-// Revision 3.2  2006-07-20 20:05:50  edwards
+// Revision 3.3  2006-10-11 15:42:26  edwards
+// Removed use of numRetries !! This was a misguided attempt to get restarts
+// into the code. Will try another way via the system solvers and the
+// InvertParam xml group.
+//
+// Revision 3.2  2006/07/20 20:05:50  edwards
 // Added norm.
 //
 // Revision 3.1  2006/06/11 06:30:32  edwards
@@ -220,7 +225,6 @@ namespace Chroma
 		      Handle< FermState<LatticeFermion,
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 		      const Real& m_q,
-		      int numRetries,
 		      int& ncg_had)
   {
     START_CODE();
@@ -273,7 +277,6 @@ namespace Chroma
 
 	// now we are ready invert
 	// Compute the propagator for given source color/spin.	   
-	for(int ntry=0; ntry < numRetries; ++ntry)
 	{
 	  SystemSolverResults_t result = (*qpropT)(psi,chi);
 	  ncg_had += result.n_count;
@@ -281,7 +284,6 @@ namespace Chroma
 	  push(xml_out,"Qprop");
 	  write(xml_out, "color_source", color_source);
 	  write(xml_out, "spin_source", spin_source);
-	  write(xml_out, "ntry", ntry);
 	  write(xml_out, "n_count", result.n_count);
 	  write(xml_out, "resid", result.resid);
 	  pop(xml_out);
