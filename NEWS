@@ -1,4 +1,10 @@
 10/10/2006 -- Robert Edwards
+	Version 3.16.0. Change in seqsource construction. Now pass in full 
+        propagator headers as well as props. For baryons, now compensate
+        for time-ordering of source and sink baryons as well as the
+        spurious phase from a quark source not at the spatial origin.
+
+10/10/2006 -- Robert Edwards
 	Version 3.15.1. Small changes in plaq+adj gauge action. Other small
         regression test cleanups.
 
