@@ -46,7 +46,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 3.4 2006-10-14 04:52:16 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 3.5 2006-10-14 17:26:53 kostas Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -207,11 +207,6 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 
       // counts number of momenta permutations per canonical ordering
       GBB_NMomPerms(f,o) ++;
-
-      //Also please modify the seqsource to have a minus sign when  antiperiodic BC and 
-      // Negative parity (i.e. anti-nucleon). For periodic  BC is plus. (KNO)
-      //All this should fix everything...
-      //End of ROBERTs work...
 
       float real_part[ T2 - T1 + 1 ];
       float imag_part[ T2 - T1 + 1 ];
