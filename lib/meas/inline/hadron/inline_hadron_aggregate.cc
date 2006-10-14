@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.7 2006-10-14 03:56:25 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.8 2006-10-14 03:57:58 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -14,7 +14,7 @@
 #include "meas/inline/hadron/inline_seqsource_w.h"
 #include "meas/inline/hadron/inline_hadspec_w.h"
 #include "meas/inline/hadron/inline_mesonspec_w.h"
-#include "meas/inline/hadron/inline_spectrum_w.h"
+//#include "meas/inline/hadron/inline_spectrum_w.h"
 #include "meas/inline/hadron/inline_sink_smear_w.h"
 #include "meas/inline/hadron/inline_qqq_w.h"
 #include "meas/inline/hadron/inline_qqbar_w.h"
@@ -66,7 +66,7 @@ namespace Chroma
 	success &= InlineSeqSourceEnv::registerAll();
 	success &= InlineHadSpecEnv::registerAll();
 	success &= InlineMesonSpecEnv::registerAll();
-	success &= InlineSpectrumEnv::registerAll();
+//	success &= InlineSpectrumEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();
 	success &= InlineQQQEnv::registerAll();
 	success &= InlineQQbarEnv::registerAll();
