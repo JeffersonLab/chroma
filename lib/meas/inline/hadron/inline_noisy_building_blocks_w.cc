@@ -1,4 +1,4 @@
-// $Id: inline_noisy_building_blocks_w.cc,v 3.6 2006-10-14 04:52:16 edwards Exp $
+// $Id: inline_noisy_building_blocks_w.cc,v 3.7 2006-10-14 05:03:05 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -673,36 +673,18 @@ namespace Chroma
     const signed short int T1 = 0;
     const signed short int T2 = QDP::Layout::lattSize()[j_decay] - 1;
     const signed short int DecayDir = j_decay;
+    const signed short int Tsrc = T1;
+    const signed short int Tsnk = T2;
 
     swatch.start();
 
-//  switch (source_header.source.id) {
-//  case SRC_TYPE_RAND_Z2_WALL_SOURCE:
-//    BuildingBlocks( S, F, U, GammaInsertions, Flavors,
-//                    params.param.links_max, AllNoisyLinkPatterns,
-//                    Phases, PhasesCanonical, Files, T1, T2,
-//                    std::string("RAND_Z2_WALL_SOURCE"), SnkMom, DecayDir);
-//    break;
-//  case SRC_TYPE_RAND_U1_WALL_SOURCE:
-//    BuildingBlocks( S, F, U, GammaInsertions, Flavors,
-//                    params.param.links_max, AllNoisyLinkPatterns,
-//                    Phases, PhasesCanonical, Files, T1, T2,
-//                    std::string("RAND_U1_WALL_SOURCE"), SnkMom, DecayDir);
-//    break;
-//  default:
-//    QDPIO::cout << "Unsupported source type" << endl;
-//    QDP_abort(1);
-//  }
-
     BuildingBlocks( S, F, U, GammaInsertions, Flavors,
 		    params.param.links_max, AllNoisyLinkPatterns, Phases, PhasesCanonical,
-		    Files, T1, T2, 
+		    Files, T1, T2, Tsrc, Tsnk,
 		    source_header.source.id,
 		    SnkMom, DecayDir,
 		    params.param.time_reverse,
 		    false );
-
-//      theSourceTypeMap::Instance().lookUpString(source_header.source.id),
 
     swatch.stop();
 
