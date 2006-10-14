@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_building_blocks_w.h,v 3.3 2006-10-11 13:44:30 edwards Exp $
+// $Id: inline_building_blocks_w.h,v 3.4 2006-10-14 04:52:16 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -40,6 +40,7 @@ namespace Chroma
       int          links_max;          /*!< maximum number of links */
       bool         canonical;          /*!< True if mom in BB filenames is canonicalized */
       bool         time_reverse;       /*!< Time reverse the building blocks */
+      bool         translate;          /*!< Shifts the BB correlator output to start at t_source as 0*/
       GroupXML_t   cfs;                /*!< Fermion state */
     } param;
 

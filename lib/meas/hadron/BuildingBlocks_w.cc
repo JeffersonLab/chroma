@@ -46,7 +46,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 3.3 2006-10-14 04:10:58 kostas Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 3.4 2006-10-14 04:52:16 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -73,8 +73,11 @@ void BkwdFrwdTr( const LatticePropagator &             B,
                  const int                             f,
                  const multi1d< unsigned short int > & LinkDirs,
                  const signed short int                T1, 
-                 const signed short int                T2,
-		 const bool                            TimeReverse )
+                 const signed short int                T2,	
+		 const signed short int                Tsrc,
+		 const signed short int                Tsnk,
+		 const bool                            TimeReverse,
+		 const bool                            ShiftFlag )
 {
   StopWatch TotalTime;
   TotalTime.reset();
@@ -96,6 +99,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
   unsigned short int Link;
   const int NumQ = Phases.numMom();
   const int NumO = BinaryWriters.size1();
+  const int NT   = Phases.numSubsets();  // Length of lattice in decay direction
 
   //#################################################################################//
   // add a tag to identify the link pattern                                          //
@@ -204,12 +208,6 @@ void BkwdFrwdTr( const LatticePropagator &             B,
       // counts number of momenta permutations per canonical ordering
       GBB_NMomPerms(f,o) ++;
 
-      // Robert, could you set these variables to the correct thing?  Thanks.
-      const int t_snk = 4; // No need to know this variable if you use the 
-                           // flip around the source time reversal (KNO)
-      const int t_src = 12;
-      const int NT = 16;
-      bool ShiftFlag=false ;
       //Also please modify the seqsource to have a minus sign when  antiperiodic BC and 
       // Negative parity (i.e. anti-nucleon). For periodic  BC is plus. (KNO)
       //All this should fix everything...
@@ -230,7 +228,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
         {
 #ifdef DRU
           // This is twice the midpoint time-slice.
-	  int _2_t_mp = t_snk + t_src;
+	  int _2_t_mp = Tsnk + Tsrc;
 
 	  //// This is the displacement in time between the quark and anti-quark. It is
           //// needed because quarks and anti-quarks switch under charge conjugation.
@@ -248,16 +246,16 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 #else
 	  //cout<<"TimeReversing: " ;
 	  //shift the time origin to the source
-          int t_shifted = (t - t_src + NT )%NT ;
+          int t_shifted = (t - Tsrc + NT )%NT ;
           //time reverse around the source
           int t_reversed = (NT - t_shifted)%NT; 
           //undo the shift to put time back where it was.
           //we may not want to do this. it may be better to just shift
-          //the time origin to t_src as we do in the spectrum
+          //the time origin to Tsrc as we do in the spectrum
 	  if(ShiftFlag==false) 
-	    t_prime = (t_reversed + t_src)%NT ;
+	    t_prime = (t_reversed + Tsrc)%NT ;
 
-	  //cout<<t<<" "<<t_prime<<" [t_src="<<t_src<<",NT="<<NT<<",tsh="<<t_shifted<<"]"<<endl ;
+	  //cout<<t<<" "<<t_prime<<" [Tsrc="<<Tsrc<<",NT="<<NT<<",tsh="<<t_shifted<<"]"<<endl ;
 #endif
 	}
 
@@ -320,7 +318,10 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
 	       multi2d< int > &                      GBB_NMomPerms,
                const signed short int                T1, 
                const signed short int                T2,
-	       const bool                            TimeReverse )
+	       const signed short int                Tsrc,
+	       const signed short int                Tsnk,
+	       const bool                            TimeReverse,
+	       const bool                            ShiftFlag )
 {
   StopWatch Timer;
   int ShiftCalls = 0;
@@ -376,7 +377,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
         {
           BkwdFrwdTr( B[ f ], F_mu, GammaInsertions[ f ], Phases, PhasesCanonical,
 		      BinaryWriters, GBB_NLinkPatterns, GBB_NMomPerms,
-		      f, NextLinkDirs, T1, T2, TimeReverse );
+		      f, NextLinkDirs, T1, T2, Tsrc, Tsnk, TimeReverse, ShiftFlag );
         }
       }
 
@@ -387,7 +388,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
 		  Phases, PhasesCanonical,
 		  NextLinkDirs, MaxNLinks, LinkPattern, 1, mu, 
 		  BinaryWriters, GBB_NLinkPatterns, GBB_NMomPerms,
-		  T1, T2, TimeReverse );
+		  T1, T2, Tsrc, Tsnk, TimeReverse, ShiftFlag );
       }
     }
   }
@@ -425,7 +426,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
         {
           BkwdFrwdTr( B[ f ], F_mu, GammaInsertions[ f ], Phases, PhasesCanonical,
 		      BinaryWriters, GBB_NLinkPatterns, GBB_NMomPerms,
-		      f, NextLinkDirs, T1, T2, TimeReverse );
+		      f, NextLinkDirs, T1, T2, Tsrc, Tsnk, TimeReverse, ShiftFlag );
         }
       }
 
@@ -435,7 +436,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
         AddLinks( B, F_mu, U, GammaInsertions, Phases, PhasesCanonical,
 		  NextLinkDirs, MaxNLinks, LinkPattern, -1, mu, BinaryWriters, 
 		  GBB_NLinkPatterns, GBB_NMomPerms,
-		  T1, T2, TimeReverse );
+		  T1, T2, Tsrc, Tsnk, TimeReverse, ShiftFlag );
       }
     }
   }
@@ -465,10 +466,13 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 	             const multi2d< string > &             BinaryDataFileNames,
                      const signed short int                T1,
                      const signed short int                T2,
+		     const signed short int                Tsrc,
+		     const signed short int                Tsnk,
 		     const std::string&                    SeqSourceType, 
 		     const multi1d< int >&                 SnkMom, 
 		     const signed short int                DecayDir,
-		     const bool                            TimeReverse )
+		     const bool                            TimeReverse,
+		     const bool                            ShiftFlag )
 {
   StopWatch TotalTime;
   TotalTime.reset();
@@ -526,7 +530,9 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   for( int f = 0; f < NumF; f ++ )
   {
     BkwdFrwdTr( B[ f ], F, GammaInsertions[ f ], Phases, PhasesCanonical,
-		BinaryWriters, GBB_NLinkPatterns, GBB_NMomPerms, f, LinkDirs, T1, T2, TimeReverse );
+		BinaryWriters, GBB_NLinkPatterns, GBB_NMomPerms, f, LinkDirs, 
+		T1, T2, Tsrc, Tsnk,
+		TimeReverse, ShiftFlag );
   }
 
   Timer.stop();
@@ -543,7 +549,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 	    Phases, PhasesCanonical,
 	    LinkDirs, MaxNLinks, LinkPattern, 0, -1, 
 	    BinaryWriters, GBB_NLinkPatterns, GBB_NMomPerms,
-	    T1, T2, TimeReverse );
+	    T1, T2, Tsrc, Tsnk, TimeReverse, ShiftFlag );
 
   Timer.stop();
   QDPIO::cout << __func__ << ": total time for remaining links (outermost AddLinks call) = "
@@ -564,8 +570,6 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   const unsigned short int NY = Layout::lattSize()[1];
   const unsigned short int NZ = Layout::lattSize()[2];
   const unsigned short int NT = Layout::lattSize()[3];
-  //const signed short int T1 = 0;
-  //const signed short int T2 = NT - 1;
   const signed short int   PX = SnkMom[0];
   const signed short int   PY = SnkMom[1];
   const signed short int   PZ = SnkMom[2];

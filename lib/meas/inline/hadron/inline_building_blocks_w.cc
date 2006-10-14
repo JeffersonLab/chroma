@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.7 2006-10-11 13:44:30 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.8 2006-10-14 04:52:16 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -61,6 +61,7 @@ namespace Chroma
     input.use_sink_offset = false;
     input.canonical = false;
     input.time_reverse = false;
+    input.translate = false;
 
     input.cfs = CreateFermStateEnv::nullXMLGroup();
 
@@ -90,6 +91,7 @@ namespace Chroma
       read(paramtop, "use_sink_offset", input.use_sink_offset);
       read(paramtop, "canonical", input.canonical);
       read(paramtop, "time_reverse", input.time_reverse);
+      read(paramtop, "translate", input.translate);
 
       if (paramtop.count("FermState") != 0)
 	input.cfs = readXMLGroup(paramtop, "FermState", "Name");
@@ -117,6 +119,7 @@ namespace Chroma
     write(xml, "mom2_max", input.mom2_max);
     write(xml, "canonical", input.canonical);
     write(xml, "time_reverse", input.time_reverse);
+    write(xml, "translate", input.translate);
     xml << input.cfs.xml;
 
     pop(xml);
@@ -310,6 +313,7 @@ namespace Chroma
     Out << "  Maximum Spatial Momentum Squared    = " << params.param.mom2_max               << "\n"; 
     Out << "  Filename Canonicalization           = " << params.param.canonical              << "\n"; 
     Out << "  Time reverse building blocks        = " << params.param.time_reverse           << "\n"; 
+    Out << "  Translate building blocks           = " << params.param.translate              << "\n"; 
 
     Out << "  Text Output File Name               = " << params.bb.OutFileName               << "\n";
     Out <<                                                                                     "\n";
@@ -690,6 +694,8 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       const signed short int T1 = 0;
       const signed short int T2 = QDP::Layout::lattSize()[j_decay] - 1;
       const signed short int DecayDir = j_decay;
+      const signed short int Tsrc = source_header.t_source;
+      const signed short int Tsnk = seqsource_header.t_sink;
 
       swatch.start();
       BuildingBlocks(B, F, U, 
@@ -697,8 +703,10 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 		     params.param.links_max, AllLinkPatterns, 
 		     Phases, PhasesCanonical,
 		     Files, T1, T2,
+		     Tsrc, Tsnk,
 		     seqsource_header.seqsrc.id, seqsource_header.sink_mom, DecayDir,
-		     params.param.time_reverse);
+		     params.param.time_reverse,
+		     params.param.translate);
       swatch.stop();
       
       Out << "finished calculating building blocks for loop = " << loop << "\n";  Out.flush();

@@ -1,4 +1,4 @@
-// $Id: inline_noisy_building_blocks_w.cc,v 3.5 2006-10-11 14:06:11 edwards Exp $
+// $Id: inline_noisy_building_blocks_w.cc,v 3.6 2006-10-14 04:52:16 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -699,7 +699,8 @@ namespace Chroma
 		    Files, T1, T2, 
 		    source_header.source.id,
 		    SnkMom, DecayDir,
-		    params.param.time_reverse);
+		    params.param.time_reverse,
+		    false );
 
 //      theSourceTypeMap::Instance().lookUpString(source_header.source.id),
 
