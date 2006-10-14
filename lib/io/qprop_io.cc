@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.8 2006-10-11 15:42:26 edwards Exp $
+// $Id: qprop_io.cc,v 3.9 2006-10-14 02:42:29 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -1170,7 +1170,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 10;
+    int version = 9;
     write(xml, "version", version);
     write(xml, "quarkSpinType", header.quarkSpinType);
     write(xml, "obsvP", header.obsvP);           // new - measured 5D stuff
