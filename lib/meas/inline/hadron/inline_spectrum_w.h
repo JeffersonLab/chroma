@@ -1,10 +1,12 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_w.h,v 3.2 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_spectrum_w.h,v 3.3 2006-10-14 04:19:42 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
  * Spectrum calculations
  */
+
+#error "THIS ROUTINE IS OBSOLETE"
 
 #ifndef __inline_spectrum_h__
 #define __inline_spectrum_h__

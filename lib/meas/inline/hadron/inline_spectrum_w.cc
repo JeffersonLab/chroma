@@ -1,9 +1,11 @@
-// $Id: inline_spectrum_w.cc,v 3.5 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_spectrum_w.cc,v 3.6 2006-10-14 04:19:42 edwards Exp $
 /*! \file
  * \brief Inline construction of spectrum
  *
  * Spectrum calculations
  */
+
+#error "THIS ROUTINE IS OBSOLETE"
 
 #include "meas/inline/hadron/inline_spectrum_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
