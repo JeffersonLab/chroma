@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_parwilson.out.xml,v 3.4 2006-08-24 21:07:08 edwards Exp $
+; $Id: prec_parwilson.out.xml,v 3.5 2006-10-14 03:40:23 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -120,10 +120,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.11.0</chroma>
-      <qdp>1.20.8</qdp>
+      <chroma>3.17.0</chroma>
+      <qdp>1.21.2</qdp>
     </code_version>
-    <run_date>24 Aug 06 15:26:04 EDT</run_date>
+    <run_date>13 Oct 06 22:54:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -152,32 +152,32 @@
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994803997558645</w_plaq>
-    <s_plaq>0.99479844317668</s_plaq>
-    <t_plaq>0.99480955194061</t_plaq>
-    <plane_01_plaq>0.994703591490785</plane_01_plaq>
-    <plane_02_plaq>0.99492682578663</plane_02_plaq>
-    <plane_12_plaq>0.994764912252625</plane_12_plaq>
-    <plane_03_plaq>0.994693187996745</plane_03_plaq>
-    <plane_13_plaq>0.994853910369178</plane_13_plaq>
-    <plane_23_plaq>0.994881557455907</plane_23_plaq>
-    <link>0.379449337740274</link>
+    <w_plaq>0.994803997506905</w_plaq>
+    <s_plaq>0.994798443435381</s_plaq>
+    <t_plaq>0.994809551578429</t_plaq>
+    <plane_01_plaq>0.994703592111667</plane_01_plaq>
+    <plane_02_plaq>0.994926826562732</plane_02_plaq>
+    <plane_12_plaq>0.994764911631743</plane_12_plaq>
+    <plane_03_plaq>0.994693187686304</plane_03_plaq>
+    <plane_13_plaq>0.994853908040871</plane_13_plaq>
+    <plane_23_plaq>0.994881559008112</plane_23_plaq>
+    <link>0.379449337626284</link>
     <pollp>
       <elem>
-        <re>0.96658587983499</re>
-        <im>-0.00132088747583718</im>
+        <re>0.966585880688702</re>
+        <im>-0.00132088747318448</im>
       </elem>
       <elem>
-        <re>0.966365774977021</re>
-        <im>-0.00123499089295365</im>
+        <re>0.966365773618842</re>
+        <im>-0.00123499087385426</im>
       </elem>
       <elem>
-        <re>0.967146154221458</re>
-        <im>-0.00112309936806317</im>
+        <re>0.967146154958755</re>
+        <im>-0.00112309937897711</im>
       </elem>
       <elem>
-        <re>0.878769261723695</re>
-        <im>-0.00991386471347747</im>
+        <re>0.87876926199533</re>
+        <im>-0.00991386472378508</im>
       </elem>
     </pollp>
   </Observables>
@@ -187,10 +187,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.11.0</chroma>
-            <qdp>1.20.8</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>24 Aug 06 15:26:04 EDT</run_date>
+          <run_date>13 Oct 06 22:54:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -248,32 +248,32 @@
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997558645</w_plaq>
-          <s_plaq>0.99479844317668</s_plaq>
-          <t_plaq>0.99480955194061</t_plaq>
-          <plane_01_plaq>0.994703591490785</plane_01_plaq>
-          <plane_02_plaq>0.99492682578663</plane_02_plaq>
-          <plane_12_plaq>0.994764912252625</plane_12_plaq>
-          <plane_03_plaq>0.994693187996745</plane_03_plaq>
-          <plane_13_plaq>0.994853910369178</plane_13_plaq>
-          <plane_23_plaq>0.994881557455907</plane_23_plaq>
-          <link>0.379449337740274</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658587983499</re>
-              <im>-0.00132088747583718</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365774977021</re>
-              <im>-0.00123499089295365</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.967146154221458</re>
-              <im>-0.00112309936806317</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769261723695</re>
-              <im>-0.00991386471347747</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
@@ -287,10 +287,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.11.0</chroma>
-            <qdp>1.20.8</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>24 Aug 06 15:26:05 EDT</run_date>
+          <run_date>13 Oct 06 22:54:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -301,10 +301,9 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>PARWILSON</FermAct>
       <Kappa>0.205</Kappa>
       <H>0.01</H>
@@ -344,32 +343,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997558645</w_plaq>
-          <s_plaq>0.99479844317668</s_plaq>
-          <t_plaq>0.99480955194061</t_plaq>
-          <plane_01_plaq>0.994703591490785</plane_01_plaq>
-          <plane_02_plaq>0.99492682578663</plane_02_plaq>
-          <plane_12_plaq>0.994764912252625</plane_12_plaq>
-          <plane_03_plaq>0.994693187996745</plane_03_plaq>
-          <plane_13_plaq>0.994853910369178</plane_13_plaq>
-          <plane_23_plaq>0.994881557455907</plane_23_plaq>
-          <link>0.379449337740274</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658587983499</re>
-              <im>-0.00132088747583718</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365774977021</re>
-              <im>-0.00123499089295365</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.967146154221458</re>
-              <im>-0.00112309936806317</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769261723695</re>
-              <im>-0.00991386471347747</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
@@ -428,93 +427,81 @@
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.342003e-07</resid>
+            <resid>1.365133e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.379794e-07</resid>
+            <resid>1.38022e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.331944e-07</resid>
+            <resid>1.374584e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.361842e-07</resid>
+            <resid>1.387735e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.221377e-07</resid>
+            <resid>1.217819e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.389891e-07</resid>
+            <resid>1.337179e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.410862e-07</resid>
+            <resid>1.395164e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.410632e-07</resid>
+            <resid>1.381628e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.384469e-07</resid>
+            <resid>1.39934e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.331657e-07</resid>
+            <resid>1.392735e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.354049e-07</resid>
+            <resid>1.367409e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>36</n_count>
-            <resid>1.354005e-07</resid>
+            <resid>1.320844e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>432</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.240750709785191 0.092452129229047 0.0263446059020463 0.00841285412338831 0.00460240113436212 0.00841235881599964 0.0262829395208191 0.0924746627505297</prop_corr>
+          <prop_corr>0.240750712588394 0.0924521294600626 0.0263446058703207 0.00841285427652664 0.00460240128038242 0.00841235885401892 0.0262829398377628 0.0924746627763083</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

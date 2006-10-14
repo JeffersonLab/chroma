@@ -960,11 +960,12 @@ Calculate building blocks - insertions in 3-pt functions
       <Name>BUILDING_BLOCKS</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>4</version>
+        <version>5</version>
         <use_sink_offset>true</use_sink_offset>
         <mom2_max>3</mom2_max>
         <links_max>1</links_max>
         <canonical>false</canonical>
+        <time_reverse>false</time_reverse>
         <FermState>
           <Name>SIMPLE_FERM_STATE</Name>
           <FermionBC>
@@ -1096,10 +1097,10 @@ Calculate building blocks - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.15.0</chroma>
-      <qdp>1.20.9</qdp>
+      <chroma>3.17.0</chroma>
+      <qdp>1.21.2</qdp>
     </code_version>
-    <run_date>21 Sep 06 15:39:24 EDT</run_date>
+    <run_date>13 Oct 06 22:56:54 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1163,10 +1164,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:24 EDT</run_date>
+          <run_date>13 Oct 06 22:56:54 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1263,10 +1264,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:24 EDT</run_date>
+          <run_date>13 Oct 06 22:56:55 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1277,10 +1278,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1403,84 +1403,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.233667e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.176247e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.34897e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.168402e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.288205e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.022059e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.339582e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.235014e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.159808e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.399859e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.18755e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>47</n_count>
             <resid>1.089687e-07</resid>
           </Qprop>
@@ -1498,10 +1486,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:24 EDT</run_date>
+          <run_date>13 Oct 06 22:56:55 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1597,10 +1585,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -1682,10 +1669,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:24 EDT</run_date>
+          <run_date>13 Oct 06 22:56:55 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1696,10 +1683,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -1838,10 +1824,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -1905,84 +1890,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>48</n_count>
             <resid>4.380107e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>48</n_count>
             <resid>4.560167e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>48</n_count>
             <resid>4.476791e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>48</n_count>
             <resid>4.386369e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>48</n_count>
             <resid>4.690709e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.244142e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>48</n_count>
             <resid>4.368845e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>48</n_count>
             <resid>4.402129e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.041377e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.090855e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.217762e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.051239e-07</resid>
           </Qprop>
@@ -2000,10 +1973,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:25 EDT</run_date>
+          <run_date>13 Oct 06 22:56:55 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2084,10 +2057,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2156,10 +2128,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2244,10 +2215,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:25 EDT</run_date>
+          <run_date>13 Oct 06 22:56:56 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2258,10 +2229,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2368,10 +2338,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2432,10 +2401,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2499,84 +2467,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.204421e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.517484e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.474505e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.434737e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.452224e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.528232e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.668441e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.620057e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.583119e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.503268e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.351565e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.617264e-07</resid>
           </Qprop>
@@ -2594,10 +2550,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:25 EDT</run_date>
+          <run_date>13 Oct 06 22:56:56 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2677,10 +2633,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -2762,10 +2717,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:26 EDT</run_date>
+          <run_date>13 Oct 06 22:56:56 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2776,10 +2731,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -2886,10 +2840,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -2953,84 +2906,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.340968e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.269698e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.074705e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.216421e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.330525e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.486276e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.290921e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.52459e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.45691e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.143638e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.327168e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.337002e-07</resid>
           </Qprop>
@@ -3048,10 +2989,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:26 EDT</run_date>
+          <run_date>13 Oct 06 22:56:57 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3132,10 +3073,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -3204,10 +3144,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -3292,10 +3231,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:26 EDT</run_date>
+          <run_date>13 Oct 06 22:56:57 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3306,10 +3245,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3416,10 +3354,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -3480,10 +3417,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -3547,84 +3483,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.052654e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.13359e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.291369e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.110125e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.519409e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.303394e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.145825e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.476609e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.447369e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.254781e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.492957e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.364576e-07</resid>
           </Qprop>
@@ -3642,10 +3566,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:27 EDT</run_date>
+          <run_date>13 Oct 06 22:56:57 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3725,10 +3649,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -3810,10 +3733,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:27 EDT</run_date>
+          <run_date>13 Oct 06 22:56:57 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3824,10 +3747,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -3934,10 +3856,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -4001,84 +3922,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.327487e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.36926e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.524683e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.451143e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.065057e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.444516e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.599159e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.498527e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.454872e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.468916e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.447276e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.276775e-07</resid>
           </Qprop>
@@ -4096,10 +4005,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:27 EDT</run_date>
+          <run_date>13 Oct 06 22:56:58 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4180,10 +4089,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -4252,10 +4160,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -4340,10 +4247,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:27 EDT</run_date>
+          <run_date>13 Oct 06 22:56:58 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4354,10 +4261,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4464,10 +4370,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -4528,10 +4433,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -4595,84 +4499,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.455781e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.193806e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.455781e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.392525e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.242045e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.142456e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.242045e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.302545e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.361671e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.530069e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.361671e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.198768e-07</resid>
           </Qprop>
@@ -4690,10 +4582,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:28 EDT</run_date>
+          <run_date>13 Oct 06 22:56:58 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4773,10 +4665,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -4858,10 +4749,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:28 EDT</run_date>
+          <run_date>13 Oct 06 22:56:58 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4872,10 +4763,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -4982,10 +4872,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -5049,84 +4938,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.447533e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.264838e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.447533e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.402593e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.03801e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.014384e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.03801e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.246532e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.267702e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.573374e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.267702e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.378193e-07</resid>
           </Qprop>
@@ -5144,10 +5021,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:28 EDT</run_date>
+          <run_date>13 Oct 06 22:56:59 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5228,10 +5105,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -5300,10 +5176,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -5388,10 +5263,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:28 EDT</run_date>
+          <run_date>13 Oct 06 22:56:59 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5402,10 +5277,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -5512,10 +5386,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -5576,10 +5449,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -5643,84 +5515,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.336503e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.12039e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.336503e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.12039e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.608221e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.168004e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.608221e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.168004e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.513357e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.225039e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.513357e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.225039e-07</resid>
           </Qprop>
@@ -5738,10 +5598,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:29 EDT</run_date>
+          <run_date>13 Oct 06 22:56:59 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5821,10 +5681,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -5906,10 +5765,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:29 EDT</run_date>
+          <run_date>13 Oct 06 22:56:59 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5920,10 +5779,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -6030,10 +5888,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -6097,84 +5954,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.091405e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.381788e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.091405e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.381788e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.317091e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.234772e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.317091e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.234772e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.595464e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.507839e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.595464e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.507839e-07</resid>
           </Qprop>
@@ -6192,10 +6037,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:29 EDT</run_date>
+          <run_date>13 Oct 06 22:57:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6276,10 +6121,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -6348,10 +6192,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -6436,10 +6279,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:29 EDT</run_date>
+          <run_date>13 Oct 06 22:57:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6450,10 +6293,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -6560,10 +6402,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -6624,10 +6465,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -6691,84 +6531,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.317986e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.286094e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.317986e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.286094e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.326942e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.144521e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.326942e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.144521e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.501333e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.17772e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.501333e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.17772e-07</resid>
           </Qprop>
@@ -6786,10 +6614,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:30 EDT</run_date>
+          <run_date>13 Oct 06 22:57:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6869,10 +6697,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -6954,10 +6781,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:30 EDT</run_date>
+          <run_date>13 Oct 06 22:57:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6968,10 +6795,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -7078,10 +6904,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -7145,84 +6970,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.389829e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.435212e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.389829e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.435212e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.280083e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.532951e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.280083e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.532951e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.312801e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.260384e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.312801e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.260384e-07</resid>
           </Qprop>
@@ -7240,10 +7053,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:30 EDT</run_date>
+          <run_date>13 Oct 06 22:57:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7324,10 +7137,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -7396,10 +7208,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -7484,10 +7295,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:31 EDT</run_date>
+          <run_date>13 Oct 06 22:57:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7498,10 +7309,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -7608,10 +7418,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -7672,10 +7481,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -7739,84 +7547,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.094125e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.406988e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.094125e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.406988e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.384567e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.10465e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.384567e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.10465e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.323394e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.41024e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.323394e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.41024e-07</resid>
           </Qprop>
@@ -7834,10 +7630,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:31 EDT</run_date>
+          <run_date>13 Oct 06 22:57:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7917,10 +7713,9 @@ Calculate building blocks - insertions in 3-pt functions
           <elem>
             <Propagator_info><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -8002,10 +7797,10 @@ Calculate building blocks - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.15.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>21 Sep 06 15:39:31 EDT</run_date>
+          <run_date>13 Oct 06 22:57:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8016,10 +7811,9 @@ Calculate building blocks - insertions in 3-pt functions
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>false</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
       <Kappa>0.11</Kappa>
       <AnisoParam>
@@ -8126,10 +7920,9 @@ Calculate building blocks - insertions in 3-pt functions
             <j_decay>3</j_decay>
           </PropSinkSmear>
           <ForwardProp>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP>
-            <numRetries>1</numRetries>
             <FermionAction>
               <FermAct>WILSON</FermAct>
               <Kappa>0.11</Kappa>
@@ -8193,84 +7986,72 @@ Calculate building blocks - insertions in 3-pt functions
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.201621e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.403237e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.201621e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.403237e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.496424e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.33509e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.496424e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.33509e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.309363e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.143801e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.309363e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
             <n_count>49</n_count>
             <resid>4.143801e-07</resid>
           </Qprop>

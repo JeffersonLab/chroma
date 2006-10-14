@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_dwf.out.xml,v 3.10 2006-09-18 18:23:35 bjoo Exp $
+; $Id: prec_dwf.out.xml,v 3.11 2006-10-14 03:40:22 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -108,10 +108,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.13.0</chroma>
-      <qdp>1.20.9</qdp>
+      <chroma>3.17.0</chroma>
+      <qdp>1.21.2</qdp>
     </code_version>
-    <run_date>18 Sep 06 14:16:53 EDT</run_date>
+    <run_date>13 Oct 06 22:55:05 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -175,10 +175,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.13.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>18 Sep 06 14:16:53 EDT</run_date>
+          <run_date>13 Oct 06 22:55:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -275,10 +275,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.13.0</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.17.0</chroma>
+            <qdp>1.21.2</qdp>
           </code_version>
-          <run_date>18 Sep 06 14:16:53 EDT</run_date>
+          <run_date>13 Oct 06 22:55:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -289,10 +289,9 @@
         </ProgramInfo>
         <Input>
           <Param>
-            <version>10</version>
+            <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>true</obsvP>
-            <numRetries>1</numRetries><FermionAction>
+            <obsvP>true</obsvP><FermionAction>
       <FermAct>DWF</FermAct>
       <OverMass>1.2</OverMass>
       <Mass>0.4</Mass>
@@ -417,109 +416,97 @@
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.613932e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.29528e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.430436e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.370108e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.517264e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.269089e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.825238e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.432938e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.709166e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.332706e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.851632e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.27875e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.839564e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.263345e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.362872e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.34217e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.896869e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.451628e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.782381e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.431492e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.613715e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.266926e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <ntry>0</ntry>
-            <n_count>34</n_count>
-            <resid>7.572529e-08</resid>
+            <n_count>32</n_count>
+            <resid>1.292378e-07</resid>
           </Qprop>
-          <bulk_norm2>0.231882069331436 0.015373737828483</bulk_norm2>
+          <bulk_norm2>0.231882059442211 0.0153737381100962</bulk_norm2>
           <time_direction>
             <t_dir>3</t_dir>
           </time_direction>
           <DWF_ConservedAxial>
-            <mesprop>-0.08317834 -0.02397439 -0.008949869 -0.002398158 0.002393697 0.008944778 0.02397592 0.08318771</mesprop>
+            <mesprop>-0.08317834 -0.02397439 -0.008949868 -0.002398157 0.002393696 0.008944777 0.02397592 0.08318771</mesprop>
           </DWF_ConservedAxial>
           <DWF_LocalAxial>
-            <mesprop>-1.216225e-08 -0.05028691 -0.0151099 -0.005004862 -2.487281e-06 0.00500036 0.01511138 0.05027189</mesprop>
+            <mesprop>-1.29419e-08 -0.05028691 -0.0151099 -0.005004862 -2.487327e-06 0.005000359 0.01511138 0.05027189</mesprop>
           </DWF_LocalAxial>
           <DWF_MidPoint_Pseudo>
-            <mesprop>0.04292382 0.004030217 0.0003961285 4.971103e-05 7.077303e-06 4.974485e-05 0.0003968574 0.004034408</mesprop>
+            <mesprop>0.04292382 0.004030217 0.0003961285 4.971104e-05 7.077323e-06 4.974486e-05 0.0003968574 0.004034408</mesprop>
           </DWF_MidPoint_Pseudo>
           <DWF_Psuedo_Pseudo>
-            <mesprop>0.04633487 0.06392939 0.01779033 0.008065362 0.005972125 0.008064489 0.01779679 0.06392872</mesprop>
+            <mesprop>0.04633487 0.06392939 0.01779033 0.008065361 0.005972124 0.008064488 0.01779678 0.06392872</mesprop>
           </DWF_Psuedo_Pseudo>
         </DWF_QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>408</ncg_had>
+          <ncg_had>384</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0463348688081846 0.0639293921808952 0.0177903310100516 0.00806536182192287 0.00597212512646286 0.008064489099203 0.0177967867570288 0.0639287145276866</prop_corr>
+          <prop_corr>0.0463348671678734 0.0639293915936677 0.0177903294895283 0.00806536092209875 0.00597212439055618 0.00806448787286375 0.0177967847270318 0.063928713278591</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

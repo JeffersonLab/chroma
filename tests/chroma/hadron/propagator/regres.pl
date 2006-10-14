@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.0 2006-04-03 04:59:26 edwards Exp $
+#  $Id: regres.pl,v 3.1 2006-10-14 03:40:23 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -33,6 +33,14 @@
 	 output      => "prec_wilson-smearing.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_wilson-smearing.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_wilson-smearing.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_wilson.ferm.ini.xml" , 
+	 output      => "prec_wilson.ferm.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_wilson.ferm.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_wilson.ferm.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
