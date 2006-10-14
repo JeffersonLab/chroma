@@ -963,6 +963,7 @@ Calculate building blocks - insertions in 3-pt functions
         <links_max>1</links_max>
         <canonical>false</canonical>
         <time_reverse>false</time_reverse>
+        <translate>false</translate>
         <FermState>
           <Name>SIMPLE_FERM_STATE</Name>
           <FermionBC>
