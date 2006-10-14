@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.36 2006-10-14 03:52:01 edwards Exp $
+# $Id: Makefile.am,v 3.37 2006-10-14 03:59:15 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -575,7 +575,6 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_seqsource_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
-	meas/inline/hadron/inline_spectrum_w.h \
         meas/inline/hadron/inline_spectrumQll.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
         meas/inline/hadron/inline_qqq_w.h \
@@ -620,6 +619,7 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_link_smear.h
 
 # Taken out for now
+#	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
 
@@ -1066,7 +1066,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_seqsource_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
-	meas/inline/hadron/inline_spectrum_w.cc \
 	meas/inline/hadron/inline_spectrumQll.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
@@ -1113,6 +1112,7 @@ libchroma_a_SOURCES += \
 	meas/inline/smear/inline_link_smear.cc
 
 # Taken out for now
+#	meas/inline/hadron/inline_spectrum_w.cc
 #	meas/inline/hadron/inline_multipole_w.cc
 
 
