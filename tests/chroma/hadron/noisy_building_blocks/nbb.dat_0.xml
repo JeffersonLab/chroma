@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>3.11.0</chroma>
-      <qdp>1.20.9</qdp>
+      <chroma>3.17.0</chroma>
+      <qdp>1.21.2</qdp>
     </code_version>
-    <run_date>19 Aug 06 03:44:36 EDT</run_date>
+    <run_date>14 Oct 06 01:06:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -22,12 +22,17 @@
   </Output_version>
   <Input>
     <Param>
-      <version>3</version>
+      <version>5</version>
       <links_max>1</links_max>
       <mom2_max>1</mom2_max>
       <canonical>false</canonical>
-      <nrow>4 4 4 8</nrow>
-    </Param>
+      <time_reverse>false</time_reverse><?xml version="1.0"?>
+
+
+<FermState>
+  <Name>PERIODIC_FERM_STATE</Name>
+</FermState>
+</Param>
     <BuildingBlocks>
       <OutFileName>nbb.dat_0.out</OutFileName>
       <GaugeId>default_gauge_field</GaugeId>
@@ -61,10 +66,9 @@
     </FrwdPropXML>
     <FrwdPropRecordXML><Propagator>
       <ForwardProp>
-        <version>10</version>
+        <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
         <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>WILSON</FermAct>
           <Kappa>0.11</Kappa>
@@ -113,7 +117,7 @@
     </Propagator>
 
     </FrwdPropRecordXML>
-    <FrwdPropCheck>49.5044946042472 3.29052843075982 0.863153124909176 0.316279434866839 0.126202775920874 0.0513243914175411 0.0209790344936902 0.00860027704484833</FrwdPropCheck>
+    <FrwdPropCheck>49.5044944632963 3.29052840525277 0.863153124960327 0.316279436603193 0.126202777127906 0.0513243919079725 0.0209790347390243 0.00860027715424998</FrwdPropCheck>
   </ForwardProp>
   <NoisySource>
     <NoisySrcId>nsrc_0</NoisySrcId>
