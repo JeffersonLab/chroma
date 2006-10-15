@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_dwf.ini.xml,v 3.7 2006-10-15 05:46:56 edwards Exp $
+; $Id: prec_dwf.ini.xml,v 3.8 2006-10-15 05:47:35 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -74,7 +74,7 @@
           <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
-          <numRestarts>1</numRestarts>
+          <numRestarts>2</numRestarts>
         </InvertParam>
       </Param>
       <NamedObject>
