@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.11 2006-10-15 04:17:00 edwards Exp $
+// $Id: prec_dwf_qprop_array_cg_dwf_w.h,v 3.12 2006-10-15 06:16:53 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -80,7 +80,7 @@ namespace Chroma
       double rsd = toDouble(invParam.RsdCG);
       double rsd_sq = rsd * rsd;
       int    max_iter = invParam.MaxCG;
-      int    numRestarts = invParam.numRestarts;
+//      int    numRestarts = invParam.numRestarts;
       double out_eps;
       int single_count = 0;
       int double_count = 0;
@@ -91,15 +91,14 @@ namespace Chroma
       res.n_count = single_count;
 #endif
 #ifdef DOUBLE_PREC_SOLVER
-      for(int loop=0; loop < numRestarts; ++loop)
+//      for(int loop=0; loop < numRestarts; ++loop)
       {
-	int double_cnt = 0;
+//	int double_cnt = 0;
 	QDPIO::cout << "CGDWFQpropT: Beginning Double Precision Solve" << endl;
 	double_prec_solver.cgSolver(psi, M5, m_f, 
-				    chi, psi, rsd_sq, max_iter, out_eps, double_cnt);
-	double_count += double_cnt;
+				    chi, psi, rsd_sq, max_iter, out_eps, double_count);
+        res.n_count = double_count;
       }
-      res.n_count += double_count;
 #endif
 	QDPIO::cout << "CGDWFQpropT: Single Prec. Iters = " << single_count << " Double Prec. Iters = " << double_count << " Total Iters = " << res.n_count << endl;
       
