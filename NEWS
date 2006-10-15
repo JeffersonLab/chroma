@@ -3,8 +3,8 @@
         to support time reversal and translation of source location. Removed
         inline_spectrum and inline_spectrumOct - superceded by inline_hadspec.
         Reset inline_propagator version to 9. Had to regenerate lots of
-        regression tests. Removed old style restart support - will do by a 
-        new method.
+        regression tests. Removed old style restart support - now done down
+        inside the system solvers.
         
 10/11/2006 -- Robert Edwards
 	Version 3.16.1. Small fix in hadron_seqsource to make gcc4 happy.
