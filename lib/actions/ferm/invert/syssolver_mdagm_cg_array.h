@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_cg_array.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
+// $Id: syssolver_mdagm_cg_array.h,v 3.3 2006-10-15 04:17:00 edwards Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -65,7 +65,13 @@ namespace Chroma
       {
 	START_CODE();
 
-	SystemSolverResults_t res = InvCG2(*A, chi, psi, invParam.RsdCG, invParam.MaxCG);
+	SystemSolverResults_t res;  // initialized by a constructor
+	for(int i=0; i < invParam.numRestarts; ++i)
+	{
+	  int n_count = res.n_count;
+	  res = InvCG2(*A, chi, psi, invParam.RsdCG, invParam.MaxCG);
+	  res.n_count += n_count;
+	}
 
 	END_CODE();
 

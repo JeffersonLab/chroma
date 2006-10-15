@@ -1,4 +1,4 @@
-// $Id: syssolver_cg_params.cc,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: syssolver_cg_params.cc,v 3.2 2006-10-15 04:17:00 edwards Exp $
 /*! \file
  *  \brief Params of CG inverter
  */
@@ -15,6 +15,18 @@ namespace Chroma
 
     read(paramtop, "RsdCG", param.RsdCG);
     read(paramtop, "MaxCG", param.MaxCG);
+
+    if (paramtop.count("numRestarts") > 0)
+      read(paramtop, "numRestarts", param.numRestarts);
+    else
+      param.numRestarts = 1;
+
+    if (param.numRestarts <= 0)
+    {
+      QDPIO::cerr << __func__ << ": invalid SysSolverCGParams::numRestarts = " 
+		  << param.numRestarts << endl;
+      QDP_abort(1);
+    }
   }
 
   // Writer parameters
@@ -27,6 +39,7 @@ namespace Chroma
     write(xml, "invType", "CG_INVERTER");
     write(xml, "RsdCG", param.RsdCG);
     write(xml, "MaxCG", param.MaxCG);
+    write(xml, "numRestarts", param.numRestarts);
 
     pop(xml);
   }
@@ -36,6 +49,7 @@ namespace Chroma
   {
     RsdCG = zero;
     MaxCG = 0;
+    numRestarts = 1;
   }
 
   //! Read parameters

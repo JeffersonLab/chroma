@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_cg_params.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: syssolver_cg_params.h,v 3.2 2006-10-15 04:17:00 edwards Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */
@@ -22,6 +22,7 @@ namespace Chroma
     
     Real          RsdCG;           /*!< CG residual */
     int           MaxCG;           /*!< Maximum CG iterations */
+    int           numRestarts;     /*!< Number of restarts */
   };
 
 
