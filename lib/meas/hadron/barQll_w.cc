@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.4 2006-05-18 18:03:10 kostas Exp $ 
+// $Id: barQll_w.cc,v 1.5 2006-10-17 13:23:41 kostas Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -24,7 +24,8 @@ namespace Chroma {
  * We are effectively propagating a spin-0 diquark and a spin-1 diquark.
  *
  * \param u                  gauge field (Read) 
- * \param quark_propagator   quark propagator ( Read )
+ * \param quark_prop1        quark propagator 1 ( Read )
+ * \param quark_prop2        quark propagator 2 ( Read )
  * \param src_coord          cartesian coordinates of the source ( Read )
  * \param phases             object holds list of momenta and Fourier phases ( Read )
  * \param xml                xml file object ( Read )
@@ -33,7 +34,8 @@ namespace Chroma {
  */
 
 void Qll(const multi1d<LatticeColorMatrix>& u, 
-	 const LatticePropagator& quark_propagator,
+	 const LatticePropagator& quark_prop1,
+	 const LatticePropagator& quark_prop2,
 	 const multi1d<int>& src_coord, 
 	 const SftMom& phases,
        	 XMLWriter& xml,
@@ -60,28 +62,26 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 
   // LambdaQ  :  |LambdaQ> = (d C gamma_5 u) Q
 
-  di_quark = quarkContract13(quark_propagator * Gamma(5),
-			     Gamma(5) * quark_propagator); //spin-0 diquark
+  //spin-0 diquark
+  di_quark = quarkContract13(quark_prop1 * Gamma(5), Gamma(5) * quark_prop2); 
 
   LamQ_prop = traceColor(Qprop * traceSpin(di_quark));
  
  
  // SigmQ  :  |SigmaQ> = (d C gamma_mu u) Q  : The SigmaQ and SigmaQ* are degenerate!!!!
 
-  di_quark = quarkContract13(quark_propagator * Gamma(11),
-			     Gamma(11) * quark_propagator); //spin-1 diquark oriented in x-direction
+  //spin-1 diquark oriented in x-direction
+  di_quark = quarkContract13(quark_prop1 * Gamma(11), Gamma(11) * quark_prop2); 
 
   SigQx_prop = traceColor(Qprop * traceSpin(di_quark));
  
-
-  di_quark = quarkContract13(quark_propagator * Gamma(8),
-			     Gamma(8) * quark_propagator); //spin-1 diquark oriented in y-direction
+  //spin-1 diquark oriented in y-direction
+  di_quark = quarkContract13(quark_prop1 * Gamma(8), Gamma(8) * quark_prop2);
 
   SigQy_prop = traceColor(Qprop * traceSpin(di_quark));
  
-
-  di_quark = quarkContract13(quark_propagator * Gamma(14),
-			     Gamma(14) * quark_propagator); //spin-1 diquark oriented in z-direction
+  //spin-1 diquark oriented in z-direction
+  di_quark = quarkContract13(quark_prop1 * Gamma(14), Gamma(14) * quark_prop2);
 
   SigQz_prop = traceColor(Qprop * traceSpin(di_quark));
 
@@ -119,6 +119,15 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
   pop(xml);
 
   END_CODE();
+}
+
+void Qll(const multi1d<LatticeColorMatrix>& u, 
+	 const LatticePropagator& quark_propagator,
+	 const multi1d<int>& src_coord, 
+	 const SftMom& phases,
+       	 XMLWriter& xml,
+	 const string& xml_group){
+  Qll(u,quark_propagator,quark_propagator,src_coord,phases,xml,xm_group) ;
 }
 
 

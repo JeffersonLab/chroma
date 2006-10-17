@@ -1,4 +1,4 @@
-//$Id: barQll_w.h,v 1.5 2006-05-18 18:03:10 kostas Exp $
+//$Id: barQll_w.h,v 1.6 2006-10-17 13:23:41 kostas Exp $
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -35,6 +35,14 @@ namespace Chroma {
 
 void Qll(const multi1d<LatticeColorMatrix>& u, 
 	 const LatticePropagator& quark_propagator,
+	 const multi1d<int>& src_coord, 
+	 const SftMom& phases,
+       	 XMLWriter& xml,
+	 const string& xml_group);
+
+void Qll(const multi1d<LatticeColorMatrix>& u, 
+	 const LatticePropagator& quark_prop1,
+	 const LatticePropagator& quark_prop2,
 	 const multi1d<int>& src_coord, 
 	 const SftMom& phases,
        	 XMLWriter& xml,
