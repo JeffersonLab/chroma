@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.5 2006-10-17 13:23:41 kostas Exp $ 
+// $Id: barQll_w.cc,v 1.6 2006-10-17 14:05:27 kostas Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -127,7 +127,7 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 	 const SftMom& phases,
        	 XMLWriter& xml,
 	 const string& xml_group){
-  Qll(u,quark_propagator,quark_propagator,src_coord,phases,xml,xm_group) ;
+  Qll(u,quark_propagator,quark_propagator,src_coord,phases,xml,xml_group) ;
 }
 
 
