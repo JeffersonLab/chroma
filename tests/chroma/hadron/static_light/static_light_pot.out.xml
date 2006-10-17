@@ -304,7 +304,13 @@ Hadron spectrum input
       <Param>
         <version>1</version>
         <MesonP>true</MesonP>
-        <BaryonP>true</BaryonP>
+
+<annotation>
+          You cannot do the Qll spectrum with propagators for the meson
+          potential with this code.
+</annotation>
+
+        <BaryonP>false</BaryonP>
 	<MesonPot>true</MesonPot>
         <BaryonPot>false</BaryonPot>
        </Param>
@@ -384,7 +390,7 @@ regression test spectrum output is kept within the chroma xml output
       <chroma>3.16.1</chroma>
       <qdp>1.20.9</qdp>
     </code_version>
-    <run_date>17 Oct 06 14:24:30 EDT</run_date>
+    <run_date>17 Oct 06 16:06:17 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -451,7 +457,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.16.1</chroma>
             <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>17 Oct 06 14:24:30 EDT</run_date>
+          <run_date>17 Oct 06 16:06:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -551,7 +557,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.16.1</chroma>
             <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>17 Oct 06 14:24:30 EDT</run_date>
+          <run_date>17 Oct 06 16:06:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1071,7 +1077,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.16.1</chroma>
             <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>17 Oct 06 14:24:34 EDT</run_date>
+          <run_date>17 Oct 06 16:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1171,7 +1177,7 @@ regression test spectrum output is kept within the chroma xml output
             <chroma>3.16.1</chroma>
             <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>17 Oct 06 14:24:34 EDT</run_date>
+          <run_date>17 Oct 06 16:06:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1684,14 +1690,14 @@ regression test spectrum output is kept within the chroma xml output
       </sink_smear>
     </elem>
     <elem>
-      <hadspec>
+      <StaticLightSpec>
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
             <chroma>3.16.1</chroma>
             <qdp>1.20.9</qdp>
           </code_version>
-          <run_date>17 Oct 06 14:24:39 EDT</run_date>
+          <run_date>17 Oct 06 16:06:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1704,7 +1710,7 @@ regression test spectrum output is kept within the chroma xml output
           <Param>
             <version>1</version>
             <MesonP>true</MesonP>
-            <BaryonP>true</BaryonP>
+            <BaryonP>false</BaryonP>
             <MesonPot>true</MesonPot>
             <BaryonPot>false</BaryonPot>
           </Param>
@@ -2000,144 +2006,6 @@ regression test spectrum output is kept within the chroma xml output
                 </elem>
               </HeavyLight>
             </Shell_Point_Wilson_Qlmeson>
-            <Shell_Point_Wilson_QllBaryons>
-              <LambdaQ>
-                <elem>
-                  <re>0.00083733641076833</re>
-                  <im>1.51415142681799e-05</im>
-                </elem>
-                <elem>
-                  <re>-6.55193362035789e-05</re>
-                  <im>-3.16430850944016e-06</im>
-                </elem>
-                <elem>
-                  <re>-5.33605889359023e-05</re>
-                  <im>-9.39502569963224e-07</im>
-                </elem>
-                <elem>
-                  <re>-2.72388097073417e-05</re>
-                  <im>-1.18386833491968e-06</im>
-                </elem>
-                <elem>
-                  <re>-1.89830552699277e-05</re>
-                  <im>-2.67240761786525e-06</im>
-                </elem>
-                <elem>
-                  <re>-2.65101571130799e-05</re>
-                  <im>-4.70843770017382e-06</im>
-                </elem>
-                <elem>
-                  <re>-5.17223379574716e-05</re>
-                  <im>-7.59037629904924e-06</im>
-                </elem>
-                <elem>
-                  <re>-6.22326260781847e-05</re>
-                  <im>-9.24482901609736e-06</im>
-                </elem>
-              </LambdaQ>
-              <SigmaQx>
-                <elem>
-                  <re>-0.000846659997478127</re>
-                  <im>-1.5009261915111e-05</im>
-                </elem>
-                <elem>
-                  <re>6.25500251771882e-05</re>
-                  <im>3.26516305904079e-06</im>
-                </elem>
-                <elem>
-                  <re>5.23935595992953e-05</re>
-                  <im>9.61770865615108e-07</im>
-                </elem>
-                <elem>
-                  <re>2.69933370873332e-05</re>
-                  <im>1.19623143746139e-06</im>
-                </elem>
-                <elem>
-                  <re>1.89269303518813e-05</re>
-                  <im>2.66577194452111e-06</im>
-                </elem>
-                <elem>
-                  <re>2.62778885371517e-05</re>
-                  <im>4.64546064904425e-06</im>
-                </elem>
-                <elem>
-                  <re>5.08089433424175e-05</re>
-                  <im>7.4240174399165e-06</im>
-                </elem>
-                <elem>
-                  <re>5.94221019127872e-05</re>
-                  <im>8.84102973941481e-06</im>
-                </elem>
-              </SigmaQx>
-              <SigmaQy>
-                <elem>
-                  <re>0.00084596558008343</re>
-                  <im>1.51798385559232e-05</im>
-                </elem>
-                <elem>
-                  <re>-6.25792308710515e-05</re>
-                  <im>-3.27963061863557e-06</im>
-                </elem>
-                <elem>
-                  <re>-5.23685303051025e-05</re>
-                  <im>-9.66384732237202e-07</im>
-                </elem>
-                <elem>
-                  <re>-2.69802858383628e-05</re>
-                  <im>-1.19652804642101e-06</im>
-                </elem>
-                <elem>
-                  <re>-1.89269085240085e-05</re>
-                  <im>-2.66091979028715e-06</im>
-                </elem>
-                <elem>
-                  <re>-2.62721296167001e-05</re>
-                  <im>-4.63662490801653e-06</im>
-                </elem>
-                <elem>
-                  <re>-5.07610020576976e-05</re>
-                  <im>-7.40217637940077e-06</im>
-                </elem>
-                <elem>
-                  <re>-5.93867589486763e-05</re>
-                  <im>-8.72214422997786e-06</im>
-                </elem>
-              </SigmaQy>
-              <SigmaQz>
-                <elem>
-                  <re>-0.000846483977511525</re>
-                  <im>-1.52080338011729e-05</im>
-                </elem>
-                <elem>
-                  <re>6.25760294497013e-05</re>
-                  <im>3.27402085531503e-06</im>
-                </elem>
-                <elem>
-                  <re>5.23664311913308e-05</re>
-                  <im>9.69574557529995e-07</im>
-                </elem>
-                <elem>
-                  <re>2.6991794584319e-05</re>
-                  <im>1.19893502414925e-06</im>
-                </elem>
-                <elem>
-                  <re>1.89239544852171e-05</re>
-                  <im>2.6679313123168e-06</im>
-                </elem>
-                <elem>
-                  <re>2.62731009570416e-05</re>
-                  <im>4.64767799712718e-06</im>
-                </elem>
-                <elem>
-                  <re>5.07686781929806e-05</re>
-                  <im>7.42345764592756e-06</im>
-                </elem>
-                <elem>
-                  <re>5.94055636611301e-05</re>
-                  <im>8.77105958352331e-06</im>
-                </elem>
-              </SigmaQz>
-            </Shell_Point_Wilson_QllBaryons>
             <Shell_Point_Wilson_QlQlPotential>
               <Meson1U>
                 <elem>
@@ -2933,144 +2801,6 @@ regression test spectrum output is kept within the chroma xml output
                 </elem>
               </HeavyLight>
             </Shell_Shell_Wilson_Qlmeson>
-            <Shell_Shell_Wilson_QllBaryons>
-              <LambdaQ>
-                <elem>
-                  <re>-0.0350057259202003</re>
-                  <im>-0.000638388271909207</im>
-                </elem>
-                <elem>
-                  <re>-0.000728402985259891</re>
-                  <im>2.26988649956184e-05</im>
-                </elem>
-                <elem>
-                  <re>-9.36572323553264e-05</re>
-                  <im>-7.84651206231501e-07</im>
-                </elem>
-                <elem>
-                  <re>-2.99029361485736e-05</re>
-                  <im>-1.09498603251268e-06</im>
-                </elem>
-                <elem>
-                  <re>-1.89831989700906e-05</re>
-                  <im>-3.06799847749062e-06</im>
-                </elem>
-                <elem>
-                  <re>-2.89837698801421e-05</re>
-                  <im>-5.95460551267024e-06</im>
-                </elem>
-                <elem>
-                  <re>-9.1346308181528e-05</re>
-                  <im>-1.44678870128701e-05</im>
-                </elem>
-                <elem>
-                  <re>-0.000699014868587255</re>
-                  <im>-9.40859026741236e-05</im>
-                </elem>
-              </LambdaQ>
-              <SigmaQx>
-                <elem>
-                  <re>0.0350054837763309</re>
-                  <im>0.000638380763120949</im>
-                </elem>
-                <elem>
-                  <re>0.000726485333871096</re>
-                  <im>-2.26012380153406e-05</im>
-                </elem>
-                <elem>
-                  <re>9.27913424675353e-05</re>
-                  <im>8.11297582004045e-07</im>
-                </elem>
-                <elem>
-                  <re>2.9669516152353e-05</re>
-                  <im>1.11052668216871e-06</im>
-                </elem>
-                <elem>
-                  <re>1.89294951269403e-05</re>
-                  <im>3.0610617614002e-06</im>
-                </elem>
-                <elem>
-                  <re>2.87653292616596e-05</re>
-                  <im>5.89113824389642e-06</im>
-                </elem>
-                <elem>
-                  <re>9.05089691514149e-05</re>
-                  <im>1.43140478030546e-05</im>
-                </elem>
-                <elem>
-                  <re>0.00069717044243589</re>
-                  <im>9.38185839913785e-05</im>
-                </elem>
-              </SigmaQx>
-              <SigmaQy>
-                <elem>
-                  <re>-0.0350054875016212</re>
-                  <im>-0.000638393743429333</im>
-                </elem>
-                <elem>
-                  <re>-0.000726462225429714</re>
-                  <im>2.25976709771203e-05</im>
-                </elem>
-                <elem>
-                  <re>-9.27825021790341e-05</re>
-                  <im>-8.12306211628311e-07</im>
-                </elem>
-                <elem>
-                  <re>-2.96678681479534e-05</re>
-                  <im>-1.10996450075618e-06</im>
-                </elem>
-                <elem>
-                  <re>-1.89284201042028e-05</re>
-                  <im>-3.05876210404676e-06</im>
-                </elem>
-                <elem>
-                  <re>-2.87624388874974e-05</re>
-                  <im>-5.88800958212232e-06</im>
-                </elem>
-                <elem>
-                  <re>-9.04984044609591e-05</re>
-                  <im>-1.4313583051262e-05</im>
-                </elem>
-                <elem>
-                  <re>-0.00069715193239972</re>
-                  <im>-9.38284501899034e-05</im>
-                </elem>
-              </SigmaQy>
-              <SigmaQz>
-                <elem>
-                  <re>0.0350054726004601</re>
-                  <im>0.000638392812106758</im>
-                </elem>
-                <elem>
-                  <re>0.00072646833723411</re>
-                  <im>-2.25949770538136e-05</im>
-                </elem>
-                <elem>
-                  <re>9.27857618080452e-05</re>
-                  <im>8.11605445960595e-07</im>
-                </elem>
-                <elem>
-                  <re>2.96680045721587e-05</re>
-                  <im>1.11035342342802e-06</im>
-                </elem>
-                <elem>
-                  <re>1.89294551091734e-05</re>
-                  <im>3.05972343994654e-06</im>
-                </elem>
-                <elem>
-                  <re>2.87649781967048e-05</re>
-                  <im>5.89150295127183e-06</im>
-                </elem>
-                <elem>
-                  <re>9.05045817489736e-05</re>
-                  <im>1.43172046591644e-05</im>
-                </elem>
-                <elem>
-                  <re>0.000697156938258559</re>
-                  <im>9.38330631470308e-05</im>
-                </elem>
-              </SigmaQz>
-            </Shell_Shell_Wilson_QllBaryons>
             <Shell_Shell_Wilson_QlQlPotential>
               <Meson1U>
                 <elem>
@@ -3619,7 +3349,7 @@ regression test spectrum output is kept within the chroma xml output
             </Shell_Shell_Wilson_QlQlPotential>
           </elem>
         </Wilson_hadron_measurements>
-      </hadspec>
+      </StaticLightSpec>
     </elem>
     <elem>
       <StaticLightSpec>
