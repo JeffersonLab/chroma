@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.38 2006-10-17 15:20:49 kostas Exp $
+# $Id: Makefile.am,v 3.39 2006-10-17 15:25:25 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -775,6 +775,7 @@ libchroma_a_SOURCES = \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/hadron_seqsource.cc \
 	meas/hadron/mesQl_w.cc \
+	meas/hadron/mesQlPOT_w.cc \
 	meas/hadron/barQll_w.cc \
         meas/hadron/spin_insertion_aggregate.cc \
         meas/hadron/no_spin_insertion.cc \
