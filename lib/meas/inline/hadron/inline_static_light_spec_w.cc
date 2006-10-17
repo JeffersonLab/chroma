@@ -1,4 +1,4 @@
-// $Id: inline_static_light_spec_w.cc,v 1.1 2006-10-17 15:43:44 kostas Exp $
+// $Id: inline_static_light_spec_w.cc,v 1.2 2006-10-17 15:53:55 kostas Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -572,7 +572,7 @@ namespace Chroma
 	//if location of prop1 is not equal to prop2 gauge non invariant
 	//correlation function may occure...
 	//Hopefully the user knows what he is doing...
-	Qll(u_link_smr,sink_prop_1,sink_prop_2,t_src1, phases,xml_out, source_sink_type +"_Wilson_QllBaryons");
+	Qll(u, sink_prop_1,sink_prop_2,t_src1, phases,xml_out, source_sink_type +"_Wilson_QllBaryons");
       } // end if (BaryonP)
       
       // Do the baryons
