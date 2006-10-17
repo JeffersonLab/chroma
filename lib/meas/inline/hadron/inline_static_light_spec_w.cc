@@ -1,4 +1,4 @@
-// $Id: inline_static_light_spec_w.cc,v 1.2 2006-10-17 15:53:55 kostas Exp $
+// $Id: inline_static_light_spec_w.cc,v 1.3 2006-10-17 19:46:02 kostas Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -388,7 +388,7 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-    push(xml_out, "hadspec");
+    push(xml_out, "StaticLightSpec");
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << " StaticLightSpec: Spectroscopy for Wilson-like fermions" ;
@@ -589,7 +589,7 @@ namespace Chroma
       pop(xml_out);  // array element
     }
     pop(xml_out);  // Wilson_spectroscopy
-    pop(xml_out);  // hadspec
+    pop(xml_out);  // StaticLightSpec
 
     snoop.stop();
     QDPIO::cout << InlineStaticLightSpecEnv::name << ": total time = "
