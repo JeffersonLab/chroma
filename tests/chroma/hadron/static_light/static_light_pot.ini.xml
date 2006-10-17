@@ -301,7 +301,13 @@ Hadron spectrum input
       <Param>
         <version>1</version>
         <MesonP>true</MesonP>
-        <BaryonP>true</BaryonP>
+
+<annotation>
+          You cannot do the Qll spectrum with propagators for the meson
+          potential with this code.
+</annotation>
+
+        <BaryonP>false</BaryonP>
 	<MesonPot>true</MesonPot>
         <BaryonPot>false</BaryonPot>
        </Param>
