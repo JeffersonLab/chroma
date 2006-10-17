@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.37 2006-10-14 03:59:15 edwards Exp $
+# $Id: Makefile.am,v 3.38 2006-10-17 15:20:49 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -161,6 +161,7 @@ nobase_include_HEADERS = \
 	meas/hadron/baryon_operator.h \
 	meas/hadron/hadron_seqsource.h \
 	meas/hadron/mesQl_w.h \
+	meas/hadron/mesQlPOT_w.h \
 	meas/hadron/barQll_w.h \
 	meas/hadron/spin_insertion.h \
 	meas/hadron/spin_insertion_factory.h \
