@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.9 2006-10-17 15:34:56 kostas Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.10 2006-10-17 15:38:37 kostas Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -6,7 +6,7 @@
 #include "meas/inline/hadron/inline_hadron_aggregate.h"
 #include "meas/inline/hadron/inline_apply_fermstate_w.h"
 #include "meas/inline/hadron/inline_spectrumQll.h"
-#include "meas/inline/hadron/inline_static_light_spec.h"
+#include "meas/inline/hadron/inline_static_light_spec_w.h"
 #include "meas/inline/hadron/inline_make_source_w.h"
 #include "meas/inline/hadron/inline_make_source_ferm_w.h"
 #include "meas/inline/hadron/inline_propagator_w.h"
