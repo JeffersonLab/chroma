@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: poly_cheb_fermact_w.h,v 3.2 2006-09-20 20:27:59 edwards Exp $
+// $Id: poly_cheb_fermact_w.h,v 3.3 2006-10-19 16:01:27 edwards Exp $
 /*! \file
  *  \brief Chebyshev polynomial fermion action
  */
@@ -7,7 +7,7 @@
 #ifndef __poly_cheb_fermact_w_h__
 #define __poly_cheb_fermact_w_h__
 
-#include "polyfermact.h"
+#include "wilstype_polyfermact_w.h"
 #include "actions/ferm/linop/lgherm_w.h"
 
 namespace Chroma

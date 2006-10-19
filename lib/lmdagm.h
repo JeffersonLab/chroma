@@ -1,13 +1,11 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: lmdagm.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
 
 #ifndef __lmdagm_h__
 #define __lmdagm_h__
 
 #include "handle.h"
 #include "linearop.h"
-
-using namespace QDP::Hints;
 
 namespace Chroma 
 { 
@@ -38,7 +36,7 @@ namespace Chroma
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
-	T  tmp;  moveToFastMemoryHint(tmp);
+	T  tmp;  QDP::Hints::moveToFastMemoryHint(tmp);
 
 	(*A)(tmp, psi, PLUS);
 	(*A)(chi, tmp, MINUS);
@@ -86,7 +84,7 @@ namespace Chroma
     /*! For this operator, the sign is ignored */
     inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
       {
-	multi1d<T>  tmp(size()); moveToFastMemoryHint(tmp);
+	multi1d<T>  tmp(size()); QDP::Hints::moveToFastMemoryHint(tmp);
 	(*A)(tmp, psi, PLUS);
 	(*A)(chi, tmp, MINUS);
       }
@@ -128,7 +126,7 @@ namespace Chroma
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
-	T  tmp;  moveToFastMemoryHint(tmp);
+	T  tmp;  QDP::Hints::moveToFastMemoryHint(tmp);
 
 	(*A)(tmp, psi, PLUS);
 	(*A)(chi, tmp, MINUS);
@@ -138,7 +136,7 @@ namespace Chroma
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const
       {
-	T  tmp; moveToFastMemoryHint(tmp);
+	T  tmp; QDP::Hints::moveToFastMemoryHint(tmp);
 
 	(*A)(tmp, psi, PLUS, epsilon/Real(2));
 	(*A)(chi, tmp, MINUS, epsilon/Real(2));
@@ -179,7 +177,7 @@ namespace Chroma
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
-	T  tmp;  moveToFastMemoryHint(tmp);
+	T  tmp;  QDP::Hints::moveToFastMemoryHint(tmp);
 
 	(*A)(tmp, psi, PLUS);
 	(*A)(chi, tmp, MINUS);
@@ -194,7 +192,7 @@ namespace Chroma
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const
       {
-	T   tmp; moveToFastMemoryHint(tmp);
+	T   tmp; QDP::Hints::moveToFastMemoryHint(tmp);
 
 	(*A)(tmp, psi, PLUS);
 	A->deriv(ds_u, chi, tmp, MINUS);
@@ -269,7 +267,7 @@ namespace Chroma
     /*! For this operator, the sign is ignored */
     inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
       {
-	multi1d<T>  tmp(size()); moveToFastMemoryHint(tmp);
+	multi1d<T>  tmp(size()); QDP::Hints::moveToFastMemoryHint(tmp);
 	(*A)(tmp, psi, PLUS);
 	(*A)(chi, tmp, MINUS);
       }
@@ -283,7 +281,7 @@ namespace Chroma
     virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign) const
       {
-	multi1d<T>  tmp(size()); moveToFastMemoryHint(tmp);
+	multi1d<T>  tmp(size()); QDP::Hints::moveToFastMemoryHint(tmp);
 
 	(*A)(tmp, psi, PLUS);
 	A->deriv(ds_u, chi, tmp, MINUS);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovddag_double_pass_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lovddag_double_pass_w.h,v 3.1 2006-10-19 16:01:31 edwards Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -8,7 +8,7 @@
 #define __lovddag_double_pass_w_h__
 
 #include "linearop.h"
-#include "fermact.h" 
+#include "unprec_wilstype_fermact_w.h" 
 #include "meas/eig/eig_w.h"
 
 

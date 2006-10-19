@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_zolo_nef_fermact_array_w.h,v 3.5 2006-10-11 15:42:26 edwards Exp $
+// $Id: unprec_zolo_nef_fermact_array_w.h,v 3.6 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned NEF domain-wall fermion action
  */
@@ -7,7 +7,6 @@
 #ifndef __unprec_zolo_nef_fermact_array_w_h__
 #define __unprec_zolo_nef_fermact_array_w_h__
 
-#include "fermact.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
 #include "io/enum_io/enum_coeffs_io.h"
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.5 2006-09-15 02:50:45 edwards Exp $
+// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.6 2006-10-19 16:01:35 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -8,11 +8,10 @@
 #ifndef __two_flavor_hasenbusch_monomial5d_w_h__
 #define __two_flavor_hasenbusch_monomial5d_w_h__
 
+#include "unprec_wilstype_fermact_w.h"
+#include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
-//#include <typeinfo>
-
-using namespace std;
 
 namespace Chroma
 {

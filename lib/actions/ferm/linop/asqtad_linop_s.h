@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: asqtad_linop_s.h,v 3.1 2006-10-19 16:01:29 edwards Exp $
 //! Asqtad Staggered-Dirac operator
 /*!
  * \ingroup linop
@@ -10,7 +10,7 @@
 #ifndef __asqtad_linop_s_h__
 #define __asqtad_linop_s_h__
 
-#include "linearop.h"
+#include "eo_linop.h"
 #include "actions/ferm/linop/asqtad_dslash.h"
 
 

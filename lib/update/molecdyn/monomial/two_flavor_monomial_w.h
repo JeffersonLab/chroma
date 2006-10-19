@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.5 2006-09-15 02:50:45 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 3.6 2006-10-19 16:01:35 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -8,6 +8,9 @@
 #ifndef __two_flavor_monomial_w_h__
 #define __two_flavor_monomial_w_h__
 
+#include "unprec_wilstype_fermact_w.h"
+#include "eoprec_logdet_wilstype_fermact_w.h"
+#include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
@@ -409,7 +412,7 @@ namespace Chroma
       // Need way to get gauge state from AbsFieldState<P,Q>
       Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
       
-      Double S_ee =(Double(-2)*lin->LogDetEvenEven());
+      Double S_ee =(Double(-2)*lin->logDetEvenEvenLinOp());
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_even_even");
       write(xml_out, "S_ee", S_ee);
@@ -501,7 +504,7 @@ namespace Chroma
       state->deriv(F);
       Double F_sq = norm2(F);
       
-      lin->derivEvenEvenLogDet(F_tmp, PLUS);
+      lin->derivLogDetEvenEvenLinOp(F_tmp, PLUS);
       for(int mu =0; mu < Nd; mu++) { 
 	F_tmp[mu] *= Real(-2); 
       }

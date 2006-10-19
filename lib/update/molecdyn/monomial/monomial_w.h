@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_w.h,v 3.0 2006-04-03 04:59:09 edwards Exp $
+// $Id: monomial_w.h,v 3.1 2006-10-19 16:01:34 edwards Exp $
 
 /*! \file
  * \brief Monomials of actions
@@ -20,22 +20,22 @@
 
 #include "two_flavor_monomial_w.h"
 #include "unprec_two_flavor_monomial_w.h"
-#include "prec_constdet_two_flavor_monomial_w.h"
-#include "prec_logdet_two_flavor_monomial_w.h"
+#include "eoprec_constdet_two_flavor_monomial_w.h"
+#include "eoprec_logdet_two_flavor_monomial_w.h"
 
 #include "two_flavor_monomial5d_w.h"
 #include "unprec_two_flavor_monomial5d_w.h"
-#include "prec_constdet_two_flavor_monomial5d_w.h"
+#include "eoprec_constdet_two_flavor_monomial5d_w.h"
 
 #include "one_flavor_rat_monomial_w.h"
 #include "unprec_one_flavor_rat_monomial_w.h"
-#include "prec_constdet_one_flavor_rat_monomial_w.h"
+#include "eoprec_constdet_one_flavor_rat_monomial_w.h"
 #include "one_flavor_rat_monomial5d_w.h"
 #include "unprec_one_flavor_rat_monomial5d_w.h"
-#include "prec_constdet_one_flavor_rat_monomial5d_w.h"
+#include "eoprec_constdet_one_flavor_rat_monomial5d_w.h"
 
 #include "two_flavor_hasenbusch_monomial_w.h"
 #include "unprec_two_flavor_hasenbusch_monomial_w.h"
-#include "prec_constdet_two_flavor_hasenbusch_monomial_w.h"
-#include "update/molecdyn/monomial/prec_logdet_ee_monomial_w.h"
+#include "eoprec_constdet_two_flavor_hasenbusch_monomial_w.h"
+#include "eoprec_logdet_ee_monomial_w.h"
 #endif

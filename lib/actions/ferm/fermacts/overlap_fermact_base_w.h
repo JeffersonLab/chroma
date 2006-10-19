@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: overlap_fermact_base_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
+// $Id: overlap_fermact_base_w.h,v 3.2 2006-10-19 16:01:27 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned overlap-like fermion actions
  */
@@ -7,7 +7,7 @@
 #ifndef __overlap_fermact_base_w_h__
 #define __overlap_fermact_base_w_h__
 
-#include "fermact.h"
+#include "unprec_wilstype_fermact_w.h"
 #include "meas/eig/ischiral_w.h"
 #include "actions/ferm/linop/lgherm_w.h"
 #include "io/enum_io/enum_inner_solver_type_io.h"

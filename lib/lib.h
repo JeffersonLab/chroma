@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lib.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: lib.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
 
 /*! \file
  * \brief Chroma Lattice Field Theory library
@@ -19,12 +19,29 @@
 #include "init/chroma_init.h"
 
 #include "fermact.h"
+
+#include "wilstype_fermact_w.h"
+#include "unprec_wilstype_fermact_w.h"
+#include "eoprec_wilstype_fermact_w.h"
+#include "eoprec_constdet_wilstype_fermact_w.h"
+#include "eoprec_logdet_wilstype_fermact_w.h"
+#include "stagtype_fermact_s.h"
+
 #include "fermbc.h"
 #include "gaugeact.h"
 #include "gaugebc.h"
 #include "handle.h"
-#include "linearop.h"
 #include "state.h"
+
+#include "linearop.h"
+#include "eoprec_linop.h"
+#include "eoprec_constdet_linop.h"
+#include "eoprec_logdet_linop.h"
+
+#include "tprec_linop.h"
+#include "tprec_logdet_linop.h"
+#include "teoprec_linop.h"
+#include "teoprec_logdet_linop.h"
 
 #include "actions/actions.h"
 #include "update/update.h"

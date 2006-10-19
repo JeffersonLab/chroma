@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ovlap_contfrac5d_w.h,v 3.0 2006-04-03 04:58:51 edwards Exp $
+// $Id: ovlap_contfrac5d_w.h,v 3.1 2006-10-19 16:01:31 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized partfrac5d
  */
@@ -10,13 +10,13 @@
 #include "chroma_config.h"
 
 // The QDP naive dslash class: QDPWilsonDslash
-#include "prec_ovlap_contfrac5d_linop_array_w.h"
+#include "eoprec_ovlap_contfrac5d_linop_array_w.h"
 
 // The following is an ifdef lis that switches in optimised
 // Dslash-es.
 
 #ifdef BUILD_CFZ_CFZ_LINOP
-#include "prec_ovlap_contfrac5d_linop_array_opt_w.h"
+#include "eoprec_ovlap_contfrac5d_linop_array_opt_w.h"
 namespace Chroma {
 typedef OptEvenOddPrecOvlapContFrac5DLinOpArray EvenOddPrecOvlapContFrac5DLinOpArray;
 }  // end namespace Chroma

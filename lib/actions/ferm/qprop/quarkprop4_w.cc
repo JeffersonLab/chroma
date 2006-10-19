@@ -1,12 +1,11 @@
-// $Id: quarkprop4_w.cc,v 3.3 2006-10-11 15:42:26 edwards Exp $
+// $Id: quarkprop4_w.cc,v 3.4 2006-10-19 16:01:34 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
  *  Given a complete propagator as a source, this does all the inversions needed
  */
 
-#include "chromabase.h"
-#include "fermact.h"
+#include "wilstype_fermact_w.h"
 #include "util/ferm/transf.h"
 #include "actions/ferm/qprop/quarkprop4_w.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermacts_w.h,v 3.2 2006-09-19 16:04:22 edwards Exp $
+// $Id: fermacts_w.h,v 3.3 2006-10-19 16:01:27 edwards Exp $
 
 /*! \file
  * \brief Fermion actions
@@ -14,10 +14,10 @@
 #include "fermacts_aggregate_w.h"
 
 #include "unprec_wilson_fermact_w.h"
-#include "prec_wilson_fermact_w.h"
+#include "eoprec_wilson_fermact_w.h"
 
 #include "unprec_parwilson_fermact_w.h"
-#include "prec_parwilson_fermact_w.h"
+#include "eoprec_parwilson_fermact_w.h"
 
 #include "unprec_dwf_fermact_base_array_w.h"
 #include "unprec_dwf_fermact_array_w.h"
@@ -27,22 +27,22 @@
 #include "unprec_ovext_fermact_array_w.h"
 
 
-#include "prec_dwf_fermact_base_array_w.h"
-#include "prec_dwf_fermact_array_w.h"
-#include "prec_nef_fermact_array_w.h"
-#include "prec_kno_fermact_array_w.h"
-#include "prec_zolo_nef_fermact_array_w.h"
-#include "prec_ovdwf_fermact_array_w.h"
-#include "prec_ovext_fermact_array_w.h"
+#include "eoprec_dwf_fermact_base_array_w.h"
+#include "eoprec_dwf_fermact_array_w.h"
+#include "eoprec_nef_fermact_array_w.h"
+#include "eoprec_kno_fermact_array_w.h"
+#include "eoprec_zolo_nef_fermact_array_w.h"
+#include "eoprec_ovdwf_fermact_array_w.h"
+#include "eoprec_ovext_fermact_array_w.h"
 
 
 #include "overlap_fermact_base_w.h"
 #include "ovlap_partfrac4d_fermact_w.h"
 #include "unprec_ovlap_contfrac5d_fermact_array_w.h"
-#include "prec_ovlap_contfrac5d_fermact_array_w.h"
+#include "eoprec_ovlap_contfrac5d_fermact_array_w.h"
 #include "unprec_ht_contfrac5d_fermact_array_w.h"
 
-#include "prec_ht_contfrac5d_fermact_array_w.h"
+#include "eoprec_ht_contfrac5d_fermact_array_w.h"
 #include "unprec_dwftransf_fermact_w.h"
 
 #include "ovext_tuning_strategy.h"

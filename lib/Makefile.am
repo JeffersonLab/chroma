@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.41 2006-10-17 15:38:37 kostas Exp $
+# $Id: Makefile.am,v 3.42 2006-10-19 16:01:24 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -16,10 +16,12 @@ nobase_include_HEADERS = \
 	chroma_config.h chroma.h chromabase.h chromainc.h common_declarations.h \
         boundcond.h create_state.h fermact.h \
 	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h lib.h \
-	linearop.h eo_prec_linop.h prec_constdet_linop.h prec_logdet_linop.h \
+	linearop.h eo_linop.h eoprec_linop.h eoprec_constdet_linop.h eoprec_logdet_linop.h \
 	lmdagm.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
-        named_obj.h polyfermact.h polylinop.h tpreclinop.h \
+        named_obj.h polylinop.h \
+        tprec_linop.h tprec_logdet_linop.h \
+        teoprec_linop.h teoprec_logdet_linop.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
 	actions/ferm/ferm.h \
@@ -281,24 +283,27 @@ nodist_include_HEADERS=chroma_config_internal.h
 
 # Wilson specific headers
 nobase_include_HEADERS += \
+        wilstype_polyfermact_w.h \
+        wilstype_fermact_w.h unprec_wilstype_fermact_w.h eoprec_wilstype_fermact_w.h \
+        eoprec_constdet_wilstype_fermact_w.h eoprec_logdet_wilstype_fermact_w.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
-	actions/ferm/fermacts/prec_clover_fermact_w.h \
+	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
-	actions/ferm/fermacts/prec_slic_fermact_w.h \
-	actions/ferm/fermacts/prec_clover_extfield_fermact_w.h \
+	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
+	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
-	actions/ferm/fermacts/prec_dwf_fermact_array_w.h \
-	actions/ferm/fermacts/prec_nef_fermact_array_w.h \
-        actions/ferm/fermacts/prec_kno_fermact_array_w.h \
-	actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h \
-	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h \
-	actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h \
+	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.h \
+	actions/ferm/fermacts/eoprec_nef_fermact_array_w.h \
+        actions/ferm/fermacts/eoprec_kno_fermact_array_w.h \
+	actions/ferm/fermacts/eoprec_zolo_nef_fermact_array_w.h \
+	actions/ferm/fermacts/eoprec_ovdwf_fermact_array_w.h \
+	actions/ferm/fermacts/eoprec_dwf_fermact_base_array_w.h \
 	actions/ferm/fermacts/wilson_fermact_params_w.h \
-	actions/ferm/fermacts/prec_wilson_fermact_w.h \
-	actions/ferm/fermacts/prec_parwilson_fermact_w.h \
+	actions/ferm/fermacts/eoprec_wilson_fermact_w.h \
+	actions/ferm/fermacts/eoprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_nef_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h \
@@ -306,15 +311,15 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
-	actions/ferm/fermacts/prec_ovext_fermact_array_w.h \
+	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.h \
 	actions/ferm/fermacts/unprec_w12_fermact_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
-	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h \
+	actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.h \
-	actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h \
+	actions/ferm/fermacts/eoprec_ht_contfrac5d_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.h \
 	actions/ferm/fermacts/ovext_tuning_strategy.h \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h \
@@ -352,7 +357,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_nonhermop_array_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_pv_linop_array_w.h \
 	actions/ferm/linop/unprec_ht_contfrac5d_linop_array_w.h \
-	actions/ferm/linop/prec_ht_contfrac5d_linop_array_w.h \
+	actions/ferm/linop/eoprec_ht_contfrac5d_linop_array_w.h \
 	actions/ferm/linop/dslash_w.h actions/ferm/linop/dwffld_w.h \
 	actions/ferm/linop/dslash_array_w.h \
 	actions/ferm/linop/linop_w.h \
@@ -370,18 +375,18 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/clover_term_w.h \
 	actions/ferm/linop/clover_term_base_w.h \
 	actions/ferm/linop/clover_term_qdp_w.h \
-	actions/ferm/linop/prec_clover_linop_w.h \
+	actions/ferm/linop/eoprec_clover_linop_w.h \
 	actions/ferm/linop/unprec_clover_linop_w.h \
-	actions/ferm/linop/prec_clover_extfield_linop_w.h \
+	actions/ferm/linop/eoprec_clover_extfield_linop_w.h \
 	actions/ferm/linop/overlapbu_linop_w.h \
-	actions/ferm/linop/prec_dwflike_linop_base_array_w.h \
-	actions/ferm/linop/prec_dwf_linop_array_w.h \
-	actions/ferm/linop/prec_ovdwf_linop_array_w.h \
-	actions/ferm/linop/prec_nef_linop_array_w.h \
-	actions/ferm/linop/prec_nef_general_linop_array_w.h \
-	actions/ferm/linop/prec_wilson_linop_w.h \
-	actions/ferm/linop/prec_parwilson_linop_w.h \
-	actions/ferm/linop/prec_ovext_linop_array_w.h \
+	actions/ferm/linop/eoprec_dwflike_linop_base_array_w.h \
+	actions/ferm/linop/eoprec_dwf_linop_array_w.h \
+	actions/ferm/linop/eoprec_ovdwf_linop_array_w.h \
+	actions/ferm/linop/eoprec_nef_linop_array_w.h \
+	actions/ferm/linop/eoprec_nef_general_linop_array_w.h \
+	actions/ferm/linop/eoprec_wilson_linop_w.h \
+	actions/ferm/linop/eoprec_parwilson_linop_w.h \
+	actions/ferm/linop/eoprec_ovext_linop_array_w.h \
 	actions/ferm/linop/unprec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/unprec_dwf_linop_array_w.h \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
@@ -391,9 +396,9 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_w12_linop_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
 	actions/ferm/linop/unprec_parwilson_linop_w.h \
-	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.h \
-	actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_w.h \
-	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.h \
+	actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_base_array_w.h \
+	actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_w.h \
+	actions/ferm/linop/eoprec_ovlap_contfrac5d_pv_linop_array_w.h \
 	actions/ferm/linop/unprec_dwftransf_linop_w.h \
 	actions/ferm/linop/unprec_dwf4d_linop_w.h \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.h \
@@ -401,13 +406,13 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/ovlap_contfrac5d_w.h \
 	actions/ferm/linop/polynomial_op.h \
 	actions/ferm/linop/polprec_op.h \
-	actions/ferm/linop/prec_slic_linop_w.h \
+	actions/ferm/linop/eoprec_slic_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
 	actions/ferm/qprop/dwf_quarkprop4_w.h \
 	actions/ferm/qprop/nef_quarkprop4_w.h \
-	actions/ferm/qprop/prec_fermact_qprop_array.h \
+	actions/ferm/qprop/eoprec_fermact_qprop_array.h \
 	io/io_w.h io/kyuqprop_io.h \
         io/readszinferm_w.h io/readszinqprop_w.h \
 	io/writeszinqprop_w.h \
@@ -456,31 +461,31 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
-	update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
-	update/molecdyn/monomial/prec_constdet_two_flavor_monomial_w.h \
-        update/molecdyn/monomial/prec_logdet_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
+        update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h \
-	update/molecdyn/monomial/prec_constdet_two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial5d_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
-	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
-	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h \
-	update/molecdyn/monomial/prec_logdet_ee_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
@@ -490,13 +495,14 @@ nobase_include_HEADERS += \
         util/ferm/symtensor.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
-#	actions/ferm/fermacts/prec_flic_fermact_w.h
+#	actions/ferm/fermacts/eoprec_flic_fermact_w.h
 #	actions/ferm/fermacts/flic_fermstate_w.h
-#	actions/ferm/linop/prec_flic_linop_w.h
+#	actions/ferm/linop/eoprec_flic_linop_w.h
 
 
 # Staggered specific headers
 nobase_include_HEADERS += \
+        stagtype_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
@@ -514,7 +520,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
 	actions/ferm/linop/linop_s.h \
-	actions/ferm/qprop/prec_staggered_qprop.h \
+	actions/ferm/qprop/eoprec_staggered_qprop.h \
 	actions/ferm/qprop/asqtad_qprop.h \
 	actions/ferm/qprop/quarkprop4_s.h \
 	io/follana_io_s.h io/io_s.h \
@@ -708,8 +714,8 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
-	actions/ferm/qprop/prec_fermact_qprop.cc \
-	actions/ferm/qprop/prec_fermact_qprop_array.cc \
+	actions/ferm/qprop/eoprec_fermact_qprop.cc \
+	actions/ferm/qprop/eoprec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
 	actions/ferm/qprop/asqtad_qprop.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
@@ -869,25 +875,25 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
-	actions/ferm/fermacts/prec_dwf_fermact_array_w.cc \
-	actions/ferm/fermacts/prec_nef_fermact_array_w.cc \
-	actions/ferm/fermacts/prec_kno_fermact_array_w.cc \
-	actions/ferm/fermacts/prec_ovdwf_fermact_array_w.cc \
-	actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.cc \
-	actions/ferm/fermacts/prec_parwilson_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.cc \
+	actions/ferm/fermacts/eoprec_nef_fermact_array_w.cc \
+	actions/ferm/fermacts/eoprec_kno_fermact_array_w.cc \
+	actions/ferm/fermacts/eoprec_ovdwf_fermact_array_w.cc \
+	actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.cc \
+	actions/ferm/fermacts/eoprec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/wilson_fermact_params_w.cc \
-	actions/ferm/fermacts/prec_wilson_fermact_w.cc \
-	actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.cc \
-	actions/ferm/fermacts/prec_ovext_fermact_array_w.cc \
+	actions/ferm/fermacts/eoprec_wilson_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_zolo_nef_fermact_array_w.cc \
+	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
-	actions/ferm/fermacts/prec_clover_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
-	actions/ferm/fermacts/prec_slic_fermact_w.cc \
-	actions/ferm/fermacts/prec_clover_extfield_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.cc \
-	actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.cc \
+	actions/ferm/fermacts/eoprec_ht_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.cc \
@@ -930,20 +936,20 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/lwldslash_base_array_w.cc \
 	actions/ferm/linop/lwldslash_array_w.cc \
 	actions/ferm/linop/overlapbu_linop_w.cc \
-	actions/ferm/linop/prec_dwf_linop_array_w.cc \
-	actions/ferm/linop/prec_nef_general_linop_array_w.cc \
-	actions/ferm/linop/prec_nef_linop_array_w.cc \
-	actions/ferm/linop/prec_ovdwf_linop_array_w.cc \
-	actions/ferm/linop/prec_ovlap_contfrac5d_linop_base_array_w.cc \
-	actions/ferm/linop/prec_ovlap_contfrac5d_pv_linop_array_w.cc \
-	actions/ferm/linop/prec_parwilson_linop_w.cc \
-	actions/ferm/linop/prec_wilson_linop_w.cc \
-	actions/ferm/linop/prec_ovext_linop_array_w.cc \
+	actions/ferm/linop/eoprec_dwf_linop_array_w.cc \
+	actions/ferm/linop/eoprec_nef_general_linop_array_w.cc \
+	actions/ferm/linop/eoprec_nef_linop_array_w.cc \
+	actions/ferm/linop/eoprec_ovdwf_linop_array_w.cc \
+	actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_base_array_w.cc \
+	actions/ferm/linop/eoprec_ovlap_contfrac5d_pv_linop_array_w.cc \
+	actions/ferm/linop/eoprec_parwilson_linop_w.cc \
+	actions/ferm/linop/eoprec_wilson_linop_w.cc \
+	actions/ferm/linop/eoprec_ovext_linop_array_w.cc \
 	actions/ferm/linop/unprec_dwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_dwftransf_linop_w.cc \
 	actions/ferm/linop/unprec_dwf_linop_array_w.cc \
 	actions/ferm/linop/unprec_ht_contfrac5d_linop_array_w.cc \
-	actions/ferm/linop/prec_ht_contfrac5d_linop_array_w.cc \
+	actions/ferm/linop/eoprec_ht_contfrac5d_linop_array_w.cc \
 	actions/ferm/linop/unprec_nef_linop_array_w.cc \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.cc \
 	actions/ferm/linop/unprec_ovext_linop_array_w.cc \
@@ -958,10 +964,10 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
 	actions/ferm/linop/clover_term_base_w.cc \
 	actions/ferm/linop/clover_term_qdp_w.cc \
-	actions/ferm/linop/prec_clover_linop_w.cc \
+	actions/ferm/linop/eoprec_clover_linop_w.cc \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
-	actions/ferm/linop/prec_clover_extfield_linop_w.cc \
-	actions/ferm/linop/prec_slic_linop_w.cc \
+	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc \
+	actions/ferm/linop/eoprec_slic_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
@@ -1005,24 +1011,24 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
-	update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc \
-	update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/prec_constdet_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/prec_logdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
-	update/molecdyn/monomial/prec_constdet_two_flavor_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc \
-	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial5d_w.cc \
-	update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.cc \
-	update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.cc \
-	update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.cc \
-	update/molecdyn/monomial/prec_logdet_ee_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
 	util/ferm/gammasgn_w.cc \
         util/ferm/antisymtensor.cc \
@@ -1036,7 +1042,7 @@ libchroma_a_SOURCES += \
 #	meas/pbp/mespbg5p_w.cc meas/pbp/mespbp_w.cc
 #	meas/pbp/ovpbg5p_w.cc meas/pbp/pbg5p_w.cc
 #	actions/ferm/fermstates/flic_fermact_params_w.cc
-#	actions/ferm/fermstates/prec_flic_fermact_w.cc
+#	actions/ferm/fermstates/eoprec_flic_fermact_w.cc
 #	actions/ferm/fermstates/flic_fermstate_w.cc
 
 
@@ -1133,7 +1139,7 @@ libchroma_a_SOURCES += \
 endif
 
 if BUILD_CG_DWF
-nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h \
+nobase_include_HEADERS += actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
 	actions/ferm/qprop/avp_inverter_interface.h \
 	actions/ferm/qprop/avp_ssef_solver.h \
 	actions/ferm/qprop/avp_ssed_solver.h \
@@ -1141,7 +1147,7 @@ nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.h \
 	actions/ferm/qprop/avp_bgld_solver.h \
 	actions/ferm/qprop/avp_altivecf_solver.h
 
-libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_cg_dwf_w.cc \
+libchroma_a_SOURCES += actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.cc \
 	actions/ferm/qprop/avp_inverter_interface.cc
 endif
 
@@ -1159,13 +1165,13 @@ if BUILD_CG_DWF_ALTIVEC
 libchroma_a_SOURCES += actions/ferm/qprop/avp_altivecf_solver.cc
 endif
 if BUILD_SSE_DWF_CG
-nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_sse_w.h
-libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_sse_w.cc
+nobase_include_HEADERS += actions/ferm/qprop/eoprec_dwf_qprop_array_sse_w.h
+libchroma_a_SOURCES += actions/ferm/qprop/eoprec_dwf_qprop_array_sse_w.cc
 endif
 
 if BUILD_ALTIVEC_DWF_CG
-nobase_include_HEADERS += actions/ferm/qprop/prec_dwf_qprop_array_altivec_w.h
-libchroma_a_SOURCES += actions/ferm/qprop/prec_dwf_qprop_array_altivec_w.cc
+nobase_include_HEADERS += actions/ferm/qprop/eoprec_dwf_qprop_array_altivec_w.h
+libchroma_a_SOURCES += actions/ferm/qprop/eoprec_dwf_qprop_array_altivec_w.cc
 endif
 
 if BUILD_PAB_WILSON_DSLASH
@@ -1177,8 +1183,8 @@ libchroma_a_SOURCES += actions/ferm/linop/lwldslash_w_pab.cc \
 endif
 
 if BUILD_OPT_CFZ_LINOP
-nobase_include_HEADERS += actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.h
-libchroma_a_SOURCES += actions/ferm/linop/prec_ovlap_contfrac5d_linop_array_opt_w.cc
+nobase_include_HEADERS += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
+libchroma_a_SOURCES += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
 endif
 
 #

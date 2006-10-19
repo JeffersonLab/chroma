@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: linop_w.h,v 3.1 2006-10-19 16:01:31 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -16,11 +16,11 @@
 #include "dslash_array_w.h"
 
 #include "unprec_wilson_linop_w.h"
-#include "prec_wilson_linop_w.h"
+#include "eoprec_wilson_linop_w.h"
 #include "overlapbu_linop_w.h"
 
 #include "unprec_parwilson_linop_w.h"
-#include "prec_parwilson_linop_w.h"
+#include "eoprec_parwilson_linop_w.h"
 
 #include "unprec_dwf4d_linop_w.h"
 #include "unprec_pdwf4d_linop_w.h"
@@ -31,13 +31,13 @@
 #include "unprec_nef_linop_array_w.h"
 #include "unprec_ovdwf_linop_array_w.h"
 #include "unprec_ovext_linop_array_w.h"
-#include "prec_ovext_linop_array_w.h"
+#include "eoprec_ovext_linop_array_w.h"
 
-#include "prec_dwflike_linop_base_array_w.h"
-#include "prec_dwf_linop_array_w.h"
-#include "prec_nef_linop_array_w.h"
-#include "prec_nef_general_linop_array_w.h"
-#include "prec_ovdwf_linop_array_w.h"
+#include "eoprec_dwflike_linop_base_array_w.h"
+#include "eoprec_dwf_linop_array_w.h"
+#include "eoprec_nef_linop_array_w.h"
+#include "eoprec_nef_general_linop_array_w.h"
+#include "eoprec_ovdwf_linop_array_w.h"
 
 #include "dwffld_w.h"
 
@@ -50,10 +50,10 @@
 #include "lg5eps_w.h"
 
 #include "unprec_ovlap_contfrac5d_linop_array_w.h"
-#include "prec_ovlap_contfrac5d_linop_base_array_w.h"
+#include "eoprec_ovlap_contfrac5d_linop_base_array_w.h"
 #include "unprec_ovlap_contfrac5d_nonhermop_array_w.h"
 #include "unprec_ht_contfrac5d_linop_array_w.h"
-#include "prec_ht_contfrac5d_linop_array_w.h"
+#include "eoprec_ht_contfrac5d_linop_array_w.h"
 
 #include "ovlap_contfrac5d_w.h"
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 3.2 2006-09-19 16:04:21 edwards Exp $
+// $Id: asqtad_fermact_s.h,v 3.3 2006-10-19 16:01:26 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -7,7 +7,7 @@
 #ifndef __asqtad_fermact_s_h__
 #define __asqtad_fermact_s_h__
 
-#include "fermact.h"
+#include "stagtype_fermact_s.h"
 #include "state.h"
 #include "actions/ferm/fermstates/asqtad_state.h"
 #include "actions/ferm/fermstates/simple_fermstate.h"

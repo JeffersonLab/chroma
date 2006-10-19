@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_fermact_w.h,v 3.2 2006-09-20 20:27:59 edwards Exp $
+// $Id: unprec_dwftransf_fermact_w.h,v 3.3 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion action
  */
@@ -7,7 +7,7 @@
 #ifndef __unprec_dwftransf_fermact_w_h__
 #define __unprec_dwftransf_fermact_w_h__
 
-#include "fermact.h"
+#include "unprec_wilstype_fermact_w.h"
 #include "actions/ferm/linop/unprec_dwftransf_linop_w.h"
 #include "io/aniso_io.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"

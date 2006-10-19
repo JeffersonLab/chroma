@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quarkprop4_s.h,v 3.4 2006-10-11 15:42:26 edwards Exp $
+// $Id: quarkprop4_s.h,v 3.5 2006-10-19 16:01:34 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -9,7 +9,7 @@
 #ifndef __quarkprop4_s_h__
 #define __quarkprop4_s_h__
 
-#include "fermact.h"
+#include "stagtype_fermact_s.h"
 
 namespace Chroma
 {

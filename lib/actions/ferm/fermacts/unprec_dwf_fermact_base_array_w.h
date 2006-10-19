@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_fermact_base_array_w.h,v 3.1 2006-07-03 15:26:07 edwards Exp $
+// $Id: unprec_dwf_fermact_base_array_w.h,v 3.2 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Base class for unpreconditioned domain-wall-like fermion actions
  */
@@ -7,7 +7,7 @@
 #ifndef __unprec_dwf_fermact_base_array_w_h__
 #define __unprec_dwf_fermact_base_array_w_h__
 
-#include "fermact.h"
+#include "unprec_wilstype_fermact_w.h"
 #include "actions/ferm/linop/unprec_dwflike_linop_base_array_w.h"
 #include "actions/ferm/linop/unprec_dwf4d_linop_w.h"
 #include "actions/ferm/linop/lDeltaLs_w.h"

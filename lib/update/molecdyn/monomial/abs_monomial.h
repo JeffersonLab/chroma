@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 3.0 2006-04-03 04:59:08 edwards Exp $
+// $Id: abs_monomial.h,v 3.1 2006-10-19 16:01:34 edwards Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -8,7 +8,7 @@
 #ifndef __abs_monomial_h__
 #define __abs_monomial_h__
 
-#include "fermact.h"
+#include "wilstype_fermact_w.h"
 #include "gaugeact.h"
 
 #include "update/molecdyn/field_state.h"

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: nef_quarkprop4_w.h,v 3.5 2006-10-11 15:42:26 edwards Exp $
+// $Id: nef_quarkprop4_w.h,v 3.6 2006-10-19 16:01:33 edwards Exp $
 /*! \file
  * \brief Full quark propagator solver for domain wall fermions
  *
@@ -11,7 +11,7 @@
 
 #include "fermact.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
-#include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
+#include "actions/ferm/fermacts/eoprec_dwf_fermact_base_array_w.h"
 
 namespace Chroma
 {

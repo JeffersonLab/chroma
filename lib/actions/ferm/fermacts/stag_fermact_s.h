@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stag_fermact_s.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: stag_fermact_s.h,v 3.1 2006-10-19 16:01:29 edwards Exp $
 /*! \file
  *  \brief Staggered fermion action
  */
@@ -7,7 +7,7 @@
 #ifndef __stag_fermact_w_h__
 #define __stag_fermact_w_h__
 
-#include "fermact.h"
+#include "stagtype_fermact_s.h"
 
 
 namespace Chroma 
