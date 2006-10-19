@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.1 2006-10-19 16:01:33 edwards Exp $
+// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.2 2006-10-19 17:42:48 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -7,7 +7,7 @@
 #ifndef __prec_dwf_qprop_array_cg_dwf_w_h__
 #define __prec_dwf_qprop_array_cg_dwf_w_h__
 
-#include "fermact.h"
+#include "eoprec_constdet_wilstype_fermact_w.h"
 #include "io/aniso_io.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
 
