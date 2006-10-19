@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.8 2006-09-20 20:27:58 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.9 2006-10-19 17:36:07 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -13,11 +13,11 @@
 #include "actions/ferm/fermacts/unprec_dwftransf_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_w12_fermact_w.h"
 
-#include "actions/ferm/fermacts/prec_clover_fermact_w.h"
-#include "actions/ferm/fermacts/prec_clover_extfield_fermact_w.h"
-#include "actions/ferm/fermacts/prec_wilson_fermact_w.h"
-#include "actions/ferm/fermacts/prec_parwilson_fermact_w.h"
-#include "actions/ferm/fermacts/prec_slic_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_wilson_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_parwilson_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_slic_fermact_w.h"
 
 #include "actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h"
 
@@ -31,14 +31,14 @@
 #include "actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h"
 #include "actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.h"
 
-#include "actions/ferm/fermacts/prec_dwf_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_ovdwf_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_nef_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_kno_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_zolo_nef_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_ovlap_contfrac5d_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_ht_contfrac5d_fermact_array_w.h"
-#include "actions/ferm/fermacts/prec_ovext_fermact_array_w.h"
+#include "actions/ferm/fermacts/eoprec_dwf_fermact_array_w.h"
+#include "actions/ferm/fermacts/eoprec_ovdwf_fermact_array_w.h"
+#include "actions/ferm/fermacts/eoprec_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/eoprec_kno_fermact_array_w.h"
+#include "actions/ferm/fermacts/eoprec_zolo_nef_fermact_array_w.h"
+#include "actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.h"
+#include "actions/ferm/fermacts/eoprec_ht_contfrac5d_fermact_array_w.h"
+#include "actions/ferm/fermacts/eoprec_ovext_fermact_array_w.h"
 
 
 #include "actions/ferm/fermacts/ovext_tuning_strategy_aggregate.h"

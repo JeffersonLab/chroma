@@ -1,4 +1,4 @@
-// $Id: monomial_aggregate_w.cc,v 3.4 2006-09-20 20:28:05 edwards Exp $
+// $Id: monomial_aggregate_w.cc,v 3.5 2006-10-19 17:36:07 edwards Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -6,31 +6,31 @@
 #include "update/molecdyn/monomial/monomial_aggregate_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial_w.h"
-#include "update/molecdyn/monomial/prec_constdet_two_flavor_monomial_w.h"
-#include "update/molecdyn/monomial/prec_logdet_two_flavor_monomial_w.h"
+#include "update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h"
+#include "update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h"
-#include "update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial_w.h"
+#include "update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h"
-#include "update/molecdyn/monomial/prec_constdet_two_flavor_monomial5d_w.h"
+#include "update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h"
 
 #include "update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h"
-#include "update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial_w.h"
+#include "update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h"
-#include "update/molecdyn/monomial/prec_constdet_one_flavor_rat_monomial5d_w.h"
+#include "update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h"
 
 //#include "update/molecdyn/monomial/unprec_two_flavor_polynomial_monomial_w.h"
-#include "update/molecdyn/monomial/prec_constdet_two_flavor_polynomial_monomial_w.h"
+#include "update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h"
 
 //#include "update/molecdyn/monomial/unprec_two_flavor_polyprec_monomial_w.h"
-#include "update/molecdyn/monomial/prec_constdet_two_flavor_polyprec_monomial_w.h"
+#include "update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h"
 
-#include "update/molecdyn/monomial/prec_logdet_ee_monomial_w.h"
+#include "update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h"
 
 #include "update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.h"
-#include "update/molecdyn/monomial/prec_constdet_two_flavor_hasenbusch_monomial5d_w.h"
+#include "update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.h"
 
 #include "update/molecdyn/monomial/fixed_random_ferm_monomial.h"
 

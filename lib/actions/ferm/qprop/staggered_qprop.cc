@@ -1,4 +1,4 @@
-// $Id: staggered_qprop.cc,v 3.1 2006-07-03 15:26:09 edwards Exp $
+// $Id: staggered_qprop.cc,v 3.2 2006-10-19 17:36:07 edwards Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -6,7 +6,7 @@
  */
 
 #include "fermact.h"
-#include "actions/ferm/qprop/prec_staggered_qprop.h"
+#include "actions/ferm/qprop/eoprec_staggered_qprop.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
 
 namespace Chroma

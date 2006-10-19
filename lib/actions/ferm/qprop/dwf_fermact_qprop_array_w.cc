@@ -1,10 +1,10 @@
-// $Id: dwf_fermact_qprop_array_w.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
+// $Id: dwf_fermact_qprop_array_w.cc,v 3.3 2006-10-19 17:36:07 edwards Exp $
 /*! \file
  *  \brief Base class for unprec and even-odd preconditioned DWF qprop
  */
 
 #include "chromabase.h"
-#include "actions/ferm/fermacts/prec_dwf_fermact_base_array_w.h"
+#include "actions/ferm/fermacts/eoprec_dwf_fermact_base_array_w.h"
 #include "actions/ferm/fermacts/unprec_dwf_fermact_base_array_w.h"
 #include "actions/ferm/linop/dwffld_w.h"
 

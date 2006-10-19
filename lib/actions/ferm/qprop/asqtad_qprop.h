@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_qprop.h,v 3.1 2006-09-06 03:43:22 edwards Exp $
+// $Id: asqtad_qprop.h,v 3.2 2006-10-19 17:36:07 edwards Exp $
 /*! \file
  *  \brief Asqtad propagator wrapper
  *
@@ -25,7 +25,7 @@ namespace Chroma {
 
 #else 
 
-#include "actions/ferm/qprop/prec_staggered_qprop.h"
+#include "actions/ferm/qprop/eoprec_staggered_qprop.h"
 
 namespace Chroma {
   typedef EvenOddFermActQprop<LatticeStaggeredFermion,
