@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_utils.cc,v 1.1 2006-09-19 16:04:23 edwards Exp $
+// $Id: stout_utils.cc,v 1.2 2006-10-20 16:57:18 edwards Exp $
 /*! \file
  *  \brief Stout utilities
  */
@@ -510,10 +510,10 @@ namespace Chroma
 	    {
 	      multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), site);
 
-	      fprintf(stdout, 
-		      "%s: corner2; site=%d coord=[%d,%d,%d,%d] c0max=%g c0abs=%d eps=%g\n Setting theta=0",
-		      __func__, site, coord[0], coord[1], coord[2], coord[3],
-		      c0abs, c0max,eps);
+//	      fprintf(stdout, 
+//		      "%s: corner2; site=%d coord=[%d,%d,%d,%d] c0max=%g c0abs=%d eps=%g\n Setting theta=0",
+//		      __func__, site, coord[0], coord[1], coord[2], coord[3],
+//		      c0abs, c0max,eps);
 	    }
 	    theta = 0;
 	  }
