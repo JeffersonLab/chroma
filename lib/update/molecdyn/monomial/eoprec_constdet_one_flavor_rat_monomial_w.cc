@@ -1,4 +1,4 @@
-// $Id: eoprec_constdet_one_flavor_rat_monomial_w.cc,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_constdet_one_flavor_rat_monomial_w.cc,v 3.2 2006-10-22 21:31:46 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -57,8 +57,6 @@ namespace Chroma
 
     inv_param = param.inv_param;
     nthRoot   = param.nthRoot;
-
-    cout << "Param.fermact is : "<< param.fermact.id << endl;
 
     std::istringstream is(param.fermact.xml);
     XMLReader fermact_reader(is);
