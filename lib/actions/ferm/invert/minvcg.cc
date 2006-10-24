@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 3.3 2006-10-24 04:32:16 edwards Exp $
+// $Id: minvcg.cc,v 3.4 2006-10-24 04:45:07 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -122,6 +122,10 @@ namespace Chroma
       psi[i][sub] = zero;
     }
   
+    T chi_internal;      moveToFastMemoryHint(chi_internal);
+    chi_internal[sub] = chi;
+    moveToFastMemoryHint(psi,true);
+
     FlopCounter flopcount;
     flopcount.reset();
     StopWatch swatch;
@@ -129,7 +133,7 @@ namespace Chroma
     swatch.start();
 
     // If chi has zero norm then the result is zero
-    Double chi_norm_sq = norm2(chi,sub);            flopcount.addSiteFlops(4*Nc*Ns,sub);
+    Double chi_norm_sq = norm2(chi_internal,sub);    flopcount.addSiteFlops(4*Nc*Ns,sub);
     Double chi_norm = sqrt(chi_norm_sq);
 
     if( toBool( chi_norm < fuzz )) 
@@ -138,6 +142,7 @@ namespace Chroma
 
       QDPIO::cout << "MInvCG: " << n_count << " iterations" << endl;
       flopcount.report("minvcg", swatch.getTimeInSeconds());
+      revertFromFastMemoryHint(psi,true);
 
       // The psi are all zero anyway at this point
       // for(int i=0; i < n_shift; i++) { psi[i] = zero; }
@@ -157,20 +162,20 @@ namespace Chroma
 
   
     // r[0] := p[0] := Chi 
-    T r;
-    r[sub] = chi;                                   // no flops
+    T r;                     moveToFastMemoryHint(r);
+    r[sub] = chi_internal;                          // no flops
 
     // Psi[0] := 0;
-    multi1d<T> p(n_shift);
+    multi1d<T> p(n_shift);   moveToFastMemoryHint(p);
     for(s = 0; s < n_shift; ++s) {
-      p[s][sub] = chi;                              // no flops
+      p[s][sub] = chi_internal;                     // no flops
     }
 
 
     //  b[0] := - | r[0] |**2 / < p[0], Ap[0] > ;/
     //  First compute  d  =  < p, A.p > 
     //  Ap = A . p  */
-    T Ap;
+    T Ap;                    moveToFastMemoryHint(Ap);
     A(Ap, p[isz], PLUS);                            flopcount.addFlops(A.nFlops());
     Ap[sub] += shifts[isz]*p[isz];                  flopcount.addSiteFlops(4*Nc*Ns,sub);
 
@@ -204,7 +209,7 @@ namespace Chroma
 
     //  Psi[1] -= b[0] p[0] = - b[0] chi;
     for(s = 0; s < n_shift; ++s) {
-      psi[s][sub] = - Real(bs[s])*chi;           flopcount.addSiteFlops(2*Nc*Ns,sub);
+      psi[s][sub] = - Real(bs[s])*chi_internal;  flopcount.addSiteFlops(2*Nc*Ns,sub);
     }
   
     //  c = |r[1]|^2   
@@ -371,7 +376,7 @@ namespace Chroma
       A(Ap, psi[s], PLUS);
       Ap[sub] += shifts[s]*psi[s];
 
-      Ap[sub] -= chi;
+      Ap[sub] -= chi_internal;
 
       c = norm2(Ap,sub);	                /* 2 Nc Ns  flops */
 
@@ -385,6 +390,7 @@ namespace Chroma
 
     QDPIO::cout << "MInvCG: " << n_count << " iterations" << endl;
     flopcount.report("minvcg", swatch.getTimeInSeconds());
+    revertFromFastMemoryHint(psi,true);
 
     if (n_count == MaxCG) {
       QDP_error_exit("too many CG iterationns: %d\n", n_count);
