@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 3.2 2006-10-24 04:23:51 edwards Exp $
+// $Id: minvcg.cc,v 3.3 2006-10-24 04:32:16 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -129,12 +129,15 @@ namespace Chroma
     swatch.start();
 
     // If chi has zero norm then the result is zero
-    Double chi_norm_sq = norm2(chi,sub);
-    Double chi_norm = sqrt(chi_norm_sq);            flopcount.addSiteFlops(4*Nc*Ns,sub);
+    Double chi_norm_sq = norm2(chi,sub);            flopcount.addSiteFlops(4*Nc*Ns,sub);
+    Double chi_norm = sqrt(chi_norm_sq);
 
     if( toBool( chi_norm < fuzz )) 
     {
       n_count = 0;
+
+      QDPIO::cout << "MInvCG: " << n_count << " iterations" << endl;
+      flopcount.report("minvcg", swatch.getTimeInSeconds());
 
       // The psi are all zero anyway at this point
       // for(int i=0; i < n_shift; i++) { psi[i] = zero; }
@@ -155,12 +158,12 @@ namespace Chroma
   
     // r[0] := p[0] := Chi 
     T r;
-    r[sub] = chi;
+    r[sub] = chi;                                   // no flops
 
     // Psi[0] := 0;
     multi1d<T> p(n_shift);
     for(s = 0; s < n_shift; ++s) {
-      p[s][sub] = chi;
+      p[s][sub] = chi;                              // no flops
     }
 
 
@@ -325,7 +328,7 @@ namespace Chroma
 		      << css << " rsd_sq["<<s<<"] = " << rsd_sq[s] << endl;
 #endif 
 
-	  convsP[s] = toBool(  css < rsd_sq[s] );
+	  convsP[s] = toBool( css < rsd_sq[s] );
 
 #if 0
      
