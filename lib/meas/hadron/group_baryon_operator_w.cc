@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.11 2006-10-23 18:03:33 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.12 2006-10-24 21:58:17 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -130,7 +130,7 @@ name = "all-to-all";
 			for(int i=0; i < NumberofQuarks; ++i) dilution[ i ].N = 4; // Z(4) noise
 			for(int i=0; i < NumberofQuarks; ++i) dilution[ i ].j_decay = 3; // time-direction
 			read( paramtop, "DilutionScheme", dilution );
-cout<<"read params"<<endl;
+QDPIO::cout<<"read params"<<endl;
 		} // end Params::Params
 
 
@@ -638,7 +638,7 @@ cout<<"read params"<<endl;
                                     enum PlusMinus isign ) const
     {
       START_CODE();
-      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
       /* old 
        		struct CoeffTerm_t
        		{
@@ -665,7 +665,7 @@ cout<<"read params"<<endl;
         // If no entry, then create a displaced version of the quark
         if ( disp_q.find( term_q.displacement ) == disp_q.end() )
         {
-          //	      cout << __func__
+          //	      QDPIO::cout << __func__
           //		   << ": n=" << n
           //		   << " l=" << l
           //		   << " i=" << i
@@ -689,7 +689,7 @@ cout<<"read params"<<endl;
         }
       } // for i
 
-      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // void GroupBaryonQQQ::displaceQuarks
 
@@ -703,7 +703,7 @@ cout<<"read params"<<endl;
                                          enum PlusMinus isign ) const
     {
       START_CODE();
-      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
 
       multi1d<LatticeFermion> q( 3 );
 
@@ -734,7 +734,7 @@ cout<<"read params"<<endl;
         }
       }
 
-      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // GroupBaryonQQQ::displaceSmearQuarks
 
@@ -748,7 +748,7 @@ cout<<"read params"<<endl;
                                          enum PlusMinus isign ) const
     {
       START_CODE();
-      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
 
       multi1d<LatticeFermion> q( 3 );
 
@@ -773,7 +773,7 @@ cout<<"read params"<<endl;
       // Displace after the smearing
       displaceQuarks( disp_quarks, q, isign );
 
-      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // void GroupBaryonQQQ::smearDisplaceQuarks
 
@@ -787,7 +787,7 @@ cout<<"read params"<<endl;
                                 enum PlusMinus isign ) const
     {
       START_CODE();
-      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
 
       // Depending on whether this is the sink or source, do the appropriate
       // combination of smearing and displacing
@@ -808,7 +808,7 @@ cout<<"read params"<<endl;
           QDP_abort( 1 );
       }
 
-      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // void GroupBaryonQQQ::quarkManip
 
@@ -820,7 +820,7 @@ cout<<"read params"<<endl;
                                  const LatticeFermion& q3,
                                  enum PlusMinus isign ) const
     { START_CODE();
-      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
       // The result of displace and smearing (in some unspecified order here)
       multi1d< map<int, LatticeFermion> > disp_quarks;
       // Depending on whether this is the sink or source, do the appropriate
@@ -832,8 +832,8 @@ cout<<"read params"<<endl;
 LatticeFermion qtemp;
 SftMom phases_nomom(0, true, 3);
 multi1d<Double> mycorr = sumMulti( localNorm2(disp_quarks[0].find( quark[ 0 ].displacement ) ->second), phases_nomom.getSet() );
-cout<<"first_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
-cout<<"spins "<<quark[ 0 ].spin<<" "<<quark[ 1 ].spin<<" "<<quark[ 2 ].spin<<endl;
+QDPIO::cout<<"first_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
+QDPIO::cout<<"spins "<<quark[ 0 ].spin<<" "<<quark[ 1 ].spin<<" "<<quark[ 2 ].spin<<endl;
       switch ( isign )
       {
         case MINUS:
@@ -900,7 +900,7 @@ cout<<"spins "<<quark[ 0 ].spin<<" "<<quark[ 1 ].spin<<" "<<quark[ 2 ].spin<<end
       		                        peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
       		                                  quark[ 2 ].spin ) );
 mycorr = sumMulti( localNorm2(d[0]), phases_nomom.getSet() );
-cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
+QDPIO::cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
       		break;
 
         default:
@@ -909,7 +909,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
 			
 			}			
 			END_CODE();
-      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       return d;
     } // multi1d<LatticeComplex> GroupBaryonQQQ::operator()
 
@@ -991,7 +991,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
     {
       START_CODE();
 
-      //      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
 
       disp_quarks.resize( 3 );
       // three displaced quarks
@@ -1022,7 +1022,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
         }
       } // for i
 
-      //      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
 
       END_CODE();
     } // void GroupBaryonOp::displaceQuarks
@@ -1038,7 +1038,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
     {
       START_CODE();
 
-      //      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
 
       multi1d<LatticeFermion> q( 3 );
 
@@ -1069,7 +1069,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
         }
       }
 
-      //      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
 
       END_CODE();
     } // end GroupBaryonOp::displaceSmearQuarks
@@ -1085,7 +1085,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
     {
       START_CODE();
 
-      //      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
 
       multi1d<LatticeFermion> q( 3 );
 
@@ -1105,7 +1105,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
       // Displace after the smearing
       displaceQuarks( disp_quarks, q, isign );
 
-      //      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
 
       END_CODE();
     } // end void GroupBaryonOp::smearDisplaceQuarks
@@ -1121,7 +1121,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
     {
       START_CODE();
 
-      //      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
 
       // Depending on whether this is the sink or source, do the appropriate
       // combination of smearing and displacing
@@ -1142,7 +1142,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
           QDP_abort( 1 );
       }
 
-      //      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
 
       END_CODE();
     } // end void GroupBaryonOp::quarkManip
@@ -1155,7 +1155,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
                                 const LatticeFermion& q3,
                                 enum PlusMinus isign ) const
     { START_CODE();
-      //      cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
       // The result of displace and smearing (in some unspecified order here)
       multi1d< map<int, LatticeFermion> > disp_quarks;
       // Depending on whether this is the sink or source, do the appropriate
@@ -1232,7 +1232,7 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
 			
 			}
 			END_CODE();
-      //      cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       return d;
     } // multi1d<LatticeComplex> GroupBaryonOp::operator()
 #endif
@@ -1322,7 +1322,6 @@ cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
 
         registered = true;
       }
-			cout<<"registered everything"<<endl;
       return success;
     } // registerAll()
 
