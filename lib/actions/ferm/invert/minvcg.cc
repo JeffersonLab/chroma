@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: minvcg.cc,v 3.2 2006-10-24 04:23:51 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -84,7 +84,7 @@ namespace Chroma
 
     if (shifts.size() != RsdCG.size()) 
     {
-      QDPIO::cerr << "MinvCG: number of shifts and residuals must match" << endl;
+      QDPIO::cerr << "MInvCG: number of shifts and residuals must match" << endl;
       QDP_abort(1);
     }
 
@@ -92,7 +92,7 @@ namespace Chroma
 
     if (n_shift == 0) 
     {
-      QDPIO::cerr << "MinvCG: You must supply at least 1 mass: mass.size() = " 
+      QDPIO::cerr << "MInvCG: You must supply at least 1 mass: mass.size() = " 
 		  << n_shift << endl;
       QDP_abort(1);
     }
@@ -122,12 +122,18 @@ namespace Chroma
       psi[i][sub] = zero;
     }
   
+    FlopCounter flopcount;
+    flopcount.reset();
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
+
     // If chi has zero norm then the result is zero
     Double chi_norm_sq = norm2(chi,sub);
-    Double chi_norm = sqrt(chi_norm_sq);
+    Double chi_norm = sqrt(chi_norm_sq);            flopcount.addSiteFlops(4*Nc*Ns,sub);
 
-
-    if( toBool( chi_norm < fuzz )) { 
+    if( toBool( chi_norm < fuzz )) 
+    {
       n_count = 0;
 
       // The psi are all zero anyway at this point
@@ -162,14 +168,13 @@ namespace Chroma
     //  First compute  d  =  < p, A.p > 
     //  Ap = A . p  */
     T Ap;
-    A(Ap, p[isz], PLUS);
-    Ap[sub] += shifts[isz]*p[isz];
+    A(Ap, p[isz], PLUS);                            flopcount.addFlops(A.nFlops());
+    Ap[sub] += shifts[isz]*p[isz];                  flopcount.addSiteFlops(4*Nc*Ns,sub);
 
     /*  d =  < p, A.p >  */
-    Double d = real(innerProduct(p[isz], Ap, sub)); // 2Nc Ns flops 
+    Double d = innerProductReal(p[isz], Ap, sub);   flopcount.addSiteFlops(4*Nc*Ns,sub);
 
- 
-  
+
     Double b = -cp/d;
 
     /* Compute the shifted bs and z */
@@ -192,15 +197,15 @@ namespace Chroma
     }
 
     //  r[1] += b[0] A . p[0]; 
-    r[sub] += Real(b)*Ap;	                        // 2 Nc Ns  flops
+    r[sub] += Real(b)*Ap;                        flopcount.addSiteFlops(4*Nc*Ns,sub);
 
     //  Psi[1] -= b[0] p[0] = - b[0] chi;
     for(s = 0; s < n_shift; ++s) {
-      psi[s][sub] = - Real(bs[s])*chi;                      //  2 Nc Ns  flops 
+      psi[s][sub] = - Real(bs[s])*chi;           flopcount.addSiteFlops(2*Nc*Ns,sub);
     }
   
     //  c = |r[1]|^2   
-    Double c = norm2(r,sub);   	       	         //  2 Nc Ns  flops 
+    Double c = norm2(r,sub);   	       	         flopcount.addSiteFlops(4*Nc*Ns,sub);
 
     // Check convergence of first solution
     multi1d<bool> convsP(n_shift);
@@ -232,27 +237,30 @@ namespace Chroma
       //  p[k+1] := r[k+1] + a[k+1] p[k]; 
       //  Compute the shifted as */
       //  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k];
-      for(s = 0; s < n_shift; ++s) {
-
+      for(s = 0; s < n_shift; ++s) 
+      {
 	// Always update p[isz] even if isz is converged
 	// since the other p-s depend on it.
-	if (s == isz) {
-	  /* p[s][sub] *= Real(a);	                              // Nc Ns  flops 
-	     p[s][sub] += r;	                              // Nc Ns  flops */ 
-	  p[s][sub] = r + Real(a)*p[s];
+	if (s == isz) 
+	{
+	  /* p[s][sub] *= Real(a);
+	     p[s][sub] += r;
+	  */
+	  p[s][sub] = r + Real(a)*p[s];                    flopcount.addSiteFlops(4*Nc*Ns,sub);
 	}
-	else {
+	else 
+	{
 	  // Don't update other p-s if converged.
-	  if( ! convsP[s] ) { 
+	  if( ! convsP[s] ) 
+	  {
 	    as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
 	    /*
-	      p[s][sub] *= Real(as);	                             // Nc Ns  flops 
-	      p[s][sub] += Real(z[iz][s])*r;	                     // Nc Ns  flops 
+	      p[s][sub] *= Real(as);
+	      p[s][sub] += Real(z[iz][s])*r;
 	    */
-	    p[s][sub] = Real(z[iz][s])*r + Real(as)*p[s];
+	    p[s][sub] = Real(z[iz][s])*r + Real(as)*p[s];  flopcount.addSiteFlops(6*Nc*Ns,sub);
 	  }
 	}
-
       }
 
       //  cp  =  | r[k] |**2 
@@ -261,11 +269,11 @@ namespace Chroma
       //  b[k] := | r[k] |**2 / < p[k], Ap[k] > ;
       //  First compute  d  =  < p, A.p >  
       //  Ap = A . p 
-      A(Ap, p[isz], PLUS);
-      Ap[sub] += shifts[isz]*p[isz];
+      A(Ap, p[isz], PLUS);                                 flopcount.addFlops(A.nFlops());
+      Ap[sub] += shifts[isz]*p[isz];                       flopcount.addSiteFlops(4*Nc*Ns,sub);
 
       /*  d =  < p, A.p >  */
-      d = real(innerProduct(p[isz], Ap, sub));                   //  2 Nc Ns  flops
+      d = innerProductReal(p[isz], Ap, sub);               flopcount.addSiteFlops(4*Nc*Ns,sub);
     
       bp = b;
       b = -cp/d;
@@ -273,10 +281,10 @@ namespace Chroma
       // Compute the shifted bs and z 
       bs[isz] = b;
       iz = 1 - iz;
-      for(s = 0; s < n_shift; s++) {
-      
-      
-	if (s != isz && !convsP[s] ) {
+      for(s = 0; s < n_shift; s++) 
+      {
+      	if (s != isz && !convsP[s] ) 
+	{
 	  z0 = z[1-iz][s];
 	  z1 = z[iz][s];
 	  z[iz][s] = z0*z1*bp;
@@ -286,26 +294,28 @@ namespace Chroma
       }
 
       //  r[k+1] += b[k] A . p[k] ; 
-      r[sub] += Real(b)*Ap;	        // 2 Nc Ns  flops
+      r[sub] += Real(b)*Ap;                                flopcount.addSiteFlops(4*Nc*Ns,sub);
 
 
       //  Psi[k+1] -= b[k] p[k] ; 
-      for(s = 0; s < n_shift; ++s) {
-	if (! convsP[s] ) {
-	  psi[s][sub] -= Real(bs[s])*p[s];	// 2 Nc Ns  flops 
+      for(s = 0; s < n_shift; ++s) 
+      {
+	if (! convsP[s] ) 
+	{
+	  psi[s][sub] -= Real(bs[s])*p[s];                 flopcount.addSiteFlops(2*Nc*Ns,sub);
 	}
       }
 
       //  c  =  | r[k] |**2 
-      c = norm2(r,sub);	                // 2 Nc Ns  flops 
+      c = norm2(r,sub);	                                   flopcount.addSiteFlops(4*Nc*Ns,sub);
 
       //    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN;
       // or IF |r[k+1]| <= RsdCG |chi| THEN RETURN;
       convP = true;
-      for(s = 0; s < n_shift; s++) {
-	if (! convsP[s] ) {
-
-
+      for(s = 0; s < n_shift; s++) 
+      {
+	if (! convsP[s] ) 
+	{
 	  // Convergence methods 
 	  // Check norm of shifted residuals 
 	  Double css = c * z[iz][s]* z[iz][s];
@@ -317,19 +327,17 @@ namespace Chroma
 
 	  convsP[s] = toBool(  css < rsd_sq[s] );
 
-	
-
 #if 0
      
 	  // 
 	  // Check relative error of solution 
 
 	  // cs holds | beta_s p_s |^2 = | psi_next |^2
-	  cs = norm2(p[s],sub);         	        // 2 Nc Ns  flops 
+	  cs = norm2(p[s],sub);	                           flopcount.addSiteFlops(4*Nc*Ns,sub);
 	  cs *= bs[s]*bs[s];
 
 	  // d holds | psi |^2 * epsilon^2
-	  d = norm2(psi[s],sub);         	        // 2 Nc Ns  flops 
+	  d = norm2(psi[s],sub);                           flopcount.addSiteFlops(4*Nc*Ns,sub);
 	  d *= rsdcg_sq[s];
 
 
@@ -349,7 +357,11 @@ namespace Chroma
       n_count = k;
     }
 
-#if 1
+    swatch.stop();
+
+#if 0
+    // This is paranoia - do not need
+
     // Expicitly check the ALL solutions
     for(s = 0; s < n_shift; ++s)
     {
@@ -368,11 +380,11 @@ namespace Chroma
     /* end */
 #endif
 
+    QDPIO::cout << "MInvCG: " << n_count << " iterations" << endl;
+    flopcount.report("minvcg", swatch.getTimeInSeconds());
+
     if (n_count == MaxCG) {
       QDP_error_exit("too many CG iterationns: %d\n", n_count);
-    }
-    else {
-      QDPIO::cout << "MinvCG: " << n_count << " iterations" << endl;
     }
 
     END_CODE();
