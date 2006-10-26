@@ -46,7 +46,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 3.5 2006-10-14 17:26:53 kostas Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 3.6 2006-10-26 04:36:16 kostas Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -219,42 +219,30 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 
         int t_prime = t;
 
-        if( TimeReverse == true )
-        {
-#ifdef DRU
-          // This is twice the midpoint time-slice.
-	  int _2_t_mp = Tsnk + Tsrc;
-
-	  //// This is the displacement in time between the quark and anti-quark. It is
-          //// needed because quarks and anti-quarks switch under charge conjugation.
-          //int t_displacement = 0;
-          //for( Link = 0; Link < NLinks; Link ++ )
-	  //{
-          //  if( LinkDirs[ Link ] == 3 ) t_displacement += 1;
-          //  if( LinkDirs[ Link ] == 7 ) t_displacement -= 1;
-	  //}
-          //// I'm not sure why this isn't needed.
-          //t_prime = ( _2_t_mp - t + t_displacement + NT ) % NT;
-
-          // We might need +2NT to ensure 0<= t_prime < NT.
-          t_prime = ( _2_t_mp - t + NT ) % NT;
-#else
-	  //cout<<"TimeReversing: " ;
+        if( TimeReverse == true ){
+	  //QDPIO::cout<<"TimeReversing: " ;
 	  //shift the time origin to the source
-          int t_shifted = (t - Tsrc + NT )%NT ;
-          //time reverse around the source
-          int t_reversed = (NT - t_shifted)%NT; 
-          //undo the shift to put time back where it was.
-          //we may not want to do this. it may be better to just shift
-          //the time origin to Tsrc as we do in the spectrum
+	  int t_shifted = (t - Tsrc + NT )%NT ;
+	  //time reverse around the source
+	  int t_reversed = (NT - t_shifted)%NT; 
+	  //undo the shift to put time back where it was.
+	  //we may not want to do this. it may be better to just shift
+	  //the time origin to Tsrc as we do in the spectrum
 	  if(ShiftFlag==false) 
 	    t_prime = (t_reversed + Tsrc)%NT ;
-
-	  //cout<<t<<" "<<t_prime<<" [Tsrc="<<Tsrc<<",NT="<<NT<<",tsh="<<t_shifted<<"]"<<endl ;
-#endif
+	  else
+	    t_prime = t_reversed ;
+	  
+	  //QDPIO::cout<<t<<" "<<t_prime<<" [Tsrc="<<Tsrc<<",NT="<<NT<<",tsh="<<t_shifted<<"]"<<endl ;
 	}
 
-        // I think this assumes T1=0 and T2=(NT-1), so we eventually need to fix this.
+	//when TimeReverse is on shifting is done differently
+	if((ShiftFlag==true)&&(TimeReverse==false))
+	  t_prime = (t - Tsrc + NT )%NT ;
+	
+	//if(TimeReverse==false)
+	// QDPIO::cout<<t<<" "<<t_prime<<" [Tsrc="<<Tsrc<<",NT="<<NT<<"]"<<endl;
+
         real_part[ t_prime ] = r;
         imag_part[ t_prime ] = i;
 
