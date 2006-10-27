@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.12 2006-10-24 21:58:17 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.13 2006-10-27 03:01:20 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -116,9 +116,9 @@ name = "all-to-all";
 			read( paramtop, "nrow", nrow );
 		
       read( paramtop, "Baryon_type", param.baryon_operator );
-      source_quark_smearing = readXMLGroup( paramtop, "SourceQuarkSmearing", "wvf_kind" );
-      sink_quark_smearing = readXMLGroup( paramtop, "SinkQuarkSmearing", "wvf_kind" );
-      link_smearing = readXMLGroup( paramtop, "LinkSmearing", "LinkSmearingType" );
+      //source_quark_smearing = readXMLGroup( paramtop, "SourceQuarkSmearing", "wvf_kind" );
+      //sink_quark_smearing = readXMLGroup( paramtop, "SinkQuarkSmearing", "wvf_kind" );
+      //link_smearing = readXMLGroup( paramtop, "LinkSmearing", "LinkSmearingType" );
       read( paramtop, "InputFileName", InputFileName );
       read( paramtop, "mom2_max", mom2_max );
       read( paramtop, "j_decay", j_decay );
@@ -130,7 +130,6 @@ name = "all-to-all";
 			for(int i=0; i < NumberofQuarks; ++i) dilution[ i ].N = 4; // Z(4) noise
 			for(int i=0; i < NumberofQuarks; ++i) dilution[ i ].j_decay = 3; // time-direction
 			read( paramtop, "DilutionScheme", dilution );
-QDPIO::cout<<"read params"<<endl;
 		} // end Params::Params
 
 
@@ -190,6 +189,12 @@ QDPIO::cout<<"read params"<<endl;
 		//	GroupBaryonQQQ stuff
 		//	====================
 		
+    //! Constructor
+    GroupBaryonQQQ::GroupBaryonQQQ()
+    {
+      // The spin basis matrix to goto Dirac
+      spin_rotate_mat = adj( DiracToDRMat() );
+		}
     //! Full constructor
     GroupBaryonQQQ::GroupBaryonQQQ( const Params& p, const multi1d<LatticeColorMatrix>& u_ ) :
         myparams( p ), u_smr( u_ )
@@ -451,16 +456,19 @@ QDPIO::cout<<"read params"<<endl;
           {
             AQQQ[ i ].quark[ j ].disp_dir = 0;
             AQQQ[ i ].quark[ j ].disp_len = 0;
+            AQQQ[ i ].quark[ j ].disp_ind = 0;
           }
           else if ( AQQQ[ i ].quark[ j ].displacement > 0 )
           {
             AQQQ[ i ].quark[ j ].disp_dir = AQQQ[ i ].quark[ j ].displacement - 1;
             AQQQ[ i ].quark[ j ].disp_len = dL;
+            AQQQ[ i ].quark[ j ].disp_ind = AQQQ[ i ].quark[ j ].displacement;
           }
           else
           {
             AQQQ[ i ].quark[ j ].disp_dir = -AQQQ[ i ].quark[ j ].displacement - 1;
             AQQQ[ i ].quark[ j ].disp_len = -dL;
+            AQQQ[ i ].quark[ j ].disp_ind = -AQQQ[ i ].quark[ j ].displacement + 3;
           }
         }
         AQQQ[ i ].coef.resize( AQQQ[ i ].NBaryonOps );
@@ -501,7 +509,8 @@ QDPIO::cout<<"read params"<<endl;
         for ( int j = 0; j < 3; ++j )
         {
           CQQQ[ i ].quark[ j ].displacement = AQQQ[ i ].quark[ j ].displacement;
-          CQQQ[ i ].quark[ j ].disp_dir = AQQQ[ i ].quark[ j ].disp_dir;
+          CQQQ[ i ].quark[ j ].disp_dir = AQQQ[ i ].quark[ j ].disp_dir; // sign
+          CQQQ[ i ].quark[ j ].disp_ind = AQQQ[ i ].quark[ j ].disp_ind;
           CQQQ[ i ].quark[ j ].spin = AQQQ[ i ].quark[ j ].spin;
           if ( CQQQ[ i ].quark[ j ].spin > 1 ) spinCount++;
         }
@@ -638,7 +647,7 @@ QDPIO::cout<<"read params"<<endl;
                                     enum PlusMinus isign ) const
     {
       START_CODE();
-QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
+			//QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
       /* old 
        		struct CoeffTerm_t
        		{
@@ -685,11 +694,12 @@ QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
               break;
           }
           // Insert
-          disp_q.insert( std::make_pair( term_q.displacement, qq ) );
+          //disp_q.insert( std::make_pair( term_q.displacement, qq ) );
+          disp_q.insert( std::make_pair( term_q.disp_ind, qq ) );
         }
       } // for i
 
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // void GroupBaryonQQQ::displaceQuarks
 
@@ -734,7 +744,7 @@ QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
         }
       }
 
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // GroupBaryonQQQ::displaceSmearQuarks
 
@@ -773,7 +783,7 @@ QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
       // Displace after the smearing
       displaceQuarks( disp_quarks, q, isign );
 
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // void GroupBaryonQQQ::smearDisplaceQuarks
 
@@ -808,7 +818,7 @@ QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
           QDP_abort( 1 );
       }
 
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // void GroupBaryonQQQ::quarkManip
 
@@ -840,64 +850,64 @@ QDPIO::cout<<"spins "<<quark[ 0 ].spin<<" "<<quark[ 1 ].spin<<" "<<quark[ 2 ].sp
           // Source			
 					//d.resize(6);
 					// mu,nu,tau contraction
-      		d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
+      		d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].disp_ind ) ->second,
       		                                  quark[ 0 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
+      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].disp_ind ) ->second,
       		                                  quark[ 1 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
+      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].disp_ind ) ->second,
       		                                  quark[ 2 ].spin ) );
 					// tau,nu,mu contraction
-      		//d[ 3 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].displacement ) ->second,
-      		d[ 0 ] -= colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].displacement ) ->second,
+      		//d[ 3 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].disp_ind ) ->second,
+      		d[ 0 ] -= colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].disp_ind ) ->second,
       		                                   quark[ 2 ].spin ),
-      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].disp_ind ) ->second,
       		                                   quark[ 1 ].spin ),
-      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 0 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 0 ].disp_ind ) ->second,
       		                                   quark[ 0 ].spin ) );
 					//d[ 3 ] *= -2.0;
 					d[ 0 ] *= 2.0;
 					// nu,mu,tau contraction
-      		//d[ 1 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].displacement ) ->second,
-      		d[ 0 ] += colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].displacement ) ->second,
+      		//d[ 1 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].disp_ind ) ->second,
+      		d[ 0 ] += colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].disp_ind ) ->second,
       		                                   quark[ 1 ].spin ),
-      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 0 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 0 ].disp_ind ) ->second,
       		                                   quark[ 0 ].spin ),
-      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].disp_ind ) ->second,
       		                                   quark[ 2 ].spin ) );
 					// mu,tau,nu contraction
-      		//d[ 2 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
-      		d[ 0 ] += colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
+      		//d[ 2 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].disp_ind ) ->second,
+      		d[ 0 ] += colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].disp_ind ) ->second,
       		                                   quark[ 0 ].spin ),
-      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 2 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 2 ].disp_ind ) ->second,
       		                                   quark[ 2 ].spin ),
-      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 1 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 1 ].disp_ind ) ->second,
       		                                   quark[ 1 ].spin ) );
 					// nu,tau,mu contraction
-      		//d[ 4 ]= -colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].displacement ) ->second,
-      		d[ 0 ] -= colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].displacement ) ->second,
+      		//d[ 4 ]= -colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].disp_ind ) ->second,
+      		d[ 0 ] -= colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].disp_ind ) ->second,
       		                                   quark[ 1 ].spin ),
-      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 2 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 2 ].disp_ind ) ->second,
       		                                   quark[ 2 ].spin ),
-      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 0 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 0 ].disp_ind ) ->second,
       		                                   quark[ 0 ].spin ) );
 					// tau,mu,nu contraction
-      		//d[ 5 ]= -colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].displacement ) ->second,
-      		d[ 0 ] -= colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].displacement ) ->second,
+      		//d[ 5 ]= -colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].disp_ind ) ->second,
+      		d[ 0 ] -= colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].disp_ind ) ->second,
       		                                   quark[ 2 ].spin ),
-      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 0 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 1 ].find( quark[ 0 ].disp_ind ) ->second,
       		                                   quark[ 0 ].spin ),
-      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 1 ].displacement ) ->second,
+      		                         peekSpin( disp_quarks[ 2 ].find( quark[ 1 ].disp_ind ) ->second,
       		                                   quark[ 1 ].spin ) );
       		break;
 
         case PLUS:
           // Sink
 					//d.resize(1);
-      		d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
+      		d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].disp_ind ) ->second,
       		                                  quark[ 0 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
+      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].disp_ind ) ->second,
       		                                  quark[ 1 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
+      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].disp_ind ) ->second,
       		                                  quark[ 2 ].spin ) );
 mycorr = sumMulti( localNorm2(d[0]), phases_nomom.getSet() );
 QDPIO::cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
@@ -909,7 +919,7 @@ QDPIO::cout<<"Source_corr="<<mycorr[0]<<mycorr[1]<<mycorr[2]<<mycorr[3]<<endl;
 			
 			}			
 			END_CODE();
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       return d;
     } // multi1d<LatticeComplex> GroupBaryonQQQ::operator()
 
