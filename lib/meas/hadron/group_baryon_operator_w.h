@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.10 2006-10-23 18:02:42 juge Exp $
+// $Id: group_baryon_operator_w.h,v 1.11 2006-10-27 03:02:04 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -240,6 +240,7 @@ namespace Chroma
           int spin;            /*!< 0-based spin index */
           int disp_dir;        /*!< 0-based direction */
           int disp_len;        /*!< 0-based length */
+          int disp_ind;        // disp index 0=0, 1=1, 2=2, 3=3, 4=-1, 5=-2, 6=-3
         };
         multi1d<QuarkTerm_t> quark; /*!< Displacement and spin for each quark */
         
@@ -268,8 +269,7 @@ namespace Chroma
 
         //private: dangerous?
         //! Hide partial constructor
-        GroupBaryonQQQ()
-        {}
+        GroupBaryonQQQ();// {}
         Params myparams;   // ?
         multi1d<LatticeColorMatrix> u_smr;
         SpinMatrix spin_rotate_mat;
