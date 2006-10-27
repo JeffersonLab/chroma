@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_w.h,v 1.1 2006-10-26 21:20:50 kostas Exp $
+// $Id: inline_npr_w.h,v 1.2 2006-10-27 04:12:20 kostas Exp $
 /*! \file
  * \brief Inline construction of Landau gauge propagator
  *
@@ -64,6 +64,11 @@ namespace Chroma
     //! Do the measurement
     void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
+    
+    void make_source(LatticePropagator& src,
+		     const Handle<const ConnectState>& state,
+		     const mult1d<ind>& t_source,
+		     int mu) ;
 
   private:
     InlineNprParams params;

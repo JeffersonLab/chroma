@@ -1,4 +1,4 @@
-// $Id: inline_npr_w.cc,v 1.1 2006-10-26 21:20:50 kostas Exp $
+// $Id: inline_npr_w.cc,v 1.2 2006-10-27 04:12:19 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR propagator
  *
@@ -136,6 +136,31 @@ namespace Chroma
     write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
+  }
+
+  void InlineNpr::make_source(LatticePropagator& src,
+			      const Handle<const ConnectState>& state,
+			      const mult1d<ind>& t_source,
+			      int mu){
+    multi1d<LatticeColorMatrix>& u = state.getLinks() ;
+    for(int color_source = 0; color_source < Nc; ++color_source){
+      QDPIO::cout << "color = " << color_source << endl; 
+      LatticeColorVector cvec = zero;
+      // Make a point source at coordinates t_source
+      srcfil(src_color_vec, t_source, color_source);
+      if((mu>=0)&&(mu<Nd)){
+	LatticeColorVector tt = cvec ;
+	cvec=0.5*(u[mu]*shift(tt,FORWARD,mu) - shift(adj(u[mu])*tt,BACKWARD,mu));
+      }
+      for(int spin_source = 0; spin_source < Ns; ++spin_source){
+	QDPIO::cout << "spin = " << spin_source << endl; 
+	// Insert a ColorVector into spin index spin_source
+	// This only overwrites sections, so need to initialize first
+	LatticeFermion chi = zero;
+	CvToFerm(cvec, chi, spin_source);
+	FermToProp(chi, src, color_source, spin_source);
+      }
+    }
   }
 
 
