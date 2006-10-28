@@ -1,4 +1,4 @@
-// $Id: inline_npr_w.cc,v 1.2 2006-10-27 04:12:19 kostas Exp $
+// $Id: inline_npr_w.cc,v 1.3 2006-10-28 04:42:55 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR propagator
  *
@@ -104,6 +104,10 @@ namespace Chroma
 	stateInfo = s_i_xml.printCurrentContext();
       }
 
+      //Read the types of sources to do.
+      //It does point source or derivative source
+      read(paramtop, "NprSources", NprSources);
+
       // Read in the output npr/source configuration info
       read(paramtop, "NamedObject", named_obj);
 
@@ -133,6 +137,7 @@ namespace Chroma
       XMLReader xml_header(header_is);
       xml_out << xml_header;
     }
+    write(xml_out, "NprSources", NprSources);
     write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
@@ -195,61 +200,60 @@ namespace Chroma
 			 XMLWriter& xml_out) 
   {
     START_CODE();
-
+    
     StopWatch snoop;
     snoop.reset();
     snoop.start();
-
+    
     // Test and grab a reference to the gauge field
     XMLBufferWriter gauge_xml;
     try
-    {
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
-      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
-    }
+      {
+	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+      }
     catch( std::bad_cast ) 
-    {
-      QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
-		  << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
     catch (const string& e) 
-    {
-      QDPIO::cerr << InlineNprEnv::name << ": map call failed: " << e 
-		  << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << InlineNprEnv::name << ": map call failed: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
     const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
-
+    
     push(xml_out, "npr");
     write(xml_out, "update_no", update_no);
-
+    
     QDPIO::cout << InlineNprEnv::name << ": npr calculation" << endl;
-
+    
     proginfo(xml_out);    // Print out basic program info
-
+    
     // Write out the input
     params.writeXML(xml_out, "Input");
-
+    
     // Write out the config header
     write(xml_out, "Config_info", gauge_xml);
-
+    
     push(xml_out, "Output_version");
     write(xml_out, "out_version", 1);
     pop(xml_out);
-
+    
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
-
-    //Landau gauge fix
+    
     // Landau Gauge fix
     coulGauge(u, nrl_gf, Nd+1, GFAccu, GFMax, OrlxDo, OrPara);
     //                   ^^^^  Makes it Landau gauge
     // gauge field is now gauge-fixed
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "GaugeFixedObservables", u);
-
+    
     //
     // Loop over the source color and spin, creating the source
     // and calling the relevant propagator routines. The QDP
@@ -257,36 +261,36 @@ namespace Chroma
     // and spin space
     //
     try
-    {
-      TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.prop_id);
-    }
+      {
+	TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.prop_id);
+      }
     catch (std::bad_cast)
-    {
-      QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
-		  << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
     catch (const string& e) 
-    {
-      QDPIO::cerr << InlineNprEnv::name << ": error creating prop: " << e << endl;
-      QDP_abort(1);
-    }
-
-
-
+      {
+	QDPIO::cerr << InlineNprEnv::name << ": error creating prop: " << e << endl;
+	QDP_abort(1);
+      }
+    
+    
+    
     // Cast should be valid now
     LatticePropagator& quark_propagator = 
       TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
     int ncg_had = 0;
-
+    
     //
     // Initialize fermion action
     //
     std::istringstream  xml_s(params.param.fermact.xml);
     XMLReader  fermacttop(xml_s);
     QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
-
-
+    
+    
     // Deal with auxiliary (and polymorphic) state information
     // eigenvectors, eigenvalues etc. The XML for this should be
     // stored as a string called "stateInfo" in the param struct.
@@ -299,152 +303,156 @@ namespace Chroma
     // Try the factories
     //
     bool success = false;
-
+    
     if (! success)
-    {
-      try
       {
-	StopWatch swatch;
-	swatch.reset();
-	QDPIO::cout << "Try the various factories" << endl;
-
-	// Typedefs to save typing
-	typedef LatticeFermion               T;
-	typedef multi1d<LatticeColorMatrix>  P;
-	typedef multi1d<LatticeColorMatrix>  Q;
-
-	// Generic Wilson-Type stuff
-	Handle< FermionAction<T,P,Q> >
-	  S_f(TheFermionActionFactory::Instance().createObject(params.param.fermact.id,
-							       fermacttop,
-							       params.param.fermact.path));
-
-
-	Handle< FermState<T,P,Q> > state(S_f->createState(u));
-//				 state_info_xml,
-//				 state_info_path));  // uses phase-multiplied u-fields
-
-	LatticePropagator quark_prop_source ;
-	multi1d<int> t_source(Nd);
+	try
+	  {
+	    StopWatch swatch;
+	    swatch.reset();
+	    QDPIO::cout << "Try the various factories" << endl;
+	    
+	    // Typedefs to save typing
+	    typedef LatticeFermion               T;
+	    typedef multi1d<LatticeColorMatrix>  P;
+	    typedef multi1d<LatticeColorMatrix>  Q;
+	    
+	    // Generic Wilson-Type stuff
+	    Handle< FermionAction<T,P,Q> >
+	      S_f(TheFermionActionFactory::Instance().createObject(params.param.fermact.id,fermacttop,params.param.fermact.path));
+	    
+	    
+	    Handle< FermState<T,P,Q> > state(S_f->createState(u));
+	    //				 state_info_xml,
+	    //				 state_info_path));  // uses phase-multiplied u-fields
+	    
+	    LatticePropagator quark_prop_source ;
+	    multi1d<int> t_source(Nd);
+	    
+	    // Set the source in the midle of the lattice
+	    for(int mu(0);mu<Nd;mu++)
+	      t_source[mu] = Layout::lattSize()[mu]/2 ; 
+	    
+	    j_decay = Nd-1 ; // 
+	    
+	    for(int k(0);k<params.NprSources.size();k++){
+	      make_source(quark_prop_source,state,t_source,NprSources[k]);
+	      
+	      QDPIO::cout<<"Suitable factory found: compute the quark prop";
+	      QDPIO::cout<<" with source id "<<NprSources[k]<<endl;
+	      swatch.start();
+	      S_f->quarkProp(quark_propagator, 
+			     xml_out, 
+			     quark_prop_source,
+			     t_source[Nd-1], j_decay,
+			     state, 
+			     params.param.invParam, 
+			     params.param.quarkSpinType,
+			     params.param.obsvP,
+			     ncg_had);
+	      swatch.stop();
+	      QDPIO::cout << "Propagator computed: time= " 
+			  << swatch.getTimeInSeconds() 
+			  << " secs" << endl;
+	      
+	      //now need to Fourier transform and save it
+	      
+	      success = true;
+	    }
+	    catch (const std::string& e) 
+	      {
+		QDPIO::cout << InlineNprEnv::name << ": caught exception around quarkprop: " << e << endl;
+	      }
+	  }
 	
-	// Set the source in the midle of the lattice
-	for(int mu(0);mu<Nd;mu++)
-	  t_source[mu] = Layout::lattSize()[mu]/2 ; 
 	
-	j_decay = Nd ; // no jdecay
-	//first the point source
-	make_source(quark_prop_source,state,t_source,Nd);
-
-	QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
-	swatch.start();
-	S_f->quarkProp(quark_propagator, 
-		       xml_out, 
-		       quark_prop_source,
-		       t_source[Nd-1], j_decay,
-		       state, 
-		       params.param.invParam, 
-		       params.param.quarkSpinType,
-		       params.param.obsvP,
-		       ncg_had);
-	swatch.stop();
-	QDPIO::cout << "Propagator computed: time= " 
-		    << swatch.getTimeInSeconds() 
+	if (! success)
+	  {
+	    QDPIO::cerr << "Error: no fermact found" << endl;
+	    QDP_abort(1);
+	  }
+	
+	
+	push(xml_out,"Relaxation_Iterations");
+	write(xml_out, "ncg_had", ncg_had);
+	pop(xml_out);
+	
+	// Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
+	{
+	  // Initialize the slow Fourier transform phases
+	  SftMom phases(0, true, Nd-1);
+	  
+	  multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
+					       phases.getSet());
+	  
+	  push(xml_out, "Prop_correlator");
+	  write(xml_out, "prop_corr", prop_corr);
+	  pop(xml_out);
+	}
+	
+	
+	// Save the propagator info
+	try
+	  {
+	    QDPIO::cout << "Start writing propagator info" << endl;
+	    
+	    XMLBufferWriter file_xml;
+	    push(file_xml, "npr");
+	    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
+	    write(file_xml, "id", id);
+	    pop(file_xml);
+	    
+	    XMLBufferWriter record_xml;
+	    if (make_sourceP)
+	      {
+		XMLReader xml_tmp(source_record_xml, "/MakeSource");
+		
+		push(record_xml, "Npr");
+		write(record_xml, "ForwardProp", params.param);
+		record_xml << params.stateInfo;  // write out the stateinfo - might be empty
+		record_xml << xml_tmp;  // write out all the stuff under MakeSource
+		pop(record_xml);
+	      } 
+	    else if (seqsourceP)
+	      {
+		XMLReader xml_tmp(source_record_xml, "/SequentialSource");
+		
+		push(record_xml, "SequentialProp");
+		write(record_xml, "SeqProp", params.param);
+		record_xml << xml_tmp;  // write out all the stuff under SequentialSource
+		pop(record_xml);
+	      }
+	    
+	    // Write the npr xml info
+	    TheNamedObjMap::Instance().get(params.named_obj.prop_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.prop_id).setRecordXML(record_xml);
+	    
+	    QDPIO::cout << "Propagator successfully updated" << endl;
+	  }
+	catch (std::bad_cast)
+	  {
+	    QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
+			<< endl;
+	    QDP_abort(1);
+	  }
+	catch (const string& e) 
+	  {
+	    QDPIO::cerr << InlineNprEnv::name << ": error extracting prop_header: " << e << endl;
+	    QDP_abort(1);
+	  }
+	
+	pop(xml_out);  // npr
+	
+	snoop.stop();
+	QDPIO::cout << InlineNprEnv::name << ": total time = "
+		    << snoop.getTimeInSeconds() 
 		    << " secs" << endl;
-      
-	success = true;
-      }
-      catch (const std::string& e) 
-      {
-	QDPIO::cout << InlineNprEnv::name << ": caught exception around quarkprop: " << e << endl;
-      }
-    }
-
-
-    if (! success)
-    {
-      QDPIO::cerr << "Error: no fermact found" << endl;
-      QDP_abort(1);
-    }
-
-
-    push(xml_out,"Relaxation_Iterations");
-    write(xml_out, "ncg_had", ncg_had);
-    pop(xml_out);
-
-    // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
-    {
-      // Initialize the slow Fourier transform phases
-      SftMom phases(0, true, Nd-1);
-
-      multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
-					   phases.getSet());
-
-      push(xml_out, "Prop_correlator");
-      write(xml_out, "prop_corr", prop_corr);
-      pop(xml_out);
-    }
-
-
-    // Save the propagator info
-    try
-    {
-      QDPIO::cout << "Start writing propagator info" << endl;
-
-      XMLBufferWriter file_xml;
-      push(file_xml, "npr");
-      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-      write(file_xml, "id", id);
-      pop(file_xml);
-
-      XMLBufferWriter record_xml;
-      if (make_sourceP)
-      {
-	XMLReader xml_tmp(source_record_xml, "/MakeSource");
-
-	push(record_xml, "Npr");
-	write(record_xml, "ForwardProp", params.param);
-	record_xml << params.stateInfo;  // write out the stateinfo - might be empty
-	record_xml << xml_tmp;  // write out all the stuff under MakeSource
-	pop(record_xml);
+	
+	QDPIO::cout << InlineNprEnv::name << ": ran successfully" << endl;
+	
+	END_CODE();
       } 
-      else if (seqsourceP)
-      {
-	XMLReader xml_tmp(source_record_xml, "/SequentialSource");
+    
+  }
 
-	push(record_xml, "SequentialProp");
-	write(record_xml, "SeqProp", params.param);
-	record_xml << xml_tmp;  // write out all the stuff under SequentialSource
-	pop(record_xml);
-      }
-
-      // Write the npr xml info
-      TheNamedObjMap::Instance().get(params.named_obj.prop_id).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(params.named_obj.prop_id).setRecordXML(record_xml);
-
-      QDPIO::cout << "Propagator successfully updated" << endl;
-    }
-    catch (std::bad_cast)
-    {
-      QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
-		  << endl;
-      QDP_abort(1);
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << InlineNprEnv::name << ": error extracting prop_header: " << e << endl;
-      QDP_abort(1);
-    }
-
-    pop(xml_out);  // npr
-
-    snoop.stop();
-    QDPIO::cout << InlineNprEnv::name << ": total time = "
-		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
-
-    QDPIO::cout << InlineNprEnv::name << ": ran successfully" << endl;
-
-    END_CODE();
-  } 
-
-}
+} //name space Chroma

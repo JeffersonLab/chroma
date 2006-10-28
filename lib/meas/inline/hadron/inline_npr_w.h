@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_w.h,v 1.2 2006-10-27 04:12:20 kostas Exp $
+// $Id: inline_npr_w.h,v 1.3 2006-10-28 04:42:55 kostas Exp $
 /*! \file
  * \brief Inline construction of Landau gauge propagator
  *
@@ -34,6 +34,8 @@ namespace Chroma
 
     ChromaProp_t      param;
     std::string       stateInfo;
+
+    multi1d<int> NprSources ; // mu>3 or mu<0 means point source
 
     struct NamedObject_t
     {
