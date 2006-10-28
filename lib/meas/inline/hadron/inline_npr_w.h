@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_w.h,v 1.3 2006-10-28 04:42:55 kostas Exp $
+// $Id: inline_npr_w.h,v 1.4 2006-10-28 05:13:32 kostas Exp $
 /*! \file
  * \brief Inline construction of Landau gauge propagator
  *
@@ -36,6 +36,7 @@ namespace Chroma
     std::string       stateInfo;
 
     multi1d<int> NprSources ; // mu>3 or mu<0 means point source
+    int max_mom2 ; // max p^2
 
     struct NamedObject_t
     {

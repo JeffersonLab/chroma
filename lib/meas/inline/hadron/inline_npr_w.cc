@@ -1,4 +1,4 @@
-// $Id: inline_npr_w.cc,v 1.3 2006-10-28 04:42:55 kostas Exp $
+// $Id: inline_npr_w.cc,v 1.4 2006-10-28 05:13:32 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR propagator
  *
@@ -109,6 +109,9 @@ namespace Chroma
       read(paramtop, "NprSources", NprSources);
 
       // Read in the output npr/source configuration info
+      read(paramtop, "max_mom2", max_mom2);
+
+      // Read in the output npr/source configuration info
       read(paramtop, "NamedObject", named_obj);
 
       // Possible alternate XML file pattern
@@ -138,6 +141,7 @@ namespace Chroma
       xml_out << xml_header;
     }
     write(xml_out, "NprSources", NprSources);
+    write(xml_out, "max_mom2", max_mom2);
     write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
@@ -254,6 +258,7 @@ namespace Chroma
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "GaugeFixedObservables", u);
     
+
     //
     // Loop over the source color and spin, creating the source
     // and calling the relevant propagator routines. The QDP
@@ -281,7 +286,6 @@ namespace Chroma
     // Cast should be valid now
     LatticePropagator& quark_propagator = 
       TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
-    int ncg_had = 0;
     
     //
     // Initialize fermion action
@@ -329,13 +333,19 @@ namespace Chroma
 	    LatticePropagator quark_prop_source ;
 	    multi1d<int> t_source(Nd);
 	    
+	    SftMom phases(params.max_mom2, t_source, false, Nd); // 4D fourier transform
+	    
 	    // Set the source in the midle of the lattice
 	    for(int mu(0);mu<Nd;mu++)
 	      t_source[mu] = Layout::lattSize()[mu]/2 ; 
 	    
 	    j_decay = Nd-1 ; // 
-	    
+
+	    push(xml_out,"Propagators");
 	    for(int k(0);k<params.NprSources.size();k++){
+	      push(xml_out,"elem") ;
+	      int ncg_had = 0;
+
 	      make_source(quark_prop_source,state,t_source,NprSources[k]);
 	      
 	      QDPIO::cout<<"Suitable factory found: compute the quark prop";
@@ -355,104 +365,64 @@ namespace Chroma
 			  << swatch.getTimeInSeconds() 
 			  << " secs" << endl;
 	      
-	      //now need to Fourier transform and save it
+	      //now need to Fourier transform 
+	      multi1d<Propagator> = sumMulti(quark_propagator,phases.getSet());	      
+	      write(xml_out,"Source",NprSources[k]);
+	      push(xml_out,"Relaxation_Iterations");
+	      write(xml_out, "ncg_had", ncg_had);
+	      pop(xml_out);
 	      
-	      success = true;
-	    }
-	    catch (const std::string& e) 
+	      // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
 	      {
-		QDPIO::cout << InlineNprEnv::name << ": caught exception around quarkprop: " << e << endl;
-	      }
-	  }
-	
-	
-	if (! success)
-	  {
-	    QDPIO::cerr << "Error: no fermact found" << endl;
-	    QDP_abort(1);
-	  }
-	
-	
-	push(xml_out,"Relaxation_Iterations");
-	write(xml_out, "ncg_had", ncg_had);
-	pop(xml_out);
-	
-	// Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
-	{
-	  // Initialize the slow Fourier transform phases
-	  SftMom phases(0, true, Nd-1);
-	  
-	  multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
-					       phases.getSet());
-	  
-	  push(xml_out, "Prop_correlator");
-	  write(xml_out, "prop_corr", prop_corr);
-	  pop(xml_out);
-	}
-	
-	
-	// Save the propagator info
-	try
-	  {
-	    QDPIO::cout << "Start writing propagator info" << endl;
-	    
-	    XMLBufferWriter file_xml;
-	    push(file_xml, "npr");
-	    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	    write(file_xml, "id", id);
-	    pop(file_xml);
-	    
-	    XMLBufferWriter record_xml;
-	    if (make_sourceP)
-	      {
-		XMLReader xml_tmp(source_record_xml, "/MakeSource");
+		// Initialize the slow Fourier transform phases
+		SftMom ph(0, true, Nd-1);
 		
-		push(record_xml, "Npr");
-		write(record_xml, "ForwardProp", params.param);
-		record_xml << params.stateInfo;  // write out the stateinfo - might be empty
-		record_xml << xml_tmp;  // write out all the stuff under MakeSource
-		pop(record_xml);
-	      } 
-	    else if (seqsourceP)
-	      {
-		XMLReader xml_tmp(source_record_xml, "/SequentialSource");
+		multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
+						     ph.getSet());
 		
-		push(record_xml, "SequentialProp");
-		write(record_xml, "SeqProp", params.param);
-		record_xml << xml_tmp;  // write out all the stuff under SequentialSource
-		pop(record_xml);
+		push(xml_out, "Prop_correlator");
+		write(xml_out, "prop_corr", prop_corr);
+		pop(xml_out);
 	      }
-	    
-	    // Write the npr xml info
-	    TheNamedObjMap::Instance().get(params.named_obj.prop_id).setFileXML(file_xml);
-	    TheNamedObjMap::Instance().get(params.named_obj.prop_id).setRecordXML(record_xml);
-	    
-	    QDPIO::cout << "Propagator successfully updated" << endl;
-	  }
-	catch (std::bad_cast)
-	  {
-	    QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
-			<< endl;
-	    QDP_abort(1);
-	  }
-	catch (const string& e) 
-	  {
-	    QDPIO::cerr << InlineNprEnv::name << ": error extracting prop_header: " << e << endl;
-	    QDP_abort(1);
-	  }
-	
-	pop(xml_out);  // npr
-	
-	snoop.stop();
-	QDPIO::cout << InlineNprEnv::name << ": total time = "
-		    << snoop.getTimeInSeconds() 
-		    << " secs" << endl;
-	
-	QDPIO::cout << InlineNprEnv::name << ": ran successfully" << endl;
-	
-	END_CODE();
-      } 
-    
-  }
 
+
+	      //all I need to do now is save the momenta in a binary xml file
+
+	      //********************************//
+	      //** HERE COMES TH WRITING CODE **//
+	      //********************************//
+
+	      success = true;
+	      pop(xml_out);//elem
+	    }
+	    pop(xml_out): // Propagators
+   
+
+	  }
+	catch (const std::string& e) 
+	  {
+	    QDPIO::cout << InlineNprEnv::name << ": caught exception around quarkprop: " << e << endl;
+	  }
+      }
+	
+	
+    if (! success)
+      {
+	QDPIO::cerr << "Error: no fermact found" << endl;
+	QDP_abort(1);
+      }
+    
+    
+    pop(xml_out);  // npr
+    
+    snoop.stop();
+    QDPIO::cout << InlineNprEnv::name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+    
+    QDPIO::cout << InlineNprEnv::name << ": ran successfully" << endl;
+    
+    END_CODE();
+  } 
+  
 } //name space Chroma
