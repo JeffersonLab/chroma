@@ -1,34 +1,3 @@
-//###################################################################################//
-//###################################################################################//
-//                                                                                   //
-// BuildingBlocks.hh                                                                 //
-//                                                                                   //
-//###################################################################################//
-//###################################################################################//
-//                                                                                   //
-// description:                                                                      //
-//                                                                                   //
-// BuildingBlocks combines a gauge field, a forward propagator, and backward (or     //
-// sequential) propagators to form the corresponding building blocks (three point    //
-// functions).                                                                       //
-//                                                                                   //
-// history:                                                                          //
-//                                                                                   //
-// There were at least four versions of "MIT" code.  Andrew Pochinsky has a c        //
-// version. Dmitri Dolgov has a c++ version.  Dru B. Renner has c and c++ versions.  //
-// All were independent and checked against one another.  Of course, all were        //
-// developed under the guidance of John W. Negele.  The code here is just the        //
-// "Building Blocks" portion of the MIT code.                                        //
-//                                                                                   //
-// authors:                                                                          //
-//                                                                                   //
-// Dru B. Renner, dru@mit.edu, 2002 - port of Building Blocks (MIT) code to qdp++    //
-//                                                                                   //
-// There are others who have contributed since the code has been migrated to qdp++.  //
-// The cvs log entries indicate these other authors.                                 //
-//                                                                                   //
-//###################################################################################//
-//###################################################################################//
 
 #ifndef INCLUDE_BuildingBlocks_hh
 #define INCLUDE_BuildingBlocks_hh
@@ -39,7 +8,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_hh =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/npr_vertex_w.h,v 1.1 2006-10-30 22:31:43 edwards Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/npr_vertex_w.h,v 1.2 2006-10-30 22:32:01 edwards Exp $";
 
 //###################################################################################//
 // Record CVS Info for BuildingBlocks.hh and BuildingBlocks.cc                       //
