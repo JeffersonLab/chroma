@@ -1,3 +1,6 @@
+10/31/2006 -- Robert Edwards
+	Version 3.18.0. New inline measurements Qll by K. Orginos.
+
 10/14/2006 -- Robert Edwards
 	Version 3.17.0. Changes in BuildingBlocks (D. Renner, K. Orginos)
         to support time reversal and translation of source location. Removed
