@@ -1,4 +1,13 @@
 10/31/2006 -- Robert Edwards
+	Version 3.19.0. Split apart the fermact.h file into lots of
+        separate bits to make it easier to manage. Split up the linearop.h
+        file more as well. Split up and rearranged the tprec_linop.h files for
+        the anticipated new time-preconditioning. Added some new functionality
+        here.  For neatness sake, moved and renamed all the "prec_*" files
+        (which are specific to 4d even-odd preconditioning) to "eoprec_*"
+        filenames. Start of some new inline measurements not yet turned on.
+
+10/31/2006 -- Robert Edwards
 	Version 3.18.0. New inline measurements Qll by K. Orginos.
 
 10/14/2006 -- Robert Edwards
