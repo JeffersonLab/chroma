@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.3 2006-08-25 23:56:51 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.4 2006-11-02 19:24:21 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -637,6 +637,8 @@ namespace Chroma
       const RComplex<REAL>* ppsi = (const RComplex<REAL>*)&(psi.elem(site).elem(0).elem(0));
 
 
+#if 0
+      // Rolled version
       for(int i = 0; i < n; ++i)
       {
 	cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
@@ -655,6 +657,89 @@ namespace Chroma
 	  kij++;
 	}
       }
+#else
+      // Unrolled version
+      cchi[ 0] = tri[site].diag[0][0] * ppsi[ 0];
+      cchi[ 1] = tri[site].diag[0][1] * ppsi[ 1];
+      cchi[ 2] = tri[site].diag[0][2] * ppsi[ 2];
+      cchi[ 3] = tri[site].diag[0][3] * ppsi[ 3];
+      cchi[ 4] = tri[site].diag[0][4] * ppsi[ 4];
+      cchi[ 5] = tri[site].diag[0][5] * ppsi[ 5];
+      cchi[ 6] = tri[site].diag[1][0] * ppsi[ 6];
+      cchi[ 7] = tri[site].diag[1][1] * ppsi[ 7];
+      cchi[ 8] = tri[site].diag[1][2] * ppsi[ 8];
+      cchi[ 9] = tri[site].diag[1][3] * ppsi[ 9];
+      cchi[10] = tri[site].diag[1][4] * ppsi[10];
+      cchi[11] = tri[site].diag[1][5] * ppsi[11];
+
+      // cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
+      cchi[ 1] += tri[site].offd[0][ 0] * ppsi[ 0];
+      cchi[ 2] += tri[site].offd[0][ 1] * ppsi[ 0];
+      cchi[ 2] += tri[site].offd[0][ 2] * ppsi[ 1];
+      cchi[ 3] += tri[site].offd[0][ 3] * ppsi[ 0];
+      cchi[ 3] += tri[site].offd[0][ 4] * ppsi[ 1];
+      cchi[ 3] += tri[site].offd[0][ 5] * ppsi[ 2];
+      cchi[ 4] += tri[site].offd[0][ 6] * ppsi[ 0];
+      cchi[ 4] += tri[site].offd[0][ 7] * ppsi[ 1];
+      cchi[ 4] += tri[site].offd[0][ 8] * ppsi[ 2];
+      cchi[ 4] += tri[site].offd[0][ 9] * ppsi[ 3];
+      cchi[ 5] += tri[site].offd[0][10] * ppsi[ 0];
+      cchi[ 5] += tri[site].offd[0][11] * ppsi[ 1];
+      cchi[ 5] += tri[site].offd[0][12] * ppsi[ 2];
+      cchi[ 5] += tri[site].offd[0][13] * ppsi[ 3];
+      cchi[ 5] += tri[site].offd[0][14] * ppsi[ 4];
+
+      // cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
+      cchi[ 0] += conj(tri[site].offd[0][ 0]) * ppsi[ 1];
+      cchi[ 0] += conj(tri[site].offd[0][ 1]) * ppsi[ 2];
+      cchi[ 1] += conj(tri[site].offd[0][ 2]) * ppsi[ 2];
+      cchi[ 0] += conj(tri[site].offd[0][ 3]) * ppsi[ 3];
+      cchi[ 1] += conj(tri[site].offd[0][ 4]) * ppsi[ 3];
+      cchi[ 2] += conj(tri[site].offd[0][ 5]) * ppsi[ 3];
+      cchi[ 0] += conj(tri[site].offd[0][ 6]) * ppsi[ 4];
+      cchi[ 1] += conj(tri[site].offd[0][ 7]) * ppsi[ 4];
+      cchi[ 2] += conj(tri[site].offd[0][ 8]) * ppsi[ 4];
+      cchi[ 3] += conj(tri[site].offd[0][ 9]) * ppsi[ 4];
+      cchi[ 0] += conj(tri[site].offd[0][10]) * ppsi[ 5];
+      cchi[ 1] += conj(tri[site].offd[0][11]) * ppsi[ 5];
+      cchi[ 2] += conj(tri[site].offd[0][12]) * ppsi[ 5];
+      cchi[ 3] += conj(tri[site].offd[0][13]) * ppsi[ 5];
+      cchi[ 4] += conj(tri[site].offd[0][14]) * ppsi[ 5];
+
+      // cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
+      cchi[ 7] += tri[site].offd[1][ 0] * ppsi[ 6];
+      cchi[ 8] += tri[site].offd[1][ 1] * ppsi[ 6];
+      cchi[ 8] += tri[site].offd[1][ 2] * ppsi[ 7];
+      cchi[ 9] += tri[site].offd[1][ 3] * ppsi[ 6];
+      cchi[ 9] += tri[site].offd[1][ 4] * ppsi[ 7];
+      cchi[ 9] += tri[site].offd[1][ 5] * ppsi[ 8];
+      cchi[10] += tri[site].offd[1][ 6] * ppsi[ 6];
+      cchi[10] += tri[site].offd[1][ 7] * ppsi[ 7];
+      cchi[10] += tri[site].offd[1][ 8] * ppsi[ 8];
+      cchi[10] += tri[site].offd[1][ 9] * ppsi[ 9];
+      cchi[11] += tri[site].offd[1][10] * ppsi[ 6];
+      cchi[11] += tri[site].offd[1][11] * ppsi[ 7];
+      cchi[11] += tri[site].offd[1][12] * ppsi[ 8];
+      cchi[11] += tri[site].offd[1][13] * ppsi[ 9];
+      cchi[11] += tri[site].offd[1][14] * ppsi[10];
+
+      // cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
+      cchi[ 6] += conj(tri[site].offd[1][ 0]) * ppsi[ 7];
+      cchi[ 6] += conj(tri[site].offd[1][ 1]) * ppsi[ 8];
+      cchi[ 7] += conj(tri[site].offd[1][ 2]) * ppsi[ 8];
+      cchi[ 6] += conj(tri[site].offd[1][ 3]) * ppsi[ 9];
+      cchi[ 7] += conj(tri[site].offd[1][ 4]) * ppsi[ 9];
+      cchi[ 8] += conj(tri[site].offd[1][ 5]) * ppsi[ 9];
+      cchi[ 6] += conj(tri[site].offd[1][ 6]) * ppsi[10];
+      cchi[ 7] += conj(tri[site].offd[1][ 7]) * ppsi[10];
+      cchi[ 8] += conj(tri[site].offd[1][ 8]) * ppsi[10];
+      cchi[ 9] += conj(tri[site].offd[1][ 9]) * ppsi[10];
+      cchi[ 6] += conj(tri[site].offd[1][10]) * ppsi[11];
+      cchi[ 7] += conj(tri[site].offd[1][11]) * ppsi[11];
+      cchi[ 8] += conj(tri[site].offd[1][12]) * ppsi[11];
+      cchi[ 9] += conj(tri[site].offd[1][13]) * ppsi[11];
+      cchi[10] += conj(tri[site].offd[1][14]) * ppsi[11];
+#endif
 
     }
 
