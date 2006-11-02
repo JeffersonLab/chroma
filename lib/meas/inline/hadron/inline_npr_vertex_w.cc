@@ -1,4 +1,4 @@
-// $Id: inline_npr_vertex_w.cc,v 1.2 2006-11-02 22:26:10 edwards Exp $
+// $Id: inline_npr_vertex_w.cc,v 1.3 2006-11-02 22:29:31 edwards Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -34,7 +34,7 @@ namespace Chroma
       bool registered = false;
     }
 
-    const std::string name = "BUILDING_BLOCKS";
+    const std::string name = "NPR_VERTEX";
 
     //! Register all the factories
     bool registerAll() 
