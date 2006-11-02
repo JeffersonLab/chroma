@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_vertex_w.h,v 1.1 2006-10-30 22:31:43 edwards Exp $
+// $Id: inline_npr_vertex_w.h,v 1.2 2006-11-02 22:26:10 edwards Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -44,7 +44,7 @@ namespace Chroma
     {
       std::string       gauge_id;        /*!< Input Gauge id */
       std::string       prop_id;         /*!< Input forward prop */
-      std::string       bb_file_name;    /*!< bb output file name pattern */
+      std::string       file_name;    /*!< bb output file name pattern */
     } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern

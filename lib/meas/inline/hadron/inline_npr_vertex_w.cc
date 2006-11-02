@@ -1,4 +1,4 @@
-// $Id: inline_npr_vertex_w.cc,v 1.1 2006-10-30 22:31:43 edwards Exp $
+// $Id: inline_npr_vertex_w.cc,v 1.2 2006-11-02 22:26:10 edwards Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -99,7 +99,7 @@ namespace Chroma
 
     read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "prop_id", input.prop_id);
-    read(inputtop, "bb_file_name", input.bb_file_name);
+    read(inputtop, "file_name", input.file_name);
   }
 
   //! Propagator output
@@ -109,7 +109,7 @@ namespace Chroma
 
     write(xml, "gauge_id", input.gauge_id);
     write(xml, "prop_id", input.prop_id);
-    write(xml, "bb_file_name", input.bb_file_name);
+    write(xml, "file_name", input.file_name);
 
     pop(xml);
   }
@@ -245,12 +245,12 @@ namespace Chroma
 
     try
     {
-      U = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.bb.GaugeId);
-      TheNamedObjMap::Instance().get(params.bb.GaugeId).getRecordXML(gauge_xml);
+      U = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
       // Set the construct state and modify the fields
       {
-QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
+	QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 	std::istringstream  xml_s(params.param.cfs.xml);
 	XMLReader  fermtop(xml_s);
 
@@ -293,21 +293,8 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     // Write out the config info
     write(XmlOut, "Config_info", gauge_xml);
 
-    // check that the gauge field seems normal
-    Double ave_plaq, ave_spacelike_plaq, ave_timelike_plaq, ave_link_trace;
-    MesPlq( U, ave_plaq, ave_spacelike_plaq, ave_timelike_plaq, ave_link_trace );
-    Out << "basic gauge field observables"                         << "\n";
-    Out << "average plaquette            = " << ave_plaq           << "\n";
-    Out << "average space-like plaquette = " << ave_spacelike_plaq << "\n";
-    Out << "average time-like plaquette  = " << ave_timelike_plaq  << "\n";
-    Out << "average link trace           = " << ave_link_trace     << "\n";
-
-    push(XmlOut, "Observables");
-    write(XmlOut, "ave_plaq", ave_plaq);
-    write(XmlOut, "ave_spacelike_plaq", ave_spacelike_plaq);
-    write(XmlOut, "ave_timelike_plaq", ave_timelike_plaq);
-    write(XmlOut, "ave_link_trace", ave_link_trace);
-    pop(XmlOut);
+    // Calculate some gauge invariant observables just for info.
+    MesPlq(XmlOut, "Observables", U);
 
     //#################################################################################//
     // Read Forward Propagator                                                         //
@@ -319,7 +306,7 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     ChromaProp_t prop_header;
     PropSourceConst_t source_header;
     QDPIO::cout << "Attempt to parse forward propagator" << endl;
-    Out << "parsing forward propagator " << params.bb.FrwdPropId << " ... " << "\n";  Out.flush();
+    Out << "parsing forward propagator " << params.named_obj.prop_id << " ... " << "\n";  Out.flush();
 
     try
     {
@@ -327,9 +314,9 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       F = TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
 	
       // Snarf the frwd prop info. This is will throw if the frwd prop id is not there
-      XMLReader PropXML;
-      TheNamedObjMap::Instance().get(params.bb.FrwdPropId).getFileXML(PropXML);
-      TheNamedObjMap::Instance().get(params.bb.FrwdPropId).getRecordXML(PropRecordXML);
+      XMLReader PropXML, PropRecordXML;
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(PropXML);
+      TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(PropRecordXML);
 
       // Try to invert this record XML into a ChromaProp struct
       {
@@ -343,14 +330,13 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 	multi1d<Double> FrwdPropCheck = 
 	  sumMulti( localNorm2( F ), phases_nomom.getSet() );
 
-	Out << "forward propagator check = " << PropCheck[0] << "\n";  Out.flush();
+	Out << "forward propagator check = " << PropCheck[0] << "\n";  Out.u();
 
 	// Write out the forward propagator header
 	push(XmlOut, "ForwardProp");
-	write(XmlOut, "FrwdPropId", params.bb.FrwdPropId);
-	write(XmlOut, "FrwdPropXML", FrwdPropXML);
-	write(XmlOut, "FrwdPropRecordXML", FrwdPropRecordXML);
-	write(XmlOut, "FrwdPropCheck", FrwdPropCheck);
+	write(XmlOut, "PropXML", FrwdPropXML);
+	write(XmlOut, "PropRecordXML", FrwdPropRecordXML);
+	write(XmlOut, "PropCheck", FrwdPropCheck);
 	pop(XmlOut);
       }
     }
@@ -368,12 +354,6 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     }
 
     QDPIO::cout << "Forward propagator successfully parsed" << endl;
-    Out << "finished parsing forward propagator " << params.bb.FrwdPropId << "\n";  Out.flush();
-
-
-    // Derived from input prop
-    int  j_decay = source_header.j_decay;
-    multi1d<int> t_srce = source_header.getTSrce() ;
 
 
     //#################################################################################//
@@ -384,24 +364,23 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     Out << "calculating building blocks" << "\n";  Out.flush();
     QDPIO::cout << "calculating building blocks" << endl;
 
-    const signed short int T1 = 0;
-    const signed short int T2 = QDP::Layout::lattSize()[j_decay] - 1;
-    const signed short int DecayDir = j_decay;
-    const signed short int Tsrc = source_header.t_source;
-    const signed short int Tsnk = seqsource_header.t_sink;
+    XMLBufferWriter file_xml;
+    push(file_xml, "NprVertex");
+    write(file_xml, "Param", params.param);
+    write(file_xml, "ForwardProp", prop_header);
+    write(file_xml, "PropSource", source_header);
+    write(file_xml, "Config", gauge_xml);
+    pop(file_xml);
+
+    QDPFileWriter qio_file(file_xml, params.named_obj.file_name, QDPIO_SINGLEFILE, 
+			   QDPIO_SERIAL, QDPIO_OPEN); 
 
     swatch.start();
-    NprVertex(B, F, U, 
-	      GammaInsertions, Flavors,
-	      params.param.links_max, AllLinkPatterns, 
-	      Phases, PhasesCanonical,
-	      Files, T1, T2,
-	      Tsrc, Tsnk,
-	      seqsource_header.seqsrc.id, seqsource_header.sink_mom, DecayDir,
-	      params.param.time_reverse,
-	      params.param.translate);
+    NprVertex(F, U, params.param.links_max, AllLinkPatterns, qio_file);
     swatch.stop();
       
+    close(qio_file);
+
     QDPIO::cout << "finished calculating building blocks for loop = " << loop 
 		<< "  time= "
 		<< swatch.getTimeInSeconds() 
