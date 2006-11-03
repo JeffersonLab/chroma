@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_w.h,v 1.4 2006-10-28 05:13:32 kostas Exp $
+// $Id: inline_npr_w.h,v 1.5 2006-11-03 20:21:07 hwlin Exp $
 /*! \file
  * \brief Inline construction of Landau gauge propagator
  *
@@ -12,6 +12,10 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "handle.h"
+#include "state.h"
+
+using namespace QDP;
 
 namespace Chroma 
 { 
@@ -70,7 +74,7 @@ namespace Chroma
     
     void make_source(LatticePropagator& src,
 		     const Handle<const ConnectState>& state,
-		     const mult1d<ind>& t_source,
+		     const multi1d<int>& t_source,
 		     int mu) ;
 
   private:

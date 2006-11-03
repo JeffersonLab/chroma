@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.87 2006-10-19 16:03:11 edwards Exp $
+# $Id: Makefile.in,v 3.88 2006-11-03 20:21:06 hwlin Exp $
 #
 # Path for all files used in building the library
 
@@ -419,7 +419,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
-	meas/schrfun/sfpcac_w.cc meas/schrfun/sfcurcor_w.cc \
+	meas/hadron/npr_vertex_w.cc meas/schrfun/sfpcac_w.cc \
+	meas/schrfun/sfcurcor_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/d_src_w.cc \
 	meas/sources/p_src_w.cc meas/sources/walfil_w.cc \
@@ -483,6 +484,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
+	meas/inline/hadron/inline_npr_vertex_w.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/hadron_s/util_compute_quark_prop_s.cc \
@@ -794,7 +796,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	walldeltapff_w.$(OBJEXT) wallff_w.$(OBJEXT) \
 	wallnuclff_w.$(OBJEXT) wallpionff_w.$(OBJEXT) \
 	wallrhoff_w.$(OBJEXT) wallrhopiff_w.$(OBJEXT) \
-	wall_qprop_w.$(OBJEXT) sfpcac_w.$(OBJEXT) sfcurcor_w.$(OBJEXT) \
+	wall_qprop_w.$(OBJEXT) npr_vertex_w.$(OBJEXT) \
+	sfpcac_w.$(OBJEXT) sfcurcor_w.$(OBJEXT) \
 	deriv_quark_displacement_w.$(OBJEXT) \
 	gamma_displacement_w.$(OBJEXT) d_src_w.$(OBJEXT) \
 	p_src_w.$(OBJEXT) walfil_w.$(OBJEXT) \
@@ -845,6 +848,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_mres_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
 	inline_qpropadd_w.$(OBJEXT) inline_qqqNucNuc_w.$(OBJEXT) \
 	inline_stoch_baryon_w.$(OBJEXT) inline_stoch_meson_w.$(OBJEXT) \
+	inline_npr_vertex_w.$(OBJEXT) \
 	inline_hadron_aggregate_s.$(OBJEXT) \
 	inline_spectrum_s.$(OBJEXT) \
 	util_compute_quark_prop_s.$(OBJEXT) \
@@ -1279,6 +1283,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
+	meas/hadron/npr_vertex_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h meas/schrfun/sfpcac_w.h \
 	meas/schrfun/sfcurcor_w.h meas/sources/sources_w.h \
@@ -1391,6 +1396,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_qqqNucNuc_w.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
+	meas/inline/hadron/inline_npr_vertex_w.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/util_compute_quark_prop_s.h \
@@ -1976,6 +1982,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
+	meas/hadron/npr_vertex_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h meas/schrfun/sfpcac_w.h \
 	meas/schrfun/sfcurcor_w.h meas/sources/sources_w.h \
@@ -2088,6 +2095,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_qqqNucNuc_w.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
+	meas/inline/hadron/inline_npr_vertex_w.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/util_compute_quark_prop_s.h \
@@ -2466,7 +2474,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
-	meas/schrfun/sfpcac_w.cc meas/schrfun/sfcurcor_w.cc \
+	meas/hadron/npr_vertex_w.cc meas/schrfun/sfpcac_w.cc \
+	meas/schrfun/sfcurcor_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/d_src_w.cc \
 	meas/sources/p_src_w.cc meas/sources/walfil_w.cc \
@@ -2530,6 +2539,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
+	meas/inline/hadron/inline_npr_vertex_w.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/hadron_s/util_compute_quark_prop_s.cc \
@@ -2871,6 +2881,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_nersc_read_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_nersc_write_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_noisy_building_blocks_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_npr_vertex_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_plaquette.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_propagator_ferm_w.Po@am__quote@
@@ -2982,6 +2993,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_quark_displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_quark_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_spin_insertion.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npr_vertex_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial5d_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
@@ -8392,6 +8404,20 @@ wall_qprop_w.obj: meas/hadron/wall_qprop_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wall_qprop_w.obj `if test -f 'meas/hadron/wall_qprop_w.cc'; then $(CYGPATH_W) 'meas/hadron/wall_qprop_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/wall_qprop_w.cc'; fi`
 
+npr_vertex_w.o: meas/hadron/npr_vertex_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT npr_vertex_w.o -MD -MP -MF "$(DEPDIR)/npr_vertex_w.Tpo" -c -o npr_vertex_w.o `test -f 'meas/hadron/npr_vertex_w.cc' || echo '$(srcdir)/'`meas/hadron/npr_vertex_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/npr_vertex_w.Tpo" "$(DEPDIR)/npr_vertex_w.Po"; else rm -f "$(DEPDIR)/npr_vertex_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/npr_vertex_w.cc' object='npr_vertex_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o npr_vertex_w.o `test -f 'meas/hadron/npr_vertex_w.cc' || echo '$(srcdir)/'`meas/hadron/npr_vertex_w.cc
+
+npr_vertex_w.obj: meas/hadron/npr_vertex_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT npr_vertex_w.obj -MD -MP -MF "$(DEPDIR)/npr_vertex_w.Tpo" -c -o npr_vertex_w.obj `if test -f 'meas/hadron/npr_vertex_w.cc'; then $(CYGPATH_W) 'meas/hadron/npr_vertex_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/npr_vertex_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/npr_vertex_w.Tpo" "$(DEPDIR)/npr_vertex_w.Po"; else rm -f "$(DEPDIR)/npr_vertex_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/npr_vertex_w.cc' object='npr_vertex_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o npr_vertex_w.obj `if test -f 'meas/hadron/npr_vertex_w.cc'; then $(CYGPATH_W) 'meas/hadron/npr_vertex_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/npr_vertex_w.cc'; fi`
+
 sfpcac_w.o: meas/schrfun/sfpcac_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sfpcac_w.o -MD -MP -MF "$(DEPDIR)/sfpcac_w.Tpo" -c -o sfpcac_w.o `test -f 'meas/schrfun/sfpcac_w.cc' || echo '$(srcdir)/'`meas/schrfun/sfpcac_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sfpcac_w.Tpo" "$(DEPDIR)/sfpcac_w.Po"; else rm -f "$(DEPDIR)/sfpcac_w.Tpo"; exit 1; fi
@@ -9385,6 +9411,20 @@ inline_stoch_meson_w.obj: meas/inline/hadron/inline_stoch_meson_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_stoch_meson_w.cc' object='inline_stoch_meson_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_stoch_meson_w.obj `if test -f 'meas/inline/hadron/inline_stoch_meson_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_stoch_meson_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_stoch_meson_w.cc'; fi`
+
+inline_npr_vertex_w.o: meas/inline/hadron/inline_npr_vertex_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_npr_vertex_w.o -MD -MP -MF "$(DEPDIR)/inline_npr_vertex_w.Tpo" -c -o inline_npr_vertex_w.o `test -f 'meas/inline/hadron/inline_npr_vertex_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_npr_vertex_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_npr_vertex_w.Tpo" "$(DEPDIR)/inline_npr_vertex_w.Po"; else rm -f "$(DEPDIR)/inline_npr_vertex_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_npr_vertex_w.cc' object='inline_npr_vertex_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_npr_vertex_w.o `test -f 'meas/inline/hadron/inline_npr_vertex_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_npr_vertex_w.cc
+
+inline_npr_vertex_w.obj: meas/inline/hadron/inline_npr_vertex_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_npr_vertex_w.obj -MD -MP -MF "$(DEPDIR)/inline_npr_vertex_w.Tpo" -c -o inline_npr_vertex_w.obj `if test -f 'meas/inline/hadron/inline_npr_vertex_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_npr_vertex_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_npr_vertex_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_npr_vertex_w.Tpo" "$(DEPDIR)/inline_npr_vertex_w.Po"; else rm -f "$(DEPDIR)/inline_npr_vertex_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_npr_vertex_w.cc' object='inline_npr_vertex_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_npr_vertex_w.obj `if test -f 'meas/inline/hadron/inline_npr_vertex_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_npr_vertex_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_npr_vertex_w.cc'; fi`
 
 inline_hadron_aggregate_s.o: meas/inline/hadron_s/inline_hadron_aggregate_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadron_aggregate_s.o -MD -MP -MF "$(DEPDIR)/inline_hadron_aggregate_s.Tpo" -c -o inline_hadron_aggregate_s.o `test -f 'meas/inline/hadron_s/inline_hadron_aggregate_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_hadron_aggregate_s.cc; \
