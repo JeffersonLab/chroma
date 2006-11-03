@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.4 2006-11-02 19:24:21 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.5 2006-11-03 15:22:24 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -638,6 +638,7 @@ namespace Chroma
 
 
 #if 0
+#warning "Using unrolled clover term"
       // Rolled version
       for(int i = 0; i < n; ++i)
       {
@@ -657,8 +658,9 @@ namespace Chroma
 	  kij++;
 	}
       }
-#else
-      // Unrolled version
+#elif 0
+#warning "Using unrolled clover term - version 1"
+      // Unrolled version - basically copying the loop structure
       cchi[ 0] = tri[site].diag[0][0] * ppsi[ 0];
       cchi[ 1] = tri[site].diag[0][1] * ppsi[ 1];
       cchi[ 2] = tri[site].diag[0][2] * ppsi[ 2];
@@ -739,6 +741,92 @@ namespace Chroma
       cchi[ 8] += conj(tri[site].offd[1][12]) * ppsi[11];
       cchi[ 9] += conj(tri[site].offd[1][13]) * ppsi[11];
       cchi[10] += conj(tri[site].offd[1][14]) * ppsi[11];
+#elif 1
+#warning "Using unrolled clover term - version 2"
+      // Unrolled version - collect all LHS terms into 1 expression
+      cchi[ 0] = tri[site].diag[0][ 0]  * ppsi[ 0]
+        +   conj(tri[site].offd[0][ 0]) * ppsi[ 1]
+        +   conj(tri[site].offd[0][ 1]) * ppsi[ 2]
+        +   conj(tri[site].offd[0][ 3]) * ppsi[ 3]
+        +   conj(tri[site].offd[0][ 6]) * ppsi[ 4]
+        +   conj(tri[site].offd[0][10]) * ppsi[ 5];
+
+      cchi[ 1] = tri[site].diag[0][ 1]  * ppsi[ 1]
+        +        tri[site].offd[0][ 0]  * ppsi[ 0]
+        +   conj(tri[site].offd[0][ 2]) * ppsi[ 2]
+        +   conj(tri[site].offd[0][ 4]) * ppsi[ 3]
+        +   conj(tri[site].offd[0][ 7]) * ppsi[ 4]
+        +   conj(tri[site].offd[0][11]) * ppsi[ 5];
+
+      cchi[ 2] = tri[site].diag[0][ 2]  * ppsi[ 2]
+	+        tri[site].offd[0][ 1]  * ppsi[ 0]
+        +        tri[site].offd[0][ 2]  * ppsi[ 1]
+        +   conj(tri[site].offd[0][ 5]) * ppsi[ 3]
+        +   conj(tri[site].offd[0][ 8]) * ppsi[ 4]
+        +   conj(tri[site].offd[0][12]) * ppsi[ 5];
+
+      cchi[ 3] = tri[site].diag[0][ 3]  * ppsi[ 3]
+        +        tri[site].offd[0][ 3]  * ppsi[ 0]
+        +        tri[site].offd[0][ 4]  * ppsi[ 1]
+        +        tri[site].offd[0][ 5]  * ppsi[ 2]
+        +   conj(tri[site].offd[0][ 9]) * ppsi[ 4]
+        +   conj(tri[site].offd[0][13]) * ppsi[ 5];
+
+      cchi[ 4] = tri[site].diag[0][ 4]  * ppsi[ 4]
+        +        tri[site].offd[0][ 6]  * ppsi[ 0]
+        +        tri[site].offd[0][ 7]  * ppsi[ 1]
+        +        tri[site].offd[0][ 8]  * ppsi[ 2]
+        +        tri[site].offd[0][ 9]  * ppsi[ 3]
+        +   conj(tri[site].offd[0][14]) * ppsi[ 5];
+
+      cchi[ 5] = tri[site].diag[0][ 5]  * ppsi[ 5]
+        +        tri[site].offd[0][10]  * ppsi[ 0]
+        +        tri[site].offd[0][11]  * ppsi[ 1]
+	+        tri[site].offd[0][12]  * ppsi[ 2]
+	+        tri[site].offd[0][13]  * ppsi[ 3]
+        +        tri[site].offd[0][14]  * ppsi[ 4];
+
+      cchi[ 6] = tri[site].diag[1][ 0]  * ppsi[ 6]
+        +   conj(tri[site].offd[1][ 0]) * ppsi[ 7]
+        +   conj(tri[site].offd[1][ 1]) * ppsi[ 8]
+        +   conj(tri[site].offd[1][ 3]) * ppsi[ 9]
+        +   conj(tri[site].offd[1][ 6]) * ppsi[10]
+        +   conj(tri[site].offd[1][10]) * ppsi[11];
+
+      cchi[ 7] = tri[site].diag[1][ 1]  * ppsi[ 7]
+        +        tri[site].offd[1][ 0]  * ppsi[ 6]
+        +   conj(tri[site].offd[1][ 2]) * ppsi[ 8]
+        +   conj(tri[site].offd[1][ 4]) * ppsi[ 9]
+        +   conj(tri[site].offd[1][ 7]) * ppsi[10]
+        +   conj(tri[site].offd[1][11]) * ppsi[11];
+
+      cchi[ 8] = tri[site].diag[1][ 2]  * ppsi[ 8]
+	+        tri[site].offd[1][ 1]  * ppsi[ 6]
+        +        tri[site].offd[1][ 2]  * ppsi[ 7]
+	+   conj(tri[site].offd[1][ 5]) * ppsi[ 9]
+	+   conj(tri[site].offd[1][ 8]) * ppsi[10]
+        +   conj(tri[site].offd[1][12]) * ppsi[11];
+
+      cchi[ 9] = tri[site].diag[1][ 3]  * ppsi[ 9]
+	+        tri[site].offd[1][ 3]  * ppsi[ 6]
+	+        tri[site].offd[1][ 4]  * ppsi[ 7]
+	+        tri[site].offd[1][ 5]  * ppsi[ 8]
+	+   conj(tri[site].offd[1][ 9]) * ppsi[10]
+	+   conj(tri[site].offd[1][13]) * ppsi[11];
+
+      cchi[10] = tri[site].diag[1][ 4]  * ppsi[10]
+        +        tri[site].offd[1][ 6]  * ppsi[ 6]
+	+        tri[site].offd[1][ 7]  * ppsi[ 7]
+	+        tri[site].offd[1][ 8]  * ppsi[ 8]
+	+        tri[site].offd[1][ 9]  * ppsi[ 9]
+	+   conj(tri[site].offd[1][14]) * ppsi[11];
+
+      cchi[11] = tri[site].diag[1][ 5]  * ppsi[11]
+	+        tri[site].offd[1][10]  * ppsi[ 6]
+	+        tri[site].offd[1][11]  * ppsi[ 7]
+	+        tri[site].offd[1][12]  * ppsi[ 8]
+	+        tri[site].offd[1][13]  * ppsi[ 9]
+	+        tri[site].offd[1][14]  * ppsi[10];
 #endif
 
     }
