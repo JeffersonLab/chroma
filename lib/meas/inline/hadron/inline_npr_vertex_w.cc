@@ -1,4 +1,4 @@
-// $Id: inline_npr_vertex_w.cc,v 1.3 2006-11-02 22:29:31 edwards Exp $
+// $Id: inline_npr_vertex_w.cc,v 1.4 2006-11-03 20:18:55 hwlin Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -9,9 +9,11 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
-#include "meas/hadron/BuildingBlocks_w.h"
+// #include "meas/hadron/BuildingBlocks_w.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
+
+#include "meas/hadron/npr_vertex_w.h"
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -168,7 +170,7 @@ namespace Chroma
 
   void AllLinkPatterns( bool &                          DoThisPattern,
 			bool &                          DoFurtherPatterns,
-			multi1d< unsigned short int > & LinkPattern )
+			multi1d< int > & LinkPattern )
   {
     DoThisPattern     = true;
     DoFurtherPatterns = true;
@@ -237,7 +239,7 @@ namespace Chroma
     // Read Gauge Field                                                              //
     //###############################################################################//
 
-    Out << "Attempt to initialize the gauge field" << "\n";  Out.flush();
+    QDPIO::cout << "Attempt to initialize the gauge field" << endl << flush ;
 
     // Grab the gauge field
     multi1d<LatticeColorMatrix> U;
@@ -306,7 +308,7 @@ namespace Chroma
     ChromaProp_t prop_header;
     PropSourceConst_t source_header;
     QDPIO::cout << "Attempt to parse forward propagator" << endl;
-    Out << "parsing forward propagator " << params.named_obj.prop_id << " ... " << "\n";  Out.flush();
+    QDPIO::cout << "parsing forward propagator " << params.named_obj.prop_id << " ... " << endl << flush;
 
     try
     {
@@ -327,16 +329,16 @@ namespace Chroma
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification
       {
-	multi1d<Double> FrwdPropCheck = 
+	multi1d<Double> PropCheck = 
 	  sumMulti( localNorm2( F ), phases_nomom.getSet() );
 
-	Out << "forward propagator check = " << PropCheck[0] << "\n";  Out.u();
+	QDPIO::cout << "forward propagator check = " << PropCheck[0] << endl;
 
 	// Write out the forward propagator header
 	push(XmlOut, "ForwardProp");
-	write(XmlOut, "PropXML", FrwdPropXML);
-	write(XmlOut, "PropRecordXML", FrwdPropRecordXML);
-	write(XmlOut, "PropCheck", FrwdPropCheck);
+	write(XmlOut, "PropXML", PropXML);
+	write(XmlOut, "PropRecordXML", PropRecordXML);
+	write(XmlOut, "PropCheck", PropCheck);
 	pop(XmlOut);
       }
     }
@@ -359,9 +361,8 @@ namespace Chroma
     //#################################################################################//
     // Construct Building Blocks                                                       //
     //#################################################################################//
-    
+    QDP::StopWatch swatch;
     swatch.reset();
-    Out << "calculating building blocks" << "\n";  Out.flush();
     QDPIO::cout << "calculating building blocks" << endl;
 
     XMLBufferWriter file_xml;
@@ -381,7 +382,7 @@ namespace Chroma
       
     close(qio_file);
 
-    QDPIO::cout << "finished calculating building blocks for loop = " << loop 
+    QDPIO::cout << "finished calculating NprVertex"
 		<< "  time= "
 		<< swatch.getTimeInSeconds() 
 		<< " secs" << endl;

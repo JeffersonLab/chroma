@@ -1,4 +1,4 @@
-//  $Id: npr_vertex_w.cc,v 1.2 2006-11-02 22:26:10 edwards Exp $
+//  $Id: npr_vertex_w.cc,v 1.3 2006-11-03 20:18:55 hwlin Exp $
 /*! \file
  *  \brief NPR vertex calculations
  */
@@ -6,6 +6,8 @@
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "meas/hadron/npr_vertex_w.h"
+
+using namespace QDP;
 
 namespace Chroma 
 {
@@ -33,10 +35,23 @@ namespace Chroma
 
       // assumes any Gamma5 matrices have already been absorbed
       int G5 = Ns*Ns-1;
-      LatticePropagator tmp = (Gamma(G5) * adj(B) * Gamma(G5)) * Gamma(i) * F;
-      DPropagator prop = sum(tmp);
-
-      write(qio_file, record_xml, prop);
+      
+      // This is a beastly hack to make the thing compile as QIO isn't wanting
+      // to write just one single Site's worth of DPropagator
+      // So I take a lattice propagetor and set every site's data equal to the 
+      // site that I am interested in. THis is just to make the code compile
+      // and should be fixed at a later time
+      DPropagator prop;
+      {
+	LatticePropagator tmp = (Gamma(G5) * adj(B) * Gamma(G5)) * Gamma(i) * F;
+	prop = sum(tmp);   // The site's worth of data of interest
+      }
+      
+      // !!!! FIXME
+      // Hack set every site's worth of data equal to 'prop' 
+      LatticePropagatorD dprop = zero;
+      dprop = prop;
+      write(qio_file, record_xml, dprop);
     }
 
     TotalTime.stop();
@@ -58,7 +73,7 @@ namespace Chroma
 		const int          PreviousDir,
 		const int          PreviousMu,
 		QDPFileWriter&     qio_file,
-		int&               GBB_NLinkPatterns);
+		int&               GBB_NLinkPatterns)
   {
     StopWatch Timer;
     Timer.reset();
@@ -184,8 +199,11 @@ namespace Chroma
 
     const int NLinks = 0;
     multi1d< int > LinkDirs( 0 );
+    {
+      LatticePropagator B = Gamma(15)*adj(F)*Gamma(15);
 
-    BkwdFrwd(F, qio_file, GBB_NLinkPatterns, LinkDirs);
+      BkwdFrwd(B, F, qio_file, GBB_NLinkPatterns, LinkDirs);
+    }
 
     Timer.stop();
     QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdTr call) = "

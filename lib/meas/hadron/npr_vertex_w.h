@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: npr_vertex_w.h,v 1.3 2006-11-02 22:26:10 edwards Exp $
+//  $Id: npr_vertex_w.h,v 1.4 2006-11-03 20:18:21 hwlin Exp $
 /*! \file
  *  \brief NPR vertex calculations
  */
@@ -13,7 +13,7 @@ namespace Chroma
   /*! \ingroup hadron */
   typedef void (*BBLinkPattern)(bool &                          DoThisPattern,
 				bool &                          DoFurtherPatterns,
-				multi1d< unsigned short int > & LinkPattern);
+				multi1d< int > & LinkPattern);
 
   //! NPR vertices
   /*! \ingroup hadron */

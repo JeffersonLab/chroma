@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.42 2006-10-19 16:01:24 edwards Exp $
+# $Id: Makefile.am,v 3.43 2006-11-03 20:18:21 hwlin Exp $
 #
 # Path for all files used in building the library
 
@@ -448,6 +448,7 @@ nobase_include_HEADERS += \
 	meas/hadron/walldeltaff_w.h meas/hadron/walldeltapff_w.h \
 	meas/hadron/wallpionff_w.h meas/hadron/wallnuclff_w.h \
 	meas/hadron/wallrhoff_w.h meas/hadron/wallrhopiff_w.h \
+	meas/hadron/npr_vertex_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h \
         meas/schrfun/sfpcac_w.h \
@@ -596,6 +597,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_qqqNucNuc_w.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
+	meas/inline/hadron/inline_npr_vertex_w.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
         meas/inline/hadron_s/util_compute_quark_prop_s.h \
@@ -1002,6 +1004,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
+	meas/hadron/npr_vertex_w.cc \
         meas/schrfun/sfpcac_w.cc \
         meas/schrfun/sfcurcor_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
@@ -1089,6 +1092,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
+	meas/inline/hadron/inline_npr_vertex_w.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
