@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.88 2006-11-03 20:21:06 hwlin Exp $
+# $Id: Makefile.in,v 3.89 2006-11-04 05:09:11 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -250,6 +250,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/quark_displacement_aggregate.cc \
 	meas/smear/no_quark_displacement.cc \
 	meas/smear/simple_quark_displacement.cc \
+	meas/sources/mom_source_const.cc \
 	meas/sources/pt_source_const.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
@@ -665,9 +666,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) \
 	quark_displacement_aggregate.$(OBJEXT) \
 	no_quark_displacement.$(OBJEXT) \
-	simple_quark_displacement.$(OBJEXT) pt_source_const.$(OBJEXT) \
-	pt_source_smearing.$(OBJEXT) sh_source_const.$(OBJEXT) \
-	sh_source_smearing.$(OBJEXT) dilutezN_source_const.$(OBJEXT) \
+	simple_quark_displacement.$(OBJEXT) mom_source_const.$(OBJEXT) \
+	pt_source_const.$(OBJEXT) pt_source_smearing.$(OBJEXT) \
+	sh_source_const.$(OBJEXT) sh_source_smearing.$(OBJEXT) \
+	dilutezN_source_const.$(OBJEXT) \
 	rndz2wall_source_const.$(OBJEXT) wall_source_const.$(OBJEXT) \
 	partwall_source_const.$(OBJEXT) \
 	source_const_aggregate.$(OBJEXT) \
@@ -1069,7 +1071,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/sources/srcsnktype.h meas/sources/source_construction.h \
 	meas/sources/srcfil.h meas/sources/wavetype.h \
 	meas/sources/z2_src.h meas/sources/dilute_gauss_src_s.h \
-	meas/sources/zN_src.h meas/sources/pt_source_const.h \
+	meas/sources/zN_src.h meas/sources/mom_source_const.h \
+	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
@@ -1768,7 +1771,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/sources/srcsnktype.h meas/sources/source_construction.h \
 	meas/sources/srcfil.h meas/sources/wavetype.h \
 	meas/sources/z2_src.h meas/sources/dilute_gauss_src_s.h \
-	meas/sources/zN_src.h meas/sources/pt_source_const.h \
+	meas/sources/zN_src.h meas/sources/mom_source_const.h \
+	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
@@ -2304,6 +2308,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/smear/quark_displacement_aggregate.cc \
 	meas/smear/no_quark_displacement.cc \
 	meas/smear/simple_quark_displacement.cc \
+	meas/sources/mom_source_const.cc \
 	meas/sources/pt_source_const.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
@@ -2980,6 +2985,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvsumr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mom_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monomial_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monomial_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mre_extrap_predictor.Po@am__quote@
@@ -5547,6 +5553,20 @@ simple_quark_displacement.obj: meas/smear/simple_quark_displacement.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/simple_quark_displacement.cc' object='simple_quark_displacement.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_quark_displacement.obj `if test -f 'meas/smear/simple_quark_displacement.cc'; then $(CYGPATH_W) 'meas/smear/simple_quark_displacement.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/simple_quark_displacement.cc'; fi`
+
+mom_source_const.o: meas/sources/mom_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mom_source_const.o -MD -MP -MF "$(DEPDIR)/mom_source_const.Tpo" -c -o mom_source_const.o `test -f 'meas/sources/mom_source_const.cc' || echo '$(srcdir)/'`meas/sources/mom_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mom_source_const.Tpo" "$(DEPDIR)/mom_source_const.Po"; else rm -f "$(DEPDIR)/mom_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/mom_source_const.cc' object='mom_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mom_source_const.o `test -f 'meas/sources/mom_source_const.cc' || echo '$(srcdir)/'`meas/sources/mom_source_const.cc
+
+mom_source_const.obj: meas/sources/mom_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mom_source_const.obj -MD -MP -MF "$(DEPDIR)/mom_source_const.Tpo" -c -o mom_source_const.obj `if test -f 'meas/sources/mom_source_const.cc'; then $(CYGPATH_W) 'meas/sources/mom_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/mom_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mom_source_const.Tpo" "$(DEPDIR)/mom_source_const.Po"; else rm -f "$(DEPDIR)/mom_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/mom_source_const.cc' object='mom_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mom_source_const.obj `if test -f 'meas/sources/mom_source_const.cc'; then $(CYGPATH_W) 'meas/sources/mom_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/mom_source_const.cc'; fi`
 
 pt_source_const.o: meas/sources/pt_source_const.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT pt_source_const.o -MD -MP -MF "$(DEPDIR)/pt_source_const.Tpo" -c -o pt_source_const.o `test -f 'meas/sources/pt_source_const.cc' || echo '$(srcdir)/'`meas/sources/pt_source_const.cc; \
