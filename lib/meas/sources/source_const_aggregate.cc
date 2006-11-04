@@ -1,4 +1,4 @@
-// $Id: source_const_aggregate.cc,v 3.2 2006-10-30 21:59:09 edwards Exp $
+// $Id: source_const_aggregate.cc,v 3.3 2006-11-04 05:04:17 edwards Exp $
 /*! \file
  *  \brief All make source constructors
  */
@@ -34,7 +34,7 @@ namespace Chroma
 	success &= ShellQuarkSourceConstEnv::registerAll();
 	success &= RandZ2WallQuarkSourceConstEnv::registerAll();
 	success &= WallQuarkSourceConstEnv::registerAll();
-//	success &= MomWallQuarkSourceConstEnv::registerAll();
+	success &= MomWallQuarkSourceConstEnv::registerAll();
 	success &= PartialWallQuarkSourceConstEnv::registerAll();
 	success &= DiluteZNQuarkSourceConstEnv::registerAll();
 
