@@ -1,4 +1,4 @@
-// $Id: mom_source_const.cc,v 3.1 2006-10-30 21:59:09 edwards Exp $
+// $Id: mom_source_const.cc,v 3.2 2006-11-04 05:12:54 edwards Exp $
 /*! \file
  *  \brief Momentum (wall) source construction
  */
@@ -59,8 +59,7 @@ namespace Chroma
     //! Initialize
     Params::Params()
     {
-      j_decay = -1;
-      t_source = -1;
+      t_dir = -1;
     }
 
 
@@ -113,18 +112,18 @@ namespace Chroma
       multi1d<int> mom3(Nd-1);
       for(int mu=0,j=0; mu < Nd; ++mu)
       {
-	if (mu != params.param.t_dir)
-	  mom3[j++] = params.param.mom[mu];
+	if (mu != params.t_dir)
+	  mom3[j++] = params.mom[mu];
       }
       int mom2_max = norm2(mom3);
-      SftMom phases(mom2_max, true, params.param.t_dir);
+      SftMom phases(mom2_max, true, params.t_dir);
       mom3 = phases.canonicalOrder(mom3);
 
       // Create the quark source
       LatticePropagator quark_source;
 
-      Real fact = twopi * Real(params.param.mom[t_dir]) / Real(Layout::lattSize()[t_dir]);
-      LatticeReal p_dot_t = cos(QDP::Layout::latticeCoordinate(params.param.t_dir) * fact);
+      Real fact = twopi * Real(params.mom[params.t_dir]) / Real(Layout::lattSize()[params.t_dir]);
+      LatticeReal p_dot_t = cos(QDP::Layout::latticeCoordinate(params.t_dir) * fact);
 
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
