@@ -1,4 +1,4 @@
-//  $Id: npr_vertex_w.cc,v 1.3 2006-11-03 20:18:55 hwlin Exp $
+//  $Id: npr_vertex_w.cc,v 1.4 2006-11-04 04:42:49 edwards Exp $
 /*! \file
  *  \brief NPR vertex calculations
  */
@@ -36,22 +36,14 @@ namespace Chroma
       // assumes any Gamma5 matrices have already been absorbed
       int G5 = Ns*Ns-1;
       
-      // This is a beastly hack to make the thing compile as QIO isn't wanting
-      // to write just one single Site's worth of DPropagator
-      // So I take a lattice propagetor and set every site's data equal to the 
-      // site that I am interested in. THis is just to make the code compile
-      // and should be fixed at a later time
+      // Compute the single site propagator and write it
       DPropagator prop;
       {
 	LatticePropagator tmp = (Gamma(G5) * adj(B) * Gamma(G5)) * Gamma(i) * F;
 	prop = sum(tmp);   // The site's worth of data of interest
       }
       
-      // !!!! FIXME
-      // Hack set every site's worth of data equal to 'prop' 
-      LatticePropagatorD dprop = zero;
-      dprop = prop;
-      write(qio_file, record_xml, dprop);
+      write(qio_file, record_xml, prop);
     }
 
     TotalTime.stop();
