@@ -6,6 +6,59 @@
 #include "meas/hadron/group_baryon_operator_w.h"
 using namespace Chroma;
 using namespace GroupBaryonOperatorEnv;
+
+  void write( XMLWriter& xml, const string& path, 
+	            const GroupBaryonOperatorEnv::BaryonOperator_t::BaryonOperatorInsertion_t::BaryonOperatorIndex_t::BaryonOperatorElement_t& input )
+  {
+    push( xml, path );
+    write( xml, "BaryonOpElement", input );
+    pop( xml );
+  }
+  void write( XMLWriter& xml, const string& path, 
+	            const GroupBaryonOperatorEnv::BaryonOperator_t::BaryonOperatorInsertion_t::BaryonOperatorIndex_t& input )
+  {
+    push( xml, path );
+    write( xml, "BaryonOpIndex", input );
+    pop( xml );
+  }
+  void write( XMLWriter& xml, const string& path, 
+	            const GroupBaryonOperatorEnv::BaryonOperator_t::BaryonOperatorInsertion_t& input )
+  {
+    push( xml, path );
+    write( xml, "BaryonOpIns", input );
+    pop( xml );
+  }
+	/*
+  void write( XMLWriter& xml, const string& path, 
+	            const GroupBaryonOperatorEnv::BaryonOperator_t& input )
+  {
+    push( xml, path );
+    write( xml, "BaryonOp2", input );
+    pop( xml );
+  }
+	*/
+  void write( XMLWriter& xml, const string& path, 
+	            const GroupBaryonOperatorEnv::Params::NamedObject_t& input )
+  {
+    push( xml, path );
+    write( xml, "gauge_id", input.gauge_id );
+    //write( xml, "BaryonOp", input.Bops );
+    pop( xml );
+  }
+  //! BaryonOperator header writer
+  void write( XMLWriter& xml, const string& path, const BaryonOperator_t& param )
+  {
+    if( path != "." ) push( xml, path );
+    int version = 1;
+    write( xml, "version", version );
+    write( xml, "mom2_max", param.mom2_max );
+    write( xml, "j_decay", param.j_decay );
+    write( xml, "seed_l", param.seed_l );
+    write( xml, "seed_m", param.seed_m );
+    write( xml, "seed_r", param.seed_r );
+    write( xml, "perms", param.quarkOrderings );
+    if( path != "." ) pop( xml );
+  }
 //
 //! Make a group theory based baryon operator with all-to-all quark 
 //! propagators using the dilution method of TrinLat (2004)
@@ -68,37 +121,35 @@ int main( int argc, char *argv[] )
 	// ===============
 	// Noise Solutions
 	// ===============
-	/*
-	  struct PropSourceConst_t              struct QuarkSourceSolutions_t {
-		{ PropSourceConst_t();            		  struct QuarkSolution_t {
-		  multi1d<int> getTSrce() const;  		    LatticeFermion source;
-		  GroupXML_t       source;        		    LatticeFermion soln;
-		  int              j_decay;       		    PropSourceConst_t source_header;
-		  int              t_source;      		    ChromaProp_t      prop_header;
-		};																		  };
-		struct ChromaProp_t {           			  int j_decay;
-		  ChromaProp_t();               			  Seed seed;
-		  QuarkSpinType   quarkSpinType;			  multi1d<QuarkSolution_t> dilutions;
-		  GroupXML_t      fermact;      			};
-		  bool            obsvP;        			
-		  GroupXML_t      invParam;     			
-		};
-	  quarks[n] is a QuarkSourceSolutions_t
-	  quarks[n].dilutions[i] is a QuarkSolution_t
-	  quarks[n].dilutions[i].soln is a LatticeFermion
-	  quarks[n].dilutions[i].source_header is a PropSourceConst_t
-	  quarks[n].dilutions[i].prop_header is a ChromaProp_t
-	*/
   multi1d<Params::QuarkSourceSolutions_t>  quarks( params.qprop.solns.size() );
   QDPIO::cout << "num_quarks= " << params.qprop.solns.size() << endl;
+  try
+  {
+    for(int n=0; n < quarks.size(); ++n)
+    {
+			quarks[n].dilutions.resize(params.qprop.solns[n].soln_file_names.size());
+			for(int i=0; i < quarks[n].dilutions.size(); ++i)
+			{
+				QDPIO::cout<<"file n="<<n<<" i="<<i<<" "<<params.qprop.solns[n].soln_file_names[i]<<endl;
+				XMLReader file_xml, record_xml;
+				QDPFileReader from(file_xml, params.qprop.solns[n].soln_file_names[i], QDPIO_SERIAL);
+			}
+		}
+	}
+  catch (const string& e) 
+  {
+    QDPIO::cerr << "Error reading files: " << e << endl;
+    QDP_abort(1);
+  }
+	
   try
   {
     //QDPIO::cout << "quarks.size= " << quarks.size() << endl;
     for(int n=0; n < quarks.size(); ++n)
     {
-			//QDPIO::cout << "Attempt to read solutions for source number=" << n << endl;
-			quarks[n].dilutions.resize(params.qprop.solns[n].soln_file_names.size());
-			//QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << endl;
+			QDPIO::cout << "Attempt to read solutions for source number=" << n << endl;
+			quarks[n].dilutions.resize( params.qprop.solns[n].soln_file_names.size() );
+			QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << endl;
 			for(int i=0; i < quarks[n].dilutions.size(); ++i)
 			{
 				XMLReader file_xml, record_xml;
@@ -111,17 +162,6 @@ int main( int argc, char *argv[] )
 				// read headers ... may not be necessary
 	  		read(record_xml, "/Propagator/PropSource",  quarks[n].dilutions[i].source_header);
 	  		read(record_xml, "/Propagator/ForwardProp", quarks[n].dilutions[i].prop_header);
-				/* some reminders
-				myPropSourceConst = quarks[n].dilutions[i].source_header;
-				            mystr = myPropSourceConst.source.xml;  // XML
-				            mystr = myPropSourceConst.source.id;   // RAND_DILUTE_ZN_SOURCE
-				            mystr = myPropSourceConst.source.path; // /Source
-				     myChromaProp = quarks[n].dilutions[i].prop_header;
-				       myGroupXML = myPropSourceConst.source;
-				QDPIO::cout<< "quark number " << n << " : dilution number " << i <<endl;
-				QDPIO::cout<< "j_decay="<<myPropSourceConst.j_decay << " t_source=" << myPropSourceConst.t_source <<endl;
-				QDPIO::cout<<"seed2:"<<quarks[n].seed<<endl<<endl;
-				*/
 			}
     }
   }
@@ -145,13 +185,13 @@ int main( int argc, char *argv[] )
 	    {
 	      std::istringstream xml_s( quarks[ n ].dilutions[ i ].source_header.source.xml );
 	      XMLReader sourcetop( xml_s );
-	      //	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
+	      //QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
 	      if ( quarks[ n ].dilutions[ i ].source_header.source.id != DiluteZNQuarkSourceConstEnv::name )
 	      {
 	        QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
 	        QDP_abort( 1 );
 	      }
-	      QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
+	      //QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
 	      DiluteZNQuarkSourceConstEnv::Params srcParams( sourcetop,
 	                                                     quarks[ n ].dilutions[ i ].source_header.source.path );
 	      DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion> srcConst( srcParams );
@@ -200,6 +240,17 @@ int main( int argc, char *argv[] )
 	  QDP_abort( 1 );
 	}
 	QDPIO::cout << "Source vectors reconstructed from Seeds" << endl;
+	// setting the seeds for output (baryon_operator file)
+	// should also put the mass of the quarks in here as well
+	for(int n=0; n < quarks.size(); ++n)
+	{
+		COp[ n ].baryonoperator.seed_l = quarks[0].seed;
+		COp[ n ].baryonoperator.seed_m = quarks[1].seed;
+		COp[ n ].baryonoperator.seed_r = quarks[2].seed;
+		AOp[ n ].baryonoperator.seed_l = quarks[0].seed;
+		AOp[ n ].baryonoperator.seed_m = quarks[1].seed;
+		AOp[ n ].baryonoperator.seed_r = quarks[2].seed;
+	}
 	
 	// ====================================
 	//       Main Part of Program
@@ -208,584 +259,239 @@ int main( int argc, char *argv[] )
 	// to make the various operators
 	// ====================================
 	//
-	// Create the group baryon operator object
-	//
-#if 0
-	  // Diagnostic
-	  {
-      for(int n=0; n < quarks.size(); ++n)
-      {
-				for(int i=0; i < quarks[n].dilutions.size(); ++i)
-				{
-	    		// Keep a copy of the phases with NO momenta
-	    		SftMom phases_nomom(0, true, 3);
-
-	    		multi1d<Double> source_corr = sumMulti(localNorm2(quarks[n].dilutions[i].source), 
-								   phases_nomom.getSet());
-
-	    		multi1d<Double> soln_corr = sumMulti(localNorm2(quarks[n].dilutions[i].soln), 
-								 phases_nomom.getSet());
-
-	    		push(xml_out, "elem");
-	    		write(xml_out, "n", n);
-	    		write(xml_out, "i", i);
-	    		write(xml_out, "source_corr", source_corr);
-	    		write(xml_out, "soln_corr", soln_corr);
-	    		pop(xml_out);
-				}
-			}
-	  }
-#endif
-/*	
-  std::istringstream  xml_op(params.param.baryon_operator);
-  XMLReader  optop(xml_op);
-  const string operator_path = "/BaryonOperator";
-  Handle< GroupBaryonQQQ >
-    baryonOperator(TheWilsonBaryonOperatorFactory::Instance().createObject
-		               (
-								    params.param.baryon_operator,
-								    optop,
-								    operator_path,
-								    params.gaugestuff.u 
-									 )
-									);
-*/
-	//
-	//enum PlusMinus {PLUS = 1, MINUS = -1};
-	//
-	// Sinks first (only one term)
-	int ordering = 0;
-	//enum PlusMinus Plus;
 	multi1d<LatticeComplex> result(1);
-	//SftMom phases_nomom(0, true, quarks[n].dilutions[i].source_header.j_decay);
-	// dont average over equivalent momenta
+	// don't average over equivalent momenta
   SftMom phases(params.mom2_max, false, params.j_decay);
-	for(int qqq=0; qqq < params.NQQQs; ++qqq)
-	{
-		for(int i=0; i < params.NH[ordering][0]; ++i)
-		for(int j=0; j < params.NH[ordering][1]; ++j)
-		for(int k=0; k < params.NH[ordering][2]; ++k)
-		{
-			result = AQQQ[ qqq ]( quarks[ 0 ].dilutions[ i ].soln,
-    	                      quarks[ 1 ].dilutions[ j ].soln,
-    	                      quarks[ 2 ].dilutions[ k ].soln,
-    	                      PLUS );
+	// average over equivalent momenta
+  //SftMom phases(params.mom2_max, true, params.j_decay);
+	multi2d<DComplex> elem( params.Nmomenta, params.nrow[3] );
+
+//#define PRINTDEBUG
+//#define TERMINCORR
+
 #if 1
-	  // Diagnostic
-	  {
-      for(int n=0; n < quarks.size()/quarks.size(); ++n)
-      {
-				for(int w=0; w < quarks[n].dilutions.size()/quarks[n].dilutions.size(); ++w)
+  QDPIO::cout << "making the annihilation operators" << endl;
+	try
+	{ //
+		// Annihilation Operator (plus) first (only one term)
+		//
+		int ordering = 0;
+		for(int qqq=0; qqq < params.NQQQs; ++qqq)
+		{
+			for(int i=0; i < params.NH[ordering][0]; ++i)
+			for(int j=0; j < params.NH[ordering][1]; ++j)
+			for(int k=0; k < params.NH[ordering][2]; ++k)
+			{ 
+				result = AQQQ[ qqq ]( quarks[ 0 ].dilutions[ i ].soln,
+	    	                      quarks[ 1 ].dilutions[ j ].soln,
+	    	                      quarks[ 2 ].dilutions[ k ].soln,
+	    	                      PLUS );
+		    for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
 				{
-	    		// Keep a copy of the phases with NO momenta
-	    		SftMom phases_nomom(0, true, params.j_decay);
-
-	    		multi1d<Double> source_corr = sumMulti( localNorm2(result[0]), 
-								                                  phases_nomom.getSet() );
-	    		multi1d<Double> q0_corr = sumMulti( localNorm2(quarks[ 0 ].dilutions[ i ].soln), 
-								                                  phases_nomom.getSet() );
-	    		multi1d<Double> q1_corr = sumMulti( localNorm2(quarks[ 1 ].dilutions[ j ].soln), 
-								                                  phases_nomom.getSet() );
-	    		multi1d<Double> q2_corr = sumMulti( localNorm2(quarks[ 2 ].dilutions[ k ].soln), 
-								                                  phases_nomom.getSet() );
-
-	    		push(xml_out, "Elem");
-	    		write(xml_out, "N", n);
-	    		write(xml_out, "I", w);
-	    		write(xml_out, "Source_corr", source_corr);
-	    		write(xml_out, "q0_corr", q0_corr);
-	    		write(xml_out, "q1_corr", q1_corr);
-	    		write(xml_out, "q2_corr", q2_corr);
-	    		pop(xml_out);
-				}
-			}
-	  }
-#endif
-QDPIO::cout<<"done with "<<i<<" "<<j<<" "<<k<<" results size is "<<result.size()<<endl;
-QDPIO::cout<<"NB="<<AQQQ[ qqq ].NBaryonOps<<endl;
-QDPIO::cout<<"Np="<<params.Nmomenta<<endl;
-	    for(int c=0; c < AQQQ[ qqq ].NBaryonOps; ++c)
-			{
-//				AQQQ[ qqq ].baryon[ c ]->termInCorr[ 0 ].hlist( i, j, k ).mom(0,0)
-//				= cmplx(onee,twoo);
-				AQQQ[ qqq ].baryon[ c ]->termInCorr[ 0 ].hlist( i, j, k ).mom
-				= phases.sft( result[ 0 ] );
-			}
-QDPIO::cout<<"done with p=0 computation"<<endl;
-	    for(int c=0; c < AQQQ[ qqq ].NBaryonOps; ++c)
-			{
-	    	for(int p=0; p < params.Nmomenta; ++p)
-				{
-	    		//for(int t=0; t < params.nrow[ 3 ]; ++t)
+					//AQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom
+					//= phases.sft( result[ 0 ] );
+					elem = phases.sft( result[ 0 ] );
+		    	for(int p=0; p < params.Nmomenta; ++p)
 					{
-//						AQQQ[ qqq ].baryon[ c ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, 0 ) 
-//						*= AQQQ[ qqq ].coef[ c ];
-					}
-				}
-QDPIO::cout<<"done with baryon=0 computation"<<endl;
+		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
+						{ //AQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, t )
+							AQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
+							+= elem( p, t );
+						} // end for t 
+					} // end for p
+				} // end for Bop_index b
+			} // end for i,j,k
+		} // end for qqq
+		for(int qqq=0; qqq < params.NQQQs; ++qqq)
+		{
+		  for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
+			{
+				for(int i=0; i < params.NH[ordering][0]; ++i)
+				for(int j=0; j < params.NH[ordering][1]; ++j)
+				for(int k=0; k < params.NH[ordering][2]; ++k)
+				{
+		    	for(int p=0; p < params.Nmomenta; ++p)
+					{
+		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
+						{ //AQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, t ) 
+							AQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
+							*= AQQQ[ qqq ].coef[ b ];
+						} // end for t 
+					} // end for p
+				} // end for i,j,k
+			} // end for Bop_index
+		} // end for qqq
+	} // end try
+	catch ( const std::string& e )
+	{
+	  QDPIO::cerr << ": Caught Exception creating sink baryon operator: " << e << endl;
+	  QDP_abort( 1 );
+	}
+	QDPIO::cout << "Sink operators done" << endl;
+
+#endif // end annihilation operators
+
+#if 1
+//for(int t=0; t < phases.getSet().numSubsets(); ++t)
+//	foo[phases.getSet()[t]] = <do whatever you want>;
+// need to get timeslice of eta which is non-zero
+// in the solution file as : <t_source>1</t_source>
+	try
+	{ //
+		// Creation Operator (MINUS) 
+		//
+		for(int ordering=0; ordering < params.NsrcOrderings; ++ordering)
+		{
+		  QDPIO::cout << "Creation Operator: ordering = " << ordering << endl;
+			int ii,jj,kk;
+			Real signs;
+			//
+			// t = quarks[n].dilutions[i].source_header.t_source = timeslice of source
+			//
+			int qi0 = DilSwap( ordering, 0,1,2, 0 );
+			int qi1 = DilSwap( ordering, 0,1,2, 1 );
+			int qi2 = DilSwap( ordering, 0,1,2, 2 );
+			
+			switch ( ordering )																			   
+			{ 																									   
+			  case 0: 			// [012]
+					signs =  2.0; break;
+				case 1: 			// [210]
+					signs = -2.0; break;
+				case 2: 			// [120]
+					signs = -1.0; break;
+				case 3: 			// [201]
+					signs = -1.0; break;
+				case 4: 			// [021]
+					signs =  1.0; break;
+				case 5: 			// [102]
+					signs =  1.0; break;
 			}
-QDPIO::cout<<AQQQ[ 0 ].baryon[ 0 ]->termInCorr[ 0 ].hlist( i,j,k ).mom( 0, 0 )<<endl;
+			for(int qqq=0; qqq < params.NQQQs; ++qqq)
+			{
+				for(int i=0; i < params.NH[ordering][0]; ++i)
+				for(int j=0; j < params.NH[ordering][1]; ++j)
+				for(int k=0; k < params.NH[ordering][2]; ++k)
+				{
+					ii = DilSwap( ordering, i, j, k, 0 );
+					jj = DilSwap( ordering, i, j, k, 1 );
+					kk = DilSwap( ordering, i, j, k, 2 );
+					if( ( quarks[qi0].dilutions[ii].source_header.t_source==ii ) &&
+					    ( quarks[qi1].dilutions[jj].source_header.t_source==jj ) &&
+					    ( quarks[qi2].dilutions[kk].source_header.t_source==kk ) )
+					result 
+					//result[0, phases.getSet()[ quarks[qi0].dilutions[ii].source_header.t_source] ] 
+					=  CQQQ[ qqq ]( quarks[ qi0 ].dilutions[ ii ].source,
+		    	                quarks[ qi1 ].dilutions[ jj ].source,
+		    	                quarks[ qi2 ].dilutions[ kk ].source,
+		    	                MINUS 
+												 );
+			    for(int b=0; b < CQQQ[ qqq ].NBaryonOps; ++b)
+					{
+						//CQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom
+						//= phases.sft( result[ 0 ] );
+						elem = phases.sft( result[ 0 ] );
+			    	for(int p=0; p < params.Nmomenta; ++p)
+						{
+			    		for(int t=0; t < params.nrow[ 3 ]; ++t)
+							{
+							#ifdef TERMINCORR
+								CQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, t )
+							#else
+								CQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
+							#endif
+								+= ( signs * elem( p, t ) );
+							} // end for t 
+						} // end for p
+					} // end for Bop_index
+				} // end for i,j,k
+			} // end for qqq
+
+			for(int qqq=0; qqq < params.NQQQs; ++qqq)
+			{
+			  for(int b=0; b < CQQQ[ qqq ].NBaryonOps; ++b)
+				{
+					for(int i=0; i < params.NH[ordering][0]; ++i)
+					for(int j=0; j < params.NH[ordering][1]; ++j)
+					for(int k=0; k < params.NH[ordering][2]; ++k)
+					{
+						ii = DilSwap( ordering, i, j, k, 0 );
+						jj = DilSwap( ordering, i, j, k, 1 );
+						kk = DilSwap( ordering, i, j, k, 2 );
+			    	for(int p=0; p < params.Nmomenta; ++p)
+						{
+			    		for(int t=0; t < params.nrow[ 3 ]; ++t)
+							{
+							#ifdef TERMINCORR
+								CQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, t ) 
+							#else
+								CQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
+							#endif
+								*= ( CQQQ[ qqq ].coef[ b ] );
+							} // end for t 
+						} // end for p
+					} // end for i,j,k
+				} // end for Bop_index
+			} // end for qqq
+		} // end for ordering
+	} // end try
+	catch ( const std::string& e )
+	{
+	  QDPIO::cerr << ": Caught Exception creating source baryon operator: " << e << endl;
+	  QDP_abort( 1 );
+	}
+	QDPIO::cout << "Source operators done" << endl;
+
+	#ifdef PRINTDEBUG
+	for(int b=0; b < params.Noperators; ++b)
+	{
+	  for(int t=0; t < params.nrow[ 3 ]; ++t)
+		{
+		#ifdef TERMINCORR
+			QDPIO::cout<<"op("<<b<<") t:"<<t<<" "<<COp[ b ].termInCorr[0].hlist(0,0,0).mom(0,t)<<endl;
+		#else
+			QDPIO::cout<<"op("<<b<<") t:"<<t<<" "<<COp[ b ].baryonoperator.orderings[ 0 ].op(0,0,0).ind[ 0 ].elem(0,t)<<endl;
+		#endif
 		}
 	}
-	
-/*	
-	std::istringstream xml_op( params.param.baryon_operator );
-	XMLReader optop( xml_op );
-	const string operator_path = "/GroupBaryonOperator";
-	
-	// baryon_operator_type NUCLEONS
-	Handle< BaryonOperator<LatticeFermion> >
-	baryonOperator( TheWilsonBaryonOperatorFactory::Instance().createObject( 
-	                params.param.baryon_operator,
-	                optop,
-	                operator_path,
-	                params.gaugestuff.u ) 
-								);
-	//
-	// Permutations of quarks within an operator
-	//    only doing one of them now ...
-	//    but this will change once we start to do decays 
-	int num_orderings = 1;   // number of permutations of the numbers  0,1,2
-	multi1d< multi1d<int> > perms( num_orderings );
-	{
-	  multi1d<int> p( 3 );
-	  if ( num_orderings >= 1 )
-	  {
-	    p[ 0 ] = 0;
-	    p[ 1 ] = 1;
-	    p[ 2 ] = 2;
-	    perms[ 0 ] = p;
-	  }
-	  if ( num_orderings >= 2 )
-	  {
-	    p[ 0 ] = 0;
-	    p[ 1 ] = 2;
-	    p[ 2 ] = 1;
-	    perms[ 1 ] = p;
-	  }
-	  if ( num_orderings >= 3 )
-	  {
-	    p[ 0 ] = 1;
-	    p[ 1 ] = 0;
-	    p[ 2 ] = 2;
-	    perms[ 2 ] = p;
-	  }
-	  if ( num_orderings >= 4 )
-	  {
-	    p[ 0 ] = 1;
-	    p[ 1 ] = 2;
-	    p[ 2 ] = 0;
-	    perms[ 3 ] = p;
-	  }
-	  if ( num_orderings >= 5 )
-	  {
-	    p[ 0 ] = 2;
-	    p[ 1 ] = 1;
-	    p[ 2 ] = 0;
-	    perms[ 4 ] = p;
-	  }
-	  if ( num_orderings >= 6 )
-	  {
-	    p[ 0 ] = 2;
-	    p[ 1 ] = 0;
-	    p[ 2 ] = 1;
-	    perms[ 5 ] = p;
-	  }
-	}
-	//
-	// Annihilation Operator A
-	//
-	/*
-  struct BaryonOperator_t                              
+	#endif
+
+#endif // end of creation operators
+
+	QDPIO::cout<<"end of group baryon operator calculation"<<endl;
+
+	// Now writing the operators out ... inline_stoch_baryon_w.cc
+
+  // Save the operators
+  // ONLY SciDAC output format is supported!
+  //swatch.start();
+	for(int b=0; b < params.Noperators; ++b)
   {
-    struct BaryonOperatorInsertion_t
+    XMLBufferWriter file_xml;
+    push( file_xml, params.Names[ b ] );
+    file_xml << params.param.baryon_operator;
+    write( file_xml, "Config_info", gauge_xml );
+    pop( file_xml );
+    QDPFileWriter to( file_xml, params.Names[ b ],
+                      QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN );
+    // Write the scalar data
     {
-      struct BaryonOperatorIndex_t
-      {
-        struct BaryonOperatorElement_t
-        {
-          multi2d<DComplex> elem;
-        };
-        multi1d<BaryonOperatorElement_t> ind;
-      };
-      multi3d<BaryonOperatorIndex_t> op;
-    };
-    multi1d<BaryonOperatorInsertion_t> orderings;
-    Seed seed_l, seed_m, seed_r;
-    multi1d< multi1d<int> > perms;
-    int mom2_max, j_decay;
-    multi1d<Complex> serialize();
-  }; 
-	
-	class GroupBaryonOp : public BaryonOperator<LatticeFermion>
-	{ public:
-    GroupBaryonOp( const Params& p, const multi1d<LatticeColorMatrix>& u );
-    std::string Name;  // Name of the Operator ... may also be the filename
-    //protected:
-    // .termInCorr[ whichterm ].hlist(i,j,k).mom[ p ]
-    struct termInCorr_t
-    {
-      struct hlist_t
-      {
-        multi1d<DComplex> mom;
-      };
-      multi3d<hlist_t> hlist;
-    };
-    multi1d<termInCorr_t> termInCorr; // termInCorr(1); used to be size 2
-    GroupBaryonOp(){}
-    Params params;
-    multi1d<LatticeColorMatrix> u_smr;
-    SpinMatrix spin_rotate_mat;
-		multi1d<Complex> serialize();
-	}; // end class GroupBaryonOp
-	*/
-/*
-//	swatch.start();
-	BaryonOperator_t baryon_opA;
-	baryon_opA.mom2_max = params.mom2_max;
-	baryon_opA.j_decay = params.j_decay;
-	baryon_opA.seed_l = quarks[ 0 ].seed;
-	baryon_opA.seed_m = quarks[ 1 ].seed;
-	baryon_opA.seed_r = quarks[ 2 ].seed;
-	baryon_opA.orderings.resize( num_orderings );
-	baryon_opA.perms.resize( num_orderings );
-
-	push( xml_out, "OperatorA" );
-
-	// Sanity check
-	if ( toBool( baryon_opA.seed_l == baryon_opA.seed_m ) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort( 1 );
-	}
-	// Sanity check
-	if ( toBool( baryon_opA.seed_l == baryon_opA.seed_r ) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort( 1 );
-	}
-	// Sanity check
-	if ( toBool( baryon_opA.seed_m == baryon_opA.seed_r ) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort( 1 );
-	}
-	// Construct annihilation operator A
-	try
-	{
-	  for ( int ord = 0; ord < baryon_opA.orderings.size(); ++ord )
-	  {
-	    QDPIO::cout << "Operator A: ordering = " << ord << endl;
-
-	    baryon_opA.perms[ ord ] = perms[ ord ];
-
-	    // Operator construction
-	    const QuarkSourceSolutions_t& q0 = quarks[ perms[ ord ][ 0 ] ];
-	    const QuarkSourceSolutions_t& q1 = quarks[ perms[ ord ][ 1 ] ];
-	    const QuarkSourceSolutions_t& q2 = quarks[ perms[ ord ][ 2 ] ];
-
-	    baryon_opA.orderings[ ord ].op.resize( q0.dilutions.size(),
-	                                           q1.dilutions.size(),
-	                                           q2.dilutions.size() );
-
-	    for ( int i = 0; i < q0.dilutions.size(); ++i )
-	    {
-	      for ( int j = 0; j < q1.dilutions.size(); ++j )
-	      {
-	        for ( int k = 0; k < q2.dilutions.size(); ++k )
-	        {
-	          multi1d<LatticeComplex> bar = ( *baryonOperator ) ( q0.dilutions[ i ].source,
-	                                                              q1.dilutions[ j ].source,
-	                                                              q2.dilutions[ k ].source,
-	                                                              MINUS );
-
-	          baryon_opA.orderings[ ord ].op( i, j, k ).ind.resize( bar.size() );
-	          for ( int l = 0; l < bar.size(); ++l )
-	            baryon_opA.orderings[ ord ].op( i, j, k ).ind[ l ].elem = phases.sft( bar[ l ] );
-
-	        } // end for k
-	      } // end for j
-	    } // end for i
-	  } // end for ord
-	} // end try
-	catch ( const std::string& e )
-	{
-	  QDPIO::cerr << ": Caught Exception creating group baryon sink operator: " << e << endl;
-	  QDP_abort( 1 );
-	}
-	catch ( ... )
-	{
-	  QDPIO::cerr << ": Caught generic exception creating group baryon sink operator" << endl;
-	  QDP_abort( 1 );
-	}
-	pop( xml_out ); // OperatorA
-//	swatch.stop();
-//	QDPIO::cout << "Operator A computed: time= " << swatch.getTimeInSeconds() << " secs" << endl;
-
-
-	//
-	// Creation Operator B    ... probably should have called it C
-	//
-//	swatch.start();
-	BaryonOperator_t baryon_opB;
-	baryon_opB.mom2_max = params.mom2_max;
-	baryon_opB.j_decay = j_decay;
-	baryon_opB.seed_l = quarks[ 0 ].seed;
-	baryon_opB.seed_m = quarks[ 1 ].seed;
-	baryon_opB.seed_r = quarks[ 2 ].seed;
-	baryon_opB.orderings.resize( num_orderings );
-	baryon_opB.perms.resize( num_orderings );
-
-	push( xml_out, "OperatorB" );
-
-	// Sanity check
-	if ( toBool( baryon_opB.seed_l == baryon_opB.seed_m ) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort( 1 );
-	}
-	// Sanity check
-	if ( toBool( baryon_opB.seed_l == baryon_opB.seed_r ) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort( 1 );
-	}
-	// Sanity check
-	if ( toBool( baryon_opB.seed_m == baryon_opB.seed_r ) )
-	{
-	  QDPIO::cerr << "baryon op seeds are the same" << endl;
-	  QDP_abort( 1 );
-	}
-	//
-	// Construct creation operator B
-	//
-	try
-	{
-	  for ( int ord = 0; ord < baryon_opB.orderings.size(); ++ord )
-	  {
-	    QDPIO::cout << "Operator B: ordering = " << ord << endl;
-
-	    baryon_opB.perms[ ord ] = perms[ ord ];
-
-	    // Operator construction
-	    const QuarkSourceSolutions_t& q0 = quarks[ perms[ ord ][ 0 ] ];
-	    const QuarkSourceSolutions_t& q1 = quarks[ perms[ ord ][ 1 ] ];
-	    const QuarkSourceSolutions_t& q2 = quarks[ perms[ ord ][ 2 ] ];
-
-	    baryon_opB.orderings[ ord ].op.resize( q0.dilutions.size(),
-	                                           q1.dilutions.size(),
-	                                           q2.dilutions.size() );
-
-	    for ( int i = 0; i < q0.dilutions.size(); ++i )
-	    {
-	      for ( int j = 0; j < q1.dilutions.size(); ++j )
-	      {
-	        for ( int k = 0; k < q2.dilutions.size(); ++k )
-	        {
-	          multi1d<LatticeComplex> bar = ( *baryonOperator ) ( q0.dilutions[ i ].soln,
-	                                                              q1.dilutions[ j ].soln,
-	                                                              q2.dilutions[ k ].soln,
-	                                                              PLUS );
-	          baryon_opB.orderings[ ord ].op( i, j, k ).ind.resize( bar.size() );
-	          for ( int l = 0; l < bar.size(); ++l )
-	            baryon_opB.orderings[ ord ].op( i, j, k ).ind[ l ].elem = phases.sft( bar[ l ] );
-	        } // end for k
-	      } // end for j
-	    } // end for i
-	  } // end for ord
-	} // end try
-	catch ( const std::string& e )
-	{
-	  QDPIO::cerr << ": Caught Exception creating group baryon source operator: " << e << endl;
-	  QDP_abort( 1 );
-	}
-	catch ( ... )
-	{
-	  QDPIO::cerr << ": Caught generic exception creating group baryon source operator" << endl;
-	  QDP_abort( 1 );
-	}
-
-	pop( xml_out ); // OperatorB
-
-//	swatch.stop();
-
-//	QDPIO::cout << "Operator B computed: time= " << swatch.getTimeInSeconds() << " secs" << endl;
-*/
-
-	// Save the operators
-	// ONLY SciDAC output format is supported!
-//	swatch.start();
-/*
-	{
-	  XMLBufferWriter file_xml;
-	  push( file_xml, "baryon_operator" );
-	  file_xml << params.param.baryon_operator;
-	  write( file_xml, "Config_info", gauge_xml );
-	  pop( file_xml );
-
-	  QDPFileWriter to( file_xml, params.named_obj.prop.op_file,      // are there one or two files???
-	                    QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN );
-
-	  // Write the scalar data
-	  {
-	    XMLBufferWriter record_xml;
-	    write( record_xml, "SourceBaryonOperator", baryon_opA );
-	    write( to, record_xml, baryon_opA.serialize() );
-	  }
-
-	  // Write the scalar data
-	  {
-	    XMLBufferWriter record_xml;
-	    write( record_xml, "SinkBaryonOperator", baryon_opB );
-	    write( to, record_xml, baryon_opB.serialize() );
-	  }
-
-	  close( to );
-	}
-*/
-
-//	swatch.stop();
-
-//	QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
-
-#if 0
-  /*
-   * Read in a Chroma prop
-   */
-  LatticePropagator prop;
-  XMLReader prop_in_xml;
-	XMLReader prop_in_file_xml;
-
-  read( prop_in_xml, "/Propagator/ForwardProp", prop_header );
-	
-  push( xml_out, "SciDAC_propagator" );
-  write( xml_out, "prop_in_file", input.prop.prop_in_file );
-
-  readQprop( prop_in_file_xml, 
-	           prop_in_xml, 
-						 prop,
-             input.prop.prop_in_file, 
-						 QDPIO_SERIAL 
-						);
-  write( xml_out, "File_xml", prop_in_file_xml );
-  write( xml_out, "Record_xml", prop_in_xml );
-  pop( xml_out );
-  // Try to invert this record XML into a source struct
-  // Also pull out the id of this source
-  ChromaProp_t prop_header;
-  PropSourceConst_t source_header;
-  try
-  {
-    read( prop_in_xml, "/Propagator/ForwardProp", prop_header );
-    read( prop_in_xml, "/Propagator/PropSource", source_header );
-  }
-  catch ( const string & e )
-  {
-    QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
-    throw;
-  }
-  // Derived from input prop
-  int j_decay = source_header.j_decay;
-  int t_source = source_header.t_source;
-  // Initialize the slow Fourier transform phases
-  // This is used to get the time-slice subsets in the j_decay dir
-  SftMom phases( 0, true, j_decay );
-
-  // Length of lattice in j_decay direction and 3pt correlations fcns
-  int length = phases.numSubsets();
-
-  // Sanity check - write out the propagator (pion) correlator in the j_decay direction
-  {
-    multi1d<Double> prop_corr = sumMulti( localNorm2( prop ),
-                                          phases.getSet() );
-    push( xml_out, "Prop_correlator" );
-    write( xml_out, "prop_corr", prop_corr );
-    pop( xml_out );
-  }
-  xml_out.flush();
-  /*
-   * Charge-conjugation and time-reverse the beasty
-   */
-  {
-    /* Time-charge reverse the quark propagators */
-    /* S_{CT} = gamma_5 gamma_4 = gamma_1 gamma_2 gamma_3 = Gamma(7) */
-    LatticePropagator prop_tmp = - ( Gamma( 7 ) * prop * Gamma( 7 ) );
-    // This is a really dumb way to implement this. Shift each slice around.
-    // Do nothing on the t=0 slice
-    prop[ phases.getSet() [ 0 ] ] = prop_tmp;
-
-    LatticePropagator tmp1, tmp2, tmp3;
-
-    for(int t=1; t < length; ++t)
-    {
-      int tp = ( length - t ) % length;
-      if ( t < tp )
-      {
-        tmp1[ phases.getSet() [ tp ] ] = prop_tmp;
-        for(int k=tp - 1; k >= t; --k )
-        {
-          tmp2[ phases.getSet() [ k ] ] = shift( tmp1, FORWARD, j_decay );
-          tmp1[ phases.getSet() [ k ] ] = tmp2;
-        }
-        prop[ phases.getSet() [ t ] ] = tmp1;
-      }
-      else if ( t == tp )
-      {
-        prop[ phases.getSet() [ t ] ] = prop_tmp;
-      }
-      else if ( t > tp )
-      {
-        tmp1[ phases.getSet() [ tp ] ] = prop_tmp;
-        for(int k=tp + 1; k <= t; ++k)
-        {
-          tmp2[ phases.getSet() [ k ] ] = shift( tmp1, BACKWARD, j_decay );
-          tmp1[ phases.getSet() [ k ] ] = tmp2;
-        }
-        prop[ phases.getSet() [ t ] ] = tmp1;
-      }
+      XMLBufferWriter record_xml;
+      write( record_xml, "SourceBaryonOperator", COp[ b ].baryonoperator );
+      write( to, record_xml, COp[ b ].baryonoperator.serialize() );
     }
-  }
-  // Sanity check - write out the propagator (pion) correlator in the j_decay direction
-  {
-    multi1d<Double> trev_prop_corr = sumMulti( localNorm2( prop ),
-                                     phases.getSet() );
-    push( xml_out, "TRevProp_correlator" );
-    write( xml_out, "trev_prop_corr", trev_prop_corr );
-    pop( xml_out );
-  }
-  /*
-   * Now write them thangs...
-   */
-  {
-    XMLBufferWriter prop_out_file_xml;
-    push( prop_out_file_xml, "propagator" );
-    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-    write( prop_out_file_xml, "id", id );
-    pop( prop_out_file_xml );
-
-    source_header.t_source = ( length - source_header.t_source ) % length;
-
-    XMLBufferWriter prop_out_record_xml;
-    push( prop_out_record_xml, "Propagator" );
-    write( prop_out_record_xml, "ForwardProp", prop_header );
-    write( prop_out_record_xml, "PropSource", source_header );
+    // Write the scalar data
     {
-      QDPIO::cout << "Create config info" << endl;
-      XMLReader gauge_xml( prop_in_xml, "/Propagator/Config_info" );
-      ostringstream gauge_str;
-      gauge_xml.print( gauge_str );
-      write( prop_out_record_xml, "Config_info", gauge_str );
-      QDPIO::cout << "Done config info" << endl;
+      XMLBufferWriter record_xml;
+      write( record_xml, "SinkBaryonOperator", AOp[ b ].baryonoperator );
+      write( to, record_xml, AOp[ b ].baryonoperator.serialize() );
     }
-    pop( prop_out_record_xml );
-
-    // Write the source
-    writeQprop( prop_out_file_xml, prop_out_record_xml, prop,
-                input.prop.prop_out_file, input.prop.prop_out_volfmt,
-                QDPIO_SERIAL );
+    close( to );
   }
-#endif
+  //swatch.stop();
+  //QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 
+  // Close the namelist output file XMLDAT
   pop( xml_out );   // GroupBaryonAll2All
   END_CODE();
   // Time to bolt
