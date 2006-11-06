@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.11 2006-10-27 03:02:04 juge Exp $
+// $Id: group_baryon_operator_w.h,v 1.12 2006-11-06 17:14:59 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -15,6 +15,14 @@
 #include "io/cfgtype_io.h"
 #include "meas/hadron/baryon_operator_aggregate_w.h"
 #include "meas/hadron/baryon_operator_factory_w.h"
+#include "meas/sources/source_smearing_aggregate.h"
+#include "meas/sources/source_smearing_factory.h"
+#include "meas/sinks/sink_smearing_aggregate.h"
+#include "meas/sinks/sink_smearing_factory.h"
+#include "meas/smear/quark_source_sink.h"
+#include "meas/sources/dilutezN_source_const.h"
+#include "meas/sources/zN_src.h"
+#include "meas/sources/srcsnktype.h"
 
 namespace Chroma
 {
@@ -25,6 +33,39 @@ namespace Chroma
     bool registerAll();
     //! Group baryon operator parameters
     /*! @ingroup hadron */
+	
+	  struct BaryonOperator_t
+	  {
+	    //! Serialize generalized operator object
+	    multi1d<Complex> serialize();
+	    //! Baryon operator
+	    struct BaryonOperatorInsertion_t
+	    {
+	      //! Possible operator index
+	      struct BaryonOperatorIndex_t
+	      {
+	        //! Baryon operator element
+	        struct BaryonOperatorElement_t
+	        {
+	          multi2d<DComplex> elem; 
+	        };
+	        multi1d<BaryonOperatorElement_t> ind;
+	      };
+	      multi3d<BaryonOperatorIndex_t> op; 
+	    };
+    	Seed seed_l;            /*!< Id of left quark */
+    	Seed seed_m;            /*!< Id of middle quark */
+    	Seed seed_r;            /*!< Id of right quark */
+
+      multi1d< multi1d<int> > quarkOrderings; // [ index ][ LMR ]=0,1,2
+    	int mom2_max;
+    	int j_decay;
+			int version;
+	    multi1d<BaryonOperatorInsertion_t> orderings; 
+	  };
+		
+		int DilSwap( int ord, int i, int j, int k, int which );
+
     struct Params
     {
       Params();
@@ -34,11 +75,15 @@ namespace Chroma
       GroupXML_t source_quark_smearing;  /*!< xml string holding smearing params */
       GroupXML_t sink_quark_smearing;    /*!< xml string holding smearing params */
       GroupXML_t link_smearing;          /*!< link smearing xml */
+    
+			PropSourceSmear_t source_smearing;
+    	PropSinkSmear_t sink_smearing;
 
       struct param_t
 			{
 				std::string baryon_operator; // NUCLEON, DELTA
-			} param;
+			} 
+			param;
 			
 			std::string name; // ?
 			
@@ -50,24 +95,25 @@ namespace Chroma
       int Nmomenta;
       int Noperators; // total number of baryon operators to be constructed
       int NQQQs;      // total number of QQQ's
-      int NsrcOrderings, NsnkOrderings; // both just 1 now
-      // older version was 4 and 3 in the case of Nucleon corr-fn
-			
+      int NsrcOrderings, NsnkOrderings; 
+      multi1d< multi1d<int> > SrcOrderings; // [ index ][ LMR ]=0,1,2
+      multi1d< multi1d<int> > SnkOrderings; // [ index ][ LMR ]=0,1,2
+						
       // the hybrid-list (dilution) sizes
-      multi1d< multi1d<int> > NH; // NH[ ord ][ 0,1,2 ] : again, now ord takes on 0 only
+      multi1d< multi1d<int> > NH; // NH[ ord ][ 0,1,2 ] 
     				
-			struct Qprop_t
+			struct Qprop_t // Prop_t
 			{
-			  struct Solutions_t
+			  struct Solutions_t // Operator_t
 			  {
-					multi1d<std::string> soln_file_names;
+					multi1d<std::string> soln_file_names; // soln_files
 					Seed seed;
 			  };
-			  multi1d<Solutions_t> solns; // quark index (0,1,2)
-			} qprop;
+			  multi1d<Solutions_t> solns; // quark index (0,1,2)  op
+      	std::string op_file;
+			} 
+			qprop; // prop
 			
-    	PropSourceSmear_t  source_smearing;
-    	PropSinkSmear_t    sink_smearing;
   		//! Structure holding a source and its solutions
   		struct QuarkSourceSolutions_t
   		{
@@ -87,8 +133,9 @@ namespace Chroma
 			struct gaugestuff_t
 			{
 				Cfg_t cfg;
-				multi1d<LatticeColorMatrix> u;//(Nd);
-			} gaugestuff;
+				multi1d<LatticeColorMatrix> u;
+			} 
+			gaugestuff;
 			
 			struct dilution_t
 			{
@@ -103,24 +150,18 @@ namespace Chroma
 			};
 			
 			multi1d<dilution_t> dilution;
-    	/*
+			
 			struct NamedObject_t
     	{
-    	  //Prop_t prop;
+    	  QuarkSourceSolutions_t vecs;
+				Qprop_t qprop;
+				BaryonOperator_t Bops;
     	  std::string gauge_id;
-    	} named_obj;
-			*/			
-      //void initialize();			
+    	} 
+			named_obj;
+						
       // -----------------------------------------------------------------------------
-      //
-      // Extra stuff that are not really needed at the moment,
-      // but may prove useful when extending the program
-      //
-      // Fix orderings to : [012]=0, [201]=1, [210]=2, [102]=3
-      //
-      // all the different orderings of 012 used   put into a 1D array
-      multi1d< multi1d<int> > SrcOrderings; // [ index ][ LMR ]=0,1,2
-      multi1d< multi1d<int> > SnkOrderings; // [ index ][ LMR ]=0,1,2
+			// not used
       // For annihilation operators, there are two terms
       // each of which has two different quark orderings
       multi1d< multi1d< int > > Aorderings; // [whichterm][0,1]=index (annihilation)
@@ -129,24 +170,43 @@ namespace Chroma
       // each of which has two different quark orderings
       multi1d< multi1d< int > > Corderings; // creation
       multi1d< multi1d< Real > > Csign;
-      //
-      // -----------------------------------------------------------------------------
-      // obsolete
       std::string operator_coeff_file;      /*!< File holding group coefficients */
       int displacement_length;
     }; // end struct Params
 		
 		
-    //    NucleonG1gOp[ t ][ OperatorType ]
-    //       .Name  "G1g_L3_DDL_6"
-    //       .coeff[ h ]  h=<mu,nu,tau,d1,d2,d3,dL>
+	  //! Structure holding a source and its solutions
+	  struct QuarkSourceSolutions_t
+	  {
+	    //! Structure holding solutions
+	    struct QuarkSolution_t
+	    {
+	      LatticeFermion source;
+	      LatticeFermion soln;
+	      PropSourceConst_t source_header;
+	      ChromaProp_t prop_header;
+	    };
+
+	    int j_decay;
+	    Seed seed;
+	    multi1d<QuarkSolution_t> dilutions;
+	  };
+
+
+
+
+		
+		
+	  //    NucleonG1gOp[ t ][ OperatorType ]
+	  //       .Name  "G1g_L3_DDL_6"
+	  //       .coeff[ h ]  h=<mu,nu,tau,d1,d2,d3,dL>
     class GroupBaryonOp : public BaryonOperator<LatticeFermion>
     {
       public:
         //! Full constructor
         GroupBaryonOp( const GroupBaryonOperatorEnv::Params& p, const multi1d<LatticeColorMatrix>& u );
         std::string Name;  // Name of the Operator ... may also be the filename
-				std::string name;  // ?
+				std::string name;
         //! Compute the operator    now obsolete
         multi1d<LatticeComplex> operator() ( const LatticeFermion& quark1,
                                              const LatticeFermion& quark2,
@@ -175,6 +235,16 @@ namespace Chroma
           multi3d<hlist_t> hlist; /*!< hybrid list indices : hlist(i,j,k) */
         };
         multi1d<termInCorr_t> termInCorr; // termInCorr(1); used to be size 2
+				//
+				// analogous terms in BaryonOperator_t
+				//
+				// groupbaryonoperator[ OPINDEX ].termInCorr[0].hlist(i,j,k).mom(p,t)
+				//
+				// baryonoperator.op(i,j,k).ind[ OPINDEX ].elem(p,t)
+				//
+	  		//! Baryon operator
+	  		BaryonOperator_t baryonoperator;
+
         //private: dangerous to take out?
         //! Hide partial constructor
         GroupBaryonOp()
@@ -227,6 +297,7 @@ namespace Chroma
     class GroupBaryonQQQ : public BaryonOperator<LatticeFermion>
     {
       public:
+    		void init( const Params& p, const multi1d<LatticeColorMatrix>& u_ );
         //! Full constructor
         GroupBaryonQQQ( const Params& p, const multi1d<LatticeColorMatrix>& u_ );
         //! Compute the operator
@@ -275,8 +346,17 @@ namespace Chroma
         SpinMatrix spin_rotate_mat;
 
         //protected:
-        Handle< QuarkSmearing<LatticeFermion> > sourceQuarkSmearing;
-        Handle< QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
+        //Handle< QuarkSmearing<LatticeFermion> > sourceQuarkSmearing;
+        //Handle< QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
+				// from inline_stoch_meson
+      	Handle< QuarkSourceSink<LatticeFermion> > sourceSmearing;
+				//(TheFermSourceSmearingFactory::Instance().createObject(
+			  //params.source_smearing.source.id, sourcetop,
+			  //params.source_smearing.source.path, u) );
+      	Handle< QuarkSourceSink<LatticeFermion> > sinkSmearing;
+				//(TheFermSinkSmearingFactory::Instance().createObject(
+		    //params.sink_smearing.sink.id, sinktop,
+		    //params.sink_smearing.sink.path, u) );
 
         //! Construct array of maps of displacements
         void displaceQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
@@ -310,7 +390,7 @@ namespace Chroma
 
 				// not really needed?
 				int QQQIndex; // index of this array ... now obsolete				
-				std::string name; // ?				
+				std::string name;			
         int Nmomenta; // get from Env params instead
 
     }; // end class GroupBaryonQQQ
@@ -345,449 +425,499 @@ namespace Chroma
 // Perl script to generate the input file
 //
 /*
-	#! /usr/bin/perl
+#! /usr/bin/perl
 
-	#------------------------------------------------------------------------
-	#Coefficient File: ${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}/...
-	$ProjCoeffDir = "$ENV{HOME}/src2/work2/projection_coefficients/Nucleons";
-	#------------------------------------------------------------------------
-	# Input file for operator indices (note that the range op - doesn't work)
-	$OperatorIndicesFile = "test.in";
-	#
-	# Example: (from_point2all.in)
-	#
-	#    <G1>
-	# 	 SS  0  1  2
-	# 	 SD  0 11 17 20 22
-	# 	 DDI 0  4  5  9 12
-	# 	 DDL 1  4 10 15 21
-	# 	 TDT 3  5  9 11 25
-	# 	 <G2>
-	# 	 SS   
-	# 	 SD   0  1  2  6  7
-	# 	 DDI  1  4  5  6  7
-	# 	 DDL 32 37 41 52 61
-	# 	 TDT  1 33 45 51 61
-	# 	 <H>
-	# 	 SS   0
-	# 	 SD   7  9 10  13  31
-	# 	 DDI  8 15 17  23  31
-	# 	 DDL 47 54 84 113 124
-	# 	 TDT 35 71 86  95 104
-	#
-	#------------------------------------------------------------------------
-	# Lattice Size
-	@Nsize = ( 4, 4, 4, 8 );
-	# Temporary Entry : Hybrid list size
-	@Ndil = ( 8, 8, 8 );
-	$NumSrcPerm = 1; # for compatiblity ... now only using ordering <0,1,2>
-	$NumSnkPerm = 1; # for compatiblity ... now only using ordering <0,1,2>
-	#------------------------------------------------------------------------
-	# The list of operators sorted according to name
-	$SortedListFileName = "SortedChannelList.txt";
-	       $ListOfNames = "NamesOfOperators.txt";
-	# The output file of this script
-	    $OutputFileName = "Chroma_Input.txt"; 
-	#------------------------------------------------------------------------
-	@DispLengths = ( 1 );
-	   @Channels = ( 'G1g', 'G1u', 'G2g', 'G2u', 'Hg', 'Hu' );
-	#------------------------------------------------------------------------
-	# Nucleon correlation function is re-written as,
-	#
-	#    (N+)         (I)   ijk               _ijk     _ijk      _ijk               
-	#   C        =   c     B      (t) {     2 B  ___ + B  ___  + B  ___             
-	#    IJ[012]      mnt   I<mnt>             J<mnt>   J<mtn>    J<nmt>            
-	#                                         _ijk     _ijk      _ijk               
-	#                                   - ( 2 B  ___ + B  ___  + B  ___  )          
-	#                                          J<tnm>   J<tmn>    J<ntm>            
-	#                                       _(J) 														           
-	#                                 }(t0) c___														           
-	#                                        mnt 														           
-	#   (all 012 noise ordering)
-	#------------------------------------------------------------------------
-	# 					Nothing from here needs to be touched
-	#------------------------------------------------------------------------
-	#------------------------------------------------------------------------
-	@ListOfIrreps  = ( 'G1', 'G2', 'H' ); # in the input file
-	@OperatorTypes = ( 'SS', 'SD', 'DDI', 'DDL', 'TDT' );
-	$LongForm{'SS'}  = "Single_Site";
-	$LongForm{'SD'}  = "Singly_Displaced";
-	$LongForm{'DDI'} = "Doubly_Displaced_I";
-	$LongForm{'DDL'} = "Doubly_Displaced_L";
-	$LongForm{'TDT'} = "Triply_Displaced_T";
-	$QNS{'G1g'} = 'G1'; $QNS{'G1u'} = 'G1';
-	$QNS{'G2g'} = 'G2'; $QNS{'G2u'} = 'G2';
-	 $QNS{'Hg'} = 'H';   $QNS{'Hu'} = 'H';
-	#
-	#------------------------------------------------------------------------
-	#
-	# First get all of the operator indices
-	#
-	if ( 1 ) {
-	  $Noperators = 0;
-	  foreach $irrep ( @ListOfIrreps ) {
-	    $name = $irrep.'ops'; # ex. G1ops
-	    &GetOperatorList( $OperatorIndicesFile, ListOfIrreps, $irrep, $name );
-	    foreach $type ( @OperatorTypes ) {
-	      $name2 = $name.'List_'.$type; # ex. G1opsList_SS
-	      @$name2 = &GetNums( $$name{"$type"} ); # ex. $G1ops{"SS"}
-	      foreach $channel ( @Channels ) {
-					if ( ($QNS{$channel} eq $irrep) && (@$name2 ne {}) ) {
-						if ( $type eq 'SS' ) {
-							$Noperators += (scalar(@$name2));
-						} else {
-							$Noperators += (scalar(@$name2)) * (scalar(@DispLengths));
-		} } } } }
-	}
-	#
-	# Generate the hash table
-	#
-	if ( 1 ) {
-	  open(HASH,">Hashes");
-	  foreach my $QN ( @Channels ) 
+#------------------------------------------------------------------------
+# The output file of this script ... the name is kind of important 
+# because the xml input file is not ready to go yet and hence the name 
+# will be used to identify the record of the inputs
+$OutputFileName = "Chroma_Input.txt"; 
+#------------------------------------------------------------------------
+# Some other files that will be generated ...
+$SortedListFileName = "SortedChannelList.txt";
+       $ListOfNames = "NamesOfOperators.txt";
+#------------------------------------------------------------------------
+#Coefficient File: ${ProjCoeffDir}/ G1g /Doubly_Displaced_L/...
+#Coefficient File: ${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}/...
+$ProjCoeffDir = "$ENV{HOME}/src2/work2/projection_coefficients/Nucleons";
+#------------------------------------------------------------------------
+# Input file for operator indices (note that the range op - doesn't work)
+# an example is given below ...
+$OperatorIndicesFile = "test.in";
+#------------------------------------------------------------------------
+# Lattice Size
+@Nsize = ( 4, 4, 4, 6 );
+# Hybrid list size
+@Ndil = ( 6, 6, 6 );
+# Different displacement lengths
+@DispLengths = ( 1 );
+# all the channels
+@Channels = ( 'G1g', 'G1u', 'G2g', 'G2u', 'Hg', 'Hu' );
+#------------------------------------------------------------------------
+# Solution file names
+$qpropStub = "zN_prop_q";
+#
+@qpropFileNames = ( 
+"zN_prop_q1_t0",
+"zN_prop_q1_t1",
+"zN_prop_q1_t2",
+"zN_prop_q1_t3",
+"zN_prop_q1_t4",
+"zN_prop_q1_t5",
+"zN_prop_q2_t0",
+"zN_prop_q2_t1",
+"zN_prop_q2_t2",
+"zN_prop_q2_t3",
+"zN_prop_q2_t4",
+"zN_prop_q2_t5",
+"zN_prop_q3_t0",
+"zN_prop_q3_t1",
+"zN_prop_q3_t2",
+"zN_prop_q3_t3",
+"zN_prop_q3_t4",
+"zN_prop_q3_t5"
+);
+#------------------------------------------------------------------------
+# Nucleon correlation function is re-written as,
+#
+#    (N+)         (I)   ijk               _ijk     _ijk      _ijk               
+#   C        =   c     B      (t) {     2 B  ___ + B  ___  + B  ___             
+#    IJ[012]      mnt   I<mnt>             J<mnt>   J<mtn>    J<nmt>            
+#                                         _ijk     _ijk      _ijk               
+#                                   - ( 2 B  ___ + B  ___  + B  ___  )          
+#                                          J<tnm>   J<tmn>    J<ntm>            
+#                                       _(J) 														           
+#                                 }(t0) c___														           
+#                                        mnt 														           
+#------------------------------------------------------------------------
+# Input File Example: (from_point2all.in)
+#
+#    <G1>
+# 	 SS  0  1  2
+# 	 SD  0 11 17 20 22
+# 	 DDI 0  4  5  9 12
+# 	 DDL 1  4 10 15 21
+# 	 TDT 3  5  9 11 25
+# 	 <G2>
+# 	 SS   
+# 	 SD   0  1  2  6  7
+# 	 DDI  1  4  5  6  7
+# 	 DDL 32 37 41 52 61
+# 	 TDT  1 33 45 51 61
+# 	 <H>
+# 	 SS   0
+# 	 SD   7  9 10  13  31
+# 	 DDI  8 15 17  23  31
+# 	 DDL 47 54 84 113 124
+# 	 TDT 35 71 86  95 104
+#
+#------------------------------------------------------------------------
+# 					Nothing from here needs to be touched
+#------------------------------------------------------------------------
+#
+# Permutations of noise indices
+#
+$NumSrcPerm = 6; # number of perm of 0,1,2 for SOURCE
+	@srcOrder0 = ( 0, 1, 2 ); $SrcPerm{0} = "srcOrder0";
+	@srcOrder1 = ( 2, 1, 0 ); $SrcPerm{1} = "srcOrder1";
+	@srcOrder2 = ( 0, 2, 1 ); $SrcPerm{2} = "srcOrder2"; 
+	@srcOrder3 = ( 1, 0, 2 ); $SrcPerm{3} = "srcOrder3";
+	@srcOrder4 = ( 1, 2, 0 ); $SrcPerm{4} = "srcOrder4";
+	@srcOrder5 = ( 2, 0, 1 ); $SrcPerm{5} = "srcOrder5";
+$NumSnkPerm = 1; # number of perm of 0,1,2 for SINK
+	@snkOrder0 = ( 0, 1, 2 ); $SnkPerm{0} = "snkOrder0";
+#------------------------------------------------------------------------
+@ListOfIrreps  = ( 'G1', 'G2', 'H' ); # in the input file
+@OperatorTypes = ( 'SS', 'SD', 'DDI', 'DDL', 'TDT' );
+$LongForm{'SS'}  = "Single_Site";
+$LongForm{'SD'}  = "Singly_Displaced";
+$LongForm{'DDI'} = "Doubly_Displaced_I";
+$LongForm{'DDL'} = "Doubly_Displaced_L";
+$LongForm{'TDT'} = "Triply_Displaced_T";
+$QNS{'G1g'} = 'G1'; $QNS{'G1u'} = 'G1';
+$QNS{'G2g'} = 'G2'; $QNS{'G2u'} = 'G2';
+ $QNS{'Hg'} = 'H';   $QNS{'Hu'} = 'H';
+#
+#------------------------------------------------------------------------
+#
+# First get all of the operator indices
+#
+if ( 1 ) {
+  $Noperators = 0;
+  foreach $irrep ( @ListOfIrreps ) {
+    $name = $irrep.'ops'; # ex. G1ops
+    &GetOperatorList( $OperatorIndicesFile, ListOfIrreps, $irrep, $name );
+    foreach $type ( @OperatorTypes ) {
+      $name2 = $name.'List_'.$type; # ex. G1opsList_SS
+      @$name2 = &GetNums( $$name{"$type"} ); # ex. $G1ops{"SS"}
+      foreach $channel ( @Channels ) {
+				if ( ($QNS{$channel} eq $irrep) && (@$name2 ne {}) ) {
+					if ( $type eq 'SS' ) {
+						$Noperators += (scalar(@$name2));
+					} else {
+						$Noperators += (scalar(@$name2)) * (scalar(@DispLengths));
+	} } } } }
+}
+#
+# Generate the hash table
+#
+if ( 1 ) {
+  open(HASH,">Hashes");
+  foreach my $QN ( @Channels ) 
+	{
+  	$QNS = $QNS{"$QN"};
+	  foreach my $OperatorType ( @OperatorTypes ) 
 		{
-	  	$QNS = $QNS{"$QN"};
-		  foreach my $OperatorType ( @OperatorTypes ) 
+      $InputFileName = "${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}";
+      $ListName = "${QNS}opsList_${OperatorType}";
+      foreach my $OperatorIndx ( @${ListName} ) 
 			{
-	      $InputFileName = "${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}";
-	      $ListName = "${QNS}opsList_${OperatorType}";
-	      foreach my $OperatorIndx ( @${ListName} ) 
+	      $Nterms = 0;
+        ( $Nterms, %list ) = &ReadProjCoeffFile( $InputFileName, $OperatorIndx );
+	      foreach my $DispLength ( @DispLengths ) 
 				{
-		      $Nterms = 0;
-	        ( $Nterms, %list ) = &ReadProjCoeffFile( $InputFileName, $OperatorIndx );
-		      foreach my $DispLength ( @DispLengths ) 
+	        #
+	        # SS L1
+	        #
+	        if ( (${OperatorType}eq'SS')and(${DispLength}==${DispLengths[0]}) ) 
 					{
-		        #
-		        # SS L1
-		        #
-		        if ( (${OperatorType}eq'SS')and(${DispLength}==${DispLengths[0]}) ) 
-						{
-		            for (my $i=0; $i<$Nterms; ++$i) 
-								{
-	                @IJK = &GetNums( $list{$i} );
-		              $line = '';
-	                # DO NOT use the coefficients here
-	                for (my $j=0; $j<($#IJK-1); ++$j) { $line = $line . "$IJK[$j] "; }
-		              $line = $line . "0";
-		              #$line = $line . ${DispLength};
-		              $hash = &HashCode($line);
-		              printf(HASH "${hash}\n");
-		            }
-		        }
-		        #
-		        # SD L1 L2 : DDI L1 L2 : DDL L1 L2 : TDT L1 L2
-		        #
-		        if ( ${OperatorType} ne 'SS' ) 
-						{
-		            for (my $i=0; $i<$Nterms; ++$i) 
-								{
-	                @IJK = &GetNums( $list{$i} );
-		              $line = '';
-	                # DO NOT use the coefficients here
-	                for (my $j=0; $j<($#IJK-1); ++$j) { $line = $line . "$IJK[$j] "; }
-		              $line = $line . ${DispLength};
-		              $hash = &HashCode($line);
-		              printf(HASH "${hash}\n");
-		            }
-		        }
-		        #
-		        # SS L2 L3 etc is ignored ...
-		        #
-		      } # end foreach $DispLength ( @DispLengths )
-		    } # end foreach $OperatorIndx ( @${ListName} )
-		  } # end foreach $OperatorType ( @OperatorTypes )
-		} # end foreach $QN ( @Channels )
-	  close(HASH);
-
-		system( "sort Hashes | uniq > Hashes2" );
-	  open(FILE,"<Hashes2");
-		@UniqHashes = ();
-		while (<FILE>) { chop($_); push( @UniqHashes, $_ ); }
-	  close(FILE);
-		system("rm Hashes Hashes2");
-	}
-	#
-	# Main Loop over Irreps
-	#
-	foreach $QN ( @Channels ) 
-	{ 
-		&MakeOpTable($QN); 
-	}
-	#
-	# Sorted List (according to channel name)
-	#   "Name re im # s1 s2 s3 d1 d2 d3 dL"
-	#
-	if ( 1 ) {
-		open(FILE,">$SortedListFileName");
-	  open(FILENAMES,">$ListOfNames");
-	  foreach my $QN ( @Channels ) 
-		{
-	    $QNS = $QNS{"$QN"};
-	    foreach my $OperatorType ( @OperatorTypes ) 
-			{
-	      $ListName = "${QNS}opsList_${OperatorType}";
-	      $InputFileName = "${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}";
-	      foreach my $OperatorIndx ( @${ListName} ) 
-				{
-	        ( $Nterms, %list ) = &ReadProjCoeffFile( $InputFileName, $OperatorIndx );
-	        for (my $i=0; $i<$Nterms; ++$i) 
-					{ 
-	          @IJK = &GetNums( $list{$i} );
-	          foreach my $DispLength ( @DispLengths ) 
-						{
-	            $line = '';
-	            for (my $j=0; $j<($#IJK-1); ++$j) { $line=$line."$IJK[$j] "; }
-	            if(($OperatorType eq 'SS')&&(${DispLength}==${DispLengths[0]})) 
-							{ 
-								$line=$line." 0"; 
-	            } else { 
-								$line=$line." ${DispLength}"; 
-							}
-	            $hash = &HashCode($line);
-	            for (my $r=0; $r <= $#{$IrrepsInHash{$hash}}; $r=$r+3) 
+	            for (my $i=0; $i<$Nterms; ++$i) 
 							{
-                $newline = "${$IrrepsInHash{$hash}}[$r] ${$IrrepsInHash{$hash}}[$r+1] ${$IrrepsInHash{$hh}}[$r+2] ${line}";
-								printf(FILE "$newline\n");
-								printf(FILENAMES "${$IrrepsInHash{$hash}}[$r]\n");
-	  } } } } } }
-	  close(FILE);
-	  close(FILENAME);
-	  system("sort ${SortedListFileName} | uniq > mytemp");
-	  system("mv mytemp ${SortedListFileName}");
-	  system("sort ${ListOfNames} | uniq > myDistinctOperators");
-		open(FILE,"<myDistinctOperators");
-		open(OUTFILE,">DistinctOperators");
-	  $GlobalNumbering = 0;
-		while (<FILE>) {
-			chop($_);
-			printf(OUTFILE "%-3i %s\n",$GlobalNumbering,$_);
-			$OperatorNames{"$_"} = $GlobalNumbering;
-			$GlobalNumbering++;
-		}
-		close(FILE);
-		close(OUTFILE);
-		system("wc -l DistinctOperators > mytemp2");
-		system("cat mytemp2 DistinctOperators > ${ListOfNames}");
-		system("rm -f mytemp2 myDistinctOperators DistinctOperators");
-	}
-	#
-	# Output Results to File
-	#   "# s1 s2 s3 d1 d2 d3 dL NtermsNeedingThisComb"
-	#   "index" corresponding to "Name" (check NamesOfOperators.txt)
-	#   "re im "
-	#
-	if ( 1 ) {
-	  open(FILE,">${OutputFileName}");
-		printf(FILE "${Nsize[0]} ${Nsize[1]} ${Nsize[2]} ${Nsize[3]}\n");
-		printf(FILE "${Ndil[0]} ${Ndil[1]} ${Ndil[2]}\n");
-		# added so that XML and TXT input files are more similar
-			printf(FILE "$NumSrcPerm\n");
-			printf(FILE "0 1 2\n");
-			printf(FILE "$NumSnkPerm\n");
-			printf(FILE "0 1 2\n");
-		printf(FILE "${Noperators}\n");
-		# moved here so that XML and TXT input files are more similar
-	  	open(INFILE,"<${ListOfNames}");
-			$line = <INFILE>;
-			while ( <INFILE> ) 
-			{
-				printf(FILE "$_");
-			}
-			close(INFILE);
-		#
-		$NElemOps = scalar(@UniqHashes);
-		printf(FILE "${NElemOps}\n");
-		foreach $hash ( @UniqHashes ) 
-		{
-			$line = $InvHashCode{$hash}; # all 7 indices
-			@indices = &GetNums( $line );
-			printf(FILE "${hash} ");
-			PrintList2FILE( FILE, @indices );
-			my $N = ( scalar(@{$IrrepsInHash{$hash}}) ) / 3;
-			printf(FILE "${N}\n"); # number of ops which need this qqq
-			for (my $r=0; $r <= $#{$IrrepsInHash{$hash}}; $r=$r+3) 
-			{
-			 #printf(FILE                "${$IrrepsInHash{$hash}}[$r]\n");
-				printf(FILE "$OperatorNames{${$IrrepsInHash{$hash}}[$r]}\n");
-				printf(FILE "${$IrrepsInHash{$hash}}[$r+1]");
-				printf(FILE " ${$IrrepsInHash{$hash}}[$r+2]\n");
-			}
-		}
-		close(FILE);
-	}
-
-	#===================================================================================
-
-	# name s1 s2 s3 d1 d2 d3  h
-	#   0   1  2  3  4  5  6  7  (use with "sort list_by_hash_value keys %hasharray")
-	sub list_by_hash_value { ($shash{$a}[7]) <=> ($shash{$b}[7]); };
-	sub PrintList{ foreach $i (@_) { printf("%2s ",$i); } print "\n";};
-	sub PrintList2FILEN
-	{ local *HANDLE = shift;
-		foreach$i(@_){printf(HANDLE "%2s ",$i);}printf(HANDLE "\n");
-	}
-	sub PrintList2FILE 
-	{ local *HANDLE = shift;
-		foreach$i(@_){printf(HANDLE "%2s ",$i);}
-	}
-	sub HashCode
-	{ my ( $line ) = @_;
-	  @in = &GetNums(@_); # s1 s2 s3 d1 d2 d3 dL
-		$hash_code = ( ( $in[0] - 1 ) << 17 ) # spins from 1
-	             + ( ( $in[1] - 1 ) << 15 )
-	             + ( ( $in[2] - 1 ) << 13 )
-	             + ( ( $in[3] + 3 ) << 10 ) # displ dirs from -3
-	             + ( ( $in[4] + 3 ) << 7 )
-	             + ( ( $in[5] + 3 ) << 4 )
-	             + (   $in[6] );            # disp length index from 1
-		$InvHashCode{$hash_code} = "$in[0] $in[1] $in[2] $in[3] $in[4] $in[5] $in[6]";
-		$GetHashCode{$line} = $hash_code;
-		return($hash_code);
-	}
-	sub MakeOpTable
-	{ # Coefficient File: ${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}
-		my($irrep,$type,$name,$name2,$IndexName,$ListName,$InputFileName);
-		my($Nterms,$line,$hash);
-		$QN = $_[0];
-		$QNS = $QNS{"$QN"};
-		print "$QNS $QN\n";
-	  foreach my $DispLength ( @DispLengths ) {
-	    foreach my $OperatorType ( @OperatorTypes ) {
-	      $InputFileName = "${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}";
-	      $ListName = "${QNS}opsList_${OperatorType}";
-				if ( ${OperatorType} eq 'SS' ) {
-					if ( ${DispLength} == ${DispLengths[0]} ) {
-				    foreach my $OperatorIndx ( @${ListName} ) {
-	            $Nterms = 0;
-				      ( $Nterms, %list ) = &ReadProjCoeffFile($InputFileName, $OperatorIndx);
-	            $IndexName = "${OperatorType}_${OperatorIndx}";
-	            for (my $i=0; $i<$Nterms; ++$i) { 
-	              @IJK = &GetNums( $list{$i} );
+                @IJK = &GetNums( $list{$i} );
 	              $line = '';
-	              for (my $j=0; $j<($#IJK-1); ++$j) { 
-	                $line = $line . "$IJK[$j] ";
-	              }
-				        $line = $line . "0";
-				        #$line = $line . ${DispLength};
-	              $hash = &HashCode( $line );
-								push( @{$IrrepsInHash{$hash}}, "${QN}_L0_${IndexName}" );
-								#push( @{$IrrepsInHash{$hash}}, "${QN}_L${DispLength}_${IndexName}" );
-								push( @{$IrrepsInHash{$hash}}, $IJK[($#IJK-1)] );
-								push( @{$IrrepsInHash{$hash}}, $IJK[($#IJK)] );
-	            } # end of going thru terms
-				    } # end foreach OperatorIndx
-					} # end if (${DispLength} == ${DispLengths[0]})
-				} # end if SS 
-				if ( ${OperatorType} ne 'SS' ) {
-				  foreach my $OperatorIndx ( @${ListName} ) {
-	          $Nterms = 0;
-				    ( $Nterms, %list ) = &ReadProjCoeffFile($InputFileName, $OperatorIndx);
-	          $IndexName = "${OperatorType}_${OperatorIndx}";
-	          for (my $i=0; $i<$Nterms; ++$i) { 
-	            @IJK = &GetNums( $list{$i} );
-	            $line = '';
-	            for (my $j=0; $j<($#IJK-1); ++$j) { 
-	              $line = $line . "$IJK[$j] ";
+                # DO NOT use the coefficients here
+                for (my $j=0; $j<($#IJK-1); ++$j) { $line = $line . "$IJK[$j] "; }
+	              $line = $line . "0";
+	              #$line = $line . ${DispLength};
+	              $hash = &HashCode($line);
+	              printf(HASH "${hash}\n");
 	            }
-	            $line = $line . "$DispLength";
-	            $hash = &HashCode( $line );
-							push( @{$IrrepsInHash{$hash}}, "${QN}_L${DispLength}_${IndexName}" );
+	        }
+	        #
+	        # SD L1 L2 : DDI L1 L2 : DDL L1 L2 : TDT L1 L2
+	        #
+	        if ( ${OperatorType} ne 'SS' ) 
+					{
+	            for (my $i=0; $i<$Nterms; ++$i) 
+							{
+                @IJK = &GetNums( $list{$i} );
+	              $line = '';
+                # DO NOT use the coefficients here
+                for (my $j=0; $j<($#IJK-1); ++$j) { $line = $line . "$IJK[$j] "; }
+	              $line = $line . ${DispLength};
+	              $hash = &HashCode($line);
+	              printf(HASH "${hash}\n");
+	            }
+	        }
+	        #
+	        # SS L2 L3 etc is ignored ...
+	        #
+	      } # end foreach $DispLength ( @DispLengths )
+	    } # end foreach $OperatorIndx ( @${ListName} )
+	  } # end foreach $OperatorType ( @OperatorTypes )
+	} # end foreach $QN ( @Channels )
+  close(HASH);
+
+	system( "sort Hashes | uniq > Hashes2" );
+  open(FILE,"<Hashes2");
+	@UniqHashes = ();
+	while (<FILE>) { chop($_); push( @UniqHashes, $_ ); }
+  close(FILE);
+	system("rm Hashes Hashes2");
+}
+#
+# Main Loop over Irreps
+#
+foreach $QN ( @Channels ) 
+{ 
+	&MakeOpTable($QN); 
+}
+#
+# Sorted List (according to channel name)
+#   "Name re im # s1 s2 s3 d1 d2 d3 dL"
+#
+if ( 1 ) {
+	open(FILE,">$SortedListFileName");
+  open(FILENAMES,">$ListOfNames");
+  foreach my $QN ( @Channels ) 
+	{
+    $QNS = $QNS{"$QN"};
+    foreach my $OperatorType ( @OperatorTypes ) 
+		{
+      $ListName = "${QNS}opsList_${OperatorType}";
+      $InputFileName = "${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}";
+      foreach my $OperatorIndx ( @${ListName} ) 
+			{
+        ( $Nterms, %list ) = &ReadProjCoeffFile( $InputFileName, $OperatorIndx );
+        for (my $i=0; $i<$Nterms; ++$i) 
+				{ 
+          @IJK = &GetNums( $list{$i} );
+          foreach my $DispLength ( @DispLengths ) 
+					{
+            $line = '';
+            for (my $j=0; $j<($#IJK-1); ++$j) { $line=$line."$IJK[$j] "; }
+            if(($OperatorType eq 'SS')&&(${DispLength}==${DispLengths[0]})) 
+						{ 
+							$line=$line." 0"; 
+            } else { 
+							$line=$line." ${DispLength}"; 
+						}
+            $hash = &HashCode($line);
+            for (my $r=0; $r <= $#{$IrrepsInHash{$hash}}; $r=$r+3) 
+						{
+              $newline = "${$IrrepsInHash{$hash}}[$r] ${$IrrepsInHash{$hash}}[$r+1] ${$IrrepsInHash{$hash}}[$r+2] ${line}";
+							printf(FILE "$newline\n");
+							printf(FILENAMES "${$IrrepsInHash{$hash}}[$r]\n");
+  } } } } } }
+  close(FILE);
+  close(FILENAME);
+  system("sort ${SortedListFileName} | uniq > mytemp");
+  system("mv mytemp ${SortedListFileName}");
+  system("sort ${ListOfNames} | uniq > myDistinctOperators");
+	open(FILE,"<myDistinctOperators");
+	open(OUTFILE,">DistinctOperators");
+  $GlobalNumbering = 0;
+	while (<FILE>) {
+		chop($_);
+		printf(OUTFILE "%-3i %s\n",$GlobalNumbering,$_);
+		$OperatorNames{"$_"} = $GlobalNumbering;
+		$GlobalNumbering++;
+	}
+	close(FILE);
+	close(OUTFILE);
+	system("wc -l DistinctOperators > mytemp2");
+	system("cat mytemp2 DistinctOperators > ${ListOfNames}");
+	system("rm -f mytemp2 myDistinctOperators DistinctOperators");
+}
+#
+# Output Results to File
+#   "# s1 s2 s3 d1 d2 d3 dL NtermsNeedingThisComb"
+#   "index" corresponding to "Name" (check NamesOfOperators.txt)
+#   "re im "
+#
+if ( 1 ) {
+  open(FILE,">${OutputFileName}");
+	printf(FILE "${Nsize[0]} ${Nsize[1]} ${Nsize[2]} ${Nsize[3]}\n");
+	printf(FILE "$NumSrcPerm\n");
+	for (my $i=0; $i < $NumSrcPerm; ++$i)
+	{
+		printf(FILE "${$SrcPerm{$i}}[0] ${$SrcPerm{$i}}[1] ${$SrcPerm{$i}}[2]\n");
+	}
+	# added so that XML and TXT input files are more similar
+	printf(FILE "$NumSnkPerm\n");
+	for (my $i=0; $i < $NumSnkPerm; ++$i)
+	{
+		printf(FILE "${$SnkPerm{$i}}[0] ${$SnkPerm{$i}}[1] ${$SnkPerm{$i}}[2]\n");
+	}
+	printf(FILE "${Ndil[0]} ${Ndil[1]} ${Ndil[2]}\n");
+	printf(FILE "${Noperators}\n");
+	# moved here so that XML and TXT input files are more similar
+  	open(INFILE,"<${ListOfNames}");
+		$line = <INFILE>;
+		while ( <INFILE> ) 
+		{
+			printf(FILE "$_");
+		}
+		close(INFILE);
+	#
+	$NElemOps = scalar(@UniqHashes);
+	printf(FILE "${NElemOps}\n");
+	foreach $hash ( @UniqHashes ) 
+	{
+		$line = $InvHashCode{$hash}; # all 7 indices
+		@indices = &GetNums( $line );
+		printf(FILE "${hash} ");
+		PrintList2FILE( FILE, @indices );
+		my $N = ( scalar(@{$IrrepsInHash{$hash}}) ) / 3;
+		printf(FILE "${N}\n"); # number of ops which need this qqq
+		for (my $r=0; $r <= $#{$IrrepsInHash{$hash}}; $r=$r+3) 
+		{
+		 #printf(FILE                "${$IrrepsInHash{$hash}}[$r]\n");
+			printf(FILE "$OperatorNames{${$IrrepsInHash{$hash}}[$r]}\n");
+			printf(FILE "${$IrrepsInHash{$hash}}[$r+1]");
+			printf(FILE " ${$IrrepsInHash{$hash}}[$r+2]\n");
+		}
+	}
+	for (my $i=0; $i <= $#{qpropFileNames}; ++$i) 
+	{
+		printf(FILE "$qpropFileNames[$i]\n");
+	}
+	close(FILE);
+}
+
+#===================================================================================
+
+# name s1 s2 s3 d1 d2 d3  h
+#   0   1  2  3  4  5  6  7  (use with "sort list_by_hash_value keys %hasharray")
+sub list_by_hash_value { ($shash{$a}[7]) <=> ($shash{$b}[7]); };
+sub PrintList{ foreach $i (@_) { printf("%2s ",$i); } print "\n";};
+sub PrintList2FILEN
+{ local *HANDLE = shift;
+	foreach$i(@_){printf(HANDLE "%2s ",$i);}printf(HANDLE "\n");
+}
+sub PrintList2FILE 
+{ local *HANDLE = shift;
+	foreach$i(@_){printf(HANDLE "%2s ",$i);}
+}
+sub HashCode
+{ my ( $line ) = @_;
+  @in = &GetNums(@_); # s1 s2 s3 d1 d2 d3 dL
+	$hash_code = ( ( $in[0] - 1 ) << 17 ) # spins from 1
+             + ( ( $in[1] - 1 ) << 15 )
+             + ( ( $in[2] - 1 ) << 13 )
+             + ( ( $in[3] + 3 ) << 10 ) # displ dirs from -3
+             + ( ( $in[4] + 3 ) << 7 )
+             + ( ( $in[5] + 3 ) << 4 )
+             + (   $in[6] );            # disp length index from 1
+	$InvHashCode{$hash_code} = "$in[0] $in[1] $in[2] $in[3] $in[4] $in[5] $in[6]";
+	$GetHashCode{$line} = $hash_code;
+	return($hash_code);
+}
+sub MakeOpTable
+{ # Coefficient File: ${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}
+	my($irrep,$type,$name,$name2,$IndexName,$ListName,$InputFileName);
+	my($Nterms,$line,$hash);
+	$QN = $_[0];
+	$QNS = $QNS{"$QN"};
+	print "$QNS $QN\n";
+  foreach my $DispLength ( @DispLengths ) {
+    foreach my $OperatorType ( @OperatorTypes ) {
+      $InputFileName = "${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}";
+      $ListName = "${QNS}opsList_${OperatorType}";
+			if ( ${OperatorType} eq 'SS' ) {
+				if ( ${DispLength} == ${DispLengths[0]} ) {
+			    foreach my $OperatorIndx ( @${ListName} ) {
+            $Nterms = 0;
+			      ( $Nterms, %list ) = &ReadProjCoeffFile($InputFileName, $OperatorIndx);
+            $IndexName = "${OperatorType}_${OperatorIndx}";
+            for (my $i=0; $i<$Nterms; ++$i) { 
+              @IJK = &GetNums( $list{$i} );
+              $line = '';
+              for (my $j=0; $j<($#IJK-1); ++$j) { 
+                $line = $line . "$IJK[$j] ";
+              }
+			        $line = $line . "0";
+			        #$line = $line . ${DispLength};
+              $hash = &HashCode( $line );
+							push( @{$IrrepsInHash{$hash}}, "${QN}_L0_${IndexName}" );
+							#push( @{$IrrepsInHash{$hash}}, "${QN}_L${DispLength}_${IndexName}" );
 							push( @{$IrrepsInHash{$hash}}, $IJK[($#IJK-1)] );
 							push( @{$IrrepsInHash{$hash}}, $IJK[($#IJK)] );
-	          } # end of $i<Nterms loop
-				  } # end of : foreach OperatorIndx
-				} # end of : ne SS
-	    } # end OperatorType loop
-	  } # end DispLength loop
-	};
-	sub ReadProjCoeffFile 
-	{ my ( $FileName, $TargetIndx ) = @_;
-		my($NumOps,$OpIndx,$Nterms_,$NTerms,$line,$k,$len);
-	  open( PROJCOEF, "< $FileName" );
-	  $NumOps = <PROJCOEF>; chop($NumOps); $NumOps*=1;
-	  $OpIndx = -1; $Nterms_ = 0; $NTerms = 0; %mylist = ();
-	  while( <PROJCOEF> )
-	  { chomp;
-	    $len = split;
-	    if( $len == 1 ) {
-	      ( $Nterms_ ) = split; $OpIndx++;
-	    } else {
-	      if( $OpIndx == $TargetIndx ) {
-	        $line = $_;
-	        my @entry = &GetNums($line);
-  				$mylist{"0"}="$entry[0] $entry[1] $entry[2] $entry[3] $entry[4] $entry[5] $entry[6] $entry[7]";
-	        for($k=1; $k < $Nterms_; ++$k) {
-	          $line = <PROJCOEF>; chomp;
-	          @entry = &GetNums($line);
-  					$mylist{"$k"}="$entry[0] $entry[1] $entry[2] $entry[3] $entry[4] $entry[5] $entry[6] $entry[7]";
-	        }
-					$NTerms = $Nterms_;
-				}
+            } # end of going thru terms
+			    } # end foreach OperatorIndx
+				} # end if (${DispLength} == ${DispLengths[0]})
+			} # end if SS 
+			if ( ${OperatorType} ne 'SS' ) {
+			  foreach my $OperatorIndx ( @${ListName} ) {
+          $Nterms = 0;
+			    ( $Nterms, %list ) = &ReadProjCoeffFile($InputFileName, $OperatorIndx);
+          $IndexName = "${OperatorType}_${OperatorIndx}";
+          for (my $i=0; $i<$Nterms; ++$i) { 
+            @IJK = &GetNums( $list{$i} );
+            $line = '';
+            for (my $j=0; $j<($#IJK-1); ++$j) { 
+              $line = $line . "$IJK[$j] ";
+            }
+            $line = $line . "$DispLength";
+            $hash = &HashCode( $line );
+						push( @{$IrrepsInHash{$hash}}, "${QN}_L${DispLength}_${IndexName}" );
+						push( @{$IrrepsInHash{$hash}}, $IJK[($#IJK-1)] );
+						push( @{$IrrepsInHash{$hash}}, $IJK[($#IJK)] );
+          } # end of $i<Nterms loop
+			  } # end of : foreach OperatorIndx
+			} # end of : ne SS
+    } # end OperatorType loop
+  } # end DispLength loop
+};
+sub ReadProjCoeffFile 
+{ my ( $FileName, $TargetIndx ) = @_;
+	my($NumOps,$OpIndx,$Nterms_,$NTerms,$line,$k,$len);
+  open( PROJCOEF, "< $FileName" );
+  $NumOps = <PROJCOEF>; chop($NumOps); $NumOps*=1;
+  $OpIndx = -1; $Nterms_ = 0; $NTerms = 0; %mylist = ();
+  while( <PROJCOEF> )
+  { chomp;
+    $len = split;
+    if( $len == 1 ) {
+      ( $Nterms_ ) = split; $OpIndx++;
+    } else {
+      if( $OpIndx == $TargetIndx ) {
+        $line = $_;
+        my @entry = &GetNums($line);
+				$mylist{"0"}="$entry[0] $entry[1] $entry[2] $entry[3] $entry[4] $entry[5] $entry[6] $entry[7]";
+        for($k=1; $k < $Nterms_; ++$k) {
+          $line = <PROJCOEF>; chomp;
+          @entry = &GetNums($line);
+					$mylist{"$k"}="$entry[0] $entry[1] $entry[2] $entry[3] $entry[4] $entry[5] $entry[6] $entry[7]";
+        }
+				$NTerms = $Nterms_;
 			}
-	  } close( PROJCOEF );
-		return( $NTerms, %mylist );
-	};
-	sub GetOperatorList
-	{ my ( $filename, $list, $channel, $outputref ) = @_;
-		my ( $irrep, $line, $oplist );
-		open(FILE,"<$filename");
-		foreach $irrep ( @{$list} ) {
-	  	$line = <FILE>; # irrep
-	    $line = <FILE>; chop($line);
-			if ( ($irrep eq "$channel") and ( $line ) ) {
-				${$outputref}{'SS'} = $line; }
-	    $line = <FILE>; 
-			if ( ($irrep eq "$channel") and ( $line ) ) {
-				${$outputref}{'SD'} = $line; }
-	    $line = <FILE>; 
-			if ( ($irrep eq "$channel") and ( $line ) ) {
-	    	${$outputref}{'DDI'} = $line; }
-	    $line = <FILE>; 
-			if ( ($irrep eq "$channel") and ( $line ) ) {
-	    	${$outputref}{'DDL'} = $line; }
-	    $line = <FILE>; 
-			if ( ($irrep eq "$channel") and ( $line ) ) {
-	    	${$outputref}{'TDT'} = $line; }
-		} close(FILE);
-	};
-	sub RmTrail 
-	{ my($i,$j,$len,$c,$Out);
-		$i=0; $len=length($_[0]); $j=$len;
-		while($i<$len){ $c=substr($_[0],$j-1,1);
-		if($c =~ /[.0-9]/){$Out=substr($_[0],0,$len-$i);$i=$len;}$j--;$i++;}
-		$_[0]=$Out;
-	};
-	sub GetNums # ASCII separated by space, comma, semi-colon, colon
-	{ my ( $line ) = @_; # can simplify this routine for ints only ...
-	  my($k,$char,$i,$j,$num,$prev);
-		$k=0;$i=0;$j=0;$num='';$char='a';@ReturnThis=();# $j is counter
-		while(($i<=length($line))and($char ne "\n")and($char ne "")){
-			$char=substr($line,$i,1);if(($char eq ',')or($char eq ';')or
-			($char eq ':')){if(length($num)>0){&RmTrail($num);
-			push(@ReturnThis,$num);}$num='';$j++;}else{if((($char eq '+')
-			or($char eq '-'))and(length($num)==0)){$num=$char;$k++;}else
-			{if($k>0){if($char=~/[0-9,.,E,e,D,d,\-,+]/){
-			$prev=substr($num,$k-1,1);if(not(($char eq '0')and(
-			($prev eq '+')or($prev eq '-')))){if(($char eq 'D')or($prev eq 'd')
-			){$num=$num.'E';$k++;}else{$num=$num.$char;$k++;}}}else{if(
-			length($num)>0){&RmTrail($num);push(@ReturnThis,$num);$num='';
-			$j++;}}}else{if($char=~/[0-9,.,\-,+]/){$num=$num.$char;$k++;}}}}
-		$i++;}
-		return(@ReturnThis);
-	};
-	sub sign
-	{ my ( $line ) = @_;
-	  my $sign_ = 1;
-		@spin = &GetNums(@_); # s1 s2 s3
-		$count = 0;
-	  for (my $i=0; $i < 3; ++$i) {
-			if ( $spin[ $i ] >= 3 ) { $count++; }
 		}
-		$odd = ( $count%2 );
-		if ( $odd ) {	$sign_ = -1; }
-		return( $sign_ );
+  } close( PROJCOEF );
+	return( $NTerms, %mylist );
+};
+sub GetOperatorList
+{ my ( $filename, $list, $channel, $outputref ) = @_;
+	my ( $irrep, $line, $oplist );
+	open(FILE,"<$filename");
+	foreach $irrep ( @{$list} ) {
+  	$line = <FILE>; # irrep
+    $line = <FILE>; chop($line);
+		if ( ($irrep eq "$channel") and ( $line ) ) {
+			${$outputref}{'SS'} = $line; }
+    $line = <FILE>; 
+		if ( ($irrep eq "$channel") and ( $line ) ) {
+			${$outputref}{'SD'} = $line; }
+    $line = <FILE>; 
+		if ( ($irrep eq "$channel") and ( $line ) ) {
+    	${$outputref}{'DDI'} = $line; }
+    $line = <FILE>; 
+		if ( ($irrep eq "$channel") and ( $line ) ) {
+    	${$outputref}{'DDL'} = $line; }
+    $line = <FILE>; 
+		if ( ($irrep eq "$channel") and ( $line ) ) {
+    	${$outputref}{'TDT'} = $line; }
+	} close(FILE);
+};
+sub RmTrail 
+{ my($i,$j,$len,$c,$Out);
+	$i=0; $len=length($_[0]); $j=$len;
+	while($i<$len){ $c=substr($_[0],$j-1,1);
+	if($c =~ /[.0-9]/){$Out=substr($_[0],0,$len-$i);$i=$len;}$j--;$i++;}
+	$_[0]=$Out;
+};
+sub GetNums # ASCII separated by space, comma, semi-colon, colon
+{ my ( $line ) = @_; # can simplify this routine for ints only ...
+  my($k,$char,$i,$j,$num,$prev);
+	$k=0;$i=0;$j=0;$num='';$char='a';@ReturnThis=();# $j is counter
+	while(($i<=length($line))and($char ne "\n")and($char ne "")){
+		$char=substr($line,$i,1);if(($char eq ',')or($char eq ';')or
+		($char eq ':')){if(length($num)>0){&RmTrail($num);
+		push(@ReturnThis,$num);}$num='';$j++;}else{if((($char eq '+')
+		or($char eq '-'))and(length($num)==0)){$num=$char;$k++;}else
+		{if($k>0){if($char=~/[0-9,.,E,e,D,d,\-,+]/){
+		$prev=substr($num,$k-1,1);if(not(($char eq '0')and(
+		($prev eq '+')or($prev eq '-')))){if(($char eq 'D')or($prev eq 'd')
+		){$num=$num.'E';$k++;}else{$num=$num.$char;$k++;}}}else{if(
+		length($num)>0){&RmTrail($num);push(@ReturnThis,$num);$num='';
+		$j++;}}}else{if($char=~/[0-9,.,\-,+]/){$num=$num.$char;$k++;}}}}
+	$i++;}
+	return(@ReturnThis);
+};
+sub sign
+{ my ( $line ) = @_;
+  my $sign_ = 1;
+	@spin = &GetNums(@_); # s1 s2 s3
+	$count = 0;
+  for (my $i=0; $i < 3; ++$i) {
+		if ( $spin[ $i ] >= 3 ) { $count++; }
 	}
-	1;
-	# end
+	$odd = ( $count%2 );
+	if ( $odd ) {	$sign_ = -1; }
+	return( $sign_ );
+}
+
+1;
+# end
 */
 #endif
