@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.2 2006-10-19 17:42:48 edwards Exp $
+// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.3 2006-11-07 05:22:41 edwards Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -84,11 +84,12 @@ namespace Chroma
       double out_eps;
       int single_count = 0;
       int double_count = 0;
+      res.n_count = 0;
 #ifdef SINGLE_PREC_SOLVER
       QDPIO::cout << "CGDWFQpropT: Beginning Single Precision Solve" << endl;
       single_prec_solver.cgSolver(psi, M5, m_f, 
 				  chi, psi, rsd_sq, max_iter, out_eps, single_count);
-      res.n_count = single_count;
+      res.n_count += single_count;
 #endif
 #ifdef DOUBLE_PREC_SOLVER
 //      for(int loop=0; loop < numRestarts; ++loop)
@@ -97,7 +98,7 @@ namespace Chroma
 	QDPIO::cout << "CGDWFQpropT: Beginning Double Precision Solve" << endl;
 	double_prec_solver.cgSolver(psi, M5, m_f, 
 				    chi, psi, rsd_sq, max_iter, out_eps, double_count);
-        res.n_count = double_count;
+        res.n_count += double_count;
       }
 #endif
 	QDPIO::cout << "CGDWFQpropT: Single Prec. Iters = " << single_count << " Double Prec. Iters = " << double_count << " Total Iters = " << res.n_count << endl;
