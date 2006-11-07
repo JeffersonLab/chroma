@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.44 2006-11-04 05:08:08 edwards Exp $
+# $Id: Makefile.am,v 3.45 2006-11-07 23:16:13 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -259,7 +259,10 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h \
 	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
-	update/molecdyn/integrator/lcm_sw_min_mixed.h \
+	update/molecdyn/integrator/lcm_exp_sdt.h \
+	update/molecdyn/integrator/lcm_exp_tdt.h \
+	update/molecdyn/integrator/lcm_sts_leapfrog_component.h \
+	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
 	update/molecdyn/hmc/hmc.h\
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
@@ -280,6 +283,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/lu_solve.h \
 	update/molecdyn/predictor/mre_extrap_predictor.h
 
+#	update/molecdyn/integrator/lcm_sw_min_mixed.h \
 nodist_include_HEADERS=chroma_config_internal.h
 
 # Wilson specific headers
@@ -848,11 +852,14 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
 	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
-	update/molecdyn/integrator/lcm_sw_min_mixed.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
+	update/molecdyn/integrator/lcm_exp_sdt.cc \
+	update/molecdyn/integrator/lcm_exp_tdt.cc \
+	update/molecdyn/integrator/lcm_sts_leapfrog_component.cc \
+	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -863,6 +870,7 @@ libchroma_a_SOURCES = \
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
+#	update/molecdyn/integrator/lcm_sw_min_mixed.cc 
 
 if BUILD_GMP_REMEZ
 nobase_include_HEADERS += actions/ferm/fermacts/remez_gmp.h
