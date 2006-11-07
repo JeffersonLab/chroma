@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_minimum_norm2_qpq_integrator_mts.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
+// $Id: lcm_minimum_norm2_qpq_integrator_mts.h,v 3.3 2006-11-07 23:11:03 bjoo Exp $
 /*! @file
  * @brief Second order minimal norm (2MN) integrator position version with multiple time scales
  *
@@ -171,14 +171,15 @@ namespace Chroma
 
     //! Do a trajectory
     void operator()(AbsFieldState<multi1d<LatticeColorMatrix>,
-		    multi1d<LatticeColorMatrix> >& s) 
+		    multi1d<LatticeColorMatrix> >& s, 
+		    const Real& traj_length) 
     {
       START_CODE();
 
       int recursive_seed = number_of_timescales-1;
 
       // Its all recursively
-      recursive_integrator(recursive_seed, tau, s);
+      recursive_integrator(recursive_seed, traj_length, s);
     
       END_CODE();
     }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_pqp_leapfrog_mts.h,v 3.3 2006-09-20 20:28:05 edwards Exp $
+// $Id: lcm_pqp_leapfrog_mts.h,v 3.4 2006-11-07 23:11:03 bjoo Exp $
 /*! @file
  * @brief Second order minimal norm (2MN) integrator with multiple time scales
  *
@@ -171,14 +171,14 @@ namespace Chroma
 
     //! Do a trajectory
     void operator()(AbsFieldState<multi1d<LatticeColorMatrix>,
-		    multi1d<LatticeColorMatrix> >& s) 
+		    multi1d<LatticeColorMatrix> >& s, const Real& traj_length) 
     {
       START_CODE();
 
       int recursive_seed = number_of_timescales-1;
 
       // The half step at the beginning for all the momenta
-      Real dtau  = tau/Real(n_steps_list[recursive_seed]*2);
+      Real dtau  = traj_length/Real(n_steps_list[recursive_seed]*2);
       for(int i = number_of_timescales-1; i > 0; i--) {
 	leapP(monomial_list[i], dtau, s);
 	dtau /= Real(n_steps_list[i-1]);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_sexton_weingarten.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
+// $Id: lcm_sexton_weingarten.h,v 3.3 2006-11-07 23:11:03 bjoo Exp $
 
 /*! @file
  * @brief Sexton Weingarten integrator
@@ -174,11 +174,12 @@ namespace Chroma
 
     //! Do a trajectory
     void operator()(AbsFieldState<multi1d<LatticeColorMatrix>,
-		    multi1d<LatticeColorMatrix> >& s) 
+		    multi1d<LatticeColorMatrix> >& s,
+		    const Real& traj_length) 
     {
       START_CODE();
 
-      Real dt = getStepSize();      // Overall step size
+      Real dt = traj_length/n_steps;      // Overall step size
       Real dtby2 = dt/Real(2);      // First and last half steps
       Real dtbyN = dt/n_short_steps;  // length of a short step
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
+// $Id: abs_integrator.h,v 3.3 2006-11-07 23:11:01 bjoo Exp $
 
 /*! @file
  * @brief Integrators
@@ -18,6 +18,48 @@
 
 namespace Chroma 
 {
+  // 
+  class NoSubIntegratorsException {
+  public : 
+    NoSubIntegratorsException() {}
+  };
+  
+  //! MD integrator that can be used as a component for other integrators
+  /*! @ingroup integrator */
+  template<typename P, typename Q>
+  class AbsComponentIntegrator { 
+  public:
+    //! Virtual destructor
+    virtual ~AbsComponentIntegrator(void) {} 
+
+    //! Do an integration of length n*delta tau in n steps.
+    virtual void operator()(AbsFieldState<P,Q>& s, 
+			    const Real& traj_length) const = 0;
+
+    //! Return the list of Monomial ID's this integrator deals with
+    virtual void getMonomialList(multi1d<int>& monomial_list) const = 0;
+  };
+
+  //! MD component integrator that has a sub integrator (recursive)
+  /*! @ingroup integrator */
+  template<typename P, typename Q>
+  class AbsRecursiveIntegrator : public AbsComponentIntegrator<P,Q> { 
+  public: 
+    //! Virtual destructor 
+    virtual ~AbsRecursiveIntegrator(void) {}
+
+    //! Do an integration of lenght n*delta tau in n steps.
+    virtual  void operator()(AbsFieldState<P,Q>& s, 
+			     const Real& traj_length) const = 0;
+			    
+
+    //! Return the next level down integrator
+    virtual AbsComponentIntegrator<P,Q>& getSubIntegrator() const = 0;
+
+    //! Return the list of Monomial ID's this integrator deals with
+    virtual void getMonomialList(multi1d<int>& monomial_list) const = 0;
+  };
+  
 
   //! MD integrator interface
   /*! @ingroup integrator */
@@ -29,12 +71,13 @@ namespace Chroma
     virtual ~AbsMDIntegrator(void) {}
 
     // Do a trajectory -- that is all HMD/HMC needs to know
-    virtual void operator()(AbsFieldState<P,Q>& s) = 0;
+    virtual void operator()(AbsFieldState<P,Q>& s, const Real& traj_length) = 0;
 
     //! Get at the MD Hamiltonian
     //  This needs to be exposed to initialise the PF fields.
     virtual AbsHamiltonian<P,Q>& getHamiltonian(void)  = 0;
 
+    virtual const Real getTrajLength() const = 0;
   }; // End class MD integrator
 
 
@@ -48,7 +91,7 @@ namespace Chroma
 
 
     //! Perform a trajectory 
-    virtual void operator()(AbsFieldState<P,Q>& s) 
+    virtual void operator()(AbsFieldState<P,Q>& s, const Real& traj_length) 
     {
       START_CODE();
 
@@ -60,12 +103,12 @@ namespace Chroma
       Real dtby2 = dt / Real(2);
       int  num_steps = getNumSteps();
 
-      Real tau0 = getTrajLength();
+      // Real tau0 = getTrajLength();
 
       write(xml_out, "n_steps", num_steps);
       write(xml_out, "dt", dt);
       write(xml_out, "dtby2", dtby2);
-      write(xml_out, "tau0", tau0);
+      write(xml_out, "tau0", traj_length);
 
       // Start time = 0
       Real t = Real(0);

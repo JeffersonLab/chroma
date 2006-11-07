@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 3.1 2006-08-26 02:08:42 edwards Exp $
+// $Id: md_integrator_factory.h,v 3.2 2006-11-07 23:11:05 bjoo Exp $
 /*! \file
  *  \brief Integrator factories
  */
@@ -48,6 +48,26 @@ namespace Chroma
 							Handle<LCMHam>&),
     StringFactoryError> >
   TheMDIntegratorFactory;
+
+  //! A factory for component integrators
+  /*! @ingroup integrator */
+  typedef SingletonHolder< 
+  ObjectFactory<
+    AbsComponentIntegrator< multi1d<LatticeColorMatrix>, 
+			    multi1d<LatticeColorMatrix> >,
+    std::string,
+
+    TYPELIST_3(XMLReader&, 
+	       const std::string&, 
+	       Handle< LCMHam >& ),
+
+    AbsComponentIntegrator< multi1d<LatticeColorMatrix>, 
+			    multi1d<LatticeColorMatrix> >* (*)(
+							       XMLReader&,
+							       const std::string&,
+							       Handle<LCMHam>&),
+			      StringFactoryError> >
+  TheMDComponentIntegratorFactory;
 
 
 } // End namespace Chroma
