@@ -49,10 +49,11 @@ POST_UNINSTALL = :
 @BUILD_ALTIVEC_DWF_CG_TRUE@am__append_10 = -I$(TOPDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/include
 @BUILD_ALTIVEC_DWF_CG_TRUE@am__append_11 = -L$(BUILDDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/lib
 @BUILD_ALTIVEC_DWF_CG_TRUE@am__append_12 = -laltivec_dwf_cg 
-bin_PROGRAMS = chroma$(EXEEXT) collect_propcomp$(EXEEXT) \
-	purgaug$(EXEEXT) cfgtransf$(EXEEXT) qpropgfix$(EXEEXT) \
-	qproptrev$(EXEEXT) hmc$(EXEEXT) spectrum_s$(EXEEXT) \
-	qpropqio$(EXEEXT) qproptransf$(EXEEXT) wallformfac$(EXEEXT)
+bin_PROGRAMS = chroma$(EXEEXT) purgaug$(EXEEXT) cfgtransf$(EXEEXT) \
+	hmc$(EXEEXT) spectrum_s$(EXEEXT)
+check_PROGRAMS = collect_propcomp$(EXEEXT) qpropgfix$(EXEEXT) \
+	qproptrev$(EXEEXT) qpropqio$(EXEEXT) qproptransf$(EXEEXT) \
+	wallformfac$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
 	collect_multi_propcomp$(EXEEXT) spectrum_s$(EXEEXT)
@@ -432,6 +433,9 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
 cfgtransf$(EXEEXT): $(cfgtransf_OBJECTS) $(cfgtransf_DEPENDENCIES) 
 	@rm -f cfgtransf$(EXEEXT)
 	$(CXXLINK) $(cfgtransf_LDFLAGS) $(cfgtransf_OBJECTS) $(cfgtransf_LDADD) $(LIBS)
@@ -609,6 +613,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 check: check-am
 all-am: Makefile $(PROGRAMS)
 installdirs:
@@ -641,7 +646,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
+clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -689,15 +695,16 @@ ps-am:
 uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
-	clean-generic ctags distclean distclean-compile \
-	distclean-generic distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-exec install-exec-am \
-	install-info install-info-am install-man install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-info-am
+	clean-checkPROGRAMS clean-generic ctags distclean \
+	distclean-compile distclean-generic distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-binPROGRAMS install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-info-am
 
 ${bin_PROGRAMS}: ${DEPENDENCIES}
 ###${check_PROGRAMS}: ${DEPENDENCIES}  # uncomment this when there are checkprograms
