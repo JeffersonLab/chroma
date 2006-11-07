@@ -55,13 +55,13 @@ HDRS =
 ## Moved these to be bin_PROGRAMS so that they are installed. Easier
 ## than for users to have to always make them by hand
 ##
-bin_PROGRAMS = chroma collect_propcomp \
+bin_PROGRAMS = chroma  \
         purgaug \
-        cfgtransf qpropgfix \
-        qproptrev hmc spectrum_s
+        cfgtransf \
+        hmc spectrum_s
 
 # Wilson specific programs
-bin_PROGRAMS += qpropqio qproptransf wallformfac
+check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac
 
 
 # Staggered specific programs
