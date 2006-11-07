@@ -1,3 +1,7 @@
+11/07/2006 -- Robert Edwards
+	Version 3.19.1. NPR code compiles and linked, but not fully tested.
+        Small fix in AVP DWF-cg wrapper to correct cg-counts.
+
 10/31/2006 -- Robert Edwards
 	Version 3.19.0. Split apart the fermact.h file into lots of
         separate bits to make it easier to manage. Split up the linearop.h
