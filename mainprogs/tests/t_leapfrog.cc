@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
   swatch.reset();
   swatch.start();
   // Do a trajectory
-  (*MD)(gauge_state);
+  (*MD)(gauge_state, (*MD).getTrajLength());
   swatch.stop();
   double total_time = swatch.getTimeInSeconds();
   QDPIO::cout << "Trajectory took: " << total_time << " sec" <<endl;

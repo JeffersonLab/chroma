@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hmc.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
+// $Id: abs_hmc.h,v 3.3 2006-11-07 23:16:29 bjoo Exp $
 /*! \file
  * \brief Abstract HMC trajectory
  *
@@ -83,7 +83,7 @@ namespace Chroma
       MD.getHamiltonian().setInternalFields(H_MC);
 
       // Integrate MD trajectory
-      MD(s);
+      MD(s, MD.getTrajLength());
            
       //  Measure the energy of the new state
       Double KE, PE;

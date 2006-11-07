@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+   <Hamiltonian>
+    <Monomials>
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_CONSTDET_HASENBUSCH_FERM_MONOMIAL</Name>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+	  <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+
+        <FermionActionPrec>
+          <FermAct>WILSON</FermAct>
+	  <Kappa>0.10</Kappa>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionActionPrec>
+
+      </elem>
+
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_CONSTDET_FERM_MONOMIAL</Name>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+	  <Kappa>0.10</Kappa>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+      </elem>
+
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+          <Name>WILSON_GAUGEACT</Name>
+	  <beta>5.2</beta>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+          </AnisoParam>
+	  <GaugeBC>
+	    <Name>PERIODIC_GAUGEBC</Name>
+          </GaugeBC>
+        </GaugeAction>
+      </elem>
+    </Monomials>
+   </Hamiltonian>
+
+   <MDIntegrator>
+	<Name>LCM_STS_LEAPFROG_RECURSIVE</Name>
+	<tau0>1.0</tau0>
+	<n_steps>2</n_steps>
+	<monomial_list>0</monomial_list>
+	<SubIntegrator>
+	     <Name>LCM_STS_LEAPFROG_RECURSIVE</Name>
+	     <n_steps>4</n_steps>
+	     <monomial_list>1</monomial_list>
+	     <SubIntegrator>
+	         <Name>LCM_STS_LEAPFROG</Name>
+		  <monomial_list>2</monomial_list>
+		  <n_steps>2</n_steps>
+	     </SubIntegrator>
+        </SubIntegrator> 
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>UNIT</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>2 2 2 2</nrow>
+</LeapfrogTest>
