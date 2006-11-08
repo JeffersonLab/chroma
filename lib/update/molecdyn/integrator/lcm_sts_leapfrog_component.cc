@@ -32,7 +32,7 @@ namespace Chroma
       bool registered = false;
     }
 
-    const std::string name = "LCM_STS_LEAPFROG";
+    const std::string name = "LCM_STS_LEAPFROG_COMPONENT";
 
     //! Register all the factories
     bool registerAll() 

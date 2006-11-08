@@ -9,8 +9,8 @@
 
 #include "update/molecdyn/integrator/lcm_exp_sdt.h"
 #include "update/molecdyn/integrator/lcm_exp_tdt.h"
-#include "update/molecdyn/integrator/lcm_sts_leapfrog_component.h"
 #include "update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h"
+#include "update/molecdyn/integrator/lcm_min_norm2_recursive.h"
 
 namespace Chroma 
 {
@@ -58,8 +58,8 @@ namespace Chroma
       {
 	success &=  LatColMatExpSdtIntegratorEnv::registerAll();
 	success &=  LatColMatExpTdtIntegratorEnv::registerAll();
-	success &=  LatColMatSTSLeapfrogComponentIntegratorEnv::registerAll();
 	success &=  LatColMatSTSLeapfrogRecursiveIntegratorEnv::registerAll();
+	success &=  LatColMatMinNorm2RecursiveIntegratorEnv::registerAll();
 
 	registered = true;
       }
