@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.45 2006-11-07 23:16:13 bjoo Exp $
+# $Id: Makefile.am,v 3.46 2006-11-08 23:54:01 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -261,8 +261,8 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
-	update/molecdyn/integrator/lcm_sts_leapfrog_component.h \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_min_norm2_recursive.h \
 	update/molecdyn/hmc/hmc.h\
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
@@ -858,8 +858,8 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
-	update/molecdyn/integrator/lcm_sts_leapfrog_component.cc \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
+	update/molecdyn/integrator/lcm_min_norm2_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
