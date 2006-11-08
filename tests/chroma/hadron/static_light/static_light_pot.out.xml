@@ -387,10 +387,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.16.1</chroma>
-      <qdp>1.20.9</qdp>
+      <chroma>3.19.1</chroma>
+      <qdp>1.21.5</qdp>
     </code_version>
-    <run_date>17 Oct 06 16:06:17 EDT</run_date>
+    <run_date>07 Nov 06 19:44:54 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -419,32 +419,32 @@ regression test spectrum output is kept within the chroma xml output
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994803993238343</w_plaq>
-    <s_plaq>0.994798439296169</s_plaq>
-    <t_plaq>0.994809547180517</t_plaq>
-    <plane_01_plaq>0.99470359319821</plane_01_plaq>
-    <plane_02_plaq>0.994926819577813</plane_02_plaq>
-    <plane_12_plaq>0.994764905112485</plane_12_plaq>
-    <plane_03_plaq>0.994693183340132</plane_03_plaq>
-    <plane_13_plaq>0.994853908661753</plane_13_plaq>
-    <plane_23_plaq>0.994881549539665</plane_23_plaq>
-    <link>0.379449338128325</link>
+    <w_plaq>0.994803997506905</w_plaq>
+    <s_plaq>0.994798443435381</s_plaq>
+    <t_plaq>0.994809551578429</t_plaq>
+    <plane_01_plaq>0.994703592111667</plane_01_plaq>
+    <plane_02_plaq>0.994926826562732</plane_02_plaq>
+    <plane_12_plaq>0.994764911631743</plane_12_plaq>
+    <plane_03_plaq>0.994693187686304</plane_03_plaq>
+    <plane_13_plaq>0.994853908040871</plane_13_plaq>
+    <plane_23_plaq>0.994881559008112</plane_23_plaq>
+    <link>0.379449337626284</link>
     <pollp>
       <elem>
-        <re>0.96658588356028</re>
-        <im>-0.00132088692703292</im>
+        <re>0.966585880688702</re>
+        <im>-0.00132088747318448</im>
       </elem>
       <elem>
-        <re>0.966365775093436</re>
-        <im>-0.00123499086688147</im>
+        <re>0.966365773618842</re>
+        <im>-0.00123499087385426</im>
       </elem>
       <elem>
-        <re>0.96714614254112</re>
-        <im>-0.00112309914417589</im>
+        <re>0.967146154958755</re>
+        <im>-0.00112309937897711</im>
       </elem>
       <elem>
-        <re>0.878769256640226</re>
-        <im>-0.00991386457220263</im>
+        <re>0.87876926199533</re>
+        <im>-0.00991386472378508</im>
       </elem>
     </pollp>
   </Observables>
@@ -454,10 +454,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.16.1</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.19.1</chroma>
+            <qdp>1.21.5</qdp>
           </code_version>
-          <run_date>17 Oct 06 16:06:17 EDT</run_date>
+          <run_date>07 Nov 06 19:44:54 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -515,37 +515,37 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>6.68018603347193 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.68018581299261 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -554,10 +554,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.16.1</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.19.1</chroma>
+            <qdp>1.21.5</qdp>
           </code_version>
-          <run_date>17 Oct 06 16:06:18 EDT</run_date>
+          <run_date>07 Nov 06 19:44:54 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -609,32 +609,32 @@ regression test spectrum output is kept within the chroma xml output
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
@@ -687,87 +687,87 @@ regression test spectrum output is kept within the chroma xml output
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.68018603347193 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.68018581299261 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>9.51043e-08</resid>
+            <resid>1.144004e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.138397e-07</resid>
+            <resid>1.158619e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.167249e-07</resid>
+            <resid>1.259485e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.27452e-07</resid>
+            <resid>1.104737e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.000797e-07</resid>
+            <resid>1.173151e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.211684e-07</resid>
+            <resid>1.067848e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.14782e-07</resid>
+            <resid>1.255339e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.30716e-07</resid>
+            <resid>1.399761e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.072835e-07</resid>
+            <resid>1.177971e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.277112e-07</resid>
+            <resid>1.321579e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.392239e-07</resid>
+            <resid>1.480853e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.170645e-07</resid>
+            <resid>1.260045e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.192608938725124 0.0159807814622685 0.00618062945200362 0.00284180978264281 0.00198266749756842 0.00283889766170431 0.00617588811468516 0.0159631264935214</prop_corr>
+          <prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -808,37 +808,37 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.192608938725124 0.0159807814622685 0.00618062945200362 0.00284180978264281 0.00198266749756842 0.00283889766170431 0.00617588811468516 0.0159631264935214</forward_prop_corr>
+          <forward_prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</forward_prop_corr>
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
@@ -910,7 +910,7 @@ regression test spectrum output is kept within the chroma xml output
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.192608938725124 0.0159807814622685 0.00618062945200362 0.00284180978264281 0.00198266749756842 0.00283889766170431 0.00617588811468516 0.0159631264935214</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -957,37 +957,37 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.192608938725124 0.0159807814622685 0.00618062945200362 0.00284180978264281 0.00198266749756842 0.00283889766170431 0.00617588811468516 0.0159631264935214</forward_prop_corr>
+          <forward_prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</forward_prop_corr>
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
@@ -1065,7 +1065,7 @@ regression test spectrum output is kept within the chroma xml output
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2.7680996109876 0.038203277356705 0.00643155299040401 0.00278466682582965 0.00193899139984369 0.00278128630671564 0.00642889616854004 0.0381603247590615</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.7680994515226 0.0382032750474977 0.00643155301702432 0.00278466687256993 0.00193899147214226 0.00278128640152976 0.00642889686863981 0.038160325042159</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1074,10 +1074,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.16.1</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.19.1</chroma>
+            <qdp>1.21.5</qdp>
           </code_version>
-          <run_date>17 Oct 06 16:06:22 EDT</run_date>
+          <run_date>07 Nov 06 19:44:55 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1135,37 +1135,37 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>6.68244930821474 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.68244862264147 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -1174,10 +1174,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.16.1</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.19.1</chroma>
+            <qdp>1.21.5</qdp>
           </code_version>
-          <run_date>17 Oct 06 16:06:22 EDT</run_date>
+          <run_date>07 Nov 06 19:44:55 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1229,32 +1229,32 @@ regression test spectrum output is kept within the chroma xml output
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
@@ -1307,87 +1307,87 @@ regression test spectrum output is kept within the chroma xml output
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.68244930821474 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.68244862264147 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.080792e-07</resid>
+            <resid>1.309501e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.035929e-07</resid>
+            <resid>1.132421e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.161981e-07</resid>
+            <resid>1.198713e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.222623e-07</resid>
+            <resid>1.255012e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.17945e-07</resid>
+            <resid>1.165361e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.103612e-07</resid>
+            <resid>1.264218e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.383011e-07</resid>
+            <resid>1.42388e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.126927e-07</resid>
+            <resid>1.475269e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.067986e-07</resid>
+            <resid>1.240114e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.398516e-07</resid>
+            <resid>1.289883e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.491505e-07</resid>
+            <resid>1.280986e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.177463e-07</resid>
+            <resid>1.13661e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.192683305379842 0.0159848406389429 0.00618142612600998 0.0028423831358694 0.00198349332789204 0.00284070799925625 0.00618055809559168 0.0159748929011067</prop_corr>
+          <prop_corr>0.192683291057548 0.0159848401437948 0.00618142591451267 0.00284238307759852 0.00198349317781794 0.00284070772973468 0.00618055761089156 0.0159748918532374</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1428,37 +1428,37 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.192683305379842 0.0159848406389429 0.00618142612600998 0.0028423831358694 0.00198349332789204 0.00284070799925625 0.00618055809559168 0.0159748929011067</forward_prop_corr>
+          <forward_prop_corr>0.192683291057548 0.0159848401437948 0.00618142591451267 0.00284238307759852 0.00198349317781794 0.00284070772973468 0.00618055761089156 0.0159748918532374</forward_prop_corr>
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
@@ -1530,7 +1530,7 @@ regression test spectrum output is kept within the chroma xml output
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.192683305379842 0.0159848406389429 0.00618142612600998 0.0028423831358694 0.00198349332789204 0.00284070799925625 0.00618055809559168 0.0159748929011067</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.192683291057548 0.0159848401437948 0.00618142591451267 0.00284238307759852 0.00198349317781794 0.00284070772973468 0.00618055761089156 0.0159748918532374</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1577,37 +1577,37 @@ regression test spectrum output is kept within the chroma xml output
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.192683305379842 0.0159848406389429 0.00618142612600998 0.0028423831358694 0.00198349332789204 0.00284070799925625 0.00618055809559168 0.0159748929011067</forward_prop_corr>
+          <forward_prop_corr>0.192683291057548 0.0159848401437948 0.00618142591451267 0.00284238307759852 0.00198349317781794 0.00284070772973468 0.00618055761089156 0.0159748918532374</forward_prop_corr>
         </Forward_prop_correlator>
         <PropSource>
           <version>6</version><Source>
@@ -1685,7 +1685,7 @@ regression test spectrum output is kept within the chroma xml output
           <j_decay>3</j_decay>
         </PropSink>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2.76929725982904 0.0381995268446559 0.00643178339866131 0.00278519053362019 0.00193976918670965 0.00278302531100984 0.00643336262658711 0.0381770754839661</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.76929688343549 0.0381995233984686 0.00643178346527027 0.00278519056044144 0.00193976915790067 0.00278302498714444 0.00643336257397521 0.0381770757436126</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1694,10 +1694,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.16.1</chroma>
-            <qdp>1.20.9</qdp>
+            <chroma>3.19.1</chroma>
+            <qdp>1.21.5</qdp>
           </code_version>
-          <run_date>17 Oct 06 16:06:27 EDT</run_date>
+          <run_date>07 Nov 06 19:44:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1740,39 +1740,39 @@ regression test spectrum output is kept within the chroma xml output
           <out_version>14</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803993238343</w_plaq>
-          <s_plaq>0.994798439296169</s_plaq>
-          <t_plaq>0.994809547180517</t_plaq>
-          <plane_01_plaq>0.99470359319821</plane_01_plaq>
-          <plane_02_plaq>0.994926819577813</plane_02_plaq>
-          <plane_12_plaq>0.994764905112485</plane_12_plaq>
-          <plane_03_plaq>0.994693183340132</plane_03_plaq>
-          <plane_13_plaq>0.994853908661753</plane_13_plaq>
-          <plane_23_plaq>0.994881549539665</plane_23_plaq>
-          <link>0.379449338128325</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658588356028</re>
-              <im>-0.00132088692703292</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365775093436</re>
-              <im>-0.00123499086688147</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.96714614254112</re>
-              <im>-0.00112309914417589</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769256640226</re>
-              <im>-0.00991386457220263</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Wilson_hadron_measurements>
           <elem>
-            <Mass_1>0.5454545</Mass_1>
-            <Mass_2>0.5454545</Mass_2>
+            <Mass_1>0.5454546</Mass_1>
+            <Mass_2>0.5454546</Mass_2>
             <t0>0</t0>
             <Forward_prop_headers>
               <First_forward_prop>
@@ -1921,8 +1921,8 @@ regression test spectrum output is kept within the chroma xml output
               </Second_forward_prop>
             </Forward_prop_headers>
             <Forward_prop_correlator>
-              <forward_prop_corr_1>0.192608938725124 0.0159807814622685 0.00618062945200362 0.00284180978264281 0.00198266749756842 0.00283889766170431 0.00617588811468516 0.0159631264935214</forward_prop_corr_1>
-              <forward_prop_corr_2>0.192683305379842 0.0159848406389429 0.00618142612600998 0.0028423831358694 0.00198349332789204 0.00284070799925625 0.00618055809559168 0.0159748929011067</forward_prop_corr_2>
+              <forward_prop_corr_1>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</forward_prop_corr_1>
+              <forward_prop_corr_2>0.192683291057548 0.0159848401437948 0.00618142591451267 0.00284238307759852 0.00198349317781794 0.00284070772973468 0.00618055761089156 0.0159748918532374</forward_prop_corr_2>
             </Forward_prop_correlator>
             <SourceSinkType>
               <source_type_1>SHELL_SOURCE</source_type_1>
@@ -1937,36 +1937,36 @@ regression test spectrum output is kept within the chroma xml output
             <Shell_Point_Wilson_Qlmeson>
               <HeavyLight>
                 <elem>
-                  <re>-0.0973203107714653</re>
-                  <im>4.9302434490528e-05</im>
+                  <re>-0.0973203182220459</re>
+                  <im>4.93031730002258e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0168807208538055</re>
-                  <im>1.31980305013712e-05</im>
+                  <re>0.0168807245790958</re>
+                  <im>1.31972301460337e-05</im>
                 </elem>
                 <elem>
                   <re>0.0213983077555895</re>
-                  <im>6.9472735049203e-06</im>
+                  <im>6.94741356710438e-06</im>
                 </elem>
                 <elem>
                   <re>0.0149578172713518</re>
-                  <im>-1.38496034196578e-06</im>
+                  <im>-1.38491122925188e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00969202164560556</re>
-                  <im>-3.51872586179525e-06</im>
+                  <re>0.00969202071428299</re>
+                  <im>-3.51863127434626e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00631325505673885</re>
-                  <im>-2.460261748638e-05</im>
+                  <re>0.00631325412541628</re>
+                  <im>-2.46026211243588e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00431829271838069</re>
-                  <im>-5.6499702623114e-05</im>
+                  <re>0.00431829178705812</re>
+                  <im>-5.64998481422663e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00326478434726596</re>
-                  <im>-9.23312909435481e-05</im>
+                  <re>0.0032647845800966</re>
+                  <im>-9.23307306948118e-05</im>
                 </elem>
               </HeavyLight>
             </Shell_Point_Wilson_Qlmeson>
@@ -1974,588 +1974,588 @@ regression test spectrum output is kept within the chroma xml output
               <HeavyLight>
                 <elem>
                   <re>-0.0972935855388641</re>
-                  <im>4.81399256386794e-05</im>
+                  <im>4.81394272355828e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0168942846357822</re>
-                  <im>2.87502480205148e-05</im>
+                  <re>0.0168942883610725</re>
+                  <im>2.8750546334777e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0214211754500866</re>
-                  <im>2.23869428737089e-05</im>
+                  <re>0.0214211735874414</re>
+                  <im>2.23869828914758e-05</im>
                 </elem>
                 <elem>
                   <re>0.0149595588445663</re>
-                  <im>2.47294556174893e-05</im>
+                  <im>2.47293919528602e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00969372037798166</re>
-                  <im>6.1653190641664e-06</im>
+                  <re>0.00969371944665909</re>
+                  <im>6.16526267549489e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00628736242651939</re>
+                  <re>0.00628736196085811</re>
                   <im>-1.5772289771121e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00431036436930299</re>
-                  <im>-4.83603216707706e-05</im>
+                  <re>0.0043103639036417</re>
+                  <im>-4.83604126202408e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00327806151472032</re>
-                  <im>-9.43374907365069e-05</im>
+                  <re>0.00327806384302676</re>
+                  <im>-9.43377963267267e-05</im>
                 </elem>
               </HeavyLight>
             </Shell_Point_Wilson_Qlmeson>
             <Shell_Point_Wilson_QlQlPotential>
               <Meson1U>
                 <elem>
-                  <re>-0.0973213315010071</re>
-                  <im>3.69215049431659e-05</im>
+                  <re>-0.0973213389515877</re>
+                  <im>3.6921956052538e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0168799720704556</re>
-                  <im>1.15956572699361e-05</im>
+                  <re>0.0168799757957458</re>
+                  <im>1.15941948024556e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0213986802846193</re>
-                  <im>3.18570528179407e-06</im>
+                  <re>0.0213986784219742</re>
+                  <im>3.18580714520067e-06</im>
                 </elem>
                 <elem>
                   <re>0.0149576049298048</re>
-                  <im>1.24418875202537e-08</im>
+                  <im>1.23945937957615e-08</im>
                 </elem>
                 <elem>
-                  <re>0.00969136692583561</re>
-                  <im>-3.65001324098557e-06</im>
+                  <re>0.00969136506319046</re>
+                  <im>-3.65010055247694e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00631367415189743</re>
-                  <im>-2.52474274020642e-05</im>
+                  <re>0.00631367368623614</re>
+                  <im>-2.52475510933436e-05</im>
                 </elem>
                 <elem>
                   <re>0.00431699678301811</re>
-                  <im>-5.65142836421728e-05</im>
+                  <im>-5.65146910957992e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00326803559437394</re>
-                  <im>-8.99940496310592e-05</im>
+                  <re>0.00326803838834167</re>
+                  <im>-8.99938022485003e-05</im>
                 </elem>
               </Meson1U>
               <Meson1D>
                 <elem>
-                  <re>-0.0973192900419235</re>
-                  <im>6.16833713138476e-05</im>
+                  <re>-0.0973192974925041</re>
+                  <im>6.1684382671956e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0168814696371555</re>
-                  <im>1.48004037328064e-05</im>
+                  <re>0.0168814714998007</re>
+                  <im>1.48002654896118e-05</im>
                 </elem>
                 <elem>
                   <re>0.0213979370892048</re>
-                  <im>1.07088417280465e-05</im>
+                  <im>1.07090227174922e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0149580296128988</re>
-                  <im>-2.78236257145181e-06</im>
+                  <re>0.0149580286815763</re>
+                  <im>-2.78221887128893e-06</im>
                 </elem>
                 <elem>
                   <re>0.00969267636537552</re>
-                  <im>-3.38743848260492e-06</im>
+                  <im>-3.38716199621558e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00631283596158028</re>
-                  <im>-2.39578075706959e-05</im>
+                  <re>0.00631283409893513</re>
+                  <im>-2.39576911553741e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00431958818808198</re>
-                  <im>-5.64851216040552e-05</im>
+                  <re>0.00431958679109812</re>
+                  <im>-5.64849979127757e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00326153356581926</re>
-                  <im>-9.4668532256037e-05</im>
+                  <re>0.00326153100468218</re>
+                  <im>-9.46676591411233e-05</im>
                 </elem>
               </Meson1D>
               <Meson2U>
                 <elem>
                   <re>-0.0972937270998955</re>
-                  <im>4.38166825915687e-05</im>
+                  <im>4.38154966104776e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0168953370302916</re>
-                  <im>2.62941612163559e-05</im>
+                  <re>0.0168953407555819</re>
+                  <im>2.62946268776432e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0214218609035015</re>
-                  <im>2.28101125685498e-05</im>
+                  <re>0.0214218590408564</re>
+                  <im>2.28101598622743e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0149594461545348</re>
-                  <im>2.4581684556324e-05</im>
+                  <re>0.0149594452232122</re>
+                  <im>2.45817100221757e-05</im>
                 </elem>
                 <elem>
                   <re>0.00969429314136505</re>
-                  <im>6.21381332166493e-06</im>
+                  <im>6.21378057985567e-06</im>
                 </elem>
                 <elem>
-                  <re>0.0062886574305594</re>
-                  <im>-1.55259622260928e-05</im>
+                  <re>0.00628865603357553</re>
+                  <im>-1.55258021550253e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00431127846240997</re>
-                  <im>-4.84568881802261e-05</im>
+                  <re>0.00431127799674869</re>
+                  <im>-4.84567790408619e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00328110647387803</re>
-                  <im>-9.25162748899311e-05</im>
+                  <re>0.00328110670670867</re>
+                  <im>-9.2516238510143e-05</im>
                 </elem>
               </Meson2U>
               <Meson2D>
                 <elem>
                   <re>-0.0972934514284134</re>
-                  <im>5.24631686857902e-05</im>
+                  <im>5.24633651366457e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0168932303786278</re>
-                  <im>3.12063348246738e-05</im>
+                  <re>0.0168932359665632</re>
+                  <im>3.12064657919109e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0214204899966717</re>
-                  <im>2.1963773178868e-05</im>
+                  <re>0.0214204881340265</re>
+                  <im>2.19638059206773e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0149596715345979</re>
-                  <im>2.48772266786546e-05</im>
+                  <re>0.0149596724659204</re>
+                  <im>2.48770738835447e-05</im>
                 </elem>
                 <elem>
                   <re>0.0096931466832757</re>
-                  <im>6.11682480666786e-06</im>
+                  <im>6.11673749517649e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00628606788814068</re>
-                  <im>-1.60186173161492e-05</im>
+                  <re>0.00628606742247939</re>
+                  <im>-1.60187883011531e-05</im>
                 </elem>
                 <elem>
                   <re>0.004309450276196</re>
-                  <im>-4.82637551613152e-05</im>
+                  <im>-4.82640534755774e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00327501632273197</re>
-                  <im>-9.61586774792522e-05</im>
+                  <re>0.0032750207465142</re>
+                  <im>-9.6159361419268e-05</im>
                 </elem>
               </Meson2D>
               <Meson1>
                 <elem>
-                  <re>-0.0973203107714653</re>
-                  <im>4.93024381285068e-05</im>
+                  <re>-0.0973203182220459</re>
+                  <im>4.9303169362247e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0168807208538055</re>
-                  <im>1.31980305013712e-05</im>
+                  <re>0.0168807236477733</re>
+                  <im>1.31972301460337e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0213983086869121</re>
-                  <im>6.9472735049203e-06</im>
+                  <re>0.0213983077555895</re>
+                  <im>6.94741493134643e-06</im>
                 </elem>
                 <elem>
-                  <re>0.0149578172713518</re>
-                  <im>-1.38496034196578e-06</im>
+                  <re>0.0149578168056905</re>
+                  <im>-1.38491213874659e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00969202164560556</re>
-                  <im>-3.51872586179525e-06</im>
+                  <re>0.00969202071428299</re>
+                  <im>-3.51863127434626e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00631325505673885</re>
-                  <im>-2.460261748638e-05</im>
+                  <re>0.00631325389258564</re>
+                  <im>-2.46026211243588e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00431829248555005</re>
-                  <im>-5.6499702623114e-05</im>
+                  <re>0.00431829178705812</re>
+                  <im>-5.64998445042875e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0032647845800966</re>
-                  <im>-9.23312909435481e-05</im>
+                  <re>0.00326478469651192</re>
+                  <im>-9.23307306948118e-05</im>
                 </elem>
               </Meson1>
               <Meson2>
                 <elem>
                   <re>-0.0972935892641544</re>
-                  <im>4.81399256386794e-05</im>
+                  <im>4.81394308735617e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0168942837044597</re>
-                  <im>2.87502480205148e-05</im>
+                  <re>0.0168942883610725</re>
+                  <im>2.8750546334777e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0214211754500866</re>
-                  <im>2.23869428737089e-05</im>
+                  <re>0.0214211735874414</re>
+                  <im>2.23869828914758e-05</im>
                 </elem>
                 <elem>
                   <re>0.0149595588445663</re>
-                  <im>2.47294556174893e-05</im>
+                  <im>2.47293919528602e-05</im>
                 </elem>
                 <elem>
                   <re>0.00969371991232038</re>
-                  <im>6.1653190641664e-06</im>
+                  <im>6.16525903751608e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00628736265935004</re>
-                  <im>-1.5772289771121e-05</im>
+                  <re>0.00628736172802746</re>
+                  <im>-1.57722952280892e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00431036436930299</re>
-                  <im>-4.83603216707706e-05</im>
+                  <re>0.00431036413647234</re>
+                  <im>-4.83604162582196e-05</im>
                 </elem>
                 <elem>
-                  <re>0.003278061398305</re>
-                  <im>-9.43374761845917e-05</im>
+                  <re>0.00327806372661144</re>
+                  <im>-9.43377999647055e-05</im>
                 </elem>
               </Meson2>
               <A1S1Sp1>
                 <elem>
                   <re>0.00946875382214785</re>
-                  <im>-7.85652900958667e-06</im>
+                  <im>-7.85645715950523e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000285192509181798</re>
-                  <im>6.39756990494789e-07</im>
+                  <re>0.000285192625597119</re>
+                  <im>6.39740392216481e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000458399474155158</re>
-                  <im>5.56349789349042e-07</im>
+                  <re>0.000458399386843666</re>
+                  <im>5.56352858893661e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000223757466301322</re>
-                  <im>3.67869347428496e-07</im>
+                  <re>0.000223757480853237</re>
+                  <im>3.67868750572597e-07</im>
                 </elem>
                 <elem>
-                  <re>9.39509773161262e-05</re>
-                  <im>2.48363978272437e-08</im>
+                  <re>9.3950962764211e-05</re>
+                  <im>2.48349056874986e-08</im>
                 </elem>
                 <elem>
-                  <re>3.97041403630283e-05</re>
-                  <im>-2.56798188047469e-07</im>
+                  <re>3.97041294490919e-05</re>
+                  <im>-2.56798529107982e-07</im>
                 </elem>
                 <elem>
                   <re>1.860903648776e-05</re>
-                  <im>-4.52837127795647e-07</im>
+                  <im>-4.52838293085733e-07</im>
                 </elem>
                 <elem>
-                  <re>1.07144460343989e-05</re>
-                  <im>-5.9762652426798e-07</im>
+                  <re>1.071445785783e-05</re>
+                  <im>-5.97625785303535e-07</im>
                 </elem>
               </A1S1Sp1>
               <A1S1Sm1>
                 <elem>
                   <re>0.00946852657943964</re>
-                  <im>-1.11070667117019e-05</im>
+                  <im>-1.11071831270237e-05</im>
                 </elem>
                 <elem>
-                  <re>0.000285182090010494</re>
-                  <im>7.76835520355235e-07</im>
+                  <re>0.000285182206425816</re>
+                  <im>7.76835918259167e-07</im>
                 </elem>
                 <elem>
                   <re>0.000458354072179645</re>
-                  <im>6.99367660672578e-07</im>
+                  <im>6.99372662893438e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000223767288844101</re>
-                  <im>3.30490848909903e-07</im>
+                  <re>0.000223767259740271</re>
+                  <im>3.304905362711e-07</im>
                 </elem>
                 <elem>
                   <re>9.39525634748861e-05</re>
-                  <im>2.64531099247733e-08</im>
+                  <im>2.64550834572219e-08</im>
                 </elem>
                 <elem>
-                  <re>3.96825380448718e-05</re>
-                  <im>-2.5172352025038e-07</im>
+                  <re>3.96825198549777e-05</re>
+                  <im>-2.51723690780636e-07</im>
                 </elem>
                 <elem>
-                  <re>1.86123252206016e-05</re>
-                  <im>-4.51899182962734e-07</im>
+                  <re>1.86123124876758e-05</re>
+                  <im>-4.51900007192307e-07</im>
                 </elem>
                 <elem>
-                  <re>1.06724710349226e-05</re>
-                  <im>-6.23665869170509e-07</im>
+                  <re>1.0672479220375e-05</re>
+                  <im>-6.23665755483671e-07</im>
                 </elem>
               </A1S1Sm1>
               <A2S1Sp1>
                 <elem>
-                  <re>-0.00058224837994203</re>
-                  <im>-1.46996990224579e-06</im>
+                  <re>-0.000582248321734369</re>
+                  <im>-1.46997376759828e-06</im>
                 </elem>
                 <elem>
                   <re>-0.000350166257703677</re>
-                  <im>-3.21496429478429e-07</im>
+                  <im>-3.21495576827147e-07</im>
                 </elem>
                 <elem>
-                  <re>-0.000160736133693717</re>
-                  <im>-2.57231079103803e-07</im>
+                  <re>-0.000160736104589887</re>
+                  <im>-2.57233836009618e-07</im>
                 </elem>
                 <elem>
-                  <re>-6.94131522323005e-05</re>
-                  <im>-2.51831067998864e-07</im>
+                  <re>-6.94131449563429e-05</re>
+                  <im>-2.51831636433053e-07</im>
                 </elem>
                 <elem>
-                  <re>-2.91445849143201e-05</re>
-                  <im>-9.71628253410017e-08</im>
+                  <re>-2.91445776383625e-05</re>
+                  <im>-9.71624061207876e-08</im>
                 </elem>
                 <elem>
                   <re>-1.19605365398456e-05</re>
-                  <im>4.66334029169957e-08</im>
+                  <im>4.66336018689617e-08</im>
                 </elem>
                 <elem>
-                  <re>-4.71412658953341e-06</re>
-                  <im>1.25641420822831e-07</im>
+                  <re>-4.714124770544e-06</re>
+                  <im>1.25641861359327e-07</im>
                 </elem>
                 <elem>
-                  <re>-1.42031126415532e-06</re>
-                  <im>1.2470110277718e-07</im>
+                  <re>-1.42031171890267e-06</re>
+                  <im>1.24700733294958e-07</im>
                 </elem>
               </A2S1Sp1>
               <A2S1Sm1>
                 <elem>
                   <re>-0.000582257169298828</re>
-                  <im>-1.84749433174147e-06</im>
+                  <im>-1.84747807452368e-06</im>
                 </elem>
                 <elem>
-                  <re>-0.000350130256265402</re>
-                  <im>-4.32755427937082e-07</im>
+                  <re>-0.000350130285369232</re>
+                  <im>-4.32752756296395e-07</im>
                 </elem>
                 <elem>
-                  <re>-0.000160707044415176</re>
-                  <im>-3.28661030835065e-07</im>
+                  <re>-0.000160707015311345</re>
+                  <im>-3.28659865544978e-07</im>
                 </elem>
                 <elem>
-                  <re>-6.94148475304246e-05</re>
-                  <im>-2.44071429733594e-07</im>
+                  <re>-6.9414840254467e-05</re>
+                  <im>-2.44070349708636e-07</im>
                 </elem>
                 <elem>
-                  <re>-2.91445176117122e-05</re>
-                  <im>-9.79522098987218e-08</im>
+                  <re>-2.9144512154744e-05</re>
+                  <im>-9.79509167109427e-08</im>
                 </elem>
                 <elem>
-                  <re>-1.19546875794185e-05</re>
-                  <im>4.0279076074512e-08</im>
+                  <re>-1.19546839414397e-05</re>
+                  <im>4.02796658249827e-08</im>
                 </elem>
                 <elem>
-                  <re>-4.71493331133388e-06</re>
-                  <im>1.24860605410504e-07</im>
+                  <re>-4.71493240183918e-06</re>
+                  <im>1.2486107436871e-07</im>
                 </elem>
                 <elem>
-                  <re>-1.40947372528899e-06</re>
-                  <im>1.25089798075351e-07</im>
+                  <re>-1.40947258842061e-06</re>
+                  <im>1.25089030689196e-07</im>
                 </elem>
               </A2S1Sm1>
               <A1S0>
                 <elem>
-                  <re>0.00473432010039687</re>
-                  <im>-4.74090256830095e-06</im>
+                  <re>0.00473432056605816</re>
+                  <im>-4.74091348223737e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000142593664349988</re>
-                  <im>3.54145868186606e-07</im>
+                  <re>0.000142593722557649</re>
+                  <im>3.54141945990705e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000229188386583701</re>
-                  <im>3.13932929429939e-07</im>
+                  <re>0.00022918835747987</re>
+                  <im>3.13935004214727e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000111881192424335</re>
-                  <im>1.74591747281738e-07</im>
+                  <re>0.000111881185148377</re>
+                  <im>1.74591548329772e-07</im>
                 </elem>
                 <elem>
-                  <re>4.69758851977531e-05</re>
-                  <im>1.28214638905888e-08</im>
+                  <re>4.69758742838167e-05</re>
+                  <im>1.28217356731852e-08</im>
                 </elem>
                 <elem>
-                  <re>1.98466732399538e-05</re>
-                  <im>-1.27133915839295e-07</im>
+                  <re>1.98466677829856e-05</re>
+                  <im>-1.27134043736987e-07</im>
                 </elem>
                 <elem>
-                  <re>9.30534133658512e-06</re>
-                  <im>-2.26186287477503e-07</im>
+                  <re>9.30533769860631e-06</re>
+                  <im>-2.26186855911692e-07</im>
                 </elem>
                 <elem>
-                  <re>5.34670880369958e-06</re>
-                  <im>-3.05321862015262e-07</im>
+                  <re>5.34671289642574e-06</re>
+                  <im>-3.05321577798168e-07</im>
                 </elem>
               </A1S0>
               <A2S0>
                 <elem>
-                  <re>0.000291124801151454</re>
-                  <im>8.29499640531139e-07</im>
+                  <re>0.000291124742943794</re>
+                  <im>8.29496570986521e-07</im>
                 </elem>
                 <elem>
                   <re>0.000175076856976375</re>
-                  <im>1.88705996606586e-07</im>
+                  <im>1.88704973425047e-07</im>
                 </elem>
                 <elem>
-                  <re>8.03610746515915e-05</re>
+                  <re>8.03610673756339e-05</re>
                   <im>1.46398832612249e-07</im>
                 </elem>
                 <elem>
-                  <re>3.47073473676573e-05</re>
-                  <im>1.23980640864829e-07</im>
+                  <re>3.47073437296785e-05</re>
+                  <im>1.2398061244312e-07</im>
                 </elem>
                 <elem>
-                  <re>1.45721769513329e-05</re>
-                  <im>4.87938081050743e-08</im>
+                  <re>1.45721760418382e-05</re>
+                  <im>4.87934102011423e-08</im>
                 </elem>
                 <elem>
-                  <re>5.97882944930461e-06</re>
-                  <im>-2.17179483286145e-08</im>
+                  <re>5.97882808506256e-06</re>
+                  <im>-2.17181099770869e-08</im>
                 </elem>
                 <elem>
-                  <re>2.35735365095024e-06</re>
-                  <im>-6.26310097118221e-08</im>
+                  <re>2.35735342357657e-06</re>
+                  <im>-6.26311731366513e-08</im>
                 </elem>
                 <elem>
-                  <re>7.07025037627318e-07</re>
-                  <im>-6.25184384261956e-08</im>
+                  <re>7.07024867097061e-07</re>
+                  <im>-6.2518147103674e-08</im>
                 </elem>
               </A2S0>
               <I1S1>
                 <elem>
-                  <re>0.00888638742617331</re>
-                  <im>-1.11405299776379e-05</im>
+                  <re>0.00888638745527714</re>
+                  <im>-1.11405460643255e-05</im>
                 </elem>
                 <elem>
-                  <re>-6.49609573883936e-05</re>
-                  <im>3.31170326717256e-07</im>
+                  <re>-6.4960855524987e-05</re>
+                  <im>3.31163988676053e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000297655184112955</re>
-                  <im>3.34912670041376e-07</im>
+                  <re>0.00029765516956104</re>
+                  <im>3.34915910116251e-07</im>
                 </elem>
                 <elem>
                   <re>0.000154348377691349</re>
-                  <im>1.0122884930297e-07</im>
+                  <im>1.01228650351004e-07</im>
                 </elem>
                 <elem>
-                  <re>6.480721913249e-05</re>
-                  <im>-7.19127637438532e-08</im>
+                  <re>6.48072182229953e-05</re>
+                  <im>-7.19116668435049e-08</im>
                 </elem>
                 <elem>
-                  <re>2.77357271443179e-05</re>
-                  <im>-2.10804614653171e-07</im>
+                  <re>2.77357144113921e-05</re>
+                  <im>-2.10804476097337e-07</im>
                 </elem>
                 <elem>
-                  <re>1.38961509037472e-05</re>
-                  <im>-3.27117142262523e-07</im>
+                  <re>1.38961459015263e-05</re>
+                  <im>-3.27117682275002e-07</im>
                 </elem>
                 <elem>
-                  <re>9.2785660399386e-06</re>
-                  <im>-4.85750746292979e-07</im>
+                  <re>9.27857638544083e-06</re>
+                  <im>-4.85750888401526e-07</im>
                 </elem>
               </I1S1>
               <I0S1>
                 <elem>
-                  <re>0.0100508929754142</re>
-                  <im>-7.82306574365066e-06</im>
+                  <re>0.0100508929463103</re>
+                  <im>-7.82309422220351e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000635335556580685</re>
-                  <im>1.08542218413277e-06</im>
+                  <re>0.000635335687547922</re>
+                  <im>1.08541232179959e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000619098362221848</re>
-                  <im>9.20804779980244e-07</im>
+                  <re>0.000619098289462272</re>
+                  <im>9.20809611670848e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000293176377454074</re>
-                  <im>5.97131347035429e-07</im>
+                  <re>0.000293176362902159</re>
+                  <im>5.97130636492693e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000123096321658522</re>
-                  <im>1.2320227149587e-07</im>
+                  <re>0.000123096308016102</re>
+                  <im>1.23201655988225e-07</im>
                 </elem>
                 <elem>
-                  <re>5.16509512635821e-05</re>
-                  <im>-2.97717093644678e-07</im>
+                  <re>5.16509348926775e-05</re>
+                  <im>-2.97717743791281e-07</im>
                 </elem>
                 <elem>
-                  <re>2.33252108046145e-05</re>
-                  <im>-5.77619168495858e-07</im>
+                  <re>2.33252030739095e-05</re>
+                  <im>-5.77620618003039e-07</im>
                 </elem>
                 <elem>
-                  <re>1.21083510293829e-05</re>
-                  <im>-7.3554164714551e-07</im>
+                  <re>1.21083606927641e-05</re>
+                  <im>-7.3554065238568e-07</im>
                 </elem>
               </I0S1>
               <I1S0>
                 <elem>
-                  <re>0.00502544490154833</re>
-                  <im>-3.91140292776981e-06</im>
+                  <re>0.00502544530900195</re>
+                  <im>-3.91141691125085e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000317670521326363</re>
-                  <im>5.42851864793192e-07</im>
+                  <re>0.000317670579534024</re>
+                  <im>5.42846919415751e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000309549461235292</re>
-                  <im>4.60331762042188e-07</im>
+                  <re>0.000309549424855504</re>
+                  <im>4.60333836826976e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000146588539791992</re>
-                  <im>2.98572388146567e-07</im>
+                  <re>0.000146588528878056</re>
+                  <im>2.98572160772892e-07</im>
                 </elem>
                 <elem>
-                  <re>6.1548062149086e-05</re>
-                  <im>6.16152719956631e-08</im>
+                  <re>6.15480503256549e-05</re>
+                  <im>6.16151458743275e-08</im>
                 </elem>
                 <elem>
-                  <re>2.58255026892584e-05</re>
-                  <im>-1.48851864167909e-07</im>
+                  <re>2.58254958680482e-05</re>
+                  <im>-1.48852153714074e-07</im>
                 </elem>
                 <elem>
-                  <re>1.16626949875354e-05</re>
-                  <im>-2.88817297189325e-07</im>
+                  <re>1.16626911221829e-05</re>
+                  <im>-2.88818029048343e-07</im>
                 </elem>
                 <elem>
-                  <re>6.0537338413269e-06</re>
-                  <im>-3.67840300441458e-07</im>
+                  <re>6.0537377635228e-06</re>
+                  <im>-3.67839724901842e-07</im>
                 </elem>
               </I1S0>
               <I0S0>
                 <elem>
-                  <re>0.00444319529924542</re>
-                  <im>-5.57040220883209e-06</im>
+                  <re>0.00444319582311437</re>
+                  <im>-5.5704100532239e-06</im>
                 </elem>
                 <elem>
-                  <re>-3.24831926263869e-05</re>
-                  <im>1.6543987158002e-07</im>
+                  <re>-3.2483134418726e-05</re>
+                  <im>1.65436972565658e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000148827311932109</re>
-                  <im>1.6753409681769e-07</im>
+                  <re>0.000148827290104236</re>
+                  <im>1.67536171602478e-07</im>
                 </elem>
                 <elem>
-                  <re>7.71738450566772e-05</re>
-                  <im>5.0611106416909e-08</im>
+                  <re>7.71738414186984e-05</re>
+                  <im>5.06109358866524e-08</im>
                 </elem>
                 <elem>
-                  <re>3.24037082464201e-05</re>
-                  <im>-3.59723442144855e-08</im>
+                  <re>3.24036982419784e-05</re>
+                  <im>-3.5971674527957e-08</im>
                 </elem>
                 <elem>
-                  <re>1.38678437906492e-05</re>
-                  <im>-1.0541596751068e-07</im>
+                  <re>1.3867839697923e-05</re>
+                  <im>-1.054159337599e-07</im>
                 </elem>
                 <elem>
-                  <re>6.94798768563487e-06</re>
-                  <im>-1.63555277765681e-07</im>
+                  <re>6.94798427502974e-06</re>
+                  <im>-1.63555682775041e-07</im>
                 </elem>
                 <elem>
-                  <re>4.63968376607227e-06</re>
-                  <im>-2.42803423589066e-07</im>
+                  <re>4.63968802932868e-06</re>
+                  <im>-2.42803430694494e-07</im>
                 </elem>
               </I0S0>
             </Shell_Point_Wilson_QlQlPotential>
           </elem>
           <elem>
-            <Mass_1>0.5454545</Mass_1>
-            <Mass_2>0.5454545</Mass_2>
+            <Mass_1>0.5454546</Mass_1>
+            <Mass_2>0.5454546</Mass_2>
             <t0>0</t0>
             <Forward_prop_headers>
               <First_forward_prop>
@@ -2716,8 +2716,8 @@ regression test spectrum output is kept within the chroma xml output
               </Second_forward_prop>
             </Forward_prop_headers>
             <Forward_prop_correlator>
-              <forward_prop_corr_1>2.7680996109876 0.038203277356705 0.00643155299040401 0.00278466682582965 0.00193899139984369 0.00278128630671564 0.00642889616854004 0.0381603247590615</forward_prop_corr_1>
-              <forward_prop_corr_2>2.76929725982904 0.0381995268446559 0.00643178339866131 0.00278519053362019 0.00193976918670965 0.00278302531100984 0.00643336262658711 0.0381770754839661</forward_prop_corr_2>
+              <forward_prop_corr_1>2.7680994515226 0.0382032750474977 0.00643155301702432 0.00278466687256993 0.00193899147214226 0.00278128640152976 0.00642889686863981 0.038160325042159</forward_prop_corr_1>
+              <forward_prop_corr_2>2.76929688343549 0.0381995233984686 0.00643178346527027 0.00278519056044144 0.00193976915790067 0.00278302498714444 0.00643336257397521 0.0381770757436126</forward_prop_corr_2>
             </Forward_prop_correlator>
             <SourceSinkType>
               <source_type_1>SHELL_SOURCE</source_type_1>
@@ -2733,617 +2733,617 @@ regression test spectrum output is kept within the chroma xml output
               <HeavyLight>
                 <elem>
                   <re>0.498018234968185</re>
-                  <im>5.28026139363647e-05</im>
+                  <im>5.2802097343374e-05</im>
                 </elem>
                 <elem>
                   <re>0.0962587222456932</re>
-                  <im>-1.16360897663981e-05</im>
+                  <im>-1.16358205559663e-05</im>
                 </elem>
                 <elem>
                   <re>0.0313388705253601</re>
                   <im>6.16828037891537e-06</im>
                 </elem>
                 <elem>
-                  <re>0.0159172527492046</re>
-                  <im>-8.87735950527713e-07</im>
+                  <re>0.0159172508865595</re>
+                  <im>-8.87748683453538e-07</im>
                 </elem>
                 <elem>
-                  <re>0.00960799120366573</re>
-                  <im>2.42350870394148e-06</im>
+                  <re>0.00960798934102058</re>
+                  <im>2.42352689383551e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00613582273945212</re>
-                  <im>-2.61193126789294e-05</im>
+                  <re>0.00613582227379084</re>
+                  <im>-2.61193890764844e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00409020110964775</re>
-                  <im>-5.54841826669872e-05</im>
+                  <re>0.00409020157530904</re>
+                  <im>-5.54843427380547e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00312925106845796</re>
-                  <im>-8.73560202307999e-05</im>
+                  <re>0.00312924943864346</re>
+                  <im>-8.73562603374012e-05</im>
                 </elem>
               </HeavyLight>
             </Shell_Shell_Wilson_Qlmeson>
             <Shell_Shell_Wilson_Qlmeson>
               <HeavyLight>
                 <elem>
-                  <re>0.498191267251968</re>
-                  <im>5.23203198099509e-05</im>
+                  <re>0.498191207647324</re>
+                  <im>5.23201306350529e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0963904783129692</re>
-                  <im>2.65723501797765e-05</im>
+                  <re>0.0963904708623886</re>
+                  <im>2.65721610048786e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0313943848013878</re>
-                  <im>3.29180766129866e-05</im>
+                  <re>0.0313943773508072</re>
+                  <im>3.2918087526923e-05</im>
                 </elem>
                 <elem>
                   <re>0.0159038193523884</re>
-                  <im>4.06206818297505e-05</im>
+                  <im>4.06205290346406e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00960622541606426</re>
-                  <im>1.09089342004154e-05</im>
+                  <re>0.00960622448474169</re>
+                  <im>1.0908837793977e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00610543694347143</re>
-                  <im>-8.48697527544573e-06</im>
+                  <re>0.00610543601214886</re>
+                  <im>-8.48709896672517e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00409558229148388</re>
-                  <im>-4.35756519436836e-05</im>
+                  <re>0.00409558042883873</re>
+                  <im>-4.35759357060306e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0031630874145776</re>
-                  <im>-9.00355516932905e-05</im>
+                  <re>0.0031630857847631</re>
+                  <im>-9.00354643817991e-05</im>
                 </elem>
               </HeavyLight>
             </Shell_Shell_Wilson_Qlmeson>
             <Shell_Shell_Wilson_QlQlPotential>
               <Meson1U>
                 <elem>
-                  <re>0.498017191886902</re>
-                  <im>5.09900382894557e-05</im>
+                  <re>0.498017162084579</re>
+                  <im>5.09897909068968e-05</im>
                 </elem>
                 <elem>
-                  <re>0.096258133649826</re>
-                  <im>-1.29964610096067e-05</im>
+                  <re>0.0962581261992455</re>
+                  <im>-1.29961699713022e-05</im>
                 </elem>
                 <elem>
                   <re>0.0313388332724571</re>
-                  <im>5.38298627361655e-06</im>
+                  <im>5.38313179276884e-06</im>
                 </elem>
                 <elem>
-                  <re>0.0159171726554632</re>
-                  <im>-1.01687328424305e-06</im>
+                  <re>0.0159171707928181</re>
+                  <im>-1.0167459549848e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00960756279528141</re>
-                  <im>1.74359593074769e-06</im>
+                  <re>0.00960756093263626</re>
+                  <im>1.74362503457814e-06</im>
                 </elem>
                 <elem>
-                  <re>0.0061358162201941</re>
-                  <im>-2.6072098989971e-05</im>
+                  <re>0.00613581482321024</re>
+                  <im>-2.60720480582677e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00408884044736624</re>
-                  <im>-5.6528631830588e-05</im>
+                  <re>0.00408884137868881</re>
+                  <im>-5.65288646612316e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00313040567561984</re>
-                  <im>-8.51322547532618e-05</im>
+                  <re>0.00313040427863598</re>
+                  <im>-8.51323566166684e-05</im>
                 </elem>
               </Meson1U>
               <Meson1D>
                 <elem>
-                  <re>0.498019278049469</re>
-                  <im>5.46151932212524e-05</im>
+                  <re>0.498019307851791</re>
+                  <im>5.46144074178301e-05</im>
                 </elem>
                 <elem>
                   <re>0.0962593108415604</re>
-                  <im>-1.02757185231894e-05</im>
+                  <im>-1.02754711406305e-05</im>
                 </elem>
                 <elem>
                   <re>0.0313389077782631</re>
-                  <im>6.95357448421419e-06</im>
+                  <im>6.9534289650619e-06</im>
                 </elem>
                 <elem>
-                  <re>0.0159173309803009</re>
-                  <im>-7.58598616812378e-07</im>
+                  <re>0.0159173291176558</re>
+                  <im>-7.58756868890487e-07</im>
                 </elem>
                 <elem>
-                  <re>0.00960841961205006</re>
+                  <re>0.00960841774940491</re>
                   <im>3.10342147713527e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00613582925871015</re>
-                  <im>-2.61665263678879e-05</im>
+                  <re>0.00613582879304886</re>
+                  <im>-2.61667300947011e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00409156130626798</re>
-                  <im>-5.44397335033864e-05</im>
+                  <re>0.00409156223759055</re>
+                  <im>-5.44398426427506e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00312809646129608</re>
-                  <im>-8.9579785708338e-05</im>
+                  <re>0.00312809459865093</re>
+                  <im>-8.9580164058134e-05</im>
                 </elem>
               </Meson1D>
               <Meson2U>
                 <elem>
-                  <re>0.498190462589264</re>
-                  <im>4.99707966810092e-05</im>
+                  <re>0.498190432786942</re>
+                  <im>4.99698981002439e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0963898748159409</re>
-                  <im>2.58746440522373e-05</im>
+                  <re>0.0963898599147797</re>
+                  <im>2.58740910794586e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0313943922519684</re>
-                  <im>3.1617862987332e-05</im>
+                  <re>0.0313943885266781</re>
+                  <im>3.16178993671201e-05</im>
                 </elem>
                 <elem>
                   <re>0.0159038566052914</re>
-                  <im>4.01000579586253e-05</im>
+                  <im>4.01000033889432e-05</im>
                 </elem>
                 <elem>
                   <re>0.00960611924529076</re>
-                  <im>1.05193248600699e-05</im>
+                  <im>1.05193430499639e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0061054159887135</re>
-                  <im>-8.69881478138268e-06</im>
+                  <re>0.00610541552305222</re>
+                  <im>-8.69893119670451e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00409516179934144</re>
-                  <im>-4.44159086328e-05</im>
+                  <re>0.00409516040235758</re>
+                  <im>-4.44159813923761e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0031654816120863</re>
-                  <im>-8.76947888173163e-05</im>
+                  <re>0.00316548207774758</re>
+                  <im>-8.76945850905031e-05</im>
                 </elem>
               </Meson2U>
               <Meson2D>
                 <elem>
-                  <re>0.498192071914673</re>
-                  <im>5.46698429388925e-05</im>
+                  <re>0.498192012310028</re>
+                  <im>5.4670363169862e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0963910967111588</re>
-                  <im>2.72700563073158e-05</im>
+                  <re>0.096391074359417</re>
+                  <im>2.72702309302986e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0313943736255169</re>
-                  <im>3.42182866006624e-05</im>
+                  <re>0.0313943699002266</re>
+                  <im>3.4218275686726e-05</im>
                 </elem>
                 <elem>
                   <re>0.0159037802368402</re>
-                  <im>4.11413057008758e-05</im>
+                  <im>4.11410583183169e-05</im>
                 </elem>
                 <elem>
                   <re>0.00960632972419262</re>
-                  <im>1.12985435407609e-05</im>
+                  <im>1.12983325379901e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00610545743256807</re>
-                  <im>-8.27513576950878e-06</im>
+                  <re>0.0061054565012455</re>
+                  <im>-8.27527401270345e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00409600231796503</re>
-                  <im>-4.27353952545673e-05</im>
+                  <re>0.00409600045531988</re>
+                  <im>-4.27358609158546e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00316069321706891</re>
-                  <im>-9.23762854654342e-05</im>
+                  <re>0.00316068949177861</re>
+                  <im>-9.23763727769256e-05</im>
                 </elem>
               </Meson2D>
               <Meson1>
                 <elem>
                   <re>0.498018234968185</re>
-                  <im>5.28026157553541e-05</im>
+                  <im>5.28020991623634e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0962587222456932</re>
-                  <im>-1.16360897663981e-05</im>
+                  <re>0.0962587185204029</re>
+                  <im>-1.16358205559663e-05</im>
                 </elem>
                 <elem>
                   <re>0.0313388705253601</re>
                   <im>6.16828037891537e-06</im>
                 </elem>
                 <elem>
-                  <re>0.0159172518178821</re>
-                  <im>-8.87735950527713e-07</im>
+                  <re>0.0159172499552369</re>
+                  <im>-8.87751411937643e-07</im>
                 </elem>
                 <elem>
-                  <re>0.00960799120366573</re>
-                  <im>2.42350870394148e-06</im>
+                  <re>0.00960798934102058</re>
+                  <im>2.42352325585671e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00613582273945212</re>
-                  <im>-2.61193126789294e-05</im>
+                  <re>0.00613582180812955</re>
+                  <im>-2.61193890764844e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00409020087681711</re>
-                  <im>-5.54841826669872e-05</im>
+                  <re>0.00409020180813968</re>
+                  <im>-5.54843536519911e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00312925106845796</re>
-                  <im>-8.73560202307999e-05</im>
+                  <re>0.00312924943864346</re>
+                  <im>-8.73562603374012e-05</im>
                 </elem>
               </Meson1>
               <Meson2>
                 <elem>
-                  <re>0.498191267251968</re>
-                  <im>5.23203198099509e-05</im>
+                  <re>0.498191222548485</re>
+                  <im>5.23201306350529e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0963904857635498</re>
-                  <im>2.65723501797765e-05</im>
+                  <re>0.0963904671370983</re>
+                  <im>2.65721610048786e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0313943829387426</re>
-                  <im>3.29180747939972e-05</im>
+                  <re>0.0313943792134523</re>
+                  <im>3.2918087526923e-05</im>
                 </elem>
                 <elem>
                   <re>0.0159038184210658</re>
-                  <im>4.06206818297505e-05</im>
+                  <im>4.062053085363e-05</im>
                 </elem>
                 <elem>
                   <re>0.00960622448474169</re>
-                  <im>1.09089342004154e-05</im>
+                  <im>1.0908837793977e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00610543671064079</re>
-                  <im>-8.48697527544573e-06</im>
+                  <re>0.00610543601214886</re>
+                  <im>-8.48710260470398e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00409558205865324</re>
-                  <im>-4.35756519436836e-05</im>
+                  <re>0.00409558042883873</re>
+                  <im>-4.35759211541153e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0031630874145776</re>
-                  <im>-9.00355371413752e-05</im>
+                  <re>0.0031630857847631</re>
+                  <im>-9.00354789337143e-05</im>
                 </elem>
               </Meson2>
               <A1S1Sp1>
                 <elem>
-                  <re>0.248107418417931</re>
-                  <im>5.02890652569477e-05</im>
+                  <re>0.248107388615608</re>
+                  <im>5.02884940942749e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00927830953150988</re>
-                  <im>1.23791357964365e-06</im>
+                  <re>0.00927830766886473</re>
+                  <im>1.23790584893868e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000983863486908376</re>
-                  <im>1.15986267701373e-06</im>
+                  <re>0.000983863370493054</re>
+                  <im>1.1598685887293e-06</im>
                 </elem>
                 <elem>
-                  <re>0.0002531444770284</re>
-                  <im>6.22106938408251e-07</im>
+                  <re>0.000253144447924569</re>
+                  <im>6.22108927927911e-07</im>
                 </elem>
                 <elem>
-                  <re>9.22913823160343e-05</re>
-                  <im>1.1781496311869e-07</im>
+                  <re>9.22913677641191e-05</re>
+                  <im>1.17814941802408e-07</im>
                 </elem>
                 <elem>
-                  <re>3.74614864995237e-05</re>
-                  <im>-2.12554738254767e-07</im>
+                  <re>3.74614683096297e-05</re>
+                  <im>-2.12555420375793e-07</im>
                 </elem>
                 <elem>
-                  <re>1.6741951185395e-05</re>
-                  <im>-4.13103322216557e-07</im>
+                  <re>1.67419530043844e-05</re>
+                  <im>-4.13104885410576e-07</im>
                 </elem>
                 <elem>
-                  <re>9.90178159554489e-06</re>
+                  <re>9.90176613413496e-06</re>
                   <im>-5.44003910363244e-07</im>
                 </elem>
               </A1S1Sp1>
               <A1S1Sm1>
                 <elem>
-                  <re>0.248109251260757</re>
-                  <im>5.44354916200973e-05</im>
+                  <re>0.248109236359596</re>
+                  <im>5.44353570148814e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00927854049950838</re>
-                  <im>1.63450283707789e-06</im>
+                  <re>0.00927853956818581</re>
+                  <im>1.63453580626083e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000983865116722882</re>
-                  <im>1.29066665977007e-06</im>
+                  <re>0.00098386500030756</re>
+                  <im>1.29066279441759e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00025314575759694</re>
-                  <im>6.42795157546061e-07</im>
+                  <re>0.000253145699389279</re>
+                  <im>6.42788450022636e-07</im>
                 </elem>
                 <elem>
-                  <re>9.23016195883974e-05</re>
-                  <im>1.38373991376284e-07</im>
+                  <re>9.23015832086094e-05</re>
+                  <im>1.38371788693803e-07</im>
                 </elem>
                 <elem>
-                  <re>3.74618321075104e-05</re>
-                  <im>-2.10533485756059e-07</im>
+                  <re>3.74618175555952e-05</re>
+                  <im>-2.10535318956317e-07</im>
                 </elem>
                 <elem>
-                  <re>1.67567141033942e-05</re>
-                  <im>-3.97839698962343e-07</im>
+                  <re>1.67567122844048e-05</re>
+                  <im>-3.97841802168841e-07</im>
                 </elem>
                 <elem>
-                  <re>9.87868224910926e-06</re>
-                  <im>-5.72096155337931e-07</im>
+                  <re>9.87865951174172e-06</re>
+                  <im>-5.72096269024769e-07</im>
                 </elem>
               </A1S1Sm1>
               <A2S1Sp1>
                 <elem>
-                  <re>-0.0355133786797523</re>
-                  <im>-1.29140344142797e-05</im>
+                  <re>-0.0355133749544621</re>
+                  <im>-1.29138425108977e-05</im>
                 </elem>
                 <elem>
-                  <re>-0.00165259791538119</re>
-                  <im>8.97061681826017e-07</im>
+                  <re>-0.00165259768255055</re>
+                  <im>8.97062818694394e-07</im>
                 </elem>
                 <elem>
-                  <re>-0.000249281525611877</re>
-                  <im>-5.18636284141394e-07</im>
+                  <re>-0.000249281496508047</re>
+                  <im>-5.18639126312337e-07</im>
                 </elem>
                 <elem>
-                  <re>-7.76894594309852e-05</re>
-                  <im>-4.4321211589704e-07</im>
+                  <re>-7.76894448790699e-05</re>
+                  <im>-4.43212854861486e-07</im>
                 </elem>
                 <elem>
-                  <re>-2.99746861855965e-05</re>
-                  <im>-1.68609432193989e-07</im>
+                  <re>-2.99746770906495e-05</re>
+                  <im>-1.68610000628178e-07</im>
                 </elem>
                 <elem>
-                  <re>-1.21354405564489e-05</re>
-                  <im>9.84388748292986e-09</im>
+                  <re>-1.21354378279648e-05</re>
+                  <im>9.8445340768194e-09</im>
                 </elem>
                 <elem>
-                  <re>-5.16876889378182e-06</re>
-                  <im>1.10768510808157e-07</im>
+                  <re>-5.16876707479241e-06</re>
+                  <im>1.1076812711508e-07</im>
                 </elem>
                 <elem>
                   <re>-2.00173371922574e-06</re>
-                  <im>1.48575736602652e-07</im>
+                  <im>1.48575168168463e-07</im>
                 </elem>
               </A2S1Sp1>
               <A2S1Sm1>
                 <elem>
-                  <re>-0.0355138070881367</re>
-                  <im>-1.37818651637645e-05</im>
+                  <re>-0.0355138033628464</re>
+                  <im>-1.37818751682062e-05</im>
                 </elem>
                 <elem>
-                  <re>-0.00165266415569931</re>
-                  <im>7.73920874053147e-07</im>
+                  <re>-0.00165266403928399</re>
+                  <im>7.73916099205962e-07</im>
                 </elem>
                 <elem>
-                  <re>-0.000249280128628016</re>
-                  <im>-5.84008034820727e-07</im>
+                  <re>-0.000249280099524185</re>
+                  <im>-5.84012127546885e-07</im>
                 </elem>
                 <elem>
                   <re>-7.76901069912128e-05</re>
-                  <im>-4.52762208169588e-07</im>
+                  <im>-4.5276010496309e-07</im>
                 </elem>
                 <elem>
-                  <re>-2.99773910228396e-05</re>
-                  <im>-1.74744457126508e-07</im>
+                  <re>-2.99773855658714e-05</re>
+                  <im>-1.74742979197617e-07</im>
                 </elem>
                 <elem>
-                  <re>-1.21360235425527e-05</re>
-                  <im>8.84142536961008e-09</im>
+                  <re>-1.21360189950792e-05</re>
+                  <im>8.84196538208926e-09</im>
                 </elem>
                 <elem>
-                  <re>-5.17367152497172e-06</re>
-                  <im>1.06347044948052e-07</im>
+                  <re>-5.17366879648762e-06</re>
+                  <im>1.06347677331087e-07</im>
                 </elem>
                 <elem>
-                  <re>-1.99439909920329e-06</re>
-                  <im>1.54588803980005e-07</im>
+                  <re>-1.99440319192945e-06</re>
+                  <im>1.5458954294445e-07</im>
                 </elem>
               </A2S1Sm1>
               <A1S0>
                 <elem>
-                  <re>0.124054163694382</re>
-                  <im>2.61811328527983e-05</im>
+                  <re>0.124054156243801</re>
+                  <im>2.61809582298156e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00463921250775456</re>
-                  <im>7.1810279678175e-07</im>
+                  <re>0.00463921204209328</re>
+                  <im>7.18107116881583e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000491932150907815</re>
-                  <im>6.12631481544668e-07</im>
+                  <re>0.000491932092700154</re>
+                  <im>6.12632277352532e-07</im>
                 </elem>
                 <elem>
                   <re>0.000126572558656335</re>
-                  <im>3.16225339247467e-07</im>
+                  <im>3.16224401331056e-07</im>
                 </elem>
                 <elem>
-                  <re>4.61482450191397e-05</re>
-                  <im>6.40471427004741e-08</im>
+                  <re>4.61482377431821e-05</re>
+                  <im>6.40466382151317e-08</im>
                 </elem>
                 <elem>
-                  <re>1.87308287422638e-05</re>
-                  <im>-1.05772478775634e-07</im>
+                  <re>1.87308232852956e-05</re>
+                  <im>-1.05773224845507e-07</im>
                 </elem>
                 <elem>
-                  <re>8.3746681411867e-06</re>
-                  <im>-2.02738505095112e-07</im>
+                  <re>8.37466359371319e-06</re>
+                  <im>-2.02739457222378e-07</im>
                 </elem>
                 <elem>
-                  <re>4.94512141813175e-06</re>
-                  <im>-2.79033997685474e-07</im>
+                  <re>4.94510641146917e-06</re>
+                  <im>-2.79035162975561e-07</im>
                 </elem>
               </A1S0>
               <A2S0>
                 <elem>
-                  <re>0.0177567955106497</re>
-                  <im>6.67396034259582e-06</im>
+                  <re>0.0177567936480045</re>
+                  <im>6.67392396280775e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000826314848382026</re>
-                  <im>-4.17771957472723e-07</im>
+                  <re>0.000826314790174365</re>
+                  <im>-4.1777013848332e-07</im>
                 </elem>
                 <elem>
                   <re>0.00012464020983316</re>
-                  <im>2.75645817282566e-07</im>
+                  <im>2.75647892067354e-07</im>
                 </elem>
                 <elem>
                   <re>3.88448206649628e-05</re>
-                  <im>2.23988593006652e-07</im>
+                  <im>2.23988323000412e-07</im>
                 </elem>
                 <elem>
-                  <re>1.49879870150471e-05</re>
-                  <im>8.58328661479391e-08</im>
+                  <re>1.49879824675736e-05</re>
+                  <im>8.58325890362721e-08</im>
                 </elem>
                 <elem>
-                  <re>6.06786761636613e-06</re>
-                  <im>-4.67469618570249e-09</im>
+                  <re>6.06786625212408e-06</re>
+                  <im>-4.67503902257249e-09</im>
                 </elem>
                 <elem>
-                  <re>2.58560112342821e-06</re>
-                  <im>-5.42775779877047e-08</im>
+                  <re>2.5856002139335e-06</re>
+                  <im>-5.42777698342434e-08</im>
                 </elem>
                 <elem>
-                  <re>9.98984319267038e-07</re>
-                  <im>-7.57771374537697e-08</im>
+                  <re>9.98984660327551e-07</re>
+                  <im>-7.57768248149659e-08</im>
                 </elem>
               </A2S0>
               <I1S1>
                 <elem>
-                  <re>0.2125947419554</re>
-                  <im>3.90143286495004e-05</im>
+                  <re>0.212594723328948</re>
+                  <im>3.90140667150263e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00762579397996888</re>
-                  <im>2.27169948630035e-06</im>
+                  <re>0.007625792757608</re>
+                  <im>2.27171028654993e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000734583474695683</re>
-                  <im>6.73942508910841e-07</im>
+                  <re>0.000734583387384191</re>
+                  <im>6.7394006464383e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000175455334101571</re>
-                  <im>1.84463885943842e-07</im>
+                  <re>0.000175455297721783</re>
+                  <im>1.84462209062985e-07</im>
                 </elem>
                 <elem>
-                  <re>6.23204623479978e-05</re>
-                  <im>-4.35824674127616e-08</im>
+                  <re>6.23204441581038e-05</re>
+                  <im>-4.35831246647922e-08</im>
                 </elem>
                 <elem>
-                  <re>2.53259272540163e-05</re>
-                  <im>-2.02201455579143e-07</im>
+                  <re>2.53259145210905e-05</re>
+                  <im>-2.02202119936601e-07</im>
                 </elem>
                 <elem>
-                  <re>1.15781124350178e-05</re>
-                  <im>-2.96913732711346e-07</im>
+                  <re>1.15781147087546e-05</re>
+                  <im>-2.96915441566625e-07</im>
                 </elem>
                 <elem>
-                  <re>7.89216551311256e-06</re>
-                  <im>-4.06467762559259e-07</im>
+                  <re>7.89214436736074e-06</re>
+                  <im>-4.0646773413755e-07</im>
                 </elem>
               </I1S1>
               <I0S1>
                 <elem>
-                  <re>0.283621927723289</re>
-                  <im>6.57102282275446e-05</im>
+                  <re>0.283621901646256</re>
+                  <im>6.57097843941301e-05</im>
                 </elem>
                 <elem>
-                  <re>0.0109310560510494</re>
-                  <im>6.00716930421186e-07</im>
+                  <re>0.0109310544794425</re>
+                  <im>6.00731368649576e-07</im>
                 </elem>
                 <elem>
-                  <re>0.00123314512893558</re>
-                  <im>1.77658682787296e-06</im>
+                  <re>0.00123314498341642</re>
+                  <im>1.77659131850305e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000330834900523769</re>
-                  <im>1.08043821001047e-06</im>
+                  <re>0.000330834849592065</re>
+                  <im>1.08043516888756e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000122272539556434</re>
-                  <im>2.99771421907735e-07</im>
+                  <re>0.000122272506814625</re>
+                  <im>2.99769855161003e-07</im>
                 </elem>
                 <elem>
-                  <re>4.95973913530179e-05</re>
-                  <im>-2.20886768431683e-07</im>
+                  <re>4.95973713441344e-05</re>
+                  <im>-2.2088861939551e-07</im>
                 </elem>
                 <elem>
-                  <re>2.19205528537714e-05</re>
-                  <im>-5.14029288467555e-07</im>
+                  <re>2.19205505800346e-05</re>
+                  <im>-5.14031246012792e-07</im>
                 </elem>
                 <elem>
-                  <re>1.18882983315416e-05</re>
-                  <im>-7.09632303141916e-07</im>
+                  <re>1.18882812785159e-05</re>
+                  <im>-7.09632445250463e-07</im>
                 </elem>
               </I0S1>
               <I1S0>
                 <elem>
-                  <re>0.141810959205031</re>
-                  <im>3.28550931953941e-05</im>
+                  <re>0.141810949891806</re>
+                  <im>3.28548821926233e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00546552735613659</re>
-                  <im>3.00330839309026e-07</im>
+                  <re>0.00546552683226764</re>
+                  <im>3.00336978398263e-07</im>
                 </elem>
                 <elem>
-                  <re>0.000616572360740975</re>
-                  <im>8.88277298827234e-07</im>
+                  <re>0.000616572302533314</re>
+                  <im>8.88280169419886e-07</im>
                 </elem>
                 <elem>
                   <re>0.000165417379321298</re>
-                  <im>5.40213932254119e-07</im>
+                  <im>5.40212724331468e-07</im>
                 </elem>
                 <elem>
-                  <re>6.11362320341868e-05</re>
-                  <im>1.49880008848413e-07</im>
+                  <re>6.11362202107557e-05</re>
+                  <im>1.49879227251404e-07</im>
                 </elem>
                 <elem>
-                  <re>2.479869635863e-05</re>
-                  <im>-1.10447174961337e-07</im>
+                  <re>2.47986895374197e-05</re>
+                  <im>-1.10448263868079e-07</im>
                 </elem>
                 <elem>
-                  <re>1.09602692646149e-05</re>
-                  <im>-2.57016083082817e-07</im>
+                  <re>1.09602638076467e-05</re>
+                  <im>-2.57017227056622e-07</im>
                 </elem>
                 <elem>
-                  <re>5.94410573739879e-06</re>
-                  <im>-3.54811135139244e-07</im>
+                  <re>5.94409107179672e-06</re>
+                  <im>-3.54811987790526e-07</im>
                 </elem>
               </I1S0>
               <I0S0>
                 <elem>
-                  <re>0.106297368183732</re>
-                  <im>1.95071725102025e-05</im>
+                  <re>0.106297362595797</re>
+                  <im>1.95070342670078e-05</im>
                 </elem>
                 <elem>
-                  <re>0.00381289765937254</re>
-                  <im>1.13587475425447e-06</im>
+                  <re>0.00381289725191891</re>
+                  <im>1.1358772553649e-06</im>
                 </elem>
                 <elem>
-                  <re>0.000367291941074654</re>
-                  <im>3.36985664262102e-07</im>
+                  <re>0.000367291882866994</re>
+                  <im>3.36984385285177e-07</im>
                 </elem>
                 <elem>
                   <re>8.77277379913721e-05</re>
-                  <im>9.22367462408147e-08</im>
+                  <im>9.22360783306431e-08</im>
                 </elem>
                 <elem>
-                  <re>3.11602580040926e-05</re>
-                  <im>-2.1785723447465e-08</im>
+                  <re>3.11602552756085e-05</re>
+                  <im>-2.17859508211404e-08</im>
                 </elem>
                 <elem>
-                  <re>1.26629611258977e-05</re>
-                  <im>-1.01097782589932e-07</im>
+                  <re>1.26629570331716e-05</re>
+                  <im>-1.01098185822934e-07</im>
                 </elem>
                 <elem>
-                  <re>5.7890670177585e-06</re>
-                  <im>-1.48460927107408e-07</im>
+                  <re>5.78906337977969e-06</re>
+                  <im>-1.48461687388135e-07</im>
                 </elem>
                 <elem>
-                  <re>3.94613709886471e-06</re>
-                  <im>-2.03256860231704e-07</im>
+                  <re>3.94612175114162e-06</re>
+                  <im>-2.03258338160595e-07</im>
                 </elem>
               </I0S0>
             </Shell_Shell_Wilson_QlQlPotential>
