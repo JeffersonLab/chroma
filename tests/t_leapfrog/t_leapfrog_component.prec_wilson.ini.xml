@@ -83,12 +83,12 @@
    </Hamiltonian>
 
    <MDIntegrator>
-	<Name>LCM_STS_LEAPFROG_RECURSIVE</Name>
+	<Name>LCM_STS_LEAPFROG</Name>
 	<tau0>1.0</tau0>
 	<n_steps>2</n_steps>
 	<monomial_list>0</monomial_list>
 	<SubIntegrator>
-	     <Name>LCM_STS_LEAPFROG_RECURSIVE</Name>
+	     <Name>LCM_STS_LEAPFROG</Name>
 	     <n_steps>4</n_steps>
 	     <monomial_list>1</monomial_list>
 	     <SubIntegrator>
