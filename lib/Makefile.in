@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.91 2006-11-07 23:16:27 bjoo Exp $
+# $Id: Makefile.in,v 3.92 2006-11-08 23:54:21 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -287,8 +287,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
-	update/molecdyn/integrator/lcm_sts_leapfrog_component.cc \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
+	update/molecdyn/integrator/lcm_min_norm2_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -694,8 +694,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	lcm_minimum_norm2_integrator_mts.$(OBJEXT) \
 	lcm_minimum_norm2_qpq_integrator_mts.$(OBJEXT) \
 	lcm_pqp_leapfrog_mts.$(OBJEXT) lcm_exp_sdt.$(OBJEXT) \
-	lcm_exp_tdt.$(OBJEXT) lcm_sts_leapfrog_component.$(OBJEXT) \
-	lcm_sts_leapfrog_recursive.$(OBJEXT) \
+	lcm_exp_tdt.$(OBJEXT) lcm_sts_leapfrog_recursive.$(OBJEXT) \
+	lcm_min_norm2_recursive.$(OBJEXT) \
 	global_metropolis_accrej.$(OBJEXT) \
 	predictor_aggregate.$(OBJEXT) zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
@@ -1118,8 +1118,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
-	update/molecdyn/integrator/lcm_sts_leapfrog_component.h \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_min_norm2_recursive.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
@@ -1823,8 +1823,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
-	update/molecdyn/integrator/lcm_sts_leapfrog_component.h \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_min_norm2_recursive.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
@@ -2357,8 +2357,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
-	update/molecdyn/integrator/lcm_sts_leapfrog_component.cc \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
+	update/molecdyn/integrator/lcm_min_norm2_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
@@ -2954,13 +2954,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_exp_sdt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_exp_tdt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_integrator_leaps.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_min_norm2_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_minimum_norm2_integrator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_minimum_norm2_integrator_mts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_minimum_norm2_qpq_integrator_mts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_pqp_leapfrog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_pqp_leapfrog_mts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sexton_weingarten.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_leapfrog_component.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_leapfrog_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_double_pass_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lg5eps_w.Po@am__quote@
@@ -6367,20 +6367,6 @@ lcm_exp_tdt.obj: update/molecdyn/integrator/lcm_exp_tdt.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_exp_tdt.obj `if test -f 'update/molecdyn/integrator/lcm_exp_tdt.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_exp_tdt.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_exp_tdt.cc'; fi`
 
-lcm_sts_leapfrog_component.o: update/molecdyn/integrator/lcm_sts_leapfrog_component.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_leapfrog_component.o -MD -MP -MF "$(DEPDIR)/lcm_sts_leapfrog_component.Tpo" -c -o lcm_sts_leapfrog_component.o `test -f 'update/molecdyn/integrator/lcm_sts_leapfrog_component.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_leapfrog_component.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_sts_leapfrog_component.Tpo" "$(DEPDIR)/lcm_sts_leapfrog_component.Po"; else rm -f "$(DEPDIR)/lcm_sts_leapfrog_component.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_leapfrog_component.cc' object='lcm_sts_leapfrog_component.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_leapfrog_component.o `test -f 'update/molecdyn/integrator/lcm_sts_leapfrog_component.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_leapfrog_component.cc
-
-lcm_sts_leapfrog_component.obj: update/molecdyn/integrator/lcm_sts_leapfrog_component.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_leapfrog_component.obj -MD -MP -MF "$(DEPDIR)/lcm_sts_leapfrog_component.Tpo" -c -o lcm_sts_leapfrog_component.obj `if test -f 'update/molecdyn/integrator/lcm_sts_leapfrog_component.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_leapfrog_component.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_leapfrog_component.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_sts_leapfrog_component.Tpo" "$(DEPDIR)/lcm_sts_leapfrog_component.Po"; else rm -f "$(DEPDIR)/lcm_sts_leapfrog_component.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_leapfrog_component.cc' object='lcm_sts_leapfrog_component.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_leapfrog_component.obj `if test -f 'update/molecdyn/integrator/lcm_sts_leapfrog_component.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_leapfrog_component.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_leapfrog_component.cc'; fi`
-
 lcm_sts_leapfrog_recursive.o: update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_leapfrog_recursive.o -MD -MP -MF "$(DEPDIR)/lcm_sts_leapfrog_recursive.Tpo" -c -o lcm_sts_leapfrog_recursive.o `test -f 'update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_sts_leapfrog_recursive.Tpo" "$(DEPDIR)/lcm_sts_leapfrog_recursive.Po"; else rm -f "$(DEPDIR)/lcm_sts_leapfrog_recursive.Tpo"; exit 1; fi
@@ -6394,6 +6380,20 @@ lcm_sts_leapfrog_recursive.obj: update/molecdyn/integrator/lcm_sts_leapfrog_recu
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc' object='lcm_sts_leapfrog_recursive.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_leapfrog_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc'; fi`
+
+lcm_min_norm2_recursive.o: update/molecdyn/integrator/lcm_min_norm2_recursive.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_min_norm2_recursive.o -MD -MP -MF "$(DEPDIR)/lcm_min_norm2_recursive.Tpo" -c -o lcm_min_norm2_recursive.o `test -f 'update/molecdyn/integrator/lcm_min_norm2_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_min_norm2_recursive.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_min_norm2_recursive.Tpo" "$(DEPDIR)/lcm_min_norm2_recursive.Po"; else rm -f "$(DEPDIR)/lcm_min_norm2_recursive.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_min_norm2_recursive.cc' object='lcm_min_norm2_recursive.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_min_norm2_recursive.o `test -f 'update/molecdyn/integrator/lcm_min_norm2_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_min_norm2_recursive.cc
+
+lcm_min_norm2_recursive.obj: update/molecdyn/integrator/lcm_min_norm2_recursive.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_min_norm2_recursive.obj -MD -MP -MF "$(DEPDIR)/lcm_min_norm2_recursive.Tpo" -c -o lcm_min_norm2_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_min_norm2_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_min_norm2_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_min_norm2_recursive.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lcm_min_norm2_recursive.Tpo" "$(DEPDIR)/lcm_min_norm2_recursive.Po"; else rm -f "$(DEPDIR)/lcm_min_norm2_recursive.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_min_norm2_recursive.cc' object='lcm_min_norm2_recursive.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_min_norm2_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_min_norm2_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_min_norm2_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_min_norm2_recursive.cc'; fi`
 
 global_metropolis_accrej.o: update/molecdyn/hmc/global_metropolis_accrej.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT global_metropolis_accrej.o -MD -MP -MF "$(DEPDIR)/global_metropolis_accrej.Tpo" -c -o global_metropolis_accrej.o `test -f 'update/molecdyn/hmc/global_metropolis_accrej.cc' || echo '$(srcdir)/'`update/molecdyn/hmc/global_metropolis_accrej.cc; \
