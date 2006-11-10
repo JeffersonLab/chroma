@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.15 2006-11-06 17:14:59 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.16 2006-11-10 02:37:18 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -1441,7 +1441,7 @@ QDPIO::cout<<InputFileName<<endl;
 
         registered = true;
       }
-			cout<<"registered everything"<<endl;
+//			cout<<"registered everything"<<endl;
       return success;
     } // registerAll()
 
