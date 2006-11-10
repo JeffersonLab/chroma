@@ -1,4 +1,4 @@
-// $Id: mom_source_const.cc,v 3.2 2006-11-04 05:12:54 edwards Exp $
+// $Id: mom_source_const.cc,v 3.3 2006-11-10 03:10:32 edwards Exp $
 /*! \file
  *  \brief Momentum (wall) source construction
  */
@@ -7,7 +7,6 @@
 
 #include "meas/sources/source_const_factory.h"
 #include "meas/sources/mom_source_const.h"
-#include "meas/sources/walfil_w.h"
 #include "util/ft/sftmom.h"
 #include "util/ferm/transf.h"
 
@@ -24,6 +23,35 @@ namespace Chroma
   void write(XMLWriter& xml, const string& path, const MomWallQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
+  }
+
+
+  //! Fill a specific color and spin index with 1.0 within a volume
+  /*! \ingroup sources */
+  void boxfil(LatticeFermion& a, int color_index, int spin_index)
+  {
+    START_CODE();
+
+    if (color_index >= Nc || color_index < 0)
+      QDP_error_exit("invalid color index", color_index);
+
+    if (spin_index >= Ns || spin_index < 0)
+      QDP_error_exit("invalid spin index", spin_index);
+
+    // Write ONE to all field
+    Real one = 1;
+    Complex sitecomp = cmplx(one,0);
+    ColorVector sitecolor = zero;
+    Fermion sitefield = zero;
+
+    pokeSpin(sitefield,
+	     pokeColor(sitecolor,sitecomp,color_index),
+	     spin_index);
+
+    // Broadcast to all sites
+    a = sitefield;  // QDP (not installed version) now supports   construct OLattice = OScalar
+      
+    END_CODE();
   }
 
 
@@ -131,12 +159,9 @@ namespace Chroma
 	{
 	  // MomWall fill a fermion source. Insert it into the propagator source
 	  LatticeFermion chi;
-	  
-	  walfil(chi, 
-		 -1,                  // outside space-time
-		 -1,                  // outside space-time
-		 color_source, spin_source);
+	  boxfil(chi, color_source, spin_source);
 
+	  // Multiply in the time direction phases (not handled in sftmom)
 	  chi *= p_dot_t;
 
 	  for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
