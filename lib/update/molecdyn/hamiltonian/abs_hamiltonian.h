@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hamiltonian.h,v 3.2 2006-09-15 02:50:45 edwards Exp $
+// $Id: abs_hamiltonian.h,v 3.3 2006-11-16 20:39:48 bjoo Exp $
 /*! \file
  * \brief Abstract Hamiltonian
  *
@@ -342,7 +342,7 @@ namespace Chroma
     
     //! Get the number of monomials.
     virtual int numMonomials(void) const = 0;
-    
+   
   protected:
     //! Get hold of monomial with index i
     virtual ExactMonomial<P,Q>& getMonomial(int i) const = 0;

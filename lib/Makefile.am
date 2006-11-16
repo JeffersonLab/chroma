@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.46 2006-11-08 23:54:01 bjoo Exp $
+# $Id: Makefile.am,v 3.47 2006-11-16 20:39:46 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -70,8 +70,10 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_polyprec_aggregate.h \
 	actions/ferm/invert/syssolver_cg_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
+	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
+	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
 	actions/ferm/invert/syssolver_mdagm_cg_array.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
 	actions/ferm/invert/multi_syssolver_mdagm.h \
@@ -711,8 +713,10 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
 	actions/ferm/invert/syssolver_cg_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
+	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
+	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \

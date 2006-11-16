@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 3.3 2006-08-26 02:08:40 edwards Exp $
+// $Id: lwldslash_array_pab_w.cc,v 3.4 2006-11-16 20:39:48 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -154,16 +154,21 @@ namespace Chroma
   PABWilsonDslashArray::~PABWilsonDslashArray(void) 
   {
     START_CODE();
-
+    QDPIO::cout << "~PABWilsonDslashArray() refcount=" << PABDslashEnv::refcount << flush;
     if( PABDslashEnv::refcount > 0 ) {
+	QDPIO::cout << "...decrementing refcount" << flush;
 	PABDslashEnv::refcount--;
      
 
         if( PABDslashEnv::refcount == 0 ) {
+	  QDPIO::cout << "...refcount reached 0. Finalizing" << flush << endl;
 	  wfm_vec_end(&wil);
         }
     }
 
+    QDPIO::cout << "Packed gauge pointer is: " << packed_gauge <<endl;
+    QDPIO::cout << "~PABWilsnDslashArray() freeing gauge field" << endl << flush ;
+   
     QDP::Allocator::theQDPAllocator::Instance().free(packed_gauge);
     
     END_CODE();

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: monomial_io.h,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: monomial_io.h,v 3.1 2006-11-16 20:39:48 bjoo Exp $
 /*! \file
  *  \brief Monomial IO
  */
@@ -27,6 +27,17 @@ namespace Chroma
 	    Handle< ExactMonomial< multi1d<LatticeColorMatrix>, 
 	                           multi1d<LatticeColorMatrix> > >& mon_handle );
 
+  //! Read a named monomial from an XML reader, use factory to create and assign the pointer to a handle in the named object map of monomial handles.
+  /*! \ingroup io */
+  void readNamedMonomial(XMLReader& xml,
+			 const std::string& path,
+			 std::string& the_monomial_id);
+
+
+  //! Read an array of named monomials from an XML reader. use factory to create the monomials and put them in a named object map of monomial handles.
+  /*! \ingroup io */
+  void readNamedMonomialArray(XMLReader& xml, 
+			      const std::string& path);
 
 
 }; // End namespace Chroma
