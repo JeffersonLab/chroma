@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg2_timing_hacks.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: invcg2_timing_hacks.h,v 3.1 2006-11-16 20:39:15 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -8,6 +8,7 @@
 #define __invcg2_timing_hacks_h__
 
 #include "linearop.h"
+#include "syssolver.h"
 
 namespace Chroma {
 
@@ -65,12 +66,11 @@ namespace Chroma {
  */
 
 template<typename T>
-void InvCG2_timing_hacks(const LinearOperator<T>& M,
-			 const T& chi,
-			 T& psi,
-			 const Real& RsdCG, 
-			 int MaxCG, 
-			 int& n_count);
+SystemSolverResults_t
+InvCG2_timings(const LinearOperator<T>& M,
+	       const T& chi,
+	       T& psi,
+	       int MaxCG);
 
 }  // end namespace Chroma
 

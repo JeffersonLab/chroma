@@ -1,11 +1,13 @@
-// $Id: syssolver_mdagm_aggregate.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
+// $Id: syssolver_mdagm_aggregate.cc,v 3.4 2006-11-16 20:39:15 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
 
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 
+
 #include "actions/ferm/invert/syssolver_mdagm_cg.h"
+#include "actions/ferm/invert/syssolver_mdagm_cg_timing.h"
 #include "actions/ferm/invert/syssolver_mdagm_cg_array.h"
 
 namespace Chroma
@@ -25,6 +27,7 @@ namespace Chroma
       {
 	// Sources
 	success &= MdagMSysSolverCGEnv::registerAll();
+	success &= MdagMSysSolverCGTimingsEnv::registerAll();
 	registered = true;
       }
       return success;
