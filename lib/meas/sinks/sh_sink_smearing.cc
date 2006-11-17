@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 3.5 2006-09-20 20:28:04 edwards Exp $
+// $Id: sh_sink_smearing.cc,v 3.6 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -52,6 +52,14 @@ namespace Chroma
     }
 
     //! Callback function
+    QuarkSourceSink<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								const std::string& path,
+								const multi1d<LatticeColorMatrix>& u)
+    {
+      return new SinkSmear<LatticeStaggeredPropagator>(Params(xml_in, path), u);
+    }
+
+    //! Callback function
     QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
 						const std::string& path,
 						const multi1d<LatticeColorMatrix>& u)
@@ -75,6 +83,7 @@ namespace Chroma
 	success &= QuarkSmearingEnv::registerAll();
 	success &= QuarkDisplacementEnv::registerAll();
 	success &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheStagPropSinkSmearingFactory::Instance().registerObject(name, createStagProp);
 	success &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
 
 	registered = true;
@@ -216,6 +225,77 @@ namespace Chroma
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
 										displace_path));
+
+	if (params.quark_smear_firstP)
+	{
+	  //
+	  // Sink smear quark
+	  //
+	  (*quarkSmearing)(quark_sink, u_smr);
+
+	  //
+	  // Displace the sink
+	  //
+	  (*quarkDisplacement)(quark_sink, u_smr, PLUS);
+	}
+	else
+	{
+	  //
+	  // Displace the sink
+	  //
+	  (*quarkDisplacement)(quark_sink, u_smr, PLUS);
+
+	  //
+	  // Sink smear quark
+	  //
+	  (*quarkSmearing)(quark_sink, u_smr);
+	}
+
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDP_abort(1);
+      }
+    }
+
+
+
+
+    //! Smear the sink
+    template<>
+    void
+    SinkSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark_sink) const
+    {
+      QDPIO::cout << "Shell sink" << endl;
+
+      try
+      {
+	//
+	// Create the quark smearing object
+	//
+	std::istringstream  xml_s(params.quark_smearing.xml);
+	XMLReader  smeartop(xml_s);
+	const string smear_path = "/SmearingParam";
+        QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
+	
+	Handle< QuarkSmearing<LatticeStaggeredPropagator> >
+	  quarkSmearing(TheStagPropSmearingFactory::Instance().createObject(params.quark_smearing.id,
+									    smeartop,
+									    smear_path));
+
+	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.quark_displacement.xml);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+        QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
+	
+	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
+	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
+										    displacetop,
+										    displace_path));
 
 	if (params.quark_smear_firstP)
 	{

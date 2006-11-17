@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ferm_createstate_aggregate_s.h,v 1.2 2006-09-20 20:31:41 edwards Exp $
+// $Id: ferm_createstate_aggregate_s.h,v 1.3 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  *  \brief All ferm create-state method
  */
@@ -14,7 +14,7 @@ namespace Chroma
 {
   //! Registration aggregator
   /*! @ingroup fermstates */
-  namespace CreateFermStateEnv
+  namespace StaggeredCreateFermStateEnv
   {
     bool registerAll();
 

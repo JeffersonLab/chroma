@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: source_const_factory.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: source_const_factory.h,v 3.1 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark prop sources
  */
@@ -34,6 +34,17 @@ namespace Chroma
 		  QuarkSourceConstruction<LatticeFermion>* (*)(XMLReader&,
 							       const std::string&), StringFactoryError> >
   TheFermSourceConstructionFactory;
+
+
+  //! Propagator source factory (foundry)
+  /*! @ingroup sources */
+  typedef SingletonHolder< 
+    ObjectFactory<QuarkSourceConstruction<LatticeStaggeredPropagator>, 
+		  std::string,
+		  TYPELIST_2(XMLReader&, const std::string&),
+		  QuarkSourceConstruction<LatticeStaggeredPropagator>* (*)(XMLReader&,
+									   const std::string&), StringFactoryError> >
+  TheStagPropSourceConstructionFactory;
 
 }
 

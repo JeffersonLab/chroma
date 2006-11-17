@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sink_smearing_factory.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: sink_smearing_factory.h,v 3.1 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark prop sinks
  */
@@ -25,6 +25,19 @@ namespace Chroma
 							  const multi1d<LatticeColorMatrix>&), 
 		  StringFactoryError> >
   ThePropSinkSmearingFactory;
+
+
+  //! Propagator sink factory (foundry)
+  /*! @ingroup sinks */
+  typedef SingletonHolder< 
+    ObjectFactory<QuarkSourceSink<LatticeStaggeredPropagator>, 
+		  std::string,
+		  TYPELIST_3(XMLReader&, const std::string&, const multi1d<LatticeColorMatrix>&),
+		  QuarkSourceSink<LatticeStaggeredPropagator>* (*)(XMLReader&,
+								   const std::string&,
+								   const multi1d<LatticeColorMatrix>&), 
+		  StringFactoryError> >
+  TheStagPropSinkSmearingFactory;
 
 
   //! Propagator sink factory (foundry)

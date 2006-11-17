@@ -1,4 +1,4 @@
-// $Id: gaus_quark_smearing.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
+// $Id: gaus_quark_smearing.cc,v 3.2 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -37,6 +37,13 @@ namespace Chroma
     }
 
     //! Callback function
+    QuarkSmearing<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+							      const std::string& path)
+    {
+      return new QuarkSmear<LatticeStaggeredPropagator>(Params(xml_in, path));
+    }
+
+    //! Callback function
     QuarkSmearing<LatticeFermion>* createFerm(XMLReader& xml_in,
 					      const std::string& path)
     {
@@ -63,6 +70,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= Chroma::ThePropSmearingFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheStagPropSmearingFactory::Instance().registerObject(name, createStagProp);
 	success &= Chroma::TheFermSmearingFactory::Instance().registerObject(name, createFerm);
 	success &= Chroma::TheColorVecSmearingFactory::Instance().registerObject(name, createColorVec);
 	registered = true;
@@ -101,6 +109,15 @@ namespace Chroma
     void
     QuarkSmear<LatticePropagator>::operator()(LatticePropagator& quark,
 					      const multi1d<LatticeColorMatrix>& u) const
+    {
+      gausSmear(u, quark, params.wvf_param, params.wvfIntPar, params.no_smear_dir);
+    }
+
+    //! Smear the quark
+    template<>
+    void
+    QuarkSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark,
+						       const multi1d<LatticeColorMatrix>& u) const
     {
       gausSmear(u, quark, params.wvf_param, params.wvfIntPar, params.no_smear_dir);
     }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: klein_gord.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: klein_gord.h,v 3.1 2006-11-17 02:17:31 edwards Exp $
 
 /*! \file
  * \brief Klein-Gordon operator
@@ -22,6 +22,13 @@ namespace Chroma
   void klein_gord(const multi1d<LatticeColorMatrix>& u, 
 		  const LatticeFermion& psi, 
 		  LatticeFermion& chi, 
+		  const Real& mass_sq, int j_decay);
+
+  //! Klein-Gordon operator
+  /*! @ingroup boson */
+  void klein_gord(const multi1d<LatticeColorMatrix>& u, 
+		  const LatticeStaggeredPropagator& psi, 
+		  LatticeStaggeredPropagator& chi, 
 		  const Real& mass_sq, int j_decay);
 
   //! Klein-Gordon operator

@@ -1,4 +1,4 @@
-// $Id: inline_mres_w.cc,v 3.3 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_mres_w.cc,v 3.4 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  * \brief Inline construction of mres
  *
@@ -56,7 +56,6 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, InlineMresParams::Param_t& input)
   {
     XMLReader inputtop(xml, path);
-    read(inputtop, "nrow", input.nrow);
 
     if (inputtop.count("FermionAction") != 0)
       input.fermact = readXMLGroup(inputtop, "FermionAction", "FermAct");
@@ -67,7 +66,6 @@ namespace Chroma
   void write(XMLWriter& xml, const string& path, const InlineMresParams::Param_t& input)
   {
     push(xml, path);
-    write(xml, "nrow", input.nrow);
 
     QDPIO::cout << "write mresparams: fermact=XX" << input.fermact.xml << "XX\n";
 

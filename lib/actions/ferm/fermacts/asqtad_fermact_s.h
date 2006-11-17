@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_fermact_s.h,v 3.3 2006-10-19 16:01:26 edwards Exp $
+// $Id: asqtad_fermact_s.h,v 3.4 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -11,10 +11,19 @@
 #include "state.h"
 #include "actions/ferm/fermstates/asqtad_state.h"
 #include "actions/ferm/fermstates/simple_fermstate.h"
+#include "actions/ferm/fermacts/asqtad_fermact_params_s.h"
 
 
 namespace Chroma 
 { 
+  //! Name and registration
+  namespace AsqtadFermActEnv
+  {
+    extern const std::string name;
+    bool registerAll();
+  }
+
+
   //! Asqtad staggered fermion action
   /*! \ingroup fermacts
    *
@@ -29,13 +38,13 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  Q;
 
     //! General CreateFermState
-    AsqtadFermAct(Handle< FermBC<T,P,Q> > fbc_, 
-		  const Real Mass_, const Real u0_) : 
-      cfs(new CreateSimpleFermState<T,P,Q>(fbc_)), Mass(Mass_), u0(u0_) {}
+    AsqtadFermAct(Handle< CreateFermState<T,P,Q> > cfs_, 
+		  const AsqtadFermActParams& p) :
+      cfs(cfs_), param(p) {}
   
     //! Copy constructor
     AsqtadFermAct(const AsqtadFermAct& a) : 
-      cfs(a.cfs), Mass(a.Mass), u0(a.u0) {}
+      cfs(a.cfs), param(a.param) {}
 
     //! Create state should apply the BC
     AsqtadConnectStateBase* createState(const Q& u_) const;
@@ -54,8 +63,8 @@ namespace Chroma
 			   const GroupXML_t& invParam) const;
 
     //! accessors 
-    const Real getQuarkMass() const {return Mass;}
-    Real getU0() {return u0;}
+    const Real getQuarkMass() const {return param.Mass;}
+    Real getU0() {return param.u0;}
 
     //! Destructor is automatic
     ~AsqtadFermAct() {}
@@ -70,8 +79,7 @@ namespace Chroma
   
   private:
     Handle< CreateFermState<T,P,Q> >  cfs;
-    Real Mass;
-    Real u0;
+    AsqtadFermActParams  param;
   };
 
 

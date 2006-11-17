@@ -1,4 +1,4 @@
-// $Id: asqtad_fermact_s.cc,v 3.1 2006-09-19 18:08:38 edwards Exp $
+// $Id: asqtad_fermact_s.cc,v 3.2 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  *  \brief Asqtad staggered fermion action
  */
@@ -9,6 +9,9 @@
 //#include "actions/ferm/fermacts/asqtad_fermact_s.h"
 //#include "actions/ferm/linop/lmdagm_s.h"
 
+#include "actions/ferm/fermacts/fermact_factory_s.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_s.h"
+
 #include "actions/ferm/linop/asqtad_mdagm_s.h"
 #include "actions/ferm/linop/asqtad_linop_s.h"
 #include "actions/ferm/fermacts/asqtad_fermact_s.h"
@@ -16,6 +19,50 @@
 
 namespace Chroma 
 { 
+
+  //! Hooks to register the class with the fermact factory
+  namespace AsqtadFermActEnv
+  {
+    //! Callback function
+    StaggeredTypeFermAct<LatticeStaggeredFermion,
+			 multi1d<LatticeColorMatrix>,
+			 multi1d<LatticeColorMatrix> >* createFermAct4D(XMLReader& xml_in,
+									const std::string& path)
+    {
+      return new AsqtadFermAct(StaggeredCreateFermStateEnv::reader(xml_in, path), 
+			       AsqtadFermActParams(xml_in, path));
+    }
+
+    //! Callback function
+    /*! Differs in return type */
+    FermionAction<LatticeStaggeredFermion,
+		  multi1d<LatticeColorMatrix>,
+		  multi1d<LatticeColorMatrix> >* createFermAct(XMLReader& xml_in,
+							       const std::string& path)
+    {
+      return createFermAct4D(xml_in, path);
+    }
+
+    //! Name to be used
+    const std::string name = "ASQTAD";
+
+    //! Local registration flag
+    static bool registered = false;
+
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheStagFermionActionFactory::Instance().registerObject(name, createFermAct);
+	success &= Chroma::TheStagTypeFermActFactory::Instance().registerObject(name, createFermAct4D);
+	registered = true;
+      }
+      return success;
+    }
+  }
+
 
   //! Produce a linear operator for this action
   /*!
@@ -44,7 +91,7 @@ namespace Chroma
     // OR from the Proxy. We then get access to all the virtual methods
     // in the AsqtadConnectState. Only Restriction: We have to use the
     // get() methods as they are all the base class provides.
-    return new AsqtadLinOp(state.cast<AsqtadConnectStateBase>(), Mass);
+    return new AsqtadLinOp(state.cast<AsqtadConnectStateBase>(), param.Mass);
   }
 
   //! Produce a M^dag.M linear operator for this action
@@ -60,7 +107,7 @@ namespace Chroma
 		     multi1d<LatticeColorMatrix> >* 
   AsqtadFermAct::lMdagM(Handle< FermState<T,P,Q> > state) const
   {
-    return new AsqtadMdagM(state.cast<AsqtadConnectStateBase>(), Mass);
+    return new AsqtadMdagM(state.cast<AsqtadConnectStateBase>(), param.Mass);
   }
 
 
@@ -84,8 +131,8 @@ namespace Chroma
     }
 
     // Make Fat7 and triple links
-    Fat7_Links(u_with_phases, u_fat, u0);
-    Triple_Links(u_with_phases, u_triple, u0);
+    Fat7_Links(u_with_phases, u_fat, param.u0);
+    Triple_Links(u_with_phases, u_triple, param.u0);
 
     return new AsqtadConnectState(cfs->getFermBC(), u_with_phases, u_fat, u_triple);
   }

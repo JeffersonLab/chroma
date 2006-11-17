@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 3.2 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_qqq_w.cc,v 3.3 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -66,7 +66,6 @@ namespace Chroma
     }
 
     read(paramtop, "Dirac_basis", input.Dirac_basis);
-    read(paramtop, "nrow", input.nrow);
   }
 
   //! Param output
@@ -77,7 +76,6 @@ namespace Chroma
     int version = 4;
     write(xml, "version", version);
     write(xml, "Dirac_basis", input.Dirac_basis);
-    write(xml, "nrow", input.nrow);
 
     pop(xml);
   }

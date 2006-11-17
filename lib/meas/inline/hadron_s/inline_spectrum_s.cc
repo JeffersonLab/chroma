@@ -783,24 +783,20 @@ namespace Chroma {
     // First calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
 
+    // Typedefs to save typing
+    typedef LatticeStaggeredFermion      T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
-
-    // Create a fermion BC
-    Handle< FermBC<LatticeStaggeredFermion,
-		   multi1d<LatticeColorMatrix>,
-		   multi1d<LatticeColorMatrix> > >  
-      fbc(new SimpleFermBC<LatticeStaggeredFermion,
-		           multi1d<LatticeColorMatrix>,
-		           multi1d<LatticeColorMatrix> >(params.param.boundary));
-
+    // Create a fermion state
+    Handle< CreateFermState<T,P,Q> > cfg(new CreateSimpleFermState<T,P,Q>(params.param.boundary));
 
     // Initialize fermion action
-
-    AsqtadFermAct S_f(fbc, params.prop_param.Mass,
-		      params.prop_param.u0);
-    Handle< FermState<LatticeStaggeredFermion,
-		      multi1d<LatticeColorMatrix>,
-		      multi1d<LatticeColorMatrix> > > state(S_f.createState(u));
+    AsqtadFermActParams asq_param;
+    asq_param.Mass = params.prop_param.Mass;
+    asq_param.u0   = params.prop_param.u0;
+    AsqtadFermAct S_f(cfg, asq_param);
+    Handle< FermState<T,P,Q> > state(S_f.createState(u));
 
     // Jiggery-pokery to turn a CG struct into a GroupXML_t for the qprops
     GroupXML_t inv_param;

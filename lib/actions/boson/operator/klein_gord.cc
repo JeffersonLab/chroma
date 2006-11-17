@@ -1,4 +1,4 @@
-// $Id: klein_gord.cc,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: klein_gord.cc,v 3.1 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  *  \brief Apply Klein-Gordon operator
  */
@@ -67,6 +67,15 @@ namespace Chroma
 		  const Real& mass_sq, int j_decay)
   {
     klein_gord<LatticeFermion>(u, psi, chi, mass_sq, j_decay);
+  }
+
+  //! Compute the covariant Klein-Gordon operator on a propagator
+  void klein_gord(const multi1d<LatticeColorMatrix>& u, 
+		  const LatticeStaggeredPropagator& psi, 
+		  LatticeStaggeredPropagator& chi, 
+		  const Real& mass_sq, int j_decay)
+  {
+    klein_gord<LatticeStaggeredPropagator>(u, psi, chi, mass_sq, j_decay);
   }
 
   //! Compute the covariant Klein-Gordon operator on a propagator

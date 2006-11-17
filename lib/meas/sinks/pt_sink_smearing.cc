@@ -1,4 +1,4 @@
-// $Id: pt_sink_smearing.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
+// $Id: pt_sink_smearing.cc,v 3.3 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief Point sink construction
  */
@@ -45,6 +45,14 @@ namespace Chroma
     }
 
     //! Callback function
+    QuarkSourceSink<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								const std::string& path,
+								const multi1d<LatticeColorMatrix>& u)
+    {
+      return new SinkSmear<LatticeStaggeredPropagator>(Params(xml_in, path), u);
+    }
+
+    //! Callback function
     QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
 						const std::string& path,
 						const multi1d<LatticeColorMatrix>& u)
@@ -67,6 +75,7 @@ namespace Chroma
 	success &= LinkSmearingEnv::registerAll();
 	success &= QuarkDisplacementEnv::registerAll();
 	success &= Chroma::ThePropSinkSmearingFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheStagPropSinkSmearingFactory::Instance().registerObject(name, createStagProp);
 	success &= Chroma::TheFermSinkSmearingFactory::Instance().registerObject(name, createFerm);
 	registered = true;
       }
@@ -184,6 +193,43 @@ namespace Chroma
 	QDP_abort(1);
       }
     }
+
+
+
+    //! Construct the sink smearing
+    template<>
+    void
+    SinkSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark_sink) const
+    {
+      QDPIO::cout << "Point sink" << endl;
+ 
+      try
+      {
+	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.quark_displacement.xml);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+	
+	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
+	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
+										    displacetop,
+										    displace_path));
+	
+	//
+	// Displace quark source
+	//
+	(*quarkDisplacement)(quark_sink, u_smr, PLUS);
+
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << endl;
+	QDP_abort(1);
+      }
+    }
+
 
 
     //! Construct the sink smearing

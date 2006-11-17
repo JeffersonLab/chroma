@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: quark_displacement_factory.h,v 3.1 2006-08-11 16:13:30 edwards Exp $
+// $Id: quark_displacement_factory.h,v 3.2 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark displacement objects
  */
@@ -23,6 +23,17 @@ namespace Chroma
 		  QuarkDisplacement<LatticePropagator>* (*)(XMLReader&,
 							    const std::string&), StringFactoryError> >
   ThePropDisplacementFactory;
+
+
+  //! Quark displacement factory (foundry)
+  /*! \ingroup smear */
+  typedef SingletonHolder< 
+    ObjectFactory<QuarkDisplacement<LatticeStaggeredPropagator>, 
+		  std::string,
+		  TYPELIST_2(XMLReader&, const std::string&),
+		  QuarkDisplacement<LatticeStaggeredPropagator>* (*)(XMLReader&,
+								     const std::string&), StringFactoryError> >
+  TheStagPropDisplacementFactory;
 
 
   //! Quark displacement factory (foundry)

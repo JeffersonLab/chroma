@@ -1,4 +1,4 @@
-// $Id: no_quark_displacement.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
+// $Id: no_quark_displacement.cc,v 3.2 2006-11-17 02:17:32 edwards Exp $
 /*! \file
  *  \brief No quark displacement
  */
@@ -36,6 +36,13 @@ namespace Chroma
     }
 
     //! Callback function
+    QuarkDisplacement<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								  const std::string& path)
+    {
+      return new QuarkDisplace<LatticeStaggeredPropagator>(Params(xml_in, path));
+    }
+
+    //! Callback function
     QuarkDisplacement<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path)
     {
@@ -62,6 +69,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(name, createStagProp);
 	success &= Chroma::TheFermDisplacementFactory::Instance().registerObject(name, createFerm);
 	success &= Chroma::TheColorVecDisplacementFactory::Instance().registerObject(name, createColorVec);
 	registered = true;

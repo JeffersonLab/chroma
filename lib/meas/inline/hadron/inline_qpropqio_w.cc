@@ -1,4 +1,4 @@
-// $Id: inline_qpropqio_w.cc,v 3.1 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_qpropqio_w.cc,v 3.2 2006-11-17 02:17:31 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropqio
  *
@@ -88,8 +88,6 @@ namespace Chroma
       QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
       QDP_abort(1);
     }
-
-    read(paramtop, "nrow", param.nrow);
   }
 
 
@@ -101,7 +99,6 @@ namespace Chroma
     int version = 1;
 
     write(xml, "version", version);
-    write(xml, "nrow", param.nrow);
 
     pop(xml);
   }
