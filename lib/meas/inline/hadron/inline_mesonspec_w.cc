@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.11 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.12 2006-11-17 16:23:22 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -434,6 +434,8 @@ namespace Chroma
     QDPIO::cout << endl;
 
     proginfo(xml_out);    // Print out basic program info
+
+    QDPIO::cout << "xml_file = " << params.xml_file << endl;
 
     // Write out the input
     params.write(xml_out, "Input");
