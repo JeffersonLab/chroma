@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.95 2006-11-17 02:15:59 edwards Exp $
+# $Id: Makefile.in,v 3.96 2006-11-17 02:53:58 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -563,6 +563,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/scalar_loops_s.cc \
 	meas/hadron/pseudoscalar_loops_s.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
+	meas/smear/deriv_quark_displacement_s.cc \
 	meas/sources/walfil_s.cc util/gauge/stag_phases_s.cc \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc \
 	init/chroma_init.cc
@@ -906,7 +907,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	stag_propShift_s.$(OBJEXT) stag_scalars_s.$(OBJEXT) \
 	vector_meson_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
 	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
-	pseudoscalar_stoch_conn_s.$(OBJEXT) walfil_s.$(OBJEXT) \
+	pseudoscalar_stoch_conn_s.$(OBJEXT) \
+	deriv_quark_displacement_s.$(OBJEXT) walfil_s.$(OBJEXT) \
 	stag_phases_s.$(OBJEXT) $(am__objects_11) \
 	chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
@@ -1381,6 +1383,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h meas/hadron/enum_loops_s.h \
+	meas/smear/deriv_quark_displacement_s.h \
 	meas/sources/walfil_s.h util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
@@ -2094,6 +2097,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h meas/hadron/enum_loops_s.h \
+	meas/smear/deriv_quark_displacement_s.h \
 	meas/sources/walfil_s.h util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
@@ -2650,6 +2654,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/scalar_loops_s.cc \
 	meas/hadron/pseudoscalar_loops_s.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
+	meas/smear/deriv_quark_displacement_s.cc \
 	meas/sources/walfil_s.cc util/gauge/stag_phases_s.cc \
 	$(am__append_24) init/chroma_init.cc
 all: chroma_config_internal.h
@@ -2787,6 +2792,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor3_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/d_src_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/default_gauge_field.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_quark_displacement_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_quark_displacement_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/derivmesonseqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilute_gauss_src_s.Po@am__quote@
@@ -10666,6 +10672,20 @@ pseudoscalar_stoch_conn_s.obj: meas/hadron/pseudoscalar_stoch_conn_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/pseudoscalar_stoch_conn_s.cc' object='pseudoscalar_stoch_conn_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pseudoscalar_stoch_conn_s.obj `if test -f 'meas/hadron/pseudoscalar_stoch_conn_s.cc'; then $(CYGPATH_W) 'meas/hadron/pseudoscalar_stoch_conn_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pseudoscalar_stoch_conn_s.cc'; fi`
+
+deriv_quark_displacement_s.o: meas/smear/deriv_quark_displacement_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deriv_quark_displacement_s.o -MD -MP -MF "$(DEPDIR)/deriv_quark_displacement_s.Tpo" -c -o deriv_quark_displacement_s.o `test -f 'meas/smear/deriv_quark_displacement_s.cc' || echo '$(srcdir)/'`meas/smear/deriv_quark_displacement_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/deriv_quark_displacement_s.Tpo" "$(DEPDIR)/deriv_quark_displacement_s.Po"; else rm -f "$(DEPDIR)/deriv_quark_displacement_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/deriv_quark_displacement_s.cc' object='deriv_quark_displacement_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deriv_quark_displacement_s.o `test -f 'meas/smear/deriv_quark_displacement_s.cc' || echo '$(srcdir)/'`meas/smear/deriv_quark_displacement_s.cc
+
+deriv_quark_displacement_s.obj: meas/smear/deriv_quark_displacement_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deriv_quark_displacement_s.obj -MD -MP -MF "$(DEPDIR)/deriv_quark_displacement_s.Tpo" -c -o deriv_quark_displacement_s.obj `if test -f 'meas/smear/deriv_quark_displacement_s.cc'; then $(CYGPATH_W) 'meas/smear/deriv_quark_displacement_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/deriv_quark_displacement_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/deriv_quark_displacement_s.Tpo" "$(DEPDIR)/deriv_quark_displacement_s.Po"; else rm -f "$(DEPDIR)/deriv_quark_displacement_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/deriv_quark_displacement_s.cc' object='deriv_quark_displacement_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o deriv_quark_displacement_s.obj `if test -f 'meas/smear/deriv_quark_displacement_s.cc'; then $(CYGPATH_W) 'meas/smear/deriv_quark_displacement_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/deriv_quark_displacement_s.cc'; fi`
 
 walfil_s.o: meas/sources/walfil_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT walfil_s.o -MD -MP -MF "$(DEPDIR)/walfil_s.Tpo" -c -o walfil_s.o `test -f 'meas/sources/walfil_s.cc' || echo '$(srcdir)/'`meas/sources/walfil_s.cc; \
