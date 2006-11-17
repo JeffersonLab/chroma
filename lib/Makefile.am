@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.47 2006-11-16 20:39:46 bjoo Exp $
+# $Id: Makefile.am,v 3.48 2006-11-17 02:11:57 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -512,6 +512,9 @@ nobase_include_HEADERS += \
 nobase_include_HEADERS += \
         stagtype_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
+	actions/ferm/fermacts/fermacts_aggregate_s.h \
+	actions/ferm/fermacts/fermact_factory_s.h \
+	actions/ferm/fermacts/asqtad_fermact_params_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
@@ -605,6 +608,9 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
 	meas/inline/hadron/inline_npr_vertex_w.h \
+	meas/inline/hadron_s/inline_make_source_s.h \
+	meas/inline/hadron_s/inline_propagator_s.h \
+	meas/inline/hadron_s/inline_sink_smear_s.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/hadron_s.h \
         meas/inline/hadron_s/util_compute_quark_prop_s.h \
@@ -1108,6 +1114,9 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
+	meas/inline/hadron_s/inline_make_source_s.cc \
+	meas/inline/hadron_s/inline_propagator_s.cc \
+	meas/inline/hadron_s/inline_sink_smear_s.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \
@@ -1211,6 +1220,8 @@ endif
 #
 # Staggered specific sources
 libchroma_a_SOURCES += \
+	actions/ferm/fermacts/fermacts_aggregate_s.cc \
+	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
