@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.48 2006-11-17 02:11:57 edwards Exp $
+# $Id: Makefile.am,v 3.49 2006-11-17 02:53:31 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -552,6 +552,7 @@ nobase_include_HEADERS += \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
 	meas/hadron/enum_loops_s.h \
+	meas/smear/deriv_quark_displacement_s.h \
         meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h\
@@ -1247,6 +1248,7 @@ libchroma_a_SOURCES += \
         meas/hadron/scalar_loops_s.cc\
         meas/hadron/pseudoscalar_loops_s.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
+	meas/smear/deriv_quark_displacement_s.cc \
         meas/sources/walfil_s.cc \
 	util/gauge/stag_phases_s.cc
 
