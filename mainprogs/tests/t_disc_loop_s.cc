@@ -307,20 +307,23 @@ int main(int argc, char **argv)
   MesPlq(xml_out, "Is_this_gauge_invariant", u);
   xml_out.flush();
 
-  // Create the fermion boundary conditions
-  Handle< FermBC<LatticeStaggeredFermion,
-    multi1d<LatticeColorMatrix>,
-    multi1d<LatticeColorMatrix> > >  fbc(new SimpleFermBC<LatticeStaggeredFermion,
-					 multi1d<LatticeColorMatrix>,
-					 multi1d<LatticeColorMatrix> >(input.param.boundary));
+  // Typedefs to save typing
+  typedef LatticeStaggeredFermion      T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
+
+  // Create a fermion state
+  Handle< CreateFermState<T,P,Q> > cfs(new CreateSimpleFermState<T,P,Q>(params.param.boundary));
 
   //
   // Initialize fermion action
   //
-  AsqtadFermAct S_f(fbc, input.param.Mass, input.param.u0);
-  Handle< FermState<LatticeStaggeredFermion,
-                    multi1d<LatticeColorMatrix>,
-                    multi1d<LatticeColorMatrix> > > state(S_f.createState(u));
+  AsqtadFermActParams asq_param;
+  asq_param.Mass = params.prop_param.Mass;
+  asq_param.u0   = params.prop_param.u0;
+  AsqtadFermAct S_f(cfs, asq_param);
+  Handle< FermState<T,P,Q> > state(S_f.createState(u));
+
   GroupXML_t inv_param;
   {
     XMLBufferWriter xml_buf;

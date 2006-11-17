@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 3.2 2006-07-03 15:26:11 edwards Exp $
+// $Id: t_propagator_s.cc,v 3.3 2006-11-17 14:39:26 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -339,25 +339,28 @@ int main(int argc, char **argv)
   MesPlq(xml_out, "Is_this_gauge_invariant", u);
   xml_out.flush();
 
-  // Create a fermion BC. Note, the handle is on an ABSTRACT type.
-  Handle< FermBC<LatticeStaggeredFermion, 
-    multi1d<LatticeColorMatrix>, 
-    multi1d<LatticeColorMatrix>  > >  fbc(new SimpleFermBC<LatticeStaggeredFermion,
-					  multi1d<LatticeColorMatrix>, 
-					  multi1d<LatticeColorMatrix>  >(input.param.boundary));
+  // Typedefs to save typing
+  typedef LatticeStaggeredFermion      T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
+
+  // Create a fermion state
+  Handle< CreateFermState<T,P,Q> > cfs(new CreateSimpleFermState<T,P,Q>(params.param.boundary));
 
   //
   // Initialize fermion action
   //
-  AsqtadFermAct S_f(fbc, input.param.Mass, input.param.u0);
+  AsqtadFermActParams asq_param;
+  asq_param.Mass = params.prop_param.Mass;
+  asq_param.u0   = params.prop_param.u0;
+  AsqtadFermAct S_f(cfs, asq_param);
 
   // Set up a state for the current u,
   // (compute fat & triple links)
   // Use S_f.createState so that S_f can pass in u0
 
-  Handle< FermState<LatticeStaggeredFermion,
-    multi1d<LatticeColorMatrix>,
-    multi1d<LatticeColorMatrix> > > state(S_f.createState(u));
+  Handle< FermState<T,P,Q> > state(S_f.createState(u));
+
 //  Handle< EvenOddLinearOperatorBase<LatticeStaggeredFermion> > D_asqtad(S_f.linOp(state));
 //  Handle< LinearOperator<LatticeStaggeredFermion> > MdagM_asqtad(S_f.lMdagM(state));
 
