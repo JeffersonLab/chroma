@@ -1,4 +1,4 @@
-// $Id: quark_displacement_aggregate.cc,v 3.3 2006-09-20 20:28:04 edwards Exp $
+// $Id: quark_displacement_aggregate.cc,v 3.4 2006-11-17 02:55:11 edwards Exp $
 /*! \file
  *  \brief All quark displacements
  */
@@ -9,6 +9,8 @@
 #include "meas/smear/simple_quark_displacement.h"
 #include "meas/smear/deriv_quark_displacement_w.h"
 #include "meas/smear/gamma_displacement_w.h"
+
+#include "meas/smear/deriv_quark_displacement_s.h"
 
 namespace Chroma
 {
@@ -25,10 +27,14 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	// Wilson-type
 	success &= NoQuarkDisplacementEnv::registerAll();
 	success &= SimpleQuarkDisplacementEnv::registerAll();
 	success &= DerivQuarkDisplacementEnv::registerAll();
 	success &= GammaDisplacementEnv::registerAll();
+
+	// Staggered-type
+	success &= StaggeredDerivQuarkDisplacementEnv::registerAll();
 
 	registered = true;
       }
