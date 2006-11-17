@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_linop_s.h,v 3.1 2006-10-19 16:01:29 edwards Exp $
+// $Id: asqtad_linop_s.h,v 3.2 2006-11-17 02:54:47 edwards Exp $
 //! Asqtad Staggered-Dirac operator
 /*!
  * \ingroup linop
@@ -20,6 +20,11 @@ namespace Chroma
 		      multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    // Typedefs to save typing
+    typedef LatticeStaggeredFermion      T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+
     //! Partial constructor - Must use create later
     AsqtadLinOp() {}
 
@@ -42,9 +47,8 @@ namespace Chroma
     ~AsqtadLinOp() {}
 
     //! Return the fermion BC object for this linear operator
-    const FermBC<LatticeStaggeredFermion,
-		 multi1d<LatticeColorMatrix>,
-		 multi1d<LatticeColorMatrix> >& getFermBC() const {return D.getFermBC();}
+    //! Return the fermion BC object for this linear operator
+    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
 
     //! Apply the the even-even block onto a source vector
     inline void evenEvenLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
@@ -67,6 +71,9 @@ namespace Chroma
     {
       chi[ rb[1] ] = 2*Mass*psi;
     }
+
+    //! Return flops performed by the operator()
+    unsigned long nFlops() const;
 
   private:
     Real Mass;
