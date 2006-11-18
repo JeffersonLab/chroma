@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 3.4 2006-10-11 15:42:26 edwards Exp $
+// $Id: quarkprop4_s.cc,v 3.5 2006-11-18 04:40:18 kostas Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -52,6 +52,8 @@ namespace Chroma
     // This version loops over all color and spin indices
     for(int color_source = 0; color_source < Nc; ++color_source)
     {
+      QDPIO::cout<<"quarkprop_s:: doing color  : "<< color_source<<endl;
+
       LatticeStaggeredFermion psi = zero;  // note this is ``zero'' and not 0
       LatticeStaggeredFermion chi;
 
