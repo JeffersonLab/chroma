@@ -1,4 +1,4 @@
-// $Id: inline_stag_to_wils.cc,v 3.1 2006-11-18 04:40:18 kostas Exp $
+// $Id: inline_stag_to_wils.cc,v 3.2 2006-11-18 04:56:42 kostas Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -196,8 +196,12 @@ namespace Chroma
 	read(stag_record_xml, "/Propagator/PropSource", source_header);
 	j_decay = source_header.j_decay;
 	t0 = source_header.t_source;
-	make_sourceP = true;
 	t_srce = source_header.getTSrce() ;
+	//Need to figure out what you do for Wall noise, or Corner sources
+	//plane wall or noise source should not be supported.
+	// corner sources do not exist...
+	// All this should be fixed in the future
+	make_sourceP = true;
       }
       else
       {
@@ -289,7 +293,7 @@ namespace Chroma
       g = g | ((t_srce[mu]%2)<<mu) ;
     QDPIO::cout<<"SOURCE gamma: "<<g<<endl ;
     Omega = Gamma(g)*Omega ;
-    //quark_propagator = quark_propagator*adj(Omega) ;
+    
     //now the sink location
     LatticeSpinMatrix lOmega=1.0 ;
     LatticeInteger lg = zero;
