@@ -1,4 +1,4 @@
-// $Id: asqtad_linop_s.cc,v 3.1 2006-11-17 02:54:47 edwards Exp $
+// $Id: asqtad_linop_s.cc,v 3.2 2006-11-18 02:33:03 kostas Exp $
 /*! \file
  *  \brief Unpreconditioned Asqtad linear operator
  */
@@ -26,7 +26,7 @@ namespace Chroma
   //! Return flops performed by the operator()
   unsigned long AsqtadLinOp::nFlops() const
   {
-    unsigned long cbsite_flops = 0;
+    unsigned long cbsite_flops = 1146; // I think this is correct... see flop count in asq_dsl_s.cc
     return cbsite_flops*(Layout::sitesOnNode()/2);
   }
 

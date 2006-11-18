@@ -1,4 +1,4 @@
-/*  $Id: asq_dsl_s.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $  */
+/*  $Id: asq_dsl_s.cc,v 3.1 2006-11-18 02:33:03 kostas Exp $  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/asq_dsl_s.h"
@@ -93,35 +93,37 @@ namespace Chroma
     /* Note the KS phase factors are already included in the U's! */
     mu = 0;
     tmp_0 = shift(psi, FORWARD, mu);
-    chi[rb[cb]] = u_fat[mu] * tmp_0;
+    chi[rb[cb]] = u_fat[mu] * tmp_0; // Color matrix X color vector : 66 flops
     //  NEIGHBOUR(tmp_0, tmp_1, FORWARD, mu, 1);
     tmp_1 = shift(tmp_0, FORWARD, mu);
     tmp_2 = shift(tmp_1, FORWARD, mu);
-    chi[rb[cb]] += u_triple[mu] * tmp_2;
+    chi[rb[cb]] += u_triple[mu] * tmp_2; // +66 + 6  flops
 
     for(mu = 1;mu  <= ( Nd - 1); ++mu )
     {
       tmp_0 = shift(psi, FORWARD, mu);
-      chi[rb[cb]] += u_fat[mu] * tmp_0;
+      chi[rb[cb]] += u_fat[mu] * tmp_0; //+66 + 6 flops
       //    NEIGHBOUR(tmp_0, tmp_1, FORWARD, mu, 1);
       tmp_1 = shift(tmp_0, FORWARD, mu);
       tmp_2 = shift(tmp_1, FORWARD, mu);
-      chi[rb[cb]] += u_triple[mu] * tmp_2;
+      chi[rb[cb]] += u_triple[mu] * tmp_2; //+66 + 6 flops
     }
+
+    // Up to now 570 flops
 
     /* Backward one-hop and three-hop neigbhors */
     /* Note the KS phase factors are already included in the U's! */
     for(mu = 0;mu  <= ( Nd - 1); ++mu )
     {
-      chi[rb[cb]] -= shift(adj(u_fat[mu]), BACKWARD, mu) * shift(psi, 
-								 BACKWARD, mu);
-      tmp_0 = shift(adj(u_triple[mu]),  BACKWARD, mu) * shift(psi, BACKWARD, 
-							      mu);
+      chi[rb[cb]] -= shift(adj(u_fat[mu]), BACKWARD, mu) * shift(psi,BACKWARD, mu);
+      // +66 + 6 flops
+      tmp_0 = shift(adj(u_triple[mu]),  BACKWARD, mu) * shift(psi, BACKWARD,  mu);
+      // +66 flops
       // NEIGHBOUR(tmp_0, tmp_1, BACKWARD, mu, 1);
       tmp_1 = shift(tmp_0, BACKWARD, mu);
       tmp_2 = shift(tmp_1, BACKWARD, mu);
 
-      chi[rb[cb]] -= tmp_2;
+      chi[rb[cb]] -= tmp_2; //+6 flops
     }
 
 
