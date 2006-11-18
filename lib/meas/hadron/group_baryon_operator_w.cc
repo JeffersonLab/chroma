@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.16 2006-11-10 02:37:18 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.17 2006-11-18 06:43:00 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -40,6 +40,7 @@ namespace Chroma
 			//	=======
 	  	//	Readers
 			//	=======
+
 			void read( XMLReader& xml, const string& path, 
 			           GroupBaryonOperatorEnv::Params::Qprop_t::Solutions_t& input )
 	  	{ 
@@ -100,11 +101,10 @@ namespace Chroma
 			int NumberofQuarks = 3;
 			j_decay = 3;
 			nrow.resize( 4 );
-
       int version;
       read( paramtop, "Param/Name", name );
       read( paramtop, "Param/version", version );
-QDPIO::cout<<name<<" Version "<<version<<endl;
+			QDPIO::cout<< name << " Version " << version <<endl;
       switch ( version )
       {
         case 2:
@@ -112,24 +112,20 @@ QDPIO::cout<<name<<" Version "<<version<<endl;
         default:
           QDPIO::cerr << name << ": parameter version " << version << " unsupported." << endl;
           QDP_abort( 1 );
-      }	
+      }
 			read( paramtop, "Param/LattSize", nrow );
       read( paramtop, "Param/Baryon_type", param.baryon_operator );
-      //source_quark_smearing = readXMLGroup( paramtop, "Param/SourceSmearing", "Source" );
+
       read( paramtop, "Param/SourceSmearing", source_smearing );
-      //sink_quark_smearing = readXMLGroup( paramtop, "Param/SinkSmearing", "Sink" );
       read( paramtop, "Param/SinkSmearing", sink_smearing );
-      link_smearing = readXMLGroup( paramtop, "Param/LinkSmearing", "LinkSmearingType" );
-      read( paramtop, "Param/InputFileName", InputFileName );
-QDPIO::cout<<InputFileName<<endl;
-      //read( paramtop, "Param/mom2_max", mom2_max );
-      //read( paramtop, "Param/j_decay", j_decay );
-      // Read in the output propagator/source configuration info
-      //read( paramtop, "Param/NamedObject", named_obj );
-			//read( paramtop, "QProps", qprop );
+
+      gaugestuff.link_smearing = readXMLGroup( paramtop, "Param/LinkSmearing", "LinkSmearingType" );
+			read( paramtop, "Param/InputFileName", InputFileName );
+			QDPIO::cout<< "Main input file is " << InputFileName <<endl;
+			
 			gaugestuff.u.resize(Nd);
 			read( paramtop, "Cfg", gaugestuff.cfg );
-			
+
 			dilution.resize( NumberofQuarks );
 			for(int i=0; i < NumberofQuarks; ++i) dilution[ i ].N = 4; // Z(4) noise
 			for(int i=0; i < NumberofQuarks; ++i) dilution[ i ].j_decay = 3; // time-direction
@@ -142,25 +138,20 @@ QDPIO::cout<<InputFileName<<endl;
     void Params::writeXML( XMLWriter& xml, const string& path ) const
     {
       push( xml, path );
-
       int version = 1;
       write( xml, "version", version );
       write( xml, "nrow", nrow );
       //write( xml, "BaryonOperatorType", GroupBaryonOperatorEnv::name );
-			//xml << source_quark_smearing.xml;
-      //xml << sink_quark_smearing.xml;
-//			xml << source_smearing.xml;
-//      xml << sink_smearing.xml;
-      xml << link_smearing.xml;
+			//xml << source_smearing.xml;
+      //xml << sink_smearing.xml;
+      //xml << link_smearing.xml;
       write( xml, "InputFileName", InputFileName );
-      //
-      // from inline_stoch_baryon_w.cc
-      //
       write( xml, "mom2_max", mom2_max );
       write( xml, "j_decay",  j_decay );
       pop( xml );
     } // end void Params::writeXML
-		
+
+
 		// Used for hybrid list indices, NH and noise indices 
 		//  	for indices:  ( ord, i,   j,   k,   which )			
 		//  	for NHlimit:  ( ord, NH0, NH1, NH2, which )			
@@ -206,6 +197,50 @@ QDPIO::cout<<InputFileName<<endl;
 		  } 																									   
 		  return ( ijk[ which ] );														   
 		}
+		//
+		// index things back to [012] ordering
+		//
+		int DilSwapInv( int ord, int i, int j, int k, int which )   
+		{  
+		  multi1d<int> ijk( 3 );															   
+		  switch ( ord )																			   
+		  { 																									   
+		    case 0:  // [012] ijk 														   
+		      ijk[ 0 ] = i; 																	   
+		      ijk[ 1 ] = j; 																	   
+		      ijk[ 2 ] = k; 																	   
+		      break;																					   
+		    case 1:  // [210] kji 														   
+		      ijk[ 0 ] = k; 																	   
+		      ijk[ 1 ] = j; 																	   
+		      ijk[ 2 ] = i; 																	   
+		      break;																					   
+		    case 2:  // [021] ikj 														   
+		      ijk[ 0 ] = i; 																	   
+		      ijk[ 1 ] = k; 																	   
+		      ijk[ 2 ] = j; 																	   
+		      break;																					   
+		    case 3:  // [102] jik 														   
+		      ijk[ 0 ] = j; 																	   
+		      ijk[ 1 ] = i; 																	   
+		      ijk[ 2 ] = k; 																	   
+		      break;																					   
+		    case 4:  // [120] jki 														   
+		      ijk[ 0 ] = k; 																	   
+		      ijk[ 1 ] = i; 																	   
+		      ijk[ 2 ] = j; 																	   
+		      break;																					   
+		    case 5:  // [201] kij 														   
+		      ijk[ 0 ] = j; 																	   
+		      ijk[ 1 ] = k; 																	   
+		      ijk[ 2 ] = i; 																	   
+		      break;
+				default:
+					cerr<<"Say what? "<<ord<<" "<<i<<" "<<j<<" "<<k<<" "<<which<<endl;
+					exit(1);
+		  } 																									   
+		  return ( ijk[ which ] );														   
+		}
 		
 		//	====================
 		//	GroupBaryonQQQ stuff
@@ -215,7 +250,7 @@ QDPIO::cout<<InputFileName<<endl;
     GroupBaryonQQQ::GroupBaryonQQQ()
     {
       // The spin basis matrix to goto Dirac
-      spin_rotate_mat = adj( DiracToDRMat() );
+      //spin_rotate_mat = adj( DiracToDRMat() );
 		}
     void GroupBaryonQQQ::init( const Params& p_, const multi1d<LatticeColorMatrix>& u_ )
     {
@@ -223,58 +258,34 @@ QDPIO::cout<<InputFileName<<endl;
 			u_smr = u_;
       // The spin basis matrix to goto Dirac
       spin_rotate_mat = adj( DiracToDRMat() );
+			/*
       // Factory constructions
       try
       {
-				/*
-				// Smear the gauge field if needed
-        {
-          std::istringstream xml_l( myparams.link_smearing.xml );
-          XMLReader linktop( xml_l );
-          const string link_path = "/LinkSmearing";
-          QDPIO::cout << "Link smearing type = " << myparams.link_smearing.id << endl;
-
-          Handle< LinkSmearing >
-          linkSmearing( TheLinkSmearingFactory::Instance().createObject( 
-					              myparams.link_smearing.id,
-                        linktop,
-                        link_path ) );
-          ( *linkSmearing ) ( u_smr );
-        }
-				*/
         // Create the source quark smearing object
         {
       		std::istringstream  xml_s( myparams.source_smearing.source.xml );
       		XMLReader  sourcetop( xml_s );
-      		QDPIO::cout << "Source = " << myparams.source_smearing.source.id << endl;
-          //const string smear_path = "/SourceQuarkSmearing";
-          //const string smear_path = "/SourceSmearing";
-          //QDPIO::cout << "Source quark smearing type = " << myparams.source_quark_smearing.id << endl;
-
+      		QDPIO::cout << "Source quark smearing type = " << myparams.source_smearing.source.id << endl;
       		Handle< QuarkSourceSink<LatticeFermion> > sourceSmearing(
 								TheFermSourceSmearingFactory::Instance().createObject(
-				               myparams.source_smearing.source.id, sourcetop,
+				               myparams.source_smearing.source.id,   sourcetop,
 											 myparams.source_smearing.source.path, u_smr
 								)
 							);
         }
-
         // Create the sink quark smearing object
         {
       		std::istringstream  xml_s( myparams.sink_smearing.sink.xml );
       		XMLReader  sinktop( xml_s );
-      		QDPIO::cout << "Sink = " << myparams.sink_smearing.sink.id << endl;
-	
+      		QDPIO::cout << "Sink quark smearing type = " << myparams.sink_smearing.sink.id << endl;
       		Handle< QuarkSourceSink<LatticeFermion> >
 							sinkSmearing(
 								TheFermSinkSmearingFactory::Instance().createObject(
-		        			myparams.sink_smearing.sink.id, sinktop,
+		        			myparams.sink_smearing.sink.id,   sinktop,
 									myparams.sink_smearing.sink.path, u_smr
 								)
 							);
-          //const string smear_path = "/SinkQuarkSmearing";
-          //const string smear_path = "/SinkSmearing";
-          //QDPIO::cout << "Sink quark smearing type = " << myparams.sink_quark_smearing.id << endl;
         }
       }
       catch ( const std::string & e )
@@ -282,6 +293,7 @@ QDPIO::cout<<InputFileName<<endl;
         QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
         QDP_abort( 1 );
       }
+			*/
     } // GroupBaryonQQQ::init
 
     //! Full constructor
@@ -293,21 +305,6 @@ QDPIO::cout<<InputFileName<<endl;
       // Factory constructions
       try
       {
-/*
-        // Smear the gauge field if needed
-        {
-          std::istringstream xml_l( myparams.link_smearing.xml );
-          XMLReader linktop( xml_l );
-          const string link_path = "/LinkSmearing";
-          QDPIO::cout << "Link smearing type = " << myparams.link_smearing.id << endl;
-
-          Handle< LinkSmearing > linkSmearing( 
-						TheLinkSmearingFactory::Instance().createObject( myparams.link_smearing.id,
-			    		linktop,
-			    		link_path ) );
-          ( *linkSmearing ) ( u_smr );
-        }
-*/
         // Create the source quark smearing object
         {
           std::istringstream xml_s( myparams.source_smearing.source.xml );
@@ -315,12 +312,6 @@ QDPIO::cout<<InputFileName<<endl;
           const string smear_path = "/SourceSmearing";
           QDPIO::cout << "Source quark smearing type = " 
 					            << myparams.source_smearing.source.id << endl;
-          /*
-					sourceQuarkSmearing =
-            TheFermSmearingFactory::Instance().createObject( myparams.source_quark_smearing.id,
-                smeartop,
-                smear_path );
-      		*/
 		      Handle< QuarkSourceSink<LatticeFermion> > sourceSmearing(
 							TheFermSourceSmearingFactory::Instance().createObject(
 				               myparams.source_smearing.source.id, //sourcetop,
@@ -328,21 +319,13 @@ QDPIO::cout<<InputFileName<<endl;
 											 myparams.source_smearing.source.path, u_smr )
 							);
         }
-
         // Create the sink quark smearing object
         {
           std::istringstream xml_s( myparams.sink_smearing.sink.xml );
           XMLReader smeartop( xml_s );
-          //const string smear_path = "/SinkQuarkSmearing";
           const string smear_path = "/SinkSmearing";
           QDPIO::cout << "Sink quark smearing type = " 
 					            << myparams.sink_smearing.sink.id << endl;
-          /*
-					sinkQuarkSmearing =
-            TheFermSmearingFactory::Instance().createObject( myparams.sink_quark_smearing.id,
-                smeartop,
-                smear_path );
-					*/
 					Handle< QuarkSourceSink<LatticeFermion> > sinkSmearing(
 							TheFermSinkSmearingFactory::Instance().createObject(
 											myparams.sink_smearing.sink.id, smeartop,
@@ -357,7 +340,7 @@ QDPIO::cout<<InputFileName<<endl;
       }
 
     } // GroupBaryonQQQ::GroupBaryonQQQ
-		
+
     //! Reader
     void ReadTextInput( Params& params,
                         multi1d<GroupBaryonOp>& AB, multi1d<GroupBaryonOp>& CB,
@@ -365,16 +348,15 @@ QDPIO::cout<<InputFileName<<endl;
     {
       QDPIO::cout << "Reading input from text file : " << params.InputFileName <<endl;
       TextReader reader( params.InputFileName );
-      //	
-      // The spin basis matrix to goto Dirac
-      //      spin_rotate_mat = adj( DiracToDRMat() );
+
+			// Lattice sizes
       // ------------------------------------------------------------------------------------
-      // Lattice sizes
       reader >> params.nrow[ 0 ] >> params.nrow[ 1 ] >> params.nrow[ 2 ] >> params.nrow[ 3 ];
 			// ------------------------------------------------------------------------------------
 
 			params.Nmomenta = 1; // need to change this in the future when we do multiple momenta
-			params.mom2_max = 0; // obviously needs to be changed and read in ...
+			params.mom2_max = 0; // this obviously needs to be changed and read in ...
+			params.j_decay  = 3; // this is OK
 
       // Orderings are more or less hard wired for now
 			//  ... to be continued later when I have the time
@@ -395,9 +377,9 @@ QDPIO::cout<<InputFileName<<endl;
       for(int i=0; i < params.NsrcOrderings; ++i)
       {
         params.SrcOrderings[ i ].resize( 3 );
-	// ------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------
         reader >> params.SrcOrderings[ i ][ 0 ] >> params.SrcOrderings[ i ][ 1 ] >> params.SrcOrderings[ i ][ 2 ];
-	// ------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------
       }
       //
 			// This again, is hard-wired to 012 case for now ...
@@ -411,14 +393,13 @@ QDPIO::cout<<InputFileName<<endl;
       for(int i=0; i < params.NsnkOrderings; ++i)
       {
         params.SnkOrderings[ i ].resize( 3 );
-	// ------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------
         reader >> params.SnkOrderings[ i ][ 0 ] >> params.SnkOrderings[ i ][ 1 ] >> params.SnkOrderings[ i ][ 2 ];
-	// ------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------
       }
       // Hybrid list sizes
       params.NH.resize( params.NsrcOrderings ); 
-      for(int i=0; i < params.NH.size(); ++i)
-        params.NH[ i ].resize( 3 ); // L,M,R quarks
+      for(int i=0; i < params.NH.size(); ++i) params.NH[ i ].resize( 3 ); // L,M,R quarks
       	// Set the hybrid list sizes
       	//   { something like this would be better                  }
       	//   { Ndil = params.named_obj.prop.op[n].soln_files.size() }			
@@ -443,107 +424,56 @@ QDPIO::cout<<InputFileName<<endl;
 			int nameindex;
       for(int i=0; i < params.Names.size(); ++i)
       {
-	// ------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------
         reader >> nameindex >> params.Names[ i ];
-	// ------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------
       }	
       //read( xml, "NumDistinctQQQ", params.NQQQs );
-  // ------------------------------------------------------------------------------------
+			// ------------------------------------------------------------------------------------
       reader >> params.NQQQs;
-  // ------------------------------------------------------------------------------------
-			
+			// ------------------------------------------------------------------------------------
       AQQQ.resize( params.NQQQs );
-
       for(int i=0; i < params.NQQQs; ++i)
       {
 				AQQQ[ i ].init( params, params.gaugestuff.u );
 			}
-/**/
+
       for(int i=0; i < params.NQQQs; ++i)
       {
         AQQQ[ i ].myparams = params;
         AQQQ[ i ].u_smr = params.gaugestuff.u;
         AQQQ[ i ].quark.resize( 3 );
-        AQQQ[ i ].orderings.resize( params.NsnkOrderings );
-        for(int j=0; j < params.NsnkOrderings; ++j)
-        {
-          //AQQQ[ i ].orderings[ j ].hlist.resize( params.NH[ j ][ 0 ], params.NH[ j ][ 1 ], params.NH[ j ][ 2 ] );
-					// order of indices is i,j,k regardless of the ordering so that matching with AB is easier
-          AQQQ[ i ].orderings[ j ].hlist.resize( params.NH[ 0 ][ 0 ], params.NH[ 0 ][ 1 ], params.NH[ 0 ][ 2 ] );
-        }
+        //AQQQ[ i ].orderings.resize( params.NsnkOrderings );
       }
       CQQQ.resize( params.NQQQs );
-
       for(int i=0; i < params.NQQQs; ++i)
       {
 				CQQQ[ i ].init( params, params.gaugestuff.u );
 			}
-/**/
+
       for(int i=0; i < params.NQQQs; ++i)
       {
         CQQQ[ i ].myparams = params;
         CQQQ[ i ].u_smr = params.gaugestuff.u;
         CQQQ[ i ].quark.resize( 3 );
-        CQQQ[ i ].orderings.resize( params.NsrcOrderings );
-        for(int j=0; j < params.NsrcOrderings; ++j)
-        {
-          //CQQQ[ i ].orderings[ j ].hlist.resize( params.NH[ j ][ 0 ], params.NH[ j ][ 1 ], params.NH[ j ][ 2 ] );
-					// order of indices is i,j,k regardless of the ordering so that matching with AB is easier
-          CQQQ[ i ].orderings[ j ].hlist.resize( params.NH[ 0 ][ 0 ], params.NH[ 0 ][ 1 ], params.NH[ 0 ][ 2 ] );
-        }
+        //CQQQ[ i ].orderings.resize( params.NsrcOrderings );
       }
-			
-      for(int q=0; q < params.NQQQs; ++q)
-      {
-        for(int p=0; p < params.NsrcOrderings; ++p)
-        {
-          for(int i=0; i < params.NH[ 0 ][ 0 ]; ++i)
-            for(int j=0; j < params.NH[ 0 ][ 1 ]; ++j)
-              for(int k=0; k < params.NH[ 0 ][ 2 ]; ++k)
-              {
-								// only i,j,k ordering so that matching with AB is easier
-                CQQQ[ q ].orderings[ p ].hlist( i, j, k ).mom.resize( params.Nmomenta, params.nrow[3] );
-              }
-        }
-        for(int p=0; p < params.NsnkOrderings; ++p)
-        {
-          for(int i=0; i < params.NH[ 0 ][ 0 ]; ++i)
-            for(int j=0; j < params.NH[ 0 ][ 1 ]; ++j)
-              for(int k=0; k < params.NH[ 0 ][ 2 ]; ++k)
-              {
-								// only i,j,k ordering so that matching with AB is easier
-                AQQQ[ q ].orderings[ p ].hlist( i, j, k ).mom.resize( params.Nmomenta, params.nrow[3] );
-              }
-        }
-      }
+			//
+			// GroupBaryonOperator structures
+			//
       AB.resize( params.Noperators );
       CB.resize( params.Noperators );
-//#define TERMINCORR
-#ifdef TERMINCORR
-      for(int n=0; n < params.Noperators; ++n)
-      {
-				AB[ n ].termInCorr.resize( 1 );
-        AB[ n ].termInCorr[ 0 ].hlist.resize( params.NH[ 0 ][ 0 ], params.NH[ 0 ][ 1 ], params.NH[ 0 ][ 2 ] );
-        CB[ n ].termInCorr.resize( params.NsrcOrderings );
-        CB[ n ].termInCorr[ 0 ].hlist.resize( params.NH[ 0 ][ 0 ], params.NH[ 0 ][ 1 ], params.NH[ 0 ][ 2 ] );
-        for(int i=0; i < params.NH[ 0 ][ 0 ]; ++i)
-          for(int j=0; j < params.NH[ 0 ][ 1 ]; ++j)
-            for(int k=0; k < params.NH[ 0 ][ 2 ]; ++k)
-            {
-              AB[ n ].termInCorr[ 0 ].hlist( i, j, k ).mom.resize( params.Nmomenta, params.nrow[3] );
-              for(int t=0;t<params.nrow[3];++t)AB[ n ].termInCorr[ 0 ].hlist( i, j, k ).mom( 0, t ) = cmplx( Real(0), Real(0) );
-              CB[ n ].termInCorr[ 0 ].hlist( i, j, k ).mom.resize( params.Nmomenta, params.nrow[3] );
-              for(int t=0;t<params.nrow[3];++t)CB[ n ].termInCorr[ 0 ].hlist( i, j, k ).mom( 0, t ) = cmplx( Real(0), Real(0) );
-            }
-      }
-#else
 			//
-			// Using the BaryonOperator_t structure instead
+			// Using the BaryonOperator_t structure
 			//
       for(int n=0; n < params.Noperators; ++n)
       {
-				AB[ n ].baryonoperator.orderings.resize( params.NsnkOrderings );
-        for(int ord=0; ord < params.NsnkOrderings; ++ord)
+        // This is 1 now because all the 
+				// contractions are summed over
+				// AB[ n ].baryonoperator.orderings.resize( params.NsnkOrderings );
+        // for(int ord=0; ord < params.NsnkOrderings; ++ord)
+				AB[ n ].baryonoperator.orderings.resize( 1 );
+        for(int ord=0; ord < 1; ++ord)
 				{
         	AB[ n ].baryonoperator.orderings[ ord ].op.resize( params.NH[ 0 ][ 0 ], params.NH[ 0 ][ 1 ], params.NH[ 0 ][ 2 ] );
         	for(int i=0; i < params.NH[ 0 ][ 0 ]; ++i)
@@ -552,16 +482,26 @@ QDPIO::cout<<InputFileName<<endl;
         	    {
         	      AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind.resize(1);
         	      AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem.resize( params.Nmomenta, params.nrow[3] );
-        	      for(int t=0;t<params.nrow[3];++t)AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem( 0, t ) = cmplx( Real(0), Real(0) );
-        	    }
+        	      for(int t=0;t<params.nrow[3];++t)
+								{
+									AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem( 0, t ) = cmplx( Real(0), Real(0) );
+        	    	}
+							}
         }
 				AB[ n ].baryonoperator.version = 1;
 				AB[ n ].baryonoperator.mom2_max = params.mom2_max;
 				AB[ n ].baryonoperator.j_decay = params.j_decay;
-				AB[ n ].baryonoperator.quarkOrderings = params.SnkOrderings;
+				//AB[ n ].baryonoperator.quarkOrderings = params.SnkOrderings;
+				AB[ n ].baryonoperator.quarkOrderings.resize(1);
+				AB[ n ].baryonoperator.quarkOrderings[0].resize(3);
+				AB[ n ].baryonoperator.quarkOrderings[0][0] = 0;
+				AB[ n ].baryonoperator.quarkOrderings[0][1] = 1;
+				AB[ n ].baryonoperator.quarkOrderings[0][2] = 2;
 
-				CB[ n ].baryonoperator.orderings.resize( params.NsrcOrderings );
-        for(int ord=0; ord < params.NsrcOrderings; ++ord)
+				//CB[ n ].baryonoperator.orderings.resize( params.NsrcOrderings );
+        //for(int ord=0; ord < params.NsrcOrderings; ++ord)
+				CB[ n ].baryonoperator.orderings.resize( 1 );
+        for(int ord=0; ord < 1; ++ord)
 				{
         CB[ n ].baryonoperator.orderings[ ord ].op.resize( params.NH[ 0 ][ 0 ], params.NH[ 0 ][ 1 ], params.NH[ 0 ][ 2 ] );
         for(int i=0; i < params.NH[ 0 ][ 0 ]; ++i)
@@ -576,13 +516,18 @@ QDPIO::cout<<InputFileName<<endl;
 				CB[ n ].baryonoperator.version = AB[ n ].baryonoperator.version;
 				CB[ n ].baryonoperator.mom2_max = params.mom2_max;
 				CB[ n ].baryonoperator.j_decay = params.j_decay;
-				CB[ n ].baryonoperator.quarkOrderings = params.SrcOrderings;
+				//CB[ n ].baryonoperator.quarkOrderings = params.SrcOrderings;
+				CB[ n ].baryonoperator.quarkOrderings.resize(1);
+				CB[ n ].baryonoperator.quarkOrderings[0].resize(3);
+				CB[ n ].baryonoperator.quarkOrderings[0][0] = 0;
+				CB[ n ].baryonoperator.quarkOrderings[0][1] = 1;
+				CB[ n ].baryonoperator.quarkOrderings[0][2] = 2;
       }
-#endif
+
       for(int i=0; i < params.NQQQs; ++i)
       {
 				int dL, hash;
-	// ------------------------------------------------------------------------------------
+				// ------------------------------------------------------------------------------------
         reader >> hash
 	       >> AQQQ[ i ].quark[ 0 ].spin
 	       >> AQQQ[ i ].quark[ 1 ].spin
@@ -592,9 +537,7 @@ QDPIO::cout<<InputFileName<<endl;
 	       >> AQQQ[ i ].quark[ 2 ].displacement
 	       >> dL
 	       >> AQQQ[ i ].NBaryonOps;
-	// ------------------------------------------------------------------------------------
-
-        AQQQ[ i ].QQQIndex = i;
+				 // ------------------------------------------------------------------------------------
 
         for(int j=0; j < 3; ++j)
         {
@@ -628,10 +571,10 @@ QDPIO::cout<<InputFileName<<endl;
         for(int n=0; n < AQQQ[ i ].NBaryonOps; ++n)
         {
           Real re, im;
-	  // ------------------------------------------------------------------------------------
+					// ------------------------------------------------------------------------------------
           reader >> AQQQ[ i ].whichBaryonOps[ n ];
           reader >> re >> im;
-	  // ------------------------------------------------------------------------------------
+					// ------------------------------------------------------------------------------------
           AQQQ[ i ].coef[ n ] = cmplx( re, im );
 					//
 					// Storage will be in the GroupBaryonOp class
@@ -639,6 +582,7 @@ QDPIO::cout<<InputFileName<<endl;
 					AQQQ[ i ].baryon[ n ] = &AB[ (AQQQ[ i ].whichBaryonOps[ n ]) ];
         }
       } // i : AQQQ[] loop
+
       //
       // Now for the creation operators
       //
@@ -649,7 +593,6 @@ QDPIO::cout<<InputFileName<<endl;
       //          displacement directions ??????
       for(int i=0; i < params.NQQQs; ++i)
       {
-        CQQQ[ i ].QQQIndex = i;
         int spinCount, flipsign;
         spinCount = 0;
         flipsign = 0;
@@ -687,12 +630,13 @@ QDPIO::cout<<InputFileName<<endl;
             // just cc
             CQQQ[ i ].coef[ n ] = cmplx( re, -im );
           }
-	  //
-	  // Storage will be in the GroupBaryonOp class
-	  //
-	  CQQQ[ i ].baryon[ n ] = &CB[ CQQQ[ i ].whichBaryonOps[ n ] ];
+					//
+					// Storage will be in the GroupBaryonOp class
+					//
+					CQQQ[ i ].baryon[ n ] = &CB[ CQQQ[ i ].whichBaryonOps[ n ] ];
         }
       } // i : CQQQ[] loop
+			
 			// solution file names
 			params.qprop.solns.resize( 3 );
       for(int n=0; n < 3; ++n)
@@ -700,7 +644,9 @@ QDPIO::cout<<InputFileName<<endl;
 				params.qprop.solns[ n ].soln_file_names.resize( params.NH[ 0 ][ n ] );
       	for(int i=0; i < params.NH[ 0 ][ n ]; ++i)
 				{
+					// ------------------------------------------------------------------------------------
         	reader >> params.qprop.solns[ n ].soln_file_names[ i ];
+					// ------------------------------------------------------------------------------------
 				}
 			}
       reader.close();
@@ -806,7 +752,6 @@ QDPIO::cout<<InputFileName<<endl;
     {
       START_CODE();
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-      // three displaced quarks
       disp_quarks.resize( 3 );
       for(int i=0; i < disp_quarks.size(); ++i)
       {
@@ -817,27 +762,23 @@ QDPIO::cout<<InputFileName<<endl;
         if ( disp_q.find( term_q.displacement ) == disp_q.end() )
         {
           //QDPIO::cout << __func__
-          //		   << ": n=" << n
-          //		   << " l=" << l
-          //		   << " i=" << i
+          //		   << ": i=" << i
           //		   << " disp=" << quark[i].displacement << " disp=" << term_q.displacement
-          //		   << " len=" << quark[i].disp_len			<< " len=" << term_q.disp_len
-          //		   << " dir=" << quark[i].disp_dir			<< " dir=" << term_q.disp_dir
+          //		   << " len =" << quark[i].disp_len			<< " len=" << term_q.disp_len
+          //		   << " dir =" << quark[i].disp_dir			<< " dir=" << term_q.disp_dir
           //		   << endl;
           LatticeFermion qq = q[ i ];
           switch ( isign )
           {
-	  case PLUS:
-	    displacement( u_smr, qq, term_q.disp_len, term_q.disp_dir );
-	    break;
+						case PLUS:
+							displacement( u_smr, qq, term_q.disp_len, term_q.disp_dir );
+							break;
 
-	  case MINUS:
-	    displacement( u_smr, qq, -term_q.disp_len, term_q.disp_dir );
-	    break;
+	  				case MINUS:
+							displacement( u_smr, qq, -term_q.disp_len, term_q.disp_dir );
+							break;
           }
-          // Insert
           disp_q.insert( std::make_pair( term_q.displacement, qq ) );
-          //disp_q.insert( std::make_pair( term_q.disp_ind, qq ) );
         }
       } // for i
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
@@ -866,21 +807,27 @@ QDPIO::cout<<InputFileName<<endl;
       q[ 2 ] = rotateMat() * q3;
       // Displace
       displaceQuarks( disp_quarks, q, isign );
+#if 1
       // Source smear after the displacements
+      std::istringstream  xml_s( myparams.source_smearing.source.xml );
+      XMLReader  sourcetop( xml_s );
+      Handle< QuarkSourceSink<LatticeFermion> >
+					sourceSmearing(
+						             TheFermSourceSmearingFactory::Instance().createObject(
+		    			                     myparams.source_smearing.source.id, sourcetop,
+							                     myparams.source_smearing.source.path, u_smr ) );
       for(int i=0; i < disp_quarks.size(); ++i)
       {
         // Make some shorthands to ease my brain
         map<int, LatticeFermion>& disp_q = disp_quarks[ i ];
-/*
         // Loop over all keys
         for ( std::map<int, LatticeFermion>::const_iterator mm = disp_q.begin();
-              mm != disp_q.end();
-              ++mm )
+              mm != disp_q.end(); ++mm )
         {
-          ( *sourceQuarkSmearing ) ( disp_q[ mm->first ], u_smr );
+          ( *sourceSmearing ) ( disp_q[ mm->first ] );
         }
-*/
       }
+#endif
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // GroupBaryonQQQ::displaceSmearQuarks
@@ -905,15 +852,20 @@ QDPIO::cout<<InputFileName<<endl;
       q[ 0 ] = rotateMat() * q1;
       q[ 1 ] = rotateMat() * q2;
       q[ 2 ] = rotateMat() * q3;
-/*
+#if 1
       // Sink smear the quarks
+      std::istringstream  xml_s( myparams.sink_smearing.sink.xml );
+      XMLReader  sinktop( xml_s );
+      Handle< QuarkSourceSink<LatticeFermion> >
+					sinkSmearing(
+					             TheFermSinkSmearingFactory::Instance().createObject(
+											         myparams.sink_smearing.sink.id,   sinktop,
+															 myparams.sink_smearing.sink.path, u_smr ) );
       for(int i=0; i < q.size(); ++i) 
 			{
-				QDPIO::cout<<"attempting to smear sink"<<endl;
-        ( *sinkQuarkSmearing ) ( q[ i ], u_smr );
-				QDPIO::cout<<"in smearDisplace: smeared"<<endl;
+        ( *sinkSmearing ) ( q[ i ] );
 			}
-/**/
+#endif
       // Displace after the smearing
       displaceQuarks( disp_quarks, q, isign );
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
@@ -936,18 +888,18 @@ QDPIO::cout<<InputFileName<<endl;
       switch ( isign )
       {
       case PLUS:
-	// Sink
-	smearDisplaceQuarks( disp_quarks, q1, q2, q3, isign );
-	break;
+				// Sink
+				smearDisplaceQuarks( disp_quarks, q1, q2, q3, isign );
+				break;
 
       case MINUS:
-	// Source
-	displaceSmearQuarks( disp_quarks, q1, q2, q3, isign );
-	break;
+				// Source
+				displaceSmearQuarks( disp_quarks, q1, q2, q3, isign );
+				break;
 
       default:
-	QDPIO::cerr << name << ": illegal isign" << endl;
-	QDP_abort( 1 );
+				QDPIO::cerr << name << ": illegal isign" << endl;
+				QDP_abort( 1 );
       }
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
@@ -971,14 +923,6 @@ QDPIO::cout<<InputFileName<<endl;
       // The return
       multi1d<LatticeComplex> d( 1 ); //( 6 )
       // Contract over color indices with antisym tensors
-      /*
-			d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].disp_ind ) ->second,
-                                        quark[ 0 ].spin ),
-                              peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].disp_ind ) ->second,
-                                        quark[ 1 ].spin ),
-                              peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].disp_ind ) ->second,
-                                        quark[ 2 ].spin ) );
-      */
 			d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
                                         quark[ 0 ].spin ),
                               peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
@@ -992,329 +936,10 @@ QDPIO::cout<<InputFileName<<endl;
     } // multi1d<LatticeComplex> GroupBaryonQQQ::operator()
 
 
-
-    //	====================
+    //	===========================
     //	GroupBaryonOp stuff
-    //	====================
-		
-    // most of this is obsolete ... see GroupBaryonQQQ now
-#if 1
-    //! Full constructor
-    //GroupBaryonOp::GroupBaryonOp( const Params& p, multi1d<LatticeColorMatrix>& u_ ) :
-    GroupBaryonOp::GroupBaryonOp( const Params& p, const multi1d<LatticeColorMatrix>& u_ ) :
-      myparams( p ), u_smr( u_ )
-    {
-      //readCoeffs( coeffs );
-
-      // The spin basis matrix to goto Dirac
-      spin_rotate_mat = adj( DiracToDRMat() );
-
-      // Factory constructions
-      try
-      {
-        // Smear the gauge field if needed
-        {
-          std::istringstream xml_l( myparams.link_smearing.xml );
-          XMLReader linktop( xml_l );
-          const string link_path = "/LinkSmearing";
-          QDPIO::cout << "Link smearing type = " << myparams.link_smearing.id << endl;
-
-          Handle< LinkSmearing >
-	    linkSmearing( TheLinkSmearingFactory::Instance().createObject( 
-			    myparams.link_smearing.id,
-			    linktop,
-			    link_path ) );
-          ( *linkSmearing ) ( u_smr );
-        }
-
-        // Create the source quark smearing object
-        {
-          std::istringstream xml_s( myparams.source_quark_smearing.xml );
-          XMLReader smeartop( xml_s );
-//          const string smear_path = "/SourceQuarkSmearing";
-          const string smear_path = "/SourceSmearing";
-
-          sourceQuarkSmearing =
-            TheFermSmearingFactory::Instance().createObject( 
-	      myparams.source_quark_smearing.id,
-	      smeartop,
-	      smear_path );
-        }
-
-        // Create the sink quark smearing object
-        {
-          std::istringstream xml_s( myparams.sink_quark_smearing.xml );
-          XMLReader smeartop( xml_s );
-//          const string smear_path = "/SinkQuarkSmearing";
-          const string smear_path = "/SinkSmearing";
-
-          sinkQuarkSmearing =
-            TheFermSmearingFactory::Instance().createObject( 
-	      myparams.sink_quark_smearing.id,
-	      smeartop,
-	      smear_path );
-        }
-      }
-      catch ( const std::string & e )
-      {
-        QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
-        QDP_abort( 1 );
-      }
-
-    } // GroupBaryonOp full constructor
-
-    //! Construct array of maps of displacements
-    void
-    GroupBaryonOp::displaceQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
-                                   const multi1d<LatticeFermion>& q,
-                                   enum PlusMinus isign ) const
-    {
-      START_CODE();
-
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-
-      disp_quarks.resize( 3 );
-      // three displaced quarks
-      for(int i=0; i < disp_quarks.size(); ++i)
-      {
-        // Make some shorthands to ease my brain
-        map<int, LatticeFermion>& disp_q = disp_quarks[ i ];
-        const QuarkTerm_t& term_q = quark[ i ];
-
-        // If no entry, then create a displaced version of the quark
-        if ( disp_q.find( term_q.displacement ) == disp_q.end() )
-        {
-          LatticeFermion qq = q[ i ];
-
-          switch ( isign )
-          {
-	  case PLUS:
-	    displacement( u_smr, qq, term_q.disp_len, term_q.disp_dir );
-	    break;
-
-	  case MINUS:
-	    displacement( u_smr, qq, -term_q.disp_len, term_q.disp_dir );
-	    break;
-          }
-
-          // Insert
-          disp_q.insert( std::make_pair( term_q.displacement, qq ) );
-        }
-      } // for i
-
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-
-      END_CODE();
-    } // void GroupBaryonOp::displaceQuarks
-
-
-    //! First displace then smear the quarks
-    void
-    GroupBaryonOp::displaceSmearQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
-                                        const LatticeFermion& q1,
-                                        const LatticeFermion& q2,
-                                        const LatticeFermion& q3,
-                                        enum PlusMinus isign ) const
-    {
-      START_CODE();
-
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-
-      multi1d<LatticeFermion> q( 3 );
-
-      // Rotate the quarks up-front.
-      // NOTE: this step assumes the spin rotation commutes with the
-      // quark smearing and the displacement
-      // However, we are careful about the ordering of the smearing and
-      // the displacement
-      q[ 0 ] = rotateMat() * q1;
-      q[ 1 ] = rotateMat() * q2;
-      q[ 2 ] = rotateMat() * q3;
-
-      // Displace
-      displaceQuarks( disp_quarks, q, isign );
-
-      // Source smear after the displacements
-      for(int i=0; i < disp_quarks.size(); ++i)
-      {
-        // Make some shorthands to ease my brain
-        map<int, LatticeFermion>& disp_q = disp_quarks[ i ];
-
-        // Loop over all keys
-        for ( std::map<int, LatticeFermion>::const_iterator mm = disp_q.begin();
-              mm != disp_q.end();
-              ++mm )
-        {
-          ( *sourceQuarkSmearing ) ( disp_q[ mm->first ], u_smr );
-        }
-      }
-
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-
-      END_CODE();
-    } // end GroupBaryonOp::displaceSmearQuarks
-
-
-    //! First smear then displace the quarks
-    void
-    GroupBaryonOp::smearDisplaceQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
-                                        const LatticeFermion& q1,
-                                        const LatticeFermion& q2,
-                                        const LatticeFermion& q3,
-                                        enum PlusMinus isign ) const
-    {
-      START_CODE();
-
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-
-      multi1d<LatticeFermion> q( 3 );
-
-      // Rotate the quarks up-front.
-      // NOTE: this step assumes the spin rotation commutes with the
-      // quark smearing and the displacement
-      // However, we are careful about the ordering of the smearing and
-      // the displacement
-      q[ 0 ] = rotateMat() * q1;
-      q[ 1 ] = rotateMat() * q2;
-      q[ 2 ] = rotateMat() * q3;
-
-      // Sink smear the quarks
-      for(int i=0; i < q.size(); ++i)
-        ( *sinkQuarkSmearing ) ( q[ i ], u_smr );
-
-      // Displace after the smearing
-      displaceQuarks( disp_quarks, q, isign );
-
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-
-      END_CODE();
-    } // end void GroupBaryonOp::smearDisplaceQuarks
-		
-		
-    //! Manipulate the quark fields
-    void
-    GroupBaryonOp::quarkManip( multi1d< map<int, LatticeFermion> >& disp_quarks,
-                               const LatticeFermion& q1,
-                               const LatticeFermion& q2,
-                               const LatticeFermion& q3,
-                               enum PlusMinus isign ) const
-    {
-      START_CODE();
-
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-
-      // Depending on whether this is the sink or source, do the appropriate
-      // combination of smearing and displacing
-      switch ( isign )
-      {
-      case PLUS:
-	// Sink
-	smearDisplaceQuarks( disp_quarks, q1, q2, q3, isign );
-	break;
-
-      case MINUS:
-	// Source
-	displaceSmearQuarks( disp_quarks, q1, q2, q3, isign );
-	break;
-
-      default:
-	QDPIO::cerr << name << ": illegal isign" << endl;
-	QDP_abort( 1 );
-      }
-
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-
-      END_CODE();
-    } // end void GroupBaryonOp::quarkManip
-		
-		
-    //! Compute the operator
-    multi1d<LatticeComplex>
-    GroupBaryonOp::operator() ( const LatticeFermion& q1,
-                                const LatticeFermion& q2,
-                                const LatticeFermion& q3,
-                                enum PlusMinus isign ) const
-    { START_CODE();
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-      // The result of displace and smearing (in some unspecified order here)
-      multi1d< map<int, LatticeFermion> > disp_quarks;
-      // Depending on whether this is the sink or source, do the appropriate
-      // combination of smearing and displacing
-      quarkManip( disp_quarks, q1, q2, q3, isign );
-      // The return
-      multi1d<LatticeComplex> d;//[ 6 ];
-      // Contract over color indices with antisym tensors
-      switch ( isign )
-      {
-        case MINUS:
-          // Source			
-					d.resize(6);
-					// mu,nu,tau contraction
-      		d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
-      		                                  quark[ 0 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
-      		                                  quark[ 1 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
-      		                                  quark[ 2 ].spin ) );
-					d[ 0 ] *= 2.0;
-					// nu,mu,tau contraction
-      		d[ 1 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].displacement ) ->second,
-      		                                  quark[ 1 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 0 ].displacement ) ->second,
-      		                                  quark[ 0 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
-      		                                  quark[ 2 ].spin ) );
-					// mu,tau,nu contraction
-      		d[ 2 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
-      		                                  quark[ 0 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 2 ].displacement ) ->second,
-      		                                  quark[ 2 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 1 ].displacement ) ->second,
-      		                                  quark[ 1 ].spin ) );
-					// tau,nu,mu contraction
-      		d[ 3 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].displacement ) ->second,
-      		                                  quark[ 2 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
-      		                                  quark[ 1 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 0 ].displacement ) ->second,
-      		                                  quark[ 0 ].spin ) );
-					d[ 3 ] *= -2.0;
-					// nu,tau,mu contraction
-      		d[ 4 ]= -colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 1 ].displacement ) ->second,
-      		                                  quark[ 1 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 2 ].displacement ) ->second,
-      		                                  quark[ 2 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 0 ].displacement ) ->second,
-      		                                  quark[ 0 ].spin ) );
-					// tau,mu,nu contraction
-      		d[ 5 ]= -colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 2 ].displacement ) ->second,
-      		                                  quark[ 2 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 0 ].displacement ) ->second,
-      		                                  quark[ 0 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 1 ].displacement ) ->second,
-      		                                  quark[ 1 ].spin ) );
-      		break;
-
-        case PLUS:
-          // Sink
-					d.resize(1);
-      		d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
-      		                                  quark[ 0 ].spin ),
-      		                        peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
-      		                                  quark[ 1 ].spin ),
-      		                        peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
-      		                                  quark[ 2 ].spin ) );
-      		break;
-
-        default:
-          QDPIO::cerr << name << ": illegal isign" << endl;
-          QDP_abort( 1 );	
-			}
-			END_CODE();
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-      return d;
-    } // multi1d<LatticeComplex> GroupBaryonOp::operator()
-#endif
+		//	now only used to store data
+    //	===========================
   	//! Serialize baryon_operator object
   	multi1d<Complex> 
 		BaryonOperator_t::serialize()
@@ -1356,53 +981,6 @@ QDPIO::cout<<InputFileName<<endl;
   	  return baryop_1d;
   	}
 		
-  	//! Serialize generalized operator object
-  	multi1d<Complex> 
-		GroupBaryonOp::serialize()
-  	{
-  	  int termInCorr_size = termInCorr.size();
-  	  int hlist_size3 = termInCorr[ 0 ].hlist.size3();
-  	  int hlist_size2 = termInCorr[ 0 ].hlist.size2();
-  	  int hlist_size1 = termInCorr[ 0 ].hlist.size1();
-//  	  int mom_size = termInCorr[ 0 ].hlist( 0, 0, 0 ).mom.size();
-      int elem_size2 = termInCorr[ 0 ].hlist( 0, 0, 0 ).mom.size2();
-      int elem_size1 = termInCorr[ 0 ].hlist( 0, 0, 0 ).mom.size1();
-      // dreadful hack - use a complex to hold an int
-      //     if you think that's dreadful ...
-      int mom_size = 0;
-      Complex termInCorr_sizes, hlist_sizes1, hlist_sizes2, elem_sizes;
-      termInCorr_sizes = cmplx( Real( termInCorr_size ), Real( zero ) );
-      hlist_sizes1 = cmplx( Real( hlist_size2 ), Real( hlist_size1 ) );
-      hlist_sizes2 = cmplx( Real( hlist_size3 ), Real( mom_size ) );
-      elem_sizes = cmplx( Real( elem_size2 ), Real( elem_size1 ) );
-
-      multi1d<Complex> baryonOp_1d( 4 + termInCorr_size * hlist_size3 * hlist_size2 * hlist_size1 * elem_size2 * elem_size1 );
-  	  //    QDPIO::cout << "baryonprop_size=" << baryonOp_1d.size() << endl;
-  	  int cnt = 0;
-  	  baryonOp_1d[ cnt++ ] = termInCorr_sizes;
-  	  baryonOp_1d[ cnt++ ] = hlist_sizes1;
-  	  baryonOp_1d[ cnt++ ] = hlist_sizes2;
-  	  baryonOp_1d[ cnt++ ] = elem_sizes;
-  	  for(int s=0; s < termInCorr.size(); ++s) // termInCorr
-  	  {
-  	    for(int i=0; i < termInCorr[ s ].hlist.size3(); ++i)      // hlist_l
-  	      for(int j=0; j < termInCorr[ s ].hlist.size2(); ++j)    // hlist_m
-  	        for(int k=0; k < termInCorr[ s ].hlist.size1(); ++k)  // hlist_r
-  	          //for(int p=0; p < termInCorr[ s ].hlist( i, j, k ).mom.size(); ++p)  // mom
-  	            for(int a=0; a < termInCorr[ s ].hlist( i, j, k ).mom.size2(); ++a)    // elem_l
-  	              for(int b=0; b < termInCorr[ s ].hlist( i, j, k ).mom.size1(); ++b)  // elem_r
-  	                baryonOp_1d[ cnt++ ] = termInCorr[ s ].hlist( i, j, k ).mom( a, b );
-  	  }
-  	  if ( cnt != baryonOp_1d.size() )
-  	  {
-//  	    QDPIO::cerr << GroupBaryonOperatorEnv::name << ": size mismatch in serialization" << endl;
-	QDPIO::cerr << ": size mismatch in serialization" << endl;
-	QDP_abort( 1 );
-      }
-      return baryonOp_1d;
-    } // multi1d<Complex> GroupBaryonOp::serialize()
-		
-		
     //! Anonymous namespace
     namespace
     {
@@ -1423,7 +1001,7 @@ QDPIO::cout<<InputFileName<<endl;
     }  // end anonymous namespace
 
     const std::string name = "GROUP_BARYON";
-				
+
     //! Register all the factories
     bool registerAll()
     {
@@ -1432,7 +1010,6 @@ QDPIO::cout<<InputFileName<<endl;
       {
         // Required stuff
         success &= LinkSmearingEnv::registerAll();
-        //success &= QuarkSmearingEnv::registerAll();
 				success &= QuarkSourceSmearingEnv::registerAll();
 				success &= QuarkSinkSmearingEnv::registerAll();
 
@@ -1441,7 +1018,7 @@ QDPIO::cout<<InputFileName<<endl;
 
         registered = true;
       }
-//			cout<<"registered everything"<<endl;
+			cout<<"registered everything"<<endl;
       return success;
     } // registerAll()
 
