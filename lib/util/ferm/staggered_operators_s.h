@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: staggered_operators_s.h,v 1.1 2006-11-18 05:41:51 kostas Exp $
+// $Id: staggered_operators_s.h,v 1.2 2006-11-18 07:39:44 kostas Exp $
 /*! \file
  *  \brief Staggered  operators
  *
@@ -11,8 +11,13 @@
 
 namespace Chroma 
 {
+  //void StaggeredZEta(LatticeStaggeredPropagator& dest,int mu);
+  //void StaggeredEta(LatticeStaggeredPropagator& dest,int mu);
 
-  void SymShift(LatticeStaggeredPropagator& dest,const LatticeStaggeredPropagator& src,const  multi1d<LatticeColorMatrix>& u,const int mu) ;
+  //void SymShift(LatticeStaggeredPropagator& dest,const LatticeStaggeredPropagator& src,const  multi1d<LatticeColorMatrix>& u,const int mu) ;
+
+  //void EtaShift(LatticeStaggeredPropagator& dest,const LatticeStaggeredPropagator& src,const  multi1d<LatticeColorMatrix>& u,const multi1d<int>& mu) ;
+  //void ZetaShift(LatticeStaggeredPropagator& dest,const LatticeStaggeredPropagator& src,const  multi1d<LatticeColorMatrix>& u,const multi1d<int>& mu) ;
 
   void SpinScalar(LatticeStaggeredPropagator& dest, const LatticeStaggeredPropagator& src, const  multi1d<LatticeColorMatrix>& u ) ;
   void SpinVector(LatticeStaggeredPropagator& dest, const LatticeStaggeredPropagator& src, const  multi1d<LatticeColorMatrix>& u,const int mu) ;
