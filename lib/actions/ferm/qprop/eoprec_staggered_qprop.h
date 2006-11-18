@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_staggered_qprop.h,v 3.2 2006-11-17 21:03:02 kostas Exp $
+// $Id: eoprec_staggered_qprop.h,v 3.3 2006-11-18 02:46:18 kostas Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -104,7 +104,7 @@ namespace Chroma
       // Compute residual
       {
 	T  r;
-	(*A)(r, psi, PLUS);
+	(*M)(r, psi, PLUS);
 	r -= chi;
 	res.resid = sqrt(norm2(r));
 	 QDPIO::cout << "eoprec_staggered_qprop:  true residual:  " << res.resid << endl;
