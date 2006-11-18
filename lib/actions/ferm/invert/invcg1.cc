@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 3.2 2006-11-17 21:03:02 kostas Exp $
+// $Id: invcg1.cc,v 3.3 2006-11-18 02:48:09 kostas Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -173,7 +173,7 @@ InvCG1_a(const LinearOperator<T>& A,
     //  cp  =  | r[k] |**2
     cp = norm2(r, s);	                /* 2 Nc Ns  flops */
 
-#if 1
+#if 0
     QDPIO::cout << "InvCG1: k = " << k << "  cp = " << cp << endl;
 #endif
 
@@ -187,7 +187,7 @@ InvCG1_a(const LinearOperator<T>& A,
 	A(ap, psi, PLUS);
 	Double actual_res = norm2(chi - ap,s);
 	res.resid = sqrt(actual_res);
-#if 1
+#if 0
     QDPIO::cout << "InvCG1:  true residual:  " << res.resid << endl;
 #endif
       }
