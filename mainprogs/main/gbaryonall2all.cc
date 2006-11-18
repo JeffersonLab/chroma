@@ -4,6 +4,10 @@
 #include "chroma.h"
 #include "chromabase.h"
 #include "meas/hadron/group_baryon_operator_w.h"
+#include "meas/sources/source_smearing_aggregate.h"
+#include "meas/sources/source_smearing_factory.h"
+#include "meas/sinks/sink_smearing_aggregate.h"
+#include "meas/sinks/sink_smearing_factory.h"
 using namespace Chroma;
 using namespace GroupBaryonOperatorEnv;
 
@@ -28,15 +32,6 @@ using namespace GroupBaryonOperatorEnv;
     write( xml, "BaryonOpIns", input );
     pop( xml );
   }
-	/*
-  void write( XMLWriter& xml, const string& path, 
-	            const GroupBaryonOperatorEnv::BaryonOperator_t& input )
-  {
-    push( xml, path );
-    write( xml, "BaryonOp2", input );
-    pop( xml );
-  }
-	*/
   void write( XMLWriter& xml, const string& path, 
 	            const GroupBaryonOperatorEnv::Params::NamedObject_t& input )
   {
@@ -59,6 +54,15 @@ using namespace GroupBaryonOperatorEnv;
     write( xml, "perms", param.quarkOrderings );
     if( path != "." ) pop( xml );
   }
+
+bool linkageHack(void)
+{
+  bool foo = true;
+  // Inline Measurements
+  foo &= InlineAggregateEnv::registerAll();
+  return foo;
+}
+
 //
 //! Make a group theory based baryon operator with all-to-all quark 
 //! propagators using the dilution method of TrinLat (2004)
@@ -76,6 +80,8 @@ int main( int argc, char *argv[] )
   Chroma::initialize( &argc, &argv );
   START_CODE();
   QDPIO::cout << "GroupBaryonAll2All: Group Baryon Operators with All2All" << endl;
+  QDPIO::cout << "Linkage = " << linkageHack() << endl;
+	StopWatch swatch;
 	// ===============
   // Read input data
 	// ===============
@@ -96,7 +102,7 @@ int main( int argc, char *argv[] )
   	proginfo( xml_out ); // Print out basic program info
   	write( xml_out, "InputCopy", xml_in ); // save a copy of the input
   	xml_out.flush();
-	// =============
+	// ============
   // Startup gauge
 	// =============
   XMLReader gauge_file_xml, gauge_xml;
@@ -104,7 +110,26 @@ int main( int argc, char *argv[] )
 		// test the config
 		Double w_plaq, s_plaq, t_plaq, link;
   	MesPlq(params.gaugestuff.u, w_plaq, s_plaq, t_plaq, link);
+		QDPIO::cout<< "Gauge field measurements " << w_plaq <<" "<< s_plaq <<" "<< t_plaq <<" "<< link <<" "<<endl;	
+#if 1
+	// Smear the gauge field if needed
+	swatch.start();
+  std::istringstream xml_l( params.gaugestuff.link_smearing.xml );
+  XMLReader linktop( xml_l );
+  const string link_path = "/LinkSmearing";
+  QDPIO::cout << "Link smearing type = " << params.gaugestuff.link_smearing.id << endl;
+	
+  Handle< LinkSmearing >
+  linkSmearing( TheLinkSmearingFactory::Instance().createObject( 
+	              params.gaugestuff.link_smearing.id,
+                linktop,
+                link_path ) );
+  ( *linkSmearing ) ( params.gaugestuff.u );
+	swatch.stop();
+	QDPIO::cout << "Gauge links smeared : time = " << swatch.getTimeInSeconds() << " secs" << endl;
+  	MesPlq(params.gaugestuff.u, w_plaq, s_plaq, t_plaq, link);
 		QDPIO::cout<< "gauge meas " << w_plaq <<" "<< s_plaq <<" "<< t_plaq <<" "<< link <<" "<<endl;	
+#endif
 	// ====================
 	// qqq's and baryonop's
 	// ====================
@@ -122,29 +147,10 @@ int main( int argc, char *argv[] )
 	// Noise Solutions
 	// ===============
   multi1d<Params::QuarkSourceSolutions_t>  quarks( params.qprop.solns.size() );
-  QDPIO::cout << "num_quarks= " << params.qprop.solns.size() << endl;
+#if 1
   try
   {
-    for(int n=0; n < quarks.size(); ++n)
-    {
-			quarks[n].dilutions.resize(params.qprop.solns[n].soln_file_names.size());
-			for(int i=0; i < quarks[n].dilutions.size(); ++i)
-			{
-				QDPIO::cout<<"file n="<<n<<" i="<<i<<" "<<params.qprop.solns[n].soln_file_names[i]<<endl;
-				XMLReader file_xml, record_xml;
-				QDPFileReader from(file_xml, params.qprop.solns[n].soln_file_names[i], QDPIO_SERIAL);
-			}
-		}
-	}
-  catch (const string& e) 
-  {
-    QDPIO::cerr << "Error reading files: " << e << endl;
-    QDP_abort(1);
-  }
-	
-  try
-  {
-    //QDPIO::cout << "quarks.size= " << quarks.size() << endl;
+		swatch.start();
     for(int n=0; n < quarks.size(); ++n)
     {
 			QDPIO::cout << "Attempt to read solutions for source number=" << n << endl;
@@ -164,18 +170,22 @@ int main( int argc, char *argv[] )
 	  		read(record_xml, "/Propagator/ForwardProp", quarks[n].dilutions[i].prop_header);
 			}
     }
+		swatch.stop();
   }
   catch (const string& e) 
   {
     QDPIO::cerr << "Error extracting headers: " << e << endl;
     QDP_abort(1);
   }
+	QDPIO::cout << "Read SOLUTION vectors from files : time = " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif
 	// =============
-	// Noise Sources ... re-make from the seeds
+	// Noise Sources ... re-generate from the rng seeds
 	// =============
-  QDPIO::cout << "re-generating the noise sources" << endl;
+  QDPIO::cout << "Re-generating the noise SOURCES" << endl;
 	try
 	{
+		swatch.start();
 	  int N;
 		for(int n=0; n < quarks.size(); ++n)
 	  {
@@ -225,7 +235,6 @@ int main( int argc, char *argv[] )
 	      quarks[ n ].dilutions[ i ].source = srcConst( params.gaugestuff.u );
 	      quark_noise -= quarks[ n ].dilutions[ i ].source;
 	    } // end for i
-
 	    Double dcnt = norm2( quark_noise );
 	    if ( toDouble( dcnt ) != 0.0 )   // problematic - seems to work with unnormalized sources
 	    {
@@ -233,15 +242,18 @@ int main( int argc, char *argv[] )
 	      QDP_abort( 1 );
 	    }
 	  } // end for n
+		swatch.stop();
 	} // end try
 	catch ( const std::string& e )
 	{
 	  QDPIO::cerr << ": Caught Exception creating source: " << e << endl;
 	  QDP_abort( 1 );
 	}
-	QDPIO::cout << "Source vectors reconstructed from Seeds" << endl;
+	QDPIO::cout << "SOURCE vectors reconstructed from Seeds : time = " << swatch.getTimeInSeconds() << " secs" << endl;
+	//
 	// setting the seeds for output (baryon_operator file)
 	// should also put the mass of the quarks in here as well
+	//
 	for(int n=0; n < quarks.size(); ++n)
 	{
 		COp[ n ].baryonoperator.seed_l = quarks[0].seed;
@@ -251,30 +263,26 @@ int main( int argc, char *argv[] )
 		AOp[ n ].baryonoperator.seed_m = quarks[1].seed;
 		AOp[ n ].baryonoperator.seed_r = quarks[2].seed;
 	}
-	
 	// ====================================
+	//
 	//       Main Part of Program
+	//
 	// Run through the QQQ combinations and
 	// multiply by appropriate coefficients
 	// to make the various operators
-	// ====================================
 	//
+	// ====================================
 	multi1d<LatticeComplex> result(1);
 	// don't average over equivalent momenta
   SftMom phases(params.mom2_max, false, params.j_decay);
-	// average over equivalent momenta
-  //SftMom phases(params.mom2_max, true, params.j_decay);
 	multi2d<DComplex> elem( params.Nmomenta, params.nrow[3] );
-
-//#define PRINTDEBUG
-//#define TERMINCORR
-
 #if 1
-  QDPIO::cout << "making the annihilation operators" << endl;
 	try
 	{ //
 		// Annihilation Operator (plus) first (only one term)
 		//
+  	QDPIO::cout << "Making the SINK operators" << endl;
+		swatch.start();
 		int ordering = 0;
 		for(int qqq=0; qqq < params.NQQQs; ++qqq)
 		{
@@ -282,176 +290,126 @@ int main( int argc, char *argv[] )
 			for(int j=0; j < params.NH[ordering][1]; ++j)
 			for(int k=0; k < params.NH[ordering][2]; ++k)
 			{ 
-				result = AQQQ[ qqq ]( quarks[ 0 ].dilutions[ i ].soln,
+				result = AQQQ[ qqq ]( 
+	    	                      quarks[ 0 ].dilutions[ i ].soln,
 	    	                      quarks[ 1 ].dilutions[ j ].soln,
 	    	                      quarks[ 2 ].dilutions[ k ].soln,
-	    	                      PLUS );
+	    	                      PLUS 
+														);
 		    for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
 				{
-					//AQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom
-					//= phases.sft( result[ 0 ] );
 					elem = phases.sft( result[ 0 ] );
 		    	for(int p=0; p < params.Nmomenta; ++p)
 					{
 		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
-						{ //AQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, t )
+						{ 
 							AQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
-							+= elem( p, t );
-						} // end for t 
-					} // end for p
-				} // end for Bop_index b
-			} // end for i,j,k
-		} // end for qqq
-		for(int qqq=0; qqq < params.NQQQs; ++qqq)
-		{
-		  for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
-			{
-				for(int i=0; i < params.NH[ordering][0]; ++i)
-				for(int j=0; j < params.NH[ordering][1]; ++j)
-				for(int k=0; k < params.NH[ordering][2]; ++k)
-				{
-		    	for(int p=0; p < params.Nmomenta; ++p)
-					{
-		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
-						{ //AQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, t ) 
-							AQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
-							*= AQQQ[ qqq ].coef[ b ];
-						} // end for t 
-					} // end for p
-				} // end for i,j,k
-			} // end for Bop_index
-		} // end for qqq
-	} // end try
+							+= ( AQQQ[ qqq ].coef[ b ] * elem( p, t ) );
+						} // t 
+					} // p
+				} // Bop_index b
+			} // i,j,k
+		} // qqq
+		swatch.stop();
+	} // try
 	catch ( const std::string& e )
 	{
 	  QDPIO::cerr << ": Caught Exception creating sink baryon operator: " << e << endl;
 	  QDP_abort( 1 );
 	}
-	QDPIO::cout << "Sink operators done" << endl;
-
+	QDPIO::cout << "SINK operators done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 #endif // end annihilation operators
 
 #if 1
-//for(int t=0; t < phases.getSet().numSubsets(); ++t)
-//	foo[phases.getSet()[t]] = <do whatever you want>;
-// need to get timeslice of eta which is non-zero
-// in the solution file as : <t_source>1</t_source>
 	try
 	{ //
 		// Creation Operator (MINUS) 
 		//
 		for(int ordering=0; ordering < params.NsrcOrderings; ++ordering)
 		{
-		  QDPIO::cout << "Creation Operator: ordering = " << ordering << endl;
-			int ii,jj,kk;
+		  QDPIO::cout << "SOURCE Operator: ordering = " << ordering << endl;
+			swatch.start();
 			Real signs;
+			const int L=0,M=1,R=2;
 			//
 			// t = quarks[n].dilutions[i].source_header.t_source = timeslice of source
 			//
-			int qi0 = DilSwap( ordering, 0,1,2, 0 );
-			int qi1 = DilSwap( ordering, 0,1,2, 1 );
-			int qi2 = DilSwap( ordering, 0,1,2, 2 );
-			
+			int qL = DilSwap( ordering, 0,1,2, L );
+			int qM = DilSwap( ordering, 0,1,2, M );
+			int qR = DilSwap( ordering, 0,1,2, R );
 			switch ( ordering )																			   
 			{ 																									   
 			  case 0: 			// [012]
 					signs =  2.0; break;
 				case 1: 			// [210]
+					//signs =  2.0; break;
 					signs = -2.0; break;
 				case 2: 			// [120]
 					signs = -1.0; break;
 				case 3: 			// [201]
 					signs = -1.0; break;
 				case 4: 			// [021]
+					//signs = -1.0; break;
 					signs =  1.0; break;
 				case 5: 			// [102]
+					//signs = -1.0; break;
 					signs =  1.0; break;
 			}
-			for(int qqq=0; qqq < params.NQQQs; ++qqq)
-			{
-				for(int i=0; i < params.NH[ordering][0]; ++i)
-				for(int j=0; j < params.NH[ordering][1]; ++j)
-				for(int k=0; k < params.NH[ordering][2]; ++k)
-				{
-					ii = DilSwap( ordering, i, j, k, 0 );
-					jj = DilSwap( ordering, i, j, k, 1 );
-					kk = DilSwap( ordering, i, j, k, 2 );
-					if( ( quarks[qi0].dilutions[ii].source_header.t_source==ii ) &&
-					    ( quarks[qi1].dilutions[jj].source_header.t_source==jj ) &&
-					    ( quarks[qi2].dilutions[kk].source_header.t_source==kk ) )
-					result 
-					//result[0, phases.getSet()[ quarks[qi0].dilutions[ii].source_header.t_source] ] 
-					=  CQQQ[ qqq ]( quarks[ qi0 ].dilutions[ ii ].source,
-		    	                quarks[ qi1 ].dilutions[ jj ].source,
-		    	                quarks[ qi2 ].dilutions[ kk ].source,
-		    	                MINUS 
-												 );
-			    for(int b=0; b < CQQQ[ qqq ].NBaryonOps; ++b)
-					{
-						//CQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom
-						//= phases.sft( result[ 0 ] );
-						elem = phases.sft( result[ 0 ] );
-			    	for(int p=0; p < params.Nmomenta; ++p)
-						{
-			    		for(int t=0; t < params.nrow[ 3 ]; ++t)
-							{
-							#ifdef TERMINCORR
-								CQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, t )
-							#else
-								CQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
-							#endif
-								+= ( signs * elem( p, t ) );
-							} // end for t 
-						} // end for p
-					} // end for Bop_index
-				} // end for i,j,k
-			} // end for qqq
 
 			for(int qqq=0; qqq < params.NQQQs; ++qqq)
 			{
-			  for(int b=0; b < CQQQ[ qqq ].NBaryonOps; ++b)
+				for(int iL=0; iL < params.NH[ordering][L]; ++iL)
+				for(int iM=0; iM < params.NH[ordering][M]; ++iM)
+				for(int iR=0; iR < params.NH[ordering][R]; ++iR)
 				{
-					for(int i=0; i < params.NH[ordering][0]; ++i)
-					for(int j=0; j < params.NH[ordering][1]; ++j)
-					for(int k=0; k < params.NH[ordering][2]; ++k)
+					if(   (quarks[qL].dilutions[iL].source_header.t_source
+					    == quarks[qM].dilutions[iM].source_header.t_source)
+					    &&(quarks[qM].dilutions[iM].source_header.t_source
+						  == quarks[qR].dilutions[iR].source_header.t_source) ) 
 					{
-						ii = DilSwap( ordering, i, j, k, 0 );
-						jj = DilSwap( ordering, i, j, k, 1 );
-						kk = DilSwap( ordering, i, j, k, 2 );
-			    	for(int p=0; p < params.Nmomenta; ++p)
+						int i0 = DilSwapInv( ordering, iL, iM, iR, 0 );
+						int i1 = DilSwapInv( ordering, iL, iM, iR, 1 );
+						int i2 = DilSwapInv( ordering, iL, iM, iR, 2 );
+											
+						result = CQQQ[ qqq ]( 
+									                quarks[ qL ].dilutions[ iL ].source,
+					  			                quarks[ qM ].dilutions[ iM ].source,
+		    	  			                quarks[ qR ].dilutions[ iR ].source,
+		    	  			                MINUS 
+		    	  			              );
+						
+						for(int b=0; b < CQQQ[ qqq ].NBaryonOps; ++b)
 						{
-			    		for(int t=0; t < params.nrow[ 3 ]; ++t)
+							elem = phases.sft( result[ 0 ] );
+			    		for(int p=0; p < params.Nmomenta; ++p)
 							{
-							#ifdef TERMINCORR
-								CQQQ[ qqq ].baryon[ b ]->termInCorr[ 0 ].hlist( i, j, k ).mom( p, t ) 
-							#else
-								CQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
-							#endif
-								*= ( CQQQ[ qqq ].coef[ b ] );
-							} // end for t 
-						} // end for p
-					} // end for i,j,k
-				} // end for Bop_index
-			} // end for qqq
-		} // end for ordering
-	} // end try
+			    			for(int t=0; t < params.nrow[ 3 ]; ++t)
+								{
+									CQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i0, i1, i2 ).ind[ 0 ].elem( p, t ) 
+									+= ( CQQQ[ qqq ].coef[ b ] * signs * elem( p, t ) );
+								} // t 
+							} // p
+						} // Bop_index
+			    } // if t_sources are all the same
+				} // iL,iM,iR
+			} // qqq
+			swatch.stop();
+			QDPIO::cout << "SOURCE operator " << ordering << " done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+		} // ordering
+	} // try
 	catch ( const std::string& e )
 	{
 	  QDPIO::cerr << ": Caught Exception creating source baryon operator: " << e << endl;
 	  QDP_abort( 1 );
 	}
-	QDPIO::cout << "Source operators done" << endl;
+	QDPIO::cout << "All SOURCE operators done" << endl;
 
 	#ifdef PRINTDEBUG
 	for(int b=0; b < params.Noperators; ++b)
 	{
 	  for(int t=0; t < params.nrow[ 3 ]; ++t)
 		{
-		#ifdef TERMINCORR
-			QDPIO::cout<<"op("<<b<<") t:"<<t<<" "<<COp[ b ].termInCorr[0].hlist(0,0,0).mom(0,t)<<endl;
-		#else
 			QDPIO::cout<<"op("<<b<<") t:"<<t<<" "<<COp[ b ].baryonoperator.orderings[ 0 ].op(0,0,0).ind[ 0 ].elem(0,t)<<endl;
-		#endif
 		}
 	}
 	#endif
@@ -464,7 +422,7 @@ int main( int argc, char *argv[] )
 
   // Save the operators
   // ONLY SciDAC output format is supported!
-  //swatch.start();
+  swatch.start();
 	for(int b=0; b < params.Noperators; ++b)
   {
     XMLBufferWriter file_xml;
@@ -488,8 +446,8 @@ int main( int argc, char *argv[] )
     }
     close( to );
   }
-  //swatch.stop();
-  //QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+  swatch.stop();
+  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 
   // Close the namelist output file XMLDAT
   pop( xml_out );   // GroupBaryonAll2All
