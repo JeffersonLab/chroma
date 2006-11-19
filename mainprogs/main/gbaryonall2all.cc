@@ -179,6 +179,86 @@ int main( int argc, char *argv[] )
   }
 	QDPIO::cout << "Read SOLUTION vectors from files : time = " << swatch.getTimeInSeconds() << " secs" << endl;
 #endif
+	// ====================================
+	//
+	//       Main Part of Program
+	//
+	// Run through the QQQ combinations and
+	// multiply by appropriate coefficients
+	// to make the various operators
+	//
+	// ====================================
+	multi1d<LatticeComplex> result(1);
+	// don't average over equivalent momenta
+  SftMom phases(params.mom2_max, false, params.j_decay);
+	multi2d<DComplex> elem( params.Nmomenta, params.nrow[3] );
+#if 1
+	try
+	{ //
+		// Annihilation Operator (plus) first (only one term)
+		//
+  	QDPIO::cout << "Making the SINK operators" << endl;
+		int ordering = 0;
+		
+		#if 1
+		swatch.start();
+    // Sink smear all the quarks up-front
+    std::istringstream  xml_s( params.sink_smearing.sink.xml );
+    XMLReader  sinktop( xml_s );
+    Handle< QuarkSourceSink<LatticeFermion> >
+				sinkSmearing(
+				             TheFermSinkSmearingFactory::Instance().createObject(
+										         params.sink_smearing.sink.id,   sinktop,
+														 params.sink_smearing.sink.path, params.gaugestuff.u ) );
+    for(int n=0; n < quarks.size(); ++n) 
+		{
+			for(int i=0; i < params.NH[ordering][n]; ++i)
+			{
+      	( *sinkSmearing ) ( quarks[ n ].dilutions[ i ].soln );
+			}
+		}
+		swatch.stop();
+		QDPIO::cout << "SINK smearings done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+		#endif
+		
+		swatch.start();
+		for(int qqq=0; qqq < params.NQQQs; ++qqq)
+		{
+			for(int i=0; i < params.NH[ordering][0]; ++i)
+			for(int j=0; j < params.NH[ordering][1]; ++j)
+			for(int k=0; k < params.NH[ordering][2]; ++k)
+			{ 
+				result = AQQQ[ qqq ]( 
+	    	                      quarks[ 0 ].dilutions[ i ].soln,
+	    	                      quarks[ 1 ].dilutions[ j ].soln,
+	    	                      quarks[ 2 ].dilutions[ k ].soln,
+	    	                      PLUS 
+														);
+		    for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
+				{
+					elem = phases.sft( result[ 0 ] );
+		    	for(int p=0; p < params.Nmomenta; ++p)
+					{
+		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
+						{ 
+							AQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
+							+= ( AQQQ[ qqq ].coef[ b ] * elem( p, t ) );
+						} // t 
+					} // p
+				} // Bop_index b
+			} // i,j,k
+		} // qqq
+		swatch.stop();
+	} // try
+	catch ( const std::string& e )
+	{
+	  QDPIO::cerr << ": Caught Exception creating sink baryon operator: " << e << endl;
+	  QDP_abort( 1 );
+	}
+	QDPIO::cout << "SINK operators done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif // end annihilation operators
+
+#if 1
 	// =============
 	// Noise Sources ... re-generate from the rng seeds
 	// =============
@@ -254,7 +334,7 @@ int main( int argc, char *argv[] )
 	// setting the seeds for output (baryon_operator file)
 	// should also put the mass of the quarks in here as well
 	//
-	for(int n=0; n < quarks.size(); ++n)
+	for(int n=0; n < params.Noperators; ++n)
 	{
 		COp[ n ].baryonoperator.seed_l = quarks[0].seed;
 		COp[ n ].baryonoperator.seed_m = quarks[1].seed;
@@ -263,64 +343,6 @@ int main( int argc, char *argv[] )
 		AOp[ n ].baryonoperator.seed_m = quarks[1].seed;
 		AOp[ n ].baryonoperator.seed_r = quarks[2].seed;
 	}
-	// ====================================
-	//
-	//       Main Part of Program
-	//
-	// Run through the QQQ combinations and
-	// multiply by appropriate coefficients
-	// to make the various operators
-	//
-	// ====================================
-	multi1d<LatticeComplex> result(1);
-	// don't average over equivalent momenta
-  SftMom phases(params.mom2_max, false, params.j_decay);
-	multi2d<DComplex> elem( params.Nmomenta, params.nrow[3] );
-#if 1
-	try
-	{ //
-		// Annihilation Operator (plus) first (only one term)
-		//
-  	QDPIO::cout << "Making the SINK operators" << endl;
-		swatch.start();
-		int ordering = 0;
-		for(int qqq=0; qqq < params.NQQQs; ++qqq)
-		{
-			for(int i=0; i < params.NH[ordering][0]; ++i)
-			for(int j=0; j < params.NH[ordering][1]; ++j)
-			for(int k=0; k < params.NH[ordering][2]; ++k)
-			{ 
-				result = AQQQ[ qqq ]( 
-	    	                      quarks[ 0 ].dilutions[ i ].soln,
-	    	                      quarks[ 1 ].dilutions[ j ].soln,
-	    	                      quarks[ 2 ].dilutions[ k ].soln,
-	    	                      PLUS 
-														);
-		    for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
-				{
-					elem = phases.sft( result[ 0 ] );
-		    	for(int p=0; p < params.Nmomenta; ++p)
-					{
-		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
-						{ 
-							AQQQ[ qqq ].baryon[ b ]->baryonoperator.orderings[ 0 ].op( i, j, k ).ind[ 0 ].elem( p, t ) 
-							+= ( AQQQ[ qqq ].coef[ b ] * elem( p, t ) );
-						} // t 
-					} // p
-				} // Bop_index b
-			} // i,j,k
-		} // qqq
-		swatch.stop();
-	} // try
-	catch ( const std::string& e )
-	{
-	  QDPIO::cerr << ": Caught Exception creating sink baryon operator: " << e << endl;
-	  QDP_abort( 1 );
-	}
-	QDPIO::cout << "SINK operators done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
-#endif // end annihilation operators
-
-#if 1
 	try
 	{ //
 		// Creation Operator (MINUS) 
@@ -418,7 +440,7 @@ int main( int argc, char *argv[] )
 
 	QDPIO::cout<<"end of group baryon operator calculation"<<endl;
 
-	// Now writing the operators out ... inline_stoch_baryon_w.cc
+	// Now writing the operators out
 
   // Save the operators
   // ONLY SciDAC output format is supported!
