@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: staggered_operators_s.cc,v 1.2 2006-11-18 07:39:44 kostas Exp $
+// $Id: staggered_operators_s.cc,v 1.3 2006-11-19 04:42:20 kostas Exp $
 /*! \file
  *  \brief Staggered  operators
  *
@@ -12,63 +12,71 @@ namespace Chroma
 {
 
    
-class AntiSymmetricTensor4D {
-  public:
-    multi1d<int> d;
-    Real sign ;
-    AntiSymmetricTensor4D(){
-      d.resize(4) ; sign=1.0 ;
-      for(int i(0);i<d.size();i++)
-	d[i]=i; ;
+  class AntiSymmetricTensor4D {
+  private:
+    class Datum{
+    public:
+      multi1d<int> d;
+      Real sign ;  
+      void init(int i,int j, int k, int l, Real s){
+	d.resize(4) ; sign=s ;
+	d[0]=i;d[1]=j;d[2]=k;d[3]=l ;
+      }
+      eps(){d.resize(4);sign=1.0;}
+      eps(int i,int j, int k, int l, Real s){
+	init(i,j,k,l,s);
+      }
+      ~eps(){}
+    } ;
+    
+    static Datum eps[24] ;
+    
+    void InitializeTable(){
+      eps[0].init(0,1,2,3,+1.0);
+      eps[1].init(0,3,1,2,+1.0);
+      eps[2].init(0,2,3,1,+1.0);
+      eps[3].init(0,3,2,1,-1.0);
+      eps[4].init(0,1,3,2,-1.0);
+      eps[5].init(0,2,1,3,-1.0);
+      
+      eps[6].init(1,0,2,3,-1.0);
+      eps[7].init(1,3,0,2,-1.0);
+      eps[8].init(1,2,3,0,-1.0);
+      eps[9].init(1,3,2,0,+1.0);
+      eps[10].init(1,0,3,2,+1.0);
+      eps[11].init(1,2,0,3,+1.0);
+      
+      eps[12].init(2,1,0,3,-1.0);
+      eps[13].init(2,3,1,0,-1.0);
+      eps[14].init(2,0,3,1,-1.0);
+      eps[15].init(2,3,0,1,+1.0);
+      eps[16].init(2,1,3,0,+1.0);
+      eps[17].init(2,0,1,3,+1.0);
+      
+      eps[18].init(3,1,2,0,-1.0);
+      eps[19].init(3,0,1,2,-1.0);
+      eps[20].init(3,2,0,1,-1.0);
+      eps[21].init(3,0,2,1,+1.0);
+      eps[22].init(3,1,0,2,+1.0);
+      eps[23].init(3,2,1,0,+1.0);
     }
-
-  void init(int i,int j, int k, int l, Real s){
-    d.resize(4) ; sign=s ;
-    d[0]=i;d[1]=j;d[2]=k;d[3]=l ;
-  }
-   
-  AntiSymmetricTensor4D(int i,int j, int k, int l, Real s){
-    init(i,j,k,l,s);
-  }
-
-
+    
+  public:
+    AntiSymmetricTensor4D(){
+      InitializeTable();
+    }
+    
     ~AntiSymmetricTensor4D(){} 
+    
+    Real sign(int k){return eps[k].sign ;} 
+    multi1d<int> indx(int k){return eps[k].d;}
+    
   } ;
   
 
 
-static AntiSymmetricTensor4D eps[24] ;
+  static AntiSymmetricTensor4D eps ;
 
-void InitializeEps(){
-  
-  eps[0].init(0,1,2,3,+1.0);
-  eps[1].init(0,3,1,2,+1.0);
-  eps[2].init(0,2,3,1,+1.0);
-  eps[3].init(0,3,2,1,-1.0);
-  eps[4].init(0,1,3,2,-1.0);
-  eps[5].init(0,2,1,3,-1.0);
-  
-  eps[6].init(1,0,2,3,-1.0);
-  eps[7].init(1,3,0,2,-1.0);
-  eps[8].init(1,2,3,0,-1.0);
-  eps[9].init(1,3,2,0,+1.0);
-  eps[10].init(1,0,3,2,+1.0);
-  eps[11].init(1,2,0,3,+1.0);
-  
-  eps[12].init(2,1,0,3,-1.0);
-  eps[13].init(2,3,1,0,-1.0);
-  eps[14].init(2,0,3,1,-1.0);
-  eps[15].init(2,3,0,1,+1.0);
-  eps[16].init(2,1,3,0,+1.0);
-  eps[17].init(2,0,1,3,+1.0);
-  
-  eps[18].init(3,1,2,0,-1.0);
-  eps[19].init(3,0,1,2,-1.0);
-  eps[20].init(3,2,0,1,-1.0);
-  eps[21].init(3,0,2,1,+1.0);
-  eps[22].init(3,1,0,2,+1.0);
-  eps[23].init(3,2,1,0,+1.0);
-}
   
   typedef LatticeStaggeredPropagator  T ;
   typedef multi1d<LatticeColorMatrix> G ;
@@ -147,18 +155,20 @@ void InitializeEps(){
   }
   void SpinAxialVector (T& dest, const T& src, const G& u,const int mu){
     T tmp ;
+    dest = zero ;
     for(int p(0);p<24;p++)
-      if(eps[p].d[0]==mu){
-	EtaShift(tmp,src,u,eps[p].d);
-	dest += eps[p].sign/6.0*tmp ;
+      if(eps.indx(p)[0]==mu){
+	EtaShift(tmp,src,u,eps.indx(p));
+	dest += eps.sign(p)/6.0*tmp ;
       } 
   }
 
   void SpinPseudoScalar(T& dest, const T& src, const G& u){
     T tmp ;
+    dest = zero ;
     for(int p(0);p<24;p++){
-      EtaShift(tmp,src,u,eps[p].d);
-      dest += eps[p].sign/24.0*tmp ;
+      EtaShift(tmp,src,u,eps.indx(p));
+      dest += eps.sign(p)/24.0*tmp ;
     } 
   }
 
@@ -185,19 +195,19 @@ void InitializeEps(){
   
   void FlavorAxialVector (T& dest,const T& src,const G& u,const int mu){
     T tmp ;
+    dest = zero ;
     for(int p(0);p<24;p++)
-      if(eps[p].d[0]==mu){
-	
-	ZetaShift(tmp,src,u,eps[p].d);
-	dest += eps[p].sign/6.0*tmp ;
-      } 
-  }
+      if(eps.indx(p)[0]==mu){
+	ZetaShift(tmp,src,u,eps.indx(p));
+	dest += eps.sign(p)/6.0*tmp ;
+      }
 
   void FlavorPseudoScalar(T& dest,const T& src,const G& u){
     T tmp ;
+    dest = zero ;
     for(int p(0);p<24;p++){
-      ZetaShift(tmp,src,u,eps[p].d);
-      dest += eps[p].sign/24.0*tmp ;
+      ZetaShift(tmp,src,u,eps.indx(p));
+      dest += eps.sign(p)/24.0*tmp ;
     } 
   }
 
