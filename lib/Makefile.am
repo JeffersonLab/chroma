@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.50 2006-11-18 04:40:16 kostas Exp $
+# $Id: Makefile.am,v 3.51 2006-11-19 05:01:32 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -497,9 +497,10 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
 	util/ferm/tdiractodr.h \
-        util/ferm/paulitodr.h \
-        util/ferm/antisymtensor.h \
-        util/ferm/etensor.h \
+	util/ferm/paulitodr.h \
+	util/ferm/staggered_operators_s.h \
+	util/ferm/antisymtensor.h \
+	util/ferm/etensor.h \
         util/ferm/symtensor.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
@@ -1055,6 +1056,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
+	util/ferm/staggered_operators_s.cc \
 	util/ferm/gammasgn_w.cc \
         util/ferm/antisymtensor.cc \
         util/ferm/etensor.cc \

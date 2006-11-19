@@ -1,12 +1,12 @@
 // -*- C++ -*-
-// $Id: staggered_operators_s.cc,v 1.3 2006-11-19 04:42:20 kostas Exp $
+// $Id: staggered_operators_s.cc,v 1.4 2006-11-19 05:01:34 kostas Exp $
 /*! \file
  *  \brief Staggered  operators
  *
  */
 
 #include "chromabase.h"
-#include "util/ferm/staggered_operators.h"
+#include "util/ferm/staggered_operators_s.h"
 
 namespace Chroma 
 {
@@ -22,11 +22,11 @@ namespace Chroma
 	d.resize(4) ; sign=s ;
 	d[0]=i;d[1]=j;d[2]=k;d[3]=l ;
       }
-      eps(){d.resize(4);sign=1.0;}
-      eps(int i,int j, int k, int l, Real s){
+      Datum(){d.resize(4);sign=1.0;}
+      Datum(int i,int j, int k, int l, Real s){
 	init(i,j,k,l,s);
       }
-      ~eps(){}
+      ~Datum(){}
     } ;
     
     static Datum eps[24] ;
@@ -81,7 +81,7 @@ namespace Chroma
   typedef LatticeStaggeredPropagator  T ;
   typedef multi1d<LatticeColorMatrix> G ;
   
-  void StaggeredZEta(LatticeStaggeredPropagator& dest,int mu){
+  void StaggeredZeta(LatticeStaggeredPropagator& dest,int mu){
     LatticeReal sign = 1.0 ;
     
     for(int c(mu+1);c<Nd;c++){
@@ -101,7 +101,7 @@ namespace Chroma
   }
 
   void SymShift(T& dest,const T& src,const G& u,const int mu){
-    dest = u[mu]*shift(src,FORWARD,mu) + shift(adj(u[dir])*src,BACKWARD,mu) ;
+    dest = u[mu]*shift(src,FORWARD,mu) + shift(adj(u[mu])*src,BACKWARD,mu) ;
   }
   
 
@@ -123,7 +123,7 @@ namespace Chroma
     T tmp(src);
     for(int c(0) ; c<mu.size();c++){
       SymShift(dest, tmp, u, mu[c]);
-      StaggeredZEta(dest,mu[c]);
+      StaggeredZeta(dest,mu[c]);
       tmp = dest ;
     }
   }
@@ -177,7 +177,7 @@ namespace Chroma
   }
   
   void FlavorVector(T& dest,const T& src,const G& u,const int mu){
-    ZetaShift(dest,src,mu) ;
+    ZetaShift(dest,src,u,mu) ;
   }
   
   void FlavorTensor(T& dest,const T& src,const G& u,const int mu,const int nu){
@@ -201,6 +201,7 @@ namespace Chroma
 	ZetaShift(tmp,src,u,eps.indx(p));
 	dest += eps.sign(p)/6.0*tmp ;
       }
+  }
 
   void FlavorPseudoScalar(T& dest,const T& src,const G& u){
     T tmp ;
