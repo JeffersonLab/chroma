@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.17 2006-11-18 06:43:00 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.18 2006-11-19 13:10:30 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -443,7 +443,6 @@ namespace Chroma
         AQQQ[ i ].myparams = params;
         AQQQ[ i ].u_smr = params.gaugestuff.u;
         AQQQ[ i ].quark.resize( 3 );
-        //AQQQ[ i ].orderings.resize( params.NsnkOrderings );
       }
       CQQQ.resize( params.NQQQs );
       for(int i=0; i < params.NQQQs; ++i)
@@ -456,7 +455,6 @@ namespace Chroma
         CQQQ[ i ].myparams = params;
         CQQQ[ i ].u_smr = params.gaugestuff.u;
         CQQQ[ i ].quark.resize( 3 );
-        //CQQQ[ i ].orderings.resize( params.NsrcOrderings );
       }
 			//
 			// GroupBaryonOperator structures
@@ -582,7 +580,6 @@ namespace Chroma
 					AQQQ[ i ].baryon[ n ] = &AB[ (AQQQ[ i ].whichBaryonOps[ n ]) ];
         }
       } // i : AQQQ[] loop
-
       //
       // Now for the creation operators
       //
@@ -775,7 +772,8 @@ namespace Chroma
 							break;
 
 	  				case MINUS:
-							displacement( u_smr, qq, -term_q.disp_len, term_q.disp_dir );
+//							displacement( u_smr, qq, -term_q.disp_len, term_q.disp_dir );
+							displacement( u_smr, qq, term_q.disp_len, term_q.disp_dir );
 							break;
           }
           disp_q.insert( std::make_pair( term_q.displacement, qq ) );
@@ -807,7 +805,8 @@ namespace Chroma
       q[ 2 ] = rotateMat() * q3;
       // Displace
       displaceQuarks( disp_quarks, q, isign );
-#if 1
+			
+			#if 1
       // Source smear after the displacements
       std::istringstream  xml_s( myparams.source_smearing.source.xml );
       XMLReader  sourcetop( xml_s );
@@ -827,7 +826,8 @@ namespace Chroma
           ( *sourceSmearing ) ( disp_q[ mm->first ] );
         }
       }
-#endif
+			#endif
+			
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // GroupBaryonQQQ::displaceSmearQuarks
@@ -852,7 +852,8 @@ namespace Chroma
       q[ 0 ] = rotateMat() * q1;
       q[ 1 ] = rotateMat() * q2;
       q[ 2 ] = rotateMat() * q3;
-#if 1
+			
+			#if 0 // already done at beginning so that there are no repetitions
       // Sink smear the quarks
       std::istringstream  xml_s( myparams.sink_smearing.sink.xml );
       XMLReader  sinktop( xml_s );
@@ -865,7 +866,8 @@ namespace Chroma
 			{
         ( *sinkSmearing ) ( q[ i ] );
 			}
-#endif
+			#endif
+			
       // Displace after the smearing
       displaceQuarks( disp_quarks, q, isign );
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
