@@ -313,14 +313,14 @@ int main(int argc, char **argv)
   typedef multi1d<LatticeColorMatrix>  Q;
 
   // Create a fermion state
-  Handle< CreateFermState<T,P,Q> > cfs(new CreateSimpleFermState<T,P,Q>(params.param.boundary));
+  Handle< CreateFermState<T,P,Q> > cfs(new CreateSimpleFermState<T,P,Q>(input.param.boundary));
 
   //
   // Initialize fermion action
   //
   AsqtadFermActParams asq_param;
-  asq_param.Mass = params.prop_param.Mass;
-  asq_param.u0   = params.prop_param.u0;
+  asq_param.Mass = input.param.Mass;
+  asq_param.u0   = input.param.u0;
   AsqtadFermAct S_f(cfs, asq_param);
   Handle< FermState<T,P,Q> > state(S_f.createState(u));
 
