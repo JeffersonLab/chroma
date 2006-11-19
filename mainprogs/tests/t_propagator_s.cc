@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 3.3 2006-11-17 14:39:26 edwards Exp $
+// $Id: t_propagator_s.cc,v 3.4 2006-11-19 04:59:08 edwards Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -345,14 +345,14 @@ int main(int argc, char **argv)
   typedef multi1d<LatticeColorMatrix>  Q;
 
   // Create a fermion state
-  Handle< CreateFermState<T,P,Q> > cfs(new CreateSimpleFermState<T,P,Q>(params.param.boundary));
+  Handle< CreateFermState<T,P,Q> > cfs(new CreateSimpleFermState<T,P,Q>(input.param.boundary));
 
   //
   // Initialize fermion action
   //
   AsqtadFermActParams asq_param;
-  asq_param.Mass = params.prop_param.Mass;
-  asq_param.u0   = params.prop_param.u0;
+  asq_param.Mass = input.param.Mass;
+  asq_param.u0   = input.param.u0;
   AsqtadFermAct S_f(cfs, asq_param);
 
   // Set up a state for the current u,
