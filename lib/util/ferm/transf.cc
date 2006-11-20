@@ -1,4 +1,4 @@
-// $Id: transf.cc,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: transf.cc,v 3.1 2006-11-20 16:22:03 edwards Exp $
 /*! \file
  *  \brief Insertion/Extraction utilities for vectors/fermions/propagators
  */
@@ -56,7 +56,7 @@ namespace Chroma
    * \param a      Source color vector
    * \param b      Destination fermion
    */
-  void CvToFerm(const LatticeColorVectorD& a, LatticeFermionD& b)
+  void CvToFerm(const LatticeColorVectorD& a, LatticeStaggeredFermionD& b)
   {
     pokeSpin(b, a, 0);
   }
