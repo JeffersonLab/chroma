@@ -18,14 +18,12 @@ namespace Chroma
 			     multi1d<LatticeColorMatrix> >* 
       createMDIntegrator(
 			 XMLReader& xml, 
-			 const std::string& path,  
-			 Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, 
-			 multi1d<LatticeColorMatrix> > >& H) 
+			 const std::string& path)
       {
 	// Read the integrator params
 	LatColMatMinNorm2RecursiveIntegratorParams p(xml, path);
     
-	return new LatColMatMinNorm2RecursiveIntegrator(p, H);
+	return new LatColMatMinNorm2RecursiveIntegrator(p);
       }
       
       //! Local registration flag
@@ -53,7 +51,7 @@ namespace Chroma
     XMLReader paramtop(xml_in, path);
     try {
       read(paramtop, "./n_steps", n_steps);
-      read(paramtop, "./monomial_list", monomial_list);
+      read(paramtop, "./monomial_ids", monomial_ids);
       if( paramtop.count("./lambda") == 1 ) { 
 	read(paramtop, "./lambda", lambda );
       }
@@ -108,39 +106,13 @@ namespace Chroma
 	     const LatColMatMinNorm2RecursiveIntegratorParams& p) {
     push(xml, path);
     write(xml, "n_steps", p.n_steps);
-    write(xml, "monomial_list", p.monomial_list);
+    write(xml, "monomial_ids", p.monomial_ids);
     write(xml, "lambda", p.lambda);
     xml << p.subintegrator_xml;
     pop(xml);
   }
 
   
-  // Could this be reused if it was moved to a namespace?
-  // It deals exclusively with abstract stuff 
-  AbsComponentIntegrator< multi1d<LatticeColorMatrix>,
-			  multi1d<LatticeColorMatrix> >* LatColMatMinNorm2RecursiveIntegrator::createSubIntegrator(const std::string& subintegrator_xml, 
-														      Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) {
-    
-    std::istringstream is( subintegrator_xml );
-    XMLReader top(is);
-    
-    std::string subint_name;
-    try { 
-      read(top, "/SubIntegrator/Name", subint_name);
-    }
-    catch( const std::string ) {
-      QDPIO::cerr << "Failed to extract name of subintegrator in LatColMatMinNorm2RecursiveIntegrator" << endl;
-      QDP_abort(1);
-    }
-    std::string root="/SubIntegrator";
-    
-    AbsComponentIntegrator< multi1d<LatticeColorMatrix>,
-      multi1d<LatticeColorMatrix> >* ret_val=
-     TheMDComponentIntegratorFactory::Instance().createObject(subint_name, top, root, H_);
-    return ret_val;
-
-  }
-
 
   void LatColMatMinNorm2RecursiveIntegrator::operator()( 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -150,8 +122,8 @@ namespace Chroma
    
     START_CODE();
     LatColMatExpSdtIntegrator expSdt(1,
-				     monomial_list,
-				     H_MD);    // Single Step
+				     monomials);
+
 
     const AbsComponentIntegrator< multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >& subIntegrator = getSubIntegrator();

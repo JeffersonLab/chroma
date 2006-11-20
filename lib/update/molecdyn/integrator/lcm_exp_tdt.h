@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_exp_tdt.h,v 3.1 2006-11-07 23:11:03 bjoo Exp $
+// $Id: lcm_exp_tdt.h,v 3.2 2006-11-20 19:15:02 bjoo Exp $
 
 /*! @file
  * @brief Intgrator for exp(T dt)
@@ -70,15 +70,15 @@ namespace Chroma
     // ! Destruction is automagic
     ~LatColMatExpTdtIntegrator(void) {};
 
-    void getMonomialList(multi1d<int>& ml) const {
-      ml.resize(0);
-    }
-
 
     void operator()( AbsFieldState<multi1d<LatticeColorMatrix>,
 		                   multi1d<LatticeColorMatrix> >& s, 
 		     const Real& traj_length) const;
    			    
+
+    void refreshFields(AbsFieldState<multi1d<LatticeColorMatrix>,
+		                   multi1d<LatticeColorMatrix> >& s) const
+    {}
 
   private:
     int  n_steps;

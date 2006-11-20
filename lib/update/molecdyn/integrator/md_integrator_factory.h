@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 3.2 2006-11-07 23:11:05 bjoo Exp $
+// $Id: md_integrator_factory.h,v 3.3 2006-11-20 19:15:02 bjoo Exp $
 /*! \file
  *  \brief Integrator factories
  */
@@ -57,15 +57,14 @@ namespace Chroma
 			    multi1d<LatticeColorMatrix> >,
     std::string,
 
-    TYPELIST_3(XMLReader&, 
-	       const std::string&, 
-	       Handle< LCMHam >& ),
+    TYPELIST_2(XMLReader&, 
+	       const std::string&),
+	      
 
     AbsComponentIntegrator< multi1d<LatticeColorMatrix>, 
 			    multi1d<LatticeColorMatrix> >* (*)(
 							       XMLReader&,
-							       const std::string&,
-							       Handle<LCMHam>&),
+							       const std::string&),
 			      StringFactoryError> >
   TheMDComponentIntegratorFactory;
 

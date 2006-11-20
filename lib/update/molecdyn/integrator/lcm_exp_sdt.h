@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_exp_sdt.h,v 3.1 2006-11-07 23:11:02 bjoo Exp $
+// $Id: lcm_exp_sdt.h,v 3.2 2006-11-20 19:15:02 bjoo Exp $
 
 /*! @file
  * @brief Intgrator for exp(S dt)
@@ -13,8 +13,10 @@
 
 
 #include "chromabase.h"
-#include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
+#include "handle.h"
+#include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/integrator/abs_integrator.h"
+#include "update/molecdyn/integrator/integrator_shared.h" 
 
 
 namespace Chroma 
@@ -34,7 +36,7 @@ namespace Chroma
     LatColMatExpSdtIntegratorParams();
     LatColMatExpSdtIntegratorParams(XMLReader& xml, const std::string& path);
     int  n_steps;
-    multi1d<int> monomial_list;
+    multi1d<std::string> monomial_list;
   };
 
   /*! @ingroup integrator */
@@ -59,40 +61,52 @@ namespace Chroma
 
     // Simplest Constructor
     LatColMatExpSdtIntegrator(const int  n_steps_, 
-			      const multi1d<int>& monomial_list_,
-			      const Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_ ) : n_steps(n_steps_), monomial_list(monomial_list_), H_MD(H_) {};
+			      const multi1d<std::string>& monomial_id_list) : n_steps(n_steps_) { 
+      create(monomial_id_list);
+    }
+
+
+    // Construct from nsteps and monomial_handle array
+    LatColMatExpSdtIntegrator(const int n_steps_,
+      const multi1d< Handle< Monomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > > monomials_) : n_steps(n_steps_), monomials(monomials_) {}
 
     // Construct from params struct and Hamiltonian
-    LatColMatExpSdtIntegrator(const LatColMatExpSdtIntegratorParams& p,
-				   Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) : n_steps(p.n_steps), monomial_list(p.monomial_list), H_MD(H_) {}
+    LatColMatExpSdtIntegrator(const LatColMatExpSdtIntegratorParams& p) : n_steps(p.n_steps) { 
+      create(p.monomial_list);
+    }
 
     // Copy constructor
     LatColMatExpSdtIntegrator(const LatColMatExpSdtIntegrator& l) :
-      n_steps(l.n_steps), monomial_list(l.monomial_list), H_MD(l.H_MD) {}
+      n_steps(l.n_steps), monomials(l.monomials) {}
 
     // ! Destruction is automagic
     ~LatColMatExpSdtIntegrator(void) {};
-
-
-    void getMonomialList(multi1d<int>& ml) const {
-      ml.resize(monomial_list.size());
-      for(int i=0; i < monomial_list.size(); i++) { 
-	ml[i]=monomial_list[i];
-      }
-
-    }
-
 
     void operator()( AbsFieldState<multi1d<LatticeColorMatrix>,
 		                   multi1d<LatticeColorMatrix> >& s, 
 		     const Real& traj_length) const;
    			    
 
+    void refreshFields(AbsFieldState<multi1d<LatticeColorMatrix>,
+		                   multi1d<LatticeColorMatrix> >& s) const { 
+      for(int i=0; i < monomials.size(); i++) { 
+	monomials[i]->refreshInternalFields(s);
+      }
+    }
+
   private:
     int  n_steps;
-    const multi1d<int> monomial_list;
-    const Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, 
-			    multi1d<LatticeColorMatrix> > > H_MD;
+
+    typedef multi1d<LatticeColorMatrix> LCM;
+    // Use the shared routine to bind the monomial list 
+    void create(multi1d<std::string> monomial_id_list) { 
+      IntegratorShared::bindMonomials(monomial_id_list, monomials);
+    }
+
+   
+
+    multi1d< Handle< Monomial<multi1d<LatticeColorMatrix>, 
+			      multi1d<LatticeColorMatrix> > > > monomials;
     
     
   };

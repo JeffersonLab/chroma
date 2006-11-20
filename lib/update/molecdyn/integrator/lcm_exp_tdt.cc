@@ -17,9 +17,7 @@ namespace Chroma
 			     multi1d<LatticeColorMatrix> >* 
       createMDIntegrator(
 			 XMLReader& xml, 
-			 const std::string& path,  
-			 Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, 
-			 multi1d<LatticeColorMatrix> > >& H) 
+			 const std::string& path)
       {
 	// Read the integrator params
 	LatColMatExpTdtIntegratorParams p(xml, path);

@@ -17,14 +17,12 @@ namespace Chroma
 			     multi1d<LatticeColorMatrix> >* 
       createMDIntegrator(
 			 XMLReader& xml, 
-			 const std::string& path,  
-			 Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, 
-			 multi1d<LatticeColorMatrix> > >& H) 
+			 const std::string& path)
       {
 	// Read the integrator params
 	LatColMatExpSdtIntegratorParams p(xml, path);
     
-	return new LatColMatExpSdtIntegrator(p, H);
+	return new LatColMatExpSdtIntegrator(p);
       }
       
       //! Local registration flag
@@ -85,9 +83,8 @@ namespace Chroma
     START_CODE();
     Real dtau = traj_length / n_steps;
     for(int i=0; i < n_steps; i++) { 
-      LCMMDIntegratorSteps::leapP( monomial_list,
+      LCMMDIntegratorSteps::leapP( monomials,
 				   dtau,
-				   (*H_MD), 
 				   s  );
     }
 

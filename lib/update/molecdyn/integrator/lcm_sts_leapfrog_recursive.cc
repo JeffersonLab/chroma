@@ -18,14 +18,12 @@ namespace Chroma
 			     multi1d<LatticeColorMatrix> >* 
       createMDIntegrator(
 			 XMLReader& xml, 
-			 const std::string& path,  
-			 Handle< AbsHamiltonian<multi1d<LatticeColorMatrix>, 
-			 multi1d<LatticeColorMatrix> > >& H) 
+			 const std::string& path)
       {
 	// Read the integrator params
 	LatColMatSTSLeapfrogRecursiveIntegratorParams p(xml, path);
     
-	return new LatColMatSTSLeapfrogRecursiveIntegrator(p, H);
+	return new LatColMatSTSLeapfrogRecursiveIntegrator(p);
       }
       
       //! Local registration flag
@@ -53,7 +51,7 @@ namespace Chroma
     XMLReader paramtop(xml_in, path);
     try {
       read(paramtop, "./n_steps", n_steps);
-      read(paramtop, "./monomial_list", monomial_list);
+      read(paramtop, "./monomial_ids", monomial_ids);
       if( paramtop.count("./SubIntegrator") == 0 ) {
 	// BASE CASE: User does not supply sub-integrator 
 	//
@@ -101,37 +99,12 @@ namespace Chroma
 	     const LatColMatSTSLeapfrogRecursiveIntegratorParams& p) {
     push(xml, path);
     write(xml, "n_steps", p.n_steps);
-    write(xml, "monomial_list", p.monomial_list);
+    write(xml, "monomial_ids", p.monomial_ids);
     xml << p.subintegrator_xml;
     pop(xml);
   }
 
   
-  AbsComponentIntegrator< multi1d<LatticeColorMatrix>,
-			  multi1d<LatticeColorMatrix> >* LatColMatSTSLeapfrogRecursiveIntegrator::createSubIntegrator(const std::string& subintegrator_xml, 
-														      Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& H_) {
-    
-    std::istringstream is( subintegrator_xml );
-    XMLReader top(is);
-    
-    std::string subint_name;
-    try { 
-      read(top, "/SubIntegrator/Name", subint_name);
-    }
-    catch( const std::string ) {
-      QDPIO::cerr << "Failed to extract name of subintegrator in LatColMatSTSLeapfrogRecursiveIntegrator" << endl;
-      QDP_abort(1);
-    }
-    std::string root="/SubIntegrator";
-    
-    AbsComponentIntegrator< multi1d<LatticeColorMatrix>,
-      multi1d<LatticeColorMatrix> >* ret_val=
-     TheMDComponentIntegratorFactory::Instance().createObject(subint_name, top, root, H_);
-    return ret_val;
-
-  }
-
-
   void LatColMatSTSLeapfrogRecursiveIntegrator::operator()( 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
 					     multi1d<LatticeColorMatrix> >& s, 
@@ -140,8 +113,7 @@ namespace Chroma
    
     START_CODE();
     LatColMatExpSdtIntegrator expSdt(1,
-				     monomial_list,
-				     H_MD);    // Single Step
+				     monomials); // Single Step
 
     const AbsComponentIntegrator< multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix> >& subIntegrator = getSubIntegrator();
@@ -162,7 +134,6 @@ namespace Chroma
     expSdt(s, dtauby2);  // Last Half Step
 
     END_CODE();
-    
 
   }
 

@@ -97,6 +97,59 @@ namespace Chroma
       END_CODE();
     }
 
+
+    //! LeapP for just a selected list of monomials
+    void leapP(const multi1d< 
+	       Handle<   Monomial< multi1d<LatticeColorMatrix>, 
+	                           multi1d<LatticeColorMatrix> > >
+	       > monomials,
+	                                       
+	       const Real& dt, 
+	       	       
+	       AbsFieldState<multi1d<LatticeColorMatrix>,
+	       multi1d<LatticeColorMatrix> >& s) 
+    {
+      START_CODE();
+      
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
+      // Self Description rule
+      push(xml_out, "leapP");
+      write(xml_out, "dt",dt);
+      
+      // Force Term
+      multi1d<LatticeColorMatrix> dsdQ(Nd);
+      push(xml_out, "AbsHamiltonianForce"); // Backward compatibility
+      write(xml_out, "num_terms", monomials.size());
+      push(xml_out, "ForcesByMonomial");
+
+      if( monomials.size() > 0 ) { 
+	push(xml_out, "elem");
+	monomials[0]->dsdq(dsdQ,s);
+	pop(xml_out); //elem
+	for(int i=1; i < monomials.size(); i++) { 
+	  push(xml_out, "elem");
+	  multi1d<LatticeColorMatrix> cur_F(Nd);
+	  monomials[i]->dsdq(cur_F, s);
+	  dsdQ += cur_F;
+	  pop(xml_out); // elem
+	}
+      }
+      pop(xml_out); // ForcesByMonomial
+      pop(xml_out); // AbsHamiltonianForce 
+
+      for(int mu =0; mu < Nd; mu++) 
+      {
+	(s.getP())[mu] += dt * dsdQ[mu];
+	
+	// taproj it...
+	taproj( (s.getP())[mu] );
+      }
+      
+      pop(xml_out); // pop("leapP");
+    
+      END_CODE();
+    }
+
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
 	       multi1d<LatticeColorMatrix> >& s) 

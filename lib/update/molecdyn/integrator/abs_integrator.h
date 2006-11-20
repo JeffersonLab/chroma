@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 3.3 2006-11-07 23:11:01 bjoo Exp $
+// $Id: abs_integrator.h,v 3.4 2006-11-20 19:15:02 bjoo Exp $
 
 /*! @file
  * @brief Integrators
@@ -36,8 +36,9 @@ namespace Chroma
     virtual void operator()(AbsFieldState<P,Q>& s, 
 			    const Real& traj_length) const = 0;
 
-    //! Return the list of Monomial ID's this integrator deals with
-    virtual void getMonomialList(multi1d<int>& monomial_list) const = 0;
+    //! Refresh fields in this level of the integrator (for R like algorithms)
+    virtual void refreshFields(AbsFieldState<multi1d<LatticeColorMatrix>,
+		                   multi1d<LatticeColorMatrix> >& s) const = 0;
   };
 
   //! MD component integrator that has a sub integrator (recursive)
@@ -56,10 +57,55 @@ namespace Chroma
     //! Return the next level down integrator
     virtual AbsComponentIntegrator<P,Q>& getSubIntegrator() const = 0;
 
-    //! Return the list of Monomial ID's this integrator deals with
-    virtual void getMonomialList(multi1d<int>& monomial_list) const = 0;
+    //! Refresh fields in this level of the integrator and sub integrators.
+    virtual void refreshFields(AbsFieldState<multi1d<LatticeColorMatrix>,
+		                   multi1d<LatticeColorMatrix> >& s) const {
+      refreshFieldsThisLevel(s); // Do the fields in this level
+      getSubIntegrator().refreshFields(s); // Recurse down 
+    }
+
+  protected:
+    //! Refresh fields in just this level
+    virtual void refreshFieldsThisLevel(AbsFieldState<multi1d<LatticeColorMatrix>,
+		                   multi1d<LatticeColorMatrix> >& s) const = 0;
   };
   
+
+  //! New MD integrator interface 
+  /*! @ingroup integrator */
+  template<typename P, typename Q>
+  class AbsMDIntegratorNew {
+  public:
+    //! Virtual destructor
+    virtual ~AbsMDIntegratorNew(void) {}
+
+    //! Do the trajectory for length trajLength 
+    virtual void operator()(AbsFieldState<P,Q>&s, const Real& trajLength) const {
+      // Default behaviour - get the subintegrator and integrate
+      // the trajectory of length trajLength
+      AbsComponentIntegrator<P,Q>& theIntegrator = getIntegrator();
+      theIntegrator(s, trajLength);
+    }
+    
+    //! Refresh fields in the sub integrators (for R-like algorithms)
+    virtual void refreshFields(AbsFieldState<P,Q>&s ) const { 
+      getIntegrator().refreshFields(s); // Recursively refresh fields
+    }
+    
+    //! Get the trajectory length
+    virtual Real getTrajLength(void) const = 0;
+
+    //! Copy equivalent fields into MD monomals before integration
+    /*! It is up to the toplevel integrator to keep track of which 
+        fields it needs to copy internally so that this function doesn't
+	need its details exposed */
+    virtual void copyFields(void) const = 0;
+  private:
+
+    //! Get the toplevel sub integrator
+    virtual AbsComponentIntegrator<P,Q>& getIntegrator() const = 0;
+    
+  };
 
   //! MD integrator interface
   /*! @ingroup integrator */
