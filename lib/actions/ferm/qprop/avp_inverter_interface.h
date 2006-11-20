@@ -128,9 +128,22 @@ namespace Chroma {
 	      double& out_eps,                      // output
 	      int &out_iter )       const           // output
       {
+
+	StopWatch swatch;
+	swatch.reset();
+	swatch.start();
 	Fermion *eta = loadFermionRHS(&rhs);
-	
+	swatch.stop();
+	QDPIO::cout << "Importing RHS Fermion took: " << swatch.getTimeInSeconds() << " seconds " << endl;
+
+
+	swatch.reset();
+	swatch.start();
 	Fermion *X0  = loadFermionGuess(&x0);
+	swatch.stop();
+
+	QDPIO::cout << "Importing Guess took: " << swatch.getTimeInSeconds() 
+		    << " seconds" << endl;
 	
 	Fermion *res = allocateFermion();
 	
@@ -143,7 +156,7 @@ namespace Chroma {
 	out_iter = 0;
 	int min_iter = 0;
 
-	StopWatch swatch;
+
 	swatch.reset();
 	swatch.start();
 	
@@ -186,7 +199,14 @@ namespace Chroma {
 	  flopcount.report("CGDWFQpropT", swatch.getTimeInSeconds());
 	}
 
+	swatch.reset();
+	swatch.start();
 	saveFermionSolver(&solution,res);
+	swatch.stop();
+
+	QDPIO::cout << "Exporting Solution took: " << swatch.getTimeInSeconds()
+		    << " seconds " << endl;
+
 	deleteFermion(res);
 	deleteFermion(X0);
 	deleteFermion(eta);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.3 2006-11-07 05:22:41 edwards Exp $
+// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.4 2006-11-20 21:02:44 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -193,12 +193,22 @@ namespace Chroma
       multi1d<LatticeColorMatrix> v(Nd);
       for (int i = 0; i < Nd; i++)
 	v[i] = shift(u[i], -1, i); // as viewed from the destination
+
+      StopWatch swatch;
 #ifdef SINGLE_PREC_SOLVER      
+      
+      swatch.reset(); swatch.start();
       single_prec_solver.loadGauge(&u, &v);
+      swatch.stop();
+      QDPIO::cout << "Single Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << endl;
 #endif 
 #ifdef DOUBLE_PREC_SOLVER
+      swatch.reset(); swatch.start();
       double_prec_solver.loadGauge(&u, &v);
+      swatch.stop();
+      QDPIO::cout << "Double Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << endl;
 #endif 
+
       QDPIO::cout << "exiting CGDWFQpropT::init" << endl;
     }
 
@@ -217,8 +227,13 @@ namespace Chroma
     }
       
   private:
+#ifdef SINGLE_PREC_SOLVER
     SinglePrecSolver  single_prec_solver;
+#endif
+
+#ifdef DOUBLE_PREC_SOLVER
     DoublePrecSolver double_prec_solver;
+#endif
 
     Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
     Real OverMass;
