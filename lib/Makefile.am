@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.51 2006-11-19 05:01:32 kostas Exp $
+# $Id: Makefile.am,v 3.52 2006-11-20 19:26:00 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -250,21 +250,23 @@ nobase_include_HEADERS = \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
-	update/molecdyn/integrator/integrator.h \
 	update/molecdyn/integrator/abs_integrator.h \
 	update/molecdyn/integrator/integrator_aggregate.h \
-	update/molecdyn/integrator/md_integrator_factory.h \
+	update/molecdyn/integrator/integrator.h \
+	update/molecdyn/integrator/integrator_shared.h \
+	update/molecdyn/integrator/lcm_exp_sdt.h \
+	update/molecdyn/integrator/lcm_exp_tdt.h \
 	update/molecdyn/integrator/lcm_integrator_leaps.h \
-	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
-	update/molecdyn/integrator/lcm_sexton_weingarten.h \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.h \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h \
 	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h \
-	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
-	update/molecdyn/integrator/lcm_exp_sdt.h \
-	update/molecdyn/integrator/lcm_exp_tdt.h \
-	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_min_norm2_recursive.h \
+	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
+	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
+	update/molecdyn/integrator/lcm_sexton_weingarten.h \
+	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_toplevel_integrator.h \
+	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/hmc/hmc.h\
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
@@ -858,21 +860,22 @@ libchroma_a_SOURCES = \
         update/heatbath/su3over.cc \
 	update/heatbath/su2_hb_update.cc \
 	update/heatbath/mciter.cc \
+	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
+	update/molecdyn/integrator/integrator_shared.cc \
+	update/molecdyn/integrator/lcm_exp_sdt.cc \
+	update/molecdyn/integrator/lcm_exp_tdt.cc \
 	update/molecdyn/integrator/lcm_integrator_leaps.cc \
-	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
-	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
-	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc \
 	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc \
-	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
-	update/molecdyn/integrator/lcm_exp_sdt.cc \
-	update/molecdyn/integrator/lcm_exp_tdt.cc \
-	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_min_norm2_recursive.cc \
+	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
+	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
+	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
+	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \

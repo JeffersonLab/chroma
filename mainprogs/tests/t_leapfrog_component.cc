@@ -3,6 +3,11 @@
 #include <string>
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"
+#include "update/molecdyn/integrator/lcm_toplevel_integrator.h"
+
+// Specials
+#include "update/molecdyn/hamiltonian/exact_hamiltonian.h"
+
 using namespace Chroma;
 
 //! To insure linking of code, place the registered code flags here
@@ -84,24 +89,21 @@ int main(int argc, char *argv[])
     gaugeStartup(file_xml, config_xml, u, cfg);
   }
 
-
-  Handle<AbsHamiltonian<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > > H(new ExactLatColMatHamiltonian(paramtop, "./Hamiltonian"));
-
-  std::string integrator_name;
-  Real tau0;
-
+  // Try and create an array of monomials:
   try { 
-    read(paramtop, "./MDIntegrator/Name", integrator_name);
-    read(paramtop, "./MDIntegrator/tau0", tau0);
+    readNamedMonomialArray(paramtop, "./Monomials");
   }
   catch(const std::string& e) { 
-    QDPIO::cout << "Error reading XML: " << integrator_name << endl;
+    QDPIO::cout << "Failed to read monomials " << endl;
     QDP_abort(1);
   }
 
+  NewExactHamParams ham_params(paramtop, "./Hamiltonian");
+  NewExactHam H(ham_params);
 
-  // Get the Integrator
-  Handle< AbsComponentIntegrator<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > MD( TheMDComponentIntegratorFactory::Instance().createObject(integrator_name, paramtop, "./MDIntegrator", H) );
+  // create toplevel integrator
+  LCMToplevelIntegratorParams int_par(paramtop, "./MDIntegrator");
+  LCMToplevelIntegrator the_integrator(int_par);
 
   // Fictitious momenta for now
   multi1d<LatticeColorMatrix> p(Nd);
@@ -121,24 +123,28 @@ int main(int argc, char *argv[])
   
   QDPIO::cout << "exact ham" << endl;
 
-  ExactLatColMatHamiltonian& H_exact = dynamic_cast<ExactLatColMatHamiltonian&    >(*H);
+
   Double KE_old, PE_old;
 
   QDPIO::cout << "fields" << endl;
 
-  // Put some noise into the pseudofermions...
-  H_exact.refreshInternalFields(gauge_state);
+
+  H.refreshInternalFields(gauge_state);
 
   QDPIO::cout << "mesE" << endl;
 
-  H_exact.mesE(gauge_state, KE_old, PE_old);
+  H.mesE(gauge_state, KE_old, PE_old);
+
   QDPIO::cout << "Initial energies: KE =" << KE_old << " PE = " << PE_old <<endl;
+
+  // Setup fields 
+  the_integrator.copyFields();
 
   QDP::StopWatch swatch;
   swatch.reset();
   swatch.start();
   // Do a trajectory
-  (*MD)(gauge_state, tau0);
+  the_integrator(gauge_state, the_integrator.getTrajLength());
   swatch.stop();
   double total_time = swatch.getTimeInSeconds();
   QDPIO::cout << "Trajectory took: " << total_time << " sec" <<endl;
@@ -189,7 +195,7 @@ int main(int argc, char *argv[])
 
   
   Double KE_new, PE_new;
-  H_exact.mesE(gauge_state, KE_new, PE_new);
+  H.mesE(gauge_state, KE_new, PE_new);
   QDPIO::cout << "Final energies: KE =" << KE_new << " PE = " << PE_new <<endl;
   
 
