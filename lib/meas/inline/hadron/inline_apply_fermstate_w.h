@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_apply_fermstate_w.h,v 3.1 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_apply_fermstate_w.h,v 3.2 2006-11-21 04:07:46 edwards Exp $
 /*! \file
  *  \brief Inline ferm state application
  */
@@ -13,14 +13,14 @@
 
 namespace Chroma 
 { 
-  /*! \ingroup inlineglue */
+  /*! \ingroup inlinehadron */
   namespace InlineFermStateEnv 
   {
     extern const std::string name;
     bool registerAll();
   }
 
-  /*! \ingroup inlineglue */
+  /*! \ingroup inlinehadron */
   struct InlineFermStateParams 
   {
     InlineFermStateParams();
@@ -42,7 +42,7 @@ namespace Chroma
   };
 
 
-  /*! \ingroup inlineglue */
+  /*! \ingroup inlinehadron */
   class InlineFermState : public AbsInlineMeasurement 
   {
   public:
