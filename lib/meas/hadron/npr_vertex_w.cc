@@ -1,4 +1,4 @@
-//  $Id: npr_vertex_w.cc,v 1.5 2006-11-21 18:42:34 edwards Exp $
+//  $Id: npr_vertex_w.cc,v 1.6 2006-11-21 19:36:59 edwards Exp $
 /*! \file
  *  \brief NPR vertex calculations
  */
@@ -11,6 +11,19 @@ using namespace QDP;
 
 namespace Chroma 
 {
+
+  QDP::StandardOutputStream& operator<<(QDP::StandardOutputStream& s, const multi1d<int>& d)
+  {
+    if (d.size() > 0)
+    {
+      s << d[0];
+      for(int i=1; i < d.size(); ++i)
+	s << " " << d[i];
+    }
+
+    return s;
+  }
+
 
   void BkwdFrwd(const LatticePropagator&  B,
 		const LatticePropagator&  F,
@@ -27,6 +40,9 @@ namespace Chroma
       XMLBufferWriter record_xml;
       push(record_xml, "Vertex");
 
+      QDPIO::cout << __func__ << ": LinkDirs = " << LinkDirs 
+		  << "  gamma = " << i << endl;
+
       write(record_xml, "linkDirs", LinkDirs);   // link pattern
       write(record_xml, "gamma", i);
 
@@ -39,7 +55,8 @@ namespace Chroma
       // Compute the single site propagator and write it
       DPropagator prop;
       {
-	LatticePropagator tmp = (Gamma(G5) * adj(B) * Gamma(G5)) * Gamma(i) * F;
+	// assumes any Gamma5 matrices have already been absorbed into B
+	LatticePropagator tmp = B * Gamma(i) * F;
 	prop = sum(tmp);   // The site's worth of data of interest
       }
       
