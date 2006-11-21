@@ -1,4 +1,4 @@
-//  $Id: npr_vertex_w.cc,v 1.4 2006-11-04 04:42:49 edwards Exp $
+//  $Id: npr_vertex_w.cc,v 1.5 2006-11-21 18:42:34 edwards Exp $
 /*! \file
  *  \brief NPR vertex calculations
  */
@@ -43,6 +43,8 @@ namespace Chroma
 	prop = sum(tmp);   // The site's worth of data of interest
       }
       
+      pop(record_xml);
+
       write(qio_file, record_xml, prop);
     }
 
