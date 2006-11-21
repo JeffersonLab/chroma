@@ -1,4 +1,4 @@
-// $Id: quark_displacement_aggregate.cc,v 3.5 2006-11-20 22:22:28 kostas Exp $
+// $Id: quark_displacement_aggregate.cc,v 3.6 2006-11-21 05:20:13 kostas Exp $
 /*! \file
  *  \brief All quark displacements
  */
@@ -11,7 +11,7 @@
 #include "meas/smear/gamma_displacement_w.h"
 
 #include "meas/smear/deriv_quark_displacement_s.h"
-//#include "meas/smear/quark_flavor_s.h"
+#include "meas/smear/quark_flavor_s.h"
 
 namespace Chroma
 {
@@ -36,7 +36,7 @@ namespace Chroma
 
 	// Staggered-type
 	success &= StaggeredDerivQuarkDisplacementEnv::registerAll();
-	//success &= StaggeredQuarkFlavorOpEnv::registerAll();
+	success &= StaggeredQuarkFlavorOpEnv::registerAll();
 
 	registered = true;
       }

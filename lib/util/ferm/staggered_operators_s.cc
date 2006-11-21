@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: staggered_operators_s.cc,v 1.4 2006-11-19 05:01:34 kostas Exp $
+// $Id: staggered_operators_s.cc,v 1.5 2006-11-21 05:20:14 kostas Exp $
 /*! \file
  *  \brief Staggered  operators
  *
@@ -11,75 +11,80 @@
 namespace Chroma 
 {
 
-   
-  class AntiSymmetricTensor4D {
-  private:
-    class Datum{
-    public:
-      multi1d<int> d;
-      Real sign ;  
-      void init(int i,int j, int k, int l, Real s){
-	d.resize(4) ; sign=s ;
-	d[0]=i;d[1]=j;d[2]=k;d[3]=l ;
+  namespace StaggeredFlavorOperators{
+
+    namespace AntiSymmetricTensor4D
+    {
+      
+      bool Initialized = false ;
+      class Datum{
+      public:
+	multi1d<int> d;
+	Real sign ;  
+	void init(int i,int j, int k, int l, Real s){
+	  d.resize(4) ; sign=s ;
+	  d[0]=i;d[1]=j;d[2]=k;d[3]=l ;
+	}
+	Datum(){d.resize(4);sign=1.0;}
+	Datum(int i,int j, int k, int l, Real s){
+	  init(i,j,k,l,s);
+	}
+	~Datum(){}
+      } ;
+
+      Datum eps[24] ;
+      
+      void InitializeTable(){
+	eps[0].init(0,1,2,3,+1.0);
+	eps[1].init(0,3,1,2,+1.0);
+	eps[2].init(0,2,3,1,+1.0);
+	eps[3].init(0,3,2,1,-1.0);
+	eps[4].init(0,1,3,2,-1.0);
+	eps[5].init(0,2,1,3,-1.0);
+	
+	eps[6].init(1,0,2,3,-1.0);
+	eps[7].init(1,3,0,2,-1.0);
+	eps[8].init(1,2,3,0,-1.0);
+	eps[9].init(1,3,2,0,+1.0);
+	eps[10].init(1,0,3,2,+1.0);
+	eps[11].init(1,2,0,3,+1.0);
+	
+	eps[12].init(2,1,0,3,-1.0);
+	eps[13].init(2,3,1,0,-1.0);
+	eps[14].init(2,0,3,1,-1.0);
+	eps[15].init(2,3,0,1,+1.0);
+	eps[16].init(2,1,3,0,+1.0);
+	eps[17].init(2,0,1,3,+1.0);
+	
+	eps[18].init(3,1,2,0,-1.0);
+	eps[19].init(3,0,1,2,-1.0);
+	eps[20].init(3,2,0,1,-1.0);
+	eps[21].init(3,0,2,1,+1.0);
+	eps[22].init(3,1,0,2,+1.0);
+	eps[23].init(3,2,1,0,+1.0);
+	Initialized = true ;
       }
-      Datum(){d.resize(4);sign=1.0;}
-      Datum(int i,int j, int k, int l, Real s){
-	init(i,j,k,l,s);
+
+      Real eps_sign(int k){
+	if(!Initialized) InitializeTable();
+	//cout<<"EPS_SIGN: "<<eps[k].sign <<endl ;
+
+	return eps[k].sign ;
+      } 
+      multi1d<int> eps_indx(int k){
+	if(!Initialized) InitializeTable();
+	//cout<<"EPS_INDX: "<<eps[k].d[0]<< eps[k].d[1]<< eps[k].d[2]<<endl ;
+	return eps[k].d;
       }
-      ~Datum(){}
-    } ;
-    
-    static Datum eps[24] ;
-    
-    void InitializeTable(){
-      eps[0].init(0,1,2,3,+1.0);
-      eps[1].init(0,3,1,2,+1.0);
-      eps[2].init(0,2,3,1,+1.0);
-      eps[3].init(0,3,2,1,-1.0);
-      eps[4].init(0,1,3,2,-1.0);
-      eps[5].init(0,2,1,3,-1.0);
+
+    } // end namespace AntiSymmetricTensor4D
+
       
-      eps[6].init(1,0,2,3,-1.0);
-      eps[7].init(1,3,0,2,-1.0);
-      eps[8].init(1,2,3,0,-1.0);
-      eps[9].init(1,3,2,0,+1.0);
-      eps[10].init(1,0,3,2,+1.0);
-      eps[11].init(1,2,0,3,+1.0);
-      
-      eps[12].init(2,1,0,3,-1.0);
-      eps[13].init(2,3,1,0,-1.0);
-      eps[14].init(2,0,3,1,-1.0);
-      eps[15].init(2,3,0,1,+1.0);
-      eps[16].init(2,1,3,0,+1.0);
-      eps[17].init(2,0,1,3,+1.0);
-      
-      eps[18].init(3,1,2,0,-1.0);
-      eps[19].init(3,0,1,2,-1.0);
-      eps[20].init(3,2,0,1,-1.0);
-      eps[21].init(3,0,2,1,+1.0);
-      eps[22].init(3,1,0,2,+1.0);
-      eps[23].init(3,2,1,0,+1.0);
-    }
-    
-  public:
-    AntiSymmetricTensor4D(){
-      InitializeTable();
-    }
-    
-    ~AntiSymmetricTensor4D(){} 
-    
-    Real sign(int k){return eps[k].sign ;} 
-    multi1d<int> indx(int k){return eps[k].d;}
-    
-  } ;
-  
+    using namespace  AntiSymmetricTensor4D ;    
 
 
-  static AntiSymmetricTensor4D eps ;
-
-  
-  typedef LatticeStaggeredPropagator  T ;
-  typedef multi1d<LatticeColorMatrix> G ;
+    typedef LatticeStaggeredPropagator  T ;
+    typedef multi1d<LatticeColorMatrix> G ;
   
   void StaggeredZeta(LatticeStaggeredPropagator& dest,int mu){
     LatticeReal sign = 1.0 ;
@@ -89,7 +94,9 @@ namespace Chroma
     }
     dest *= sign ;
   }
-  
+    //boundary conditions are not checked in both routines.
+    //as a result they do not work right on the boundary...
+
   void StaggeredEta(LatticeStaggeredPropagator& dest,int mu){
     LatticeReal sign = 1.0 ;
     
@@ -157,9 +164,9 @@ namespace Chroma
     T tmp ;
     dest = zero ;
     for(int p(0);p<24;p++)
-      if(eps.indx(p)[0]==mu){
-	EtaShift(tmp,src,u,eps.indx(p));
-	dest += eps.sign(p)/6.0*tmp ;
+      if(eps_indx(p)[0]==mu){
+	EtaShift(tmp,src,u,eps_indx(p));
+	dest += eps_sign(p)/6.0*tmp ;
       } 
   }
 
@@ -167,8 +174,8 @@ namespace Chroma
     T tmp ;
     dest = zero ;
     for(int p(0);p<24;p++){
-      EtaShift(tmp,src,u,eps.indx(p));
-      dest += eps.sign(p)/24.0*tmp ;
+      EtaShift(tmp,src,u,eps_indx(p));
+      dest += eps_sign(p)/24.0*tmp ;
     } 
   }
 
@@ -197,9 +204,9 @@ namespace Chroma
     T tmp ;
     dest = zero ;
     for(int p(0);p<24;p++)
-      if(eps.indx(p)[0]==mu){
-	ZetaShift(tmp,src,u,eps.indx(p));
-	dest += eps.sign(p)/6.0*tmp ;
+      if(eps_indx(p)[0]==mu){
+	ZetaShift(tmp,src,u,eps_indx(p));
+	dest += eps_sign(p)/6.0*tmp ;
       }
   }
 
@@ -207,10 +214,13 @@ namespace Chroma
     T tmp ;
     dest = zero ;
     for(int p(0);p<24;p++){
-      ZetaShift(tmp,src,u,eps.indx(p));
-      dest += eps.sign(p)/24.0*tmp ;
+      ZetaShift(tmp,src,u,eps_indx(p));
+      dest += eps_sign(p)/24.0*tmp ;
     } 
   }
+
+  } // end unamed name space
+  
 
 }  // end namespace Chroma
 

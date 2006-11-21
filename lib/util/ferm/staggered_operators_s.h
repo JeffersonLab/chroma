@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: staggered_operators_s.h,v 1.2 2006-11-18 07:39:44 kostas Exp $
+// $Id: staggered_operators_s.h,v 1.3 2006-11-21 05:20:14 kostas Exp $
 /*! \file
  *  \brief Staggered  operators
  *
@@ -11,7 +11,12 @@
 
 namespace Chroma 
 {
-  //void StaggeredZEta(LatticeStaggeredPropagator& dest,int mu);
+
+namespace StaggeredFlavorOperators{
+  
+  
+    
+   //void StaggeredZEta(LatticeStaggeredPropagator& dest,int mu);
   //void StaggeredEta(LatticeStaggeredPropagator& dest,int mu);
 
   //void SymShift(LatticeStaggeredPropagator& dest,const LatticeStaggeredPropagator& src,const  multi1d<LatticeColorMatrix>& u,const int mu) ;
@@ -30,6 +35,9 @@ namespace Chroma
   void FlavorTensor(LatticeStaggeredPropagator& dest,const LatticeStaggeredPropagator& src,const  multi1d<LatticeColorMatrix>& u,const int mu,const int nu) ;
   void FlavorAxialVector (LatticeStaggeredPropagator& dest,const LatticeStaggeredPropagator& src,const  multi1d<LatticeColorMatrix>& u,const int mu) ;
   void FlavorPseudoScalar(LatticeStaggeredPropagator& dest,const LatticeStaggeredPropagator& src,const  multi1d<LatticeColorMatrix>& u) ;
+
+} //end namespace
+
 
 }  // end namespace Chroma
 

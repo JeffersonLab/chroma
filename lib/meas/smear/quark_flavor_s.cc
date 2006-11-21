@@ -1,4 +1,4 @@
-// $Id: quark_flavor_s.cc,v 1.1 2006-11-20 22:13:28 kostas Exp $
+// $Id: quark_flavor_s.cc,v 1.2 2006-11-21 05:20:13 kostas Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -100,7 +100,7 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	read(paramtop, "FlavorOp",  FlavorOp);
+	read(paramtop, "DisplacementType",  FlavorOp);
 	break;
 
       default:
@@ -108,6 +108,8 @@ namespace Chroma
 		    << " unsupported." << endl;
 	QDP_abort(1);
       }
+
+      QDPIO::cout<<"Staggered Flavor Operator= "<<FlavorOp<<endl;
 
     }
 
@@ -119,7 +121,7 @@ namespace Chroma
       int version = 1;
       QDP::write(xml, "version", version);
 
-      write(xml,  "FlavorOp",  FlavorOp);
+      write(xml,  "DisplacementType",  FlavorOp);
      
       pop(xml);
     }
@@ -136,7 +138,7 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	read(paramtop, "FlavorOp",  FlavorOp);
+	read(paramtop, "DisplacementType",  FlavorOp);
 	read(paramtop, "mu",  mu);
 
 	break;
@@ -146,6 +148,8 @@ namespace Chroma
 		    << " unsupported." << endl;
 	QDP_abort(1);
       }
+
+      QDPIO::cout<<"Staggered Flavor Operator= "<<FlavorOp<<"("<<mu<<")"<<endl;
 
     }
 
@@ -157,7 +161,7 @@ namespace Chroma
       int version = 1;
       QDP::write(xml, "version", version);
 
-      write(xml,  "FlavorOp",  FlavorOp);
+      write(xml,  "DisplacementType",  FlavorOp);
       write(xml,  "mu",  mu);
 
       pop(xml);
@@ -175,9 +179,9 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	read(paramtop, "FlavorOp",  FlavorOp);
+	read(paramtop, "DisplacementType",  FlavorOp);
 	read(paramtop, "mu",  mu);
-	read(paramtop, "nu",  mu);
+	read(paramtop, "nu",  nu);
 
 	break;
 
@@ -185,6 +189,9 @@ namespace Chroma
 	QDPIO::cerr << __func__ << ": parameter version " << version 
 		    << " unsupported." << endl;
 	QDP_abort(1);
+
+	QDPIO::cout<<"Staggered Flavor Operator= "<<FlavorOp ;
+	QDPIO::cout<<"("<<mu<<","<<nu<<")"<<endl;
       }
 
     }
@@ -197,7 +204,7 @@ namespace Chroma
       int version = 1;
       QDP::write(xml, "version", version);
 
-      write(xml,  "FlavorOp",  FlavorOp);
+      write(xml,  "DisplacementType",  FlavorOp);
       write(xml,  "mu",  mu);
       write(xml,  "nu",  nu);
 
@@ -214,8 +221,7 @@ namespace Chroma
     {
       START_CODE();
 
-      // do nothing
-      // good job! there are no bugs in this code!!
+      //set up a point source
 
       END_CODE();
     }
@@ -231,7 +237,9 @@ namespace Chroma
     {
       START_CODE();
 
-      FlavorPseudoScalar(tmp, tmp, u) ;
+      LatticeStaggeredPropagator tt(tmp) ;
+
+      FlavorPseudoScalar(tmp, tt, u) ;
 
       END_CODE();
     }
@@ -245,8 +253,9 @@ namespace Chroma
 							      enum PlusMinus isign) const
     {
       START_CODE();
+      LatticeStaggeredPropagator tt(tmp) ;
 
-      FlavorVector(tmp, tmp, u, params.mu) ;
+      FlavorVector(tmp, tt, u, params.mu) ;
 
       END_CODE();
     }
@@ -261,7 +270,9 @@ namespace Chroma
     {
       START_CODE();
 
-      FlavorAxialVector(tmp, tmp, u, params.mu) ;
+      LatticeStaggeredPropagator tt(tmp) ;
+
+      FlavorAxialVector(tmp, tt, u, params.mu) ;
       
       END_CODE();
     }
@@ -277,7 +288,9 @@ namespace Chroma
     {
       START_CODE();
 
-      FlavorTensor(tmp, tmp, u, params.mu, params.nu) ;
+      LatticeStaggeredPropagator tt(tmp) ;
+
+      FlavorTensor(tmp, tt, u, params.mu, params.nu) ;
 
       END_CODE();
     }
@@ -292,11 +305,11 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("SCALAR"), scalar);
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("VECTOR"), vector);
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("AXIAL_VECTOR"), axial_vector);
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("TENSOR"), tensor);
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("PSEUDO_SCALAR"), pseudo_scalar);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("SCALAR_STAG_FLAV"), scalar);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("VECTOR_STAG_FLAV"), vector);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("AXIAL_VECTOR_STAG_FLAV"), axial_vector);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("TENSOR_STAG_FLAV"), tensor);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("PSEUDO_SCALAR_STAG_FLAV"), pseudo_scalar);
 
 	registered = true;
       }
