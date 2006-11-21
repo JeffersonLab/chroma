@@ -1,4 +1,4 @@
-// $Id: mom_source_const.cc,v 3.3 2006-11-10 03:10:32 edwards Exp $
+// $Id: mom_source_const.cc,v 3.4 2006-11-21 19:45:53 edwards Exp $
 /*! \file
  *  \brief Momentum (wall) source construction
  */
@@ -112,6 +112,12 @@ namespace Chroma
 
       read(paramtop, "t_dir", t_dir);
       read(paramtop, "mom", mom);
+
+      if (mom.size() != Nd)
+      {
+	QDPIO::cerr << name << ": wrong size of mom array: expected length=" << Nd << endl;
+	QDP_abort(1);
+      }
     }
 
 
