@@ -1,4 +1,4 @@
-// $Id: simple_baryon_operator_w.cc,v 1.5 2006-09-20 20:28:01 edwards Exp $
+// $Id: simple_baryon_operator_w.cc,v 1.6 2006-11-22 04:17:02 juge Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */
@@ -277,3 +277,4 @@ namespace Chroma
 
 
 }  // end namespace Chroma
+

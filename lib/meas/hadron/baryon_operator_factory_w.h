@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: baryon_operator_factory_w.h,v 1.1 2006-05-12 03:38:01 edwards Exp $
+// $Id: baryon_operator_factory_w.h,v 1.2 2006-11-22 04:17:02 juge Exp $
 /*! \file
  *  \brief Factory for producing baryon operators
  */
@@ -25,7 +25,6 @@ namespace Chroma
 						      const multi1d<LatticeColorMatrix>&),
 		  StringFactoryError> >
   TheWilsonBaryonOperatorFactory;
-
 }
 
 

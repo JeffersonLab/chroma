@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: baryon_operator.h,v 1.1 2006-05-12 03:38:01 edwards Exp $
+// $Id: baryon_operator.h,v 1.2 2006-11-22 04:17:02 juge Exp $
 /*! \file
  *  \brief Construct baryon operator
  */
@@ -27,6 +27,13 @@ namespace Chroma
 					       const T& quark2, 
 					       const T& quark3,
 					       enum PlusMinus isign) const = 0;
+
+    virtual LatticeComplex operator()(const T& quark1, 
+					       const T& quark2, 
+					       const T& quark3,
+								 int i,
+					       enum PlusMinus isign) const = 0;
+
   };
 
 }

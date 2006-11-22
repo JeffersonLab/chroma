@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.18 2006-11-19 13:10:30 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.19 2006-11-22 04:17:02 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -885,8 +885,8 @@ namespace Chroma
     {
       START_CODE();
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-      // Depending on whether this is the sink or source, do the appropriate
-      // combination of smearing and displacing
+      // Depending on whether this is the sink or source, do the 
+      // appropriate combination of smearing and displacing
       switch ( isign )
       {
       case PLUS:
@@ -907,8 +907,35 @@ namespace Chroma
       END_CODE();
     } // void GroupBaryonQQQ::quarkManip
 
-    
     //! Compute the operator
+    LatticeComplex 
+    GroupBaryonQQQ::operator() ( const LatticeFermion& q1,
+                                 const LatticeFermion& q2,
+                                 const LatticeFermion& q3,
+																 int   not_used,
+                                 enum  PlusMinus isign ) const
+    { 
+			START_CODE();
+      // The result of displace and smearing (in some unspecified order here)
+      multi1d< map<int, LatticeFermion> > disp_quarks;
+      // Depending on whether this is the sink or source, do the 
+      // appropriate combination of smearing and displacing
+      quarkManip( disp_quarks, q1, q2, q3, isign );
+      // The return
+      LatticeComplex d;
+      // Contract over color indices with antisym tensors
+			d = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
+                                   quark[ 0 ].spin ),
+                         peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
+                                   quark[ 1 ].spin ),
+                         peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
+                                   quark[ 2 ].spin ) 
+											 );
+      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
+			END_CODE();
+      return d;
+    } // LatticeComplex GroupBaryonQQQ::operator()
+
     multi1d<LatticeComplex>
     GroupBaryonQQQ::operator() ( const LatticeFermion& q1,
                                  const LatticeFermion& q2,
@@ -996,7 +1023,6 @@ namespace Chroma
       {
         return new GroupBaryonQQQ( Params( xml_in, path ), u );
       }
-
       //! Local registration flag
       bool registered = false;
 			

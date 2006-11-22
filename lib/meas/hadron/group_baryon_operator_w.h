@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.13 2006-11-18 06:43:00 juge Exp $
+// $Id: group_baryon_operator_w.h,v 1.14 2006-11-22 04:17:02 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -212,6 +212,13 @@ namespace Chroma
                                              const LatticeFermion& quark2,
                                              const LatticeFermion& quark3,
                                              enum PlusMinus isign ) const;
+
+        LatticeComplex operator() ( const LatticeFermion& quark1,
+                                    const LatticeFermion& quark2,
+                                    const LatticeFermion& quark3,
+																		int not_used,
+                                    enum PlusMinus isign ) const;
+
         struct QuarkTerm_t
         {
           int displacement;    /*!< Orig plus/minus 1-based directional displacements */
