@@ -55,13 +55,13 @@ using namespace GroupBaryonOperatorEnv;
     if( path != "." ) pop( xml );
   }
 
-bool linkageHack(void)
-{
-  bool foo = true;
-  // Inline Measurements
-  foo &= InlineAggregateEnv::registerAll();
-  return foo;
-}
+	bool linkageHack(void)
+	{
+  	bool foo = true;
+  	// Inline Measurements
+  	foo &= InlineAggregateEnv::registerAll();
+  	return foo;
+	}
 
 //
 //! Make a group theory based baryon operator with all-to-all quark 
@@ -188,9 +188,10 @@ int main( int argc, char *argv[] )
 	// to make the various operators
 	//
 	// ====================================
-	multi1d<LatticeComplex> result(1);
+	multi1d<LatticeComplex> vresult(1);
+	LatticeComplex result;
 	// don't average over equivalent momenta
-  SftMom phases(params.mom2_max, false, params.j_decay);
+  SftMom phases(params.mom2_max, true, params.j_decay);
 	multi2d<DComplex> elem( params.Nmomenta, params.nrow[3] );
 #if 1
 	try
@@ -228,15 +229,24 @@ int main( int argc, char *argv[] )
 			for(int j=0; j < params.NH[ordering][1]; ++j)
 			for(int k=0; k < params.NH[ordering][2]; ++k)
 			{ 
-				result = AQQQ[ qqq ]( 
+		swatch.start();
+		//QDPIO::cout << "SINK operators "<<i<<" "<<j<<" "<<k<<" ... "<<endl;
+				vresult = AQQQ[ qqq ]( 
 	    	                      quarks[ 0 ].dilutions[ i ].soln,
 	    	                      quarks[ 1 ].dilutions[ j ].soln,
 	    	                      quarks[ 2 ].dilutions[ k ].soln,
+															PLUS,
 	    	                      PLUS 
 														);
+		swatch.stop();
+		QDPIO::cout << "contraction "<<i<<" "<<j<<" "<<k<<" done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 		    for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
 				{
-					elem = phases.sft( result[ 0 ] );
+		swatch.start();
+					elem = phases.sft( vresult[ 0 ] );
+		swatch.stop();
+		if((i==0)&&(j==0)&&(k==0)&&(b==0))
+		QDPIO::cout << "sft done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 		    	for(int p=0; p < params.Nmomenta; ++p)
 					{
 		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
@@ -246,6 +256,8 @@ int main( int argc, char *argv[] )
 						} // t 
 					} // p
 				} // Bop_index b
+		//swatch.stop();
+		//QDPIO::cout << "SINK operators "<<i<<" "<<j<<" "<<k<<" done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 			} // i,j,k
 		} // qqq
 		swatch.stop();
@@ -262,6 +274,8 @@ int main( int argc, char *argv[] )
 	// =============
 	// Noise Sources ... re-generate from the rng seeds
 	// =============
+#define REGENERATE_NOISE
+#ifdef  REGENERATE_NOISE
   QDPIO::cout << "Re-generating the noise SOURCES" << endl;
 	try
 	{
@@ -330,6 +344,7 @@ int main( int argc, char *argv[] )
 	  QDP_abort( 1 );
 	}
 	QDPIO::cout << "SOURCE vectors reconstructed from Seeds : time = " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif
 	//
 	// setting the seeds for output (baryon_operator file)
 	// should also put the mass of the quarks in here as well
@@ -359,23 +374,33 @@ int main( int argc, char *argv[] )
 			int qL = DilSwap( ordering, 0,1,2, L );
 			int qM = DilSwap( ordering, 0,1,2, M );
 			int qR = DilSwap( ordering, 0,1,2, R );
+//#define FIRSTTYPE
 			switch ( ordering )																			   
 			{ 																									   
 			  case 0: 			// [012]
 					signs =  2.0; break;
 				case 1: 			// [210]
-					//signs =  2.0; break;
+#ifdef FIRSTTYPE
+					signs =  2.0; break;
+#else
 					signs = -2.0; break;
+#endif
 				case 2: 			// [120]
 					signs = -1.0; break;
 				case 3: 			// [201]
 					signs = -1.0; break;
 				case 4: 			// [021]
-					//signs = -1.0; break;
+#ifdef FIRSTTYPE
+					signs = -1.0; break;
+#else
 					signs =  1.0; break;
+#endif
 				case 5: 			// [102]
-					//signs = -1.0; break;
+#ifdef FIRSTTYPE
+					signs = -1.0; break;
+#else
 					signs =  1.0; break;
+#endif
 			}
 
 			for(int qqq=0; qqq < params.NQQQs; ++qqq)
@@ -392,17 +417,18 @@ int main( int argc, char *argv[] )
 						int i0 = DilSwapInv( ordering, iL, iM, iR, 0 );
 						int i1 = DilSwapInv( ordering, iL, iM, iR, 1 );
 						int i2 = DilSwapInv( ordering, iL, iM, iR, 2 );
-											
-						result = CQQQ[ qqq ]( 
+						for(int t=0; t < phases.getSet().numSubsets(); ++t)
+							result[ phases.getSet()[t] ] 
+							     = CQQQ[ qqq ]( 
 									                quarks[ qL ].dilutions[ iL ].source,
 					  			                quarks[ qM ].dilutions[ iM ].source,
 		    	  			                quarks[ qR ].dilutions[ iR ].source,
+		    	  			                MINUS,
 		    	  			                MINUS 
 		    	  			              );
-						
 						for(int b=0; b < CQQQ[ qqq ].NBaryonOps; ++b)
 						{
-							elem = phases.sft( result[ 0 ] );
+							elem = phases.sft( result );
 			    		for(int p=0; p < params.Nmomenta; ++p)
 							{
 			    			for(int t=0; t < params.nrow[ 3 ]; ++t)
