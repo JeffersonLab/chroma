@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_baryon_operator_w.h,v 1.4 2006-09-20 20:28:01 edwards Exp $
+// $Id: simple_baryon_operator_w.h,v 1.5 2006-11-23 16:17:53 edwards Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */
@@ -53,6 +53,17 @@ namespace Chroma
 					 const LatticeFermion& quark2, 
 					 const LatticeFermion& quark3,
 					 enum PlusMinus isign) const;
+
+      //! Add this hack for the moment
+      LatticeComplex operator()(const LatticeFermion& quark1, 
+				const LatticeFermion& quark2, 
+				const LatticeFermion& quark3,
+				int i,
+				enum PlusMinus isign) const
+	{
+	  QDPIO::cerr << "BarNuclCg5 operator not implemented at this moment\n";
+	  QDP_abort(1);
+	}
 
     protected:
       //! Manipulate the quark fields
