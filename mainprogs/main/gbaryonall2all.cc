@@ -222,7 +222,7 @@ int main( int argc, char *argv[] )
 		QDPIO::cout << "SINK smearings done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 		#endif
 		
-		swatch.start();
+		//swatch.start();
 		for(int qqq=0; qqq < params.NQQQs; ++qqq)
 		{
 			for(int i=0; i < params.NH[ordering][0]; ++i)
@@ -235,9 +235,8 @@ int main( int argc, char *argv[] )
 	    	                      quarks[ 0 ].dilutions[ i ].soln,
 	    	                      quarks[ 1 ].dilutions[ j ].soln,
 	    	                      quarks[ 2 ].dilutions[ k ].soln,
-															PLUS,
 	    	                      PLUS 
-														);
+														 );
 		swatch.stop();
 		QDPIO::cout << "contraction "<<i<<" "<<j<<" "<<k<<" done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 		    for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
@@ -260,7 +259,7 @@ int main( int argc, char *argv[] )
 		//QDPIO::cout << "SINK operators "<<i<<" "<<j<<" "<<k<<" done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 			} // i,j,k
 		} // qqq
-		swatch.stop();
+		//swatch.stop();
 	} // try
 	catch ( const std::string& e )
 	{
@@ -374,7 +373,7 @@ int main( int argc, char *argv[] )
 			int qL = DilSwap( ordering, 0,1,2, L );
 			int qM = DilSwap( ordering, 0,1,2, M );
 			int qR = DilSwap( ordering, 0,1,2, R );
-//#define FIRSTTYPE
+#define FIRSTTYPE
 			switch ( ordering )																			   
 			{ 																									   
 			  case 0: 			// [012]
