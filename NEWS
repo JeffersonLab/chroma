@@ -1,3 +1,8 @@
+11/25/2006 -- Robert Edwards
+	Version 3.20.0. New component integrator codes for HMC. New staggered
+        chroma task chain of  MAKE_SOURCE, PROPAGATOR and SINK_SMEARING .
+        Fixes in NPR task codes.
+
 11/07/2006 -- Robert Edwards
 	Version 3.19.1. NPR code compiles and linked, but not fully tested.
         Small fix in AVP DWF-cg wrapper to correct cg-counts.
