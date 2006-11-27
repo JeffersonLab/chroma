@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate_s.cc,v 3.2 2006-11-17 02:17:31 edwards Exp $
+// $Id: inline_hadron_aggregate_s.cc,v 3.3 2006-11-27 04:31:38 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -8,6 +8,7 @@
 #include "meas/inline/hadron_s/inline_make_source_s.h"
 #include "meas/inline/hadron_s/inline_propagator_s.h"
 #include "meas/inline/hadron_s/inline_sink_smear_s.h"
+#include "meas/inline/hadron_s/inline_apply_fermstate_s.h"
 
 namespace Chroma
 {
@@ -32,6 +33,7 @@ namespace Chroma
 	success &= InlineStaggeredMakeSourceEnv::registerAll();
 	success &= InlineStaggeredPropagatorEnv::registerAll();
 	success &= InlineStaggeredSinkSmearEnv::registerAll();
+	success &= InlineStaggeredFermStateEnv::registerAll();
 	registered = true;
       }
       return success;
