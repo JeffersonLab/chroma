@@ -410,22 +410,22 @@ int main( int argc, char *argv[] )
 #else
 					signs = -2.0; break;
 #endif
-				case 2: 			// [120]
-					signs = -1.0; break;
-				case 3: 			// [201]
-					signs = -1.0; break;
-				case 4: 			// [021]
+				case 2: 			// [021]
 #ifdef FIRSTTYPE
 					signs = -1.0; break;
 #else
 					signs =  1.0; break;
 #endif
-				case 5: 			// [102]
+				case 3: 			// [102]
 #ifdef FIRSTTYPE
 					signs = -1.0; break;
 #else
 					signs =  1.0; break;
 #endif
+				case 4: 			// [120]
+					signs = -1.0; break;
+				case 5: 			// [201]
+					signs = -1.0; break;
 			}
 
 			for(int qqq=0; qqq < params.NQQQs; ++qqq)
