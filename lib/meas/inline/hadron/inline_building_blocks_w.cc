@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.8 2006-10-14 04:52:16 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.9 2006-11-27 04:33:36 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -486,13 +486,12 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     StopWatch swatch;
     const int NF = params.bb.BkwdProps.size();
 
-    XMLArrayWriter  XmlSeqSrc(XmlOut, NF);
-    push(XmlSeqSrc, "SequentialSource");
+    push(XmlOut, "SequentialSource");
 
     for(int loop = 0; loop < NF; ++loop)
     {
-      push(XmlSeqSrc);
-      write(XmlSeqSrc, "loop_ctr", loop);
+      push(XmlOut, "elem");
+      write(XmlOut, "loop_ctr", loop);
 
       Out << "Loop = " << loop << "\n";  Out.flush();
       QDPIO::cout << "Loop = " << loop << endl;
@@ -526,14 +525,14 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 	  Out << "backward u propagator check = " << BkwdPropCheck[0] << "\n";  Out.flush();
       
 	  // Write out the forward propagator header
-	  push(XmlSeqSrc, "BackwardProp");
-	  write(XmlSeqSrc, "BkwdPropId", params.bb.BkwdProps[loop].BkwdPropId);
-	  write(XmlSeqSrc, "BkwdPropG5Format", params.bb.BkwdProps[loop].BkwdPropG5Format);
-	  write(XmlSeqSrc, "SequentialSourceType", seqsource_header.seqsrc.id);
-	  write(XmlSeqSrc, "BkwdPropXML", BkwdPropXML);
-	  write(XmlSeqSrc, "BkwdPropRecordXML", BkwdPropRecordXML);
-	  write(XmlSeqSrc, "BkwdPropCheck", BkwdPropCheck);
-	  pop(XmlSeqSrc);
+	  push(XmlOut, "BackwardProp");
+	  write(XmlOut, "BkwdPropId", params.bb.BkwdProps[loop].BkwdPropId);
+	  write(XmlOut, "BkwdPropG5Format", params.bb.BkwdProps[loop].BkwdPropG5Format);
+	  write(XmlOut, "SequentialSourceType", seqsource_header.seqsrc.id);
+	  write(XmlOut, "BkwdPropXML", BkwdPropXML);
+	  write(XmlOut, "BkwdPropRecordXML", BkwdPropRecordXML);
+	  write(XmlOut, "BkwdPropCheck", BkwdPropCheck);
+	  pop(XmlOut);
 	}
       }
       catch( std::bad_cast ) 
@@ -573,12 +572,12 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       QDPIO::cout << "Gamma insertion = " << params.bb.BkwdProps[loop].GammaInsertion << endl;
       QDPIO::cout << "Flavor          = " << params.bb.BkwdProps[loop].Flavor << endl;
 
-      write(XmlSeqSrc, "seq_src", seqsource_header.seqsrc.id);
-      write(XmlSeqSrc, "gamma_insertion", GammaInsertions[0]);
-      write(XmlSeqSrc, "flavor", params.bb.BkwdProps[loop].Flavor);
-      write(XmlSeqSrc, "t_source", source_header.t_source);
-      write(XmlSeqSrc, "t_sink", seqsource_header.t_sink);
-      write(XmlSeqSrc, "sink_mom", seqsource_header.sink_mom);
+      write(XmlOut, "seq_src", seqsource_header.seqsrc.id);
+      write(XmlOut, "gamma_insertion", GammaInsertions[0]);
+      write(XmlOut, "flavor", params.bb.BkwdProps[loop].Flavor);
+      write(XmlOut, "t_source", source_header.t_source);
+      write(XmlOut, "t_sink", seqsource_header.t_sink);
+      write(XmlOut, "sink_mom", seqsource_header.sink_mom);
 	
       //#################################################################################//
       // Convert Backward Propagator Format                                              //
@@ -684,6 +683,67 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       }
 
       //#################################################################################//
+      // Loop-back tests                                                                 //
+      //#################################################################################//
+      {
+	//! Test a meson sequential source.
+	/*!
+	 *  For the case of a meson, we have evaluated as the sequential source
+	 *
+	 *  H(y, 0; tx, p) = \sum exp{ip.x} U(y,x) \gamma_5\Gamma_f^\dag\gamma_5 D(x,0) 
+	 *
+	 *  H^\dag(y, 0; tx, p) = \sum_x exp{-ip.x} \gamma_5 D(0,x) \Gamma_f U(x,y) \gamma_5
+	 *
+	 *  Thus we can see that 
+	 *
+	 *  Tr[ \gamma_5 H^\dag(0,0; tx, p)\gamma_5 \Gamma_i] = 
+	 *                         \sum_x exp{-ip.x} Tr[ D(0,x)\Gamma_f U(x,0) \Gamma_i ]
+	 *
+	 *  which is the desired meson correlator at momentum p and timslice tx
+	 */
+
+	// assumes any Gamma5 matrices have already been absorbed
+	push(XmlOut, "LoopBackTest");
+	write(XmlOut, "seq_src", seqsource_header.seqsrc.id);
+	write(XmlOut, "gamma_insertion", GammaInsertions[0]);
+	write(XmlOut, "flavor", params.bb.BkwdProps[loop].Flavor);
+	write(XmlOut, "t_srce", t_srce);
+	write(XmlOut, "t_source", source_header.t_source);
+	write(XmlOut, "t_sink", seqsource_header.t_sink);
+	write(XmlOut, "sink_mom", seqsource_header.sink_mom);
+	LatticeComplex tr = trace(adj(B[0]) * Gamma(GammaInsertions[0]));
+	Complex seq_src_value = peekSite(tr, t_srce);
+	write(XmlOut, "source_value", seq_src_value);
+	pop(XmlOut);
+      }
+
+      //#################################################################################//
+      // Diagnostic tests                                                                //
+      //#################################################################################//
+      {
+	// assumes any Gamma5 matrices have already been absorbed
+	int GammaInsertion = GammaInsertions[0];
+
+	push(XmlOut, "DiagnosticTest");
+	write(XmlOut, "GammaInsertion", GammaInsertion);
+
+	{
+	  LatticePropagator GFG = Gamma(0) * F * Gamma( GammaInsertion );
+	  LatticeComplex tr = localInnerProduct( B[0], GFG );
+	  multi1d< DComplex > pr = sumMulti(tr, Phases.getSet());
+	  write(XmlOut, "formFactor_G0", pr);
+	}
+	{
+	  LatticePropagator GFG = Gamma(Ns*Ns-1) * F * Gamma( GammaInsertion );
+	  LatticeComplex tr = localInnerProduct( B[0], GFG );
+	  multi1d< DComplex > pr = sumMulti(tr, Phases.getSet());
+	  write(XmlOut, "formFactor_G15", pr);
+	}
+
+	pop(XmlOut);
+      }
+
+      //#################################################################################//
       // Construct Building Blocks                                                       //
       //#################################################################################//
     
@@ -715,10 +775,10 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
 
-      pop(XmlSeqSrc);   // elem
+      pop(XmlOut);   // elem
     } // end loop over sequential sources
 
-    pop(XmlSeqSrc);  // SequentialSource
+    pop(XmlOut);  // SequentialSource
 
     pop(XmlOut);   // ExampleBuildingBlocks
 

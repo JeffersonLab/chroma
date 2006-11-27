@@ -1,4 +1,4 @@
-// $Id: photon_seqsrc_w.cc,v 3.3 2006-10-10 17:52:44 edwards Exp $
+// $Id: photon_seqsrc_w.cc,v 3.4 2006-11-27 04:33:35 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -131,11 +131,12 @@ namespace Chroma
     LatticePropagator
     PhotonRhoSeqSource::operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& quark_propagators) const
+				   const multi1d<LatticePropagator>& quark_propagators)
     {
-      QDPIO::cout << "Photon sequential source " << endl;
-
       START_CODE();
+
+      QDPIO::cout << "Photon sequential source " << endl;
+      setTSrce(forward_headers);
 
       if (quark_propagators.size() != 1)
       {
@@ -178,7 +179,7 @@ namespace Chroma
 	    pp_f[j] = params.sink_mom[j] * twopi / Real(Layout::lattSize()[mu]);
 	    
 	    if (params.sink_mom[j] != 0)
-	      p_dot_x += Layout::latticeCoordinate(mu) * pp_f[j];
+	      p_dot_x += (Layout::latticeCoordinate(mu) - getTSrce()[mu]) * pp_f[j];
 
 	    j++;
 	  }
@@ -228,11 +229,12 @@ namespace Chroma
     LatticePropagator
     PointSplitPhotonRhoSeqSource::operator()(const multi1d<LatticeColorMatrix>& u,
 					     const multi1d<ForwardProp_t>& forward_headers,
-					     const multi1d<LatticePropagator>& quark_propagators) const
+					     const multi1d<LatticePropagator>& quark_propagators)
     {
-      QDPIO::cout << "Point split photon sequential source " << endl;
-
       START_CODE();
+
+      QDPIO::cout << "Point split photon sequential source " << endl;
+      setTSrce(forward_headers);
 
       if (quark_propagators.size() != 1)
       {
@@ -282,7 +284,7 @@ namespace Chroma
 	    pp_f[j] = params.sink_mom[j] * twopi / Real(Layout::lattSize()[mu]);
 	    
 	    if (params.sink_mom[j] != 0)
-	      p_dot_x += Layout::latticeCoordinate(mu) * pp_f[j];
+	      p_dot_x += (Layout::latticeCoordinate(mu) - getTSrce()[mu]) * pp_f[j];
 
 	    j++;
 	  }

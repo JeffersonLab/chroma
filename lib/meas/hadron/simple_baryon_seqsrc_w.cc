@@ -1,9 +1,9 @@
-// $Id: barseqsrc_w.cc,v 3.4 2006-10-10 21:01:08 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.cc,v 3.1 2006-11-27 04:33:36 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
 
-#include "meas/hadron/barseqsrc_w.h"
+#include "meas/hadron/simple_baryon_seqsrc_w.h"
 #include "meas/hadron/seqsource_factory_w.h"
 #include "meas/hadron/barspinmat_w.h"
 
@@ -115,45 +115,11 @@ namespace Chroma
     }
 
 
-
-    // Combine projection with time-ordering
-    LatticePropagator 
-    BaryonSeqSourceBase::projectBaryon(const LatticePropagator& src_prop_tmp,
-				       const multi1d<ForwardProp_t>& forward_headers,
-				       const multi1d<int>& sink_mom, 
-				       int t_sink, int j_decay) const
-    {
-      // Multiply in time-ordering phase
-      multi1d<int> t_srce = getTSrce(forward_headers);
-      multi1d<int> bc     = getBC(forward_headers);
-      Complex phase = timeOrder(t_srce[j_decay], t_sink, bc[j_decay]);
-
-      return project(LatticePropagator(phase * src_prop_tmp),
-		     t_srce,
-		     sink_mom, t_sink, j_decay);
-
-    }
-
-
-    // Time-ordering phase of source and sink hadron states
-    Complex BaryonSeqSourceBase::timeOrder(int t_source, int t_sink, int bc_spec) const
-    {
-      Complex phase;
-
-      if ( (bc_spec < 0) && (t_source > t_sink) )
-	phase = -1;
-      else
-	phase = 1;
-
-      return phase;
-    }
-
-
     //! Nucleon-Nucleon U piece with general projector and Cg5
     LatticePropagator
     BarNuclUTCg5::operator()(const multi1d<LatticeColorMatrix>& u,
 			     const multi1d<ForwardProp_t>& forward_headers,
-			     const multi1d<LatticePropagator>& quark_propagators) const
+			     const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
 
@@ -189,8 +155,7 @@ namespace Chroma
       END_CODE();
 
       return projectBaryon(src_prop_tmp,
-			   forward_headers,
-			   params.sink_mom, params.t_sink, params.j_decay);
+			   forward_headers);
     }
 
 
@@ -198,7 +163,7 @@ namespace Chroma
     LatticePropagator
     BarNuclDTCg5::operator()(const multi1d<LatticeColorMatrix>& u,
 			     const multi1d<ForwardProp_t>& forward_headers,
-			     const multi1d<LatticePropagator>& quark_propagators) const
+			     const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
 
@@ -228,8 +193,7 @@ namespace Chroma
       END_CODE();
 
       return projectBaryon(src_prop_tmp,
-			   forward_headers,
-			   params.sink_mom, params.t_sink, params.j_decay);
+			   forward_headers);
     }
 
 
@@ -237,7 +201,7 @@ namespace Chroma
     LatticePropagator
     BarNuclPatchMixedNR::operator()(const multi1d<LatticeColorMatrix>& u,
 				    const multi1d<ForwardProp_t>& forward_headers,
-				    const multi1d<LatticePropagator>& quark_propagators) const
+				    const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
 
@@ -265,16 +229,10 @@ namespace Chroma
       di_quark = quarkContract12(q2_tmp, q1_tmp);
       src_prop_tmp = di_quark - transposeSpin(di_quark);   // bad guy - good guy
 
-      // Multiply in time-ordering phase
-      multi1d<int> t_srce = getTSrce(forward_headers);
-      multi1d<int> bc     = getBC(forward_headers);
-      src_prop_tmp *= timeOrder(t_srce[params.j_decay], params.t_sink, bc[params.j_decay]);
-
       END_CODE();
 
       return projectBaryon(src_prop_tmp,
-			   forward_headers,
-			   params.sink_mom, params.t_sink, params.j_decay);
+			   forward_headers);
     }
 
 
@@ -282,7 +240,7 @@ namespace Chroma
     LatticePropagator
     BarDeltaUTsp::operator()(const multi1d<LatticeColorMatrix>& u,
 			     const multi1d<ForwardProp_t>& forward_headers,
-			     const multi1d<LatticePropagator>& quark_propagators) const
+			     const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
 
@@ -324,16 +282,10 @@ namespace Chroma
       src_prop_tmp += quarkContract14(q1_tmp, q2_tmp) + quarkContract13(q1_tmp, q2_tmp);
       src_prop_tmp *= 2;
 
-      // Multiply in time-ordering phase
-      multi1d<int> t_srce = getTSrce(forward_headers);
-      multi1d<int> bc     = getBC(forward_headers);
-      src_prop_tmp *= timeOrder(t_srce[params.j_decay], params.t_sink, bc[params.j_decay]);
-
       END_CODE();
 
       return projectBaryon(src_prop_tmp,
-			   forward_headers,
-			   params.sink_mom, params.t_sink, params.j_decay);
+			   forward_headers);
     }
 
 
@@ -341,7 +293,7 @@ namespace Chroma
     LatticePropagator
     BarDeltaDTsp::operator()(const multi1d<LatticeColorMatrix>& u,
 			     const multi1d<ForwardProp_t>& forward_headers,
-			     const multi1d<LatticePropagator>& quark_propagators) const
+			     const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
 
@@ -375,16 +327,10 @@ namespace Chroma
 
       src_prop_tmp += traceSpin(di_quark) * T;
 
-      // Multiply in time-ordering phase
-      multi1d<int> t_srce = getTSrce(forward_headers);
-      multi1d<int> bc     = getBC(forward_headers);
-      src_prop_tmp *= timeOrder(t_srce[params.j_decay], params.t_sink, bc[params.j_decay]);
-
       END_CODE();
 
       return projectBaryon(src_prop_tmp,
-			   forward_headers,
-			   params.sink_mom, params.t_sink, params.j_decay);
+			   forward_headers);
     }
 
 

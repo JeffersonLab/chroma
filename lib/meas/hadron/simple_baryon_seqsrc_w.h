@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: barseqsrc_w.h,v 3.4 2006-10-10 21:01:08 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.h,v 3.1 2006-11-27 04:33:36 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
 
-#ifndef __barseqsrc_w_h__
-#define __barseqsrc_w_h__
+#ifndef __simple_baryon_seqsrc_w_h__
+#define __simple_baryon_seqsrc_w_h__
 
-#include "meas/hadron/hadron_seqsource.h"
+#include "meas/hadron/baryon_seqsrc_w.h"
 
 namespace Chroma 
 {
@@ -33,27 +33,6 @@ namespace Chroma
     };
 
 
-    //! Baryon-Baryon seqsources have a time order phase
-    /*! @ingroup hadron */
-    class BaryonSeqSourceBase : public HadronSeqSource<LatticePropagator>
-    {
-    public:
-      //! Virtual destructor to help with cleanup;
-      virtual ~BaryonSeqSourceBase() {}
-
-    protected:
-      //! Combine projection with time-ordering
-      virtual LatticePropagator projectBaryon(const LatticePropagator& src_prop_tmp,
-					      const multi1d<ForwardProp_t>& forward_headers,
-					      const multi1d<int>& sink_mom, 
-					      int t_sink, int j_decay) const;
-
-      //! Time-ordering phase of source and sink hadron states
-      virtual Complex timeOrder(int t_source, int t_sink, int bc_spec) const;
-    };
-
-
-
     //! Nucleon-Nucleon U piece with general projector and Cg5
     /*! @ingroup hadron
      *
@@ -72,13 +51,37 @@ namespace Chroma
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props) const;
+				   const multi1d<LatticePropagator>& forward_props);
+
+    protected: 
+      //! Set bc
+      multi1d<int>& getBC() {return bc;}
+
+      //! Get bc
+      const multi1d<int>& getBC() const {return bc;}
+
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor
       BarNuclUTCg5() {}
 
     private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      multi1d<int>  bc;       /*<! Must come from propagator headers */
       Params  params;   /*!< Seqsource params */
       SpinMatrix T;     /*!< The spin projector matrix */
       SpinMatrix Cg5;   /*!< The Cg5 at the source and sink */
@@ -103,13 +106,38 @@ namespace Chroma
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props) const;
+				   const multi1d<LatticePropagator>& forward_props);
+
+
+    protected: 
+      //! Set bc
+      multi1d<int>& getBC() {return bc;}
+
+      //! Get bc
+      const multi1d<int>& getBC() const {return bc;}
+
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor
       BarNuclDTCg5() {}
 
     private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      multi1d<int>  bc;       /*<! Must come from propagator headers */
       Params  params;   /*!< Seqsource params */
       SpinMatrix T;     /*!< The spin projector matrix */
       SpinMatrix Cg5;   /*!< The Cg5 at the source and sink */
@@ -133,13 +161,38 @@ namespace Chroma
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props) const;
+				   const multi1d<LatticePropagator>& forward_props);
+
+
+    protected: 
+      //! Set bc
+      multi1d<int>& getBC() {return bc;}
+
+      //! Get bc
+      const multi1d<int>& getBC() const {return bc;}
+
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor
       BarNuclPatchMixedNR() {}
 
     private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      multi1d<int>  bc;       /*<! Must come from propagator headers */
       Params  params;   /*!< Seqsource params */
     };
 
@@ -162,13 +215,38 @@ namespace Chroma
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props) const;
+				   const multi1d<LatticePropagator>& forward_props);
+
+
+    protected: 
+      //! Set bc
+      multi1d<int>& getBC() {return bc;}
+
+      //! Get bc
+      const multi1d<int>& getBC() const {return bc;}
+
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor
       BarDeltaUTsp() {}
 
     private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      multi1d<int>  bc;       /*<! Must come from propagator headers */
       Params  params;   /*!< Seqsource params */
       SpinMatrix T;     /*!< The spin projector matrix */
       SpinMatrix sp;    /*!< The spin at the source and sink */
@@ -192,13 +270,38 @@ namespace Chroma
       //! Construct the source
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props) const;
+				   const multi1d<LatticePropagator>& forward_props);
+
+
+    protected: 
+      //! Set bc
+      multi1d<int>& getBC() {return bc;}
+
+      //! Get bc
+      const multi1d<int>& getBC() const {return bc;}
+
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
 
     private:
       //! Hide partial constructor
       BarDeltaDTsp() {}
 
     private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      multi1d<int>  bc;       /*<! Must come from propagator headers */
       Params  params;   /*!< Seqsource params */
       SpinMatrix T;     /*!< The spin projector matrix */
       SpinMatrix sp;    /*!< The spin at the source and sink */

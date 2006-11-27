@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_seqsource.h,v 3.4 2006-10-10 21:01:08 edwards Exp $ 
+// $Id: hadron_seqsource.h,v 3.5 2006-11-27 04:33:35 edwards Exp $ 
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -27,23 +27,32 @@ namespace Chroma
     //! Construct the source
     virtual T operator()(const multi1d<LatticeColorMatrix>& u,
 			 const multi1d<ForwardProp_t>& forward_headers,
-			 const multi1d<T>& forward_props) const = 0;
+			 const multi1d<T>& forward_props) = 0;
 
   protected:
-    //! Default method to put source on a fixed time slice and momenta
-    /*!
-     * \param src_prop_tmp     Sequential source before projection to a specific momenta ( Read )
-     */
-    virtual T project(const T& src_prop_tmp,
-		      const multi1d<int>& t_srce, 
-		      const multi1d<int>& sink_mom, 
-		      int t_sink, int j_decay) const;
+    //! Project onto a definite time-slice
+    virtual T project(const LatticePropagator& src_prop_tmp) const;
+
+    //! Construct phases
+    virtual LatticeComplex phases() const;
 
     //! Convenience function to yank the source location from the forward prop headers
-    virtual multi1d<int> getTSrce(const multi1d<ForwardProp_t>& forward_headers) const;
+    virtual void setTSrce(const multi1d<ForwardProp_t>& forward_headers);
 
-    //! Convenience function to yank the boundary condition from the forward prop headers
-    virtual multi1d<int> getBC(const multi1d<ForwardProp_t>& forward_headers) const;
+    //! Set t_srce
+    virtual multi1d<int>& getTSrce() = 0;
+
+    //! Get t_srce
+    virtual const multi1d<int>& getTSrce() const = 0;
+
+    //! Get t_sink
+    virtual int getTSink() const = 0;
+
+    //! Get sink_mom
+    virtual const multi1d<int>& getSinkMom() const = 0;
+
+    //! Get decay_dir
+    virtual const int getDecayDir() const = 0;
   };
 
 }

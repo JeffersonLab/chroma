@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.53 2006-11-20 22:13:26 kostas Exp $
+# $Id: Makefile.am,v 3.54 2006-11-27 04:33:33 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -429,7 +429,8 @@ nobase_include_HEADERS += \
 	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 	meas/hadron/barcomp_w.h \
 	meas/hadron/mescomp_w.h \
-	meas/hadron/barseqsrc_w.h \
+	meas/hadron/baryon_seqsrc_w.h \
+	meas/hadron/simple_baryon_seqsrc_w.h \
 	meas/hadron/barspinmat_w.h \
 	meas/hadron/simple_baryon_operator_w.h \
 	meas/hadron/group_baryon_operator_w.h \
@@ -439,8 +440,9 @@ nobase_include_HEADERS += \
         meas/hadron/curcor3_w.h \
 	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
-	meas/hadron/mesonseqsrc_w.h \
-	meas/hadron/derivmesonseqsrc_w.h \
+	meas/hadron/meson_seqsrc_w.h \
+	meas/hadron/simple_meson_seqsrc_w.h \
+	meas/hadron/deriv_meson_seqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h \
 	meas/hadron/mesons_w.h \
 	meas/hadron/mesons2_w.h \
@@ -614,11 +616,12 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_stoch_meson_w.h \
 	meas/inline/hadron/inline_npr_vertex_w.h \
 	meas/inline/hadron/inline_stag_to_wils.h \
+	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/inline_make_source_s.h \
 	meas/inline/hadron_s/inline_propagator_s.h \
 	meas/inline/hadron_s/inline_sink_smear_s.h \
 	meas/inline/hadron_s/inline_spectrum_s.h \
-	meas/inline/hadron_s/hadron_s.h \
+	meas/inline/hadron_s/inline_apply_fermstate_s.h \
         meas/inline/hadron_s/util_compute_quark_prop_s.h \
 	meas/inline/io/io.h \
 	meas/inline/io/named_objmap.h \
@@ -1007,7 +1010,8 @@ libchroma_a_SOURCES += \
 	meas/eig/ischiral_w.cc meas/hadron/barcomp_w.cc \
         meas/hadron/mescomp_w.cc \
 	meas/hadron/barhqlq_w.cc \
-        meas/hadron/barseqsrc_w.cc \
+        meas/hadron/baryon_seqsrc_w.cc \
+        meas/hadron/simple_baryon_seqsrc_w.cc \
 	meas/hadron/barspinmat_w.cc \
         meas/hadron/simple_baryon_operator_w.cc \
         meas/hadron/group_baryon_operator_w.cc \
@@ -1017,8 +1021,9 @@ libchroma_a_SOURCES += \
         meas/hadron/DjDk_w.cc \
 	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
-	meas/hadron/derivmesonseqsrc_w.cc \
-	meas/hadron/mesonseqsrc_w.cc \
+	meas/hadron/meson_seqsrc_w.cc \
+	meas/hadron/simple_meson_seqsrc_w.cc \
+	meas/hadron/deriv_meson_seqsrc_w.cc \
 	meas/hadron/photon_seqsrc_w.cc \
         meas/hadron/mesons_w.cc \
         meas/hadron/mesons2_w.cc \
@@ -1127,6 +1132,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron_s/inline_propagator_s.cc \
 	meas/inline/hadron_s/inline_sink_smear_s.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
+	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \
         meas/inline/hadron_s/util_compute_meson_s.cc \
