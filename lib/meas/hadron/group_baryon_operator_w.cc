@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.19 2006-11-22 04:17:02 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.20 2006-11-27 00:58:16 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -620,12 +620,16 @@ namespace Chroma
           if ( flipsign )
           {
             // cc and -sign
-            CQQQ[ i ].coef[ n ] = cmplx( -re, im );
+//            CQQQ[ i ].coef[ n ] = cmplx( -re, im );
+            // just sign (cc at the correlator level)
+						CQQQ[ i ].coef[ n ] = cmplx( -re, -im );
           }
           else
           {
             // just cc
-            CQQQ[ i ].coef[ n ] = cmplx( re, -im );
+//            CQQQ[ i ].coef[ n ] = cmplx( re, -im );
+            // no cc at this point (cc at the correlator level)
+						CQQQ[ i ].coef[ n ] = cmplx( re, im );
           }
 					//
 					// Storage will be in the GroupBaryonOp class
