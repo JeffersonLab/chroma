@@ -147,7 +147,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A0_1</seq_src>
+	<seq_src>A0-A0_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -188,7 +188,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_X_1</seq_src>
+	<seq_src>A0-RHO_X_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -229,7 +229,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_Y_1</seq_src>
+	<seq_src>A0-RHO_Y_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -270,7 +270,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-B1_Z_1</seq_src>
+	<seq_src>A0-B1_Z_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -311,7 +311,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_Z_1</seq_src>
+	<seq_src>A0-RHO_Z_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -352,7 +352,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-B1_Y_1</seq_src>
+	<seq_src>A0-B1_Y_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -393,7 +393,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-B1_X_1</seq_src>
+	<seq_src>A0-B1_X_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -434,7 +434,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-PION_2</seq_src>
+	<seq_src>A0-PION_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -475,7 +475,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A0_2</seq_src>
+	<seq_src>A0-A0_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -516,7 +516,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_X_2</seq_src>
+	<seq_src>A0-RHO_X_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -557,7 +557,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_Y_2</seq_src>
+	<seq_src>A0-RHO_Y_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -598,7 +598,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A1_Z_1</seq_src>
+	<seq_src>A0-A1_Z_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -639,7 +639,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_Z_2</seq_src>
+	<seq_src>A0-RHO_Z_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -680,7 +680,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A1_Y_1</seq_src>
+	<seq_src>A0-A1_Y_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -721,7 +721,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A1_X_1</seq_src>
+	<seq_src>A0-A1_X_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -762,7 +762,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION_1</seq_src>
+	<seq_src>PION</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -816,10 +816,10 @@ Sequential source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.20.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>13 Oct 06 23:44:26 EDT</run_date>
+    <run_date>27 Nov 06 00:33:11 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -848,32 +848,32 @@ Sequential source
     </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994803997506905</w_plaq>
-    <s_plaq>0.994798443435381</s_plaq>
-    <t_plaq>0.994809551578429</t_plaq>
-    <plane_01_plaq>0.994703592111667</plane_01_plaq>
-    <plane_02_plaq>0.994926826562732</plane_02_plaq>
-    <plane_12_plaq>0.994764911631743</plane_12_plaq>
-    <plane_03_plaq>0.994693187686304</plane_03_plaq>
-    <plane_13_plaq>0.994853908040871</plane_13_plaq>
-    <plane_23_plaq>0.994881559008112</plane_23_plaq>
-    <link>0.379449337626284</link>
+    <w_plaq>0.9948041322667</w_plaq>
+    <s_plaq>0.994798578341303</s_plaq>
+    <t_plaq>0.994809686192097</t_plaq>
+    <plane_01_plaq>0.994703733245322</plane_01_plaq>
+    <plane_02_plaq>0.994926957486681</plane_02_plaq>
+    <plane_12_plaq>0.994765044291907</plane_12_plaq>
+    <plane_03_plaq>0.994693320035353</plane_03_plaq>
+    <plane_13_plaq>0.99485404921873</plane_13_plaq>
+    <plane_23_plaq>0.994881689322207</plane_23_plaq>
+    <link>0.379449348715193</link>
     <pollp>
       <elem>
-        <re>0.966585880688702</re>
-        <im>-0.00132088747318448</im>
+        <re>0.966586019188471</re>
+        <im>-0.0013208855364667</im>
       </elem>
       <elem>
-        <re>0.966365773618842</re>
-        <im>-0.00123499087385426</im>
+        <re>0.966365913774658</re>
+        <im>-0.00123498976830508</im>
       </elem>
       <elem>
-        <re>0.967146154958755</re>
-        <im>-0.00112309937897711</im>
+        <re>0.96714627642381</re>
+        <im>-0.00112309841124561</im>
       </elem>
       <elem>
-        <re>0.87876926199533</re>
-        <im>-0.00991386472378508</im>
+        <re>0.878769500914111</re>
+        <im>-0.00991386113656915</im>
       </elem>
     </pollp>
   </Observables>
@@ -883,10 +883,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:26 EDT</run_date>
+          <run_date>27 Nov 06 00:33:12 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -942,37 +942,37 @@ Sequential source
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>6.63399876808731 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.63399911108962 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -981,10 +981,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:26 EDT</run_date>
+          <run_date>27 Nov 06 00:33:13 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1036,32 +1036,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -1112,87 +1112,87 @@ Sequential source
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.63399876808731 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.63399911108962 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>47</n_count>
-            <resid>1.233667e-07</resid>
+            <resid>4.24765384751178e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>47</n_count>
-            <resid>1.176247e-07</resid>
+            <resid>4.10693039594432e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>47</n_count>
-            <resid>1.34897e-07</resid>
+            <resid>4.72105330733578e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>47</n_count>
-            <resid>1.168402e-07</resid>
+            <resid>4.5340659099751e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>47</n_count>
-            <resid>1.288205e-07</resid>
+            <resid>4.39825369352313e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>47</n_count>
-            <resid>1.022059e-07</resid>
+            <resid>4.27157742807289e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>47</n_count>
-            <resid>1.339582e-07</resid>
+            <resid>4.60169459817686e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>47</n_count>
-            <resid>1.235014e-07</resid>
+            <resid>4.83431273501983e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>47</n_count>
-            <resid>1.159808e-07</resid>
+            <resid>4.46112498939514e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>47</n_count>
-            <resid>1.399859e-07</resid>
+            <resid>4.53011833938138e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>47</n_count>
-            <resid>1.18755e-07</resid>
+            <resid>4.83031590566026e-13</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>47</n_count>
-            <resid>1.089687e-07</resid>
+            <resid>4.88423545842644e-13</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>564</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</prop_corr>
+          <prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1201,10 +1201,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:15 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1265,32 +1265,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -1367,11 +1367,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.57714752462444e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.57716064027432e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1386,10 +1386,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1402,7 +1402,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-A0_1</SeqSourceType>
+      <SeqSourceType>A0-A0_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -1436,32 +1436,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -1538,11 +1538,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1557,10 +1557,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1573,7 +1573,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-RHO_X_1</SeqSourceType>
+      <SeqSourceType>A0-RHO_X_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -1607,32 +1607,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -1709,11 +1709,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1728,10 +1728,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1744,7 +1744,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-RHO_Y_1</SeqSourceType>
+      <SeqSourceType>A0-RHO_Y_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -1778,32 +1778,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -1880,11 +1880,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1899,10 +1899,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1915,7 +1915,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-B1_Z_1</SeqSourceType>
+      <SeqSourceType>A0-B1_Z_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -1949,32 +1949,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -2051,11 +2051,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2070,10 +2070,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2086,7 +2086,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-RHO_Z_1</SeqSourceType>
+      <SeqSourceType>A0-RHO_Z_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -2120,32 +2120,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -2222,11 +2222,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2241,10 +2241,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2257,7 +2257,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-B1_Y_1</SeqSourceType>
+      <SeqSourceType>A0-B1_Y_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -2291,32 +2291,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -2393,11 +2393,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2412,10 +2412,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2428,7 +2428,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-B1_X_1</SeqSourceType>
+      <SeqSourceType>A0-B1_X_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -2462,32 +2462,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -2564,11 +2564,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2583,10 +2583,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2599,7 +2599,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-PION_2</SeqSourceType>
+      <SeqSourceType>A0-PION_2</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -2633,32 +2633,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -2735,11 +2735,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2754,10 +2754,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2770,7 +2770,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-A0_2</SeqSourceType>
+      <SeqSourceType>A0-A0_2</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -2804,32 +2804,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -2906,11 +2906,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -2925,10 +2925,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2941,7 +2941,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-RHO_X_2</SeqSourceType>
+      <SeqSourceType>A0-RHO_X_2</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -2975,32 +2975,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -3077,11 +3077,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -3096,10 +3096,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3112,7 +3112,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-RHO_Y_2</SeqSourceType>
+      <SeqSourceType>A0-RHO_Y_2</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -3146,32 +3146,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -3248,11 +3248,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -3267,10 +3267,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3283,7 +3283,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-A1_Z_1</SeqSourceType>
+      <SeqSourceType>A0-A1_Z_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -3317,32 +3317,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -3419,11 +3419,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -3438,10 +3438,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3454,7 +3454,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-RHO_Z_2</SeqSourceType>
+      <SeqSourceType>A0-RHO_Z_2</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -3488,32 +3488,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -3590,11 +3590,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -3609,10 +3609,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3625,7 +3625,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-A1_Y_1</SeqSourceType>
+      <SeqSourceType>A0-A1_Y_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -3659,32 +3659,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -3761,11 +3761,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -3780,10 +3780,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:19 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3796,7 +3796,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION-A1_X_1</SeqSourceType>
+      <SeqSourceType>A0-A1_X_1</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -3830,32 +3830,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -3932,11 +3932,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -3951,10 +3951,10 @@ Sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.20.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:44:27 EDT</run_date>
+          <run_date>27 Nov 06 00:33:19 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3967,7 +3967,7 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION_1</SeqSourceType>
+      <SeqSourceType>PION</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -4001,32 +4001,32 @@ Sequential source
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.9948041322667</w_plaq>
+          <s_plaq>0.994798578341303</s_plaq>
+          <t_plaq>0.994809686192097</t_plaq>
+          <plane_01_plaq>0.994703733245322</plane_01_plaq>
+          <plane_02_plaq>0.994926957486681</plane_02_plaq>
+          <plane_12_plaq>0.994765044291907</plane_12_plaq>
+          <plane_03_plaq>0.994693320035353</plane_03_plaq>
+          <plane_13_plaq>0.99485404921873</plane_13_plaq>
+          <plane_23_plaq>0.994881689322207</plane_23_plaq>
+          <link>0.379449348715193</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966586019188471</re>
+              <im>-0.0013208855364667</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.966365913774658</re>
+              <im>-0.00123498976830508</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.96714627642381</re>
+              <im>-0.00112309841124561</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769500914111</re>
+              <im>-0.00991386113656915</im>
             </elem>
           </pollp>
         </Observables>
@@ -4103,11 +4103,11 @@ Sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057169358659 0.0165113071702443 0.00626269500216984 0.00253901589646451 0.00103327124401607 0.000420642446108156 0.000171402154843483 6.99145280393027e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.99144219328091e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.99145280393027e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>

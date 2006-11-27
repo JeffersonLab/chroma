@@ -144,7 +144,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A0_1</seq_src>
+	<seq_src>A0-A0_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -185,7 +185,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_X_1</seq_src>
+	<seq_src>A0-RHO_X_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -226,7 +226,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_Y_1</seq_src>
+	<seq_src>A0-RHO_Y_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -267,7 +267,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-B1_Z_1</seq_src>
+	<seq_src>A0-B1_Z_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -308,7 +308,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_Z_1</seq_src>
+	<seq_src>A0-RHO_Z_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -349,7 +349,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-B1_Y_1</seq_src>
+	<seq_src>A0-B1_Y_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -390,7 +390,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-B1_X_1</seq_src>
+	<seq_src>A0-B1_X_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -431,7 +431,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-PION_2</seq_src>
+	<seq_src>A0-PION_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -472,7 +472,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A0_2</seq_src>
+	<seq_src>A0-A0_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -513,7 +513,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_X_2</seq_src>
+	<seq_src>A0-RHO_X_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -554,7 +554,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_Y_2</seq_src>
+	<seq_src>A0-RHO_Y_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -595,7 +595,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A1_Z_1</seq_src>
+	<seq_src>A0-A1_Z_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -636,7 +636,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-RHO_Z_2</seq_src>
+	<seq_src>A0-RHO_Z_2</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -677,7 +677,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A1_Y_1</seq_src>
+	<seq_src>A0-A1_Y_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -718,7 +718,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION-A1_X_1</seq_src>
+	<seq_src>A0-A1_X_1</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -759,7 +759,7 @@ Sequential source
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-	<seq_src>PION_1</seq_src>
+	<seq_src>PION</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
