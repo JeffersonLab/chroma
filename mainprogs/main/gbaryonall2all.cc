@@ -193,6 +193,86 @@ int main( int argc, char *argv[] )
 	// don't average over equivalent momenta
   SftMom phases(params.mom2_max, true, params.j_decay);
 	multi2d<DComplex> elem( params.Nmomenta, params.nrow[3] );
+
+#define JUST_MAKE_SINK_OPS
+
+#ifdef  JUST_MAKE_SINK_OPS
+	// get noise info first if the source operator is not
+	// being constructed at the same time as the sink operator
+	try
+	{
+		swatch.start();
+	  int N;
+		for(int n=0; n < quarks.size(); ++n)
+	  {
+	    LatticeFermion quark_noise;      // noisy source on entire lattice
+	    bool first = true;
+	    for(int i=0; i < quarks[ n ].dilutions.size(); ++i)
+	    {
+	      std::istringstream xml_s( quarks[ n ].dilutions[ i ].source_header.source.xml );
+	      XMLReader sourcetop( xml_s );
+	      //QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
+	      if ( quarks[ n ].dilutions[ i ].source_header.source.id != DiluteZNQuarkSourceConstEnv::name )
+	      {
+	        QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
+	        QDP_abort( 1 );
+	      }
+	      //QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
+	      DiluteZNQuarkSourceConstEnv::Params srcParams( sourcetop,
+	                                                     quarks[ n ].dilutions[ i ].source_header.source.path );
+	      DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion> srcConst( srcParams );
+	      if ( first )
+	      {
+	        first = false;
+	        quarks[ 0 ].j_decay = srcParams.j_decay;
+	        // Grab N
+	        N = srcParams.N;
+	        // Set the seed to desired value
+	        quarks[ n ].seed = srcParams.ran_seed;
+	        QDP::RNG::setrn( quarks[ n ].seed );
+	        // Create the noisy quark source on the entire lattice
+	        zN_src( quark_noise, N );
+	      }
+	      // The seeds must always agree - here the seed is the unique id of the source
+	      if ( toBool( srcParams.ran_seed != quarks[ n ].seed ) )
+	      {
+	        QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << endl;
+	        QDP_abort( 1 );
+	      }
+	      // The N's must always agree
+	      if ( toBool( srcParams.N != N ) )
+	      {
+	        QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << endl;
+	        QDP_abort( 1 );
+	      }
+	      // Use a trick here, create the source and subtract it from the global noisy
+	      // Check at the end that the global noisy is zero everywhere.
+	      // NOTE: the seed will be set every call
+	      quarks[ n ].dilutions[ i ].source = srcConst( params.gaugestuff.u );
+	      quark_noise -= quarks[ n ].dilutions[ i ].source;
+	    } // end for i
+	    Double dcnt = norm2( quark_noise );
+	    if ( toDouble( dcnt ) != 0.0 )   // problematic - seems to work with unnormalized sources
+	    {
+	      QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
+	      QDP_abort( 1 );
+	    }
+	  } // end for n
+		swatch.stop();
+	} // end try
+	catch ( const std::string& e )
+	{
+	  QDPIO::cerr << ": Caught Exception creating source: " << e << endl;
+	  QDP_abort( 1 );
+	}
+	for(int n=0; n < params.Noperators; ++n)
+	{
+		AOp[ n ].baryonoperator.seed_l = quarks[0].seed;
+		AOp[ n ].baryonoperator.seed_m = quarks[1].seed;
+		AOp[ n ].baryonoperator.seed_r = quarks[2].seed;
+	}
+#endif
+
 #if 1
 	try
 	{ //
@@ -200,7 +280,7 @@ int main( int argc, char *argv[] )
 		//
   	QDPIO::cout << "Making the SINK operators" << endl;
 		int ordering = 0;
-		
+				
 		#if 1
 		swatch.start();
     // Sink smear all the quarks up-front
@@ -229,7 +309,7 @@ int main( int argc, char *argv[] )
 			for(int j=0; j < params.NH[ordering][1]; ++j)
 			for(int k=0; k < params.NH[ordering][2]; ++k)
 			{ 
-		swatch.start();
+		//swatch.start();
 		//QDPIO::cout << "SINK operators "<<i<<" "<<j<<" "<<k<<" ... "<<endl;
 				vresult = AQQQ[ qqq ]( 
 	    	                      quarks[ 0 ].dilutions[ i ].soln,
@@ -237,15 +317,15 @@ int main( int argc, char *argv[] )
 	    	                      quarks[ 2 ].dilutions[ k ].soln,
 	    	                      PLUS 
 														 );
-		swatch.stop();
-		QDPIO::cout << "contraction "<<i<<" "<<j<<" "<<k<<" done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+		//swatch.stop();
+		//QDPIO::cout << "contraction "<<i<<" "<<j<<" "<<k<<" done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 		    for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
 				{
-		swatch.start();
+		//swatch.start();
 					elem = phases.sft( vresult[ 0 ] );
-		swatch.stop();
-		if((i==0)&&(j==0)&&(k==0)&&(b==0))
-		QDPIO::cout << "sft done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+		//swatch.stop();
+		//if((i==0)&&(j==0)&&(k==0)&&(b==0))
+		//QDPIO::cout << "sft done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 		    	for(int p=0; p < params.Nmomenta; ++p)
 					{
 		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
@@ -267,6 +347,41 @@ int main( int argc, char *argv[] )
 	  QDP_abort( 1 );
 	}
 	QDPIO::cout << "SINK operators done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+#define WRITEOPSOUTNOW
+#ifdef  WRITEOPSOUTNOW
+  // Save the operators
+  // ONLY SciDAC output format is supported!
+  swatch.start();
+	for(int b=0; b < params.Noperators; ++b)
+  {
+    XMLBufferWriter file_xml;
+    push( file_xml, params.Names[ b ] );
+    file_xml << params.param.baryon_operator;
+    write( file_xml, "Config_info", gauge_xml );
+    pop( file_xml );
+		string output=params.Names[ b ]+"_snk";
+		
+    QDPFileWriter to( file_xml, output,
+                      QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN );
+    /*
+		// Write the scalar data
+    {
+      XMLBufferWriter record_xml;
+      write( record_xml, "SourceBaryonOperator", COp[ b ].baryonoperator );
+      write( to, record_xml, COp[ b ].baryonoperator.serialize() );
+    }
+		*/
+    // Write the scalar data
+    {
+      XMLBufferWriter record_xml;
+      write( record_xml, "SinkBaryonOperator", AOp[ b ].baryonoperator );
+      write( to, record_xml, AOp[ b ].baryonoperator.serialize() );
+    }
+    close( to );
+  }
+  swatch.stop();
+  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif
 #endif // end annihilation operators
 
 #if 1
@@ -353,9 +468,6 @@ int main( int argc, char *argv[] )
 		COp[ n ].baryonoperator.seed_l = quarks[0].seed;
 		COp[ n ].baryonoperator.seed_m = quarks[1].seed;
 		COp[ n ].baryonoperator.seed_r = quarks[2].seed;
-		AOp[ n ].baryonoperator.seed_l = quarks[0].seed;
-		AOp[ n ].baryonoperator.seed_m = quarks[1].seed;
-		AOp[ n ].baryonoperator.seed_r = quarks[2].seed;
 	}
 	try
 	{ //
@@ -366,6 +478,7 @@ int main( int argc, char *argv[] )
 		  QDPIO::cout << "SOURCE Operator: ordering = " << ordering << endl;
 			swatch.start();
 			Real signs;
+			int not_used;
 			const int L=0,M=1,R=2;
 			//
 			// t = quarks[n].dilutions[i].source_header.t_source = timeslice of source
@@ -422,7 +535,7 @@ int main( int argc, char *argv[] )
 									                quarks[ qL ].dilutions[ iL ].source,
 					  			                quarks[ qM ].dilutions[ iM ].source,
 		    	  			                quarks[ qR ].dilutions[ iR ].source,
-		    	  			                MINUS,
+		    	  			                not_used,
 		    	  			                MINUS 
 		    	  			              );
 						for(int b=0; b < CQQQ[ qqq ].NBaryonOps; ++b)
@@ -460,13 +573,49 @@ int main( int argc, char *argv[] )
 		}
 	}
 	#endif
+	
+#define WRITEOPSOUTNOW
+#ifdef  WRITEOPSOUTNOW
+  // Save the operators
+  // ONLY SciDAC output format is supported!
+  swatch.start();
+	for(int b=0; b < params.Noperators; ++b)
+  {
+    XMLBufferWriter file_xml;
+    push( file_xml, params.Names[ b ] );
+    file_xml << params.param.baryon_operator;
+    write( file_xml, "Config_info", gauge_xml );
+    pop( file_xml );
+		string output=params.Names[ b ]+"_src";
+		
+    QDPFileWriter to( file_xml, output,
+                      QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN );
+		// Write the scalar data
+    {
+      XMLBufferWriter record_xml;
+      write( record_xml, "SourceBaryonOperator", COp[ b ].baryonoperator );
+      write( to, record_xml, COp[ b ].baryonoperator.serialize() );
+    }
+		/*
+    // Write the scalar data
+    {
+      XMLBufferWriter record_xml;
+      write( record_xml, "SinkBaryonOperator", AOp[ b ].baryonoperator );
+      write( to, record_xml, AOp[ b ].baryonoperator.serialize() );
+    }
+		*/
+    close( to );
+  }
+  swatch.stop();
+  QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif
 
 #endif // end of creation operators
 
 	QDPIO::cout<<"end of group baryon operator calculation"<<endl;
 
-	// Now writing the operators out
-
+#ifdef WRITE_ALL_OUT
+	// Now writing all the operators out
   // Save the operators
   // ONLY SciDAC output format is supported!
   swatch.start();
@@ -495,6 +644,7 @@ int main( int argc, char *argv[] )
   }
   swatch.stop();
   QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif
 
   // Close the namelist output file XMLDAT
   pop( xml_out );   // GroupBaryonAll2All
