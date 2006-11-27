@@ -2428,6 +2428,7 @@ Calculate building blocks - insertions in 3-pt functions
          </elem>
        </BkwdProps>
       </BuildingBlocks>
+      <!-- Uncomment the xml_file line to write to a separate file -->
       <!-- xml_file>bb.dat.xml</xml_file -->
     </elem>
 
@@ -2456,7 +2457,7 @@ Calculate building blocks - insertions in 3-pt functions
       <chroma>3.20.0</chroma>
       <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>26 Nov 06 21:41:31 EST</run_date>
+    <run_date>27 Nov 06 15:10:43 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -2523,7 +2524,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:32 EST</run_date>
+          <run_date>27 Nov 06 15:10:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2623,7 +2624,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:32 EST</run_date>
+          <run_date>27 Nov 06 15:10:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2994,7 +2995,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:38 EST</run_date>
+          <run_date>27 Nov 06 15:10:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3161,7 +3162,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:38 EST</run_date>
+          <run_date>27 Nov 06 15:10:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3348,80 +3349,80 @@ Calculate building blocks - insertions in 3-pt functions
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>63</n_count>
-            <resid>5.11238247154289e-16</resid>
+            <resid>5.1872018869173e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>63</n_count>
-            <resid>4.52514570143286e-16</resid>
+            <resid>4.52605578688315e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>63</n_count>
-            <resid>4.42015311901852e-16</resid>
+            <resid>4.45384624241869e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>63</n_count>
-            <resid>4.59792319807865e-16</resid>
+            <resid>4.70117296833062e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>63</n_count>
-            <resid>4.48871126688799e-16</resid>
+            <resid>4.81091203083246e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>63</n_count>
-            <resid>4.18894553894793e-16</resid>
+            <resid>5.75734134362847e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>63</n_count>
-            <resid>4.24769715469149e-16</resid>
+            <resid>4.00170878158489e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>63</n_count>
-            <resid>4.02701381526344e-16</resid>
+            <resid>4.71699022145155e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>63</n_count>
-            <resid>4.26183691694526e-16</resid>
+            <resid>4.44283931322159e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>63</n_count>
-            <resid>4.62391733902474e-16</resid>
+            <resid>4.8878394312455e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>63</n_count>
-            <resid>4.28230955748265e-16</resid>
+            <resid>5.20162068397589e-16</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>63</n_count>
-            <resid>4.01519900874496e-16</resid>
+            <resid>4.70703757773353e-16</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>756</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>2.5160851961305e-06 6.19636251118972e-06 1.54821178409115e-05 4.05336955816474e-05 0.000123384632483888 0.00054163011138289 0.00400202495062801 0.000103404247043439</prop_corr>
+          <prop_corr>2.52022968254162e-06 6.20413534452528e-06 1.54948289076741e-05 4.05453587628084e-05 0.000123350531220424 0.000541573588865277 0.00400081576671406 0.000103675599138334</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -3433,7 +3434,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:40 EST</run_date>
+          <run_date>27 Nov 06 15:10:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3618,7 +3619,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:42 EST</run_date>
+          <run_date>27 Nov 06 15:10:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3924,7 +3925,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:44 EST</run_date>
+          <run_date>27 Nov 06 15:10:54 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4109,7 +4110,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:45 EST</run_date>
+          <run_date>27 Nov 06 15:10:54 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4415,7 +4416,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:47 EST</run_date>
+          <run_date>27 Nov 06 15:10:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4584,7 +4585,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:47 EST</run_date>
+          <run_date>27 Nov 06 15:10:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4858,7 +4859,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:50 EST</run_date>
+          <run_date>27 Nov 06 15:10:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5026,7 +5027,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:50 EST</run_date>
+          <run_date>27 Nov 06 15:10:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5299,7 +5300,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:52 EST</run_date>
+          <run_date>27 Nov 06 15:11:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5468,7 +5469,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:53 EST</run_date>
+          <run_date>27 Nov 06 15:11:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5742,7 +5743,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:55 EST</run_date>
+          <run_date>27 Nov 06 15:11:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5911,7 +5912,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:55 EST</run_date>
+          <run_date>27 Nov 06 15:11:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6185,7 +6186,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:58 EST</run_date>
+          <run_date>27 Nov 06 15:11:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6353,7 +6354,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:41:58 EST</run_date>
+          <run_date>27 Nov 06 15:11:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6626,7 +6627,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:01 EST</run_date>
+          <run_date>27 Nov 06 15:11:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6795,7 +6796,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:01 EST</run_date>
+          <run_date>27 Nov 06 15:11:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7069,7 +7070,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:03 EST</run_date>
+          <run_date>27 Nov 06 15:11:11 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7238,7 +7239,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:03 EST</run_date>
+          <run_date>27 Nov 06 15:11:11 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7512,7 +7513,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:08 EST</run_date>
+          <run_date>27 Nov 06 15:11:14 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7681,7 +7682,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:08 EST</run_date>
+          <run_date>27 Nov 06 15:11:14 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7955,7 +7956,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:10 EST</run_date>
+          <run_date>27 Nov 06 15:11:16 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8124,7 +8125,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:11 EST</run_date>
+          <run_date>27 Nov 06 15:11:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8398,7 +8399,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:13 EST</run_date>
+          <run_date>27 Nov 06 15:11:19 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8566,7 +8567,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:15 EST</run_date>
+          <run_date>27 Nov 06 15:11:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8839,7 +8840,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:17 EST</run_date>
+          <run_date>27 Nov 06 15:11:22 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9008,7 +9009,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:18 EST</run_date>
+          <run_date>27 Nov 06 15:11:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9282,7 +9283,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:20 EST</run_date>
+          <run_date>27 Nov 06 15:11:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9451,7 +9452,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:21 EST</run_date>
+          <run_date>27 Nov 06 15:11:26 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9725,7 +9726,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:24 EST</run_date>
+          <run_date>27 Nov 06 15:11:29 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9894,7 +9895,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:25 EST</run_date>
+          <run_date>27 Nov 06 15:11:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10168,7 +10169,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:27 EST</run_date>
+          <run_date>27 Nov 06 15:11:32 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10337,7 +10338,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:29 EST</run_date>
+          <run_date>27 Nov 06 15:11:33 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10611,7 +10612,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:31 EST</run_date>
+          <run_date>27 Nov 06 15:11:35 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10780,7 +10781,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:32 EST</run_date>
+          <run_date>27 Nov 06 15:11:36 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11054,7 +11055,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:34 EST</run_date>
+          <run_date>27 Nov 06 15:11:39 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11223,7 +11224,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:35 EST</run_date>
+          <run_date>27 Nov 06 15:11:40 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11497,7 +11498,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:38 EST</run_date>
+          <run_date>27 Nov 06 15:11:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11666,7 +11667,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:39 EST</run_date>
+          <run_date>27 Nov 06 15:11:43 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11940,7 +11941,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:41 EST</run_date>
+          <run_date>27 Nov 06 15:11:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -12109,7 +12110,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:43 EST</run_date>
+          <run_date>27 Nov 06 15:11:46 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -12383,7 +12384,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:45 EST</run_date>
+          <run_date>27 Nov 06 15:11:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -12552,7 +12553,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:46 EST</run_date>
+          <run_date>27 Nov 06 15:11:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -12826,7 +12827,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:48 EST</run_date>
+          <run_date>27 Nov 06 15:11:52 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -12995,7 +12996,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:49 EST</run_date>
+          <run_date>27 Nov 06 15:11:53 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -13269,7 +13270,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:51 EST</run_date>
+          <run_date>27 Nov 06 15:11:55 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -13438,7 +13439,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:52 EST</run_date>
+          <run_date>27 Nov 06 15:11:55 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -13712,7 +13713,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:54 EST</run_date>
+          <run_date>27 Nov 06 15:11:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -13881,7 +13882,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:55 EST</run_date>
+          <run_date>27 Nov 06 15:11:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -14155,7 +14156,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:59 EST</run_date>
+          <run_date>27 Nov 06 15:12:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -14324,7 +14325,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:42:59 EST</run_date>
+          <run_date>27 Nov 06 15:12:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -14598,7 +14599,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:01 EST</run_date>
+          <run_date>27 Nov 06 15:12:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -14767,7 +14768,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:02 EST</run_date>
+          <run_date>27 Nov 06 15:12:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15041,7 +15042,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:04 EST</run_date>
+          <run_date>27 Nov 06 15:12:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15210,7 +15211,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:05 EST</run_date>
+          <run_date>27 Nov 06 15:12:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15484,7 +15485,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:07 EST</run_date>
+          <run_date>27 Nov 06 15:12:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15653,7 +15654,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:08 EST</run_date>
+          <run_date>27 Nov 06 15:12:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15927,7 +15928,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:10 EST</run_date>
+          <run_date>27 Nov 06 15:12:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -16096,7 +16097,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:11 EST</run_date>
+          <run_date>27 Nov 06 15:12:11 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -16370,7 +16371,7 @@ Calculate building blocks - insertions in 3-pt functions
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>26 Nov 06 21:43:13 EST</run_date>
+          <run_date>27 Nov 06 15:12:13 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -16836,7 +16837,7 @@ Calculate building blocks - insertions in 3-pt functions
     </SequentialProp>
 
               </BkwdPropRecordXML>
-              <BkwdPropCheck>2.5160851961305e-06 6.19636251118972e-06 1.54821178409115e-05 4.05336955816474e-05 0.000123384632483888 0.00054163011138289 0.00400202495062801 0.000103404247043439</BkwdPropCheck>
+              <BkwdPropCheck>2.52022968254162e-06 6.20413534452528e-06 1.54948289076741e-05 4.05453587628084e-05 0.000123350531220424 0.000541573588865277 0.00400081576671406 0.000103675599138334</BkwdPropCheck>
             </BackwardProp>
             <seq_src>PION</seq_src>
             <gamma_insertion>0</gamma_insertion>
@@ -16854,77 +16855,111 @@ Calculate building blocks - insertions in 3-pt functions
               <sink_mom>1 0 0</sink_mom>
               <source_value>
                 <re>0.024797051873107</re>
-                <im>6.43787061758236e-06</im>
+                <im>-6.43787061758284e-06</im>
               </source_value>
             </LoopBackTest>
             <DiagnosticTest>
               <GammaInsertion>0</GammaInsertion>
               <formFactor_G0>
                 <elem>
-                  <re>-1.82839249392695e-07</re>
-                  <im>5.8589282138586e-09</im>
+                  <re>-3.44740319220325e-07</re>
+                  <im>7.94692714710145e-10</im>
                 </elem>
                 <elem>
-                  <re>-7.34473423666317e-07</re>
-                  <im>1.52192234610221e-08</im>
+                  <re>-1.26001220206558e-06</re>
+                  <im>8.82421048534972e-09</im>
                 </elem>
                 <elem>
-                  <re>-2.83970860569326e-06</re>
-                  <im>4.12048706865075e-08</im>
+                  <re>-4.11123174928203e-06</re>
+                  <im>2.50630612882693e-08</im>
                 </elem>
                 <elem>
-                  <re>-1.44663457507277e-05</re>
-                  <im>8.47082940621344e-08</im>
+                  <re>-1.7206408910831e-05</re>
+                  <im>7.8589378898205e-08</im>
                 </elem>
                 <elem>
-                  <re>-0.000102726209416727</re>
-                  <im>2.81636392164461e-07</im>
+                  <re>-0.000107775561657035</re>
+                  <im>6.25798784851571e-08</im>
                 </elem>
                 <elem>
-                  <re>0.00759600647202673</re>
-                  <im>5.17797076726594e-06</im>
+                  <re>0.00758979296346064</re>
+                  <im>-2.06095838756366e-06</im>
                 </elem>
                 <elem>
-                  <re>0.00760712674718681</re>
-                  <im>5.70401748360637e-06</im>
+                  <re>0.00760176461171463</re>
+                  <im>-3.19075253925558e-06</im>
                 </elem>
                 <elem>
-                  <re>-9.09345304753063e-05</re>
-                  <im>5.4557009450924e-07</im>
+                  <re>-9.30981253029328e-05</re>
+                  <im>-2.92909217600835e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>5.67675611515107e-11</re>
+                  <im>-6.4222091511292e-10</im>
+                </elem>
+                <elem>
+                  <re>-1.13400201545528e-10</re>
+                  <im>-2.95011796591758e-09</im>
+                </elem>
+                <elem>
+                  <re>9.16397279180862e-10</re>
+                  <im>-1.7700617081204e-10</im>
+                </elem>
+                <elem>
+                  <re>-4.96434939522908e-09</re>
+                  <im>2.15809471151659e-09</im>
+                </elem>
+                <elem>
+                  <re>5.74488408960219e-08</re>
+                  <im>8.8301853542846e-10</im>
+                </elem>
+                <elem>
+                  <re>0.00850985004135637</re>
+                  <im>-2.24484209321671e-06</im>
+                </elem>
+                <elem>
+                  <re>0.00851450342199446</re>
+                  <im>-1.60792243979907e-06</im>
+                </elem>
+                <elem>
+                  <re>2.60600308973472e-08</re>
+                  <im>9.285704031056e-09</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
-                  <re>-2.09380334042544e-09</re>
-                  <im>1.65850940010254e-09</im>
+                  <re>-3.45851396697156e-09</re>
+                  <im>1.91069138626099e-09</im>
                 </elem>
                 <elem>
-                  <re>-5.93985857056665e-09</re>
-                  <im>3.33698109668203e-09</im>
+                  <re>-8.97315451559648e-09</re>
+                  <im>4.14946796738523e-09</im>
                 </elem>
                 <elem>
-                  <re>-1.57790521831989e-08</re>
-                  <im>6.68722490556278e-09</im>
+                  <re>-2.13004076117255e-08</re>
+                  <im>8.53027819433697e-09</im>
                 </elem>
                 <elem>
-                  <re>-4.79468514726275e-08</re>
-                  <im>2.21344398062192e-08</im>
+                  <re>-5.48563353953765e-08</re>
+                  <im>6.92034390019724e-09</im>
                 </elem>
                 <elem>
-                  <re>-1.25551656111257e-07</re>
-                  <im>5.85765396997069e-08</im>
+                  <re>-1.35435126010162e-07</re>
+                  <im>4.95150046302082e-09</im>
                 </elem>
                 <elem>
-                  <re>4.0425701280887e-07</re>
-                  <im>-1.65012196962406e-08</im>
+                  <re>3.7739873948605e-07</re>
+                  <im>6.90010943665933e-08</im>
                 </elem>
                 <elem>
-                  <re>-2.81130813717736e-08</re>
-                  <im>2.2152458480412e-07</im>
+                  <re>4.91848352079211e-08</re>
+                  <im>-3.18464669567752e-07</im>
                 </elem>
                 <elem>
-                  <re>1.75702876857644e-07</re>
-                  <im>3.08078666977436e-08</im>
+                  <re>2.05751317062257e-07</re>
+                  <im>-9.65057500306611e-08</im>
                 </elem>
               </formFactor_G15>
             </DiagnosticTest>
@@ -17148,6 +17183,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-6.92159203129209e-08</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>7.27020939851713e-11</re>
+                  <im>1.02794586355614e-11</im>
+                </elem>
+                <elem>
+                  <re>-1.08365107656739e-10</re>
+                  <im>5.51841633359415e-11</im>
+                </elem>
+                <elem>
+                  <re>-4.07360862379649e-10</re>
+                  <im>7.5729197594529e-10</im>
+                </elem>
+                <elem>
+                  <re>-4.07730639580395e-10</re>
+                  <im>-1.30377626649949e-09</im>
+                </elem>
+                <elem>
+                  <re>-3.7547561538259e-09</re>
+                  <im>9.73884812436592e-09</im>
+                </elem>
+                <elem>
+                  <re>-1.16002985541712e-07</re>
+                  <im>7.07336470028905e-07</im>
+                </elem>
+                <elem>
+                  <re>1.13521979352772e-07</re>
+                  <im>-1.10956106099419e-07</im>
+                </elem>
+                <elem>
+                  <re>1.99856952186328e-08</re>
+                  <im>-3.13367190376369e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>2.15491049392531e-07</re>
@@ -17403,6 +17472,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>1.04697534375203e-05</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>1.28101770260347e-09</re>
+                  <im>1.42140441782334e-10</im>
+                </elem>
+                <elem>
+                  <re>6.10383392567808e-09</re>
+                  <im>-3.67373305143584e-10</im>
+                </elem>
+                <elem>
+                  <re>-1.58565706079052e-09</re>
+                  <im>1.33424132151941e-09</im>
+                </elem>
+                <elem>
+                  <re>1.92928893077349e-09</re>
+                  <im>-7.4163017052282e-09</im>
+                </elem>
+                <elem>
+                  <re>-4.23004272366881e-08</re>
+                  <im>-1.44092102311031e-07</im>
+                </elem>
+                <elem>
+                  <re>-8.3203711940269e-08</re>
+                  <im>0.00107255686224562</im>
+                </elem>
+                <elem>
+                  <re>3.93247918618569e-06</re>
+                  <im>0.00107918590978128</im>
+                </elem>
+                <elem>
+                  <re>4.38941382150181e-08</re>
+                  <im>-7.68990636771797e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-1.1015378927058e-08</re>
@@ -17626,6 +17729,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-5.02278770224818e-05</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>1.34898829869808e-09</re>
+                  <im>-4.24249957653257e-11</im>
+                </elem>
+                <elem>
+                  <re>6.06117978750015e-09</re>
+                  <im>-3.78490680543711e-10</im>
+                </elem>
+                <elem>
+                  <re>-6.46168821994109e-10</re>
+                  <im>2.2244187725272e-09</im>
+                </elem>
+                <elem>
+                  <re>5.07506140327187e-09</re>
+                  <im>-7.52171336799253e-09</im>
+                </elem>
+                <elem>
+                  <re>3.45525022082018e-08</re>
+                  <im>1.51206203858109e-07</im>
+                </elem>
+                <elem>
+                  <re>1.49144303931641e-08</re>
+                  <im>0.000879985077113937</im>
+                </elem>
+                <elem>
+                  <re>2.4500007258107e-06</re>
+                  <im>0.00107951519364848</im>
+                </elem>
+                <elem>
+                  <re>-4.47652512819263e-08</re>
+                  <im>8.73204160825509e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-1.39906151344482e-08</re>
@@ -17848,6 +17985,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>3.70622772773846e-08</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-1.54094970238504e-10</re>
+                  <im>2.90439138935561e-09</im>
+                </elem>
+                <elem>
+                  <re>8.54779744284525e-10</re>
+                  <im>1.31656301374167e-08</im>
+                </elem>
+                <elem>
+                  <re>-8.33233575941114e-09</re>
+                  <im>1.95800704420234e-09</im>
+                </elem>
+                <elem>
+                  <re>1.12756857418952e-08</re>
+                  <im>1.93897762251623e-08</im>
+                </elem>
+                <elem>
+                  <re>-1.681873287179e-07</re>
+                  <im>5.69161755203274e-09</im>
+                </elem>
+                <elem>
+                  <re>-0.00691361963772617</re>
+                  <im>3.20263431481538e-06</im>
+                </elem>
+                <elem>
+                  <re>-0.0146976625400836</re>
+                  <im>8.66148199438156e-06</im>
+                </elem>
+                <elem>
+                  <re>-3.16884459131793e-08</re>
+                  <im>1.3151137764711e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-1.40479947094925e-08</re>
@@ -18071,6 +18242,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>1.01675902182139e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>1.86066896013614e-10</re>
+                  <im>-2.02155165771021e-10</im>
+                </elem>
+                <elem>
+                  <re>-1.08474182083675e-09</re>
+                  <im>4.90795774263828e-10</im>
+                </elem>
+                <elem>
+                  <re>3.6004127956635e-09</re>
+                  <im>-2.69446618575085e-09</im>
+                </elem>
+                <elem>
+                  <re>-4.40905869854847e-09</re>
+                  <im>-2.29206041756201e-08</im>
+                </elem>
+                <elem>
+                  <re>-8.13538016527978e-08</re>
+                  <im>2.06692807361936e-07</im>
+                </elem>
+                <elem>
+                  <re>-1.78547340314406e-06</re>
+                  <im>-8.84643213920997e-07</im>
+                </elem>
+                <elem>
+                  <re>-1.55768144635443e-06</re>
+                  <im>-2.58731798343925e-06</im>
+                </elem>
+                <elem>
+                  <re>-1.88052563470903e-08</re>
+                  <im>1.07370010925412e-09</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>3.64945414622478e-09</re>
@@ -18294,6 +18499,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-1.32595843580609e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>2.04531287307248e-12</re>
+                  <im>-1.86030526619697e-10</im>
+                </elem>
+                <elem>
+                  <re>-5.97479379099074e-10</re>
+                  <im>-1.10739591114634e-09</im>
+                </elem>
+                <elem>
+                  <re>-4.08243858413525e-09</re>
+                  <im>-2.1415443865902e-09</im>
+                </elem>
+                <elem>
+                  <re>2.73077120240572e-08</re>
+                  <im>-1.32205990318742e-08</im>
+                </elem>
+                <elem>
+                  <re>7.00585460370663e-08</re>
+                  <im>6.81984258648828e-08</im>
+                </elem>
+                <elem>
+                  <re>-5.0574806772017e-05</re>
+                  <im>1.86644575814402e-06</im>
+                </elem>
+                <elem>
+                  <re>-0.000138432831234802</re>
+                  <im>3.41639856419995e-06</im>
+                </elem>
+                <elem>
+                  <re>1.01240811511118e-08</re>
+                  <im>-2.01649748758125e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>2.16744256545066e-08</re>
@@ -18516,6 +18755,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>3.30812677881776e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-1.66520356038307e-11</re>
+                  <im>9.69289212101847e-12</im>
+                </elem>
+                <elem>
+                  <re>-1.04901064784656e-10</re>
+                  <im>1.34547138781945e-10</im>
+                </elem>
+                <elem>
+                  <re>6.17582853514558e-10</re>
+                  <im>1.1017464827707e-09</im>
+                </elem>
+                <elem>
+                  <re>-2.21020496369754e-09</re>
+                  <im>1.71357339829217e-09</im>
+                </elem>
+                <elem>
+                  <re>-5.0599607398475e-08</re>
+                  <im>5.25193514462099e-08</im>
+                </elem>
+                <elem>
+                  <re>-2.95042012174275e-07</re>
+                  <im>7.90493912904252e-07</im>
+                </elem>
+                <elem>
+                  <re>6.1296905931666e-07</re>
+                  <im>-7.11908788002604e-07</im>
+                </elem>
+                <elem>
+                  <re>-7.63431488223215e-08</re>
+                  <im>-2.33034269015627e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>2.62159398873588e-05</re>
@@ -18739,6 +19012,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>4.69840765094084e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-1.01846389964115e-10</re>
+                  <im>2.02872630101711e-11</im>
+                </elem>
+                <elem>
+                  <re>-2.64399777374572e-10</re>
+                  <im>-3.96607287128575e-11</im>
+                </elem>
+                <elem>
+                  <re>-1.50490552674879e-09</re>
+                  <im>-3.03290685813088e-10</im>
+                </elem>
+                <elem>
+                  <re>-1.02669561969351e-08</re>
+                  <im>-1.21176537009459e-08</im>
+                </elem>
+                <elem>
+                  <re>5.36523300791905e-08</re>
+                  <im>5.49425506290613e-09</im>
+                </elem>
+                <elem>
+                  <re>-4.06330479370464e-07</re>
+                  <im>8.14152982033864e-07</im>
+                </elem>
+                <elem>
+                  <re>3.10212723592203e-07</re>
+                  <im>5.82140234034086e-07</im>
+                </elem>
+                <elem>
+                  <re>7.64506428317234e-08</re>
+                  <im>2.20818089667806e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-5.29999316197426e-07</re>
@@ -18962,6 +19269,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>9.44943760660133e-06</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>3.05410196164401e-11</re>
+                  <im>-6.91724540856303e-11</im>
+                </elem>
+                <elem>
+                  <re>-7.81330622942125e-11</re>
+                  <im>7.19716704901399e-10</im>
+                </elem>
+                <elem>
+                  <re>2.08250979316209e-09</re>
+                  <im>4.02305561277694e-11</im>
+                </elem>
+                <elem>
+                  <re>2.288995579246e-10</re>
+                  <im>1.27993792152973e-08</im>
+                </elem>
+                <elem>
+                  <re>-9.29357023426035e-08</re>
+                  <im>1.48692634722975e-07</im>
+                </elem>
+                <elem>
+                  <re>-1.23984243191921e-06</re>
+                  <im>2.11260400310532e-05</im>
+                </elem>
+                <elem>
+                  <re>-6.69933716537938e-07</re>
+                  <im>-2.04654306526076e-05</im>
+                </elem>
+                <elem>
+                  <re>-6.41427699802935e-08</re>
+                  <im>-1.51923216875621e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>2.70210342242992e-05</re>
@@ -19185,6 +19526,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>0.000117113223278462</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-4.92852436148498e-11</re>
+                  <im>9.05637876157588e-11</im>
+                </elem>
+                <elem>
+                  <re>-2.01183674471376e-10</re>
+                  <im>-1.61818253418225e-11</im>
+                </elem>
+                <elem>
+                  <re>7.2037030237536e-10</re>
+                  <im>1.76139953521498e-10</im>
+                </elem>
+                <elem>
+                  <re>3.88860627512595e-09</re>
+                  <im>3.81051603597167e-09</im>
+                </elem>
+                <elem>
+                  <re>1.22770471006651e-08</re>
+                  <im>-4.04473828564492e-08</im>
+                </elem>
+                <elem>
+                  <re>-9.86434069444474e-07</re>
+                  <im>0.00096433053715158</im>
+                </elem>
+                <elem>
+                  <re>7.31315955164897e-07</re>
+                  <im>0.000966238061557703</im>
+                </elem>
+                <elem>
+                  <re>-1.10874857431827e-08</re>
+                  <im>3.04157114266366e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-2.24843238063813e-08</re>
@@ -19408,6 +19783,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>1.25108035468038e-06</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-9.72600524750652e-12</re>
+                  <im>2.87172221194778e-11</im>
+                </elem>
+                <elem>
+                  <re>-4.83711765392734e-12</re>
+                  <im>-3.5015826664923e-10</im>
+                </elem>
+                <elem>
+                  <re>-2.96277430222928e-09</re>
+                  <im>3.04367681076324e-10</im>
+                </elem>
+                <elem>
+                  <re>2.96345526918045e-08</re>
+                  <im>9.61580762747076e-09</im>
+                </elem>
+                <elem>
+                  <re>-1.05978202168687e-07</re>
+                  <im>-4.13974743730774e-08</im>
+                </elem>
+                <elem>
+                  <re>3.33444503092038e-05</re>
+                  <im>-2.89120615365304e-07</im>
+                </elem>
+                <elem>
+                  <re>-1.66730786796863e-05</re>
+                  <im>4.33796987020491e-06</im>
+                </elem>
+                <elem>
+                  <re>1.51944925049208e-07</re>
+                  <im>1.47330698552869e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-2.719532704332e-08</re>
@@ -19630,6 +20039,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>1.58071446880914e-06</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>1.83409987501206e-10</re>
+                  <im>2.82613587222403e-10</im>
+                </elem>
+                <elem>
+                  <re>1.75287972359799e-09</re>
+                  <im>1.82293236569383e-11</im>
+                </elem>
+                <elem>
+                  <re>-1.74598477236509e-09</re>
+                  <im>7.81911913241432e-09</im>
+                </elem>
+                <elem>
+                  <re>2.20918207794543e-08</re>
+                  <im>5.19951363709845e-08</im>
+                </elem>
+                <elem>
+                  <re>4.57884558591013e-07</re>
+                  <im>1.40699542458533e-07</im>
+                </elem>
+                <elem>
+                  <re>8.83611242429712e-06</re>
+                  <im>2.21773421085868e-06</im>
+                </elem>
+                <elem>
+                  <re>1.15431302247567e-05</re>
+                  <im>3.04320114602128e-06</im>
+                </elem>
+                <elem>
+                  <re>3.31344002456853e-07</re>
+                  <im>3.77917500824731e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>1.58857907606425e-07</re>
@@ -19853,6 +20296,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-7.87411027868695e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-1.45174186692137e-10</re>
+                  <im>1.71853172458907e-10</im>
+                </elem>
+                <elem>
+                  <re>-2.11390805737425e-09</re>
+                  <im>-9.92266548522928e-10</im>
+                </elem>
+                <elem>
+                  <re>-1.29702639545345e-08</re>
+                  <im>-1.03844246234748e-08</im>
+                </elem>
+                <elem>
+                  <re>-1.28409007644546e-08</re>
+                  <im>-2.85514551513722e-08</im>
+                </elem>
+                <elem>
+                  <re>4.60369081625289e-07</re>
+                  <im>-1.10740994440924e-07</im>
+                </elem>
+                <elem>
+                  <re>0.000297039960652957</re>
+                  <im>-3.43784615430014e-06</im>
+                </elem>
+                <elem>
+                  <re>-0.000326606287582779</re>
+                  <im>-2.30288274665545e-06</im>
+                </elem>
+                <elem>
+                  <re>3.22967750769034e-07</re>
+                  <im>-1.6225923661352e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-7.22163362698477e-08</re>
@@ -20076,6 +20553,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>7.93858806271249e-08</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-1.41703082444433e-10</re>
+                  <im>-6.35420589151908e-11</im>
+                </elem>
+                <elem>
+                  <re>-1.52097024730407e-09</re>
+                  <im>8.75690973755176e-11</im>
+                </elem>
+                <elem>
+                  <re>1.14329188788876e-09</re>
+                  <im>-2.95122277837916e-09</im>
+                </elem>
+                <elem>
+                  <re>5.07685260564599e-09</re>
+                  <im>1.65822627649522e-08</im>
+                </elem>
+                <elem>
+                  <re>-1.04585111734255e-07</re>
+                  <im>2.34707226362772e-07</im>
+                </elem>
+                <elem>
+                  <re>-4.72951511326577e-06</re>
+                  <im>3.44710125498212e-07</im>
+                </elem>
+                <elem>
+                  <re>-1.4097498959382e-06</re>
+                  <im>4.92190490181521e-07</im>
+                </elem>
+                <elem>
+                  <re>-2.1709555468873e-07</re>
+                  <im>1.72788520016284e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-7.08808599540658e-08</re>
@@ -20299,6 +20810,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-3.7306815513954e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>7.76941160531926e-12</re>
+                  <im>5.26523463522853e-10</im>
+                </elem>
+                <elem>
+                  <re>-6.26943796692493e-10</re>
+                  <im>1.88153832412506e-09</im>
+                </elem>
+                <elem>
+                  <re>6.32608797484468e-10</re>
+                  <im>4.91130847865014e-09</im>
+                </elem>
+                <elem>
+                  <re>1.77035292189286e-08</re>
+                  <im>2.16733438236174e-08</im>
+                </elem>
+                <elem>
+                  <re>9.34378507640344e-08</re>
+                  <im>-7.14591839482508e-08</im>
+                </elem>
+                <elem>
+                  <re>-1.8419222438812e-05</re>
+                  <im>-4.39023520492251e-06</im>
+                </elem>
+                <elem>
+                  <re>5.48298199422126e-05</re>
+                  <im>-3.60704891669115e-06</im>
+                </elem>
+                <elem>
+                  <re>4.1261591041597e-08</re>
+                  <im>1.14160660953005e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-2.51060944157293e-08</re>
@@ -20522,6 +21067,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-2.32294146498956e-06</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-6.90732574447439e-11</re>
+                  <im>-4.78020307565156e-10</im>
+                </elem>
+                <elem>
+                  <re>-7.57224239414171e-11</re>
+                  <im>-1.86235219487999e-10</im>
+                </elem>
+                <elem>
+                  <re>-4.51518349161555e-10</re>
+                  <im>-5.54093791336976e-09</im>
+                </elem>
+                <elem>
+                  <re>4.18435049842834e-08</re>
+                  <im>-2.60794889580729e-08</im>
+                </elem>
+                <elem>
+                  <re>-1.36872734128467e-07</re>
+                  <im>-1.10313106505336e-07</im>
+                </elem>
+                <elem>
+                  <re>-1.57044342082367e-06</re>
+                  <im>-2.40857310656632e-06</im>
+                </elem>
+                <elem>
+                  <re>5.38471675845748e-06</re>
+                  <im>-4.23527475007646e-07</im>
+                </elem>
+                <elem>
+                  <re>-2.0056033211112e-07</re>
+                  <im>-2.84273078208599e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-1.22067819917705e-07</re>
@@ -20745,6 +21324,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>1.51542114987456e-06</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-5.76374136943119e-11</re>
+                  <im>-1.91663551973979e-11</im>
+                </elem>
+                <elem>
+                  <re>9.89133789958275e-10</re>
+                  <im>8.02369469697246e-10</im>
+                </elem>
+                <elem>
+                  <re>4.10344509563657e-09</re>
+                  <im>1.61841792334157e-09</im>
+                </elem>
+                <elem>
+                  <re>5.47374517024269e-08</re>
+                  <im>1.11374557250693e-08</im>
+                </elem>
+                <elem>
+                  <re>-8.83256499694771e-08</re>
+                  <im>3.20946764490162e-08</im>
+                </elem>
+                <elem>
+                  <re>-0.000302212149559147</re>
+                  <im>-1.06767462710085e-06</im>
+                </elem>
+                <elem>
+                  <re>-0.000331073933777903</re>
+                  <im>-3.69870111298695e-06</im>
+                </elem>
+                <elem>
+                  <re>-3.82688333193733e-07</re>
+                  <im>2.37811219894333e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-4.9272464844224e-08</re>
@@ -20968,6 +21581,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-1.17606667464991e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>3.09047506811302e-10</re>
+                  <im>2.61095501789029e-11</im>
+                </elem>
+                <elem>
+                  <re>-1.26165191253664e-09</re>
+                  <im>3.36676855383527e-10</im>
+                </elem>
+                <elem>
+                  <re>-3.85824333377841e-09</re>
+                  <im>3.38675973281433e-09</im>
+                </elem>
+                <elem>
+                  <re>-6.74500892225913e-11</re>
+                  <im>5.42148969774068e-09</im>
+                </elem>
+                <elem>
+                  <re>-1.67195965758835e-07</re>
+                  <im>-8.30754670046278e-09</im>
+                </elem>
+                <elem>
+                  <re>-1.98436437457157e-06</re>
+                  <im>6.15313945559816e-07</im>
+                </elem>
+                <elem>
+                  <re>-1.39023661569418e-06</re>
+                  <im>1.33464025123667e-06</im>
+                </elem>
+                <elem>
+                  <re>2.52258008077426e-07</re>
+                  <im>-1.97202297174823e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-1.56642723497629e-07</re>
@@ -21191,6 +21838,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>6.55397706562425e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>1.2719763318152e-10</re>
+                  <im>-2.52707657512517e-10</im>
+                </elem>
+                <elem>
+                  <re>-2.65386814410929e-10</re>
+                  <im>-1.39000867658397e-09</im>
+                </elem>
+                <elem>
+                  <re>-3.0814290327916e-09</re>
+                  <im>2.37330478178224e-09</im>
+                </elem>
+                <elem>
+                  <re>-5.31409619530601e-08</re>
+                  <im>1.57643859546236e-08</im>
+                </elem>
+                <elem>
+                  <re>-2.883169505673e-07</re>
+                  <im>-8.08683762527296e-08</im>
+                </elem>
+                <elem>
+                  <re>1.49393985429498e-05</re>
+                  <im>-3.62103478445309e-06</im>
+                </elem>
+                <elem>
+                  <re>4.99994286086562e-05</re>
+                  <im>-5.87653486483043e-06</im>
+                </elem>
+                <elem>
+                  <re>-5.17957277587615e-08</re>
+                  <im>-9.15828948348369e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-8.22279611683361e-08</re>
@@ -21414,6 +22095,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-8.22503952520956e-06</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>3.73212549363121e-10</re>
+                  <im>3.23945807266515e-10</im>
+                </elem>
+                <elem>
+                  <re>3.82394071445997e-09</re>
+                  <im>2.56043190299426e-09</im>
+                </elem>
+                <elem>
+                  <re>9.88164538741055e-09</re>
+                  <im>1.71901275235709e-08</im>
+                </elem>
+                <elem>
+                  <re>6.28394047441895e-08</re>
+                  <im>-3.13628201953945e-08</im>
+                </elem>
+                <elem>
+                  <re>8.01594264174912e-08</re>
+                  <im>-1.17593696389761e-06</im>
+                </elem>
+                <elem>
+                  <re>-4.36467743446329e-06</re>
+                  <im>-2.41608021136228e-05</im>
+                </elem>
+                <elem>
+                  <re>3.22227996471609e-06</re>
+                  <im>0.000195161022621748</im>
+                </elem>
+                <elem>
+                  <re>6.33274266786934e-08</re>
+                  <im>-5.81150803620981e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-1.86689336928903e-07</re>
@@ -21637,6 +22352,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-0.000592464313738362</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>2.27835564327529e-10</re>
+                  <im>2.0735143034592e-09</im>
+                </elem>
+                <elem>
+                  <re>2.89043948077186e-09</re>
+                  <im>-1.39448478751302e-09</im>
+                </elem>
+                <elem>
+                  <re>1.20698615858071e-09</re>
+                  <im>1.041338576614e-08</im>
+                </elem>
+                <elem>
+                  <re>-2.83635352780245e-08</re>
+                  <im>3.59930213559268e-09</im>
+                </elem>
+                <elem>
+                  <re>-2.95295585648334e-07</re>
+                  <im>-6.95636636746519e-07</im>
+                </elem>
+                <elem>
+                  <re>4.01710370384553e-06</re>
+                  <im>-0.00107966931808678</im>
+                </elem>
+                <elem>
+                  <re>1.49852370422161e-05</re>
+                  <im>0.00498049786808937</im>
+                </elem>
+                <elem>
+                  <re>-8.9367858119334e-08</re>
+                  <im>1.84149372907364e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>4.6164007340726e-08</re>
@@ -21860,6 +22609,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-1.18094308877472e-06</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-4.65698092240112e-10</re>
+                  <im>1.6856610574766e-10</im>
+                </elem>
+                <elem>
+                  <re>-2.54362226758804e-10</re>
+                  <im>1.2388231732917e-09</im>
+                </elem>
+                <elem>
+                  <re>-5.05550345898588e-11</re>
+                  <im>9.73733572887473e-11</im>
+                </elem>
+                <elem>
+                  <re>-5.28482704619803e-08</re>
+                  <im>3.79166643587827e-08</im>
+                </elem>
+                <elem>
+                  <re>-6.63807821793428e-07</re>
+                  <im>-1.32329229208139e-07</im>
+                </elem>
+                <elem>
+                  <re>3.83470805148922e-06</re>
+                  <im>6.75973154178001e-06</im>
+                </elem>
+                <elem>
+                  <re>2.28163662800746e-06</re>
+                  <im>-3.17450293210019e-06</im>
+                </elem>
+                <elem>
+                  <re>-1.53857460821336e-07</re>
+                  <im>-1.77212939706023e-07</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>2.57920614268015e-06</re>
@@ -22083,6 +22866,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>5.54659653382988e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>1.12774871795326e-10</re>
+                  <im>-1.78608002920033e-11</im>
+                </elem>
+                <elem>
+                  <re>2.86949954791083e-10</re>
+                  <im>7.44217225166259e-11</im>
+                </elem>
+                <elem>
+                  <re>5.86909471409323e-10</re>
+                  <im>-4.67378029236352e-10</im>
+                </elem>
+                <elem>
+                  <re>-5.88527316030889e-09</re>
+                  <im>-1.28566318142495e-08</im>
+                </elem>
+                <elem>
+                  <re>4.88680814585758e-09</re>
+                  <im>-1.11351072124409e-08</im>
+                </elem>
+                <elem>
+                  <re>3.94132305038711e-07</re>
+                  <im>5.76651925342373e-07</im>
+                </elem>
+                <elem>
+                  <re>-8.74885786229905e-07</re>
+                  <im>1.26051875455133e-06</im>
+                </elem>
+                <elem>
+                  <re>9.00447762999197e-09</re>
+                  <im>8.47808694819893e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>2.26709003551705e-06</re>
@@ -22306,6 +23123,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>3.92073746038054e-08</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-8.31666726271729e-12</re>
+                  <im>-6.51137575823989e-13</im>
+                </elem>
+                <elem>
+                  <re>-4.85335340597094e-11</re>
+                  <im>-3.08910505106413e-11</im>
+                </elem>
+                <elem>
+                  <re>6.65389181313067e-11</re>
+                  <im>-2.78134729079346e-11</im>
+                </elem>
+                <elem>
+                  <re>-2.84503623478518e-09</re>
+                  <im>-6.93440009687685e-10</im>
+                </elem>
+                <elem>
+                  <re>-1.79161498642572e-08</re>
+                  <im>-1.0615632587407e-08</im>
+                </elem>
+                <elem>
+                  <re>-1.31759759972295e-08</re>
+                  <im>8.86129397188102e-07</im>
+                </elem>
+                <elem>
+                  <re>8.59608874617442e-08</re>
+                  <im>2.84370670218843e-07</im>
+                </elem>
+                <elem>
+                  <re>-8.65961610348503e-09</re>
+                  <im>-6.10810346354943e-09</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>1.16473841491314e-08</re>
@@ -22529,6 +23380,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-3.86625213557485e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>2.19647368312322e-10</re>
+                  <im>2.09605101059882e-10</im>
+                </elem>
+                <elem>
+                  <re>-1.09549406398302e-10</re>
+                  <im>8.20291364371802e-11</im>
+                </elem>
+                <elem>
+                  <re>-1.43347692987581e-10</re>
+                  <im>9.3336428106742e-10</im>
+                </elem>
+                <elem>
+                  <re>-2.35858305298567e-08</re>
+                  <im>1.11980381320338e-08</im>
+                </elem>
+                <elem>
+                  <re>-6.29205618812537e-08</re>
+                  <im>7.78163027953414e-08</im>
+                </elem>
+                <elem>
+                  <re>-3.23225602367569e-06</re>
+                  <im>3.93735200987194e-06</im>
+                </elem>
+                <elem>
+                  <re>-1.04928915542887e-05</re>
+                  <im>5.47327632626361e-06</im>
+                </elem>
+                <elem>
+                  <re>3.26131274129413e-08</re>
+                  <im>4.01454822015732e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-1.72727574982582e-09</re>
@@ -22752,6 +23637,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-1.60415549463599e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-1.2313386012499e-10</re>
+                  <im>2.97479713089911e-10</im>
+                </elem>
+                <elem>
+                  <re>4.62145574749398e-10</re>
+                  <im>-2.87505319093107e-11</im>
+                </elem>
+                <elem>
+                  <re>4.53051032148091e-09</re>
+                  <im>1.61580131867469e-10</im>
+                </elem>
+                <elem>
+                  <re>1.97037384436991e-09</re>
+                  <im>1.1589349509422e-08</im>
+                </elem>
+                <elem>
+                  <re>-4.22610779952671e-07</re>
+                  <im>1.39768723645722e-07</im>
+                </elem>
+                <elem>
+                  <re>3.47878334758983e-06</re>
+                  <im>3.52035121218947e-06</im>
+                </elem>
+                <elem>
+                  <re>1.12557884040479e-05</re>
+                  <im>6.41517148128286e-06</im>
+                </elem>
+                <elem>
+                  <re>1.53600720006607e-08</re>
+                  <im>-6.70559589687392e-09</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>2.50098562613064e-08</re>
@@ -22975,6 +23894,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>2.31852653883408e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>1.02528477305138e-10</re>
+                  <im>-5.74968113930159e-11</im>
+                </elem>
+                <elem>
+                  <re>-5.30610408380457e-10</re>
+                  <im>-1.38050119557013e-10</im>
+                </elem>
+                <elem>
+                  <re>-2.13005355855216e-10</re>
+                  <im>3.26254722398913e-10</im>
+                </elem>
+                <elem>
+                  <re>1.9386965277049e-08</re>
+                  <im>2.55692768578575e-09</im>
+                </elem>
+                <elem>
+                  <re>-5.09316501780308e-08</re>
+                  <im>8.01762861299944e-09</im>
+                </elem>
+                <elem>
+                  <re>-3.43979104631956e-06</re>
+                  <im>-3.30387882867827e-07</im>
+                </elem>
+                <elem>
+                  <re>1.4179588443549e-06</re>
+                  <im>-2.29979308675041e-06</im>
+                </elem>
+                <elem>
+                  <re>1.04434207740853e-07</re>
+                  <im>2.09795898228629e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>2.70819078485895e-08</re>
@@ -23198,6 +24151,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>7.69736091868879e-08</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>-6.66331723203067e-11</re>
+                  <im>4.17317564590323e-11</im>
+                </elem>
+                <elem>
+                  <re>1.20622309058025e-11</re>
+                  <im>9.89585923369535e-11</im>
+                </elem>
+                <elem>
+                  <re>6.54641806895599e-10</re>
+                  <im>1.0693514061351e-10</im>
+                </elem>
+                <elem>
+                  <re>3.73301396012268e-09</re>
+                  <im>9.54295964323171e-09</im>
+                </elem>
+                <elem>
+                  <re>-1.39643203728897e-08</re>
+                  <im>1.69135986192636e-08</im>
+                </elem>
+                <elem>
+                  <re>-2.95698035338487e-07</re>
+                  <im>-3.65810468680876e-07</im>
+                </elem>
+                <elem>
+                  <re>-5.03583916972286e-07</re>
+                  <im>-7.34369633145763e-07</im>
+                </elem>
+                <elem>
+                  <re>-2.04019140735621e-08</re>
+                  <im>-7.83965916697008e-10</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>-5.48770766037353e-08</re>
@@ -23421,6 +24408,40 @@ Calculate building blocks - insertions in 3-pt functions
                   <im>-2.03877567589953e-07</im>
                 </elem>
               </formFactor_G0>
+              <formFactor_G8>
+                <elem>
+                  <re>5.11525523862873e-11</re>
+                  <im>7.59959361451965e-12</im>
+                </elem>
+                <elem>
+                  <re>2.18740399455398e-10</re>
+                  <im>-3.52425551883894e-13</im>
+                </elem>
+                <elem>
+                  <re>-3.75036027327293e-10</re>
+                  <im>1.10533022371306e-09</im>
+                </elem>
+                <elem>
+                  <re>-1.86528659976965e-09</re>
+                  <im>4.15622773558664e-09</im>
+                </elem>
+                <elem>
+                  <re>-1.26769580043844e-09</re>
+                  <im>-6.09549937105651e-08</im>
+                </elem>
+                <elem>
+                  <re>-1.05062541748962e-06</re>
+                  <im>-3.06410261090324e-06</im>
+                </elem>
+                <elem>
+                  <re>1.76087517253827e-06</re>
+                  <im>-1.90652510558282e-06</im>
+                </elem>
+                <elem>
+                  <re>4.13480080123745e-09</re>
+                  <im>-2.4089465450808e-08</im>
+                </elem>
+              </formFactor_G8>
               <formFactor_G15>
                 <elem>
                   <re>4.94227047252575e-08</re>
