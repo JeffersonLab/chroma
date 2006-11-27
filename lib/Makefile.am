@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.54 2006-11-27 04:33:33 edwards Exp $
+# $Id: Makefile.am,v 3.55 2006-11-27 20:07:25 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -225,7 +225,8 @@ nobase_include_HEADERS = \
 	meas/sources/source_smearing_aggregate.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ferm/eigeninfo.h \
-	util/ft/sftmom.h util/gauge/eesu2.h util/gauge/eeu1.h \
+	util/ft/sftmom.h util/ft/single_phase.h \
+        util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
 	util/gauge/eesu3.h \
 	util/gauge/gauge.h \
@@ -499,7 +500,9 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.h \
-	util/ferm/ferm_w.h util/ferm/diractodr.h util/ferm/gammasgn_w.h \
+	util/ferm/ferm_w.h util/ferm/diractodr.h \
+        util/ferm/gammasgn_w.h \
+        util/ferm/gamma5_herm_w.h \
 	util/ferm/tdiractodr.h \
 	util/ferm/paulitodr.h \
 	util/ferm/staggered_operators_s.h \
@@ -848,7 +851,8 @@ libchroma_a_SOURCES = \
         meas/sources/zN_src.cc \
         meas/sources/dilute_gauss_src_s.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
-	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
+	util/ferm/tdiractodr.cc util/ferm/transf.cc \
+        util/ft/sftmom.cc util/ft/single_phase.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
 	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
@@ -1067,6 +1071,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
 	util/ferm/staggered_operators_s.cc \
 	util/ferm/gammasgn_w.cc \
+	util/ferm/gamma5_herm_w.cc \
         util/ferm/antisymtensor.cc \
         util/ferm/etensor.cc \
         util/ferm/symtensor.cc
