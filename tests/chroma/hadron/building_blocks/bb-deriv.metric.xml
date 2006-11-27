@@ -7,94 +7,94 @@
 <assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
 <!-- pion -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[1]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[1]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- pionxNABLA_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[2]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[2]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a0xNABLA_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[3]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[3]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a0_2xNABLA_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[4]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[4]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- rhoxNABLA_A1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[5]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[5]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- rhoxNABLA_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[6]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[6]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- rhoxNABLA_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[7]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[7]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xNABLA_A1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[8]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[8]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xNABLA_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[9]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[9]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xNABLA_E -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[10]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[10]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- b1xNABLA_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[11]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[11]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a0_2xD_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[12]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[12]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xD_A2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[13]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[13]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xD_E -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[14]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[14]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xD_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[15]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[15]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xD_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[16]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[16]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- b1xD_A2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[17]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[17]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- b1xD_E -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[18]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[18]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- b1xD_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[19]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[19]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- b1xD_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[20]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[20]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- rhoxD_A2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[21]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[21]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- rhoxD_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[22]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[22]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- rhoxD_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[23]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[23]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- pionxD_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[24]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[24]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- pionxB_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[25]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[25]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- rhoxB_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[26]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[26]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- rhoxB_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[27]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[27]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xB_A1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[28]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[28]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xB_T1 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[29]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[29]/LoopBackTest/source_value/re" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 <!-- a1xB_T2 -->
-<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[29]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[65]/ExampleBuildingBlocks/SequentialSource/elem[29]/LoopBackTest/source_value/im" type="double" comparison="relative" tolerance="1.0e-2"/>
 
 
 </assertions>
