@@ -54,7 +54,6 @@ using namespace GroupBaryonOperatorEnv;
     write( xml, "perms", param.quarkOrderings );
     if( path != "." ) pop( xml );
   }
-
 	bool linkageHack(void)
 	{
   	bool foo = true;
@@ -62,7 +61,6 @@ using namespace GroupBaryonOperatorEnv;
   	foo &= InlineAggregateEnv::registerAll();
   	return foo;
 	}
-
 //
 //! Make a group theory based baryon operator with all-to-all quark 
 //! propagators using the dilution method of TrinLat (2004)
@@ -74,6 +72,8 @@ using namespace GroupBaryonOperatorEnv;
  */
 int main( int argc, char *argv[] )
 {
+//#define MAKE_SOURCE_OPERATORS
+#define MAKE_SINK_OPERATORS
 	// ==================================
   // Put the machine into a known state
 	// ==================================
@@ -111,14 +111,13 @@ int main( int argc, char *argv[] )
 		Double w_plaq, s_plaq, t_plaq, link;
   	MesPlq(params.gaugestuff.u, w_plaq, s_plaq, t_plaq, link);
 		QDPIO::cout<< "Gauge field measurements " << w_plaq <<" "<< s_plaq <<" "<< t_plaq <<" "<< link <<" "<<endl;	
-#if 1
+
 	// Smear the gauge field if needed
 	swatch.start();
   std::istringstream xml_l( params.gaugestuff.link_smearing.xml );
   XMLReader linktop( xml_l );
   const string link_path = "/LinkSmearing";
-  QDPIO::cout << "Link smearing type = " << params.gaugestuff.link_smearing.id << endl;
-	
+  QDPIO::cout << "Link smearing type = " << params.gaugestuff.link_smearing.id << endl;	
   Handle< LinkSmearing >
   linkSmearing( TheLinkSmearingFactory::Instance().createObject( 
 	              params.gaugestuff.link_smearing.id,
@@ -129,7 +128,6 @@ int main( int argc, char *argv[] )
 	QDPIO::cout << "Gauge links smeared : time = " << swatch.getTimeInSeconds() << " secs" << endl;
   	MesPlq(params.gaugestuff.u, w_plaq, s_plaq, t_plaq, link);
 		QDPIO::cout<< "gauge meas " << w_plaq <<" "<< s_plaq <<" "<< t_plaq <<" "<< link <<" "<<endl;	
-#endif
 	// ====================
 	// qqq's and baryonop's
 	// ====================
@@ -147,7 +145,6 @@ int main( int argc, char *argv[] )
 	// Noise Solutions
 	// ===============
   multi1d<Params::QuarkSourceSolutions_t>  quarks( params.qprop.solns.size() );
-#if 1
   try
   {
 		swatch.start();
@@ -178,7 +175,6 @@ int main( int argc, char *argv[] )
     QDP_abort(1);
   }
 	QDPIO::cout << "Read SOLUTION vectors from files : time = " << swatch.getTimeInSeconds() << " secs" << endl;
-#endif
 	// ====================================
 	//
 	//       Main Part of Program
@@ -193,95 +189,19 @@ int main( int argc, char *argv[] )
 	// don't average over equivalent momenta
   SftMom phases(params.mom2_max, true, params.j_decay);
 	multi2d<DComplex> elem( params.Nmomenta, params.nrow[3] );
-
-#define JUST_MAKE_SINK_OPS
-
-#ifdef  JUST_MAKE_SINK_OPS
-	// get noise info first if the source operator is not
-	// being constructed at the same time as the sink operator
-	try
-	{
-		swatch.start();
-	  int N;
-		for(int n=0; n < quarks.size(); ++n)
-	  {
-	    LatticeFermion quark_noise;      // noisy source on entire lattice
-	    bool first = true;
-	    for(int i=0; i < quarks[ n ].dilutions.size(); ++i)
-	    {
-	      std::istringstream xml_s( quarks[ n ].dilutions[ i ].source_header.source.xml );
-	      XMLReader sourcetop( xml_s );
-	      //QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
-	      if ( quarks[ n ].dilutions[ i ].source_header.source.id != DiluteZNQuarkSourceConstEnv::name )
-	      {
-	        QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
-	        QDP_abort( 1 );
-	      }
-	      //QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
-	      DiluteZNQuarkSourceConstEnv::Params srcParams( sourcetop,
-	                                                     quarks[ n ].dilutions[ i ].source_header.source.path );
-	      DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion> srcConst( srcParams );
-	      if ( first )
-	      {
-	        first = false;
-	        quarks[ 0 ].j_decay = srcParams.j_decay;
-	        // Grab N
-	        N = srcParams.N;
-	        // Set the seed to desired value
-	        quarks[ n ].seed = srcParams.ran_seed;
-	        QDP::RNG::setrn( quarks[ n ].seed );
-	        // Create the noisy quark source on the entire lattice
-	        zN_src( quark_noise, N );
-	      }
-	      // The seeds must always agree - here the seed is the unique id of the source
-	      if ( toBool( srcParams.ran_seed != quarks[ n ].seed ) )
-	      {
-	        QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << endl;
-	        QDP_abort( 1 );
-	      }
-	      // The N's must always agree
-	      if ( toBool( srcParams.N != N ) )
-	      {
-	        QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << endl;
-	        QDP_abort( 1 );
-	      }
-	      // Use a trick here, create the source and subtract it from the global noisy
-	      // Check at the end that the global noisy is zero everywhere.
-	      // NOTE: the seed will be set every call
-	      quarks[ n ].dilutions[ i ].source = srcConst( params.gaugestuff.u );
-	      quark_noise -= quarks[ n ].dilutions[ i ].source;
-	    } // end for i
-	    Double dcnt = norm2( quark_noise );
-	    if ( toDouble( dcnt ) != 0.0 )   // problematic - seems to work with unnormalized sources
-	    {
-	      QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
-	      QDP_abort( 1 );
-	    }
-	  } // end for n
-		swatch.stop();
-	} // end try
-	catch ( const std::string& e )
-	{
-	  QDPIO::cerr << ": Caught Exception creating source: " << e << endl;
-	  QDP_abort( 1 );
-	}
-	for(int n=0; n < params.Noperators; ++n)
-	{
-		AOp[ n ].baryonoperator.seed_l = quarks[0].seed;
-		AOp[ n ].baryonoperator.seed_m = quarks[1].seed;
-		AOp[ n ].baryonoperator.seed_r = quarks[2].seed;
-	}
-#endif
-
-#if 1
+#ifdef MAKE_SINK_OPERATORS
 	try
 	{ //
 		// Annihilation Operator (plus) first (only one term)
 		//
   	QDPIO::cout << "Making the SINK operators" << endl;
 		int ordering = 0;
-				
-		#if 1
+		for(int n=0; n < params.Noperators; ++n)
+		{
+			AOp[ n ].baryonoperator.seed_l = quarks[0].seed;
+			AOp[ n ].baryonoperator.seed_m = quarks[1].seed;
+			AOp[ n ].baryonoperator.seed_r = quarks[2].seed;
+		}
 		swatch.start();
     // Sink smear all the quarks up-front
     std::istringstream  xml_s( params.sink_smearing.sink.xml );
@@ -300,7 +220,6 @@ int main( int argc, char *argv[] )
 		}
 		swatch.stop();
 		QDPIO::cout << "SINK smearings done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
-		#endif
 		
 		//swatch.start();
 		for(int qqq=0; qqq < params.NQQQs; ++qqq)
@@ -347,8 +266,6 @@ int main( int argc, char *argv[] )
 	  QDP_abort( 1 );
 	}
 	QDPIO::cout << "SINK operators done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
-#define WRITEOPSOUTNOW
-#ifdef  WRITEOPSOUTNOW
   // Save the operators
   // ONLY SciDAC output format is supported!
   swatch.start();
@@ -381,15 +298,12 @@ int main( int argc, char *argv[] )
   }
   swatch.stop();
   QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
-#endif
 #endif // end annihilation operators
 
-#if 1
+#ifdef MAKE_SOURCE_OPERATORS
 	// =============
 	// Noise Sources ... re-generate from the rng seeds
 	// =============
-#define REGENERATE_NOISE
-#ifdef  REGENERATE_NOISE
   QDPIO::cout << "Re-generating the noise SOURCES" << endl;
 	try
 	{
@@ -458,7 +372,6 @@ int main( int argc, char *argv[] )
 	  QDP_abort( 1 );
 	}
 	QDPIO::cout << "SOURCE vectors reconstructed from Seeds : time = " << swatch.getTimeInSeconds() << " secs" << endl;
-#endif
 	//
 	// setting the seeds for output (baryon_operator file)
 	// should also put the mass of the quarks in here as well
@@ -573,9 +486,6 @@ int main( int argc, char *argv[] )
 		}
 	}
 	#endif
-	
-#define WRITEOPSOUTNOW
-#ifdef  WRITEOPSOUTNOW
   // Save the operators
   // ONLY SciDAC output format is supported!
   swatch.start();
@@ -608,8 +518,6 @@ int main( int argc, char *argv[] )
   }
   swatch.stop();
   QDPIO::cout << "Operators written: time= " << swatch.getTimeInSeconds() << " secs" << endl;
-#endif
-
 #endif // end of creation operators
 
 	QDPIO::cout<<"end of group baryon operator calculation"<<endl;
