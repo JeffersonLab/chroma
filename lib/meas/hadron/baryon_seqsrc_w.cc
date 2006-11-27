@@ -1,10 +1,11 @@
-// $Id: baryon_seqsrc_w.cc,v 3.1 2006-11-27 04:33:35 edwards Exp $
+// $Id: baryon_seqsrc_w.cc,v 3.2 2006-11-27 20:09:27 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
 
 #include "meas/hadron/baryon_seqsrc_w.h"
 #include "meas/hadron/seqsource_factory_w.h"
+#include "util/ferm/gamma5_herm_w.h"
 
 namespace Chroma 
 {
@@ -14,36 +15,6 @@ namespace Chroma
   /*! @ingroup hadron */
   namespace
   {
-    //! Construct hadron sequential sources
-    /*! @ingroup hadron */
-    template<typename T> 
-    T   barSeqSourceProject(const T& source_prop,
-			    int t_sink, int j_decay)
-    {
-      START_CODE();
-
-      if (j_decay < 0 || j_decay >= Nd)
-      {
-	QDPIO::cerr << __func__ << ": j_decay out of bounds" << endl;
-	QDP_abort(1);
-      }
-
-      /* Now take hermitian conjugate and multiply on both sides
-	 with gamma_5 = Gamma(15) */
-      T seq_src_tmp = Gamma(15) * adj(source_prop) * Gamma(15);
-        
-      /*
-       * Now mask out all but sink time slice
-       */
-      T seq_src_prop = where(Layout::latticeCoordinate(j_decay) == t_sink,
-			     seq_src_tmp,
-			     LatticePropagator(zero));
-        
-      END_CODE();
-
-      return seq_src_prop;
-    }
-
     //! Get fermion bc
     multi1d<int>
     barSeqSourceGetBC(const multi1d<ForwardProp_t>& forward_headers)
@@ -95,7 +66,7 @@ namespace Chroma
     setBC(forward_headers);
 
     // Multiply in time-ordering phase and project
-    return timeOrder() * phases() * project(src_prop_tmp);
+    return timeOrder() * phases() * project(gamma5Herm(src_prop_tmp));
   }
 
 
