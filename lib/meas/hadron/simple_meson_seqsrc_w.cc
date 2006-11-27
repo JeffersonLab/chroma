@@ -1,4 +1,4 @@
-// $Id: simple_meson_seqsrc_w.cc,v 3.1 2006-11-27 04:33:36 edwards Exp $
+// $Id: simple_meson_seqsrc_w.cc,v 3.2 2006-11-27 05:52:28 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -396,7 +396,7 @@ namespace Chroma
 
 //    int G5 = Ns*Ns-1;
       LatticePropagator tmp = mesA0XSeqSrc(quark_propagators[0], gamma_sink);
-      LatticeComplex     ph = phases();
+      LatticeComplex     ph = conj(phases());
       LatticePropagator fin = project(tmp * ph);
 
       END_CODE();
@@ -427,7 +427,7 @@ namespace Chroma
 
       int G5 = Ns*Ns-1;
       LatticePropagator tmp = mesA0XSeqSrc(quark_propagators[0], 15) * Gamma(G5);
-      LatticeComplex     ph = phases();
+      LatticeComplex     ph = conj(phases());
       LatticePropagator fin = project(tmp * ph);
 
       END_CODE();
