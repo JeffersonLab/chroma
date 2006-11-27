@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.9 2006-11-27 04:33:36 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.10 2006-11-27 20:06:59 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -732,6 +732,12 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 	  LatticeComplex tr = localInnerProduct( B[0], GFG );
 	  multi1d< DComplex > pr = sumMulti(tr, Phases.getSet());
 	  write(XmlOut, "formFactor_G0", pr);
+	}
+	{
+	  LatticePropagator GFG = Gamma(8) * F * Gamma( GammaInsertion );
+	  LatticeComplex tr = localInnerProduct( B[0], GFG );
+	  multi1d< DComplex > pr = sumMulti(tr, Phases.getSet());
+	  write(XmlOut, "formFactor_G8", pr);
 	}
 	{
 	  LatticePropagator GFG = Gamma(Ns*Ns-1) * F * Gamma( GammaInsertion );
