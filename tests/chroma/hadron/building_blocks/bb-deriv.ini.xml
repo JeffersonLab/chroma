@@ -2425,6 +2425,7 @@ Calculate building blocks - insertions in 3-pt functions
          </elem>
        </BkwdProps>
       </BuildingBlocks>
+      <!-- Uncomment the xml_file line to write to a separate file -->
       <!-- xml_file>bb.dat.xml</xml_file -->
     </elem>
 
