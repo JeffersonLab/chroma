@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.0 2006-04-03 04:59:24 edwards Exp $
+#  $Id: regres.pl,v 3.1 2006-11-27 03:54:20 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -17,5 +17,13 @@
 	 output      => "bb.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/building_blocks/bb.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/building_blocks/bb.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/building_blocks/bb-deriv.ini.xml" , 
+	 output      => "bb-deriv.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/building_blocks/bb-deriv.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/building_blocks/bb-deriv.out.xml" ,
      }
      );
