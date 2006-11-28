@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.20 2006-11-27 00:58:16 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.21 2006-11-28 14:08:40 bjoo Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -1050,7 +1050,6 @@ namespace Chroma
 
         registered = true;
       }
-			cout<<"registered everything"<<endl;
       return success;
     } // registerAll()
 
