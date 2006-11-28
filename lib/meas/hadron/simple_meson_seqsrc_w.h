@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_meson_seqsrc_w.h,v 3.1 2006-11-27 04:33:36 edwards Exp $
+// $Id: simple_meson_seqsrc_w.h,v 3.2 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -59,6 +59,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -111,6 +117,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce

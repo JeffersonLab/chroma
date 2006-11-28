@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_seqsource.h,v 3.5 2006-11-27 04:33:35 edwards Exp $ 
+// $Id: hadron_seqsource.h,v 3.6 2006-11-28 19:28:57 edwards Exp $ 
 /*! \file
  *  \brief Construct hadron sequential sources
  */
@@ -28,6 +28,32 @@ namespace Chroma
     virtual T operator()(const multi1d<LatticeColorMatrix>& u,
 			 const multi1d<ForwardProp_t>& forward_headers,
 			 const multi1d<T>& forward_props) = 0;
+
+    //! Evaluate the seqprop back at the source - this is the 2-pt at the sink
+    /*!
+     *  For the case of a meson, we have evaluated as the sequential source
+     *
+     *  H(y, 0; tx, p) = \sum exp{ip.x} U(y,x) \gamma_5\Gamma_f^\dag\gamma_5 D(x,0) 
+     *
+     *  H^\dag(y, 0; tx, p) = \sum_x exp{-ip.x} \gamma_5 D(0,x) \Gamma_f U(x,y) \gamma_5
+     *
+     *  Thus we can see that 
+     *
+     *  Tr[ \gamma_5 H^\dag(0,0; tx, p)\gamma_5 \Gamma_i] = 
+     *                         \sum_x exp{-ip.x} Tr[ D(0,x)\Gamma_f U(x,0) \Gamma_i ]
+     *
+     *  which is the desired meson correlator at momentum p and timslice tx
+     */
+    virtual Complex tieBack(const multi1d<LatticeColorMatrix>& u,
+			    const SequentialProp_t& seqprop_header,
+			    const T& seqprop, 
+			    int gamma_insertion);
+
+    //! Compute the 2-pt at the sink
+    virtual Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			      const multi1d<ForwardProp_t>& forward_headers,
+			      const multi1d<T>& forward_props,
+			      int gamma_insertion) = 0;
 
   protected:
     //! Project onto a definite time-slice

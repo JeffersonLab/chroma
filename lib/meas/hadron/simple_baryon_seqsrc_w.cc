@@ -1,4 +1,4 @@
-// $Id: simple_baryon_seqsrc_w.cc,v 3.1 2006-11-27 04:33:36 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.cc,v 3.2 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -6,6 +6,8 @@
 #include "meas/hadron/simple_baryon_seqsrc_w.h"
 #include "meas/hadron/seqsource_factory_w.h"
 #include "meas/hadron/barspinmat_w.h"
+#include "meas/hadron/barhqlq_w.h"
+#include "util/ft/sftmom.h"
 
 namespace Chroma 
 {
@@ -158,6 +160,30 @@ namespace Chroma
 			   forward_headers);
     }
 
+    
+    // Compute the 2-pt at the sink
+    Complex
+    BarNuclUTCg5::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			    const multi1d<ForwardProp_t>& forward_headers,
+			    const multi1d<LatticePropagator>& quark_propagators,
+			    int gamma_insertion)
+    {
+      check2Args("BarNuclUTCg5", quark_propagators);
+      setTSrce(forward_headers);
+      setBC(forward_headers);
+
+      LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0], 
+							      quark_propagators[1], 
+							      T, Cg5);
+
+      SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
+      multi2d<DComplex> hsum;
+      hsum = sft.sft(b_prop);
+
+      // U-quark rescaling factor is 1 for this type of seqsource
+      return Real(2) * hsum[0][getTSink()];
+    }
+
 
     //! Nucleon-Nucleon D piece with general projector and Cg5
     LatticePropagator
@@ -196,44 +222,29 @@ namespace Chroma
 			   forward_headers);
     }
 
-
-    // Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
-    LatticePropagator
-    BarNuclPatchMixedNR::operator()(const multi1d<LatticeColorMatrix>& u,
-				    const multi1d<ForwardProp_t>& forward_headers,
-				    const multi1d<LatticePropagator>& quark_propagators)
+    // Compute the 2-pt at the sink
+    Complex
+    BarNuclDTCg5::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			    const multi1d<ForwardProp_t>& forward_headers,
+			    const multi1d<LatticePropagator>& quark_propagators,
+			    int gamma_insertion)
     {
-      START_CODE();
+      check2Args("BarNuclUTCg5", quark_propagators);
+      setTSrce(forward_headers);
+      setBC(forward_headers);
 
-      check1Args("BarNuclPatchMixedNR", quark_propagators);
+      LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0], 
+							      quark_propagators[1], 
+							      T, Cg5);
 
-      LatticePropagator src_prop_tmp;
-      LatticePropagator q1_tmp;
-      LatticePropagator q2_tmp;
-      LatticePropagator di_quark;
-  
-      /* C g_5 NR = (1/2)*C gamma_5 * ( 1 + g_4 ) */ 
-      SpinMatrix Cg5NR = BaryonSpinMats::Cg5NR();
+      SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
+      multi2d<DComplex> hsum;
+      hsum = sft.sft(b_prop);
 
-      /* "\bar d O d" insertion in proton, ie. "(u C gamma_5 (1/2)(1+gamma_4)d) u" */
-      // T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
-      //   = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-
-      /* C gamma_5 (1/2)(1+gamma_4)= Cg5NR */
-
-      q2_tmp = Cg5NR * quark_propagators[0];
-      q1_tmp = q2_tmp * Cg5NR;
-
-      q2_tmp = quark_propagators[0] * BaryonSpinMats::Tmixed();
-
-      di_quark = quarkContract12(q2_tmp, q1_tmp);
-      src_prop_tmp = di_quark - transposeSpin(di_quark);   // bad guy - good guy
-
-      END_CODE();
-
-      return projectBaryon(src_prop_tmp,
-			   forward_headers);
+      // D-quark rescaling factor is 1 for this type of seqsource
+      return Real(1) * hsum[0][getTSink()];
     }
+
 
 
     //! Delta+ - Delta+ U piece with general projector and spin matrix
@@ -517,13 +528,6 @@ namespace Chroma
 				BaryonSpinMats::TmixedNegPar(), BaryonSpinMats::Cg5NRnegPar());
       }
 
-      //! Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
-      HadronSeqSource<LatticePropagator>* barNuclPatchMixedNR(XMLReader& xml_in,
-							      const std::string& path)
-      {
-	return new BarNuclPatchMixedNR(Params(xml_in, path));
-      }
-
 
       /** The octet baryon sequantial sources **/
       //! \bar d O d" insertion in NR proton
@@ -650,9 +654,6 @@ namespace Chroma
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA_D_UNPOL"),
 										      barDeltaDUnpol);
 
-
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_PATCH_MIXED_NONREL"),   
-										      barNuclPatchMixedNR);
 	registered = true;
       }
       return success;

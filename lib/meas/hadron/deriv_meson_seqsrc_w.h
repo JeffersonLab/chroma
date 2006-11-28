@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_meson_seqsrc_w.h,v 3.1 2006-11-27 04:33:35 edwards Exp $
+// $Id: deriv_meson_seqsrc_w.h,v 3.2 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct derivative meson sequential sources.
  *
@@ -81,6 +81,16 @@ namespace Chroma
       virtual LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 					   const multi1d<ForwardProp_t>& forward_headers,
 					   const multi1d<LatticePropagator>& forward_props) = 0;
+
+      //! Compute the 2-pt at the sink
+      virtual Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				const multi1d<ForwardProp_t>& forward_headers,
+				const multi1d<LatticePropagator>& forward_props,
+				int gamma_insertion)
+	{
+	  QDPIO::cerr << __func__ << ": not implemented" << endl;
+	  QDP_abort(1);
+	}
 
     protected:
       //! Apply first deriv (nabla) to the right onto source

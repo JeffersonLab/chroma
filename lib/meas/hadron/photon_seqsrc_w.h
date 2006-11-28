@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: photon_seqsrc_w.h,v 3.4 2006-11-27 04:33:36 edwards Exp $
+// $Id: photon_seqsrc_w.h,v 3.5 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct a photon sequential sources via LSZ reduction
  */
@@ -57,6 +57,16 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion)
+	{
+	  QDPIO::cerr << __func__ << ": not implemented" << endl;
+	  QDP_abort(1);
+	}
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -95,6 +105,16 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion)
+	{
+	  QDPIO::cerr << __func__ << ": not implemented" << endl;
+	  QDP_abort(1);
+	}
 
     protected:
       //! Set t_srce

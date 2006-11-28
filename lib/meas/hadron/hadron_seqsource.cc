@@ -1,10 +1,11 @@
-// $Id: hadron_seqsource.cc,v 3.7 2006-11-27 20:08:31 edwards Exp $
+// $Id: hadron_seqsource.cc,v 3.8 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct hadron sequential sources
  */
 
 #include "util/ft/single_phase.h"
 #include "meas/hadron/hadron_seqsource.h"
+#include "util/ferm/gamma5_herm_w.h"
 
 namespace Chroma 
 {
@@ -70,6 +71,21 @@ namespace Chroma
     }
 
 
+  }
+
+
+  // Default versions
+  template<>
+  Complex
+  HadronSeqSource<LatticePropagator>::tieBack(const multi1d<LatticeColorMatrix>& u,
+					      const SequentialProp_t& seqprop_header,
+					      const LatticePropagator& seqprop, 
+					      int gamma_insertion)
+  {
+    getTSrce() = hadSeqSourceGetTSrce(seqprop_header.forward_props);
+    LatticeComplex tr = trace(gamma5Herm(seqprop) * Gamma(gamma_insertion));
+    Complex seq_src_value = peekSite(tr, getTSrce());
+    return seq_src_value;
   }
 
 

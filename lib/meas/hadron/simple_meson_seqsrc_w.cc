@@ -1,10 +1,12 @@
-// $Id: simple_meson_seqsrc_w.cc,v 3.2 2006-11-27 05:52:28 edwards Exp $
+// $Id: simple_meson_seqsrc_w.cc,v 3.3 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
 
 #include "meas/hadron/simple_meson_seqsrc_w.h"
 #include "meas/hadron/seqsource_factory_w.h"
+#include "util/ferm/gamma5_herm_w.h"
+#include "util/ft/sftmom.h"
 
 namespace Chroma 
 {
@@ -405,6 +407,35 @@ namespace Chroma
     }
 
 
+    // Compute the 2-pt at the sink
+    Complex 
+    SimpleMesonSeqSource::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
+				    const multi1d<LatticePropagator>& quark_propagators,
+				    int gamma_insertion)
+    {
+      setTSrce(forward_headers);
+
+      if (quark_propagators.size() != 2)
+      {
+	QDPIO::cerr << __func__ << ": expect 2 props" << endl;
+	QDP_abort(1);
+      }
+
+      // Construct the meson correlation function
+      LatticeComplex corr_fn = 
+	trace(gamma5Herm(quark_propagators[1]) * (Gamma(gamma_sink) *
+						  quark_propagators[0] * Gamma(gamma_insertion)));
+
+      // Initialize the slow Fourier transform phases
+      SftMom sft(0, true, getDecayDir());
+
+      multi1d<DComplex> hsum = sumMulti(corr_fn*phases(), sft.getSet());
+      
+      return hsum[getTSink()];
+    }
+
+
     //! Construct the source
     LatticePropagator
     PionPionSeqSource::operator()(const multi1d<LatticeColorMatrix>& u,
@@ -433,6 +464,38 @@ namespace Chroma
       END_CODE();
 
       return fin;
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    PionPionSeqSource::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int gamma_insertion)
+    {
+      setTSrce(forward_headers);
+
+      if (quark_propagators.size() != 2)
+      {
+	QDPIO::cerr << __func__ << ": expect 2 props" << endl;
+	QDP_abort(1);
+      }
+
+      // Convert gamma_insertion to old convention
+      int gamma_i = gamma_insertion ^ unsigned(Ns*Ns-1);
+
+      // Construct the meson correlation function
+      LatticeComplex corr_fn = 
+	trace(gamma5Herm(quark_propagators[1]) * (Gamma(Ns*Ns-1) *
+						  quark_propagators[0] * Gamma(gamma_i)));
+
+      // Initialize the slow Fourier transform phases
+      SftMom sft(0, true, getDecayDir());
+
+      multi1d<DComplex> hsum = sumMulti(corr_fn*phases(), sft.getSet());
+      
+      return hsum[getTSink()];
     }
 
 

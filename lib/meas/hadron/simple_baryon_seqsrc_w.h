@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_baryon_seqsrc_w.h,v 3.1 2006-11-27 04:33:36 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.h,v 3.2 2006-11-28 19:28:57 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -52,6 +52,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected: 
       //! Set bc
@@ -108,6 +114,11 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected: 
       //! Set bc
@@ -144,59 +155,6 @@ namespace Chroma
     };
 
 
-    //! Patch for the quarkContract12 piece in NuclUMixedNR and NuclDMixedNR
-    /*! @ingroup hadron
-     *
-     * Create a simple baryon sequential propagator source
-     */
-    class BarNuclPatchMixedNR : public BaryonSeqSourceBase
-    {
-    public:
-      //! Full constructor
-      BarNuclPatchMixedNR(const Params& p) : params(p) {}
-
-      //! Default destructor
-      ~BarNuclPatchMixedNR() {}
-      
-      //! Construct the source
-      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
-				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props);
-
-
-    protected: 
-      //! Set bc
-      multi1d<int>& getBC() {return bc;}
-
-      //! Get bc
-      const multi1d<int>& getBC() const {return bc;}
-
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-    private:
-      //! Hide partial constructor
-      BarNuclPatchMixedNR() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      multi1d<int>  bc;       /*<! Must come from propagator headers */
-      Params  params;   /*!< Seqsource params */
-    };
-
-
     //! Delta+ - Delta+ U piece with general projector and spin matrix
     /*! @ingroup hadron
      *
@@ -217,6 +175,15 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion)
+	{
+	  QDPIO::cerr << __func__ << ": not implemented" << endl;
+	  QDP_abort(1);
+	}
 
     protected: 
       //! Set bc
@@ -272,6 +239,15 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion)
+	{
+	  QDPIO::cerr << __func__ << ": not implemented" << endl;
+	  QDP_abort(1);
+	}
 
     protected: 
       //! Set bc
