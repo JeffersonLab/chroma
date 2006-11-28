@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.9 2006-10-14 02:42:29 edwards Exp $
+// $Id: qprop_io.cc,v 3.10 2006-11-28 19:27:32 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -1234,7 +1234,7 @@ namespace Chroma
 
     int version = 1;
     write(xml, "version", version);
-    write(xml, "PropSinkSmear", param.sink_header);
+    write(xml, "PropSink", param.sink_header);
     write(xml, "ForwardProp", param.prop_header);
     write(xml, "PropSource", param.source_header);
 
