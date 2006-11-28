@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.5 2006-10-11 15:42:26 edwards Exp $
+// $Id: qprop_io.h,v 3.6 2006-11-28 19:26:54 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -97,6 +97,7 @@ struct SeqSource_t
 
 
 //! Structure for writing to seqprop files
+/*! Deprecated - only exists for ancient compatibility */
 struct ChromaSeqProp_t
 {
   QuarkSpinType    quarkSpinType;   // which spin components to compute
