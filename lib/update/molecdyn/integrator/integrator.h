@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: integrator.h,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: integrator.h,v 3.1 2006-11-28 16:49:42 bjoo Exp $
 
 /*! \file
  * \brief HMD integrators
@@ -28,6 +28,9 @@
 #include "update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h"
 #include "update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h"
 #include "update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h"
+
+#include "update/molecdyn/integrator/integrator_shared.h"
+#include "update/molecdyn/integrator/lcm_toplevel_integrator.h"
 
 #include "update/molecdyn/integrator/integrator_aggregate.h"
 #endif
