@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.2 2006-11-28 14:02:24 bjoo Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -156,6 +156,53 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
       }
 
+      //! Read a single prec Gauge fields
+      void QIOReadArrayLatColMatF(const string& buffer_id,
+				  const string& file, 
+				  QDP_serialparallel_t serpar)
+      {
+	multi1d<LatticeColorMatrixF> obj;
+	XMLReader file_xml, record_xml;
+
+	obj.resize(Nd);    // BAD BAD BAD - FIX THIS
+
+	QDPFileReader to(file_xml,file,serpar);
+	read(to,record_xml,obj);
+	close(to);
+
+	TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(buffer_id);
+	(TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id)).resize(Nd);
+	for(int i=0; i < Nd; i++) {
+	    (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id))[i] = obj[i];
+	}
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+      }
+
+     //! Read a Double Prec Gauge Field
+      void QIOReadArrayLatColMatD(const string& buffer_id,
+				  const string& file, 
+				  QDP_serialparallel_t serpar)
+      {
+	multi1d<LatticeColorMatrixD> obj;
+	XMLReader file_xml, record_xml;
+
+	obj.resize(Nd);    // BAD BAD BAD - FIX THIS
+
+	QDPFileReader to(file_xml,file,serpar);
+	read(to,record_xml,obj);
+	close(to);
+
+	TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(buffer_id);
+	(TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id)).resize(Nd);
+	for(int i=0; i < Nd;i++) {
+	    (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(buffer_id))[i] = obj[i];
+	}
+
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+      }
+
       void QIOReadEigenInfo(const string& buffer_id,
 			    const string& file,
 			    QDP_serialparallel_t serpar)
@@ -265,6 +312,12 @@ namespace Chroma
 
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
 								     QIOReadArrayLatColMat);
+
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixF"), 
+								     QIOReadArrayLatColMatF);
+
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixD"), 
+								     QIOReadArrayLatColMatD);
 
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfo"),
 								     QIOReadEigenInfo);
