@@ -1,15 +1,103 @@
-// $Id: barhqlq_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: barhqlq_w.cc,v 3.1 2006-11-28 19:28:10 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
 
-#include "chromabase.h"
-#include "util/ft/sftmom.h"
 #include "meas/hadron/barhqlq_w.h"
 #include "meas/hadron/barspinmat_w.h"
 
 namespace Chroma 
 {
+
+  //! Baryon 2pt contractions
+  /*! \ingroup hadron */
+  namespace  Baryon2PtContractions
+  {
+    //! Sigma 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex sigma2pt(const LatticePropagator& quark_propagator_1,
+			    const LatticePropagator& quark_propagator_2,
+			    const SpinMatrix& T, const SpinMatrix& sp) 
+    {
+      LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp,
+						   sp * quark_propagator_2);
+      return LatticeComplex(trace(T * traceColor(quark_propagator_2 * traceSpin(di_quark)))
+			    + trace(T * traceColor(quark_propagator_2 * di_quark)));
+    }
+	      
+
+    //! Sigma 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex xi2pt(const LatticePropagator& quark_propagator_1,
+			 const LatticePropagator& quark_propagator_2,
+			 const SpinMatrix& T, const SpinMatrix& sp) 
+    {
+      LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp,
+						   sp * quark_propagator_2);
+      return LatticeComplex(trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)))
+			    + trace(T * traceColor(quark_propagator_1 * di_quark)));
+    }
+	      
+
+    //! Lambda 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex lambda2pt(const LatticePropagator& quark_propagator_1,
+			     const LatticePropagator& quark_propagator_2,
+			     const SpinMatrix& T, const SpinMatrix& sp) 
+    {
+      // WARNING: I'm not convinced the original SZIN version (or this version) is correct!
+      LatticePropagator di_quark = quarkContract13(quark_propagator_2 * sp,
+						   sp * quark_propagator_2);
+
+      LatticeComplex b_prop  = trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)))
+	+ trace(T * traceColor(quark_propagator_1 * di_quark));
+
+      di_quark = quarkContract13(quark_propagator_2 * sp,
+				 sp * quark_propagator_1);
+      b_prop += trace(T * traceColor(quark_propagator_2 * di_quark));
+
+      return b_prop;
+    }
+
+
+    //! Lambda 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex lambdaNaive2pt(const LatticePropagator& quark_propagator_1,
+				  const LatticePropagator& quark_propagator_2,
+				  const SpinMatrix& T, const SpinMatrix& sp) 
+    {
+      LatticePropagator di_quark = quarkContract13(quark_propagator_2 * sp,
+						   sp * quark_propagator_2);
+      return LatticeComplex(trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark))));
+    }
+
+
+    //! Delta 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex sigmast2pt(const LatticePropagator& quark_propagator_1,
+			      const LatticePropagator& quark_propagator_2,
+			      const SpinMatrix& T, const SpinMatrix& sp) 
+    {
+      LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp, 
+						   sp * quark_propagator_2);
+      LatticeComplex b_prop = trace(T * traceColor(quark_propagator_2 * traceSpin(di_quark)))
+	+ trace(T * traceColor(quark_propagator_2 * di_quark));
+      
+      di_quark = quarkContract13(quark_propagator_2 * sp, 
+				 sp * quark_propagator_1);
+      b_prop += trace(T * traceColor(quark_propagator_2 * di_quark));
+      
+      di_quark = quarkContract13(quark_propagator_2 * sp, 
+				 sp * quark_propagator_2);
+      b_prop += trace(T * traceColor(quark_propagator_1 * di_quark));
+      b_prop *= 2;
+      b_prop += trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)));
+
+      return b_prop;
+    }
+
+  }  // namespace  Baryon2PtContractions
+
 
   //! Heavy-light baryon 2-pt functions
   /*!
@@ -140,91 +228,6 @@ namespace Chroma
 
 
 
-
-  //! Sigma 2-pt
-  /*! \ingroup hadron */
-  LatticeComplex sigma2pt(const LatticePropagator& quark_propagator_1,
-			  const LatticePropagator& quark_propagator_2,
-			  const SpinMatrix& T, const SpinMatrix& sp) 
-  {
-    LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp,
-						 sp * quark_propagator_2);
-    return LatticeComplex(trace(T * traceColor(quark_propagator_2 * traceSpin(di_quark)))
-			+ trace(T * traceColor(quark_propagator_2 * di_quark)));
-  }
-	      
-
-  //! Sigma 2-pt
-  /*! \ingroup hadron */
-  LatticeComplex xi2pt(const LatticePropagator& quark_propagator_1,
-		       const LatticePropagator& quark_propagator_2,
-		       const SpinMatrix& T, const SpinMatrix& sp) 
-  {
-    LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp,
-						 sp * quark_propagator_2);
-    return LatticeComplex(trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)))
-			+ trace(T * traceColor(quark_propagator_1 * di_quark)));
-  }
-	      
-
-  //! Lambda 2-pt
-  /*! \ingroup hadron */
-  LatticeComplex lambda2pt(const LatticePropagator& quark_propagator_1,
-			   const LatticePropagator& quark_propagator_2,
-			   const SpinMatrix& T, const SpinMatrix& sp) 
-  {
-    // WARNING: I'm not convinced the original SZIN version (or this version) is correct!
-    LatticePropagator di_quark = quarkContract13(quark_propagator_2 * sp,
-						 sp * quark_propagator_2);
-
-    LatticeComplex b_prop  = trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)))
-                           + trace(T * traceColor(quark_propagator_1 * di_quark));
-
-    di_quark = quarkContract13(quark_propagator_2 * sp,
-			       sp * quark_propagator_1);
-    b_prop += trace(T * traceColor(quark_propagator_2 * di_quark));
-
-    return b_prop;
-  }
-
-
-  //! Lambda 2-pt
-  /*! \ingroup hadron */
-  LatticeComplex lambdaNaive2pt(const LatticePropagator& quark_propagator_1,
-				const LatticePropagator& quark_propagator_2,
-				const SpinMatrix& T, const SpinMatrix& sp) 
-  {
-    LatticePropagator di_quark = quarkContract13(quark_propagator_2 * sp,
-						 sp * quark_propagator_2);
-    return LatticeComplex(trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark))));
-  }
-
-
-  //! Delta 2-pt
-  /*! \ingroup hadron */
-  LatticeComplex sigmast2pt(const LatticePropagator& quark_propagator_1,
-			    const LatticePropagator& quark_propagator_2,
-			    const SpinMatrix& T, const SpinMatrix& sp) 
-  {
-    LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp, 
-						 sp * quark_propagator_2);
-    LatticeComplex b_prop = trace(T * traceColor(quark_propagator_2 * traceSpin(di_quark)))
-                          + trace(T * traceColor(quark_propagator_2 * di_quark));
-      
-    di_quark = quarkContract13(quark_propagator_2 * sp, 
-			       sp * quark_propagator_1);
-    b_prop += trace(T * traceColor(quark_propagator_2 * di_quark));
-      
-    di_quark = quarkContract13(quark_propagator_2 * sp, 
-			       sp * quark_propagator_2);
-    b_prop += trace(T * traceColor(quark_propagator_1 * di_quark));
-    b_prop *= 2;
-    b_prop += trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)));
-
-    return b_prop;
-  }
-
-
   //! Heavy-light baryon 2-pt functions
   /*!
    * \ingroup hadron
@@ -344,7 +347,8 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = sigma2pt(quark_propagator_1, quark_propagator_2, T_mixed, Cg5);
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+						 T_mixed, Cg5);
 	break;
 
       case 1:
@@ -355,7 +359,8 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = lambda2pt(quark_propagator_1, quark_propagator_2, T_mixed, Cg5);
+	b_prop = Baryon2PtContractions::lambda2pt(quark_propagator_1, quark_propagator_2, 
+						  T_mixed, Cg5);
 	break;
 
       case 2:
@@ -364,7 +369,8 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = sigmast2pt(quark_propagator_1, quark_propagator_2, T_mixed, BaryonSpinMats::Cgm());
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+						   T_mixed, BaryonSpinMats::Cgm());
 	break;
 
       case 3:
@@ -374,7 +380,8 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = sigma2pt(quark_propagator_1, quark_propagator_2, T_mixed, Cg5g4);
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+						 T_mixed, Cg5g4);
 	break;
 
       case 4:
@@ -385,7 +392,8 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = lambda2pt(quark_propagator_1, quark_propagator_2, T_mixed, Cg5g4);
+	b_prop = Baryon2PtContractions::lambda2pt(quark_propagator_1, quark_propagator_2, 
+						  T_mixed, Cg5g4);
 	break;
 
       case 5:
@@ -394,7 +402,8 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = sigmast2pt(quark_propagator_1, quark_propagator_2, T_mixed, BaryonSpinMats::Cg4m());
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+						   T_mixed, BaryonSpinMats::Cg4m());
 	break;
 
       case 6:
@@ -404,7 +413,8 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = sigma2pt(quark_propagator_1, quark_propagator_2, T_mixed, Cg5NR);
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+						 T_mixed, Cg5NR);
 	break;
 
       case 7:
@@ -415,7 +425,8 @@ namespace Chroma
 	// Polarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = lambda2pt(quark_propagator_1, quark_propagator_2, T_mixed, Cg5NR);
+	b_prop = Baryon2PtContractions::lambda2pt(quark_propagator_1, quark_propagator_2, 
+						  T_mixed, Cg5NR);
 	break;
 
       case 8:
@@ -426,7 +437,8 @@ namespace Chroma
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
 	// Arrgh, goofy CgmNR normalization again from szin code. 
-	b_prop = sigmast2pt(quark_propagator_1, quark_propagator_2, T_mixed, BaryonSpinMats::CgmNR());
+	b_prop = Baryon2PtContractions::sigmast2pt(quark_propagator_1, quark_propagator_2, 
+						   T_mixed, BaryonSpinMats::CgmNR());
 
 	// Agghh, we have a goofy factor of 4 normalization factor here. The
 	// ancient szin way didn't care about norms, so it happily made it
@@ -443,7 +455,8 @@ namespace Chroma
 	// C gamma_5 = Gamma(5)
 	// Unpolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = sigma2pt(quark_propagator_1, quark_propagator_2, T_unpol, Cg5);
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+						 T_unpol, Cg5);
 	break;
 
       case 10:
@@ -452,7 +465,8 @@ namespace Chroma
 	// C gamma_5 gamma_4 = - Gamma(13)
 	// Unpolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = sigma2pt(quark_propagator_1, quark_propagator_2, T_unpol, Cg5g4);
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+						 T_unpol, Cg5g4);
 	break;
     
       case 11:
@@ -461,7 +475,8 @@ namespace Chroma
 	// C gamma_5 = Gamma(5)
 	// Unpolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = sigma2pt(quark_propagator_1, quark_propagator_2, T_unpol, Cg5NR);
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+						 T_unpol, Cg5NR);
 	break;
 
       case 12:
@@ -470,7 +485,8 @@ namespace Chroma
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = lambdaNaive2pt(quark_propagator_1, quark_propagator_2, T_unpol, Cg5);
+	b_prop = Baryon2PtContractions::lambdaNaive2pt(quark_propagator_1, quark_propagator_2, 
+						       T_unpol, Cg5);
 	break;
       
       case 13:
@@ -479,7 +495,8 @@ namespace Chroma
 	// C gamma_5 = Gamma(5)
 	// UnPolarized:
 	// T_unpol = T = (1/2)(1 + gamma_4)
-	b_prop = xi2pt(quark_propagator_1, quark_propagator_2, T_unpol, Cg5);
+	b_prop = Baryon2PtContractions::xi2pt(quark_propagator_1, quark_propagator_2, 
+					      T_unpol, Cg5);
 	break;
 
       case 14:
@@ -489,7 +506,8 @@ namespace Chroma
 	// UnPolarized: 
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = lambdaNaive2pt(quark_propagator_1, quark_propagator_2, T_unpol, Cg5);
+	b_prop = Baryon2PtContractions::lambdaNaive2pt(quark_propagator_1, quark_propagator_2, 
+						       T_unpol, Cg5);
 	break;
       
       case 15:
@@ -499,7 +517,8 @@ namespace Chroma
 	// UnPolarized:
 	// T_mixed = T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
 	//             = (1 + Gamma(8) - i G(3) - i G(11)) / 2
-	b_prop = xi2pt(quark_propagator_1, quark_propagator_2, T_mixed, Cg5);
+	b_prop = Baryon2PtContractions::xi2pt(quark_propagator_1, quark_propagator_2, 
+					      T_mixed, Cg5);
 	break;
 
       default:
