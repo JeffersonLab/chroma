@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: inline_qpropadd_w.h,v 3.1 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_qpropadd_w.h,v 3.2 2006-11-28 19:30:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropadd
  *
  * Form-factors
  */
 
-#ifndef __inline_qpropadd_h__
-#define __inline_qpropadd_h__
+#ifndef __inline_qpropadd_w_h__
+#define __inline_qpropadd_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -19,47 +19,49 @@ namespace Chroma
   {
     extern const std::string name;
     bool registerAll();
+
+    //! Parameter structure
+    /*! \ingroup inlinehadron */
+    struct Params 
+    {
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
+      void writeXML(XMLWriter& xml_out, const std::string& path);
+
+      unsigned long      frequency;
+
+      struct NamedObject_t
+      {
+	Real             factorA;
+	std::string      propA;    
+	Real             factorB;
+	std::string      propB;   
+	std::string      propApB; 
+      } named_obj;
+    };
+
+
+    //! Inline measurement of Wilson loops
+    /*! \ingroup inlinehadron */
+    class InlineMeas : public AbsInlineMeasurement 
+    {
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
+      InlineMeas(const InlineMeas& p) : params(p.params) {}
+
+      unsigned long getFrequency(void) const {return params.frequency;}
+
+      //! Do the measurement
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
+
+    private:
+      Params params;
+    };
+
   }
 
-  //! Parameter structure
-  /*! \ingroup inlinehadron */
-  struct InlineQpropAddParams 
-  {
-    InlineQpropAddParams();
-    InlineQpropAddParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
-
-    unsigned long      frequency;
-
-    struct NamedObject_t
-    {
-      string           propA;    
-      string           propB;   
-      string           propApB; 
-    } named_obj;
-
-  };
-
-
-  //! Inline measurement of Wilson loops
-  /*! \ingroup inlinehadron */
-  class InlineQpropAdd : public AbsInlineMeasurement 
-  {
-  public:
-    ~InlineQpropAdd() {}
-    InlineQpropAdd(const InlineQpropAddParams& p) : params(p) {}
-    InlineQpropAdd(const InlineQpropAdd& p) : params(p.params) {}
-
-    unsigned long getFrequency(void) const {return params.frequency;}
-
-    //! Do the measurement
-    void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
-
-  private:
-    InlineQpropAddParams params;
-  };
-
-};
+}
 
 #endif
