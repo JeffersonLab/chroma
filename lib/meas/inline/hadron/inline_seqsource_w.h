@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: inline_seqsource_w.h,v 3.1 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_seqsource_w.h,v 3.2 2006-11-28 19:30:30 edwards Exp $
 /*! \file
  * \brief Inline construction of sequential sources
  *
  * Sequential source construction
  */
 
-#ifndef __inline_seqsource_h__
-#define __inline_seqsource_h__
+#ifndef __inline_seqsource_w_h__
+#define __inline_seqsource_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -43,7 +43,7 @@ namespace Chroma
     } named_obj;
   };
 
-  //! Inline measurement of Wilson loops
+  //! Compute a sequential source
   /*! \ingroup inlinehadron */
   class InlineSeqSource : public AbsInlineMeasurement 
   {
