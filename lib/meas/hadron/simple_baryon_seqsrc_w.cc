@@ -1,4 +1,4 @@
-// $Id: simple_baryon_seqsrc_w.cc,v 3.2 2006-11-28 19:28:57 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.cc,v 3.3 2006-11-28 20:00:49 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -172,10 +172,12 @@ namespace Chroma
       setTSrce(forward_headers);
       setBC(forward_headers);
 
+      // Constructor the 2pt
       LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0], 
 							      quark_propagators[1], 
 							      T, Cg5);
 
+      // Constructor the 2pt
       SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
       multi2d<DComplex> hsum;
       hsum = sft.sft(b_prop);
@@ -229,14 +231,16 @@ namespace Chroma
 			    const multi1d<LatticePropagator>& quark_propagators,
 			    int gamma_insertion)
     {
-      check2Args("BarNuclUTCg5", quark_propagators);
+      check2Args("BarNuclDTCg5", quark_propagators);
       setTSrce(forward_headers);
       setBC(forward_headers);
 
+      // Constructor the 2pt
       LatticeComplex b_prop = Baryon2PtContractions::sigma2pt(quark_propagators[0], 
 							      quark_propagators[1], 
 							      T, Cg5);
 
+      // Extract the sink at the appropriate momenta
       SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
       multi2d<DComplex> hsum;
       hsum = sft.sft(b_prop);
@@ -300,6 +304,33 @@ namespace Chroma
     }
 
 
+    // Compute the 2-pt at the sink
+    Complex
+    BarDeltaUTsp::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			    const multi1d<ForwardProp_t>& forward_headers,
+			    const multi1d<LatticePropagator>& quark_propagators,
+			    int gamma_insertion)
+    {
+      check2Args("BarDeltaUTsp", quark_propagators);
+      setTSrce(forward_headers);
+      setBC(forward_headers);
+
+      // Constructor the 2pt
+      LatticeComplex b_prop = Baryon2PtContractions::sigmast2pt(quark_propagators[0], 
+								quark_propagators[1], 
+								T, sp);
+
+      // Extract the sink at the appropriate momenta
+      SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
+      multi2d<DComplex> hsum;
+      hsum = sft.sft(b_prop);
+
+      // U-quark rescaling factor is 1 for this type of seqsource
+      return Real(2) * hsum[0][getTSink()];
+    }
+
+
+
     //! Delta+ - Delta+ D piece with general projector and spin matrix
     LatticePropagator
     BarDeltaDTsp::operator()(const multi1d<LatticeColorMatrix>& u,
@@ -343,6 +374,32 @@ namespace Chroma
       return projectBaryon(src_prop_tmp,
 			   forward_headers);
     }
+
+    // Compute the 2-pt at the sink
+    Complex
+    BarDeltaDTsp::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			    const multi1d<ForwardProp_t>& forward_headers,
+			    const multi1d<LatticePropagator>& quark_propagators,
+			    int gamma_insertion)
+    {
+      check2Args("BarDeltaDTsp", quark_propagators);
+      setTSrce(forward_headers);
+      setBC(forward_headers);
+
+      // Constructor the 2pt
+      LatticeComplex b_prop = Baryon2PtContractions::sigmast2pt(quark_propagators[0], 
+								quark_propagators[1], 
+								T, sp);
+
+      // Extract the sink at the appropriate momenta
+      SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
+      multi2d<DComplex> hsum;
+      hsum = sft.sft(b_prop);
+
+      // D-quark rescaling factor is 1 for this type of seqsource
+      return Real(1) * hsum[0][getTSink()];
+    }
+
 
 
     //! Anonymous namespace

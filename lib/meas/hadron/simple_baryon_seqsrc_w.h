@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_baryon_seqsrc_w.h,v 3.2 2006-11-28 19:28:57 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.h,v 3.3 2006-11-28 20:00:49 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -179,11 +179,7 @@ namespace Chroma
       Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
-			int gamma_insertion)
-	{
-	  QDPIO::cerr << __func__ << ": not implemented" << endl;
-	  QDP_abort(1);
-	}
+			int gamma_insertion);
 
     protected: 
       //! Set bc
@@ -243,11 +239,7 @@ namespace Chroma
       Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
-			int gamma_insertion)
-	{
-	  QDPIO::cerr << __func__ << ": not implemented" << endl;
-	  QDP_abort(1);
-	}
+			int gamma_insertion);
 
     protected: 
       //! Set bc

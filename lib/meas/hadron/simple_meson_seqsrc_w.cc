@@ -1,4 +1,4 @@
-// $Id: simple_meson_seqsrc_w.cc,v 3.3 2006-11-28 19:28:57 edwards Exp $
+// $Id: simple_meson_seqsrc_w.cc,v 3.4 2006-11-28 20:00:49 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -427,12 +427,12 @@ namespace Chroma
 	trace(gamma5Herm(quark_propagators[1]) * (Gamma(gamma_sink) *
 						  quark_propagators[0] * Gamma(gamma_insertion)));
 
-      // Initialize the slow Fourier transform phases
-      SftMom sft(0, true, getDecayDir());
+      // Extract the sink at the appropriate momenta
+      SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
+      multi2d<DComplex> hsum;
+      hsum = sft.sft(corr_fn);
 
-      multi1d<DComplex> hsum = sumMulti(corr_fn*phases(), sft.getSet());
-      
-      return hsum[getTSink()];
+      return hsum[0][getTSink()];
     }
 
 
@@ -490,12 +490,12 @@ namespace Chroma
 	trace(gamma5Herm(quark_propagators[1]) * (Gamma(Ns*Ns-1) *
 						  quark_propagators[0] * Gamma(gamma_i)));
 
-      // Initialize the slow Fourier transform phases
-      SftMom sft(0, true, getDecayDir());
+      // Extract the sink at the appropriate momenta
+      SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
+      multi2d<DComplex> hsum;
+      hsum = sft.sft(corr_fn);
 
-      multi1d<DComplex> hsum = sumMulti(corr_fn*phases(), sft.getSet());
-      
-      return hsum[getTSink()];
+      return hsum[0][getTSink()];
     }
 
 
