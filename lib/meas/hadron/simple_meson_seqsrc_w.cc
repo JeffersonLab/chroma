@@ -1,4 +1,4 @@
-// $Id: simple_meson_seqsrc_w.cc,v 3.4 2006-11-28 20:00:49 edwards Exp $
+// $Id: simple_meson_seqsrc_w.cc,v 3.5 2006-11-28 22:17:58 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -453,11 +453,11 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // \f$\gamma_5 * \Gamma(gamma_sink)^dag * \gamma_5 * F * \gamma_5 \$
+      // \f$\gamma_5 * \Gamma(gamma_sink)^dag * \gamma_5 * F * \gamma_5\$
 //    LatticePropagator tmp = Gamma(G5) * adj(Gamma(gamma_sink)) * Gamma(G5) * quark_propagators[0];
 
       int G5 = Ns*Ns-1;
-      LatticePropagator tmp = mesA0XSeqSrc(quark_propagators[0], 15) * Gamma(G5);
+      LatticePropagator tmp = mesA0XSeqSrc(quark_propagators[0], G5) * Gamma(G5);
       LatticeComplex     ph = conj(phases());
       LatticePropagator fin = project(tmp * ph);
 
@@ -484,6 +484,7 @@ namespace Chroma
 
       // Convert gamma_insertion to old convention
       int gamma_i = gamma_insertion ^ unsigned(Ns*Ns-1);
+      QDPIO::cout << __func__ << ": gamma_i=" << gamma_i << endl;
 
       // Construct the meson correlation function
       LatticeComplex corr_fn = 
