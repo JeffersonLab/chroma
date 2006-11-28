@@ -1,4 +1,4 @@
-// $Id: inline_seqprop_test_w.cc,v 3.1 2006-11-28 19:30:40 edwards Exp $
+// $Id: inline_seqprop_test_w.cc,v 3.2 2006-11-28 20:00:29 edwards Exp $
 /*! \file
  * \brief Test sequential propagator
  *
@@ -223,14 +223,6 @@ namespace Chroma
 	  TheNamedObjMap::Instance().get(params.named_obj.sink_ids[loop]).getFileXML(prop_file_xml);
 	  TheNamedObjMap::Instance().get(params.named_obj.sink_ids[loop]).getRecordXML(prop_record_xml);
    
-	  {
-	    XMLFileWriter foobar("forward.xml");
-	    push(foobar, "test");
-	    write(foobar, "Seqprop_info", prop_record_xml);
-	    pop(foobar);
-	    foobar.close();
-	  }
-
 	  // Try to invert this record XML into a ChromaProp struct
 	  // Also pull out the id of this source
 	  read(prop_record_xml, "/SinkSmear", forward_headers[loop]);
@@ -263,7 +255,6 @@ namespace Chroma
       LatticePropagator seqprop;
       SequentialProp_t seqprop_header;
 
-      QDPIO::cerr << "Attempt to read seqprop" << endl;
       try
       {
 	// Snarf the data into a copy
@@ -277,20 +268,9 @@ namespace Chroma
 	// Save prop input
 	write(xml_out, "Seqprop_info", prop_record_xml);
 
-	{
-	  XMLFileWriter foobar("seqprop.xml");
-	  push(foobar, "test");
-	  write(foobar, "Seqprop_info", prop_record_xml);
-	  pop(foobar);
-	  foobar.close();
-	}
-
 	// Try to invert this record XML into a SequentialSource_t struct
 	// Also pull out the id of this source
-	QDPIO::cerr << "Attempt to parse seqprop header" << endl;
 	read(prop_record_xml, "/SequentialProp", seqprop_header);
-	QDPIO::cerr << "Seqprop header parsed" << endl;
-
       }
       catch( std::bad_cast ) 
       {
@@ -329,7 +309,6 @@ namespace Chroma
 
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification
-      push(xml_out, "Seqprop_correlator");
       {
 	multi1d<Double> forward_prop_corr = sumMulti(localNorm2(seqprop),
 						     phases.getSet());
