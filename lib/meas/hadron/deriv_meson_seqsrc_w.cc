@@ -1,4 +1,4 @@
-// $Id: deriv_meson_seqsrc_w.cc,v 3.1 2006-11-27 04:33:35 edwards Exp $
+// $Id: deriv_meson_seqsrc_w.cc,v 3.2 2006-11-29 18:45:17 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -104,93 +104,6 @@ namespace Chroma
 	}
 	return chi;
       }
-
-      //! Apply first deriv (nabla) to the right onto source
-      /*!
-       * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
-       *
-       * \return $\f \nabla_\mu Fx,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
-       */
-      LatticePropagator 
-      DerivMesonSeqSourceBase::rightNabla(const LatticePropagator& F, 
-					  const multi1d<LatticeColorMatrix>& u,
-					  int mu) const
-      {
-	return displacement(u, F, getDerivLength(), mu) - displacement(u, F, -getDerivLength(), mu);
-      }
-
-      //! Apply left and right "nabla_i" onto the source
-      /*!
-       * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
-       *
-       * \return $\f \nabla_\mu Fx,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
-       */
-      LatticePropagator 
-      DerivMesonSeqSourceBase::derivNabla(const LatticePropagator& F, 
-					  const multi1d<LatticeColorMatrix>& u,
-					  int mu) const
-      {
-	LatticeComplex ph = conj(phases());
-	return ph*rightNabla(F, u, mu) + rightNabla(ph*F, u, mu);
-      }
-
-      //! Apply left and right "D_i" operator onto source
-      /*!
-       * \f$D_i = s_{ijk}\nabla_j\nabla_k\f$
-       *
-       * where  \f$s_{ijk} = +1 \quad\forall i\ne j, j\ne k, i \ne k\f$
-       * 
-       * \return $\f p*D_\mu F(x,0) + D_\mu (p*F(x,0)) + 2 \sum_{j,k}s_{ijk} \nabla_j (p*\nabla_k F(x,0))\f$
-       */
-      LatticePropagator 
-      DerivMesonSeqSourceBase::derivD(const LatticePropagator& F,
-				      const multi1d<LatticeColorMatrix>& u,
-				      int mu) const
-      {
-	LatticePropagator tmp = zero;
-	LatticeComplex ph = conj(phases());
-
-	// Slow implementation - to speed up could compute once the \nabla_j deriv
-	for(int j=0; j < 3; ++j)
-	  for(int k=0; k < 3; ++k)
-	  {
-	    if (symTensor3d(mu,j,k) != 0)
-	    {
-	      tmp += ph * rightNabla(rightNabla(F,u,j), u, k);
-	      tmp += rightNabla(rightNabla(ph * F,u,j), u, k);
-	      tmp += Real(2)*rightNabla(ph * rightNabla(F,u,j), u, k);
-	    }
-	  }
-
-	return tmp;
-      }
-
-
-      //! Apply left and right "B_i" operator onto source
-      /*!
-       * \f$B_i = \epsilon_{ijk}\nabla_j\nabla_k\f$
-       *
-       * \return $\f -B_\mu F(x,0)\f$
-       */
-      LatticePropagator 
-      DerivMesonSeqSourceBase::derivB(const LatticePropagator& F,
-				      const multi1d<LatticeColorMatrix>& u,
-				      int mu) const
-      {
-	LatticePropagator tmp = zero;
-	LatticeComplex ph = conj(phases());
-
-	// Slow implementation - to speed up could compute once the \nabla_j deriv
-	for(int j=0; j < 3; ++j)
-	  for(int k=0; k < 3; ++k)
-	  {
-	    if (antiSymTensor3d(mu,j,k) != 0)
-	      tmp -= Real(antiSymTensor3d(mu,j,k)) * rightNabla(rightNabla(ph*F,u,j), u, k);
-	  }
-
-	return tmp;
-      }
-
 
 
       //-------------------- callback functions ---------------------------------------
@@ -506,6 +419,94 @@ namespace Chroma
       write(xml, "sink_mom", sink_mom);
       pop(xml);
     }
+
+
+    //! Apply first deriv (nabla) to the right onto source
+    /*!
+     * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
+     *
+     * \return $\f \nabla_\mu Fx,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
+     */
+    LatticePropagator 
+    DerivMesonSeqSourceBase::rightNabla(const LatticePropagator& F, 
+					const multi1d<LatticeColorMatrix>& u,
+					int mu) const
+    {
+      return displacement(u, F, getDerivLength(), mu) - displacement(u, F, -getDerivLength(), mu);
+    }
+
+    //! Apply left and right "nabla_i" onto the source
+    /*!
+     * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
+     *
+     * \return $\f \nabla_\mu Fx,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
+     */
+    LatticePropagator 
+    DerivMesonSeqSourceBase::derivNabla(const LatticePropagator& F, 
+					const multi1d<LatticeColorMatrix>& u,
+					int mu) const
+    {
+      LatticeComplex ph = conj(phases());
+      return ph*rightNabla(F, u, mu) + rightNabla(ph*F, u, mu);
+    }
+
+    //! Apply left and right "D_i" operator onto source
+    /*!
+     * \f$D_i = s_{ijk}\nabla_j\nabla_k\f$
+     *
+     * where  \f$s_{ijk} = +1 \quad\forall i\ne j, j\ne k, i \ne k\f$
+     * 
+     * \return $\f p*D_\mu F(x,0) + D_\mu (p*F(x,0)) + 2 \sum_{j,k}s_{ijk} \nabla_j (p*\nabla_k F(x,0))\f$
+     */
+    LatticePropagator 
+    DerivMesonSeqSourceBase::derivD(const LatticePropagator& F,
+				    const multi1d<LatticeColorMatrix>& u,
+				    int mu) const
+    {
+      LatticePropagator tmp = zero;
+      LatticeComplex ph = conj(phases());
+
+      // Slow implementation - to speed up could compute once the \nabla_j deriv
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(mu,j,k) != 0)
+	  {
+	    tmp += ph * rightNabla(rightNabla(F,u,j), u, k);
+	    tmp += rightNabla(rightNabla(ph * F,u,j), u, k);
+	    tmp += Real(2)*rightNabla(ph * rightNabla(F,u,j), u, k);
+	  }
+	}
+
+      return tmp;
+    }
+
+
+    //! Apply left and right "B_i" operator onto source
+    /*!
+     * \f$B_i = \epsilon_{ijk}\nabla_j\nabla_k\f$
+     *
+     * \return $\f -B_\mu F(x,0)\f$
+     */
+    LatticePropagator 
+    DerivMesonSeqSourceBase::derivB(const LatticePropagator& F,
+				    const multi1d<LatticeColorMatrix>& u,
+				    int mu) const
+    {
+      LatticePropagator tmp = zero;
+      LatticeComplex ph = conj(phases());
+
+      // Slow implementation - to speed up could compute once the \nabla_j deriv
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (antiSymTensor3d(mu,j,k) != 0)
+	    tmp -= Real(antiSymTensor3d(mu,j,k)) * rightNabla(rightNabla(ph*F,u,j), u, k);
+	}
+
+      return tmp;
+    }
+
 
 
     // Construct a0-(PionxNabla_T1) sequential source
