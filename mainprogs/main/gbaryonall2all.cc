@@ -72,8 +72,6 @@ using namespace GroupBaryonOperatorEnv;
  */
 int main( int argc, char *argv[] )
 {
-//#define MAKE_SOURCE_OPERATORS
-#define MAKE_SINK_OPERATORS
 	// ==================================
   // Put the machine into a known state
 	// ==================================
@@ -162,7 +160,7 @@ int main( int argc, char *argv[] )
 				// need the seed
 				read(record_xml, "/Propagator/PropSource/Source/ran_seed", quarks[n].seed);
 				params.dilution[ n ].ran_seed = quarks[ n ].seed;
-				// read headers ... may not be necessary
+				// read headers
 	  		read(record_xml, "/Propagator/PropSource",  quarks[n].dilutions[i].source_header);
 	  		read(record_xml, "/Propagator/ForwardProp", quarks[n].dilutions[i].prop_header);
 			}
@@ -186,10 +184,76 @@ int main( int argc, char *argv[] )
 	// ====================================
 	multi1d<LatticeComplex> vresult(1);
 	LatticeComplex result;
+#ifdef REDUCETOTIMEDILUTION
+  multi1d<Params::QuarkSourceSolutions_t>  quarks2( params.qprop.solns.size() );
+#endif
 	// don't average over equivalent momenta
   SftMom phases(params.mom2_max, true, params.j_decay);
 	multi2d<DComplex> elem( params.Nmomenta, params.nrow[3] );
+
 #ifdef MAKE_SINK_OPERATORS
+
+#ifdef REDUCETOTIMEDILUTION
+	// =========================================
+	//
+	// Change the dilution scheme to a lower one 
+	//
+	// =========================================
+	// From TfSxCfGf ==> TfSxCxGx hard-wired for test
+  try
+  {
+		swatch.start();
+    for(int n=0; n < quarks.size(); ++n)
+    {
+			QDPIO::cout << "Reducing spin-colour dilution levels for quark " << n << endl;
+			int indx, indx2;
+			//
+			// Fix these for now ... temporary fix
+			//
+			int NTimeDilution   = params.nrow[3];
+			int NSpinDilution   = 4;
+			int NColourDilution = 3;
+			int NSpaceDilution  = 1;
+			quarks2[n].dilutions.resize( quarks[n].dilutions.size()/(params.NdilReduce) );
+			quarks2[n].seed = quarks[n].seed;
+			for(int i=0; i < (NTimeDilution); ++i)
+			{
+				// fix this
+				quarks2[n].dilutions[i].source_header = quarks[n].dilutions[i*(params.NdilReduce)].source_header;
+				quarks2[n].dilutions[i].prop_header = quarks[n].dilutions[i*(params.NdilReduce)].prop_header;
+			}
+			// compute the indices needed assuming they are
+			// in the order as below, time--colour--spin--space
+			// index = x + Nx * ( s + Ns * ( c + Nc * ( t ) ) )
+			//       = t * Nc * Ns * Nx + c * Ns * Nx + s * Nx + x
+			for(int t=0; t < NTimeDilution; ++t)
+			{ 
+				for(int x=0; x < NSpaceDilution; ++x)
+				{ 
+					indx2 = x + NSpaceDilution * ( t );
+					LatticeFermion Q=zero;
+					for(int c=0; c < NColourDilution; ++c)
+					{ 
+						for(int s=0; s < NSpinDilution; ++s)
+						{ 
+							indx = x + NSpaceDilution * ( s + NSpinDilution * ( c + NColourDilution * ( t ) ) );
+							//indx = x + NSpaceDilution * s + NSpaceDilution * NSpinDilution * c + NSpaceDilution * NSpinDilution * NColourDilution * t;
+							Q += quarks[n].dilutions[ indx ].soln;
+						}
+					}
+					quarks2[n].dilutions[ indx2 ].soln = Q;
+				}
+			}
+		}
+	} // try
+	catch ( const std::string& e )
+	{
+	  QDPIO::cerr << ": Caught Exception removing COLOUR and SPIN-dilution: " << e << endl;
+	  QDP_abort( 1 );
+	}
+  swatch.stop();
+	QDPIO::cout << "COLOUR and SPIN dilution removed: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif
 	try
 	{ //
 		// Annihilation Operator (plus) first (only one term)
@@ -198,9 +262,15 @@ int main( int argc, char *argv[] )
 		int ordering = 0;
 		for(int n=0; n < params.Noperators; ++n)
 		{
+#ifdef REDUCETOTIMEDILUTION
+			AOp[ n ].baryonoperator.seed_l = quarks2[0].seed;
+			AOp[ n ].baryonoperator.seed_m = quarks2[1].seed;
+			AOp[ n ].baryonoperator.seed_r = quarks2[2].seed;
+#else
 			AOp[ n ].baryonoperator.seed_l = quarks[0].seed;
 			AOp[ n ].baryonoperator.seed_m = quarks[1].seed;
 			AOp[ n ].baryonoperator.seed_r = quarks[2].seed;
+#endif
 		}
 		swatch.start();
     // Sink smear all the quarks up-front
@@ -211,40 +281,51 @@ int main( int argc, char *argv[] )
 				             TheFermSinkSmearingFactory::Instance().createObject(
 										         params.sink_smearing.sink.id,   sinktop,
 														 params.sink_smearing.sink.path, params.gaugestuff.u ) );
-    for(int n=0; n < quarks.size(); ++n) 
+#ifdef REDUCETOTIMEDILUTION
+    for(int n=0; n < quarks2.size(); ++n) 
 		{
-			for(int i=0; i < params.NH[ordering][n]; ++i)
+			for(int i=0; i < (params.NH[ordering][n]/params.NdilReduce); ++i)
 			{
-      	( *sinkSmearing ) ( quarks[ n ].dilutions[ i ].soln );
+     	( *sinkSmearing ) ( quarks2[ n ].dilutions[ i ].soln );
 			}
 		}
+#else
+    for(int n=0; n < quarks.size(); ++n) 
+		{
+			for(int i=0; i < (params.NH[ordering][n]/params.NdilReduce); ++i)
+			{
+     	( *sinkSmearing ) ( quarks[ n ].dilutions[ i ].soln );
+			}
+		}
+#endif
 		swatch.stop();
 		QDPIO::cout << "SINK smearings done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 		
-		//swatch.start();
+		swatch.start();
 		for(int qqq=0; qqq < params.NQQQs; ++qqq)
 		{
-			for(int i=0; i < params.NH[ordering][0]; ++i)
-			for(int j=0; j < params.NH[ordering][1]; ++j)
-			for(int k=0; k < params.NH[ordering][2]; ++k)
+			for(int i=0; i < (params.NH[ordering][0]/params.NdilReduce); ++i)
+			for(int j=0; j < (params.NH[ordering][1]/params.NdilReduce); ++j)
+			for(int k=0; k < (params.NH[ordering][2]/params.NdilReduce); ++k)
 			{ 
-		//swatch.start();
-		//QDPIO::cout << "SINK operators "<<i<<" "<<j<<" "<<k<<" ... "<<endl;
+#ifdef REDUCETOTIMEDILUTION
+				vresult = AQQQ[ qqq ]( 
+	    	                      quarks2[ 0 ].dilutions[ i ].soln,
+	    	                      quarks2[ 1 ].dilutions[ j ].soln,
+	    	                      quarks2[ 2 ].dilutions[ k ].soln,
+	    	                      PLUS 
+														 );
+#else
 				vresult = AQQQ[ qqq ]( 
 	    	                      quarks[ 0 ].dilutions[ i ].soln,
 	    	                      quarks[ 1 ].dilutions[ j ].soln,
 	    	                      quarks[ 2 ].dilutions[ k ].soln,
 	    	                      PLUS 
 														 );
-		//swatch.stop();
-		//QDPIO::cout << "contraction "<<i<<" "<<j<<" "<<k<<" done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif
+				elem = phases.sft( vresult[ 0 ] );
 		    for(int b=0; b < AQQQ[ qqq ].NBaryonOps; ++b)
 				{
-		//swatch.start();
-					elem = phases.sft( vresult[ 0 ] );
-		//swatch.stop();
-		//if((i==0)&&(j==0)&&(k==0)&&(b==0))
-		//QDPIO::cout << "sft done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 		    	for(int p=0; p < params.Nmomenta; ++p)
 					{
 		    		for(int t=0; t < params.nrow[ 3 ]; ++t)
@@ -254,11 +335,9 @@ int main( int argc, char *argv[] )
 						} // t 
 					} // p
 				} // Bop_index b
-		//swatch.stop();
-		//QDPIO::cout << "SINK operators "<<i<<" "<<j<<" "<<k<<" done: time= " << swatch.getTimeInSeconds() << " secs" << endl;
 			} // i,j,k
 		} // qqq
-		//swatch.stop();
+		swatch.stop();
 	} // try
 	catch ( const std::string& e )
 	{
@@ -372,15 +451,87 @@ int main( int argc, char *argv[] )
 	  QDP_abort( 1 );
 	}
 	QDPIO::cout << "SOURCE vectors reconstructed from Seeds : time = " << swatch.getTimeInSeconds() << " secs" << endl;
+
+#ifdef REDUCETOTIMEDILUTION
+	// =========================================
+	//
+	// Change the dilution scheme to a lower one 
+	//
+	// =========================================
+	// From TfSxCfGf ==> TfSxCxGx hard-wired for test
+  try
+  {
+		swatch.start();
+    for(int n=0; n < quarks.size(); ++n)
+    {
+			QDPIO::cout << "REDUCING spin-colour dilution levels for quark " << n << endl;
+			int indx, indx2;
+			//
+			// Fix these for now ... temporary fix
+			//
+			int NTimeDilution   = params.nrow[3];
+			int NSpinDilution   = 4;
+			int NColourDilution = 3;
+			int NSpaceDilution  = 1;
+			quarks2[n].dilutions.resize( quarks[n].dilutions.size()/(params.NdilReduce) );
+			quarks2[n].seed = quarks[n].seed;
+			for(int i=0; i < (NTimeDilution); ++i)
+			{
+				// fix this
+				quarks2[n].dilutions[i].source_header = quarks[n].dilutions[i*(params.NdilReduce)].source_header;
+				quarks2[n].dilutions[i].prop_header = quarks[n].dilutions[i*(params.NdilReduce)].prop_header;
+			}			
+			//DiluteZNQuarkSourceConstEnv::Params newsrcParams;
+			//newsrcParams.j_decay = 3;
+			//newsrcParams.ran_seed = quarks[ n ].seed;
+			// compute the indices needed assuming they are
+			// in the order as below, time--colour--spin--space
+			// index = x + Nx * ( s + Ns * ( c + Nc * ( t ) ) )
+			//       = t * Nc * Ns * Nx + c * Ns * Nx + s * Nx + x
+			for(int t=0; t < NTimeDilution; ++t)
+			{ 
+				//newsrcParams.t_source = t;
+				for(int x=0; x < NSpaceDilution; ++x)
+				{ 
+					indx2 = x + NSpaceDilution * ( t );
+					LatticeFermion Q=zero;
+					for(int c=0; c < NColourDilution; ++c)
+					{ 
+						for(int s=0; s < NSpinDilution; ++s)
+						{ 
+							indx = x + NSpaceDilution * ( s + NSpinDilution * ( c + NColourDilution * ( t ) ) );
+							//indx = x + NSpaceDilution * s + NSpaceDilution * NSpinDilution * c + NSpaceDilution * NSpinDilution * NColourDilution * t;
+							Q += quarks[n].dilutions[ indx ].source;
+						}
+					}
+					quarks2[n].dilutions[ indx2 ].source = Q;
+				}
+			}
+		}
+	} // try
+	catch ( const std::string& e )
+	{
+	  QDPIO::cerr << ": Caught Exception removing COLOUR and SPIN-dilution: " << e << endl;
+	  QDP_abort( 1 );
+	}
+  swatch.stop();
+	QDPIO::cout << "COLOUR and SPIN DILUTION REMOVED: time= " << swatch.getTimeInSeconds() << " secs" << endl;
+#endif
 	//
 	// setting the seeds for output (baryon_operator file)
 	// should also put the mass of the quarks in here as well
 	//
 	for(int n=0; n < params.Noperators; ++n)
 	{
+#ifdef REDUCETOTIMEDILUTION
+		COp[ n ].baryonoperator.seed_l = quarks2[0].seed;
+		COp[ n ].baryonoperator.seed_m = quarks2[1].seed;
+		COp[ n ].baryonoperator.seed_r = quarks2[2].seed;
+#else
 		COp[ n ].baryonoperator.seed_l = quarks[0].seed;
 		COp[ n ].baryonoperator.seed_m = quarks[1].seed;
 		COp[ n ].baryonoperator.seed_r = quarks[2].seed;
+#endif
 	}
 	try
 	{ //
@@ -399,61 +550,79 @@ int main( int argc, char *argv[] )
 			int qL = DilSwap( ordering, 0,1,2, L );
 			int qM = DilSwap( ordering, 0,1,2, M );
 			int qR = DilSwap( ordering, 0,1,2, R );
-#define FIRSTTYPE
+			#define FIRSTTYPE
 			switch ( ordering )																			   
 			{ 																									   
 			  case 0: 			// [012]
 					signs =  2.0; break;
 				case 1: 			// [210]
-#ifdef FIRSTTYPE
+				#ifdef FIRSTTYPE
 					signs =  2.0; break;
-#else
+				#else
 					signs = -2.0; break;
-#endif
+				#endif
 				case 2: 			// [021]
-#ifdef FIRSTTYPE
+				#ifdef FIRSTTYPE
 					signs = -1.0; break;
-#else
+				#else
 					signs =  1.0; break;
-#endif
+				#endif
 				case 3: 			// [102]
-#ifdef FIRSTTYPE
+				#ifdef FIRSTTYPE
 					signs = -1.0; break;
-#else
+				#else
 					signs =  1.0; break;
-#endif
+				#endif
 				case 4: 			// [120]
 					signs = -1.0; break;
 				case 5: 			// [201]
 					signs = -1.0; break;
 			}
-
 			for(int qqq=0; qqq < params.NQQQs; ++qqq)
 			{
-				for(int iL=0; iL < params.NH[ordering][L]; ++iL)
-				for(int iM=0; iM < params.NH[ordering][M]; ++iM)
-				for(int iR=0; iR < params.NH[ordering][R]; ++iR)
+				for(int iL=0; iL < (params.NH[ordering][L]/params.NdilReduce); ++iL)
+				for(int iM=0; iM < (params.NH[ordering][M]/params.NdilReduce); ++iM)
+				for(int iR=0; iR < (params.NH[ordering][R]/params.NdilReduce); ++iR)
 				{
+#ifdef REDUCETOTIMEDILUTION
+					if(   (quarks2[qL].dilutions[iL].source_header.t_source
+					    == quarks2[qM].dilutions[iM].source_header.t_source)
+					    &&(quarks2[qM].dilutions[iM].source_header.t_source
+						  == quarks2[qR].dilutions[iR].source_header.t_source) ) 
+#else
 					if(   (quarks[qL].dilutions[iL].source_header.t_source
 					    == quarks[qM].dilutions[iM].source_header.t_source)
 					    &&(quarks[qM].dilutions[iM].source_header.t_source
 						  == quarks[qR].dilutions[iR].source_header.t_source) ) 
+#endif
 					{
 						int i0 = DilSwapInv( ordering, iL, iM, iR, 0 );
 						int i1 = DilSwapInv( ordering, iL, iM, iR, 1 );
 						int i2 = DilSwapInv( ordering, iL, iM, iR, 2 );
 						for(int t=0; t < phases.getSet().numSubsets(); ++t)
+						{
 							result[ phases.getSet()[t] ] 
-							     = CQQQ[ qqq ]( 
-									                quarks[ qL ].dilutions[ iL ].source,
-					  			                quarks[ qM ].dilutions[ iM ].source,
-		    	  			                quarks[ qR ].dilutions[ iR ].source,
-		    	  			                not_used,
-		    	  			                MINUS 
-		    	  			              );
+#ifdef REDUCETOTIMEDILUTION
+							       = CQQQ[ qqq ]( 
+	    				                      quarks2[ qL ].dilutions[ iL ].source,
+	    				                      quarks2[ qM ].dilutions[ iM ].source,
+	    				                      quarks2[ qR ].dilutions[ iR ].source,
+		    				  			            not_used,
+		    				  			            MINUS 
+																	 );
+#else
+							       = CQQQ[ qqq ]( 
+	    				                      quarks[ qL ].dilutions[ iL ].source,
+	    				                      quarks[ qM ].dilutions[ iM ].source,
+	    				                      quarks[ qR ].dilutions[ iR ].source,
+		    				  			            not_used,
+		    				  			            MINUS 
+																	 );
+#endif					 
+						}
+						elem = phases.sft( result );
 						for(int b=0; b < CQQQ[ qqq ].NBaryonOps; ++b)
 						{
-							elem = phases.sft( result );
 			    		for(int p=0; p < params.Nmomenta; ++p)
 							{
 			    			for(int t=0; t < params.nrow[ 3 ]; ++t)
@@ -477,15 +646,6 @@ int main( int argc, char *argv[] )
 	}
 	QDPIO::cout << "All SOURCE operators done" << endl;
 
-	#ifdef PRINTDEBUG
-	for(int b=0; b < params.Noperators; ++b)
-	{
-	  for(int t=0; t < params.nrow[ 3 ]; ++t)
-		{
-			QDPIO::cout<<"op("<<b<<") t:"<<t<<" "<<COp[ b ].baryonoperator.orderings[ 0 ].op(0,0,0).ind[ 0 ].elem(0,t)<<endl;
-		}
-	}
-	#endif
   // Save the operators
   // ONLY SciDAC output format is supported!
   swatch.start();
