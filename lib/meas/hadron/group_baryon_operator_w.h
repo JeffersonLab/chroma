@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.14 2006-11-22 04:17:02 juge Exp $
+// $Id: group_baryon_operator_w.h,v 1.15 2006-11-30 14:30:33 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -26,6 +26,11 @@
 
 namespace Chroma
 {
+
+#define MAKE_SOURCE_OPERATORS
+//#define MAKE_SINK_OPERATORS
+#define REDUCETOTIMEDILUTION 1
+
   //! Name and registration
   /*! @ingroup hadron */
   namespace GroupBaryonOperatorEnv
@@ -155,8 +160,10 @@ namespace Chroma
 				BaryonOperator_t Bops;
     	  std::string gauge_id;
     	} 
-			named_obj;
-						
+			named_obj;						
+
+			int NdilReduce;
+			
     }; // end struct Params
 		
 		
@@ -308,7 +315,6 @@ namespace Chroma
 //
 /*
 #! /usr/bin/perl
-
 #------------------------------------------------------------------------
 # The output file of this script ... the name is kind of important 
 # because the xml input file is not ready to go yet and hence the name 
@@ -319,54 +325,58 @@ $OutputFileName = "Chroma_Input.txt";
 $SortedListFileName = "SortedChannelList.txt";
        $ListOfNames = "NamesOfOperators.txt";
 #------------------------------------------------------------------------
-#Coefficient File: ${ProjCoeffDir}/ G1g /Doubly_Displaced_L/...
-#Coefficient File: ${ProjCoeffDir}/${QN}/$LongForm{\"$OperatorType\"}/...
 $ProjCoeffDir = "$ENV{HOME}/src2/work2/projection_coefficients/Nucleons";
 #------------------------------------------------------------------------
 # Input file for operator indices (note that the range op - doesn't work)
 # an example is given below ...
 $OperatorIndicesFile = "test.in";
+#$OperatorIndicesFile = "from_point2all.in";
 #------------------------------------------------------------------------
 # Lattice Size
-@Nsize = ( 4, 4, 4, 6 );
+@Nsize = ( 4, 4, 4, 6 ); 
+#@Nsize = ( 12, 12, 12, 48 ); 
+$Nt = $Nsize[ 3 ];
+#------------------------------------------------------------------------
 # Hybrid list size
-@Ndil = ( 6, 6, 6 );
+if( 0 ) {
+	#@Ndil = ( 24, 6, 18 );
+	$q=1; $NTdil[$q] = $Nt; $NCdil[$q] = 1; $NSdil[$q] = 4; $NXdil[$q] = 1;
+	$q=2; $NTdil[$q] = $Nt; $NCdil[$q] = 1; $NSdil[$q] = 1; $NXdil[$q] = 1;
+	$q=3; $NTdil[$q] = $Nt; $NCdil[$q] = 3; $NSdil[$q] = 1; $NXdil[$q] = 1;
+} else {
+	for(my $q=1; $q<=3; ++$q) 
+	{
+		#@Ndil = ( 6, 6, 6 );
+		$NTdil[$q] = $Nt; $NCdil[$q] = 1; $NSdil[$q] = 1; $NXdil[$q] = 1;
+		#@Ndil = ( 72, 72, 72 );
+		$NTdil[$q] = $Nt; $NCdil[$q] = 3; $NSdil[$q] = 4; $NXdil[$q] = 1;
+	}
+}
+for(my $q=1; $q<=3; ++$q){ $NH[$q]=$NTdil[$q]*$NCdil[$q]*$NSdil[$q]*$NXdil[$q]; }
+#
+@Ndil = ( $NH[1], $NH[2], $NH[3] );
+#------------------------------------------------------------------------
 # Different displacement lengths
 @DispLengths = ( 1 );
 # all the channels
 @Channels = ( 'G1g', 'G1u', 'G2g', 'G2u', 'Hg', 'Hu' );
 #------------------------------------------------------------------------
-# Solution file names
-$qpropStub = "zN_prop_q";
-#
-@qpropFileNames = ( 
-"zN_prop_q1_t0",
-"zN_prop_q1_t1",
-"zN_prop_q1_t2",
-"zN_prop_q1_t3",
-"zN_prop_q1_t4",
-"zN_prop_q1_t5",
-"zN_prop_q2_t0",
-"zN_prop_q2_t1",
-"zN_prop_q2_t2",
-"zN_prop_q2_t3",
-"zN_prop_q2_t4",
-"zN_prop_q2_t5",
-"zN_prop_q3_t0",
-"zN_prop_q3_t1",
-"zN_prop_q3_t2",
-"zN_prop_q3_t3",
-"zN_prop_q3_t4",
-"zN_prop_q3_t5"
-);
+# Solution file names  arg: stub, time-dil, colour-dil, spin-dil, space-dil, ".lime"
+$qstub = "zN_prop_q"; $qext = ""; 
+@qpropFileNames = ();
+for(my $q=1; $q<=3; ++$q)
+{
+	@temp = &make_qprop_names( "${qstub}${q}",$NTdil[$q],$NCdil[$q],$NSdil[$q],$NXdil[$q],$qext );
+	push( @qpropFileNames, @temp );
+}
 #------------------------------------------------------------------------
 # Nucleon correlation function is re-written as,
 #
 #    (N+)         (I)   ijk               _ijk     _ijk      _ijk               
-#   C        =   c     B      (t) {     2 B  ___ + B  ___  + B  ___             
+#   C        =   c     B      (t) {     2 B  ___ - B  ___  - B  ___             
 #    IJ[012]      mnt   I<mnt>             J<mnt>   J<mtn>    J<nmt>            
 #                                         _ijk     _ijk      _ijk               
-#                                   - ( 2 B  ___ + B  ___  + B  ___  )          
+#                                   + ( 2 B  ___ - B  ___  - B  ___  )          
 #                                          J<tnm>   J<tmn>    J<ntm>            
 #                                       _(J) 														           
 #                                 }(t0) c___														           
@@ -419,7 +429,6 @@ $LongForm{'TDT'} = "Triply_Displaced_T";
 $QNS{'G1g'} = 'G1'; $QNS{'G1u'} = 'G1';
 $QNS{'G2g'} = 'G2'; $QNS{'G2u'} = 'G2';
  $QNS{'Hg'} = 'H';   $QNS{'Hu'} = 'H';
-#
 #------------------------------------------------------------------------
 #
 # First get all of the operator indices
@@ -491,9 +500,6 @@ if ( 1 ) {
 	              printf(HASH "${hash}\n");
 	            }
 	        }
-	        #
-	        # SS L2 L3 etc is ignored ...
-	        #
 	      } # end foreach $DispLength ( @DispLengths )
 	    } # end foreach $OperatorIndx ( @${ListName} )
 	  } # end foreach $OperatorType ( @OperatorTypes )
@@ -798,7 +804,70 @@ sub sign
 	if ( $odd ) {	$sign_ = -1; }
 	return( $sign_ );
 }
-
+sub make_qprop_names 
+{ my ( $stub, $TD, $CD, $SD, $XD, $ext ) = @_;
+	# TfSeCfGf
+	if( ($CD >= 2)&&($SD >= 2)&&($XD >= 2) )
+	{ my $i = 0;
+		for(my $t=0; $t<$TD; ++$t) {
+		for(my $c=0; $c<$CD; ++$c) {
+		for(my $s=0; $s<$SD; ++$s) {
+		for(my $x=0; $x<$XD; ++$x) {
+			$FileNames[ $i ] = $stub . "_t${t}_c${c}_s${s}_x${x}" . $ext;
+			$i++; }}}}}
+	# TfSxCfGf
+	if( ($CD >= 2)&&($SD >= 2)&&($XD == 1) )
+	{ my $i = 0;
+		for(my $t=0; $t<$TD; ++$t) {
+		for(my $c=0; $c<$CD; ++$c) {
+		for(my $s=0; $s<$SD; ++$s) {
+			$FileNames[ $i ] = $stub . "_t${t}_c${c}_s${s}" . $ext;
+			$i++; }}}}
+	# TfSeCfGx
+	if( ($CD >= 2)&&($SD == 1)&&($XD >= 2) )
+	{ my $i = 0;
+		for(my $t=0; $t<$TD; ++$t) {
+		for(my $c=0; $c<$CD; ++$c) {
+		for(my $x=0; $x<$XD; ++$x) {
+			$FileNames[ $i ] = $stub . "_t${t}_c${c}_x${x}" . $ext;
+			$i++; }}}}
+	# TfSeCxGf
+	if( ($CD == 1)&&($SD >= 2)&&($XD >= 2) )
+	{ my $i = 0;
+		for(my $t=0; $t<$TD; ++$t) {
+		for(my $s=0; $s<$SD; ++$s) {
+		for(my $x=0; $x<$XD; ++$x) {
+			$FileNames[ $i ] = $stub . "_t${t}_s${s}_x${x}" . $ext;
+			$i++; }}}}
+	# TfSeCxGx
+	if( ($CD == 1)&&($SD == 1)&&($XD >= 2) )
+	{ my $i = 0;
+		for(my $t=0; $t<$TD; ++$t) {
+		for(my $x=0; $x<$XD; ++$x) {
+			$FileNames[ $i ] = $stub . "_t${t}_x${x}" . $ext;
+			$i++; }}}
+	# TfSxCfGx
+	if( ($CD >= 2)&&($SD == 1)&&($XD == 1) )
+	{ my $i = 0;
+		for(my $t=0; $t<$TD; ++$t) {
+		for(my $c=0; $c<$CD; ++$c) {
+			$FileNames[ $i ] = $stub . "_t${t}_c${c}" . $ext;
+			$i++; }}}
+	# TfSxCxGf
+	if( ($CD == 1)&&($SD >= 2)&&($XD == 1) )
+	{ my $i = 0;
+		for(my $t=0; $t<$TD; ++$t) {
+		for(my $s=0; $s<$SD; ++$s) {
+			$FileNames[ $i ] = $stub . "_t${t}_s${s}" . $ext;
+			$i++; }}}
+	# TfSxCxGx
+	if( ($CD == 1)&&($SD == 1)&&($XD == 1) )
+	{ my $i = 0;
+		for(my $t=0; $t<$TD; ++$t) {
+			$FileNames[ $i ] = $stub . "_t${t}" . $ext;
+			$i++; }}
+	return( @FileNames );
+}
 1;
 # end
 */
