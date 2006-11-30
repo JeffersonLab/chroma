@@ -6,55 +6,38 @@
 
 <assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
-<!-- PION -->
-<assertion xpath="/chroma/InlineObservables/elem[3]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[6]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-A0_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[5]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[11]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-RHO_X_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[7]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[16]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-RHO_Y_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[9]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[21]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-B1_Z_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[11]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[26]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-RHO_Z_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[13]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[31]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-B1_Y_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[15]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[36]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-B1_X_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[17]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[41]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-PION_2 -->
-<assertion xpath="/chroma/InlineObservables/elem[19]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[46]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-A0_2 -->
-<assertion xpath="/chroma/InlineObservables/elem[21]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[51]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-RHO_X_2 -->
-<assertion xpath="/chroma/InlineObservables/elem[23]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[56]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-RHO_Y_2 -->
-<assertion xpath="/chroma/InlineObservables/elem[25]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[61]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-A1_Z_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[27]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[66]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-RHO_Z_2 -->
-<assertion xpath="/chroma/InlineObservables/elem[29]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[71]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-A1_Y_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[31]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[76]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION-A1_X_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[33]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[81]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
-<!-- PION_1 -->
-<assertion xpath="/chroma/InlineObservables/elem[35]/seqsource/SeqSource_correlator/seqsource_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[86]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
 
 </assertions>
