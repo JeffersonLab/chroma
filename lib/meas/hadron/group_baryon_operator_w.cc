@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.21 2006-11-28 14:08:40 bjoo Exp $
+// $Id: group_baryon_operator_w.cc,v 1.22 2006-11-30 18:59:06 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -184,7 +184,7 @@ namespace Chroma
 		    case 4:  // [120] jki 														   
 		      ijk[ 0 ] = j; 																	   
 		      ijk[ 1 ] = k; 																	   
-		      ijk[ 2 ] = i; 																	   
+		      ijk[ 2 ] = i;
 		      break;																					   
 		    case 5:  // [201] kij 														   
 		      ijk[ 0 ] = k; 																	   
@@ -228,7 +228,7 @@ namespace Chroma
 		    case 4:  // [120] jki 														   
 		      ijk[ 0 ] = k; 																	   
 		      ijk[ 1 ] = i; 																	   
-		      ijk[ 2 ] = j; 																	   
+		      ijk[ 2 ] = j; 
 		      break;																					   
 		    case 5:  // [201] kij 														   
 		      ijk[ 0 ] = j; 																	   
@@ -238,7 +238,7 @@ namespace Chroma
 				default:
 					cerr<<"Say what? "<<ord<<" "<<i<<" "<<j<<" "<<k<<" "<<which<<endl;
 					exit(1);
-		  } 																									   
+		  }
 		  return ( ijk[ which ] );														   
 		}
 		
@@ -258,42 +258,6 @@ namespace Chroma
 			u_smr = u_;
       // The spin basis matrix to goto Dirac
       spin_rotate_mat = adj( DiracToDRMat() );
-			/*
-      // Factory constructions
-      try
-      {
-        // Create the source quark smearing object
-        {
-      		std::istringstream  xml_s( myparams.source_smearing.source.xml );
-      		XMLReader  sourcetop( xml_s );
-      		QDPIO::cout << "Source quark smearing type = " << myparams.source_smearing.source.id << endl;
-      		Handle< QuarkSourceSink<LatticeFermion> > sourceSmearing(
-								TheFermSourceSmearingFactory::Instance().createObject(
-				               myparams.source_smearing.source.id,   sourcetop,
-											 myparams.source_smearing.source.path, u_smr
-								)
-							);
-        }
-        // Create the sink quark smearing object
-        {
-      		std::istringstream  xml_s( myparams.sink_smearing.sink.xml );
-      		XMLReader  sinktop( xml_s );
-      		QDPIO::cout << "Sink quark smearing type = " << myparams.sink_smearing.sink.id << endl;
-      		Handle< QuarkSourceSink<LatticeFermion> >
-							sinkSmearing(
-								TheFermSinkSmearingFactory::Instance().createObject(
-		        			myparams.sink_smearing.sink.id,   sinktop,
-									myparams.sink_smearing.sink.path, u_smr
-								)
-							);
-        }
-      }
-      catch ( const std::string & e )
-      {
-        QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
-        QDP_abort( 1 );
-      }
-			*/
     } // GroupBaryonQQQ::init
 
     //! Full constructor
@@ -349,6 +313,13 @@ namespace Chroma
       QDPIO::cout << "Reading input from text file : " << params.InputFileName <<endl;
       TextReader reader( params.InputFileName );
 
+// for testing
+#ifdef REDUCETOTIMEDILUTION
+			params.NdilReduce = 12;
+#else
+			params.NdilReduce = 1;
+#endif
+
 			// Lattice sizes
       // ------------------------------------------------------------------------------------
       reader >> params.nrow[ 0 ] >> params.nrow[ 1 ] >> params.nrow[ 2 ] >> params.nrow[ 3 ];
@@ -365,12 +336,12 @@ namespace Chroma
 			// ------------------------------------------------------------------------------------
       reader >> params.NsrcOrderings;
 			// ------------------------------------------------------------------------------------
-			// 012    factor in front is  2
-      // 210    factor in front is -2
-      // 021    factor in front is  1
-      // 102    factor in front is  1
-      // 120    factor in front is -1
-      // 201    factor in front is -1
+			// 012    factor in front is  2  2
+      // 210    factor in front is -2  2
+      // 021    factor in front is  1 -1
+      // 102    factor in front is  1 -1
+      // 120    factor in front is -1 -1
+      // 201    factor in front is -1 -1
 
       //read( xml, "SrcQuarkIndices", params.SrcOrderings );
       params.SrcOrderings.resize( params.NsrcOrderings );
@@ -473,10 +444,10 @@ namespace Chroma
 				AB[ n ].baryonoperator.orderings.resize( 1 );
         for(int ord=0; ord < 1; ++ord)
 				{
-        	AB[ n ].baryonoperator.orderings[ ord ].op.resize( params.NH[ 0 ][ 0 ], params.NH[ 0 ][ 1 ], params.NH[ 0 ][ 2 ] );
-        	for(int i=0; i < params.NH[ 0 ][ 0 ]; ++i)
-        	  for(int j=0; j < params.NH[ 0 ][ 1 ]; ++j)
-        	    for(int k=0; k < params.NH[ 0 ][ 2 ]; ++k)
+        	AB[ n ].baryonoperator.orderings[ ord ].op.resize( params.NH[ 0 ][ 0 ]/params.NdilReduce, params.NH[ 0 ][ 1 ]/params.NdilReduce, params.NH[ 0 ][ 2 ]/params.NdilReduce );
+        	for(int i=0; i < (params.NH[ 0 ][ 0 ]/params.NdilReduce); ++i)
+        	  for(int j=0; j < (params.NH[ 0 ][ 1 ]/params.NdilReduce); ++j)
+        	    for(int k=0; k < (params.NH[ 0 ][ 2 ]/params.NdilReduce); ++k)
         	    {
         	      AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind.resize(1);
         	      AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem.resize( params.Nmomenta, params.nrow[3] );
@@ -501,10 +472,10 @@ namespace Chroma
 				CB[ n ].baryonoperator.orderings.resize( 1 );
         for(int ord=0; ord < 1; ++ord)
 				{
-        CB[ n ].baryonoperator.orderings[ ord ].op.resize( params.NH[ 0 ][ 0 ], params.NH[ 0 ][ 1 ], params.NH[ 0 ][ 2 ] );
-        for(int i=0; i < params.NH[ 0 ][ 0 ]; ++i)
-          for(int j=0; j < params.NH[ 0 ][ 1 ]; ++j)
-            for(int k=0; k < params.NH[ 0 ][ 2 ]; ++k)
+        CB[ n ].baryonoperator.orderings[ ord ].op.resize( params.NH[ 0 ][ 0 ]/params.NdilReduce, params.NH[ 0 ][ 1 ]/params.NdilReduce, params.NH[ 0 ][ 2 ]/params.NdilReduce );
+        for(int i=0; i < (params.NH[ 0 ][ 0 ]/params.NdilReduce); ++i)
+          for(int j=0; j < (params.NH[ 0 ][ 1 ]/params.NdilReduce); ++j)
+            for(int k=0; k < (params.NH[ 0 ][ 2 ]/params.NdilReduce); ++k)
             {
               CB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind.resize(1);
               CB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem.resize( params.Nmomenta, params.nrow[3] );
@@ -651,6 +622,7 @@ namespace Chroma
 				}
 			}
       reader.close();
+			
       QDPIO::cout << "Reading input from text file DONE " << endl;
     } // void ReadTextInput
 		
