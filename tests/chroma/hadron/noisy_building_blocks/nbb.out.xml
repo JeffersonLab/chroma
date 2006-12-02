@@ -225,10 +225,10 @@ Calculate noisy building blocks - insertions in traces
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>14 Oct 06 01:06:46 EDT</run_date>
+    <run_date>02 Dec 06 16:13:37 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -245,16 +245,9 @@ Calculate noisy building blocks - insertions in traces
       <elem>19</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.994737201137468</w_plaq>
@@ -292,10 +285,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>14 Oct 06 01:06:46 EDT</run_date>
+          <run_date>02 Dec 06 16:13:37 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -376,10 +369,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>14 Oct 06 01:06:46 EDT</run_date>
+          <run_date>02 Dec 06 16:13:37 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -466,6 +459,7 @@ Calculate noisy building blocks - insertions in traces
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -477,14 +471,6 @@ Calculate noisy building blocks - insertions in traces
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>101</elem>
-          <elem>3722</elem>
-          <elem>262</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -600,10 +586,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>14 Oct 06 01:06:47 EDT</run_date>
+          <run_date>02 Dec 06 16:13:38 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -684,10 +670,10 @@ Calculate noisy building blocks - insertions in traces
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>14 Oct 06 01:06:47 EDT</run_date>
+          <run_date>02 Dec 06 16:13:38 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -774,6 +760,7 @@ Calculate noisy building blocks - insertions in traces
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -785,14 +772,6 @@ Calculate noisy building blocks - insertions in traces
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>3747</elem>
-          <elem>957</elem>
-          <elem>2880</elem>
-          <elem>1262</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>

@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_parwilson.out.xml,v 3.5 2006-10-14 03:40:23 edwards Exp $
+; $Id: prec_parwilson.out.xml,v 3.6 2006-12-02 21:19:51 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -120,10 +120,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>13 Oct 06 22:54:47 EDT</run_date>
+    <run_date>02 Dec 06 16:18:55 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -140,16 +140,9 @@
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.994803997506905</w_plaq>
@@ -187,10 +180,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:54:47 EDT</run_date>
+          <run_date>02 Dec 06 16:18:55 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -287,10 +280,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:54:47 EDT</run_date>
+          <run_date>02 Dec 06 16:18:55 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -378,6 +371,7 @@
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -405,14 +399,6 @@
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>

@@ -173,10 +173,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>13 Oct 06 22:56:41 EDT</run_date>
+    <run_date>02 Dec 06 16:13:33 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -193,16 +193,9 @@ Sink smear a prop
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><disordered>
+  <Config_info><disordered>
 </disordered>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>-0.0035524321311742</w_plaq>
@@ -240,10 +233,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:56:41 EDT</run_date>
+          <run_date>02 Dec 06 16:13:33 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -341,10 +334,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:56:41 EDT</run_date>
+          <run_date>02 Dec 06 16:13:33 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -431,6 +424,7 @@ Sink smear a prop
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -459,14 +453,6 @@ Sink smear a prop
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>3787</elem>
-          <elem>2897</elem>
-          <elem>4074</elem>
-          <elem>1279</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <disordered>
 </disordered>
@@ -621,75 +607,75 @@ Sink smear a prop
             </elem>
           </pollp>
         </Observables>
+        <Prop_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>3</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <quark_smear_lastP>true</quark_smear_lastP>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <disordered>
+</disordered>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
         <Forward_prop_correlator>
           <forward_prop_corr>0.0303537053502259 0.00090918337755248 5.19719612219437e-05 2.7064780834879e-06 2.54931759670547e-07 2.13104947958424e-06 4.25442247126648e-05 0.000870806394804189</forward_prop_corr>
         </Forward_prop_correlator>
-        <PropSource>
-          <version>6</version><Source>
-      <version>3</version>
-      <SourceType>SHELL_SOURCE</SourceType>
-      <j_decay>3</j_decay>
-      <t_srce>0 0 0 0</t_srce>
-      <quark_smear_lastP>true</quark_smear_lastP>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>0</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Source>
-
-          <j_decay>3</j_decay>
-          <t_source>0</t_source>
-        </PropSource>
-        <ForwardProp>
-          <version>9</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1.0</xi_0>
-        <nu>1.0</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-12</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</ForwardProp>
-        <PropSink>
-          <version>5</version><Sink>
-      <version>2</version>
-      <SinkType>POINT_SINK</SinkType>
-      <j_decay>3</j_decay>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
-        <disp_length>1</disp_length>
-        <disp_dir>1</disp_dir>
-      </Displacement>
-    </Sink>
-
-          <j_decay>3</j_decay>
-        </PropSink>
         <SinkSmearedProp_correlator>
           <sink_smeared_prop_corr>0.0303537097908958 0.000909183482423782 5.19719671010118e-05 2.7064784354829e-06 2.54931789453793e-07 2.13104970762745e-06 4.25442292021568e-05 0.000870806474279291</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
@@ -770,88 +756,75 @@ Sink smear a prop
             </elem>
           </pollp>
         </Observables>
+        <Prop_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>3</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <quark_smear_lastP>true</quark_smear_lastP>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <disordered>
+</disordered>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
         <Forward_prop_correlator>
           <forward_prop_corr>0.0303537053502259 0.00090918337755248 5.19719612219437e-05 2.7064780834879e-06 2.54931759670547e-07 2.13104947958424e-06 4.25442247126648e-05 0.000870806394804189</forward_prop_corr>
         </Forward_prop_correlator>
-        <PropSource>
-          <version>6</version><Source>
-      <version>3</version>
-      <SourceType>SHELL_SOURCE</SourceType>
-      <j_decay>3</j_decay>
-      <t_srce>0 0 0 0</t_srce>
-      <quark_smear_lastP>true</quark_smear_lastP>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>0</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Source>
-
-          <j_decay>3</j_decay>
-          <t_source>0</t_source>
-        </PropSource>
-        <ForwardProp>
-          <version>9</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1.0</xi_0>
-        <nu>1.0</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-12</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</ForwardProp>
-        <PropSink>
-          <version>5</version><Sink>
-      <version>3</version>
-      <SinkType>SHELL_SINK</SinkType>
-      <j_decay>3</j_decay>
-      <quark_smear_firstP>true</quark_smear_firstP>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
-        <disp_length>-2</disp_length>
-        <disp_dir>3</disp_dir>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>0</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Sink>
-
-          <j_decay>3</j_decay>
-        </PropSink>
         <SinkSmearedProp_correlator>
           <sink_smeared_prop_corr>2.05547289356704e-06 2.97327485272956e-05 0.0317786385453575 4.01607180185844e-05 1.64747745368845e-06 1.15660464552325e-07 9.73973933713053e-09 1.30723677644681e-07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>

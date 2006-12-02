@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun.out.xml,v 1.9 2006-10-14 04:11:09 edwards Exp $
+; $Id: schrfun.out.xml,v 1.10 2006-12-02 21:19:54 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
@@ -93,10 +93,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>13 Oct 06 23:45:55 EDT</run_date>
+    <run_date>02 Dec 06 16:19:03 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -113,19 +113,12 @@
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><SF_classical>
+  <Config_info><SF_classical>
       <SchrPhiMult>1</SchrPhiMult>
       <decay_dir>3</decay_dir>
       <loop_extent>1</loop_extent>
     </SF_classical>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.995177348454793</w_plaq>
@@ -163,10 +156,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:55 EDT</run_date>
+          <run_date>02 Dec 06 16:19:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -261,27 +254,27 @@
           <PCAC_measurements>
             <elem>
               <direction>-1</direction>
-              <pseudo_prop>0 2.098655 0.685896 0.2645563 0.1165185 0.0567869 0.02964641 0</pseudo_prop>
-              <axial_prop>0 -1.257534 -0.4756694 -0.2100718 -0.1030475 -0.05396409 -0.02927428 0</axial_prop>
+              <pseudo_prop>0 2.098655 0.6858959 0.2645563 0.1165185 0.05678691 0.02964642 0</pseudo_prop>
+              <axial_prop>0 -1.257534 -0.4756694 -0.2100718 -0.1030475 -0.05396409 -0.02927429 0</axial_prop>
             </elem>
             <elem>
               <direction>1</direction>
-              <pseudo_prop>0 3.294775 1.454108 0.6003512 0.2361806 0.0891635 0.03260896 0</pseudo_prop>
-              <axial_prop>-0 -2.265708 -0.9436166 -0.3779112 -0.1487047 -0.0596716 -0.02631178 -0</axial_prop>
+              <pseudo_prop>0 3.294775 1.454108 0.6003512 0.2361806 0.08916347 0.03260894 0</pseudo_prop>
+              <axial_prop>-0 -2.265707 -0.9436163 -0.3779111 -0.1487046 -0.05967158 -0.02631176 -0</axial_prop>
             </elem>
           </PCAC_measurements>
           <ZV_measurements>
-            <f_1>0.05892074</f_1>
-            <vector_corr>0 0.04340798 0.04310887 0.04268015 0.04213137 0.04147377 0.04071971 0</vector_corr>
+            <f_1>0.0589207</f_1>
+            <vector_corr>0 0.04340797 0.04310886 0.04268013 0.04213135 0.04147375 0.04071969 0</vector_corr>
           </ZV_measurements>
           <ZA_measurements>
-            <f_1>0.05892074</f_1>
+            <f_1>0.0589207</f_1>
             <f_AA>0.01521001</f_AA>
-            <f_AP_PA>0.0096207</f_AP_PA>
-            <f_PP>-0.003474021</f_PP>
-            <fd_AA>0.1736118</fd_AA>
-            <fd_AP_PA>0.6195408</fd_AP_PA>
-            <fd_PP>0.5478756</fd_PP>
+            <f_AP_PA>0.009620691</f_AP_PA>
+            <f_PP>-0.003474016</f_PP>
+            <fd_AA>0.1736117</fd_AA>
+            <fd_AP_PA>0.6195406</fd_AP_PA>
+            <fd_PP>0.5478755</fd_PP>
           </ZA_measurements>
           <Relaxation_Iterations>
             <ncg_had>864</ncg_had>

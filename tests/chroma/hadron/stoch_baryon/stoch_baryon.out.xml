@@ -1216,10 +1216,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>13 Oct 06 23:45:46 EDT</run_date>
+    <run_date>02 Dec 06 16:14:39 EST</run_date>
     <Setgeom>
       <latt_size>2 2 2 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1236,16 +1236,9 @@
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.994775467862686</w_plaq>
@@ -1283,10 +1276,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1382,10 +1375,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1541,10 +1534,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1640,10 +1633,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1799,10 +1792,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1898,10 +1891,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2057,10 +2050,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2156,10 +2149,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2315,10 +2308,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2414,10 +2407,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:46 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2573,10 +2566,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2672,10 +2665,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2831,10 +2824,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2930,10 +2923,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3089,10 +3082,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3188,10 +3181,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3347,10 +3340,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3446,10 +3439,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3605,10 +3598,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3704,10 +3697,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3863,10 +3856,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3962,10 +3955,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4121,10 +4114,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4220,10 +4213,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4379,10 +4372,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:47 EDT</run_date>
+          <run_date>02 Dec 06 16:14:39 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>

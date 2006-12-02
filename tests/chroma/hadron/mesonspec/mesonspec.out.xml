@@ -444,10 +444,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>13 Oct 06 23:45:34 EDT</run_date>
+    <run_date>02 Dec 06 16:14:49 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -464,16 +464,9 @@ regression test spectrum output is kept within the chroma xml output
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.994803997506905</w_plaq>
@@ -511,10 +504,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:34 EDT</run_date>
+          <run_date>02 Dec 06 16:14:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -611,10 +604,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:34 EDT</run_date>
+          <run_date>02 Dec 06 16:14:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -701,6 +694,7 @@ regression test spectrum output is kept within the chroma xml output
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -728,14 +722,6 @@ regression test spectrum output is kept within the chroma xml output
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -894,78 +880,74 @@ regression test spectrum output is kept within the chroma xml output
             </elem>
           </pollp>
         </Observables>
+        <Prop_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
         <Forward_prop_correlator>
           <forward_prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</forward_prop_corr>
         </Forward_prop_correlator>
-        <PropSource>
-          <version>6</version><Source>
-      <version>2</version>
-      <SourceType>SHELL_SOURCE</SourceType>
-      <j_decay>3</j_decay>
-      <t_srce>0 0 0 0</t_srce>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Source>
-
-          <j_decay>3</j_decay>
-          <t_source>0</t_source>
-        </PropSource>
-        <ForwardProp>
-          <version>9</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1.0</xi_0>
-        <nu>1.0</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-12</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</ForwardProp>
-        <PropSink>
-          <version>5</version><Sink>
-      <version>2</version>
-      <SinkType>POINT_SINK</SinkType>
-      <j_decay>3</j_decay>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Sink>
-
-          <j_decay>3</j_decay>
-        </PropSink>
         <SinkSmearedProp_correlator>
           <sink_smeared_prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
@@ -976,10 +958,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:34 EDT</run_date>
+          <run_date>02 Dec 06 16:14:49 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1078,10 +1060,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:35 EDT</run_date>
+          <run_date>02 Dec 06 16:14:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1168,6 +1150,7 @@ regression test spectrum output is kept within the chroma xml output
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -1197,14 +1180,6 @@ regression test spectrum output is kept within the chroma xml output
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -1357,74 +1332,76 @@ regression test spectrum output is kept within the chroma xml output
             </elem>
           </pollp>
         </Observables>
+        <Prop_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>D-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
         <Forward_prop_correlator>
           <forward_prop_corr>0.00386918896877507 0.000316164182371664 0.000120015238750589 5.41338764177346e-05 3.73349496718832e-05 5.41011008920752e-05 0.000119966185886086 0.000315877181791293</forward_prop_corr>
         </Forward_prop_correlator>
-        <PropSource>
-          <version>6</version><Source>
-      <version>2</version>
-      <SourceType>SHELL_SOURCE</SourceType>
-      <j_decay>3</j_decay>
-      <t_srce>0 0 0 0</t_srce>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>D-DERIV</DisplacementType>
-        <deriv_dir>0</deriv_dir>
-        <deriv_length>2</deriv_length>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Source>
-
-          <j_decay>3</j_decay>
-          <t_source>0</t_source>
-        </PropSource>
-        <ForwardProp>
-          <version>9</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1.0</xi_0>
-        <nu>1.0</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-12</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</ForwardProp>
-        <PropSink>
-          <version>5</version><Sink>
-      <version>2</version>
-      <SinkType>POINT_SINK</SinkType>
-      <j_decay>3</j_decay>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-    </Sink>
-
-          <j_decay>3</j_decay>
-        </PropSink>
         <SinkSmearedProp_correlator>
           <sink_smeared_prop_corr>0.00386918896877507 0.000316164182371664 0.000120015238750589 5.41338764177346e-05 3.73349496718832e-05 5.41011008920752e-05 0.000119966185886086 0.000315877181791293</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
@@ -1498,82 +1475,76 @@ regression test spectrum output is kept within the chroma xml output
             </elem>
           </pollp>
         </Observables>
+        <Prop_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>D-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
         <Forward_prop_correlator>
           <forward_prop_corr>0.00386918896877507 0.000316164182371664 0.000120015238750589 5.41338764177346e-05 3.73349496718832e-05 5.41011008920752e-05 0.000119966185886086 0.000315877181791293</forward_prop_corr>
         </Forward_prop_correlator>
-        <PropSource>
-          <version>6</version><Source>
-      <version>2</version>
-      <SourceType>SHELL_SOURCE</SourceType>
-      <j_decay>3</j_decay>
-      <t_srce>0 0 0 0</t_srce>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>D-DERIV</DisplacementType>
-        <deriv_dir>0</deriv_dir>
-        <deriv_length>2</deriv_length>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Source>
-
-          <j_decay>3</j_decay>
-          <t_source>0</t_source>
-        </PropSource>
-        <ForwardProp>
-          <version>9</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1.0</xi_0>
-        <nu>1.0</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-12</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</ForwardProp>
-        <PropSink>
-          <version>5</version><Sink>
-      <version>2</version>
-      <SinkType>POINT_SINK</SinkType>
-      <j_decay>3</j_decay>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>D-DERIV</DisplacementType>
-        <deriv_dir>0</deriv_dir>
-        <deriv_length>2</deriv_length>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Sink>
-
-          <j_decay>3</j_decay>
-        </PropSink>
         <SinkSmearedProp_correlator>
           <sink_smeared_prop_corr>0.000153723958344974 1.1342019466218e-05 4.47305190255896e-06 2.14132779980543e-06 1.36277472999699e-06 2.19901424950722e-06 4.15815327888162e-06 1.21669831190266e-05</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
@@ -1584,10 +1555,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 23:45:35 EDT</run_date>
+          <run_date>02 Dec 06 16:14:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1723,7 +1694,7 @@ regression test spectrum output is kept within the chroma xml output
               <elem>
                 <First_forward_prop>
                   <version>1</version>
-                  <PropSinkSmear>
+                  <PropSink>
                     <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
@@ -1741,7 +1712,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                     <j_decay>3</j_decay>
-                  </PropSinkSmear>
+                  </PropSink>
                   <ForwardProp>
                     <version>9</version>
                     <quarkSpinType>FULL</quarkSpinType>
@@ -1792,10 +1763,13 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                     <t_source>0</t_source>
                   </PropSource>
+                  <Config_info><weak_field>
+</weak_field>
+</Config_info>
                 </First_forward_prop>
                 <Second_forward_prop>
                   <version>1</version>
-                  <PropSinkSmear>
+                  <PropSink>
                     <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
@@ -1807,7 +1781,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                     <j_decay>3</j_decay>
-                  </PropSinkSmear>
+                  </PropSink>
                   <ForwardProp>
                     <version>9</version>
                     <quarkSpinType>FULL</quarkSpinType>
@@ -1860,12 +1834,15 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                     <t_source>0</t_source>
                   </PropSource>
+                  <Config_info><weak_field>
+</weak_field>
+</Config_info>
                 </Second_forward_prop>
               </elem>
               <elem>
                 <First_forward_prop>
                   <version>1</version>
-                  <PropSinkSmear>
+                  <PropSink>
                     <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
@@ -1883,7 +1860,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                     <j_decay>3</j_decay>
-                  </PropSinkSmear>
+                  </PropSink>
                   <ForwardProp>
                     <version>9</version>
                     <quarkSpinType>FULL</quarkSpinType>
@@ -1934,10 +1911,13 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                     <t_source>0</t_source>
                   </PropSource>
+                  <Config_info><weak_field>
+</weak_field>
+</Config_info>
                 </First_forward_prop>
                 <Second_forward_prop>
                   <version>1</version>
-                  <PropSinkSmear>
+                  <PropSink>
                     <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
@@ -1957,7 +1937,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                     <j_decay>3</j_decay>
-                  </PropSinkSmear>
+                  </PropSink>
                   <ForwardProp>
                     <version>9</version>
                     <quarkSpinType>FULL</quarkSpinType>
@@ -2010,6 +1990,9 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                     <t_source>0</t_source>
                   </PropSource>
+                  <Config_info><weak_field>
+</weak_field>
+</Config_info>
                 </Second_forward_prop>
               </elem>
             </Forward_prop_headers>
@@ -2214,7 +2197,7 @@ regression test spectrum output is kept within the chroma xml output
               <elem>
                 <First_forward_prop>
                   <version>1</version>
-                  <PropSinkSmear>
+                  <PropSink>
                     <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
@@ -2232,7 +2215,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                     <j_decay>3</j_decay>
-                  </PropSinkSmear>
+                  </PropSink>
                   <ForwardProp>
                     <version>9</version>
                     <quarkSpinType>FULL</quarkSpinType>
@@ -2283,10 +2266,13 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                     <t_source>0</t_source>
                   </PropSource>
+                  <Config_info><weak_field>
+</weak_field>
+</Config_info>
                 </First_forward_prop>
                 <Second_forward_prop>
                   <version>1</version>
-                  <PropSinkSmear>
+                  <PropSink>
                     <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
@@ -2298,7 +2284,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                     <j_decay>3</j_decay>
-                  </PropSinkSmear>
+                  </PropSink>
                   <ForwardProp>
                     <version>9</version>
                     <quarkSpinType>FULL</quarkSpinType>
@@ -2351,6 +2337,9 @@ regression test spectrum output is kept within the chroma xml output
                     <j_decay>3</j_decay>
                     <t_source>0</t_source>
                   </PropSource>
+                  <Config_info><weak_field>
+</weak_field>
+</Config_info>
                 </Second_forward_prop>
               </elem>
             </Forward_prop_headers>

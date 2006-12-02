@@ -241,10 +241,10 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>13 Oct 06 22:57:21 EDT</run_date>
+    <run_date>02 Dec 06 16:14:45 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -261,16 +261,9 @@ regression test spectrum output is kept within the chroma xml output
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.994803997506905</w_plaq>
@@ -308,10 +301,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:21 EDT</run_date>
+          <run_date>02 Dec 06 16:14:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -408,10 +401,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:21 EDT</run_date>
+          <run_date>02 Dec 06 16:14:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -498,6 +491,7 @@ regression test spectrum output is kept within the chroma xml output
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -525,14 +519,6 @@ regression test spectrum output is kept within the chroma xml output
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -691,78 +677,74 @@ regression test spectrum output is kept within the chroma xml output
             </elem>
           </pollp>
         </Observables>
+        <Prop_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
         <Forward_prop_correlator>
           <forward_prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</forward_prop_corr>
         </Forward_prop_correlator>
-        <PropSource>
-          <version>6</version><Source>
-      <version>2</version>
-      <SourceType>SHELL_SOURCE</SourceType>
-      <j_decay>3</j_decay>
-      <t_srce>0 0 0 0</t_srce>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Source>
-
-          <j_decay>3</j_decay>
-          <t_source>0</t_source>
-        </PropSource>
-        <ForwardProp>
-          <version>9</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1.0</xi_0>
-        <nu>1.0</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-12</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</ForwardProp>
-        <PropSink>
-          <version>5</version><Sink>
-      <version>2</version>
-      <SinkType>POINT_SINK</SinkType>
-      <j_decay>3</j_decay>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Sink>
-
-          <j_decay>3</j_decay>
-        </PropSink>
         <SinkSmearedProp_correlator>
           <sink_smeared_prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
@@ -840,84 +822,74 @@ regression test spectrum output is kept within the chroma xml output
             </elem>
           </pollp>
         </Observables>
+        <Prop_file_info><propagator>
+      <id>0</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
         <Forward_prop_correlator>
           <forward_prop_corr>0.192608933581813 0.0159807814610909 0.0061806293556367 0.00284180978568553 0.00198266748363577 0.00283889775683682 0.00617588844386351 0.0159631272017755</forward_prop_corr>
         </Forward_prop_correlator>
-        <PropSource>
-          <version>6</version><Source>
-      <version>2</version>
-      <SourceType>SHELL_SOURCE</SourceType>
-      <j_decay>3</j_decay>
-      <t_srce>0 0 0 0</t_srce>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Source>
-
-          <j_decay>3</j_decay>
-          <t_source>0</t_source>
-        </PropSource>
-        <ForwardProp>
-          <version>9</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP><FermionAction>
-      <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-        <t_dir>3</t_dir>
-        <xi_0>1.0</xi_0>
-        <nu>1.0</nu>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-12</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</ForwardProp>
-        <PropSink>
-          <version>5</version><Sink>
-      <version>2</version>
-      <SinkType>SHELL_SINK</SinkType>
-      <j_decay>3</j_decay>
-      <Displacement>
-        <version>1</version>
-        <DisplacementType>NONE</DisplacementType>
-      </Displacement>
-      <SmearingParam>
-        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-        <wvf_param>2.0</wvf_param>
-        <wvfIntPar>5</wvfIntPar>
-        <no_smear_dir>3</no_smear_dir>
-      </SmearingParam>
-      <LinkSmearing>
-        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-        <link_smear_fact>2.5</link_smear_fact>
-        <link_smear_num>1</link_smear_num>
-        <no_smear_dir>3</no_smear_dir>
-      </LinkSmearing>
-    </Sink>
-
-          <j_decay>3</j_decay>
-        </PropSink>
         <SinkSmearedProp_correlator>
           <sink_smeared_prop_corr>2.7680994515226 0.0382032750474977 0.00643155301702432 0.00278466687256993 0.00193899147214226 0.00278128640152976 0.00642889686863981 0.038160325042159</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
@@ -928,10 +900,10 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:22 EDT</run_date>
+          <run_date>02 Dec 06 16:14:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1013,7 +985,7 @@ regression test spectrum output is kept within the chroma xml output
             <Forward_prop_headers>
               <First_forward_prop>
                 <version>1</version>
-                <PropSinkSmear>
+                <PropSink>
                   <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
@@ -1031,7 +1003,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                   <j_decay>3</j_decay>
-                </PropSinkSmear>
+                </PropSink>
                 <ForwardProp>
                   <version>9</version>
                   <quarkSpinType>FULL</quarkSpinType>
@@ -1082,10 +1054,13 @@ regression test spectrum output is kept within the chroma xml output
                   <j_decay>3</j_decay>
                   <t_source>0</t_source>
                 </PropSource>
+                <Config_info><weak_field>
+</weak_field>
+</Config_info>
               </First_forward_prop>
               <Second_forward_prop>
                 <version>1</version>
-                <PropSinkSmear>
+                <PropSink>
                   <version>5</version><Sink>
       <version>2</version>
       <SinkType>POINT_SINK</SinkType>
@@ -1103,7 +1078,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                   <j_decay>3</j_decay>
-                </PropSinkSmear>
+                </PropSink>
                 <ForwardProp>
                   <version>9</version>
                   <quarkSpinType>FULL</quarkSpinType>
@@ -1154,6 +1129,9 @@ regression test spectrum output is kept within the chroma xml output
                   <j_decay>3</j_decay>
                   <t_source>0</t_source>
                 </PropSource>
+                <Config_info><weak_field>
+</weak_field>
+</Config_info>
               </Second_forward_prop>
             </Forward_prop_headers>
             <Forward_prop_correlator>
@@ -3745,7 +3723,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.02224379</re>
-                        <im>-9.821825e-06</im>
+                        <im>-9.821827e-06</im>
                       </elem>
                       <elem>
                         <re>0.0006697738</re>
@@ -3757,7 +3735,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.982481e-05</re>
-                        <im>-2.013077e-08</im>
+                        <im>-2.013076e-08</im>
                       </elem>
                       <elem>
                         <re>1.52052e-05</re>
@@ -3783,7 +3761,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.007692541</re>
-                        <im>-2.423435e-06</im>
+                        <im>-2.423437e-06</im>
                       </elem>
                       <elem>
                         <re>8.762907e-05</re>
@@ -3791,11 +3769,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.47226e-06</re>
-                        <im>-7.136024e-09</im>
+                        <im>-7.13602e-09</im>
                       </elem>
                       <elem>
                         <re>7.221781e-07</re>
-                        <im>2.349734e-10</im>
+                        <im>2.34973e-10</im>
                       </elem>
                       <elem>
                         <re>1.68937e-07</re>
@@ -3803,7 +3781,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.881204e-07</re>
-                        <im>2.018719e-09</im>
+                        <im>2.018718e-09</im>
                       </elem>
                       <elem>
                         <re>6.191408e-07</re>
@@ -3821,7 +3799,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.002159747</re>
-                        <im>-4.912403e-07</im>
+                        <im>-4.912407e-07</im>
                       </elem>
                       <elem>
                         <re>1.858011e-05</re>
@@ -3829,11 +3807,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.464243e-07</re>
-                        <im>-9.031493e-10</im>
+                        <im>-9.031489e-10</im>
                       </elem>
                       <elem>
                         <re>1.032774e-08</re>
-                        <im>-3.21889e-10</im>
+                        <im>-3.218884e-10</im>
                       </elem>
                       <elem>
                         <re>2.525655e-10</re>
@@ -3841,15 +3819,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.30161e-09</re>
-                        <im>-3.92036e-10</im>
+                        <im>-3.920356e-10</im>
                       </elem>
                       <elem>
                         <re>2.841093e-08</re>
-                        <im>-7.675666e-12</im>
+                        <im>-7.676258e-12</im>
                       </elem>
                       <elem>
                         <re>7.124097e-07</re>
-                        <im>7.202386e-09</im>
+                        <im>7.202385e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -3863,7 +3841,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.179079e-06</re>
-                        <im>-6.563105e-09</im>
+                        <im>-6.563108e-09</im>
                       </elem>
                       <elem>
                         <re>3.198643e-09</re>
@@ -3871,23 +3849,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-3.496083e-10</re>
-                        <im>-5.825259e-10</im>
+                        <im>-5.825279e-10</im>
                       </elem>
                       <elem>
                         <re>-2.004155e-11</re>
-                        <im>-1.109624e-10</im>
+                        <im>-1.109625e-10</im>
                       </elem>
                       <elem>
                         <re>-4.585306e-10</re>
-                        <im>1.609292e-12</im>
+                        <im>1.609958e-12</im>
                       </elem>
                       <elem>
                         <re>-2.968706e-09</re>
-                        <im>3.810676e-11</im>
+                        <im>3.810631e-11</im>
                       </elem>
                       <elem>
                         <re>2.526746e-08</re>
-                        <im>1.195303e-09</im>
+                        <im>1.195304e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -3940,19 +3918,19 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.009230202</re>
-                        <im>-3.539518e-06</im>
+                        <im>-3.53952e-06</im>
                       </elem>
                       <elem>
                         <re>0.0001167325</re>
-                        <im>-1.432496e-07</im>
+                        <im>-1.432495e-07</im>
                       </elem>
                       <elem>
                         <re>7.261195e-06</re>
-                        <im>-8.540424e-09</im>
+                        <im>-8.540419e-09</im>
                       </elem>
                       <elem>
                         <re>9.43892e-07</re>
-                        <im>6.018344e-10</im>
+                        <im>6.018339e-10</im>
                       </elem>
                       <elem>
                         <re>2.037317e-07</re>
@@ -3960,7 +3938,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.991204e-07</re>
-                        <im>2.028898e-09</im>
+                        <im>2.028897e-09</im>
                       </elem>
                       <elem>
                         <re>6.287989e-07</re>
@@ -3968,7 +3946,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.108893e-06</re>
-                        <im>5.292855e-08</im>
+                        <im>5.292854e-08</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -3978,7 +3956,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.002592078</re>
-                        <im>-7.546408e-07</im>
+                        <im>-7.546412e-07</im>
                       </elem>
                       <elem>
                         <re>2.475927e-05</re>
@@ -3990,23 +3968,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.386246e-08</re>
-                        <im>-4.661657e-10</im>
+                        <im>-4.661651e-10</im>
                       </elem>
                       <elem>
                         <re>4.095984e-10</re>
-                        <im>-1.896142e-10</im>
+                        <im>-1.896143e-10</im>
                       </elem>
                       <elem>
                         <re>2.406504e-09</re>
-                        <im>-4.367373e-10</im>
+                        <im>-4.367368e-10</im>
                       </elem>
                       <elem>
                         <re>2.864352e-08</re>
-                        <im>-6.63801e-11</im>
+                        <im>-6.638099e-11</im>
                       </elem>
                       <elem>
                         <re>7.140366e-07</re>
-                        <im>6.69246e-09</im>
+                        <im>6.692459e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4020,23 +3998,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.573532e-06</re>
-                        <im>-8.814262e-09</im>
+                        <im>-8.814268e-09</im>
                       </elem>
                       <elem>
                         <re>4.441088e-09</re>
-                        <im>-3.078492e-09</im>
+                        <im>-3.078491e-09</im>
                       </elem>
                       <elem>
                         <re>-5.417244e-10</re>
-                        <im>-7.180004e-10</im>
+                        <im>-7.180028e-10</im>
                       </elem>
                       <elem>
                         <re>1.341355e-11</re>
-                        <im>-1.484316e-10</im>
+                        <im>-1.484318e-10</im>
                       </elem>
                       <elem>
                         <re>-4.36831e-10</re>
-                        <im>-2.942165e-11</im>
+                        <im>-2.942121e-11</im>
                       </elem>
                       <elem>
                         <re>-3.02838e-09</re>
@@ -4044,7 +4022,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.428179e-08</re>
-                        <im>7.126623e-10</im>
+                        <im>7.126636e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4059,7 +4037,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.05335755</re>
-                        <im>-3.157797e-05</im>
+                        <im>-3.157796e-05</im>
                       </elem>
                       <elem>
                         <re>0.001992569</re>
@@ -4071,7 +4049,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.0001134285</re>
-                        <im>4.974115e-08</im>
+                        <im>4.974114e-08</im>
                       </elem>
                       <elem>
                         <re>3.698974e-05</re>
@@ -4097,7 +4075,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.01846691</re>
-                        <im>-7.290053e-06</im>
+                        <im>-7.290051e-06</im>
                       </elem>
                       <elem>
                         <re>0.0002622779</re>
@@ -4109,7 +4087,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.079226e-06</re>
-                        <im>3.975536e-09</im>
+                        <im>3.975535e-09</im>
                       </elem>
                       <elem>
                         <re>4.093899e-07</re>
@@ -4117,7 +4095,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.315484e-07</re>
-                        <im>4.677181e-09</im>
+                        <im>4.67718e-09</im>
                       </elem>
                       <elem>
                         <re>9.712774e-07</re>
@@ -4135,27 +4113,27 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.005181315</re>
-                        <im>-9.69635e-07</im>
+                        <im>-9.696341e-07</im>
                       </elem>
                       <elem>
                         <re>5.567063e-05</re>
-                        <im>-2.822292e-08</im>
+                        <im>-2.822291e-08</im>
                       </elem>
                       <elem>
                         <re>1.035533e-06</re>
-                        <im>-3.478645e-09</im>
+                        <im>-3.478641e-09</im>
                       </elem>
                       <elem>
                         <re>3.097281e-08</re>
-                        <im>-1.886624e-09</im>
+                        <im>-1.886622e-09</im>
                       </elem>
                       <elem>
-                        <re>1.12319e-09</re>
-                        <im>-8.422992e-10</im>
+                        <re>1.123209e-09</re>
+                        <im>-8.422995e-10</im>
                       </elem>
                       <elem>
                         <re>4.239864e-09</re>
-                        <im>-5.858665e-10</im>
+                        <im>-5.858654e-10</im>
                       </elem>
                       <elem>
                         <re>4.401274e-08</re>
@@ -4185,7 +4163,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-1.36136e-09</re>
-                        <im>-3.862461e-09</im>
+                        <im>-3.862452e-09</im>
                       </elem>
                       <elem>
                         <re>2.965448e-10</re>
@@ -4193,11 +4171,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-6.195063e-10</re>
-                        <im>-2.019662e-10</im>
+                        <im>-2.019649e-10</im>
                       </elem>
                       <elem>
                         <re>-4.577243e-09</re>
-                        <im>-7.661639e-12</im>
+                        <im>-7.659862e-12</im>
                       </elem>
                       <elem>
                         <re>3.421527e-08</re>
@@ -4216,7 +4194,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.02220751</re>
-                        <im>-9.097162e-06</im>
+                        <im>-9.097164e-06</im>
                       </elem>
                       <elem>
                         <re>0.0006563553</re>
@@ -4254,7 +4232,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.007699089</re>
-                        <im>-2.408113e-06</im>
+                        <im>-2.408115e-06</im>
                       </elem>
                       <elem>
                         <re>8.750211e-05</re>
@@ -4262,15 +4240,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.460022e-06</re>
-                        <im>-4.801247e-09</im>
+                        <im>-4.801251e-09</im>
                       </elem>
                       <elem>
                         <re>7.216659e-07</re>
-                        <im>5.384806e-10</im>
+                        <im>5.384798e-10</im>
                       </elem>
                       <elem>
                         <re>1.688686e-07</re>
-                        <im>8.406517e-10</im>
+                        <im>8.406522e-10</im>
                       </elem>
                       <elem>
                         <re>1.886924e-07</re>
@@ -4292,7 +4270,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.002156961</re>
-                        <im>-4.958353e-07</im>
+                        <im>-4.958366e-07</im>
                       </elem>
                       <elem>
                         <re>1.858297e-05</re>
@@ -4300,23 +4278,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.465048e-07</re>
-                        <im>-1.755879e-09</im>
+                        <im>-1.755878e-09</im>
                       </elem>
                       <elem>
                         <re>1.045915e-08</re>
-                        <im>-4.595063e-10</im>
+                        <im>-4.595058e-10</im>
                       </elem>
                       <elem>
                         <re>2.998089e-10</re>
-                        <im>-8.654317e-11</im>
+                        <im>-8.654284e-11</im>
                       </elem>
                       <elem>
-                        <re>2.476166e-09</re>
-                        <im>-2.182361e-10</im>
+                        <re>2.476161e-09</re>
+                        <im>-2.182359e-10</im>
                       </elem>
                       <elem>
                         <re>2.868502e-08</re>
-                        <im>1.052528e-10</im>
+                        <im>1.052533e-10</im>
                       </elem>
                       <elem>
                         <re>7.147302e-07</re>
@@ -4342,7 +4320,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-2.822984e-10</re>
-                        <im>-4.17279e-10</im>
+                        <im>-4.172805e-10</im>
                       </elem>
                       <elem>
                         <re>4.653756e-11</re>
@@ -4350,15 +4328,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-5.015012e-10</re>
-                        <im>4.394077e-12</im>
+                        <im>4.393966e-12</im>
                       </elem>
                       <elem>
                         <re>-3.130319e-09</re>
-                        <im>-3.961123e-10</im>
+                        <im>-3.961126e-10</im>
                       </elem>
                       <elem>
                         <re>2.592618e-08</re>
-                        <im>8.588322e-11</im>
+                        <im>8.588145e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4381,7 +4359,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.0001860535</re>
-                        <im>-8.424671e-08</im>
+                        <im>-8.42467e-08</im>
                       </elem>
                       <elem>
                         <re>5.125375e-05</re>
@@ -4411,7 +4389,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.009238931</re>
-                        <im>-3.519089e-06</im>
+                        <im>-3.519091e-06</im>
                       </elem>
                       <elem>
                         <re>0.0001165632</re>
@@ -4419,15 +4397,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>7.244879e-06</re>
-                        <im>-5.427376e-09</im>
+                        <im>-5.42738e-09</im>
                       </elem>
                       <elem>
                         <re>9.432091e-07</re>
-                        <im>1.006511e-09</im>
+                        <im>1.00651e-09</im>
                       </elem>
                       <elem>
                         <re>2.036406e-07</re>
-                        <im>1.052601e-09</im>
+                        <im>1.052602e-09</im>
                       </elem>
                       <elem>
                         <re>1.99883e-07</re>
@@ -4439,7 +4417,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.034206e-06</re>
-                        <im>5.835059e-08</im>
+                        <im>5.835058e-08</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4449,7 +4427,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.002588364</re>
-                        <im>-7.607679e-07</im>
+                        <im>-7.607694e-07</im>
                       </elem>
                       <elem>
                         <re>2.476309e-05</re>
@@ -4461,23 +4439,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.403774e-08</re>
-                        <im>-6.496556e-10</im>
+                        <im>-6.496549e-10</im>
                       </elem>
                       <elem>
                         <re>4.725833e-10</re>
-                        <im>-2.177721e-10</im>
+                        <im>-2.177718e-10</im>
                       </elem>
                       <elem>
-                        <re>2.63925e-09</re>
-                        <im>-2.050039e-10</im>
+                        <re>2.639241e-09</re>
+                        <im>-2.050037e-10</im>
                       </elem>
                       <elem>
                         <re>2.900902e-08</re>
-                        <im>8.418884e-11</im>
+                        <im>8.418959e-11</im>
                       </elem>
                       <elem>
                         <re>7.17131e-07</re>
-                        <im>7.298337e-09</im>
+                        <im>7.298336e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4499,7 +4477,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-4.51959e-10</re>
-                        <im>-4.976731e-10</im>
+                        <im>-4.976745e-10</im>
                       </elem>
                       <elem>
                         <re>1.021762e-10</re>
@@ -4507,15 +4485,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-4.941534e-10</re>
-                        <im>-2.571001e-11</im>
+                        <im>-2.571023e-11</im>
                       </elem>
                       <elem>
                         <re>-3.24382e-09</re>
-                        <im>-4.720563e-10</im>
+                        <im>-4.720566e-10</im>
                       </elem>
                       <elem>
                         <re>2.516006e-08</re>
-                        <im>-7.665701e-10</im>
+                        <im>-7.665719e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4530,7 +4508,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.05332161</re>
-                        <im>-3.087807e-05</im>
+                        <im>-3.087808e-05</im>
                       </elem>
                       <elem>
                         <re>0.001979415</re>
@@ -4568,27 +4546,27 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.01847334</re>
-                        <im>-7.248411e-06</im>
+                        <im>-7.248413e-06</im>
                       </elem>
                       <elem>
                         <re>0.000262175</re>
-                        <im>-3.152238e-07</im>
+                        <im>-3.152239e-07</im>
                       </elem>
                       <elem>
                         <re>1.623741e-05</re>
-                        <im>-1.007311e-08</im>
+                        <im>-1.00731e-08</im>
                       </elem>
                       <elem>
                         <re>2.080439e-06</re>
-                        <im>3.722658e-09</im>
+                        <im>3.722656e-09</im>
                       </elem>
                       <elem>
                         <re>4.091276e-07</re>
-                        <im>3.135879e-09</im>
+                        <im>3.13588e-09</im>
                       </elem>
                       <elem>
                         <re>3.320121e-07</re>
-                        <im>5.714135e-09</im>
+                        <im>5.714134e-09</im>
                       </elem>
                       <elem>
                         <re>9.685051e-07</re>
@@ -4596,7 +4574,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>6.129269e-06</re>
-                        <im>8.975886e-08</im>
+                        <im>8.975884e-08</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4606,7 +4584,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.005178611</re>
-                        <im>-9.681917e-07</im>
+                        <im>-9.681921e-07</im>
                       </elem>
                       <elem>
                         <re>5.568968e-05</re>
@@ -4614,15 +4592,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.035991e-06</re>
-                        <im>-3.949467e-09</im>
+                        <im>-3.949469e-09</im>
                       </elem>
                       <elem>
                         <re>3.162561e-08</re>
-                        <im>-2.38715e-09</im>
+                        <im>-2.387154e-09</im>
                       </elem>
                       <elem>
                         <re>1.106195e-09</re>
-                        <im>-9.608242e-10</im>
+                        <im>-9.608243e-10</im>
                       </elem>
                       <elem>
                         <re>4.330733e-09</re>
@@ -4630,11 +4608,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.410547e-08</re>
-                        <im>7.371752e-10</im>
+                        <im>7.371739e-10</im>
                       </elem>
                       <elem>
                         <re>1.078203e-06</re>
-                        <im>1.241729e-08</im>
+                        <im>1.241728e-08</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4644,7 +4622,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>-0.0005975156</re>
-                        <im>-1.982475e-07</im>
+                        <im>-1.982476e-07</im>
                       </elem>
                       <elem>
                         <re>3.549383e-06</re>
@@ -4652,11 +4630,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.288857e-08</re>
-                        <im>-1.328286e-08</im>
+                        <im>-1.328285e-08</im>
                       </elem>
                       <elem>
                         <re>-1.769375e-09</re>
-                        <im>-3.577177e-09</im>
+                        <im>-3.577172e-09</im>
                       </elem>
                       <elem>
                         <re>2.526629e-10</re>
@@ -4668,11 +4646,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-4.967692e-09</re>
-                        <im>-5.323506e-10</im>
+                        <im>-5.323519e-10</im>
                       </elem>
                       <elem>
                         <re>3.387481e-08</re>
-                        <im>-6.371951e-10</im>
+                        <im>-6.371973e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4733,11 +4711,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.361824e-06</re>
-                        <im>-2.603601e-09</im>
+                        <im>-2.603607e-09</im>
                       </elem>
                       <elem>
                         <re>6.647858e-07</re>
-                        <im>1.39211e-09</im>
+                        <im>1.392109e-09</im>
                       </elem>
                       <elem>
                         <re>1.042748e-07</re>
@@ -4745,7 +4723,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.307593e-08</re>
-                        <im>4.175517e-10</im>
+                        <im>4.175519e-10</im>
                       </elem>
                       <elem>
                         <re>2.922847e-08</re>
@@ -4771,19 +4749,19 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.433229e-07</re>
-                        <im>-1.347689e-09</im>
+                        <im>-1.34769e-09</im>
                       </elem>
                       <elem>
                         <re>1.055601e-08</re>
-                        <im>-5.955168e-10</im>
+                        <im>-5.955149e-10</im>
                       </elem>
                       <elem>
                         <re>4.739746e-10</re>
-                        <im>-3.738784e-10</im>
+                        <im>-3.738782e-10</im>
                       </elem>
                       <elem>
                         <re>3.602418e-10</re>
-                        <im>-9.69695e-11</im>
+                        <im>-9.696941e-11</im>
                       </elem>
                       <elem>
                         <re>8.979483e-10</re>
@@ -4805,15 +4783,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.182569e-06</re>
-                        <im>-1.180788e-08</im>
+                        <im>-1.180787e-08</im>
                       </elem>
                       <elem>
                         <re>4.139357e-09</re>
-                        <im>-2.587076e-09</im>
+                        <im>-2.587074e-09</im>
                       </elem>
                       <elem>
                         <re>-5.050071e-10</re>
-                        <im>-3.857046e-10</im>
+                        <im>-3.857034e-10</im>
                       </elem>
                       <elem>
                         <re>1.449309e-10</re>
@@ -4821,7 +4799,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>6.418928e-11</re>
-                        <im>1.034107e-11</im>
+                        <im>1.034129e-11</im>
                       </elem>
                       <elem>
                         <re>-7.524353e-11</re>
@@ -4829,7 +4807,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-8.064706e-10</re>
-                        <im>1.789715e-13</im>
+                        <im>1.787772e-13</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4848,7 +4826,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.0008813587</re>
-                        <im>-1.490865e-06</im>
+                        <im>-1.490866e-06</im>
                       </elem>
                       <elem>
                         <re>0.0001853243</re>
@@ -4890,19 +4868,19 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>7.149098e-06</re>
-                        <im>-3.471468e-09</im>
+                        <im>-3.471476e-09</im>
                       </elem>
                       <elem>
                         <re>8.86381e-07</re>
-                        <im>1.856145e-09</im>
+                        <im>1.856144e-09</im>
                       </elem>
                       <elem>
                         <re>1.390331e-07</re>
-                        <im>8.615307e-10</im>
+                        <im>8.615308e-10</im>
                       </elem>
                       <elem>
                         <re>4.410124e-08</re>
-                        <im>5.567357e-10</im>
+                        <im>5.56736e-10</im>
                       </elem>
                       <elem>
                         <re>3.89713e-08</re>
@@ -4924,31 +4902,31 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.471798e-05</re>
-                        <im>-2.29209e-08</im>
+                        <im>-2.292089e-08</im>
                       </elem>
                       <elem>
                         <re>4.577639e-07</re>
-                        <im>-1.796917e-09</im>
+                        <im>-1.796918e-09</im>
                       </elem>
                       <elem>
                         <re>1.407471e-08</re>
-                        <im>-7.940221e-10</im>
+                        <im>-7.940198e-10</im>
                       </elem>
                       <elem>
                         <re>6.319835e-10</re>
-                        <im>-4.985043e-10</im>
+                        <im>-4.98504e-10</im>
                       </elem>
                       <elem>
                         <re>4.803252e-10</re>
-                        <im>-1.292928e-10</im>
+                        <im>-1.292925e-10</im>
                       </elem>
                       <elem>
                         <re>1.197264e-09</re>
-                        <im>9.627216e-11</im>
+                        <im>9.627212e-11</im>
                       </elem>
                       <elem>
                         <re>6.921575e-09</re>
-                        <im>2.271881e-10</im>
+                        <im>2.27188e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -4966,11 +4944,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.519143e-09</re>
-                        <im>-3.449435e-09</im>
+                        <im>-3.449433e-09</im>
                       </elem>
                       <elem>
                         <re>-6.734185e-10</re>
-                        <im>-5.142718e-10</im>
+                        <im>-5.142703e-10</im>
                       </elem>
                       <elem>
                         <re>1.932507e-10</re>
@@ -4978,7 +4956,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>8.559044e-11</re>
-                        <im>1.378789e-11</im>
+                        <im>1.378828e-11</im>
                       </elem>
                       <elem>
                         <re>-1.003238e-10</re>
@@ -4986,7 +4964,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-1.075294e-09</re>
-                        <im>2.385454e-13</im>
+                        <im>2.382401e-13</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5017,7 +4995,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.0001136444</re>
-                        <im>6.582423e-07</im>
+                        <im>6.582422e-07</im>
                       </elem>
                       <elem>
                         <re>3.085486e-05</re>
@@ -5059,7 +5037,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.956939e-07</re>
-                        <im>5.562374e-09</im>
+                        <im>5.562371e-09</im>
                       </elem>
                       <elem>
                         <re>3.497843e-07</re>
@@ -5077,7 +5055,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.01553877</re>
-                        <im>-6.550949e-06</im>
+                        <im>-6.550948e-06</im>
                       </elem>
                       <elem>
                         <re>0.0002224612</re>
@@ -5085,7 +5063,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.124352e-06</re>
-                        <im>-1.4619e-08</im>
+                        <im>-1.461895e-08</im>
                       </elem>
                       <elem>
                         <re>1.255308e-07</re>
@@ -5097,11 +5075,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.753297e-09</re>
-                        <im>-1.518446e-09</im>
+                        <im>-1.518447e-09</im>
                       </elem>
                       <elem>
                         <re>1.059353e-08</re>
-                        <im>1.114212e-09</im>
+                        <im>1.114214e-09</im>
                       </elem>
                       <elem>
                         <re>6.216593e-08</re>
@@ -5119,31 +5097,31 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.419612e-05</re>
-                        <im>-1.564649e-07</im>
+                        <im>-1.564651e-07</im>
                       </elem>
                       <elem>
                         <re>4.67942e-08</re>
-                        <im>-5.105001e-08</im>
+                        <im>-5.105002e-08</im>
                       </elem>
                       <elem>
                         <re>-7.419552e-09</re>
-                        <im>-1.36219e-08</im>
+                        <im>-1.362189e-08</im>
                       </elem>
                       <elem>
                         <re>1.927891e-09</re>
-                        <im>-1.877324e-09</im>
+                        <im>-1.877323e-09</im>
                       </elem>
                       <elem>
                         <re>3.803255e-10</re>
-                        <im>3.553305e-10</im>
+                        <im>3.553323e-10</im>
                       </elem>
                       <elem>
                         <re>-9.789929e-10</re>
-                        <im>2.881525e-10</im>
+                        <im>2.881512e-10</im>
                       </elem>
                       <elem>
-                        <re>-9.771095e-09</re>
-                        <im>1.708677e-10</im>
+                        <re>-9.771097e-09</re>
+                        <im>1.708659e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5158,11 +5136,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.02224391</re>
-                        <im>-1.034686e-05</im>
+                        <im>-1.034687e-05</im>
                       </elem>
                       <elem>
                         <re>0.0006697792</re>
-                        <im>-1.351389e-06</im>
+                        <im>-1.351388e-06</im>
                       </elem>
                       <elem>
                         <re>0.0001429045</re>
@@ -5170,7 +5148,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.98249e-05</re>
-                        <im>-2.111033e-08</im>
+                        <im>-2.111032e-08</im>
                       </elem>
                       <elem>
                         <re>1.520538e-05</re>
@@ -5196,7 +5174,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.007692568</re>
-                        <im>-2.736277e-06</im>
+                        <im>-2.736278e-06</im>
                       </elem>
                       <elem>
                         <re>8.763094e-05</re>
@@ -5204,19 +5182,19 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.472154e-06</re>
-                        <im>-7.482106e-09</im>
+                        <im>-7.482102e-09</im>
                       </elem>
                       <elem>
                         <re>7.221397e-07</re>
-                        <im>-1.518499e-11</im>
+                        <im>-1.518534e-11</im>
                       </elem>
                       <elem>
                         <re>1.690213e-07</re>
-                        <im>7.037006e-10</im>
+                        <im>7.037007e-10</im>
                       </elem>
                       <elem>
                         <re>1.882038e-07</re>
-                        <im>1.953852e-09</im>
+                        <im>1.953851e-09</im>
                       </elem>
                       <elem>
                         <re>6.192029e-07</re>
@@ -5224,7 +5202,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.092866e-06</re>
-                        <im>5.370653e-08</im>
+                        <im>5.370654e-08</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5234,7 +5212,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.002159749</re>
-                        <im>-6.935688e-07</im>
+                        <im>-6.935692e-07</im>
                       </elem>
                       <elem>
                         <re>1.857982e-05</re>
@@ -5242,27 +5220,27 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.461982e-07</re>
-                        <im>-9.604506e-10</im>
+                        <im>-9.604494e-10</im>
                       </elem>
                       <elem>
                         <re>1.037711e-08</re>
-                        <im>-1.61673e-10</im>
+                        <im>-1.616722e-10</im>
                       </elem>
                       <elem>
                         <re>2.436269e-10</re>
-                        <im>-1.995569e-11</im>
+                        <im>-1.995566e-11</im>
                       </elem>
                       <elem>
                         <re>2.299184e-09</re>
-                        <im>-2.401193e-10</im>
+                        <im>-2.40119e-10</im>
                       </elem>
                       <elem>
                         <re>2.841227e-08</re>
-                        <im>-9.999566e-11</im>
+                        <im>-9.99961e-11</im>
                       </elem>
                       <elem>
                         <re>7.124005e-07</re>
-                        <im>7.147884e-09</im>
+                        <im>7.147883e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5276,7 +5254,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.179003e-06</re>
-                        <im>-5.958244e-09</im>
+                        <im>-5.958245e-09</im>
                       </elem>
                       <elem>
                         <re>3.394639e-09</re>
@@ -5284,7 +5262,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-2.804867e-10</re>
-                        <im>-1.776615e-10</im>
+                        <im>-1.776634e-10</im>
                       </elem>
                       <elem>
                         <re>-5.497183e-11</re>
@@ -5292,7 +5270,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-4.397723e-10</re>
-                        <im>-1.491252e-10</im>
+                        <im>-1.491248e-10</im>
                       </elem>
                       <elem>
                         <re>-2.872484e-09</re>
@@ -5300,7 +5278,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.535426e-08</re>
-                        <im>1.068067e-09</im>
+                        <im>1.068068e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5315,7 +5293,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.02220762</re>
-                        <im>-9.619843e-06</im>
+                        <im>-9.619846e-06</im>
                       </elem>
                       <elem>
                         <re>0.0006563608</re>
@@ -5327,7 +5305,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.938242e-05</re>
-                        <im>6.93722e-08</im>
+                        <im>6.937221e-08</im>
                       </elem>
                       <elem>
                         <re>1.513107e-05</re>
@@ -5353,7 +5331,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.007699111</re>
-                        <im>-2.720905e-06</im>
+                        <im>-2.720907e-06</im>
                       </elem>
                       <elem>
                         <re>8.750247e-05</re>
@@ -5361,15 +5339,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.459834e-06</re>
-                        <im>-5.142286e-09</im>
+                        <im>-5.142291e-09</im>
                       </elem>
                       <elem>
                         <re>7.216739e-07</re>
-                        <im>2.878898e-10</im>
+                        <im>2.87889e-10</im>
                       </elem>
                       <elem>
                         <re>1.6895e-07</re>
-                        <im>7.155141e-10</im>
+                        <im>7.155145e-10</im>
                       </elem>
                       <elem>
                         <re>1.88759e-07</re>
@@ -5391,7 +5369,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.002156967</re>
-                        <im>-6.980684e-07</im>
+                        <im>-6.980698e-07</im>
                       </elem>
                       <elem>
                         <re>1.858359e-05</re>
@@ -5399,27 +5377,27 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.463755e-07</re>
-                        <im>-1.81948e-09</im>
+                        <im>-1.819479e-09</im>
                       </elem>
                       <elem>
                         <re>1.049653e-08</re>
-                        <im>-2.997358e-10</im>
+                        <im>-2.997351e-10</im>
                       </elem>
                       <elem>
                         <re>2.93054e-10</re>
-                        <im>-4.094522e-11</im>
+                        <im>-4.094504e-11</im>
                       </elem>
                       <elem>
                         <re>2.467814e-09</re>
-                        <im>-6.666449e-11</im>
+                        <im>-6.666457e-11</im>
                       </elem>
                       <elem>
                         <re>2.865067e-08</re>
-                        <im>1.23881e-11</im>
+                        <im>1.238832e-11</im>
                       </elem>
                       <elem>
                         <re>7.143276e-07</re>
-                        <im>7.613965e-09</im>
+                        <im>7.613964e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5437,19 +5415,19 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.168096e-09</re>
-                        <im>-2.070734e-09</im>
+                        <im>-2.070733e-09</im>
                       </elem>
                       <elem>
                         <re>-2.206233e-10</re>
-                        <im>-1.455684e-11</im>
+                        <im>-1.455822e-11</im>
                       </elem>
                       <elem>
                         <re>1.770373e-11</re>
-                        <im>-1.238671e-10</im>
+                        <im>-1.238669e-10</im>
                       </elem>
                       <elem>
                         <re>-4.720705e-10</re>
-                        <im>-1.461322e-10</im>
+                        <im>-1.461321e-10</im>
                       </elem>
                       <elem>
                         <re>-3.050596e-09</re>
@@ -5457,7 +5435,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.588157e-08</re>
-                        <im>-4.727375e-11</im>
+                        <im>-4.727609e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5518,11 +5496,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.361616e-06</re>
-                        <im>-3.033213e-09</im>
+                        <im>-3.033217e-09</im>
                       </elem>
                       <elem>
                         <re>6.648017e-07</re>
-                        <im>1.149398e-09</im>
+                        <im>1.149397e-09</im>
                       </elem>
                       <elem>
                         <re>1.043482e-07</re>
@@ -5530,7 +5508,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.312505e-08</re>
-                        <im>3.943827e-10</im>
+                        <im>3.943828e-10</im>
                       </elem>
                       <elem>
                         <re>2.926869e-08</re>
@@ -5552,7 +5530,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.853868e-05</re>
-                        <im>-2.054992e-08</im>
+                        <im>-2.054991e-08</im>
                       </elem>
                       <elem>
                         <re>3.431405e-07</re>
@@ -5560,23 +5538,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.060854e-08</re>
-                        <im>-4.635151e-10</im>
+                        <im>-4.635133e-10</im>
                       </elem>
                       <elem>
                         <re>4.713409e-10</re>
-                        <im>-3.371362e-10</im>
+                        <im>-3.37136e-10</im>
                       </elem>
                       <elem>
                         <re>3.434411e-10</re>
-                        <im>-8.205001e-11</im>
+                        <im>-8.204998e-11</im>
                       </elem>
                       <elem>
-                        <re>9.068656e-10</re>
-                        <im>6.210257e-11</im>
+                        <re>9.068654e-10</re>
+                        <im>6.210252e-11</im>
                       </elem>
                       <elem>
                         <re>5.199288e-09</re>
-                        <im>1.499701e-10</im>
+                        <im>1.4997e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5590,31 +5568,31 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.182459e-06</re>
-                        <im>-1.117948e-08</im>
+                        <im>-1.117947e-08</im>
                       </elem>
                       <elem>
                         <re>4.261798e-09</re>
-                        <im>-1.747991e-09</im>
+                        <im>-1.747989e-09</im>
                       </elem>
                       <elem>
                         <re>-4.556101e-10</re>
-                        <im>-1.202711e-11</im>
+                        <im>-1.202593e-11</im>
                       </elem>
                       <elem>
                         <re>1.356938e-10</re>
-                        <im>-4.090728e-11</im>
+                        <im>-4.090739e-11</im>
                       </elem>
                       <elem>
                         <re>8.165442e-11</re>
-                        <im>8.787536e-13</im>
+                        <im>8.788091e-13</im>
                       </elem>
                       <elem>
                         <re>-7.166684e-11</re>
-                        <im>5.258349e-11</im>
+                        <im>5.258344e-11</im>
                       </elem>
                       <elem>
                         <re>-7.998864e-10</re>
-                        <im>-6.783895e-12</im>
+                        <im>-6.78402e-12</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5629,11 +5607,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.01779021</re>
-                        <im>-5.967397e-06</im>
+                        <im>-5.967398e-06</im>
                       </elem>
                       <elem>
                         <re>0.000447285</re>
-                        <im>-9.533618e-07</im>
+                        <im>-9.533617e-07</im>
                       </elem>
                       <elem>
                         <re>9.616176e-05</re>
@@ -5641,7 +5619,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.780605e-05</re>
-                        <im>-2.479123e-08</im>
+                        <im>-2.479122e-08</im>
                       </elem>
                       <elem>
                         <re>1.204119e-05</re>
@@ -5667,23 +5645,23 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.006154901</re>
-                        <im>-1.557652e-06</im>
+                        <im>-1.557653e-06</im>
                       </elem>
                       <elem>
                         <re>5.852693e-05</re>
-                        <im>-7.665186e-08</im>
+                        <im>-7.665185e-08</im>
                       </elem>
                       <elem>
                         <re>3.683203e-06</re>
-                        <im>-6.001001e-09</im>
+                        <im>-6.000997e-09</im>
                       </elem>
                       <elem>
                         <re>5.004352e-07</re>
-                        <im>-3.236304e-10</im>
+                        <im>-3.236306e-10</im>
                       </elem>
                       <elem>
                         <re>1.342142e-07</re>
-                        <im>5.328952e-10</im>
+                        <im>5.328953e-10</im>
                       </elem>
                       <elem>
                         <re>1.772162e-07</re>
@@ -5705,7 +5683,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001727418</re>
-                        <im>-3.894795e-07</im>
+                        <im>-3.8948e-07</im>
                       </elem>
                       <elem>
                         <re>1.240076e-05</re>
@@ -5713,27 +5691,27 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.3185e-07</re>
-                        <im>-6.738965e-10</im>
+                        <im>-6.738956e-10</im>
                       </elem>
                       <elem>
                         <re>6.858219e-09</re>
-                        <im>-4.108349e-11</im>
+                        <im>-4.108278e-11</im>
                       </elem>
                       <elem>
                         <re>8.799134e-11</re>
-                        <im>8.65414e-11</im>
+                        <im>8.654136e-11</im>
                       </elem>
                       <elem>
                         <re>2.186417e-09</re>
-                        <im>-1.887901e-10</im>
+                        <im>-1.887898e-10</im>
                       </elem>
                       <elem>
                         <re>2.814765e-08</re>
-                        <im>-2.963223e-11</im>
+                        <im>-2.963238e-11</im>
                       </elem>
                       <elem>
                         <re>7.107429e-07</re>
-                        <im>7.390197e-09</im>
+                        <im>7.390196e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5755,7 +5733,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-1.022403e-10</re>
-                        <im>-1.578288e-10</im>
+                        <im>-1.578304e-10</im>
                       </elem>
                       <elem>
                         <re>-8.520106e-11</re>
@@ -5763,7 +5741,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-4.614862e-10</re>
-                        <im>-1.470878e-10</im>
+                        <im>-1.470873e-10</im>
                       </elem>
                       <elem>
                         <re>-2.821324e-09</re>
@@ -5786,11 +5764,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.02224391</re>
-                        <im>-1.034686e-05</im>
+                        <im>-1.034687e-05</im>
                       </elem>
                       <elem>
                         <re>0.0006697792</re>
-                        <im>-1.351389e-06</im>
+                        <im>-1.351388e-06</im>
                       </elem>
                       <elem>
                         <re>0.0001429045</re>
@@ -5798,7 +5776,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.98249e-05</re>
-                        <im>-2.111033e-08</im>
+                        <im>-2.111032e-08</im>
                       </elem>
                       <elem>
                         <re>1.520538e-05</re>
@@ -5824,7 +5802,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.007692568</re>
-                        <im>-2.736277e-06</im>
+                        <im>-2.736278e-06</im>
                       </elem>
                       <elem>
                         <re>8.763094e-05</re>
@@ -5832,19 +5810,19 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.472154e-06</re>
-                        <im>-7.482106e-09</im>
+                        <im>-7.482102e-09</im>
                       </elem>
                       <elem>
                         <re>7.221397e-07</re>
-                        <im>-1.518499e-11</im>
+                        <im>-1.518534e-11</im>
                       </elem>
                       <elem>
                         <re>1.690213e-07</re>
-                        <im>7.037006e-10</im>
+                        <im>7.037007e-10</im>
                       </elem>
                       <elem>
                         <re>1.882038e-07</re>
-                        <im>1.953852e-09</im>
+                        <im>1.953851e-09</im>
                       </elem>
                       <elem>
                         <re>6.192029e-07</re>
@@ -5852,7 +5830,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.092866e-06</re>
-                        <im>5.370653e-08</im>
+                        <im>5.370654e-08</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5862,7 +5840,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.002159749</re>
-                        <im>-6.935688e-07</im>
+                        <im>-6.935692e-07</im>
                       </elem>
                       <elem>
                         <re>1.857982e-05</re>
@@ -5870,27 +5848,27 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.461982e-07</re>
-                        <im>-9.604506e-10</im>
+                        <im>-9.604494e-10</im>
                       </elem>
                       <elem>
                         <re>1.037711e-08</re>
-                        <im>-1.61673e-10</im>
+                        <im>-1.616722e-10</im>
                       </elem>
                       <elem>
                         <re>2.436269e-10</re>
-                        <im>-1.995569e-11</im>
+                        <im>-1.995566e-11</im>
                       </elem>
                       <elem>
                         <re>2.299184e-09</re>
-                        <im>-2.401193e-10</im>
+                        <im>-2.40119e-10</im>
                       </elem>
                       <elem>
                         <re>2.841227e-08</re>
-                        <im>-9.999566e-11</im>
+                        <im>-9.99961e-11</im>
                       </elem>
                       <elem>
                         <re>7.124005e-07</re>
-                        <im>7.147884e-09</im>
+                        <im>7.147883e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5904,7 +5882,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.179003e-06</re>
-                        <im>-5.958244e-09</im>
+                        <im>-5.958245e-09</im>
                       </elem>
                       <elem>
                         <re>3.394639e-09</re>
@@ -5912,7 +5890,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-2.804867e-10</re>
-                        <im>-1.776615e-10</im>
+                        <im>-1.776634e-10</im>
                       </elem>
                       <elem>
                         <re>-5.497183e-11</re>
@@ -5920,7 +5898,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-4.397723e-10</re>
-                        <im>-1.491252e-10</im>
+                        <im>-1.491248e-10</im>
                       </elem>
                       <elem>
                         <re>-2.872484e-09</re>
@@ -5928,7 +5906,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.535426e-08</re>
-                        <im>1.068067e-09</im>
+                        <im>1.068068e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -5943,11 +5921,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.01779021</re>
-                        <im>-5.967397e-06</im>
+                        <im>-5.967398e-06</im>
                       </elem>
                       <elem>
                         <re>0.000447285</re>
-                        <im>-9.533618e-07</im>
+                        <im>-9.533617e-07</im>
                       </elem>
                       <elem>
                         <re>9.616176e-05</re>
@@ -5955,7 +5933,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.780605e-05</re>
-                        <im>-2.479123e-08</im>
+                        <im>-2.479122e-08</im>
                       </elem>
                       <elem>
                         <re>1.204119e-05</re>
@@ -5981,23 +5959,23 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.006154901</re>
-                        <im>-1.557652e-06</im>
+                        <im>-1.557653e-06</im>
                       </elem>
                       <elem>
                         <re>5.852693e-05</re>
-                        <im>-7.665186e-08</im>
+                        <im>-7.665185e-08</im>
                       </elem>
                       <elem>
                         <re>3.683203e-06</re>
-                        <im>-6.001001e-09</im>
+                        <im>-6.000997e-09</im>
                       </elem>
                       <elem>
                         <re>5.004352e-07</re>
-                        <im>-3.236304e-10</im>
+                        <im>-3.236306e-10</im>
                       </elem>
                       <elem>
                         <re>1.342142e-07</re>
-                        <im>5.328952e-10</im>
+                        <im>5.328953e-10</im>
                       </elem>
                       <elem>
                         <re>1.772162e-07</re>
@@ -6019,7 +5997,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001727418</re>
-                        <im>-3.894795e-07</im>
+                        <im>-3.8948e-07</im>
                       </elem>
                       <elem>
                         <re>1.240076e-05</re>
@@ -6027,27 +6005,27 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.3185e-07</re>
-                        <im>-6.738965e-10</im>
+                        <im>-6.738956e-10</im>
                       </elem>
                       <elem>
                         <re>6.858219e-09</re>
-                        <im>-4.108349e-11</im>
+                        <im>-4.108278e-11</im>
                       </elem>
                       <elem>
                         <re>8.799134e-11</re>
-                        <im>8.65414e-11</im>
+                        <im>8.654136e-11</im>
                       </elem>
                       <elem>
                         <re>2.186417e-09</re>
-                        <im>-1.887901e-10</im>
+                        <im>-1.887898e-10</im>
                       </elem>
                       <elem>
                         <re>2.814765e-08</re>
-                        <im>-2.963223e-11</im>
+                        <im>-2.963238e-11</im>
                       </elem>
                       <elem>
                         <re>7.107429e-07</re>
-                        <im>7.390197e-09</im>
+                        <im>7.390196e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -6069,7 +6047,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-1.022403e-10</re>
-                        <im>-1.578288e-10</im>
+                        <im>-1.578304e-10</im>
                       </elem>
                       <elem>
                         <re>-8.520106e-11</re>
@@ -6077,7 +6055,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-4.614862e-10</re>
-                        <im>-1.470878e-10</im>
+                        <im>-1.470873e-10</im>
                       </elem>
                       <elem>
                         <re>-2.821324e-09</re>
@@ -6100,7 +6078,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.02224379</re>
-                        <im>-9.821825e-06</im>
+                        <im>-9.821827e-06</im>
                       </elem>
                       <elem>
                         <re>0.0006697738</re>
@@ -6112,7 +6090,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.982481e-05</re>
-                        <im>-2.013077e-08</im>
+                        <im>-2.013076e-08</im>
                       </elem>
                       <elem>
                         <re>1.52052e-05</re>
@@ -6138,7 +6116,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.007692541</re>
-                        <im>-2.423435e-06</im>
+                        <im>-2.423437e-06</im>
                       </elem>
                       <elem>
                         <re>8.762907e-05</re>
@@ -6146,11 +6124,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.47226e-06</re>
-                        <im>-7.136024e-09</im>
+                        <im>-7.13602e-09</im>
                       </elem>
                       <elem>
                         <re>7.221781e-07</re>
-                        <im>2.349734e-10</im>
+                        <im>2.34973e-10</im>
                       </elem>
                       <elem>
                         <re>1.68937e-07</re>
@@ -6158,7 +6136,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.881204e-07</re>
-                        <im>2.018719e-09</im>
+                        <im>2.018718e-09</im>
                       </elem>
                       <elem>
                         <re>6.191408e-07</re>
@@ -6176,7 +6154,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.002159747</re>
-                        <im>-4.912403e-07</im>
+                        <im>-4.912407e-07</im>
                       </elem>
                       <elem>
                         <re>1.858011e-05</re>
@@ -6184,11 +6162,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.464243e-07</re>
-                        <im>-9.031493e-10</im>
+                        <im>-9.031489e-10</im>
                       </elem>
                       <elem>
                         <re>1.032774e-08</re>
-                        <im>-3.21889e-10</im>
+                        <im>-3.218884e-10</im>
                       </elem>
                       <elem>
                         <re>2.525655e-10</re>
@@ -6196,15 +6174,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.30161e-09</re>
-                        <im>-3.92036e-10</im>
+                        <im>-3.920356e-10</im>
                       </elem>
                       <elem>
                         <re>2.841093e-08</re>
-                        <im>-7.675666e-12</im>
+                        <im>-7.676258e-12</im>
                       </elem>
                       <elem>
                         <re>7.124097e-07</re>
-                        <im>7.202386e-09</im>
+                        <im>7.202385e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -6218,7 +6196,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.179079e-06</re>
-                        <im>-6.563105e-09</im>
+                        <im>-6.563108e-09</im>
                       </elem>
                       <elem>
                         <re>3.198643e-09</re>
@@ -6226,23 +6204,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-3.496083e-10</re>
-                        <im>-5.825259e-10</im>
+                        <im>-5.825279e-10</im>
                       </elem>
                       <elem>
                         <re>-2.004155e-11</re>
-                        <im>-1.109624e-10</im>
+                        <im>-1.109625e-10</im>
                       </elem>
                       <elem>
                         <re>-4.585306e-10</re>
-                        <im>1.609292e-12</im>
+                        <im>1.609958e-12</im>
                       </elem>
                       <elem>
                         <re>-2.968706e-09</re>
-                        <im>3.810676e-11</im>
+                        <im>3.810631e-11</im>
                       </elem>
                       <elem>
                         <re>2.526746e-08</re>
-                        <im>1.195303e-09</im>
+                        <im>1.195304e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -6257,7 +6235,7 @@ regression test spectrum output is kept within the chroma xml output
             <Forward_prop_headers>
               <First_forward_prop>
                 <version>1</version>
-                <PropSinkSmear>
+                <PropSink>
                   <version>5</version><Sink>
       <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
@@ -6281,7 +6259,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                   <j_decay>3</j_decay>
-                </PropSinkSmear>
+                </PropSink>
                 <ForwardProp>
                   <version>9</version>
                   <quarkSpinType>FULL</quarkSpinType>
@@ -6332,10 +6310,13 @@ regression test spectrum output is kept within the chroma xml output
                   <j_decay>3</j_decay>
                   <t_source>0</t_source>
                 </PropSource>
+                <Config_info><weak_field>
+</weak_field>
+</Config_info>
               </First_forward_prop>
               <Second_forward_prop>
                 <version>1</version>
-                <PropSinkSmear>
+                <PropSink>
                   <version>5</version><Sink>
       <version>2</version>
       <SinkType>SHELL_SINK</SinkType>
@@ -6359,7 +6340,7 @@ regression test spectrum output is kept within the chroma xml output
     </Sink>
 
                   <j_decay>3</j_decay>
-                </PropSinkSmear>
+                </PropSink>
                 <ForwardProp>
                   <version>9</version>
                   <quarkSpinType>FULL</quarkSpinType>
@@ -6410,6 +6391,9 @@ regression test spectrum output is kept within the chroma xml output
                   <j_decay>3</j_decay>
                   <t_source>0</t_source>
                 </PropSource>
+                <Config_info><weak_field>
+</weak_field>
+</Config_info>
               </Second_forward_prop>
             </Forward_prop_headers>
             <Forward_prop_correlator>
@@ -8966,7 +8950,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.468388e-05</re>
-                        <im>9.334549e-08</im>
+                        <im>9.334548e-08</im>
                       </elem>
                       <elem>
                         <re>1.124826e-05</re>
@@ -8996,27 +8980,27 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.279237e-06</re>
-                        <im>-1.415641e-09</im>
+                        <im>-1.41564e-09</im>
                       </elem>
                       <elem>
                         <re>9.318195e-08</re>
-                        <im>5.024673e-11</im>
+                        <im>5.024656e-11</im>
                       </elem>
                       <elem>
                         <re>1.490065e-08</re>
-                        <im>6.525181e-12</im>
+                        <im>6.524922e-12</im>
                       </elem>
                       <elem>
                         <re>2.002174e-08</re>
-                        <im>2.654681e-10</im>
+                        <im>2.65467e-10</im>
                       </elem>
                       <elem>
                         <re>1.672344e-07</re>
-                        <im>4.161572e-09</im>
+                        <im>4.161573e-09</im>
                       </elem>
                       <elem>
                         <re>5.399509e-06</re>
-                        <im>1.127077e-07</im>
+                        <im>1.127078e-07</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9026,35 +9010,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001653356</re>
-                        <im>-6.444283e-07</im>
+                        <im>-6.444291e-07</im>
                       </elem>
                       <elem>
                         <re>1.311162e-05</re>
-                        <im>-2.164569e-09</im>
+                        <im>-2.164572e-09</im>
                       </elem>
                       <elem>
                         <re>1.783575e-07</re>
-                        <im>-6.712782e-11</im>
+                        <im>-6.712823e-11</im>
                       </elem>
                       <elem>
                         <re>2.513636e-09</re>
-                        <im>-2.862786e-12</im>
+                        <im>-2.863008e-12</im>
                       </elem>
                       <elem>
                         <re>4.914968e-10</re>
-                        <im>-3.536483e-12</im>
+                        <im>-3.536667e-12</im>
                       </elem>
                       <elem>
-                        <re>3.708637e-10</re>
-                        <im>3.599965e-12</im>
+                        <re>3.70859e-10</re>
+                        <im>3.600039e-12</im>
                       </elem>
                       <elem>
-                        <re>8.421037e-09</re>
-                        <im>2.498418e-10</im>
+                        <re>8.421039e-09</re>
+                        <im>2.498427e-10</im>
                       </elem>
                       <elem>
                         <re>3.830936e-07</re>
-                        <im>6.770682e-09</im>
+                        <im>6.770678e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9064,11 +9048,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0005172683</re>
-                        <im>-1.404296e-07</im>
+                        <im>-1.404289e-07</im>
                       </elem>
                       <elem>
                         <re>1.290057e-06</re>
-                        <im>8.071311e-10</im>
+                        <im>8.072235e-10</im>
                       </elem>
                       <elem>
                         <re>6.044315e-09</re>
@@ -9076,7 +9060,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.929399e-11</re>
-                        <im>4.536215e-12</im>
+                        <im>4.536492e-12</im>
                       </elem>
                       <elem>
                         <re>2.29833e-11</re>
@@ -9084,7 +9068,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-9.209022e-12</re>
-                        <im>-5.624525e-12</im>
+                        <im>-5.623192e-12</im>
                       </elem>
                       <elem>
                         <re>3.926804e-10</re>
@@ -9092,7 +9076,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.15835e-08</re>
-                        <im>1.110655e-10</im>
+                        <im>1.110691e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9107,7 +9091,7 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.464125</re>
-                        <im>-0.0002108146</im>
+                        <im>-0.0002108145</im>
                       </elem>
                       <elem>
                         <re>0.004131777</re>
@@ -9144,8 +9128,8 @@ regression test spectrum output is kept within the chroma xml output
                     <sink_mom>1 0 0</sink_mom>
                     <barprop>
                       <elem>
-                        <re>0.03801552</re>
-                        <im>-1.790719e-05</im>
+                        <re>0.03801553</re>
+                        <im>-1.790718e-05</im>
                       </elem>
                       <elem>
                         <re>0.0003153826</re>
@@ -9157,15 +9141,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.226513e-07</re>
-                        <im>9.836588e-11</im>
+                        <im>9.836548e-11</im>
                       </elem>
                       <elem>
                         <re>1.797728e-08</re>
-                        <im>1.569717e-11</im>
+                        <im>1.569673e-11</im>
                       </elem>
                       <elem>
                         <re>2.102166e-08</re>
-                        <im>2.683521e-10</im>
+                        <im>2.683508e-10</im>
                       </elem>
                       <elem>
                         <re>1.682159e-07</re>
@@ -9182,36 +9166,36 @@ regression test spectrum output is kept within the chroma xml output
                     <sink_mom>1 1 0</sink_mom>
                     <barprop>
                       <elem>
-                        <re>0.001984177</re>
-                        <im>-9.327326e-07</im>
+                        <re>0.001984178</re>
+                        <im>-9.327342e-07</im>
                       </elem>
                       <elem>
                         <re>1.747792e-05</re>
-                        <im>-2.776851e-09</im>
+                        <im>-2.776842e-09</im>
                       </elem>
                       <elem>
                         <re>2.376877e-07</re>
-                        <im>-8.502646e-11</im>
+                        <im>-8.502705e-11</im>
                       </elem>
                       <elem>
                         <re>3.344823e-09</re>
-                        <im>-3.300568e-12</im>
+                        <im>-3.300739e-12</im>
                       </elem>
                       <elem>
                         <re>5.921277e-10</re>
-                        <im>-4.363641e-12</im>
+                        <im>-4.363826e-12</im>
                       </elem>
                       <elem>
-                        <re>3.781725e-10</re>
-                        <im>3.3239e-12</im>
+                        <re>3.781631e-10</re>
+                        <im>3.324048e-12</im>
                       </elem>
                       <elem>
-                        <re>8.409981e-09</re>
-                        <im>2.465823e-10</im>
+                        <re>8.409986e-09</re>
+                        <im>2.465829e-10</im>
                       </elem>
                       <elem>
                         <re>3.820425e-07</re>
-                        <im>6.742245e-09</im>
+                        <im>6.742241e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9220,12 +9204,12 @@ regression test spectrum output is kept within the chroma xml output
                     <sink_mom>1 1 1</sink_mom>
                     <barprop>
                       <elem>
-                        <re>0.0006206785</re>
-                        <im>-1.743028e-07</im>
+                        <re>0.0006206767</re>
+                        <im>-1.743023e-07</im>
                       </elem>
                       <elem>
                         <re>1.719702e-06</re>
-                        <im>1.082894e-09</im>
+                        <im>1.083008e-09</im>
                       </elem>
                       <elem>
                         <re>8.056521e-09</re>
@@ -9233,7 +9217,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>2.430436e-11</re>
-                        <im>5.844262e-12</im>
+                        <im>5.844817e-12</im>
                       </elem>
                       <elem>
                         <re>2.841933e-11</re>
@@ -9241,7 +9225,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-1.061539e-11</re>
-                        <im>-5.787482e-12</im>
+                        <im>-5.786149e-12</im>
                       </elem>
                       <elem>
                         <re>3.915125e-10</re>
@@ -9268,7 +9252,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.00928753</re>
-                        <im>-9.041492e-06</im>
+                        <im>-9.041493e-06</im>
                       </elem>
                       <elem>
                         <re>0.0004890771</re>
@@ -9306,27 +9290,27 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.0007096257</re>
-                        <im>-4.686392e-07</im>
+                        <im>-4.686394e-07</im>
                       </elem>
                       <elem>
                         <re>9.824769e-06</re>
-                        <im>-3.825297e-09</im>
+                        <im>-3.825295e-09</im>
                       </elem>
                       <elem>
                         <re>2.724727e-07</re>
-                        <im>2.822069e-10</im>
+                        <im>2.822084e-10</im>
                       </elem>
                       <elem>
                         <re>3.616957e-08</re>
-                        <im>1.47521e-10</im>
+                        <im>1.47522e-10</im>
                       </elem>
                       <elem>
                         <re>3.451481e-08</re>
-                        <im>6.163068e-10</im>
+                        <im>6.163079e-10</im>
                       </elem>
                       <elem>
                         <re>2.545448e-07</re>
-                        <im>6.566082e-09</im>
+                        <im>6.566081e-09</im>
                       </elem>
                       <elem>
                         <re>8.110001e-06</re>
@@ -9340,27 +9324,27 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.003967183</re>
-                        <im>-2.009307e-06</im>
+                        <im>-2.009286e-06</im>
                       </elem>
                       <elem>
                         <re>3.930068e-05</re>
-                        <im>-3.558461e-09</im>
+                        <im>-3.558575e-09</im>
                       </elem>
                       <elem>
                         <re>5.343456e-07</re>
-                        <im>-2.580823e-10</im>
+                        <im>-2.580819e-10</im>
                       </elem>
                       <elem>
                         <re>7.509744e-09</re>
-                        <im>1.728837e-11</im>
+                        <im>1.728847e-11</im>
                       </elem>
                       <elem>
                         <re>1.187963e-09</re>
-                        <im>-1.437658e-11</im>
+                        <im>-1.437695e-11</im>
                       </elem>
                       <elem>
                         <re>5.905527e-10</re>
-                        <im>2.492255e-12</im>
+                        <im>2.492551e-12</im>
                       </elem>
                       <elem>
                         <re>1.264847e-08</re>
@@ -9368,7 +9352,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.749041e-07</re>
-                        <im>1.025873e-08</im>
+                        <im>1.025871e-08</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9378,19 +9362,19 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001241705</re>
-                        <im>-2.835737e-07</im>
+                        <im>-2.835764e-07</im>
                       </elem>
                       <elem>
                         <re>3.86838e-06</re>
-                        <im>3.288246e-09</im>
+                        <im>3.288417e-09</im>
                       </elem>
                       <elem>
                         <re>1.812825e-08</re>
-                        <im>3.281674e-11</im>
+                        <im>3.281851e-11</im>
                       </elem>
                       <elem>
                         <re>5.314188e-11</re>
-                        <im>3.153098e-12</im>
+                        <im>3.151266e-12</im>
                       </elem>
                       <elem>
                         <re>5.882424e-11</re>
@@ -9398,15 +9382,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-2.007037e-11</re>
-                        <im>-6.523773e-12</im>
+                        <im>-6.522885e-12</im>
                       </elem>
                       <elem>
                         <re>5.913506e-10</re>
-                        <im>1.735073e-11</im>
+                        <im>1.73525e-11</im>
                       </elem>
                       <elem>
                         <re>4.745642e-08</re>
-                        <im>1.959171e-10</im>
+                        <im>1.959348e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9429,7 +9413,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.0001626475</re>
-                        <im>-9.579074e-08</im>
+                        <im>-9.579075e-08</im>
                       </elem>
                       <elem>
                         <re>3.831363e-05</re>
@@ -9467,19 +9451,19 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.282199e-06</re>
-                        <im>-1.487209e-09</im>
+                        <im>-1.48721e-09</im>
                       </elem>
                       <elem>
                         <re>9.339945e-08</re>
-                        <im>5.10231e-11</im>
+                        <im>5.102243e-11</im>
                       </elem>
                       <elem>
                         <re>1.49172e-08</re>
-                        <im>7.752581e-12</im>
+                        <im>7.751729e-12</im>
                       </elem>
                       <elem>
-                        <re>2.014419e-08</re>
-                        <im>3.70813e-10</im>
+                        <re>2.014418e-08</re>
+                        <im>3.708125e-10</im>
                       </elem>
                       <elem>
                         <re>1.675631e-07</re>
@@ -9497,35 +9481,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001652254</re>
-                        <im>-6.507281e-07</im>
+                        <im>-6.507232e-07</im>
                       </elem>
                       <elem>
                         <re>1.30974e-05</re>
-                        <im>-1.810895e-09</im>
+                        <im>-1.810916e-09</im>
                       </elem>
                       <elem>
                         <re>1.782017e-07</re>
-                        <im>-7.263405e-11</im>
+                        <im>-7.263287e-11</im>
                       </elem>
                       <elem>
                         <re>2.512149e-09</re>
-                        <im>-3.389092e-12</im>
+                        <im>-3.388537e-12</im>
                       </elem>
                       <elem>
                         <re>4.895847e-10</re>
-                        <im>-3.60075e-12</im>
+                        <im>-3.600898e-12</im>
                       </elem>
                       <elem>
                         <re>3.702046e-10</re>
-                        <im>2.884152e-12</im>
+                        <im>2.884633e-12</im>
                       </elem>
                       <elem>
-                        <re>8.439753e-09</re>
-                        <im>2.580878e-10</im>
+                        <re>8.439763e-09</re>
+                        <im>2.580877e-10</im>
                       </elem>
                       <elem>
-                        <re>3.833427e-07</re>
-                        <im>6.893988e-09</im>
+                        <re>3.833424e-07</re>
+                        <im>6.893976e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9535,35 +9519,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0005175858</re>
-                        <im>-1.419843e-07</im>
+                        <im>-1.419839e-07</im>
                       </elem>
                       <elem>
                         <re>1.289988e-06</re>
-                        <im>9.968208e-10</im>
+                        <im>9.968137e-10</im>
                       </elem>
                       <elem>
                         <re>6.042302e-09</re>
-                        <im>1.073151e-11</im>
+                        <im>1.073018e-11</im>
                       </elem>
                       <elem>
                         <re>2.049434e-11</re>
-                        <im>4.914742e-12</im>
+                        <im>4.916186e-12</im>
                       </elem>
                       <elem>
                         <re>2.251546e-11</re>
-                        <im>2.980112e-13</im>
+                        <im>2.975671e-13</im>
                       </elem>
                       <elem>
                         <re>-9.319788e-12</re>
-                        <im>-5.199989e-12</im>
+                        <im>-5.200433e-12</im>
                       </elem>
                       <elem>
-                        <re>3.900165e-10</re>
-                        <im>7.451483e-12</im>
+                        <re>3.900449e-10</re>
+                        <im>7.451927e-12</im>
                       </elem>
                       <elem>
-                        <re>3.15908e-08</re>
-                        <im>1.339358e-10</im>
+                        <re>3.159171e-08</re>
+                        <im>1.339145e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9628,15 +9612,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.229413e-07</re>
-                        <im>9.940103e-11</im>
+                        <im>9.940011e-11</im>
                       </elem>
                       <elem>
                         <re>1.799936e-08</re>
-                        <im>1.73341e-11</im>
+                        <im>1.733306e-11</im>
                       </elem>
                       <elem>
                         <re>2.118493e-08</re>
-                        <im>4.088111e-10</im>
+                        <im>4.088103e-10</im>
                       </elem>
                       <elem>
                         <re>1.686539e-07</re>
@@ -9654,35 +9638,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001982709</re>
-                        <im>-9.411248e-07</im>
+                        <im>-9.41119e-07</im>
                       </elem>
                       <elem>
                         <re>1.745897e-05</re>
-                        <im>-2.305396e-09</im>
+                        <im>-2.305441e-09</im>
                       </elem>
                       <elem>
                         <re>2.3748e-07</re>
-                        <im>-9.236725e-11</im>
+                        <im>-9.236611e-11</im>
                       </elem>
                       <elem>
                         <re>3.342809e-09</re>
-                        <im>-4.002282e-12</im>
+                        <im>-4.00169e-12</im>
                       </elem>
                       <elem>
                         <re>5.895719e-10</re>
-                        <im>-4.450232e-12</im>
+                        <im>-4.450306e-12</im>
                       </elem>
                       <elem>
                         <re>3.772589e-10</re>
-                        <im>2.368829e-12</im>
+                        <im>2.369384e-12</im>
                       </elem>
                       <elem>
-                        <re>8.435038e-09</re>
+                        <re>8.435057e-09</re>
                         <im>2.575757e-10</im>
                       </elem>
                       <elem>
-                        <re>3.823709e-07</re>
-                        <im>6.906672e-09</im>
+                        <re>3.823706e-07</re>
+                        <im>6.906661e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9692,35 +9676,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0006211051</re>
-                        <im>-1.763737e-07</im>
+                        <im>-1.763739e-07</im>
                       </elem>
                       <elem>
                         <re>1.7196e-06</re>
-                        <im>1.336055e-09</im>
+                        <im>1.336048e-09</im>
                       </elem>
                       <elem>
                         <re>8.054291e-09</re>
-                        <im>1.481736e-11</im>
+                        <im>1.481581e-11</im>
                       </elem>
                       <elem>
                         <re>2.596166e-11</re>
-                        <im>6.348183e-12</im>
+                        <im>6.349738e-12</im>
                       </elem>
                       <elem>
                         <re>2.782398e-11</re>
-                        <im>2.932963e-13</im>
+                        <im>2.928522e-13</im>
                       </elem>
                       <elem>
                         <re>-1.076781e-11</re>
-                        <im>-5.221582e-12</im>
+                        <im>-5.222248e-12</im>
                       </elem>
                       <elem>
-                        <re>3.880554e-10</re>
-                        <im>5.744669e-12</im>
+                        <re>3.881123e-10</re>
+                        <im>5.745557e-12</im>
                       </elem>
                       <elem>
-                        <re>3.163945e-08</re>
-                        <im>1.354471e-10</im>
+                        <re>3.164036e-08</re>
+                        <im>1.354222e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9743,7 +9727,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.000486674</re>
-                        <im>-4.090573e-07</im>
+                        <im>-4.090574e-07</im>
                       </elem>
                       <elem>
                         <re>0.0001099531</re>
@@ -9773,27 +9757,27 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.07604481</re>
-                        <im>-4.190964e-05</im>
+                        <im>-4.190965e-05</im>
                       </elem>
                       <elem>
                         <re>0.0007097305</re>
-                        <im>-4.669643e-07</im>
+                        <im>-4.669647e-07</im>
                       </elem>
                       <elem>
                         <re>9.827643e-06</re>
-                        <im>-3.860527e-09</im>
+                        <im>-3.860529e-09</im>
                       </elem>
                       <elem>
                         <re>2.727588e-07</re>
-                        <im>2.372854e-10</im>
+                        <im>2.372866e-10</im>
                       </elem>
                       <elem>
                         <re>3.618164e-08</re>
-                        <im>1.249319e-10</im>
+                        <im>1.24931e-10</im>
                       </elem>
                       <elem>
                         <re>3.463106e-08</re>
-                        <im>7.295835e-10</im>
+                        <im>7.295828e-10</im>
                       </elem>
                       <elem>
                         <re>2.548711e-07</re>
@@ -9811,19 +9795,19 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.003966133</re>
-                        <im>-2.016074e-06</im>
+                        <im>-2.016072e-06</im>
                       </elem>
                       <elem>
                         <re>3.928665e-05</re>
-                        <im>-2.984018e-09</im>
+                        <im>-2.984182e-09</im>
                       </elem>
                       <elem>
                         <re>5.341763e-07</re>
-                        <im>-2.70869e-10</im>
+                        <im>-2.708676e-10</im>
                       </elem>
                       <elem>
                         <re>7.508654e-09</re>
-                        <im>1.702048e-11</im>
+                        <im>1.702329e-11</im>
                       </elem>
                       <elem>
                         <re>1.186714e-09</re>
@@ -9831,11 +9815,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.892303e-10</re>
-                        <im>1.472077e-12</im>
+                        <im>1.471781e-12</im>
                       </elem>
                       <elem>
                         <re>1.26629e-08</re>
-                        <im>3.772172e-10</im>
+                        <im>3.77216e-10</im>
                       </elem>
                       <elem>
                         <re>5.751561e-07</re>
@@ -9853,15 +9837,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.867944e-06</re>
-                        <im>3.539106e-09</im>
+                        <im>3.539007e-09</im>
                       </elem>
                       <elem>
                         <re>1.80919e-08</re>
-                        <im>3.792588e-11</im>
+                        <im>3.792854e-11</im>
                       </elem>
                       <elem>
                         <re>5.667266e-11</re>
-                        <im>3.03043e-12</im>
+                        <im>3.031984e-12</im>
                       </elem>
                       <elem>
                         <re>5.859795e-11</re>
@@ -9869,11 +9853,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-2.055063e-11</re>
-                        <im>-6.407032e-12</im>
+                        <im>-6.406588e-12</im>
                       </elem>
                       <elem>
                         <re>5.893119e-10</re>
-                        <im>1.457262e-11</im>
+                        <im>1.456907e-11</im>
                       </elem>
                       <elem>
                         <re>4.742779e-08</re>
@@ -9942,15 +9926,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>8.848494e-08</re>
-                        <im>1.68395e-10</im>
+                        <im>1.683955e-10</im>
                       </elem>
                       <elem>
                         <re>9.2325e-09</re>
-                        <im>2.879379e-11</im>
+                        <im>2.879405e-11</im>
                       </elem>
                       <elem>
                         <re>2.992464e-09</re>
-                        <im>6.196525e-11</im>
+                        <im>6.196514e-11</im>
                       </elem>
                       <elem>
                         <re>2.325543e-09</re>
@@ -9958,7 +9942,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.397407e-09</re>
-                        <im>2.221758e-10</im>
+                        <im>2.221757e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -9968,35 +9952,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0009916401</re>
-                        <im>-8.671854e-07</im>
+                        <im>-8.671877e-07</im>
                       </elem>
                       <elem>
                         <re>1.309171e-05</re>
-                        <im>-1.622812e-09</im>
+                        <im>-1.622853e-09</im>
                       </elem>
                       <elem>
                         <re>1.779091e-07</re>
-                        <im>-5.416766e-11</im>
+                        <im>-5.416772e-11</im>
                       </elem>
                       <elem>
                         <re>2.492779e-09</re>
-                        <im>-1.176963e-12</im>
+                        <im>-1.177018e-12</im>
                       </elem>
                       <elem>
                         <re>3.013769e-10</re>
-                        <im>-2.6637e-12</im>
+                        <im>-2.663773e-12</im>
                       </elem>
                       <elem>
                         <re>2.298002e-11</re>
-                        <im>-8.680252e-13</im>
+                        <im>-8.679697e-13</im>
                       </elem>
                       <elem>
                         <re>9.892899e-12</re>
-                        <im>4.900875e-13</im>
+                        <im>4.901615e-13</im>
                       </elem>
                       <elem>
                         <re>4.851841e-10</re>
-                        <im>1.652777e-11</im>
+                        <im>1.65278e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10006,19 +9990,19 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0003104752</re>
-                        <im>-1.024925e-07</im>
+                        <im>-1.024916e-07</im>
                       </elem>
                       <elem>
                         <re>1.288918e-06</re>
-                        <im>9.236311e-10</im>
+                        <im>9.235956e-10</im>
                       </elem>
                       <elem>
                         <re>6.036631e-09</re>
-                        <im>1.081766e-11</im>
+                        <im>1.081677e-11</im>
                       </elem>
                       <elem>
                         <re>1.582952e-11</re>
-                        <im>4.260555e-12</im>
+                        <im>4.260666e-12</im>
                       </elem>
                       <elem>
                         <re>1.622314e-11</re>
@@ -10030,11 +10014,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>4.068273e-12</re>
-                        <im>3.636894e-13</im>
+                        <im>3.638004e-13</im>
                       </elem>
                       <elem>
                         <re>5.848491e-11</re>
-                        <im>1.175265e-12</im>
+                        <im>1.175404e-12</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10091,7 +10075,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.000315338</re>
-                        <im>-2.084797e-07</im>
+                        <im>-2.084798e-07</im>
                       </elem>
                       <elem>
                         <re>4.359852e-06</re>
@@ -10099,23 +10083,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.179799e-07</re>
-                        <im>2.24527e-10</im>
+                        <im>2.245279e-10</im>
                       </elem>
                       <elem>
                         <re>1.230999e-08</re>
-                        <im>3.839162e-11</im>
+                        <im>3.839188e-11</im>
                       </elem>
                       <elem>
                         <re>3.989952e-09</re>
-                        <im>8.262001e-11</im>
+                        <im>8.261992e-11</im>
                       </elem>
                       <elem>
                         <re>3.100727e-09</re>
-                        <im>1.516746e-10</im>
+                        <im>1.516745e-10</im>
                       </elem>
                       <elem>
                         <re>4.529879e-09</re>
-                        <im>2.962346e-10</im>
+                        <im>2.962344e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10125,35 +10109,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001322186</re>
-                        <im>-1.156242e-06</im>
+                        <im>-1.156244e-06</im>
                       </elem>
                       <elem>
                         <re>1.745563e-05</re>
-                        <im>-2.163832e-09</im>
+                        <im>-2.163912e-09</im>
                       </elem>
                       <elem>
                         <re>2.372122e-07</re>
-                        <im>-7.222165e-11</im>
+                        <im>-7.222187e-11</im>
                       </elem>
                       <elem>
                         <re>3.323655e-09</re>
-                        <im>-1.569302e-12</im>
+                        <im>-1.569487e-12</im>
                       </elem>
                       <elem>
                         <re>4.018232e-10</re>
-                        <im>-3.551501e-12</im>
+                        <im>-3.551575e-12</im>
                       </elem>
                       <elem>
                         <re>3.06416e-11</re>
-                        <im>-1.157324e-12</im>
+                        <im>-1.157213e-12</im>
                       </elem>
                       <elem>
                         <re>1.319073e-11</re>
-                        <im>6.534561e-13</im>
+                        <im>6.534932e-13</im>
                       </elem>
                       <elem>
                         <re>6.469124e-10</re>
-                        <im>2.20369e-11</im>
+                        <im>2.203697e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10163,15 +10147,15 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0004139665</re>
-                        <im>-1.366548e-07</im>
+                        <im>-1.366534e-07</im>
                       </elem>
                       <elem>
                         <re>1.718574e-06</re>
-                        <im>1.231283e-09</im>
+                        <im>1.231212e-09</im>
                       </elem>
                       <elem>
                         <re>8.048386e-09</re>
-                        <im>1.441732e-11</im>
+                        <im>1.441688e-11</im>
                       </elem>
                       <elem>
                         <re>2.112497e-11</re>
@@ -10187,11 +10171,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>5.424957e-12</re>
-                        <im>4.848082e-13</im>
+                        <im>4.849747e-13</im>
                       </elem>
                       <elem>
                         <re>7.798047e-11</re>
-                        <im>1.56714e-12</im>
+                        <im>1.567445e-12</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10248,7 +10232,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.002838022</re>
-                        <im>-1.848927e-06</im>
+                        <im>-1.848926e-06</im>
                       </elem>
                       <elem>
                         <re>3.923987e-05</re>
@@ -10256,23 +10240,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.061594e-06</re>
-                        <im>1.844136e-09</im>
+                        <im>1.844147e-09</im>
                       </elem>
                       <elem>
                         <re>1.106568e-07</re>
-                        <im>5.196966e-10</im>
+                        <im>5.197022e-10</im>
                       </elem>
                       <elem>
                         <re>3.579938e-08</re>
-                        <im>8.007227e-10</im>
+                        <im>8.007224e-10</im>
                       </elem>
                       <elem>
                         <re>2.784501e-08</re>
-                        <im>1.379303e-09</im>
+                        <im>1.379304e-09</im>
                       </elem>
                       <elem>
                         <re>4.083831e-08</re>
-                        <im>2.634738e-09</im>
+                        <im>2.63474e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10282,35 +10266,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.01189952</re>
-                        <im>-9.564995e-06</im>
+                        <im>-9.565005e-06</im>
                       </elem>
                       <elem>
                         <re>0.0001570978</re>
-                        <im>-1.092036e-08</im>
+                        <im>-1.092024e-08</im>
                       </elem>
                       <elem>
                         <re>2.134814e-06</re>
-                        <im>-9.677659e-10</im>
+                        <im>-9.67762e-10</im>
                       </elem>
                       <elem>
                         <re>2.991581e-08</re>
-                        <im>8.218937e-11</im>
+                        <im>8.218841e-11</im>
                       </elem>
                       <elem>
                         <re>3.614969e-09</re>
-                        <im>-4.794496e-11</im>
+                        <im>-4.794614e-11</im>
                       </elem>
                       <elem>
                         <re>2.759213e-10</re>
-                        <im>-1.255645e-11</im>
+                        <im>-1.255586e-11</im>
                       </elem>
                       <elem>
                         <re>1.190654e-10</re>
-                        <im>1.52448e-12</im>
+                        <im>1.524332e-12</im>
                       </elem>
                       <elem>
                         <re>5.822325e-09</re>
-                        <im>2.086754e-10</im>
+                        <im>2.086709e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10320,23 +10304,23 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.00372572</re>
-                        <im>-1.015675e-06</im>
+                        <im>-1.015684e-06</im>
                       </elem>
                       <elem>
                         <re>1.546595e-05</re>
-                        <im>1.379588e-08</im>
+                        <im>1.379668e-08</im>
                       </elem>
                       <elem>
                         <re>7.240046e-08</re>
-                        <im>1.429646e-10</im>
+                        <im>1.430037e-10</im>
                       </elem>
                       <elem>
                         <re>1.942745e-10</re>
-                        <im>1.527893e-11</im>
+                        <im>1.526872e-11</im>
                       </elem>
                       <elem>
                         <re>1.945641e-10</re>
-                        <im>-1.608059e-12</im>
+                        <im>-1.608947e-12</im>
                       </elem>
                       <elem>
                         <re>-5.097221e-11</re>
@@ -10348,7 +10332,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>7.015968e-10</re>
-                        <im>1.518943e-11</im>
+                        <im>1.519387e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10375,7 +10359,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.87263e-05</re>
-                        <im>-2.026024e-08</im>
+                        <im>-2.026023e-08</im>
                       </elem>
                       <elem>
                         <re>1.468405e-05</re>
@@ -10405,7 +10389,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.0002365663</re>
-                        <im>-1.617866e-07</im>
+                        <im>-1.617867e-07</im>
                       </elem>
                       <elem>
                         <re>3.279197e-06</re>
@@ -10413,15 +10397,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>9.318748e-08</re>
-                        <im>5.831654e-11</im>
+                        <im>5.831647e-11</im>
                       </elem>
                       <elem>
                         <re>1.490661e-08</re>
-                        <im>-1.576076e-12</im>
+                        <im>-1.576335e-12</im>
                       </elem>
                       <elem>
                         <re>2.00261e-08</re>
-                        <im>2.590935e-10</im>
+                        <im>2.590929e-10</im>
                       </elem>
                       <elem>
                         <re>1.672507e-07</re>
@@ -10439,35 +10423,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001653371</re>
-                        <im>-7.026096e-07</im>
+                        <im>-7.026097e-07</im>
                       </elem>
                       <elem>
                         <re>1.311173e-05</re>
-                        <im>-2.519201e-09</im>
+                        <im>-2.519192e-09</im>
                       </elem>
                       <elem>
                         <re>1.783615e-07</re>
-                        <im>-5.379196e-11</im>
+                        <im>-5.379214e-11</im>
                       </elem>
                       <elem>
                         <re>2.513333e-09</re>
-                        <im>-7.425582e-12</im>
+                        <im>-7.425743e-12</im>
                       </elem>
                       <elem>
                         <re>4.915726e-10</re>
-                        <im>-2.792504e-12</im>
+                        <im>-2.792541e-12</im>
                       </elem>
                       <elem>
                         <re>3.707832e-10</re>
-                        <im>3.699884e-12</im>
+                        <im>3.699736e-12</im>
                       </elem>
                       <elem>
                         <re>8.422932e-09</re>
-                        <im>2.367696e-10</im>
+                        <im>2.367701e-10</im>
                       </elem>
                       <elem>
                         <re>3.830315e-07</re>
-                        <im>6.639907e-09</im>
+                        <im>6.639905e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10477,19 +10461,19 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0005172655</re>
-                        <im>-1.551301e-07</im>
+                        <im>-1.551288e-07</im>
                       </elem>
                       <elem>
                         <re>1.290089e-06</re>
-                        <im>6.940553e-10</im>
+                        <im>6.941406e-10</im>
                       </elem>
                       <elem>
                         <re>6.044997e-09</re>
-                        <im>7.218899e-12</im>
+                        <im>7.219787e-12</im>
                       </elem>
                       <elem>
                         <re>1.912346e-11</re>
-                        <im>6.04313e-12</im>
+                        <im>6.043269e-12</im>
                       </elem>
                       <elem>
                         <re>2.302593e-11</re>
@@ -10497,7 +10481,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-9.223232e-12</re>
-                        <im>-6.903947e-12</im>
+                        <im>-6.903503e-12</im>
                       </elem>
                       <elem>
                         <re>3.934762e-10</re>
@@ -10505,7 +10489,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.159305e-08</re>
-                        <im>7.716192e-11</im>
+                        <im>7.716903e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10536,7 +10520,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.461639e-05</re>
-                        <im>8.704799e-08</im>
+                        <im>8.704798e-08</im>
                       </elem>
                       <elem>
                         <re>1.107764e-05</re>
@@ -10570,11 +10554,11 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>9.340828e-08</re>
-                        <im>5.907181e-11</im>
+                        <im>5.907114e-11</im>
                       </elem>
                       <elem>
                         <re>1.492292e-08</re>
-                        <im>-2.886129e-13</im>
+                        <im>-2.891311e-13</im>
                       </elem>
                       <elem>
                         <re>2.014749e-08</re>
@@ -10596,35 +10580,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001652269</re>
-                        <im>-7.089592e-07</im>
+                        <im>-7.089554e-07</im>
                       </elem>
                       <elem>
                         <re>1.309751e-05</re>
-                        <im>-2.168323e-09</im>
+                        <im>-2.168345e-09</im>
                       </elem>
                       <elem>
                         <re>1.782058e-07</re>
-                        <im>-5.921559e-11</im>
+                        <im>-5.921453e-11</im>
                       </elem>
                       <elem>
                         <re>2.511978e-09</re>
-                        <im>-7.935355e-12</im>
+                        <im>-7.934763e-12</im>
                       </elem>
                       <elem>
                         <re>4.896651e-10</re>
-                        <im>-2.858659e-12</im>
+                        <im>-2.858955e-12</im>
                       </elem>
                       <elem>
                         <re>3.70143e-10</re>
-                        <im>2.979963e-12</im>
+                        <im>2.980149e-12</im>
                       </elem>
                       <elem>
-                        <re>8.441812e-09</re>
-                        <im>2.450102e-10</im>
+                        <re>8.441821e-09</re>
+                        <im>2.450098e-10</im>
                       </elem>
                       <elem>
-                        <re>3.832791e-07</re>
-                        <im>6.762407e-09</im>
+                        <re>3.83279e-07</re>
+                        <im>6.7624e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10634,35 +10618,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0005175924</re>
-                        <im>-1.566983e-07</im>
+                        <im>-1.566984e-07</im>
                       </elem>
                       <elem>
                         <re>1.290035e-06</re>
-                        <im>8.836101e-10</im>
+                        <im>8.836314e-10</im>
                       </elem>
                       <elem>
                         <re>6.043666e-09</re>
-                        <im>1.014048e-11</im>
+                        <im>1.013915e-11</im>
                       </elem>
                       <elem>
                         <re>2.043749e-11</re>
-                        <im>6.401007e-12</im>
+                        <im>6.402339e-12</im>
                       </elem>
                       <elem>
                         <re>2.254388e-11</re>
-                        <im>3.88953e-14</im>
+                        <im>3.834018e-14</im>
                       </elem>
                       <elem>
                         <re>-9.37663e-12</re>
-                        <im>-6.46298e-12</im>
+                        <im>-6.463202e-12</im>
                       </elem>
                       <elem>
-                        <re>3.910965e-10</re>
-                        <im>9.81096e-12</im>
+                        <re>3.91125e-10</re>
+                        <im>9.810516e-12</im>
                       </elem>
                       <elem>
-                        <re>3.159762e-08</re>
-                        <im>9.990433e-11</im>
+                        <re>3.159807e-08</re>
+                        <im>9.989723e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10727,23 +10711,23 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>8.849457e-08</re>
-                        <im>1.758245e-10</im>
+                        <im>1.758251e-10</im>
                       </elem>
                       <elem>
                         <re>9.237957e-09</re>
-                        <im>2.154317e-11</im>
+                        <im>2.154339e-11</im>
                       </elem>
                       <elem>
                         <re>2.997091e-09</re>
-                        <im>5.958244e-11</im>
+                        <im>5.958239e-11</im>
                       </elem>
                       <elem>
                         <re>2.328078e-09</re>
-                        <im>1.131531e-10</im>
+                        <im>1.131532e-10</im>
                       </elem>
                       <elem>
                         <re>3.394279e-09</re>
-                        <im>2.235135e-10</im>
+                        <im>2.235134e-10</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10753,35 +10737,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0009916467</re>
-                        <im>-9.022311e-07</im>
+                        <im>-9.022323e-07</im>
                       </elem>
                       <elem>
                         <re>1.309184e-05</re>
-                        <im>-1.978986e-09</im>
+                        <im>-1.979009e-09</im>
                       </elem>
                       <elem>
                         <re>1.779131e-07</re>
-                        <im>-4.086954e-11</im>
+                        <im>-4.086989e-11</im>
                       </elem>
                       <elem>
                         <re>2.492665e-09</re>
-                        <im>-5.196289e-12</im>
+                        <im>-5.196317e-12</im>
                       </elem>
                       <elem>
                         <re>3.014432e-10</re>
-                        <im>-1.998278e-12</im>
+                        <im>-1.998241e-12</im>
                       </elem>
                       <elem>
                         <re>2.297528e-11</re>
-                        <im>-7.775972e-13</im>
+                        <im>-7.775232e-13</im>
                       </elem>
                       <elem>
                         <re>9.907994e-12</re>
-                        <im>6.764161e-13</im>
+                        <im>6.764716e-13</im>
                       </elem>
                       <elem>
-                        <re>4.852104e-10</re>
-                        <im>1.609658e-11</im>
+                        <re>4.852105e-10</re>
+                        <im>1.609661e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10791,35 +10775,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0003104757</re>
-                        <im>-1.113998e-07</im>
+                        <im>-1.113995e-07</im>
                       </elem>
                       <elem>
                         <re>1.288951e-06</re>
-                        <im>8.106619e-10</im>
+                        <im>8.106335e-10</im>
                       </elem>
                       <elem>
                         <re>6.037313e-09</re>
-                        <im>1.023306e-11</im>
+                        <im>1.023218e-11</im>
                       </elem>
                       <elem>
                         <re>1.565898e-11</re>
-                        <im>5.755755e-12</im>
+                        <im>5.75581e-12</im>
                       </elem>
                       <elem>
                         <re>1.623735e-11</re>
-                        <im>-3.520001e-13</im>
+                        <im>-3.521111e-13</im>
                       </elem>
                       <elem>
                         <re>-4.276109e-12</re>
-                        <im>-9.312024e-13</im>
+                        <im>-9.311469e-13</im>
                       </elem>
                       <elem>
                         <re>4.078929e-12</re>
-                        <im>4.364409e-13</im>
+                        <im>4.36552e-13</im>
                       </elem>
                       <elem>
-                        <re>5.852022e-11</re>
-                        <im>1.126553e-12</im>
+                        <re>5.852066e-11</re>
+                        <im>1.12647e-12</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10872,11 +10856,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.02534539</re>
-                        <im>-7.354759e-06</im>
+                        <im>-7.354757e-06</im>
                       </elem>
                       <elem>
                         <re>0.0001577489</re>
-                        <im>-1.09013e-07</im>
+                        <im>-1.090131e-07</im>
                       </elem>
                       <elem>
                         <re>2.189721e-06</re>
@@ -10884,15 +10868,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>6.371628e-08</re>
-                        <im>5.896153e-12</im>
+                        <im>5.896236e-12</im>
                       </elem>
                       <elem>
                         <re>1.1829e-08</re>
-                        <im>-8.063066e-12</im>
+                        <im>-8.063177e-12</im>
                       </elem>
                       <elem>
                         <re>1.902837e-08</re>
-                        <im>2.552699e-10</im>
+                        <im>2.552695e-10</im>
                       </elem>
                       <elem>
                         <re>1.662746e-07</re>
@@ -10910,35 +10894,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001322547</re>
-                        <im>-4.025796e-07</im>
+                        <im>-4.025797e-07</im>
                       </elem>
                       <elem>
                         <re>8.745393e-06</re>
-                        <im>-1.788528e-09</im>
+                        <im>-1.788538e-09</im>
                       </elem>
                       <elem>
                         <re>1.190301e-07</re>
-                        <im>-4.046018e-11</im>
+                        <im>-4.046048e-11</im>
                       </elem>
                       <elem>
                         <re>1.682174e-09</re>
-                        <im>-5.760295e-12</im>
+                        <im>-5.760499e-12</im>
                       </elem>
                       <elem>
                         <re>3.909416e-10</re>
-                        <im>-2.153533e-12</im>
+                        <im>-2.153607e-12</im>
                       </elem>
                       <elem>
                         <re>3.634886e-10</re>
-                        <im>4.025983e-12</im>
+                        <im>4.025835e-12</im>
                       </elem>
                       <elem>
                         <re>8.434187e-09</re>
-                        <im>2.393457e-10</im>
+                        <im>2.39346e-10</im>
                       </elem>
                       <elem>
                         <re>3.840852e-07</re>
-                        <im>6.653737e-09</im>
+                        <im>6.653735e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -10948,11 +10932,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0004138562</re>
-                        <im>-1.183502e-07</im>
+                        <im>-1.183492e-07</im>
                       </elem>
                       <elem>
                         <re>8.604296e-07</re>
-                        <im>4.559406e-10</im>
+                        <im>4.560117e-10</im>
                       </elem>
                       <elem>
                         <re>4.032792e-09</re>
@@ -10968,7 +10952,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-7.831079e-12</re>
-                        <im>-6.553585e-12</im>
+                        <im>-6.553141e-12</im>
                       </elem>
                       <elem>
                         <re>3.947861e-10</re>
@@ -10976,7 +10960,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.154486e-08</re>
-                        <im>8.378215e-11</im>
+                        <im>8.378926e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -11003,7 +10987,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.87263e-05</re>
-                        <im>-2.026024e-08</im>
+                        <im>-2.026023e-08</im>
                       </elem>
                       <elem>
                         <re>1.468405e-05</re>
@@ -11033,7 +11017,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>0.0002365663</re>
-                        <im>-1.617866e-07</im>
+                        <im>-1.617867e-07</im>
                       </elem>
                       <elem>
                         <re>3.279197e-06</re>
@@ -11041,15 +11025,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>9.318748e-08</re>
-                        <im>5.831654e-11</im>
+                        <im>5.831647e-11</im>
                       </elem>
                       <elem>
                         <re>1.490661e-08</re>
-                        <im>-1.576076e-12</im>
+                        <im>-1.576335e-12</im>
                       </elem>
                       <elem>
                         <re>2.00261e-08</re>
-                        <im>2.590935e-10</im>
+                        <im>2.590929e-10</im>
                       </elem>
                       <elem>
                         <re>1.672507e-07</re>
@@ -11067,35 +11051,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001653371</re>
-                        <im>-7.026096e-07</im>
+                        <im>-7.026097e-07</im>
                       </elem>
                       <elem>
                         <re>1.311173e-05</re>
-                        <im>-2.519201e-09</im>
+                        <im>-2.519192e-09</im>
                       </elem>
                       <elem>
                         <re>1.783615e-07</re>
-                        <im>-5.379196e-11</im>
+                        <im>-5.379214e-11</im>
                       </elem>
                       <elem>
                         <re>2.513333e-09</re>
-                        <im>-7.425582e-12</im>
+                        <im>-7.425743e-12</im>
                       </elem>
                       <elem>
                         <re>4.915726e-10</re>
-                        <im>-2.792504e-12</im>
+                        <im>-2.792541e-12</im>
                       </elem>
                       <elem>
                         <re>3.707832e-10</re>
-                        <im>3.699884e-12</im>
+                        <im>3.699736e-12</im>
                       </elem>
                       <elem>
                         <re>8.422932e-09</re>
-                        <im>2.367696e-10</im>
+                        <im>2.367701e-10</im>
                       </elem>
                       <elem>
                         <re>3.830315e-07</re>
-                        <im>6.639907e-09</im>
+                        <im>6.639905e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -11105,19 +11089,19 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0005172655</re>
-                        <im>-1.551301e-07</im>
+                        <im>-1.551288e-07</im>
                       </elem>
                       <elem>
                         <re>1.290089e-06</re>
-                        <im>6.940553e-10</im>
+                        <im>6.941406e-10</im>
                       </elem>
                       <elem>
                         <re>6.044997e-09</re>
-                        <im>7.218899e-12</im>
+                        <im>7.219787e-12</im>
                       </elem>
                       <elem>
                         <re>1.912346e-11</re>
-                        <im>6.04313e-12</im>
+                        <im>6.043269e-12</im>
                       </elem>
                       <elem>
                         <re>2.302593e-11</re>
@@ -11125,7 +11109,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-9.223232e-12</re>
-                        <im>-6.903947e-12</im>
+                        <im>-6.903503e-12</im>
                       </elem>
                       <elem>
                         <re>3.934762e-10</re>
@@ -11133,7 +11117,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.159305e-08</re>
-                        <im>7.716192e-11</im>
+                        <im>7.716903e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -11186,11 +11170,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.02534539</re>
-                        <im>-7.354759e-06</im>
+                        <im>-7.354757e-06</im>
                       </elem>
                       <elem>
                         <re>0.0001577489</re>
-                        <im>-1.09013e-07</im>
+                        <im>-1.090131e-07</im>
                       </elem>
                       <elem>
                         <re>2.189721e-06</re>
@@ -11198,15 +11182,15 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>6.371628e-08</re>
-                        <im>5.896153e-12</im>
+                        <im>5.896236e-12</im>
                       </elem>
                       <elem>
                         <re>1.1829e-08</re>
-                        <im>-8.063066e-12</im>
+                        <im>-8.063177e-12</im>
                       </elem>
                       <elem>
                         <re>1.902837e-08</re>
-                        <im>2.552699e-10</im>
+                        <im>2.552695e-10</im>
                       </elem>
                       <elem>
                         <re>1.662746e-07</re>
@@ -11224,35 +11208,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001322547</re>
-                        <im>-4.025796e-07</im>
+                        <im>-4.025797e-07</im>
                       </elem>
                       <elem>
                         <re>8.745393e-06</re>
-                        <im>-1.788528e-09</im>
+                        <im>-1.788538e-09</im>
                       </elem>
                       <elem>
                         <re>1.190301e-07</re>
-                        <im>-4.046018e-11</im>
+                        <im>-4.046048e-11</im>
                       </elem>
                       <elem>
                         <re>1.682174e-09</re>
-                        <im>-5.760295e-12</im>
+                        <im>-5.760499e-12</im>
                       </elem>
                       <elem>
                         <re>3.909416e-10</re>
-                        <im>-2.153533e-12</im>
+                        <im>-2.153607e-12</im>
                       </elem>
                       <elem>
                         <re>3.634886e-10</re>
-                        <im>4.025983e-12</im>
+                        <im>4.025835e-12</im>
                       </elem>
                       <elem>
                         <re>8.434187e-09</re>
-                        <im>2.393457e-10</im>
+                        <im>2.39346e-10</im>
                       </elem>
                       <elem>
                         <re>3.840852e-07</re>
-                        <im>6.653737e-09</im>
+                        <im>6.653735e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -11262,11 +11246,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0004138562</re>
-                        <im>-1.183502e-07</im>
+                        <im>-1.183492e-07</im>
                       </elem>
                       <elem>
                         <re>8.604296e-07</re>
-                        <im>4.559406e-10</im>
+                        <im>4.560117e-10</im>
                       </elem>
                       <elem>
                         <re>4.032792e-09</re>
@@ -11282,7 +11266,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-7.831079e-12</re>
-                        <im>-6.553585e-12</im>
+                        <im>-6.553141e-12</im>
                       </elem>
                       <elem>
                         <re>3.947861e-10</re>
@@ -11290,7 +11274,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.154486e-08</re>
-                        <im>8.378215e-11</im>
+                        <im>8.378926e-11</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -11321,7 +11305,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.468388e-05</re>
-                        <im>9.334549e-08</im>
+                        <im>9.334548e-08</im>
                       </elem>
                       <elem>
                         <re>1.124826e-05</re>
@@ -11351,27 +11335,27 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.279237e-06</re>
-                        <im>-1.415641e-09</im>
+                        <im>-1.41564e-09</im>
                       </elem>
                       <elem>
                         <re>9.318195e-08</re>
-                        <im>5.024673e-11</im>
+                        <im>5.024656e-11</im>
                       </elem>
                       <elem>
                         <re>1.490065e-08</re>
-                        <im>6.525181e-12</im>
+                        <im>6.524922e-12</im>
                       </elem>
                       <elem>
                         <re>2.002174e-08</re>
-                        <im>2.654681e-10</im>
+                        <im>2.65467e-10</im>
                       </elem>
                       <elem>
                         <re>1.672344e-07</re>
-                        <im>4.161572e-09</im>
+                        <im>4.161573e-09</im>
                       </elem>
                       <elem>
                         <re>5.399509e-06</re>
-                        <im>1.127077e-07</im>
+                        <im>1.127078e-07</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -11381,35 +11365,35 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.001653356</re>
-                        <im>-6.444283e-07</im>
+                        <im>-6.444291e-07</im>
                       </elem>
                       <elem>
                         <re>1.311162e-05</re>
-                        <im>-2.164569e-09</im>
+                        <im>-2.164572e-09</im>
                       </elem>
                       <elem>
                         <re>1.783575e-07</re>
-                        <im>-6.712782e-11</im>
+                        <im>-6.712823e-11</im>
                       </elem>
                       <elem>
                         <re>2.513636e-09</re>
-                        <im>-2.862786e-12</im>
+                        <im>-2.863008e-12</im>
                       </elem>
                       <elem>
                         <re>4.914968e-10</re>
-                        <im>-3.536483e-12</im>
+                        <im>-3.536667e-12</im>
                       </elem>
                       <elem>
-                        <re>3.708637e-10</re>
-                        <im>3.599965e-12</im>
+                        <re>3.70859e-10</re>
+                        <im>3.600039e-12</im>
                       </elem>
                       <elem>
-                        <re>8.421037e-09</re>
-                        <im>2.498418e-10</im>
+                        <re>8.421039e-09</re>
+                        <im>2.498427e-10</im>
                       </elem>
                       <elem>
                         <re>3.830936e-07</re>
-                        <im>6.770682e-09</im>
+                        <im>6.770678e-09</im>
                       </elem>
                     </barprop>
                   </elem>
@@ -11419,11 +11403,11 @@ regression test spectrum output is kept within the chroma xml output
                     <barprop>
                       <elem>
                         <re>0.0005172683</re>
-                        <im>-1.404296e-07</im>
+                        <im>-1.404289e-07</im>
                       </elem>
                       <elem>
                         <re>1.290057e-06</re>
-                        <im>8.071311e-10</im>
+                        <im>8.072235e-10</im>
                       </elem>
                       <elem>
                         <re>6.044315e-09</re>
@@ -11431,7 +11415,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>1.929399e-11</re>
-                        <im>4.536215e-12</im>
+                        <im>4.536492e-12</im>
                       </elem>
                       <elem>
                         <re>2.29833e-11</re>
@@ -11439,7 +11423,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>-9.209022e-12</re>
-                        <im>-5.624525e-12</im>
+                        <im>-5.623192e-12</im>
                       </elem>
                       <elem>
                         <re>3.926804e-10</re>
@@ -11447,7 +11431,7 @@ regression test spectrum output is kept within the chroma xml output
                       </elem>
                       <elem>
                         <re>3.15835e-08</re>
-                        <im>1.110655e-10</im>
+                        <im>1.110691e-10</im>
                       </elem>
                     </barprop>
                   </elem>

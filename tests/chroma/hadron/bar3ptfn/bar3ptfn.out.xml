@@ -90,7 +90,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-        <seq_src>PION</seq_src>
+        <seq_src>pion</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -126,7 +126,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_PION</seqsource_id>
+        <seqsource_id>seqsource_pion</seqsource_id>
       </NamedObject>
     </elem>
 
@@ -231,7 +231,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
     <elem>
       <annotation>
-       PION seqprop
+       pion seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -263,8 +263,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_PION</source_id>
-        <prop_id>seqprop_PION</prop_id>
+        <source_id>seqsource_pion</source_id>
+        <prop_id>seqprop_pion</prop_id>
       </NamedObject>
     </elem>
 
@@ -364,7 +364,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <bar3ptfn_file>bar3ptfn.dat</bar3ptfn_file>
         <seqprops>
           <elem>
-            <seqprop_id>seqprop_PION</seqprop_id>
+            <seqprop_id>seqprop_pion</seqprop_id>
             <gamma_insertion>14</gamma_insertion>
           </elem>
           <elem>
@@ -421,10 +421,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>13 Oct 06 22:57:16 EDT</run_date>
+    <run_date>02 Dec 06 16:13:25 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -441,16 +441,9 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.994803997506905</w_plaq>
@@ -488,10 +481,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:16 EDT</run_date>
+          <run_date>02 Dec 06 16:13:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -588,10 +581,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:16 EDT</run_date>
+          <run_date>02 Dec 06 16:13:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -678,6 +671,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -705,14 +699,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -810,10 +796,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:17 EDT</run_date>
+          <run_date>02 Dec 06 16:13:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -826,7 +812,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION</SeqSourceType>
+      <SeqSourceType>pion</SeqSourceType>
       <sink_mom>0 0 0</sink_mom>
       <t_sink>7</t_sink>
       <j_decay>3</j_decay>
@@ -862,7 +848,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <prop_ids>
               <elem>sh_prop_0</elem>
             </prop_ids>
-            <seqsource_id>seqsource_PION</seqsource_id>
+            <seqsource_id>seqsource_pion</seqsource_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
@@ -908,6 +894,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <Forward_prop_infos>
           <elem>
             <Propagator_info><Propagator>
+      <version>1</version>
       <ForwardProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -932,8 +919,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </ForwardProp>
-      <StateInfo>
-</StateInfo>
       <PropSource>
         <version>6</version>
         <Source>
@@ -961,14 +946,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -993,10 +970,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:17 EDT</run_date>
+          <run_date>02 Dec 06 16:13:25 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1092,6 +1069,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <Forward_prop_infos>
           <elem>
             <Propagator_info><Propagator>
+      <version>1</version>
       <ForwardProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -1116,8 +1094,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </ForwardProp>
-      <StateInfo>
-</StateInfo>
       <PropSource>
         <version>6</version>
         <Source>
@@ -1145,14 +1121,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -1163,6 +1131,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </elem>
           <elem>
             <Propagator_info><Propagator>
+      <version>1</version>
       <ForwardProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -1187,8 +1156,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </ForwardProp>
-      <StateInfo>
-</StateInfo>
       <PropSource>
         <version>6</version>
         <Source>
@@ -1216,14 +1183,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -1242,7 +1201,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 2.33773313191274e-09</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 2.3377331309133e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1251,10 +1210,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:17 EDT</run_date>
+          <run_date>02 Dec 06 16:13:26 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1349,6 +1308,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <Forward_prop_infos>
           <elem>
             <Propagator_info><Propagator>
+      <version>1</version>
       <ForwardProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -1373,8 +1333,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </ForwardProp>
-      <StateInfo>
-</StateInfo>
       <PropSource>
         <version>6</version>
         <Source>
@@ -1402,14 +1360,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -1425,7 +1375,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 4.49554683201637e-10</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.4955468290633e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1434,10 +1384,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:17 EDT</run_date>
+          <run_date>02 Dec 06 16:13:26 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1474,8 +1424,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
-            <source_id>seqsource_PION</source_id>
-            <prop_id>seqprop_PION</prop_id>
+            <source_id>seqsource_pion</source_id>
+            <prop_id>seqprop_pion</prop_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
@@ -1554,7 +1504,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>PION</SeqSourceType>
+          <SeqSourceType>pion</SeqSourceType>
           <sink_mom>0 0 0</sink_mom>
           <t_sink>7</t_sink>
           <j_decay>3</j_decay>
@@ -1563,7 +1513,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSinkSmear>
+          <PropSink>
             <version>5</version>
             <Sink>
               <version>2</version>
@@ -1587,7 +1537,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSinkSmear>
+          </PropSink>
           <ForwardProp>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
@@ -1639,6 +1589,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
             <t_source>0</t_source>
           </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
         </elem>
       </ForwardProps>
       <Config_info>
@@ -1738,10 +1692,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:18 EDT</run_date>
+          <run_date>02 Dec 06 16:13:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1867,7 +1821,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSinkSmear>
+          <PropSink>
             <version>5</version>
             <Sink>
               <version>2</version>
@@ -1891,7 +1845,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSinkSmear>
+          </PropSink>
           <ForwardProp>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
@@ -1943,10 +1897,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
             <t_source>0</t_source>
           </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
         </elem>
         <elem>
           <version>1</version>
-          <PropSinkSmear>
+          <PropSink>
             <version>5</version>
             <Sink>
               <version>2</version>
@@ -1970,7 +1928,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSinkSmear>
+          </PropSink>
           <ForwardProp>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
@@ -2022,6 +1980,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
             <t_source>0</t_source>
           </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
         </elem>
       </ForwardProps>
       <Config_info>
@@ -2032,7 +1994,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 2.33773313191274e-09</source_corr>
+          <source_corr>0 0 0 0 0 0 0 2.3377331309133e-09</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -2087,32 +2049,32 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>49</n_count>
-            <resid>4.53312e-07</resid>
+            <resid>4.576853e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>49</n_count>
-            <resid>4.084749e-07</resid>
+            <resid>4.140537e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>49</n_count>
-            <resid>4.53312e-07</resid>
+            <resid>4.576853e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>49</n_count>
-            <resid>4.084749e-07</resid>
+            <resid>4.140537e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>584</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.76312318531186e-12 4.32833310020498e-12 1.06466978168122e-11 2.62037197387039e-11 6.4502895559983e-11 1.58915907154026e-10 3.91558266581642e-10 9.64097074541139e-10</prop_corr>
+          <prop_corr>1.7631231993588e-12 4.32833311828116e-12 1.06466978194878e-11 2.62037195973453e-11 6.45028954864242e-11 1.58915907331222e-10 3.91558266069254e-10 9.64097074124625e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2121,10 +2083,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:18 EDT</run_date>
+          <run_date>02 Dec 06 16:13:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2250,7 +2212,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSinkSmear>
+          <PropSink>
             <version>5</version>
             <Sink>
               <version>2</version>
@@ -2274,7 +2236,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSinkSmear>
+          </PropSink>
           <ForwardProp>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
@@ -2326,6 +2288,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
             <t_source>0</t_source>
           </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
         </elem>
       </ForwardProps>
       <Config_info>
@@ -2336,7 +2302,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 4.49554683201637e-10</source_corr>
+          <source_corr>0 0 0 0 0 0 0 4.4955468290633e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
@@ -2391,32 +2357,32 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>49</n_count>
-            <resid>4.398699e-07</resid>
+            <resid>4.249015e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>49</n_count>
-            <resid>4.368729e-07</resid>
+            <resid>4.234821e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>49</n_count>
-            <resid>4.398699e-07</resid>
+            <resid>4.249015e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>49</n_count>
-            <resid>4.368729e-07</resid>
+            <resid>4.234821e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>584</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.39060682442486e-13 8.32367233325313e-13 2.04741957126244e-12 5.03910138709783e-12 1.24042715508291e-11 3.05604188260405e-11 7.5298459668268e-11 1.85400257936772e-10</prop_corr>
+          <prop_corr>3.39060686385547e-13 8.32367240558437e-13 2.0474195640964e-12 5.03910139095075e-12 1.24042716594163e-11 3.05604194148964e-11 7.5298460350412e-11 1.85400258471162e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2425,10 +2391,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.17.0</chroma>
-            <qdp>1.21.2</qdp>
+            <chroma>3.21.0</chroma>
+            <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>13 Oct 06 22:57:19 EDT</run_date>
+          <run_date>02 Dec 06 16:13:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2447,7 +2413,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <prop_id>sh_prop_0</prop_id>
             <seqprops>
               <elem>
-                <seqprop_id>seqprop_PION</seqprop_id>
+                <seqprop_id>seqprop_pion</seqprop_id>
                 <gamma_insertion>14</gamma_insertion>
               </elem>
               <elem>
@@ -2508,6 +2474,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Propagator_file_info>
         <Propagator_record_info><Propagator>
+      <version>1</version>
       <ForwardProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -2532,8 +2499,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </ForwardProp>
-      <StateInfo>
-</StateInfo>
       <PropSource>
         <version>6</version>
         <Source>
@@ -2561,14 +2526,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>1835</elem>
-          <elem>3491</elem>
-          <elem>1302</elem>
-          <elem>1242</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -2589,6 +2546,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
               </SequentialProp_file_info>
               <SequentialProp_record_info><SequentialProp>
+      <version>1</version>
       <SeqProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -2613,7 +2571,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </SeqProp>
-      <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
         <Sink>
@@ -2643,7 +2600,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>PION</SeqSourceType>
+          <SeqSourceType>pion</SeqSourceType>
           <sink_mom>0 0 0</sink_mom>
           <t_sink>7</t_sink>
           <j_decay>3</j_decay>
@@ -2652,7 +2609,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSinkSmear>
+          <PropSink>
             <version>5</version>
             <Sink>
               <version>2</version>
@@ -2676,7 +2633,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSinkSmear>
+          </PropSink>
           <ForwardProp>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
@@ -2728,6 +2685,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
             <t_source>0</t_source>
           </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
         </elem>
       </ForwardProps>
       <Config_info>
@@ -2741,7 +2702,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
                 <backward_prop_corr>5.15427295541361e-08 1.25997232162932e-07 3.0848432704864e-07 7.55719024759674e-07 1.85144798712108e-06 4.53983310305765e-06 1.11341132834331e-05 2.70417885804534e-05</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
-              <seqsrc_type>PION</seqsrc_type>
+              <seqsrc_type>pion</seqsrc_type>
               <t_source>0</t_source>
               <t_sink>7</t_sink>
               <sink_mom>0 0 0</sink_mom>
@@ -2755,6 +2716,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
               </SequentialProp_file_info>
               <SequentialProp_record_info><SequentialProp>
+      <version>1</version>
       <SeqProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -2779,7 +2741,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </SeqProp>
-      <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
         <Sink>
@@ -2818,7 +2779,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSinkSmear>
+          <PropSink>
             <version>5</version>
             <Sink>
               <version>2</version>
@@ -2842,7 +2803,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSinkSmear>
+          </PropSink>
           <ForwardProp>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
@@ -2894,10 +2855,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
             <t_source>0</t_source>
           </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
         </elem>
         <elem>
           <version>1</version>
-          <PropSinkSmear>
+          <PropSink>
             <version>5</version>
             <Sink>
               <version>2</version>
@@ -2921,7 +2886,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSinkSmear>
+          </PropSink>
           <ForwardProp>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
@@ -2973,6 +2938,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
             <t_source>0</t_source>
           </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
         </elem>
       </ForwardProps>
       <Config_info>
@@ -2983,7 +2952,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
               </SequentialProp_record_info>
               <Backward_prop_correlator>
-                <backward_prop_corr>1.76312318531186e-12 4.32833310020498e-12 1.06466978168122e-11 2.62037197387039e-11 6.4502895559983e-11 1.58915907154026e-10 3.91558266581642e-10 9.64097074541139e-10</backward_prop_corr>
+                <backward_prop_corr>1.7631231993588e-12 4.32833311828116e-12 1.06466978194878e-11 2.62037195973453e-11 6.45028954864242e-11 1.58915907331222e-10 3.91558266069254e-10 9.64097074124625e-10</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
               <seqsrc_type>NUCL_U_MIXED_NONREL</seqsrc_type>
@@ -3000,6 +2969,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
               </SequentialProp_file_info>
               <SequentialProp_record_info><SequentialProp>
+      <version>1</version>
       <SeqProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -3024,7 +2994,6 @@ Calculate bar3ptfn - insertions in 3-pt functions
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </SeqProp>
-      <version>1</version>
       <SeqSourceSinkSmear>
         <version>5</version>
         <Sink>
@@ -3063,7 +3032,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <ForwardProps>
         <elem>
           <version>1</version>
-          <PropSinkSmear>
+          <PropSink>
             <version>5</version>
             <Sink>
               <version>2</version>
@@ -3087,7 +3056,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
               </LinkSmearing>
             </Sink>
             <j_decay>3</j_decay>
-          </PropSinkSmear>
+          </PropSink>
           <ForwardProp>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
@@ -3139,6 +3108,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <j_decay>3</j_decay>
             <t_source>0</t_source>
           </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
         </elem>
       </ForwardProps>
       <Config_info>
@@ -3149,7 +3122,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
               </SequentialProp_record_info>
               <Backward_prop_correlator>
-                <backward_prop_corr>3.39060682442486e-13 8.32367233325313e-13 2.04741957126244e-12 5.03910138709783e-12 1.24042715508291e-11 3.05604188260405e-11 7.5298459668268e-11 1.85400257936772e-10</backward_prop_corr>
+                <backward_prop_corr>3.39060686385547e-13 8.32367240558437e-13 2.0474195640964e-12 5.03910139095075e-12 1.24042716594163e-11 3.05604194148964e-11 7.5298460350412e-11 1.85400258471162e-10</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
               <seqsrc_type>NUCL_D_MIXED_NONREL</seqsrc_type>
