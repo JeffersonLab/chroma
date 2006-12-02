@@ -1,4 +1,4 @@
-// $Id: hmc_new.cc,v 3.1 2006-11-28 16:49:42 bjoo Exp $
+// $Id: hmc_new.cc,v 3.2 2006-12-02 21:14:22 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -528,18 +528,18 @@ Chroma::initialize(&argc, &argv);
     XMLReader config_xml;
     
     QDPIO::cout << "Initialize gauge field" << endl;
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
     gaugeStartup(file_xml, config_xml, u, mc_control.cfg);
-    QDPIO::cout << "Finished initializing gauge field" << endl;
+    swatch.stop();
+    QDPIO::cout << "Gauge field successfully initialized: time= " 
+		<< swatch.getTimeInSeconds() 
+		<< " secs" << endl;
 
     // Write out the config header
-    XMLBufferWriter xml_buf;
-    push(xml_buf, "Config_info");
-    write(xml_buf, "file_xml", file_xml);
-    write(xml_buf, "config_xml", config_xml);
-    pop(xml_buf);
-
-    xml_out << xml_buf;
-    xml_log << xml_buf;
+    write(xml_out, "Config_info", config_xml);
+    write(xml_log, "Config_info", config_xml);
   }
   
   // Set up the monomials
