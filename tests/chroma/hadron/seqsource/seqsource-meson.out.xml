@@ -120,16 +120,20 @@ Sequential source
     </elem>
     <elem>
       <annotation>
-       A0-A0_1 seqsource
+       a0-a0 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A0_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-a0</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -169,7 +173,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_1 seqprop
+       a0-a0 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -208,7 +212,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_1 seqprop test
+       a0-a0 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -275,16 +279,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_1 seqsource
+       a0-rho_x_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_X_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_x_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -324,7 +332,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_1 seqprop
+       a0-rho_x_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -363,7 +371,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_1 seqprop test
+       a0-rho_x_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -430,16 +438,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_1 seqsource
+       a0-rho_y_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_Y_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_y_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -479,7 +491,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_1 seqprop
+       a0-rho_y_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -518,7 +530,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_1 seqprop test
+       a0-rho_y_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -585,16 +597,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Z_1 seqsource
+       a0-b1_z seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-B1_Z_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-b1_z</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -634,7 +650,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Z_1 seqprop
+       a0-b1_z seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -673,7 +689,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Z_1 seqprop test
+       a0-b1_z seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -740,16 +756,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_1 seqsource
+       a0-rho_z_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_Z_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_z_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -789,7 +809,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_1 seqprop
+       a0-rho_z_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -828,7 +848,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_1 seqprop test
+       a0-rho_z_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -895,16 +915,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Y_1 seqsource
+       a0-b1_y seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-B1_Y_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-b1_y</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -944,7 +968,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Y_1 seqprop
+       a0-b1_y seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -983,7 +1007,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Y_1 seqprop test
+       a0-b1_y seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1050,16 +1074,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_X_1 seqsource
+       a0-b1_x seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-B1_X_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-b1_x</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1099,7 +1127,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_X_1 seqprop
+       a0-b1_x seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1138,7 +1166,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_X_1 seqprop test
+       a0-b1_x seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1205,16 +1233,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_2 seqsource
+       a0-pion_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-PION_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-pion_2</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1254,7 +1286,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_2 seqprop
+       a0-pion_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1293,7 +1325,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_2 seqprop test
+       a0-pion_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1360,16 +1392,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_2 seqsource
+       a0-b0 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A0_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-b0</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1409,7 +1445,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_2 seqprop
+       a0-b0 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1448,7 +1484,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_2 seqprop test
+       a0-b0 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1515,16 +1551,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_2 seqsource
+       a0-rho_x_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_X_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_x_2</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1564,7 +1604,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_2 seqprop
+       a0-rho_x_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1603,7 +1643,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_2 seqprop test
+       a0-rho_x_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1670,16 +1710,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_2 seqsource
+       a0-rho_y_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_Y_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_y_2</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1719,7 +1763,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_2 seqprop
+       a0-rho_y_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1758,7 +1802,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_2 seqprop test
+       a0-rho_y_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1825,16 +1869,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Z_1 seqsource
+       a0-a1_z seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A1_Z_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-a1_z</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1874,7 +1922,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Z_1 seqprop
+       a0-a1_z seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1913,7 +1961,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Z_1 seqprop test
+       a0-a1_z seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1980,16 +2028,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_2 seqsource
+       a0-rho_z_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_Z_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_z_2</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2029,7 +2081,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_2 seqprop
+       a0-rho_z_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2068,7 +2120,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_2 seqprop test
+       a0-rho_z_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2135,16 +2187,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Y_1 seqsource
+       a0-a1_y seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A1_Y_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-a1_y</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2184,7 +2240,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Y_1 seqprop
+       a0-a1_y seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2223,7 +2279,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Y_1 seqprop test
+       a0-a1_y seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2290,16 +2346,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_X_1 seqsource
+       a0-a1_x seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A1_X_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-a1_x</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2339,7 +2399,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_X_1 seqprop
+       a0-a1_x seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2378,7 +2438,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_X_1 seqprop test
+       a0-a1_x seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2445,16 +2505,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_1 seqsource
+       a0-pion_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-PION_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-pion_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2494,7 +2558,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_1 seqprop
+       a0-pion_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2533,7 +2597,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_1 seqprop test
+       a0-pion_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2600,16 +2664,20 @@ Sequential source
 
     <elem>
       <annotation>
-       PION_1-PION_1 seqsource
+       pion_1-pion_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>PION_1-PION_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>pion_1-pion_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2649,7 +2717,7 @@ Sequential source
 
     <elem>
       <annotation>
-       PION_1-PION_1 seqprop
+       pion_1-pion_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2688,7 +2756,7 @@ Sequential source
 
     <elem>
       <annotation>
-       PION_1-PION_1 seqprop test
+       pion_1-pion_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2778,7 +2846,7 @@ Sequential source
       <chroma>3.20.0</chroma>
       <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>01 Dec 06 08:50:59 EST</run_date>
+    <run_date>02 Dec 06 12:16:37 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -2795,16 +2863,9 @@ Sequential source
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.9948041322667</w_plaq>
@@ -2845,7 +2906,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:01 EST</run_date>
+          <run_date>02 Dec 06 12:16:37 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2945,7 +3006,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:01 EST</run_date>
+          <run_date>02 Dec 06 12:16:38 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3305,7 +3366,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:04 EST</run_date>
+          <run_date>02 Dec 06 12:16:41 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3318,10 +3379,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-A0_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-a0</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -3479,7 +3540,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:05 EST</run_date>
+          <run_date>02 Dec 06 12:16:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3596,10 +3657,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A0_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-a0</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -3787,7 +3848,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:07 EST</run_date>
+          <run_date>02 Dec 06 12:16:44 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4103,10 +4164,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A0_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-a0</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -4213,7 +4274,7 @@ Sequential source
           <seqprop_corr>7.57662197103396e-09 1.94642336970891e-08 6.19156009808953e-08 5.46077828935916e-07 1.67644619566202e-05 0.000714978631106165 0.0626253571020447 0.000714815939912666</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-A0_1</seq_src>
+          <seq_src>a0-a0</seq_src>
           <gamma_insertion>0</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -4258,7 +4319,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:07 EST</run_date>
+          <run_date>02 Dec 06 12:16:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4271,10 +4332,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-RHO_X_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-rho_x_1</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -4432,7 +4493,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:08 EST</run_date>
+          <run_date>02 Dec 06 12:16:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -4549,10 +4610,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_X_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_x_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -4740,7 +4801,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:10 EST</run_date>
+          <run_date>02 Dec 06 12:16:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5056,10 +5117,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_X_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_x_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -5166,7 +5227,7 @@ Sequential source
           <seqprop_corr>7.5274923084452e-09 1.93411774542541e-08 6.15929720803681e-08 5.45108119828647e-07 1.67607350986998e-05 0.000714960022197621 0.0626253859990469 0.000714834988066995</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-RHO_X_1</seq_src>
+          <seq_src>a0-rho_x_1</seq_src>
           <gamma_insertion>1</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -5211,7 +5272,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:10 EST</run_date>
+          <run_date>02 Dec 06 12:16:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5224,10 +5285,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-RHO_Y_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-rho_y_1</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -5385,7 +5446,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:11 EST</run_date>
+          <run_date>02 Dec 06 12:16:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -5502,10 +5563,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_Y_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_y_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -5693,7 +5754,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:13 EST</run_date>
+          <run_date>02 Dec 06 12:16:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6009,10 +6070,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_Y_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_y_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -6119,7 +6180,7 @@ Sequential source
           <seqprop_corr>7.90004198391856e-09 2.02496881209524e-08 6.38369104809305e-08 5.50933573576328e-07 1.67779727909003e-05 0.000715019136623744 0.0626254723514072 0.000714826671888763</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-RHO_Y_1</seq_src>
+          <seq_src>a0-rho_y_1</seq_src>
           <gamma_insertion>2</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -6164,7 +6225,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:13 EST</run_date>
+          <run_date>02 Dec 06 12:16:51 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6177,10 +6238,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-B1_Z_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-b1_z</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -6338,7 +6399,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:14 EST</run_date>
+          <run_date>02 Dec 06 12:16:51 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6455,10 +6516,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-B1_Z_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-b1_z</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -6646,7 +6707,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:15 EST</run_date>
+          <run_date>02 Dec 06 12:16:53 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -6962,10 +7023,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-B1_Z_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-b1_z</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -7072,7 +7133,7 @@ Sequential source
           <seqprop_corr>7.87737025066547e-09 2.01889345612933e-08 6.36428140956449e-08 5.5009364548009e-07 1.6772706854557e-05 0.000714978291776768 0.0626254971517785 0.000714869151845868</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-B1_Z_1</seq_src>
+          <seq_src>a0-b1_z</seq_src>
           <gamma_insertion>3</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -7117,7 +7178,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:16 EST</run_date>
+          <run_date>02 Dec 06 12:16:54 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7130,10 +7191,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-RHO_Z_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-rho_z_1</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -7291,7 +7352,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:16 EST</run_date>
+          <run_date>02 Dec 06 12:16:54 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7408,10 +7469,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_Z_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_z_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -7599,7 +7660,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:18 EST</run_date>
+          <run_date>02 Dec 06 12:16:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -7915,10 +7976,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_Z_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_z_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -8025,7 +8086,7 @@ Sequential source
           <seqprop_corr>7.89901911858732e-09 2.02471817484835e-08 6.38300623529428e-08 5.50941889585552e-07 1.67781551757904e-05 0.000715020782600666 0.062625494804826 0.000714827836995007</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-RHO_Z_1</seq_src>
+          <seq_src>a0-rho_z_1</seq_src>
           <gamma_insertion>4</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -8070,7 +8131,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:19 EST</run_date>
+          <run_date>02 Dec 06 12:16:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8083,10 +8144,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-B1_Y_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-b1_y</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -8244,7 +8305,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:19 EST</run_date>
+          <run_date>02 Dec 06 12:16:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8361,10 +8422,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-B1_Y_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-b1_y</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -8552,7 +8613,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:21 EST</run_date>
+          <run_date>02 Dec 06 12:16:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -8868,10 +8929,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-B1_Y_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-b1_y</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -8978,7 +9039,7 @@ Sequential source
           <seqprop_corr>7.88550746562464e-09 2.02088257816087e-08 6.36922845094158e-08 5.50194586512028e-07 1.6772865914257e-05 0.000714978448133427 0.0626254747073391 0.000714866650029415</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-B1_Y_1</seq_src>
+          <seq_src>a0-b1_y</seq_src>
           <gamma_insertion>5</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -9023,7 +9084,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:22 EST</run_date>
+          <run_date>02 Dec 06 12:17:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9036,10 +9097,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-B1_X_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-b1_x</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -9197,7 +9258,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:22 EST</run_date>
+          <run_date>02 Dec 06 12:17:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9314,10 +9375,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-B1_X_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-b1_x</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -9505,7 +9566,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:24 EST</run_date>
+          <run_date>02 Dec 06 12:17:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9821,10 +9882,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-B1_X_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-b1_x</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -9931,7 +9992,7 @@ Sequential source
           <seqprop_corr>7.53137163583851e-09 1.93547475806943e-08 6.16570056367987e-08 5.45521831827547e-07 1.67638468947112e-05 0.000714984639673658 0.0626253807227738 0.000714807570400588</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-B1_X_1</seq_src>
+          <seq_src>a0-b1_x</seq_src>
           <gamma_insertion>6</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -9976,7 +10037,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:24 EST</run_date>
+          <run_date>02 Dec 06 12:17:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -9989,10 +10050,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-PION_2</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-pion_2</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -10150,7 +10211,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:25 EST</run_date>
+          <run_date>02 Dec 06 12:17:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10267,10 +10328,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-PION_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-pion_2</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -10458,7 +10519,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:27 EST</run_date>
+          <run_date>02 Dec 06 12:17:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10774,10 +10835,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-PION_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-pion_2</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -10884,7 +10945,7 @@ Sequential source
           <seqprop_corr>7.56032164063888e-09 1.94222709473107e-08 6.18005785238271e-08 5.45701408815289e-07 1.67628906421848e-05 0.000714970591069523 0.0626253592827086 0.000714826090541951</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-PION_2</seq_src>
+          <seq_src>a0-pion_2</seq_src>
           <gamma_insertion>7</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -10929,7 +10990,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:27 EST</run_date>
+          <run_date>02 Dec 06 12:17:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -10942,10 +11003,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-A0_2</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-b0</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -11103,7 +11164,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:28 EST</run_date>
+          <run_date>02 Dec 06 12:17:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11220,10 +11281,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A0_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-b0</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -11411,7 +11472,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:30 EST</run_date>
+          <run_date>02 Dec 06 12:17:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11727,10 +11788,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A0_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-b0</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -11837,7 +11898,7 @@ Sequential source
           <seqprop_corr>7.86578084849105e-09 2.01611652804793e-08 6.35799096011933e-08 5.49970550625638e-07 1.67727312293191e-05 0.000714982081316277 0.0626255107788916 0.00071486419586279</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-A0_2</seq_src>
+          <seq_src>a0-b0</seq_src>
           <gamma_insertion>8</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -11882,7 +11943,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:30 EST</run_date>
+          <run_date>02 Dec 06 12:17:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -11895,10 +11956,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-RHO_X_2</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-rho_x_2</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -12056,7 +12117,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:31 EST</run_date>
+          <run_date>02 Dec 06 12:17:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -12173,10 +12234,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_X_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_x_2</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -12364,7 +12425,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:32 EST</run_date>
+          <run_date>02 Dec 06 12:17:11 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -12680,10 +12741,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_X_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_x_2</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -12790,7 +12851,7 @@ Sequential source
           <seqprop_corr>7.91193278805383e-09 2.02792047279392e-08 6.39134327314225e-08 5.51173928397565e-07 1.67790001391387e-05 0.000715024815336255 0.0626254588838383 0.000714822132402102</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-RHO_X_2</seq_src>
+          <seq_src>a0-rho_x_2</seq_src>
           <gamma_insertion>9</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -12835,7 +12896,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:33 EST</run_date>
+          <run_date>02 Dec 06 12:17:12 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -12848,10 +12909,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-RHO_Y_2</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-rho_y_2</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -13009,7 +13070,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:34 EST</run_date>
+          <run_date>02 Dec 06 12:17:12 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -13126,10 +13187,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_Y_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_y_2</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -13317,7 +13378,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:35 EST</run_date>
+          <run_date>02 Dec 06 12:17:14 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -13633,10 +13694,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_Y_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_y_2</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -13743,7 +13804,7 @@ Sequential source
           <seqprop_corr>7.542311040233e-09 1.93778801447815e-08 6.1687180003441e-08 5.45394583130379e-07 1.67618580643668e-05 0.000714965938431076 0.062625377444229 0.000714831239440859</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-RHO_Y_2</seq_src>
+          <seq_src>a0-rho_y_2</seq_src>
           <gamma_insertion>10</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -13788,7 +13849,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:36 EST</run_date>
+          <run_date>02 Dec 06 12:17:14 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -13801,10 +13862,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-A1_Z_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-a1_z</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -13962,7 +14023,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:36 EST</run_date>
+          <run_date>02 Dec 06 12:17:15 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -14079,10 +14140,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A1_Z_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-a1_z</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -14270,7 +14331,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:38 EST</run_date>
+          <run_date>02 Dec 06 12:17:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -14586,10 +14647,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A1_Z_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-a1_z</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -14696,7 +14757,7 @@ Sequential source
           <seqprop_corr>7.55700944500505e-09 1.9416803041763e-08 6.18044389570419e-08 5.45833082996785e-07 1.67642002901752e-05 0.000714981680955602 0.0626253623411331 0.000714810551479192</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-A1_Z_1</seq_src>
+          <seq_src>a0-a1_z</seq_src>
           <gamma_insertion>11</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -14741,7 +14802,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:39 EST</run_date>
+          <run_date>02 Dec 06 12:17:17 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -14754,10 +14815,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-RHO_Z_2</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-rho_z_2</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -14915,7 +14976,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:39 EST</run_date>
+          <run_date>02 Dec 06 12:17:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15032,10 +15093,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_Z_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_z_2</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -15223,7 +15284,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:41 EST</run_date>
+          <run_date>02 Dec 06 12:17:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15539,10 +15600,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-RHO_Z_2</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-rho_z_2</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -15649,7 +15710,7 @@ Sequential source
           <seqprop_corr>7.5452192096768e-09 1.93849091764074e-08 6.17048632187073e-08 5.45411209611299e-07 1.6761757754375e-05 0.000714964623339585 0.0626253659738663 0.000714829777762058</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-RHO_Z_2</seq_src>
+          <seq_src>a0-rho_z_2</seq_src>
           <gamma_insertion>12</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -15694,7 +15755,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:42 EST</run_date>
+          <run_date>02 Dec 06 12:17:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15707,10 +15768,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-A1_Y_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-a1_y</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -15868,7 +15929,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:42 EST</run_date>
+          <run_date>02 Dec 06 12:17:21 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -15985,10 +16046,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A1_Y_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-a1_y</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -16176,7 +16237,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:44 EST</run_date>
+          <run_date>02 Dec 06 12:17:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -16492,10 +16553,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A1_Y_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-a1_y</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -16602,7 +16663,7 @@ Sequential source
           <seqprop_corr>7.55049319277889e-09 1.94010290627876e-08 6.17654701226194e-08 5.45759825693066e-07 1.67640907395482e-05 0.000714981512915271 0.0626253736261572 0.000714812921993695</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-A1_Y_1</seq_src>
+          <seq_src>a0-a1_y</seq_src>
           <gamma_insertion>13</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -16647,7 +16708,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:44 EST</run_date>
+          <run_date>02 Dec 06 12:17:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -16660,10 +16721,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-A1_X_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-a1_x</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -16821,7 +16882,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:45 EST</run_date>
+          <run_date>02 Dec 06 12:17:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -16938,10 +16999,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A1_X_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-a1_x</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -17129,7 +17190,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:47 EST</run_date>
+          <run_date>02 Dec 06 12:17:26 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -17445,10 +17506,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-A1_X_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-a1_x</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -17555,7 +17616,7 @@ Sequential source
           <seqprop_corr>7.89754192354118e-09 2.02376444472355e-08 6.37576438723533e-08 5.50323801882811e-07 1.67728578600215e-05 0.000714974730747463 0.06262546294674 0.000714871650908839</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-A1_X_1</seq_src>
+          <seq_src>a0-a1_x</seq_src>
           <gamma_insertion>14</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -17600,7 +17661,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:47 EST</run_date>
+          <run_date>02 Dec 06 12:17:26 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -17613,10 +17674,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>A0-PION_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>a0-pion_1</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -17774,7 +17835,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:48 EST</run_date>
+          <run_date>02 Dec 06 12:17:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -17891,10 +17952,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-PION_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-pion_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -18082,7 +18143,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:50 EST</run_date>
+          <run_date>02 Dec 06 12:17:29 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -18398,10 +18459,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>A0-PION_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>a0-pion_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -18508,7 +18569,7 @@ Sequential source
           <seqprop_corr>7.88743081113537e-09 2.02183862763325e-08 6.37552113497788e-08 5.50705636487337e-07 1.67771387008802e-05 0.000715015158060091 0.0626255101430283 0.000714832436339284</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>A0-PION_1</seq_src>
+          <seq_src>a0-pion_1</seq_src>
           <gamma_insertion>15</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>
@@ -18553,7 +18614,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:50 EST</run_date>
+          <run_date>02 Dec 06 12:17:29 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -18566,10 +18627,10 @@ Sequential source
           <Param>
             <version>2</version><SeqSource>
       <version>1</version>
-      <SeqSourceType>PION_1-PION_1</SeqSourceType>
-      <sink_mom>1 0 0</sink_mom>
-      <t_sink>6</t_sink>
+      <SeqSourceType>pion_1-pion_1</SeqSourceType>
       <j_decay>3</j_decay>
+      <t_sink>6</t_sink>
+      <sink_mom>1 0 0</sink_mom>
     </SeqSource>
 </Param>
           <PropSink>
@@ -18727,7 +18788,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:51 EST</run_date>
+          <run_date>02 Dec 06 12:17:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -18844,10 +18905,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>PION_1-PION_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>pion_1-pion_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -19035,7 +19096,7 @@ Sequential source
             <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 08:51:53 EST</run_date>
+          <run_date>02 Dec 06 12:17:32 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -19351,10 +19412,10 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>PION_1-PION_1</SeqSourceType>
-          <sink_mom>1 0 0</sink_mom>
-          <t_sink>6</t_sink>
+          <SeqSourceType>pion_1-pion_1</SeqSourceType>
           <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </SeqSource>
       <ForwardProps>
@@ -19461,7 +19522,7 @@ Sequential source
           <seqprop_corr>7.88743081113537e-09 2.02183862763325e-08 6.37552113497788e-08 5.50705636487337e-07 1.67771387008802e-05 0.000715015158060091 0.0626255101430283 0.000714832436339284</seqprop_corr>
         </Seqprop_correlator>
         <LoopBackTest>
-          <seq_src>PION_1-PION_1</seq_src>
+          <seq_src>pion_1-pion_1</seq_src>
           <gamma_insertion>0</gamma_insertion>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 6</t_srce>

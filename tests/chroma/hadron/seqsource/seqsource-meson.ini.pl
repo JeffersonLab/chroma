@@ -124,7 +124,7 @@ Sequential source
 EOF
 
 $gamma = 0;
-foreach $seq_src ("A0-A0_1", "A0-RHO_X_1", "A0-RHO_Y_1", "A0-B1_Z_1", "A0-RHO_Z_1", "A0-B1_Y_1", "A0-B1_X_1", "A0-PION_2", "A0-A0_2", "A0-RHO_X_2", "A0-RHO_Y_2", "A0-A1_Z_1", "A0-RHO_Z_2", "A0-A1_Y_1", "A0-A1_X_1", "A0-PION_1", "PION_1-PION_1")
+foreach $seq_src ("a0-a0", "a0-rho_x_1", "a0-rho_y_1", "a0-b1_z", "a0-rho_z_1", "a0-b1_y", "a0-b1_x", "a0-pion_2", "a0-b0", "a0-rho_x_2", "a0-rho_y_2", "a0-a1_z", "a0-rho_z_2", "a0-a1_y", "a0-a1_x", "a0-pion_1", "pion_1-pion_1")
 {
 
 print <<"EOF";

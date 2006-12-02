@@ -117,16 +117,20 @@ Sequential source
     </elem>
     <elem>
       <annotation>
-       A0-A0_1 seqsource
+       a0-a0 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A0_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-a0</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -166,7 +170,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_1 seqprop
+       a0-a0 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -205,7 +209,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_1 seqprop test
+       a0-a0 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -272,16 +276,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_1 seqsource
+       a0-rho_x_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_X_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_x_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -321,7 +329,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_1 seqprop
+       a0-rho_x_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -360,7 +368,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_1 seqprop test
+       a0-rho_x_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -427,16 +435,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_1 seqsource
+       a0-rho_y_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_Y_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_y_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -476,7 +488,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_1 seqprop
+       a0-rho_y_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -515,7 +527,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_1 seqprop test
+       a0-rho_y_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -582,16 +594,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Z_1 seqsource
+       a0-b1_z seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-B1_Z_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-b1_z</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -631,7 +647,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Z_1 seqprop
+       a0-b1_z seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -670,7 +686,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Z_1 seqprop test
+       a0-b1_z seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -737,16 +753,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_1 seqsource
+       a0-rho_z_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_Z_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_z_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -786,7 +806,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_1 seqprop
+       a0-rho_z_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -825,7 +845,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_1 seqprop test
+       a0-rho_z_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -892,16 +912,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Y_1 seqsource
+       a0-b1_y seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-B1_Y_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-b1_y</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -941,7 +965,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Y_1 seqprop
+       a0-b1_y seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -980,7 +1004,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_Y_1 seqprop test
+       a0-b1_y seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1047,16 +1071,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_X_1 seqsource
+       a0-b1_x seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-B1_X_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-b1_x</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1096,7 +1124,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_X_1 seqprop
+       a0-b1_x seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1135,7 +1163,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-B1_X_1 seqprop test
+       a0-b1_x seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1202,16 +1230,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_2 seqsource
+       a0-pion_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-PION_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-pion_2</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1251,7 +1283,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_2 seqprop
+       a0-pion_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1290,7 +1322,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_2 seqprop test
+       a0-pion_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1357,16 +1389,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_2 seqsource
+       a0-b0 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A0_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-b0</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1406,7 +1442,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_2 seqprop
+       a0-b0 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1445,7 +1481,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A0_2 seqprop test
+       a0-b0 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1512,16 +1548,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_2 seqsource
+       a0-rho_x_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_X_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_x_2</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1561,7 +1601,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_2 seqprop
+       a0-rho_x_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1600,7 +1640,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_X_2 seqprop test
+       a0-rho_x_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1667,16 +1707,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_2 seqsource
+       a0-rho_y_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_Y_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_y_2</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1716,7 +1760,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_2 seqprop
+       a0-rho_y_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1755,7 +1799,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Y_2 seqprop test
+       a0-rho_y_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1822,16 +1866,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Z_1 seqsource
+       a0-a1_z seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A1_Z_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-a1_z</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -1871,7 +1919,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Z_1 seqprop
+       a0-a1_z seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1910,7 +1958,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Z_1 seqprop test
+       a0-a1_z seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -1977,16 +2025,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_2 seqsource
+       a0-rho_z_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-RHO_Z_2</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-rho_z_2</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2026,7 +2078,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_2 seqprop
+       a0-rho_z_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2065,7 +2117,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-RHO_Z_2 seqprop test
+       a0-rho_z_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2132,16 +2184,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Y_1 seqsource
+       a0-a1_y seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A1_Y_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-a1_y</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2181,7 +2237,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Y_1 seqprop
+       a0-a1_y seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2220,7 +2276,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_Y_1 seqprop test
+       a0-a1_y seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2287,16 +2343,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_X_1 seqsource
+       a0-a1_x seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-A1_X_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-a1_x</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2336,7 +2396,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_X_1 seqprop
+       a0-a1_x seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2375,7 +2435,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-A1_X_1 seqprop test
+       a0-a1_x seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2442,16 +2502,20 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_1 seqsource
+       a0-pion_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>A0-PION_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>a0-pion_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2491,7 +2555,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_1 seqprop
+       a0-pion_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2530,7 +2594,7 @@ Sequential source
 
     <elem>
       <annotation>
-       A0-PION_1 seqprop test
+       a0-pion_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
@@ -2597,16 +2661,20 @@ Sequential source
 
     <elem>
       <annotation>
-       PION_1-PION_1 seqsource
+       pion_1-pion_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>PION_1-PION_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>pion_1-pion_1</SeqSourceType>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -2646,7 +2714,7 @@ Sequential source
 
     <elem>
       <annotation>
-       PION_1-PION_1 seqprop
+       pion_1-pion_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2685,7 +2753,7 @@ Sequential source
 
     <elem>
       <annotation>
-       PION_1-PION_1 seqprop test
+       pion_1-pion_1 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>
