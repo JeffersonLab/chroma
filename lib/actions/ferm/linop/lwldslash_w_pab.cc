@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 3.2 2006-11-16 20:39:48 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 3.3 2006-12-02 18:21:41 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -8,6 +8,7 @@
 
 #include <wfm.h>
 
+#define WFM_NO_END 1
 
 namespace Chroma 
 {
@@ -128,8 +129,11 @@ namespace Chroma
     if ( PABDslashEnv::refcount == 0 ) { 
          wfm_vec_init(&wil);
     }
-
+#if defined(WFM_NO_END)
+    PABDslashEnv::refcount = 1;
+#else
     PABDslashEnv::refcount++;
+#endif
 
     END_CODE();
   }
@@ -137,22 +141,18 @@ namespace Chroma
 
   PABWilsonDslash::~PABWilsonDslash() 
   {
-    QDPIO::cout << "~PABWilsonDslash() refcount=" << PABDslashEnv::refcount << flush;
+#if defined(WFM_NO_END)
     if( PABDslashEnv::refcount > 0 ) 
     {
-      QDPIO::cout << "...decrementing refcount" << flush;
       PABDslashEnv::refcount--;
     
       if( PABDslashEnv::refcount == 0 ) {
-	QDPIO::cout << "...refcount reached 0. Finalizing" << flush << endl;
 	wfm_vec_end(&wil);
       }
     }
+#endif
 
-    QDPIO::cout << "~PABWilsonDslash(): Packed gauge pointer is: " << (unsigned long)packed_gauge <<endl;
-    QDPIO::cout << "~PABWilsonDslash() freeing gauge field" << endl << flush ;
     QDP::Allocator::theQDPAllocator::Instance().free(packed_gauge);
-    packed_gauge = 0x0; // Point to 0
   }
 
   //! Apply Wilson-Dirac dslash
