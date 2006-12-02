@@ -110,7 +110,7 @@
       <chroma>3.21.0</chroma>
       <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:38:06 EST</run_date>
+    <run_date>02 Dec 06 16:39:56 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -762,8 +762,8 @@
             <AccProb>0.148083282778537</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>0.545645</seconds_for_trajectory>
-          <seconds_for_measurements>0.002881</seconds_for_measurements>
+          <seconds_for_trajectory>0.574339</seconds_for_trajectory>
+          <seconds_for_measurements>0.002834</seconds_for_measurements>
         </Update>
       </elem>
       <elem>
@@ -1403,8 +1403,8 @@
             <AccProb>0.14937005302367</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>0.523688</seconds_for_trajectory>
-          <seconds_for_measurements>0.002772</seconds_for_measurements>
+          <seconds_for_trajectory>0.515556</seconds_for_trajectory>
+          <seconds_for_measurements>0.002803</seconds_for_measurements>
         </Update>
       </elem>
     </MCUpdates>

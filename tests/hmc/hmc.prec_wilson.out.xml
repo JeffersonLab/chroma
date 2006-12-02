@@ -114,7 +114,7 @@
       <chroma>3.21.0</chroma>
       <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:34:26 EST</run_date>
+    <run_date>02 Dec 06 16:40:13 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -149,7 +149,7 @@
             <AccProb>0.148076973368176</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>0.572224</seconds_for_trajectory>
+          <seconds_for_trajectory>0.565443</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
@@ -190,7 +190,7 @@
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.002783</seconds_for_measurements>
+          <seconds_for_measurements>0.002827</seconds_for_measurements>
         </Update>
       </elem>
       <elem>
@@ -213,7 +213,7 @@
             <AccProb>0.149374098368571</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>0.57085</seconds_for_trajectory>
+          <seconds_for_trajectory>0.524991</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
@@ -254,7 +254,7 @@
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.002719</seconds_for_measurements>
+          <seconds_for_measurements>0.002801</seconds_for_measurements>
         </Update>
       </elem>
     </MCUpdates>
