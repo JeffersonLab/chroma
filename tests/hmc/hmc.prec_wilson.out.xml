@@ -111,10 +111,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.15.0</chroma>
-      <qdp>1.20.9</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>21 Sep 06 15:19:51 EDT</run_date>
+    <run_date>02 Dec 06 16:34:26 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -123,18 +123,10 @@
       <subgrid_volume>256</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
-<Config_info>
-  <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-  </file_xml>
-  <config_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-  </config_xml>
-</Config_info>
-
+  </Config_info>
   <doHMC>
     <MCUpdates>
       <elem>
@@ -148,16 +140,16 @@
               <PE_old>-7175.06635855508</PE_old>
             </H_old>
             <H_new>
-              <KE_new>1635.99641997402</KE_new>
-              <PE_new>-4723.12775741598</PE_new>
+              <KE_new>1635.9964086348</KE_new>
+              <PE_new>-4723.12771688745</PE_new>
             </H_new>
-            <deltaKE>-2450.02860727831</deltaKE>
-            <deltaPE>2451.93860113909</deltaPE>
-            <deltaH>1.90999386077692</deltaH>
-            <AccProb>0.14808129569678</AccProb>
+            <deltaKE>-2450.02861861754</deltaKE>
+            <deltaPE>2451.93864166763</deltaPE>
+            <deltaH>1.9100230500926</deltaH>
+            <AccProb>0.148076973368176</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>0.682755</seconds_for_trajectory>
+          <seconds_for_trajectory>0.572224</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
@@ -198,7 +190,7 @@
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.002788</seconds_for_measurements>
+          <seconds_for_measurements>0.002783</seconds_for_measurements>
         </Update>
       </elem>
       <elem>
@@ -212,16 +204,16 @@
               <PE_old>-7195.79073129406</PE_old>
             </H_old>
             <H_new>
-              <KE_new>1620.6529129014</KE_new>
-              <PE_new>-4782.8890703152</PE_new>
+              <KE_new>1620.65290884449</KE_new>
+              <PE_new>-4782.88906890406</PE_new>
             </H_new>
-            <deltaKE>-2411.00035694075</deltaKE>
-            <deltaPE>2412.90166097887</deltaPE>
-            <deltaH>1.90130403811509</deltaH>
-            <AccProb>0.149373703158958</AccProb>
+            <deltaKE>-2411.00036099766</deltaKE>
+            <deltaPE>2412.90166239</deltaPE>
+            <deltaH>1.90130139234088</deltaH>
+            <AccProb>0.149374098368571</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>0.684784</seconds_for_trajectory>
+          <seconds_for_trajectory>0.57085</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
@@ -262,7 +254,7 @@
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.002749</seconds_for_measurements>
+          <seconds_for_measurements>0.002719</seconds_for_measurements>
         </Update>
       </elem>
     </MCUpdates>
