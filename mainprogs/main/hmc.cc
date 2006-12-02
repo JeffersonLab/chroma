@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.5 2006-09-20 20:28:06 edwards Exp $
+// $Id: hmc.cc,v 3.6 2006-12-02 18:12:01 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -503,6 +503,10 @@ int main(int argc, char *argv[])
   // Chroma Init stuff -- Open DATA and XMLDAT
   QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
+  StopWatch snoop;
+  snoop.reset();
+  snoop.start();
+
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   XMLFileWriter& xml_log = Chroma::getXMLLogInstance();
 
@@ -517,8 +521,8 @@ int main(int argc, char *argv[])
     XMLReader xml_in(Chroma::getXMLInputFileName());
 
     XMLReader paramtop(xml_in, "/Params");
-    read( paramtop, "./HMCTrj", trj_params);
-    read( paramtop, "./MCControl", mc_control);
+    read(paramtop, "./HMCTrj", trj_params);
+    read(paramtop, "./MCControl", mc_control);
 
     // Write out the input
     write(xml_out, "Input", xml_in);
@@ -544,18 +548,18 @@ int main(int argc, char *argv[])
     XMLReader config_xml;
     
     QDPIO::cout << "Initialize gauge field" << endl;
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
     gaugeStartup(file_xml, config_xml, u, mc_control.cfg);
-    QDPIO::cout << "Finished initializing gauge field" << endl;
+    swatch.stop();
+    QDPIO::cout << "Gauge field successfully initialized: time= " 
+		<< swatch.getTimeInSeconds() 
+		<< " secs" << endl;
 
     // Write out the config header
-    XMLBufferWriter xml_buf;
-    push(xml_buf, "Config_info");
-    write(xml_buf, "file_xml", file_xml);
-    write(xml_buf, "config_xml", config_xml);
-    pop(xml_buf);
-
-    xml_out << xml_buf;
-    xml_log << xml_buf;
+    write(xml_out, "Config_info", config_xml);
+    write(xml_log, "Config_info", config_xml);
   }
   
   // Get the MC_Hamiltonian
@@ -641,6 +645,13 @@ int main(int argc, char *argv[])
 
   pop(xml_log);  // hmc
   pop(xml_out);  // hmc
+
+  snoop.stop();
+  QDPIO::cout << "HMC: total time = "
+	      << snoop.getTimeInSeconds() 
+	      << " secs" << endl;
+
+  QDPIO::cout << "HMC: ran successfully" << endl;
 
   END_CODE();
 

@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 3.5 2006-09-20 20:28:06 edwards Exp $
+// $Id: chroma.cc,v 3.6 2006-12-02 18:12:01 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -89,6 +89,10 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
+  StopWatch snoop;
+  snoop.reset();
+  snoop.start();
+
   XMLReader xml_in;
 
   // Input parameter structure
@@ -149,10 +153,7 @@ int main(int argc, char *argv[])
   config_xml << gauge_xml;
 
   // Write out the config header
-  push(xml_out, "Config_info");
-  write(xml_out, "file_xml", gauge_file_xml);
-  write(xml_out, "gauge_xml", gauge_xml);
-  pop(xml_out);
+  write(xml_out, "Config_info", gauge_xml);
   
   // Calculate some gauge invariant observables
   MesPlq(xml_out, "Observables", u);
@@ -176,6 +177,7 @@ int main(int argc, char *argv[])
 
     QDPIO::cout << "Doing " << the_measurements.size() 
 		<<" measurements" << endl;
+    swatch.start();
     unsigned long cur_update = 0;
     for(int m=0; m < the_measurements.size(); m++) 
     {
@@ -188,6 +190,12 @@ int main(int argc, char *argv[])
 	pop(xml_out); 
       }
     }
+    swatch.stop();
+
+    QDPIO::cout << "CHROMA measurements: time= " 
+		<< swatch.getTimeInSeconds() 
+		<< " secs" << endl;
+
 
     pop(xml_out); // pop("InlineObservables");
 
@@ -215,6 +223,13 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
   pop(xml_out);
+
+  snoop.stop();
+  QDPIO::cout << "CHROMA: total time = "
+	      << snoop.getTimeInSeconds() 
+	      << " secs" << endl;
+
+  QDPIO::cout << "CHROMA: ran successfully" << endl;
 
   END_CODE();
 
