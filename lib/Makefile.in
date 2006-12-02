@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.108 2006-11-28 19:26:30 edwards Exp $
+# $Id: Makefile.in,v 3.109 2006-12-02 18:12:42 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -238,10 +238,11 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/no_spin_insertion.cc meas/hadron/stoch_var.cc \
 	meas/sinks/pt_sink_smearing.cc meas/sinks/sh_sink_smearing.cc \
 	meas/sinks/sink_smearing_aggregate.cc meas/smear/ape_smear.cc \
-	meas/smear/displacement.cc meas/smear/fuzz_smear.cc \
-	meas/smear/gaus_smear.cc meas/smear/hyp_smear.cc \
-	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
-	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
+	meas/smear/displace.cc meas/smear/displacement.cc \
+	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
+	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
+	meas/smear/laplacian.cc meas/smear/sink_smear2.cc \
+	meas/smear/stout_smear.cc \
 	meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc meas/smear/no_link_smearing.cc \
@@ -680,7 +681,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	spin_insertion_aggregate.$(OBJEXT) no_spin_insertion.$(OBJEXT) \
 	stoch_var.$(OBJEXT) pt_sink_smearing.$(OBJEXT) \
 	sh_sink_smearing.$(OBJEXT) sink_smearing_aggregate.$(OBJEXT) \
-	ape_smear.$(OBJEXT) displacement.$(OBJEXT) \
+	ape_smear.$(OBJEXT) displace.$(OBJEXT) displacement.$(OBJEXT) \
 	fuzz_smear.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
 	hyp_smear3d.$(OBJEXT) laplacian.$(OBJEXT) \
 	sink_smear2.$(OBJEXT) stout_smear.$(OBJEXT) \
@@ -1084,10 +1085,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/sinks/sh_sink_smearing.h \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h meas/smear/ape_smear.h \
-	meas/smear/displacement.h meas/smear/fuzz_smear.h \
-	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
-	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
-	meas/smear/smear.h meas/smear/wvfkind.h \
+	meas/smear/displace.h meas/smear/displacement.h \
+	meas/smear/fuzz_smear.h meas/smear/gaus_smear.h \
+	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
+	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
@@ -1809,10 +1810,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/sinks/sh_sink_smearing.h \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h meas/smear/ape_smear.h \
-	meas/smear/displacement.h meas/smear/fuzz_smear.h \
-	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
-	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
-	meas/smear/smear.h meas/smear/wvfkind.h \
+	meas/smear/displace.h meas/smear/displacement.h \
+	meas/smear/fuzz_smear.h meas/smear/gaus_smear.h \
+	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
+	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
 	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
@@ -2378,10 +2379,11 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/no_spin_insertion.cc meas/hadron/stoch_var.cc \
 	meas/sinks/pt_sink_smearing.cc meas/sinks/sh_sink_smearing.cc \
 	meas/sinks/sink_smearing_aggregate.cc meas/smear/ape_smear.cc \
-	meas/smear/displacement.cc meas/smear/fuzz_smear.cc \
-	meas/smear/gaus_smear.cc meas/smear/hyp_smear.cc \
-	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
-	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
+	meas/smear/displace.cc meas/smear/displacement.cc \
+	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
+	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
+	meas/smear/laplacian.cc meas/smear/sink_smear2.cc \
+	meas/smear/stout_smear.cc \
 	meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc meas/smear/no_link_smearing.cc \
@@ -2848,6 +2850,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilute_gauss_src_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilutezN_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diractodr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_fermact_qprop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_quarkprop4_w.Po@am__quote@
@@ -5442,6 +5445,20 @@ ape_smear.obj: meas/smear/ape_smear.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/ape_smear.cc' object='ape_smear.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ape_smear.obj `if test -f 'meas/smear/ape_smear.cc'; then $(CYGPATH_W) 'meas/smear/ape_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/ape_smear.cc'; fi`
+
+displace.o: meas/smear/displace.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT displace.o -MD -MP -MF "$(DEPDIR)/displace.Tpo" -c -o displace.o `test -f 'meas/smear/displace.cc' || echo '$(srcdir)/'`meas/smear/displace.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/displace.Tpo" "$(DEPDIR)/displace.Po"; else rm -f "$(DEPDIR)/displace.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/displace.cc' object='displace.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o displace.o `test -f 'meas/smear/displace.cc' || echo '$(srcdir)/'`meas/smear/displace.cc
+
+displace.obj: meas/smear/displace.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT displace.obj -MD -MP -MF "$(DEPDIR)/displace.Tpo" -c -o displace.obj `if test -f 'meas/smear/displace.cc'; then $(CYGPATH_W) 'meas/smear/displace.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/displace.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/displace.Tpo" "$(DEPDIR)/displace.Po"; else rm -f "$(DEPDIR)/displace.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/displace.cc' object='displace.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o displace.obj `if test -f 'meas/smear/displace.cc'; then $(CYGPATH_W) 'meas/smear/displace.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/displace.cc'; fi`
 
 displacement.o: meas/smear/displacement.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT displacement.o -MD -MP -MF "$(DEPDIR)/displacement.Tpo" -c -o displacement.o `test -f 'meas/smear/displacement.cc' || echo '$(srcdir)/'`meas/smear/displacement.cc; \
