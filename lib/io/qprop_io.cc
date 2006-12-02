@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.11 2006-12-02 18:18:07 edwards Exp $
+// $Id: qprop_io.cc,v 3.12 2006-12-02 18:29:51 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -1250,8 +1250,8 @@ namespace Chroma
   // ForwardProp writer
   void write(XMLWriter& xml, const string& path, const ForwardProp_t& param)
   {
-    if( path != "." )
-      push(xml, path);
+//    if( path != "." )
+    push(xml, path);
 
     int version = 1;
     write(xml, "version", version);
@@ -1260,16 +1260,16 @@ namespace Chroma
     write(xml, "PropSource", param.source_header);
     write(xml, "Config_info", param.gauge_header);
 
-    if( path != "." )
-      pop(xml);
+//    if( path != "." )
+    pop(xml);
   }
 
 
   //! SequentialSource header writer
   void write(XMLWriter& xml, const string& path, const SequentialSource_t& param)
   {
-    if( path != "." )
-      push(xml, path);
+//    if( path != "." )
+    push(xml, path);
 
     int version = 1;
     write(xml, "version", version);
@@ -1278,16 +1278,16 @@ namespace Chroma
     write(xml, "ForwardProps", param.forward_props);
     write(xml, "Config_info", param.gauge_header);
 
-    if( path != "." )
-      pop(xml);
+//    if( path != "." )
+    pop(xml);
   }
 
 
   //! SequentialProp header writer
   void write(XMLWriter& xml, const string& path, const SequentialProp_t& param)
   {
-    if( path != "." )
-      push(xml, path);
+//    if( path != "." )
+    push(xml, path);
 
     int version = 1;
     write(xml, "version", version);
@@ -1297,8 +1297,8 @@ namespace Chroma
     write(xml, "ForwardProps", param.forward_props);
     write(xml, "Config_info", param.gauge_header);
 
-    if( path != "." )
-      pop(xml);
+//    if( path != "." )
+    pop(xml);
   }
 
 
