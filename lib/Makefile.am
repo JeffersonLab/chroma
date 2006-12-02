@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.57 2006-11-28 19:26:20 edwards Exp $
+# $Id: Makefile.am,v 3.58 2006-12-02 18:12:22 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -179,7 +179,9 @@ nobase_include_HEADERS = \
         meas/sinks/sh_sink_smearing.h \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h \
-	meas/smear/ape_smear.h meas/smear/displacement.h \
+	meas/smear/ape_smear.h \
+        meas/smear/displace.h \
+        meas/smear/displacement.h \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
@@ -822,7 +824,9 @@ libchroma_a_SOURCES = \
         meas/sinks/pt_sink_smearing.cc \
         meas/sinks/sh_sink_smearing.cc \
 	meas/sinks/sink_smearing_aggregate.cc \
-	meas/smear/ape_smear.cc meas/smear/displacement.cc \
+	meas/smear/ape_smear.cc \
+        meas/smear/displace.cc \
+        meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
 	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
 	meas/smear/laplacian.cc \
