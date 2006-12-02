@@ -1,4 +1,4 @@
-// $Id: inline_seqprop_test_w.cc,v 3.2 2006-11-28 20:00:29 edwards Exp $
+// $Id: inline_seqprop_test_w.cc,v 3.3 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Test sequential propagator
  *
@@ -11,6 +11,8 @@
 #include "meas/glue/mesplq.h"
 #include "meas/hadron/seqsource_factory_w.h"
 #include "meas/hadron/seqsource_aggregate_w.h"
+#include "meas/sources/source_smearing_factory.h"
+#include "meas/sources/source_smearing_aggregate.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/io/named_objmap.h"
@@ -65,6 +67,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {	
+	success &= QuarkSourceSmearingEnv::registerAll();
 	success &= HadronSeqSourceEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
@@ -88,6 +91,9 @@ namespace Chroma
 	else
 	  frequency = 1;
 
+	// The parameters for smearing the sink
+	read(paramtop, "PropSourceSmear", smear_header);
+
 	// Read in the forward_prop/seqsource info
 	read(paramtop, "NamedObject", named_obj);
 
@@ -110,6 +116,7 @@ namespace Chroma
     {
       push(xml_out, path);
     
+      write(xml_out, "PropSourceSmear", smear_header);
       write(xml_out, "NamedObject", named_obj);
     
       pop(xml_out);
@@ -322,6 +329,21 @@ namespace Chroma
 
       try
       {
+	// Source smear the forward propagators
+	std::istringstream  xml_s(params.smear_header.source.xml);
+	XMLReader  sourcetop(xml_s);
+	QDPIO::cout << "Source smearing = " << params.smear_header.source.id << endl;
+	
+	Handle< QuarkSourceSink<LatticePropagator> >
+	  sourceSmearing(ThePropSourceSmearingFactory::Instance().createObject(params.smear_header.source.id,
+									       sourcetop,
+									       params.smear_header.source.path,
+									       u));
+
+	// Source smear the sequential propagator
+	(*sourceSmearing)(seqprop);
+
+
 	//
 	// Construct the sequential source constructor
 	//

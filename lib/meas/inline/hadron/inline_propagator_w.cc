@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 3.7 2006-10-11 15:42:26 edwards Exp $
+// $Id: inline_propagator_w.cc,v 3.8 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -222,10 +222,16 @@ namespace Chroma
     // 
     XMLReader source_file_xml, source_record_xml;
 
+    // These pesky variables are needed in the quarkprop call - only chiral dudes
+    // need this stuff, but it must be there for the bleeping virtual function
+    // to live at the base class
     int t0;
     int j_decay;
+
+    // Record the type of header
     bool make_sourceP = false;
     bool seqsourceP = false;
+
     QDPIO::cout << "Snarf the source from a named buffer" << endl;
     try
     {
@@ -241,28 +247,21 @@ namespace Chroma
       // First identify what kind of source might be here
       if (source_record_xml.count("/MakeSource") != 0)
       {
-	PropSourceConst_t source_header;
-
-	read(source_record_xml, "/MakeSource/PropSource", source_header);
-	j_decay = source_header.j_decay;
-	t0 = source_header.t_source;
 	make_sourceP = true;
+	MakeSourceProp_t  orig_header;
+	read(source_record_xml, "/MakeSource", orig_header);
+
+	j_decay = orig_header.source_header.j_decay;
+	t0      = orig_header.source_header.t_source;
       }
       else if (source_record_xml.count("/SequentialSource") != 0)
       {
-	ChromaProp_t      prop_header;
-	PropSourceConst_t source_header;
-	SeqSource_t       seqsource_header;
-
-	read(source_record_xml, "/SequentialSource/SeqSource", seqsource_header);
-	// Any source header will do for j_decay
-	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/ForwardProp", 
-	     prop_header);
-	read(source_record_xml, "/SequentialSource/ForwardProps/elem[1]/PropSource", 
-	     source_header);
-	j_decay = source_header.j_decay;
-	t0 = seqsource_header.t_sink;
 	seqsourceP = true;
+	SequentialSource_t   orig_header;
+	read(source_record_xml, "/SequentialSource", orig_header);
+
+	j_decay = orig_header.seqsource_header.j_decay;
+	t0      = orig_header.seqsource_header.t_sink;   // funky, but probably not really needed
       }
       else
       {
@@ -441,22 +440,27 @@ namespace Chroma
       XMLBufferWriter record_xml;
       if (make_sourceP)
       {
-	XMLReader xml_tmp(source_record_xml, "/MakeSource");
+	MakeSourceProp_t  orig_header;
+	read(source_record_xml, "/MakeSource", orig_header);
 
-	push(record_xml, "Propagator");
-	write(record_xml, "ForwardProp", params.param);
-	record_xml << params.stateInfo;  // write out the stateinfo - might be empty
-	record_xml << xml_tmp;  // write out all the stuff under MakeSource
-	pop(record_xml);
+	Propagator_t  new_header;   // note, abandoning state_info
+	new_header.prop_header   = params.param;
+	new_header.source_header = orig_header.source_header;
+	new_header.gauge_header  = orig_header.gauge_header;
+	write(record_xml, "Propagator", new_header);  
       } 
       else if (seqsourceP)
       {
-	XMLReader xml_tmp(source_record_xml, "/SequentialSource");
+	SequentialSource_t  orig_header;
+	read(source_record_xml, "/SequentialSource", orig_header);
 
-	push(record_xml, "SequentialProp");
-	write(record_xml, "SeqProp", params.param);
-	record_xml << xml_tmp;  // write out all the stuff under SequentialSource
-	pop(record_xml);
+	SequentialProp_t  new_header;   // note, abandoning state_info
+	new_header.seqprop_header   = params.param;
+	new_header.sink_header      = orig_header.sink_header;
+	new_header.seqsource_header = orig_header.seqsource_header;
+	new_header.forward_props    = orig_header.forward_props;
+	new_header.gauge_header     = orig_header.gauge_header;
+	write(record_xml, "SequentialProp", new_header);  
       }
 
       // Write the propagator xml info

@@ -1,4 +1,4 @@
-// $Id: inline_sink_smear_s.cc,v 3.1 2006-11-17 02:17:31 edwards Exp $
+// $Id: inline_sink_smear_s.cc,v 3.2 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Inline construction of sink_smear
  *
@@ -162,9 +162,11 @@ namespace Chroma
       //
       // Read the quark propagator and extract headers
       //
+      XMLReader prop_file_xml, prop_record_xml;
       LatticeStaggeredPropagator quark_propagator;
-      ChromaProp_t prop_header;
-      PropSourceConst_t source_header;
+
+      int j_decay;   // need this for diagnostics
+
       QDPIO::cout << "Attempt to read forward propagator" << endl;
       try
       {
@@ -177,13 +179,13 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
 
-	// Try to invert this record XML into a ChromaProp struct
-	// Also pull out the id of this source
-	{
-	  read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
-	  read(prop_record_xml, "/Propagator/PropSource", source_header);
-	}
-      }    
+	// Snarf out the first j_decay
+	read(prop_record_xml, "/descendant::j_decay[1]", j_decay);
+
+	// Write out the propagator header
+	write(xml_out, "Prop_file_info", prop_file_xml);
+	write(xml_out, "Prop_record_info", prop_record_xml);
+      }
       catch (std::bad_cast)
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
@@ -195,9 +197,6 @@ namespace Chroma
 	QDPIO::cerr << name << ": error extracting prop_header: " << e << endl;
 	QDP_abort(1);
       }
-
-      // Derived from input prop
-      int  j_decay = source_header.j_decay;
 
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification
@@ -239,14 +238,6 @@ namespace Chroma
       }
 
 
-      /*
-       * Save sink smeared propagator
-       */
-      // Save some info
-      write(xml_out, "PropSource", source_header);
-      write(xml_out, "ForwardProp", prop_header);
-      write(xml_out, "PropSink", params.param);
-
       // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
       {
 	// Initialize the slow Fourier transform phases
@@ -271,12 +262,24 @@ namespace Chroma
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;
-	push(record_xml, "SinkSmear");
-	write(record_xml, "PropSink", params.param);
-	write(record_xml, "ForwardProp", prop_header);
-	write(record_xml, "PropSource", source_header);
-	write(record_xml, "Config_info", gauge_xml);
-	pop(record_xml);
+
+	// Construct an appropriate record_xml based on the input type
+	if (prop_record_xml.count("/Propagator") != 0)
+	{
+	  Propagator_t  orig_header;
+	  read(prop_record_xml, "/Propagator", orig_header);
+
+	  ForwardProp_t  new_header;
+	  new_header.sink_header      = params.param;
+	  new_header.prop_header      = orig_header.prop_header;
+	  new_header.source_header    = orig_header.source_header;
+	  new_header.gauge_header     = orig_header.gauge_header;
+	  write(record_xml, "SinkSmear", new_header);  
+	} 
+	else
+	{
+	  throw std::string("No appropriate header found");
+	}
 
 	// Write the smeared prop xml info
 	TheNamedObjMap::Instance().create<LatticeStaggeredPropagator>(params.named_obj.smeared_prop_id);

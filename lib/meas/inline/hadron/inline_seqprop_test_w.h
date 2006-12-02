@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_seqprop_test_w.h,v 3.1 2006-11-28 19:30:40 edwards Exp $
+// $Id: inline_seqprop_test_w.h,v 3.2 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Test sequential propagator
  *
@@ -30,6 +30,8 @@ namespace Chroma
       void writeXML(XMLWriter& xml_out, const std::string& path);
 
       unsigned long      frequency;
+
+      PropSourceSmear_t  smear_header;    /*!< Smearing to apply on seqprop at the source */
 
       //! Propagators
       struct NamedObject_t

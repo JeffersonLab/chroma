@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 3.3 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_make_source_w.cc,v 3.4 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -160,8 +160,10 @@ namespace Chroma
 
     // Test and grab a reference to the gauge field
     XMLBufferWriter gauge_xml;
+    multi1d<LatticeColorMatrix> u;
     try
     {
+      u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
       TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
     }
@@ -173,12 +175,10 @@ namespace Chroma
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineMakeSourceEnv::name << ": map call failed: " << e 
+      QDPIO::cerr << InlineMakeSourceEnv::name << ": error extracting gauge field: " << e 
 		  << endl;
       QDP_abort(1);
     }
-    const multi1d<LatticeColorMatrix>& u = 
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     // Save the initial state of the RNG
     QDP::Seed ran_seed;
@@ -254,11 +254,14 @@ namespace Chroma
       pop(file_xml);
 
       XMLBufferWriter record_xml;
-      push(record_xml, "MakeSource");
-      write(record_xml, "PropSource", params.param);
-      write(record_xml, "RNG", ran_seed);
-      write(record_xml, "Config_info", gauge_xml);
-      pop(record_xml);
+
+      // Construct the appropriate header
+      {
+	MakeSourceProp_t prop_header;
+	prop_header.source_header = params.param;
+	prop_header.gauge_header  = gauge_xml.printCurrentContext();
+	write(record_xml, "MakeSource", prop_header);
+      }
     
       // Store the source
       TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.source_id);

@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.10 2006-11-28 19:27:32 edwards Exp $
+// $Id: qprop_io.cc,v 3.11 2006-12-02 18:18:07 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -620,49 +620,6 @@ namespace Chroma
 
   }
 
-  //! SeqPropagator header reader
-  void read(XMLReader& xml, const string& path, ChromaSeqProp_t& param)
-  {
-    XMLReader paramtop(xml, path);
-
-    int version;
-    read(paramtop, "version", version);
-
-    switch (version) 
-    {
-      // If you need previous versions, you'll have to go back to
-      // the cvs source and dig for old versions. I'm not sure what
-      // in production needs this support.
-
-    case 3:
-    {
-      bool nonRelProp;
-      read(paramtop, "nonRelSeqProp", nonRelProp); // new - is this prop non-relativistic
-      if (nonRelProp)
-	param.quarkSpinType = QUARK_SPIN_TYPE_UPPER;
-
-      read(paramtop, "seq_src", param.seq_src);
-    }
-    break;
-
-    case 4:
-    {
-      read(paramtop, "quarkSpinType", param.quarkSpinType);
-      read(paramtop, "seq_src", param.seq_src);
-    }
-    break;
-
-    default:
-      QDPIO::cerr << "ChromaSeqProp parameter version " << version 
-		  << " unsupported." << endl;
-      QDP_abort(1);
-    }
-
-    param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
-    read(paramtop, "t_sink", param.t_sink);
-    read(paramtop, "sink_mom", param.sink_mom);
-  }
-
 
   //! SeqSource header reader
   void read(XMLReader& xml, const string& path, SeqSource_t& param)
@@ -1012,7 +969,41 @@ namespace Chroma
   }
 
 
-  //! SeqPropagator header reader
+  //=================================================================================
+  // Propagator header readers and writers
+
+  // MakeSourceProp reader
+  void read(XMLReader& xml, const std::string& path, MakeSourceProp_t& param)
+  {
+    XMLReader paramtop(xml, path);
+
+    read(paramtop, "PropSource", param.source_header);
+    {
+      XMLReader xml_tmp(paramtop, "Config_info");
+      std::ostringstream os;
+      xml_tmp.printCurrentContext(os);
+      param.gauge_header = os.str();
+    }
+  }
+
+
+  // Propagator reader
+  void read(XMLReader& xml, const string& path, Propagator_t& param)
+  {
+    XMLReader paramtop(xml, path);
+
+    read(paramtop, "ForwardProp", param.prop_header);
+    read(paramtop, "PropSource", param.source_header);
+    {
+      XMLReader xml_tmp(paramtop, "Config_info");
+      std::ostringstream os;
+      xml_tmp.printCurrentContext(os);
+      param.gauge_header = os.str();
+    }
+  }
+
+
+  // ForwardProp reader
   void read(XMLReader& xml, const string& path, ForwardProp_t& param)
   {
     XMLReader paramtop(xml, path);
@@ -1020,10 +1011,16 @@ namespace Chroma
     read(paramtop, "PropSink", param.sink_header);
     read(paramtop, "ForwardProp", param.prop_header);
     read(paramtop, "PropSource", param.source_header);
+    {
+      XMLReader xml_tmp(paramtop, "Config_info");
+      std::ostringstream os;
+      xml_tmp.printCurrentContext(os);
+      param.gauge_header = os.str();
+    }
   }
 
 
-  //! SequentialSource header reader
+  // SequentialSource header reader
   void read(XMLReader& xml, const string& path, SequentialSource_t& param)
   {
     XMLReader paramtop(xml, path);
@@ -1031,10 +1028,16 @@ namespace Chroma
     read(paramtop, "SeqSourceSinkSmear", param.sink_header);
     read(paramtop, "SeqSource", param.seqsource_header);
     read(paramtop, "ForwardProps", param.forward_props);
+    {
+      XMLReader xml_tmp(paramtop, "Config_info");
+      std::ostringstream os;
+      xml_tmp.printCurrentContext(os);
+      param.gauge_header = os.str();
+    }
   }
 
 
-  //! SequentialProp header reader
+  // SequentialProp header reader
   void read(XMLReader& xml, const string& path, SequentialProp_t& param)
   {
     XMLReader paramtop(xml, path);
@@ -1043,6 +1046,12 @@ namespace Chroma
     read(paramtop, "SeqSourceSinkSmear", param.sink_header);
     read(paramtop, "SeqSource", param.seqsource_header);
     read(paramtop, "ForwardProps", param.forward_props);
+    {
+      XMLReader xml_tmp(paramtop, "Config_info");
+      std::ostringstream os;
+      xml_tmp.printCurrentContext(os);
+      param.gauge_header = os.str();
+    }
   }
 
 
@@ -1196,23 +1205,6 @@ namespace Chroma
   }
 
 
-  //! SeqPropagator header writer
-  void write(XMLWriter& xml, const string& path, const ChromaSeqProp_t& param)
-  {
-    push(xml, path);
-
-    int version = 4;
-    write(xml, "version", version);
-    write(xml, "quarkSpinType", param.quarkSpinType);
-    write(xml, "seq_src", param.seq_src);
-    xml << param.invParam.xml;
-    write(xml, "t_sink", param.t_sink);
-    write(xml, "sink_mom", param.sink_mom);
-
-    pop(xml);
-  }
-
-
   //! SeqSource header writer
   void write(XMLWriter& xml, const string& path, const SeqSource_t& param)
   {
@@ -1226,7 +1218,36 @@ namespace Chroma
   }
 
 
-  //! SeqPropagator header writer
+  // MakeSourceProp writer
+  void write(XMLWriter& xml, const std::string& path, const MakeSourceProp_t& param)
+  {
+    push(xml, path);
+
+    int version = 1;
+    write(xml, "version", version);
+    write(xml, "PropSource", param.source_header);
+    write(xml, "Config_info", param.gauge_header);
+
+    pop(xml);
+  }
+
+
+  // Propagator writer
+  void write(XMLWriter& xml, const string& path, const Propagator_t& param)
+  {
+    push(xml, path);
+
+    int version = 1;
+    write(xml, "version", version);
+    write(xml, "ForwardProp", param.prop_header);
+    write(xml, "PropSource", param.source_header);
+    write(xml, "Config_info", param.gauge_header);
+
+    pop(xml);
+  }
+
+
+  // ForwardProp writer
   void write(XMLWriter& xml, const string& path, const ForwardProp_t& param)
   {
     if( path != "." )
@@ -1237,6 +1258,7 @@ namespace Chroma
     write(xml, "PropSink", param.sink_header);
     write(xml, "ForwardProp", param.prop_header);
     write(xml, "PropSource", param.source_header);
+    write(xml, "Config_info", param.gauge_header);
 
     if( path != "." )
       pop(xml);
@@ -1254,6 +1276,7 @@ namespace Chroma
     write(xml, "SeqSourceSinkSmear", param.sink_header);
     write(xml, "SeqSource", param.seqsource_header);
     write(xml, "ForwardProps", param.forward_props);
+    write(xml, "Config_info", param.gauge_header);
 
     if( path != "." )
       pop(xml);
@@ -1272,6 +1295,7 @@ namespace Chroma
     write(xml, "SeqSourceSinkSmear", param.sink_header);
     write(xml, "SeqSource", param.seqsource_header);
     write(xml, "ForwardProps", param.forward_props);
+    write(xml, "Config_info", param.gauge_header);
 
     if( path != "." )
       pop(xml);
