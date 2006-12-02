@@ -117,7 +117,7 @@ Sequential source
     </elem>
     <elem>
       <annotation>
-       a0-pionxNABLA_T1 seqsource
+       a0-a0 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -126,9 +126,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-pionxNABLA_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-a0</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -166,13 +164,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-pionxNABLA_T1</seqsource_id>
+        <seqsource_id>seqsource_a0-a0</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-pionxNABLA_T1 seqprop
+       a0-a0 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -204,8 +202,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-pionxNABLA_T1</source_id>
-        <prop_id>seqprop_a0-pionxNABLA_T1</prop_id>
+        <source_id>seqsource_a0-a0</source_id>
+        <prop_id>seqprop_a0-a0</prop_id>
       </NamedObject>
     </elem>
 
@@ -216,7 +214,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-pionxNABLA_T1</object_id>
+        <object_id>seqsource_a0-a0</object_id>
       </NamedObject>
     </elem>
 
@@ -249,11 +247,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-pionxNABLA_T1</BkwdPropId>
+           <BkwdPropId>seqprop_a0-a0</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-pionxNABLA_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-a0_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -263,7 +261,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a0xNABLA_T1 seqsource
+       a0-rho_x_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -272,9 +270,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a0xNABLA_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-rho_x_1</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -312,13 +308,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a0xNABLA_T1</seqsource_id>
+        <seqsource_id>seqsource_a0-rho_x_1</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a0xNABLA_T1 seqprop
+       a0-rho_x_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -350,8 +346,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a0xNABLA_T1</source_id>
-        <prop_id>seqprop_a0-a0xNABLA_T1</prop_id>
+        <source_id>seqsource_a0-rho_x_1</source_id>
+        <prop_id>seqprop_a0-rho_x_1</prop_id>
       </NamedObject>
     </elem>
 
@@ -362,7 +358,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a0xNABLA_T1</object_id>
+        <object_id>seqsource_a0-rho_x_1</object_id>
       </NamedObject>
     </elem>
 
@@ -395,11 +391,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a0xNABLA_T1</BkwdPropId>
+           <BkwdPropId>seqprop_a0-rho_x_1</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a0xNABLA_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-rho_x_1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -409,7 +405,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a0_2xNABLA_T1 seqsource
+       a0-rho_y_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -418,9 +414,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a0_2xNABLA_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-rho_y_1</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -458,13 +452,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a0_2xNABLA_T1</seqsource_id>
+        <seqsource_id>seqsource_a0-rho_y_1</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a0_2xNABLA_T1 seqprop
+       a0-rho_y_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -496,8 +490,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a0_2xNABLA_T1</source_id>
-        <prop_id>seqprop_a0-a0_2xNABLA_T1</prop_id>
+        <source_id>seqsource_a0-rho_y_1</source_id>
+        <prop_id>seqprop_a0-rho_y_1</prop_id>
       </NamedObject>
     </elem>
 
@@ -508,7 +502,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a0_2xNABLA_T1</object_id>
+        <object_id>seqsource_a0-rho_y_1</object_id>
       </NamedObject>
     </elem>
 
@@ -541,11 +535,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a0_2xNABLA_T1</BkwdPropId>
+           <BkwdPropId>seqprop_a0-rho_y_1</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a0_2xNABLA_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-rho_y_1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -555,7 +549,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-rhoxNABLA_A1 seqsource
+       a0-b1_z seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -564,9 +558,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-rhoxNABLA_A1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-b1_z</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -604,13 +596,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-rhoxNABLA_A1</seqsource_id>
+        <seqsource_id>seqsource_a0-b1_z</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-rhoxNABLA_A1 seqprop
+       a0-b1_z seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -642,8 +634,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-rhoxNABLA_A1</source_id>
-        <prop_id>seqprop_a0-rhoxNABLA_A1</prop_id>
+        <source_id>seqsource_a0-b1_z</source_id>
+        <prop_id>seqprop_a0-b1_z</prop_id>
       </NamedObject>
     </elem>
 
@@ -654,7 +646,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-rhoxNABLA_A1</object_id>
+        <object_id>seqsource_a0-b1_z</object_id>
       </NamedObject>
     </elem>
 
@@ -687,11 +679,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-rhoxNABLA_A1</BkwdPropId>
+           <BkwdPropId>seqprop_a0-b1_z</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-rhoxNABLA_A1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-b1_z_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -701,7 +693,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-rhoxNABLA_T1 seqsource
+       a0-rho_z_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -710,9 +702,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-rhoxNABLA_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-rho_z_1</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -750,13 +740,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-rhoxNABLA_T1</seqsource_id>
+        <seqsource_id>seqsource_a0-rho_z_1</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-rhoxNABLA_T1 seqprop
+       a0-rho_z_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -788,8 +778,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-rhoxNABLA_T1</source_id>
-        <prop_id>seqprop_a0-rhoxNABLA_T1</prop_id>
+        <source_id>seqsource_a0-rho_z_1</source_id>
+        <prop_id>seqprop_a0-rho_z_1</prop_id>
       </NamedObject>
     </elem>
 
@@ -800,7 +790,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-rhoxNABLA_T1</object_id>
+        <object_id>seqsource_a0-rho_z_1</object_id>
       </NamedObject>
     </elem>
 
@@ -833,11 +823,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-rhoxNABLA_T1</BkwdPropId>
+           <BkwdPropId>seqprop_a0-rho_z_1</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-rhoxNABLA_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-rho_z_1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -847,7 +837,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-rhoxNABLA_T2 seqsource
+       a0-b1_y seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -856,9 +846,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-rhoxNABLA_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-b1_y</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -896,13 +884,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-rhoxNABLA_T2</seqsource_id>
+        <seqsource_id>seqsource_a0-b1_y</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-rhoxNABLA_T2 seqprop
+       a0-b1_y seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -934,8 +922,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-rhoxNABLA_T2</source_id>
-        <prop_id>seqprop_a0-rhoxNABLA_T2</prop_id>
+        <source_id>seqsource_a0-b1_y</source_id>
+        <prop_id>seqprop_a0-b1_y</prop_id>
       </NamedObject>
     </elem>
 
@@ -946,7 +934,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-rhoxNABLA_T2</object_id>
+        <object_id>seqsource_a0-b1_y</object_id>
       </NamedObject>
     </elem>
 
@@ -979,11 +967,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-rhoxNABLA_T2</BkwdPropId>
+           <BkwdPropId>seqprop_a0-b1_y</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-rhoxNABLA_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-b1_y_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -993,7 +981,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a1xNABLA_A1 seqsource
+       a0-b1_x seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1002,9 +990,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a1xNABLA_A1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-b1_x</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1042,13 +1028,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a1xNABLA_A1</seqsource_id>
+        <seqsource_id>seqsource_a0-b1_x</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a1xNABLA_A1 seqprop
+       a0-b1_x seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1080,8 +1066,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xNABLA_A1</source_id>
-        <prop_id>seqprop_a0-a1xNABLA_A1</prop_id>
+        <source_id>seqsource_a0-b1_x</source_id>
+        <prop_id>seqprop_a0-b1_x</prop_id>
       </NamedObject>
     </elem>
 
@@ -1092,7 +1078,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a1xNABLA_A1</object_id>
+        <object_id>seqsource_a0-b1_x</object_id>
       </NamedObject>
     </elem>
 
@@ -1125,11 +1111,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a1xNABLA_A1</BkwdPropId>
+           <BkwdPropId>seqprop_a0-b1_x</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xNABLA_A1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-b1_x_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -1139,7 +1125,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a1xNABLA_T2 seqsource
+       a0-pion_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1148,9 +1134,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a1xNABLA_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-pion_2</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1188,13 +1172,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a1xNABLA_T2</seqsource_id>
+        <seqsource_id>seqsource_a0-pion_2</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a1xNABLA_T2 seqprop
+       a0-pion_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1226,8 +1210,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xNABLA_T2</source_id>
-        <prop_id>seqprop_a0-a1xNABLA_T2</prop_id>
+        <source_id>seqsource_a0-pion_2</source_id>
+        <prop_id>seqprop_a0-pion_2</prop_id>
       </NamedObject>
     </elem>
 
@@ -1238,7 +1222,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a1xNABLA_T2</object_id>
+        <object_id>seqsource_a0-pion_2</object_id>
       </NamedObject>
     </elem>
 
@@ -1271,11 +1255,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a1xNABLA_T2</BkwdPropId>
+           <BkwdPropId>seqprop_a0-pion_2</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xNABLA_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-pion_2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -1285,7 +1269,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a1xNABLA_E seqsource
+       a0-b0 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1294,9 +1278,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a1xNABLA_E</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-b0</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1334,13 +1316,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a1xNABLA_E</seqsource_id>
+        <seqsource_id>seqsource_a0-b0</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a1xNABLA_E seqprop
+       a0-b0 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1372,8 +1354,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xNABLA_E</source_id>
-        <prop_id>seqprop_a0-a1xNABLA_E</prop_id>
+        <source_id>seqsource_a0-b0</source_id>
+        <prop_id>seqprop_a0-b0</prop_id>
       </NamedObject>
     </elem>
 
@@ -1384,7 +1366,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a1xNABLA_E</object_id>
+        <object_id>seqsource_a0-b0</object_id>
       </NamedObject>
     </elem>
 
@@ -1417,11 +1399,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a1xNABLA_E</BkwdPropId>
+           <BkwdPropId>seqprop_a0-b0</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xNABLA_E_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-b0_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -1431,7 +1413,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-b1xNABLA_T1 seqsource
+       a0-rho_x_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1440,9 +1422,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-b1xNABLA_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-rho_x_2</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1480,13 +1460,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-b1xNABLA_T1</seqsource_id>
+        <seqsource_id>seqsource_a0-rho_x_2</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-b1xNABLA_T1 seqprop
+       a0-rho_x_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1518,8 +1498,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-b1xNABLA_T1</source_id>
-        <prop_id>seqprop_a0-b1xNABLA_T1</prop_id>
+        <source_id>seqsource_a0-rho_x_2</source_id>
+        <prop_id>seqprop_a0-rho_x_2</prop_id>
       </NamedObject>
     </elem>
 
@@ -1530,7 +1510,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-b1xNABLA_T1</object_id>
+        <object_id>seqsource_a0-rho_x_2</object_id>
       </NamedObject>
     </elem>
 
@@ -1563,11 +1543,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-b1xNABLA_T1</BkwdPropId>
+           <BkwdPropId>seqprop_a0-rho_x_2</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-b1xNABLA_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-rho_x_2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -1577,7 +1557,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a0_2xD_T2 seqsource
+       a0-rho_y_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1586,9 +1566,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a0_2xD_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-rho_y_2</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1626,13 +1604,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a0_2xD_T2</seqsource_id>
+        <seqsource_id>seqsource_a0-rho_y_2</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a0_2xD_T2 seqprop
+       a0-rho_y_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1664,8 +1642,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a0_2xD_T2</source_id>
-        <prop_id>seqprop_a0-a0_2xD_T2</prop_id>
+        <source_id>seqsource_a0-rho_y_2</source_id>
+        <prop_id>seqprop_a0-rho_y_2</prop_id>
       </NamedObject>
     </elem>
 
@@ -1676,7 +1654,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a0_2xD_T2</object_id>
+        <object_id>seqsource_a0-rho_y_2</object_id>
       </NamedObject>
     </elem>
 
@@ -1709,11 +1687,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a0_2xD_T2</BkwdPropId>
+           <BkwdPropId>seqprop_a0-rho_y_2</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a0_2xD_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-rho_y_2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -1723,7 +1701,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a1xD_A2 seqsource
+       a0-a1_z seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1732,9 +1710,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a1xD_A2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-a1_z</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1772,13 +1748,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a1xD_A2</seqsource_id>
+        <seqsource_id>seqsource_a0-a1_z</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a1xD_A2 seqprop
+       a0-a1_z seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1810,8 +1786,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xD_A2</source_id>
-        <prop_id>seqprop_a0-a1xD_A2</prop_id>
+        <source_id>seqsource_a0-a1_z</source_id>
+        <prop_id>seqprop_a0-a1_z</prop_id>
       </NamedObject>
     </elem>
 
@@ -1822,7 +1798,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a1xD_A2</object_id>
+        <object_id>seqsource_a0-a1_z</object_id>
       </NamedObject>
     </elem>
 
@@ -1855,11 +1831,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a1xD_A2</BkwdPropId>
+           <BkwdPropId>seqprop_a0-a1_z</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xD_A2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-a1_z_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -1869,7 +1845,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a1xD_E seqsource
+       a0-rho_z_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1878,9 +1854,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a1xD_E</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-rho_z_2</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1918,13 +1892,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a1xD_E</seqsource_id>
+        <seqsource_id>seqsource_a0-rho_z_2</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a1xD_E seqprop
+       a0-rho_z_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1956,8 +1930,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xD_E</source_id>
-        <prop_id>seqprop_a0-a1xD_E</prop_id>
+        <source_id>seqsource_a0-rho_z_2</source_id>
+        <prop_id>seqprop_a0-rho_z_2</prop_id>
       </NamedObject>
     </elem>
 
@@ -1968,7 +1942,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a1xD_E</object_id>
+        <object_id>seqsource_a0-rho_z_2</object_id>
       </NamedObject>
     </elem>
 
@@ -2001,11 +1975,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a1xD_E</BkwdPropId>
+           <BkwdPropId>seqprop_a0-rho_z_2</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xD_E_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-rho_z_2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -2015,7 +1989,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a1xD_T1 seqsource
+       a0-a1_y seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -2024,9 +1998,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a1xD_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-a1_y</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -2064,13 +2036,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a1xD_T1</seqsource_id>
+        <seqsource_id>seqsource_a0-a1_y</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a1xD_T1 seqprop
+       a0-a1_y seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2102,8 +2074,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xD_T1</source_id>
-        <prop_id>seqprop_a0-a1xD_T1</prop_id>
+        <source_id>seqsource_a0-a1_y</source_id>
+        <prop_id>seqprop_a0-a1_y</prop_id>
       </NamedObject>
     </elem>
 
@@ -2114,7 +2086,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a1xD_T1</object_id>
+        <object_id>seqsource_a0-a1_y</object_id>
       </NamedObject>
     </elem>
 
@@ -2147,11 +2119,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a1xD_T1</BkwdPropId>
+           <BkwdPropId>seqprop_a0-a1_y</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xD_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-a1_y_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -2161,7 +2133,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-a1xD_T2 seqsource
+       a0-a1_x seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -2170,9 +2142,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-a1xD_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-a1_x</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -2210,13 +2180,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-a1xD_T2</seqsource_id>
+        <seqsource_id>seqsource_a0-a1_x</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-a1xD_T2 seqprop
+       a0-a1_x seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2248,8 +2218,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xD_T2</source_id>
-        <prop_id>seqprop_a0-a1xD_T2</prop_id>
+        <source_id>seqsource_a0-a1_x</source_id>
+        <prop_id>seqprop_a0-a1_x</prop_id>
       </NamedObject>
     </elem>
 
@@ -2260,7 +2230,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-a1xD_T2</object_id>
+        <object_id>seqsource_a0-a1_x</object_id>
       </NamedObject>
     </elem>
 
@@ -2293,11 +2263,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-a1xD_T2</BkwdPropId>
+           <BkwdPropId>seqprop_a0-a1_x</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xD_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-a1_x_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -2307,7 +2277,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-b1xD_A2 seqsource
+       a0-pion_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -2316,9 +2286,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-b1xD_A2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>a0-pion_1</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -2356,13 +2324,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-b1xD_A2</seqsource_id>
+        <seqsource_id>seqsource_a0-pion_1</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-b1xD_A2 seqprop
+       a0-pion_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2394,8 +2362,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-b1xD_A2</source_id>
-        <prop_id>seqprop_a0-b1xD_A2</prop_id>
+        <source_id>seqsource_a0-pion_1</source_id>
+        <prop_id>seqprop_a0-pion_1</prop_id>
       </NamedObject>
     </elem>
 
@@ -2406,7 +2374,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-b1xD_A2</object_id>
+        <object_id>seqsource_a0-pion_1</object_id>
       </NamedObject>
     </elem>
 
@@ -2439,11 +2407,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-b1xD_A2</BkwdPropId>
+           <BkwdPropId>seqprop_a0-pion_1</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-b1xD_A2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-pion_1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
@@ -2453,7 +2421,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-b1xD_E seqsource
+       pion_1-pion_1 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -2462,9 +2430,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-b1xD_E</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
+          <SeqSourceType>pion_1-pion_1</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -2502,13 +2468,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-b1xD_E</seqsource_id>
+        <seqsource_id>seqsource_pion_1-pion_1</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-b1xD_E seqprop
+       pion_1-pion_1 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -2540,8 +2506,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-b1xD_E</source_id>
-        <prop_id>seqprop_a0-b1xD_E</prop_id>
+        <source_id>seqsource_pion_1-pion_1</source_id>
+        <prop_id>seqprop_pion_1-pion_1</prop_id>
       </NamedObject>
     </elem>
 
@@ -2552,7 +2518,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-b1xD_E</object_id>
+        <object_id>seqsource_pion_1-pion_1</object_id>
       </NamedObject>
     </elem>
 
@@ -2585,1763 +2551,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-b1xD_E</BkwdPropId>
+           <BkwdPropId>seqprop_pion_1-pion_1</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-b1xD_E_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-b1xD_T1 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-b1xD_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-b1xD_T1</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-b1xD_T1 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-b1xD_T1</source_id>
-        <prop_id>seqprop_a0-b1xD_T1</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-b1xD_T1</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-b1xD_T1</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-b1xD_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-b1xD_T2 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-b1xD_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-b1xD_T2</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-b1xD_T2 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-b1xD_T2</source_id>
-        <prop_id>seqprop_a0-b1xD_T2</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-b1xD_T2</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-b1xD_T2</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-b1xD_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxD_A2 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-rhoxD_A2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-rhoxD_A2</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxD_A2 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-rhoxD_A2</source_id>
-        <prop_id>seqprop_a0-rhoxD_A2</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-rhoxD_A2</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-rhoxD_A2</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-rhoxD_A2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxD_T1 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-rhoxD_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-rhoxD_T1</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxD_T1 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-rhoxD_T1</source_id>
-        <prop_id>seqprop_a0-rhoxD_T1</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-rhoxD_T1</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-rhoxD_T1</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-rhoxD_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxD_T2 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-rhoxD_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-rhoxD_T2</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxD_T2 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-rhoxD_T2</source_id>
-        <prop_id>seqprop_a0-rhoxD_T2</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-rhoxD_T2</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-rhoxD_T2</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-rhoxD_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-pionxD_T2 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-pionxD_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-pionxD_T2</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-pionxD_T2 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-pionxD_T2</source_id>
-        <prop_id>seqprop_a0-pionxD_T2</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-pionxD_T2</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-pionxD_T2</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-pionxD_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-pionxB_T1 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-pionxB_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-pionxB_T1</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-pionxB_T1 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-pionxB_T1</source_id>
-        <prop_id>seqprop_a0-pionxB_T1</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-pionxB_T1</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-pionxB_T1</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-pionxB_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxB_T1 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-rhoxB_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-rhoxB_T1</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxB_T1 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-rhoxB_T1</source_id>
-        <prop_id>seqprop_a0-rhoxB_T1</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-rhoxB_T1</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-rhoxB_T1</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-rhoxB_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxB_T2 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-rhoxB_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-rhoxB_T2</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-rhoxB_T2 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-rhoxB_T2</source_id>
-        <prop_id>seqprop_a0-rhoxB_T2</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-rhoxB_T2</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-rhoxB_T2</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-rhoxB_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-a1xB_A1 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-a1xB_A1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-a1xB_A1</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-a1xB_A1 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xB_A1</source_id>
-        <prop_id>seqprop_a0-a1xB_A1</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-a1xB_A1</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-a1xB_A1</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xB_A1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-a1xB_T1 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-a1xB_T1</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-a1xB_T1</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-a1xB_T1 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xB_T1</source_id>
-        <prop_id>seqprop_a0-a1xB_T1</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-a1xB_T1</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-a1xB_T1</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xB_T1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
-         </elem>
-       </BkwdProps>
-      </BuildingBlocks>
-      <!-- Uncomment the xml_file line to write to a separate file -->
-      <!-- xml_file>bb.dat.xml</xml_file -->
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-a1xB_T2 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>2</version>
-        <SeqSource>
-          <version>1</version>
-          <SeqSourceType>a0-a1xB_T2</SeqSourceType>
-          <deriv_dir>0</deriv_dir>
-          <deriv_length>1</deriv_length>
-          <j_decay>3</j_decay>
-          <t_sink>6</t_sink>
-          <sink_mom>1 0 0</sink_mom>
-        </SeqSource>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_a0-a1xB_T2</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       a0-a1xB_T2 seqprop
-      </annotation>
-
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-a1xB_T2</source_id>
-        <prop_id>seqprop_a0-a1xB_T2</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_a0-a1xB_T2</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-       BuildingBlock input file.
-      </annotation>
-
-      <Name>BUILDING_BLOCKS</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>5</version>
-        <use_sink_offset>true</use_sink_offset>
-        <mom2_max>3</mom2_max>
-        <links_max>1</links_max>
-        <canonical>false</canonical>
-        <time_reverse>false</time_reverse>
-        <translate>false</translate>
-        <FermState>
-          <Name>SIMPLE_FERM_STATE</Name>
-          <FermionBC>
-            <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
-          </FermionBC>
-        </FermState>
-      </Param>
-      <BuildingBlocks>
-       <OutFileName>./examplebb_v1.out</OutFileName>
-       <GaugeId>default_gauge_field</GaugeId>
-       <FrwdPropId>sh_prop_0</FrwdPropId>
-       <BkwdProps>
-         <elem>
-           <BkwdPropId>seqprop_a0-a1xB_T2</BkwdPropId>
-           <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
-           <GammaInsertion>0</GammaInsertion>
-           <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-a1xB_T2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>pion_1-pion_1_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>

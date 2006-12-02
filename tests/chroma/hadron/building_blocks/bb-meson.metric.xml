@@ -40,28 +40,4 @@
 
 <assertion xpath="/chroma/InlineObservables/elem[71]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[75]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[79]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[83]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[87]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[91]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[95]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[99]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[103]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[107]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[111]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[115]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
-<assertion xpath="/chroma/InlineObservables/elem[119]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-8"/>
-
 </assertions>
