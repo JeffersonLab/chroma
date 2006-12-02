@@ -115,154 +115,6 @@ Sequential source
         <smeared_prop_id>sh_pt_prop_0</smeared_prop_id>
       </NamedObject>
     </elem>
-
-    <elem>
-      <annotation>
-       PION_1-PION_1 seqsource
-      </annotation>
-
-      <Name>SEQSOURCE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>1</version>
-        <seq_src>PION_1-PION_1</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
-      </Param>
-      <PropSink>
-        <version>5</version>
-        <Sink>
-          <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Sink>
-      </PropSink>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
-          <elem>sh_prop_0</elem>
-        </prop_ids>
-        <seqsource_id>seqsource_tmp</seqsource_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>PROPAGATOR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>10</version>
-        <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>false</obsvP>
-        <numRetries>1</numRetries>
-        <FermionAction>
-         <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
-         <AnisoParam>
-           <anisoP>false</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>1.0</xi_0>
-           <nu>1.0</nu>
-         </AnisoParam>
-         <FermionBC>
-           <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 0</boundary>
-         </FermionBC>
-        </FermionAction>
-        <InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_tmp</source_id>
-        <prop_id>seqprop_0</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>SEQPROP_TEST</Name>
-      <Frequency>1</Frequency>
-      <PropSourceSmear>
-        <version>6</version>
-        <Source>
-          <version>2</version>
-          <SourceType>SHELL_SOURCE</SourceType>
-          <j_decay>3</j_decay>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>0</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
-        </Source>
-      </PropSourceSmear>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <sink_ids>
-          <elem>sh_pt_prop_0</elem>
-          <elem>sh_pt_prop_0</elem>
-        </sink_ids>
-        <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqsource_tmp</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Erase the object
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>seqprop_0</object_id>
-      </NamedObject>
-    </elem>
-
     <elem>
       <annotation>
        A0-A0_1 seqsource
@@ -313,6 +165,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A0_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -348,6 +204,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A0_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -460,6 +320,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_X_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -495,6 +359,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_X_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -531,7 +399,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>1</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -607,6 +475,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_Y_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -642,6 +514,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_Y_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -678,7 +554,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>2</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -754,6 +630,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-B1_Z_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -789,6 +669,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-B1_Z_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -825,7 +709,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>3</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -901,6 +785,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_Z_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -936,6 +824,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_Z_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -972,7 +864,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>4</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -1048,6 +940,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-B1_Y_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -1083,6 +979,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-B1_Y_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -1119,7 +1019,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>5</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -1195,6 +1095,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-B1_X_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -1230,6 +1134,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-B1_X_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -1266,7 +1174,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>6</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -1342,6 +1250,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-PION_2 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -1377,6 +1289,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-PION_2 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -1413,7 +1329,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>7</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -1489,6 +1405,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A0_2 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -1524,6 +1444,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A0_2 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -1560,7 +1484,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>8</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -1636,6 +1560,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_X_2 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -1671,6 +1599,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_X_2 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -1707,7 +1639,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>9</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -1783,6 +1715,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_Y_2 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -1818,6 +1754,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_Y_2 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -1854,7 +1794,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>10</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -1930,6 +1870,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A1_Z_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -1965,6 +1909,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A1_Z_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -2001,7 +1949,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>11</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -2077,6 +2025,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_Z_2 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -2112,6 +2064,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-RHO_Z_2 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -2148,7 +2104,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>12</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -2224,6 +2180,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A1_Y_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -2259,6 +2219,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A1_Y_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -2295,7 +2259,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>13</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -2371,6 +2335,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A1_X_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -2406,6 +2374,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-A1_X_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -2442,7 +2414,7 @@ Sequential source
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
-        <gamma_insertion>0</gamma_insertion>
+        <gamma_insertion>14</gamma_insertion>
       </NamedObject>
     </elem>
 
@@ -2518,6 +2490,10 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-PION_1 seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -2553,6 +2529,165 @@ Sequential source
     </elem>
 
     <elem>
+      <annotation>
+       A0-PION_1 seqprop test
+      </annotation>
+
+      <Name>SEQPROP_TEST</Name>
+      <Frequency>1</Frequency>
+      <PropSourceSmear>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+      </PropSourceSmear>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <sink_ids>
+          <elem>sh_pt_prop_0</elem>
+          <elem>sh_pt_prop_0</elem>
+        </sink_ids>
+        <seqprop_id>seqprop_0</seqprop_id>
+        <gamma_insertion>15</gamma_insertion>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqprop_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+       PION_1-PION_1 seqsource
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <seq_src>PION_1-PION_1</seq_src>
+        <t_sink>6</t_sink>
+        <sink_mom>1 0 0</sink_mom>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>2</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+       PION_1-PION_1 seqprop
+      </annotation>
+
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>seqsource_tmp</source_id>
+        <prop_id>seqprop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+       PION_1-PION_1 seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>

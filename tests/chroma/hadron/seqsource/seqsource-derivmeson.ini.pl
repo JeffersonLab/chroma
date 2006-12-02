@@ -1,6 +1,9 @@
-#!/bin/csh
+#!/usr/bin/perl
+#
+# Used to generate the input file  seqsource-derivmeson.ini.xml
+#
 
-cat <<EOF
+print <<"EOF";
 <?xml version="1.0"?>
 <chroma>
 <annotation>
@@ -118,24 +121,75 @@ Sequential source
         <smeared_prop_id>sh_pt_prop_0</smeared_prop_id>
       </NamedObject>
     </elem>
-
 EOF
 
-foreach seq_src (PION_1-PION_1 A0-A0_1 A0-RHO_X_1 A0-RHO_Y_1 A0-B1_Z_1 A0-RHO_Z_1 A0-B1_Y_1 A0-B1_X_1 A0-PION_2 A0-A0_2 A0-RHO_X_2 A0-RHO_Y_2 A0-A1_Z_1 A0-RHO_Z_2 A0-A1_Y_1 A0-A1_X_1 A0-PION_1)
 
-cat <<EOF
+foreach $deriv_name ("a0-pionxNABLA_T1", "a0-a0xNABLA_T1", "a0-a0_2xNABLA_T1", "a0-rhoxNABLA_A1", "a0-rhoxNABLA_T1", "a0-rhoxNABLA_T2", "a0-a1xNABLA_A1", "a0-a1xNABLA_T2", "a0-a1xNABLA_E", "a0-b1xNABLA_T1", "a0-a0_2xD_T2", "a0-a1xD_A2", "a0-a1xD_E", "a0-a1xD_T1", "a0-a1xD_T2", "a0-b1xD_A2", "a0-b1xD_E", "a0-b1xD_T1", "a0-b1xD_T2", "a0-rhoxD_A2", "a0-rhoxD_T1", "a0-rhoxD_T2", "a0-pionxD_T2", "a0-pionxB_T1", "a0-rhoxB_T1", "a0-rhoxB_T2", "a0-a1xB_A1", "a0-a1xB_T1", "a0-a1xB_T2")
+{
+#    print STDERR "deriv_name = $deriv_name\n";
+
+    $rep = `echo $deriv_name |sed 's/-DERIV//'|sed 's/^.*_T1/T1/'|sed 's/^.*_T2/T2/'|sed 's/^.*_A1/A1/'|sed 's/^.*_A2/A2/'|sed 's/^.*_E/E/'`;
+
+#    print STDERR "rep = $rep\n";
+
+    if ($rep =~ /A1/)
+    {
+	@deriv_dirs = (-17);
+    }
+    elsif ($rep =~ /A2/)
+    {
+	@deriv_dirs = (-17);
+    }
+    elsif ($rep =~ /E/)
+    {
+	@deriv_dirs = (0, 1);
+    }
+    elsif ($rep =~ /T1/)
+    {
+	@deriv_dirs = (0, 1, 2);
+    }
+    elsif ($rep =~ /T2/)
+    {
+	@deriv_dirs = (0, 1, 2);
+    }
+    else
+    {
+	die "illegal rep = $rep\n";
+    }
+
+#    print STDERR "deriv_dirs = @deriv_dirs\n";
+
+#    foreach $deriv_dir (@deriv_dirs) 
+    $deriv_dir = 0;
+    {
+#	print STDERR "deriv_dir = $deriv_dir\n";
+
+	$prop_ids[1] = "<prop_ids><elem>sh_prop_0</elem><elem>sh_prop_0</elem></prop_ids>";
+	$prop_ids[2] = "<prop_ids><elem>sh_prop_0</elem></prop_ids>";
+	
+	$sink_ids[1] = "<sink_ids><elem>sh_pt_prop_0</elem></sink_ids>";
+	$sink_ids[2] = "<sink_ids><elem>sh_pt_prop_0</elem><elem>sh_pt_prop_0</elem></sink_ids>";
+
+
+print <<"EOF";
     <elem>
       <annotation>
-       ${seq_src} seqsource
+       ${deriv_name} seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
-        <seq_src>${seq_src}</seq_src>
-        <t_sink>6</t_sink>
-        <sink_mom>1 0 0</sink_mom>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>${deriv_name}</SeqSourceType>
+          <deriv_dir>${deriv_dir}</deriv_dir>
+          <deriv_length>1</deriv_length>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
       </Param>
       <PropSink>
         <version>5</version>
@@ -166,7 +220,7 @@ cat <<EOF
       </PropSink>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <prop_ids>
+	<prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
         <seqsource_id>seqsource_tmp</seqsource_id>
@@ -174,6 +228,10 @@ cat <<EOF
     </elem>
 
     <elem>
+      <annotation>
+       ${deriv_name} seqprop
+      </annotation>
+
       <Name>PROPAGATOR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -209,6 +267,10 @@ cat <<EOF
     </elem>
 
     <elem>
+      <annotation>
+       ${deriv_name} seqprop test
+      </annotation>
+
       <Name>SEQPROP_TEST</Name>
       <Frequency>1</Frequency>
       <PropSourceSmear>
@@ -240,8 +302,7 @@ cat <<EOF
       </PropSourceSmear>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <sink_ids>
-          <elem>sh_pt_prop_0</elem>
+	<sink_ids>
           <elem>sh_pt_prop_0</elem>
         </sink_ids>
         <seqprop_id>seqprop_0</seqprop_id>
@@ -272,9 +333,11 @@ cat <<EOF
     </elem>
 
 EOF
-end  # foreach
 
-cat <<EOF
+    } # foreach
+} # foreach
+
+print <<"EOF";
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
@@ -293,6 +356,6 @@ cat <<EOF
  <cfg_file>dummy</cfg_file>
 </Cfg>
 </chroma>
-
 EOF
 
+exit(0);

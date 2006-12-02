@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[1]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[6]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[11]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[16]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[21]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[26]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[31]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[36]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[41]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[46]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[51]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[56]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[61]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[66]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[71]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[76]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[81]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[86]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[91]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[96]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[101]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[106]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[111]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[116]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[121]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[126]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[131]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[136]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[141]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[146]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-10"/>
+
+</assertions>

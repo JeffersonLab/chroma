@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.1 2006-05-17 20:18:19 edwards Exp $
+#  $Id: regres.pl,v 3.2 2006-12-02 03:44:09 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -25,6 +25,14 @@
 	 output      => "seqsource-baryon.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/seqsource/seqsource-baryon.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/seqsource/seqsource-baryon.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/seqsource/seqsource-derivmeson.ini.xml" , 
+	 output      => "seqsource-derivmeson.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/seqsource/seqsource-derivmeson.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/seqsource/seqsource-derivmeson.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
