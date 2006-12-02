@@ -93,10 +93,10 @@ Write some SZIN objects
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.11.0</chroma>
-      <qdp>1.20.8</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>24 Aug 06 15:35:14 EDT</run_date>
+    <run_date>02 Dec 06 16:02:50 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -113,44 +113,37 @@ Write some SZIN objects
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
-    <w_plaq>0.994764814567235</w_plaq>
-    <s_plaq>0.994800872583356</s_plaq>
-    <t_plaq>0.994728756551113</t_plaq>
-    <plane_01_plaq>0.994752409557501</plane_01_plaq>
-    <plane_02_plaq>0.995051670198639</plane_02_plaq>
-    <plane_12_plaq>0.994598537993928</plane_12_plaq>
-    <plane_03_plaq>0.994927928006897</plane_03_plaq>
-    <plane_13_plaq>0.994742137845606</plane_13_plaq>
-    <plane_23_plaq>0.994516203800837</plane_23_plaq>
-    <link>0.379317687901979</link>
+    <w_plaq>0.994764814463755</w_plaq>
+    <s_plaq>0.994800871962474</s_plaq>
+    <t_plaq>0.994728756965034</t_plaq>
+    <plane_01_plaq>0.994752408626179</plane_01_plaq>
+    <plane_02_plaq>0.995051671285182</plane_02_plaq>
+    <plane_12_plaq>0.994598535976062</plane_12_plaq>
+    <plane_03_plaq>0.994927926144252</plane_03_plaq>
+    <plane_13_plaq>0.994742138621708</plane_13_plaq>
+    <plane_23_plaq>0.994516206129144</plane_23_plaq>
+    <link>0.379317688059624</link>
     <pollp>
       <elem>
-        <re>0.96722258204439</re>
-        <im>-0.00121316457792394</im>
+        <re>0.967222581617534</re>
+        <im>-0.00121316458201666</im>
       </elem>
       <elem>
-        <re>0.967032070271671</re>
-        <im>-0.0012961704569534</im>
+        <re>0.967032070310476</re>
+        <im>-0.00129617050743036</im>
       </elem>
       <elem>
-        <re>0.967467518639751</re>
-        <im>-0.00114548282075096</im>
+        <re>0.967467519299438</re>
+        <im>-0.00114548285447806</im>
       </elem>
       <elem>
-        <re>0.879538946435787</re>
-        <im>-0.0104402832973089</im>
+        <re>0.879538947173084</re>
+        <im>-0.0104402833220168</im>
       </elem>
     </pollp>
   </Observables>

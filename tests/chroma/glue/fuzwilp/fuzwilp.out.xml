@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: fuzwilp.out.xml,v 3.4 2006-09-21 19:45:55 edwards Exp $
+; $Id: fuzwilp.out.xml,v 3.5 2006-12-02 21:05:21 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -40,10 +40,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.15.0</chroma>
-      <qdp>1.20.9</qdp>
+      <chroma>3.21.0</chroma>
+      <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>21 Sep 06 14:59:41 EDT</run_date>
+    <run_date>02 Dec 06 16:04:00 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -60,16 +60,9 @@
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><weak_field>
+  <Config_info><weak_field>
 </weak_field>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>0.994764814463755</w_plaq>
