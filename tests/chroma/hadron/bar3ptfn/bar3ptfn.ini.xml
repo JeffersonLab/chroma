@@ -87,7 +87,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-        <seq_src>PION</seq_src>
+        <seq_src>pion</seq_src>
         <t_sink>7</t_sink>
         <sink_mom>0 0 0</sink_mom>
       </Param>
@@ -123,7 +123,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_PION</seqsource_id>
+        <seqsource_id>seqsource_pion</seqsource_id>
       </NamedObject>
     </elem>
 
@@ -228,7 +228,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
     <elem>
       <annotation>
-       PION seqprop
+       pion seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -260,8 +260,8 @@ Calculate bar3ptfn - insertions in 3-pt functions
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_PION</source_id>
-        <prop_id>seqprop_PION</prop_id>
+        <source_id>seqsource_pion</source_id>
+        <prop_id>seqprop_pion</prop_id>
       </NamedObject>
     </elem>
 
@@ -361,7 +361,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <bar3ptfn_file>bar3ptfn.dat</bar3ptfn_file>
         <seqprops>
           <elem>
-            <seqprop_id>seqprop_PION</seqprop_id>
+            <seqprop_id>seqprop_pion</seqprop_id>
             <gamma_insertion>14</gamma_insertion>
           </elem>
           <elem>

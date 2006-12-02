@@ -1,4 +1,4 @@
-// $Id: inline_sink_smear_s.cc,v 3.2 2006-12-02 18:18:07 edwards Exp $
+// $Id: inline_sink_smear_s.cc,v 3.3 2006-12-02 20:57:02 edwards Exp $
 /*! \file
  * \brief Inline construction of sink_smear
  *
@@ -175,7 +175,6 @@ namespace Chroma
 	  TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(params.named_obj.prop_id);
 	
 	// Snarf the prop info. This is will throw if the prop_id is not there
-	XMLReader prop_file_xml, prop_record_xml;
 	TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
 
