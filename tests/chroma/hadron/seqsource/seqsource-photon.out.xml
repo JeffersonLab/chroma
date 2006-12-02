@@ -204,10 +204,10 @@ Photon sequential source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.19.1</chroma>
+      <chroma>3.20.0</chroma>
       <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>01 Dec 06 22:47:57 EST</run_date>
+    <run_date>01 Dec 06 22:49:03 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -224,16 +224,9 @@ Photon sequential source
       <elem>0</elem>
     </Seed>
   </RNG>
-  <Config_info>
-    <file_xml><gauge>
-      <id>0</id>
-    </gauge>
-
-    </file_xml>
-    <gauge_xml><unit>
+  <Config_info><unit>
 </unit>
 
-    </gauge_xml>
   </Config_info>
   <Observables>
     <w_plaq>1</w_plaq>
@@ -271,10 +264,10 @@ Photon sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.19.1</chroma>
+            <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 22:47:57 EST</run_date>
+          <run_date>01 Dec 06 22:49:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -369,10 +362,10 @@ Photon sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.19.1</chroma>
+            <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 22:47:58 EST</run_date>
+          <run_date>01 Dec 06 22:49:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -459,6 +452,7 @@ Photon sequential source
 
         </Source_file_info>
         <Source_record_info><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -484,14 +478,6 @@ Photon sequential source
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <unit>
 </unit>
@@ -589,10 +575,10 @@ Photon sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.19.1</chroma>
+            <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 22:47:58 EST</run_date>
+          <run_date>01 Dec 06 22:49:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -677,6 +663,7 @@ Photon sequential source
         <Forward_prop_infos>
           <elem>
             <Propagator_info><Propagator>
+      <version>1</version>
       <ForwardProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -701,8 +688,6 @@ Photon sequential source
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </ForwardProp>
-      <StateInfo>
-</StateInfo>
       <PropSource>
         <version>6</version>
         <Source>
@@ -728,14 +713,6 @@ Photon sequential source
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <unit>
 </unit>
@@ -766,10 +743,10 @@ Photon sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.19.1</chroma>
+            <chroma>3.20.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Dec 06 22:47:58 EST</run_date>
+          <run_date>01 Dec 06 22:49:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -854,6 +831,7 @@ Photon sequential source
         <Forward_prop_infos>
           <elem>
             <Propagator_info><Propagator>
+      <version>1</version>
       <ForwardProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -878,8 +856,6 @@ Photon sequential source
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </ForwardProp>
-      <StateInfo>
-</StateInfo>
       <PropSource>
         <version>6</version>
         <Source>
@@ -905,14 +881,6 @@ Photon sequential source
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>11</elem>
-          <elem>0</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <unit>
 </unit>
