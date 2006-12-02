@@ -1,4 +1,4 @@
-// $Id: simple_meson_seqsrc_w.cc,v 3.6 2006-11-28 22:19:13 edwards Exp $
+// $Id: simple_meson_seqsrc_w.cc,v 3.7 2006-12-02 18:16:28 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -507,55 +507,59 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-A0_1"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0"), 
 										      mesA0A01SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-RHO_X_1"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_x_1"), 
 										      mesA0RhoX1SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-RHO_Y_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_y_1"),
 										      mesA0RhoY1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-B1_Z_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1_z"),
 										      mesA0B1Z1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-RHO_Z_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_z_1"),
 										      mesA0RhoZ1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-B1_Y_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1_y"),
 										      mesA01B1Y1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-B1_X_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1_x"),
 										      mesA01B1X1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-PION_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pion_2"),
 										      mesA01Pion2SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-A0_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b0"),
 										      mesA0A02SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-RHO_X_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_x_2"),
 										      mesA0RhoX2SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-RHO_Y_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_y_2"),
 										      mesA0RhoY2SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-A1_Z_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1_z"),
 										      mesA0A1Z1SeqSrc);
        
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-RHO_Z_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_z_2"),
 										      mesA0RhoZ2SeqSrc);
        
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-A1_Y_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1_y"),
 										      mesA0A1Y1SeqSrc);
        
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-A1_X_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1_x"),
 										      mesA0A1X1SeqSrc);
        
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("A0-PION_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pion_1"),
 										      mesA0Pion1SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION_1-PION_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("pion_1-pion_1"),
+										      mesPion1Pion1SeqSrc);
+
+	// keep for historical purposes
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("pion"),
 										      mesPion1Pion1SeqSrc);
 
 	registered = true;

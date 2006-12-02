@@ -1,14 +1,18 @@
-// $Id: deriv_meson_seqsrc_w.cc,v 3.2 2006-11-29 18:45:17 edwards Exp $
+// $Id: deriv_meson_seqsrc_w.cc,v 3.3 2006-12-02 18:16:27 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
 
 #include "meas/hadron/deriv_meson_seqsrc_w.h"
 #include "meas/hadron/seqsource_factory_w.h"
+#include "meas/smear/displace.h"
 
+#include "util/ferm/gammasgn_w.h"
+#include "util/ferm/gamma5_herm_w.h"
 #include "util/ferm/symtensor.h"
 #include "util/ferm/antisymtensor.h"
 #include "util/ferm/etensor.h"
+#include "util/ft/sftmom.h"
 
 namespace Chroma 
 {
@@ -78,33 +82,6 @@ namespace Chroma
     //! Anonymous namespace
     namespace
     {
-
-      //! Private displacement
-      LatticePropagator displacement(const multi1d<LatticeColorMatrix>& u, 
-				     const LatticePropagator& psi, 
-				     int length, int dir)
-      {
-	LatticePropagator chi = psi;
-
-	if (length > 0)
-	{
-	  for(int n = 0; n < length; ++n)
-	  {
-	    LatticePropagator tmp = shift(chi, FORWARD, dir);
-	    chi = u[dir] * tmp;
-	  }
-	}
-	else // If length = or < 0.  If length == 0, does nothing.
-	{
-	  for(int n = 0; n > length; --n)
-	  {
-	    LatticePropagator tmp = shift(adj(u[dir])*chi, BACKWARD, dir);
-	    chi = tmp;
-	  }
-	}
-	return chi;
-      }
-
 
       //-------------------- callback functions ---------------------------------------
 
@@ -421,19 +398,35 @@ namespace Chroma
     }
 
 
-    //! Apply first deriv (nabla) to the right onto source
-    /*!
-     * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
-     *
-     * \return $\f \nabla_\mu Fx,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
-     */
+    //! Apply right nabla
     LatticePropagator 
-    DerivMesonSeqSourceBase::rightNabla(const LatticePropagator& F, 
-					const multi1d<LatticeColorMatrix>& u,
-					int mu) const
+    DerivMesonSeqSourceBase::nabla(const LatticePropagator& F, 
+				   const multi1d<LatticeColorMatrix>& u,
+				   int mu) const
     {
-      return displacement(u, F, getDerivLength(), mu) - displacement(u, F, -getDerivLength(), mu);
+      return Chroma::rightNabla(F, u, mu, getDerivLength());
     }
+
+
+    //! Apply right D
+    LatticePropagator 
+    DerivMesonSeqSourceBase::D(const LatticePropagator& F, 
+			       const multi1d<LatticeColorMatrix>& u,
+			       int mu) const
+    {
+      return Chroma::rightD(F, u, mu, getDerivLength());
+    }
+
+
+    //! Apply right nabla
+    LatticePropagator 
+    DerivMesonSeqSourceBase::B(const LatticePropagator& F, 
+			       const multi1d<LatticeColorMatrix>& u,
+			       int mu) const
+    {
+      return Chroma::rightB(F, u, mu, getDerivLength());
+    }
+
 
     //! Apply left and right "nabla_i" onto the source
     /*!
@@ -442,12 +435,12 @@ namespace Chroma
      * \return $\f \nabla_\mu Fx,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
      */
     LatticePropagator 
-    DerivMesonSeqSourceBase::derivNabla(const LatticePropagator& F, 
-					const multi1d<LatticeColorMatrix>& u,
-					int mu) const
+    DerivMesonSeqSourceBase::threePtNabla(const LatticePropagator& F, 
+					  const multi1d<LatticeColorMatrix>& u,
+					  int mu) const
     {
       LatticeComplex ph = conj(phases());
-      return ph*rightNabla(F, u, mu) + rightNabla(ph*F, u, mu);
+      return ph*nabla(F, u, mu) + nabla(ph*F, u, mu);
     }
 
     //! Apply left and right "D_i" operator onto source
@@ -459,9 +452,9 @@ namespace Chroma
      * \return $\f p*D_\mu F(x,0) + D_\mu (p*F(x,0)) + 2 \sum_{j,k}s_{ijk} \nabla_j (p*\nabla_k F(x,0))\f$
      */
     LatticePropagator 
-    DerivMesonSeqSourceBase::derivD(const LatticePropagator& F,
-				    const multi1d<LatticeColorMatrix>& u,
-				    int mu) const
+    DerivMesonSeqSourceBase::threePtD(const LatticePropagator& F,
+				      const multi1d<LatticeColorMatrix>& u,
+				      int mu) const
     {
       LatticePropagator tmp = zero;
       LatticeComplex ph = conj(phases());
@@ -472,9 +465,9 @@ namespace Chroma
 	{
 	  if (symTensor3d(mu,j,k) != 0)
 	  {
-	    tmp += ph * rightNabla(rightNabla(F,u,j), u, k);
-	    tmp += rightNabla(rightNabla(ph * F,u,j), u, k);
-	    tmp += Real(2)*rightNabla(ph * rightNabla(F,u,j), u, k);
+	    tmp += ph * nabla(nabla(F,u,j), u, k);
+	    tmp += nabla(nabla(ph * F,u,j), u, k);
+	    tmp += Real(2)*nabla(ph * nabla(F,u,j), u, k);
 	  }
 	}
 
@@ -489,9 +482,9 @@ namespace Chroma
      * \return $\f -B_\mu F(x,0)\f$
      */
     LatticePropagator 
-    DerivMesonSeqSourceBase::derivB(const LatticePropagator& F,
-				    const multi1d<LatticeColorMatrix>& u,
-				    int mu) const
+    DerivMesonSeqSourceBase::threePtB(const LatticePropagator& F,
+				      const multi1d<LatticeColorMatrix>& u,
+				      int mu) const
     {
       LatticePropagator tmp = zero;
       LatticeComplex ph = conj(phases());
@@ -501,12 +494,76 @@ namespace Chroma
 	for(int k=0; k < 3; ++k)
 	{
 	  if (antiSymTensor3d(mu,j,k) != 0)
-	    tmp -= Real(antiSymTensor3d(mu,j,k)) * rightNabla(rightNabla(ph*F,u,j), u, k);
+	    tmp -= Real(antiSymTensor3d(mu,j,k)) * nabla(nabla(ph*F,u,j), u, k);
 	}
 
       return tmp;
     }
 
+
+    // Apply left and right "nabla_i" onto the source
+    LatticeComplex
+    DerivMesonSeqSourceBase::twoPtNabla(const LatticePropagator& F, 
+					const multi1d<LatticeColorMatrix>& u,
+					int mu, int g, int insertion) const
+    {
+      LatticePropagator drv = nabla(F,u,mu);
+      LatticeComplex corr_fn = 
+	  trace(gamma5Herm(drv) * Gamma(g) * F   * Gamma(insertion))
+	- trace(gamma5Herm(F)   * Gamma(g) * drv * Gamma(insertion));
+
+      return corr_fn;
+    }
+
+
+    // Apply left and right "D_i" operator onto source
+    LatticeComplex
+    DerivMesonSeqSourceBase::twoPtD(const LatticePropagator& F,
+				    const multi1d<LatticeColorMatrix>& u,
+				    int mu, int g, int insertion) const
+    {
+      LatticePropagator ddd = D(F,u,mu);
+
+      LatticeComplex corr_fn = 
+	  trace(gamma5Herm(ddd)  * Gamma(g) * F   * Gamma(insertion))
+	+ trace(gamma5Herm(F)    * Gamma(g) * ddd * Gamma(insertion));
+
+      // Slow implementation - to speed up could compute once the \nabla_j deriv
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  if (symTensor3d(mu,j,k) != 0)
+	    corr_fn -= Real(2)*trace(gamma5Herm(nabla(F,u,j)) * Gamma(g) * 
+				     nabla(F,u,k) * Gamma(insertion));
+	}
+
+      return corr_fn;
+    }
+
+
+    // Apply left and right "B_i" operator onto source
+    LatticeComplex
+    DerivMesonSeqSourceBase::twoPtB(const LatticePropagator& F,
+				    const multi1d<LatticeColorMatrix>& u,
+				    int mu, int g, int insertion) const
+    {
+      return trace(gamma5Herm(F) * Gamma(g) * B(F,u,mu) * Gamma(insertion));
+    }
+
+
+    // Project onto the fixed sink-momentum and return the 2-pt at the sink
+    Complex 
+    DerivMesonSeqSourceBase::momentumProject(const LatticeComplex& corr_fn) const
+    {
+      // Extract the sink at the appropriate momenta
+      SftMom sft(0, getTSrce(), getSinkMom(), false, getDecayDir());
+      multi2d<DComplex> hsum;
+      hsum = sft.sft(corr_fn);
+
+      END_CODE();
+
+      return hsum[0][getTSink()];
+    }
 
 
     // Construct a0-(PionxNabla_T1) sequential source
@@ -528,11 +585,37 @@ namespace Chroma
 
       // \f$\Gamma_f \equiv \gamma_5\nabla_i\f$
       // \f$\gamma_5 \Gamma_f^\dag \gamma_5\f$
-      fin = Gamma(G5) * derivNabla(tmp,u,params.deriv_dir);
+      fin = Gamma(G5) * threePtNabla(tmp,u,params.deriv_dir);
       
       END_CODE();
 
       return project(fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0PionxNablaT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				       const multi1d<ForwardProp_t>& forward_headers,
+				       const multi1d<LatticePropagator>& quark_propagators,
+				       int insertion)
+    {
+      START_CODE();
+
+      check1Args("MesA0PionxNablaT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator fin;
+      const int G5 = Ns*Ns-1;
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5\nabla_i\f$
+      LatticeComplex corr_fn = twoPtNabla(tmp,u,params.deriv_dir,G5,insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -553,11 +636,34 @@ namespace Chroma
       LatticePropagator tmp = quark_propagators[0];
 
       // \f$\Gamma_f \equiv \nabla_i\f$
-      fin = derivNabla(tmp,u,params.deriv_dir);
+      fin = threePtNabla(tmp,u,params.deriv_dir);
       
       END_CODE();
 
       return project(fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A0xNablaT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
+				     const multi1d<LatticePropagator>& quark_propagators,
+				     int insertion)
+    {
+      START_CODE();
+
+      check1Args("MesA0A0xNablaT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \nabla_i\f$
+      LatticeComplex corr_fn = twoPtNabla(tmp,u,params.deriv_dir,0,insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -578,11 +684,36 @@ namespace Chroma
       LatticePropagator tmp = quark_propagators[0];
       
       // \f$\Gamma_f \equiv \gamma_4 \nabla_i\f$
-      fin = Gamma(1 << 3) * derivNabla(tmp,u,params.deriv_dir);
+      fin = Gamma(1 << 3) * threePtNabla(tmp,u,params.deriv_dir);
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A02xNablaT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				      const multi1d<ForwardProp_t>& forward_headers,
+				      const multi1d<LatticePropagator>& quark_propagators,
+				      int insertion)
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+
+      check1Args("MesA0A02xNablaT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+      
+      // \f$\Gamma_f \equiv \gamma_4 \nabla_i\f$
+      LatticeComplex corr_fn = twoPtNabla(tmp,u,params.deriv_dir, 1<<3, insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -603,11 +734,37 @@ namespace Chroma
 
       // \f$\Gamma_f \equiv \gamma_i\nabla_i\f$
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * derivNabla(tmp,u,k);
+	fin += Gamma(1 << k) * threePtNabla(tmp,u,k);
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0RhoxNablaA1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				      const multi1d<ForwardProp_t>& forward_headers,
+				      const multi1d<LatticePropagator>& quark_propagators,
+				      int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+
+      check1Args("MesA0RhoxNablaA1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_i\nabla_i\f$
+      for(int k=0; k < 3; ++k)
+	corr_fn += twoPtNabla(tmp,u,k, 1<<k, insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -632,12 +789,43 @@ namespace Chroma
 	{
 	  int a = antiSymTensor3d(params.deriv_dir,j,k);
 	  if (a != 0)
-	    fin += Real(a) * (Gamma(1 << j) * derivNabla(tmp,u,k));
+	    fin += Real(a) * (Gamma(1 << j) * threePtNabla(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0RhoxNablaT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				      const multi1d<ForwardProp_t>& forward_headers,
+				      const multi1d<LatticePropagator>& quark_propagators,
+				      int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+
+      check1Args("MesA0RhoxNablaT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int a = antiSymTensor3d(params.deriv_dir,j,k);
+	  if (a != 0)
+	    corr_fn += Real(a) * twoPtNabla(tmp,u,k, 1<<j, insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -662,12 +850,43 @@ namespace Chroma
 	{
 	  int s = symTensor3d(params.deriv_dir,j,k);
 	  if (s != 0)
-	    fin += Real(s) * (Gamma(1 << j) * derivNabla(tmp,u,k));
+	    fin += Real(s) * (Gamma(1 << j) * threePtNabla(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0RhoxNablaT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				      const multi1d<ForwardProp_t>& forward_headers,
+				      const multi1d<LatticePropagator>& quark_propagators,
+				      int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+
+      check1Args("MesA0RhoxNablaT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv s_{ijk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int s = symTensor3d(params.deriv_dir,j,k);
+	  if (s != 0)
+	    corr_fn += Real(s) * twoPtNabla(tmp,u,k, 1<<j, insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -689,11 +908,38 @@ namespace Chroma
 
       // \f$\Gamma_f \equiv \gamma_5\gamma_i \nabla_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * derivNabla(tmp,u,k);
+	fin += Gamma(1 << k) * threePtNabla(tmp,u,k);
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xNablaA1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
+				     const multi1d<LatticePropagator>& quark_propagators,
+				     int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xNablaA1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5\gamma_i \nabla_i\f$  
+      for(int k=0; k < 3; ++k)
+	corr_fn += gammaSgn(G5,1<<k) * twoPtNabla(tmp,u,k, G5^(1<<k), insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -719,12 +965,44 @@ namespace Chroma
 	{
 	  int s = symTensor3d(params.deriv_dir,j,k);
 	  if (s != 0)
-	    fin += Real(s) * (Gamma(1 << j) * derivNabla(tmp,u,k));
+	    fin += Real(s) * (Gamma(1 << j) * threePtNabla(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xNablaT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
+				     const multi1d<LatticePropagator>& quark_propagators,
+				     int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xNablaT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int s = symTensor3d(params.deriv_dir,j,k);
+	  if (s != 0)
+	    corr_fn += Real(s) * gammaSgn(G5,1<<j) * twoPtNabla(tmp,u,k,G5^(1<<j),insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -750,12 +1028,44 @@ namespace Chroma
 	{
 	  int e = ETensor3d(params.deriv_dir,j,k);
 	  if (e != 0)
-	    fin += Real(e) * (Gamma(1 << j) * derivNabla(tmp,u,k));
+	    fin += Real(e) * (Gamma(1 << j) * threePtNabla(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xNablaESeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				    const multi1d<ForwardProp_t>& forward_headers,
+				    const multi1d<LatticePropagator>& quark_propagators,
+				    int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xNablaESeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int e = ETensor3d(params.deriv_dir,j,k);
+	  if (e != 0)
+	    corr_fn += Real(e) * gammaSgn(G5,1<<j) * twoPtNabla(tmp,u,k,G5^(1<<j),insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -781,12 +1091,45 @@ namespace Chroma
 	{
 	  int a = antiSymTensor3d(params.deriv_dir,j,k);
 	  if (a != 0)
-	    fin += Real(a) * (Gamma(1 << j) * derivNabla(tmp,u,k));
+	    fin += Real(a) * (Gamma(1 << j) * threePtNabla(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(-(Gamma(1 << 3) * (Gamma(G5) * fin)));
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0B1xNablaT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				     const multi1d<ForwardProp_t>& forward_headers,
+				     const multi1d<LatticePropagator>& quark_propagators,
+				     int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0B1xNablaT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5\epsilon_{ijk}\gamma_j \nabla_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int a = antiSymTensor3d(params.deriv_dir,j,k);
+	  if (a != 0)
+	    corr_fn += Real(a) * gammaSgn(1<<3,G5) * gammaSgn((1<<3)^G5,1<<j) * 
+	      twoPtNabla(tmp,u,k,(1<<3)^G5^(1<<j),insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -806,11 +1149,34 @@ namespace Chroma
       LatticePropagator tmp = quark_propagators[0];
 
       // \f$\Gamma_f \equiv \gamma_4 D_i\f$  
-      fin = Gamma(1 << 3) * derivD(tmp,u,params.deriv_dir);
+      fin = Gamma(1 << 3) * threePtD(tmp,u,params.deriv_dir);
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A02xDT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				  const multi1d<ForwardProp_t>& forward_headers,
+				  const multi1d<LatticePropagator>& quark_propagators,
+				  int insertion)
+    {
+      START_CODE();
+
+      check1Args("MesA0A02xDT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_4 D_i\f$  
+      LatticeComplex corr_fn = twoPtD(tmp,u,params.deriv_dir,1<<3,insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -832,11 +1198,38 @@ namespace Chroma
 
       // \f$\Gamma_f \equiv \gamma_5\gamma_i D_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * derivD(tmp,u,k);
+	fin += Gamma(1 << k) * threePtD(tmp,u,k);
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xDA2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xDA2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5\gamma_i D_i\f$  
+      for(int k=0; k < 3; ++k)
+	corr_fn += gammaSgn(G5,1<<k) * twoPtD(tmp,u,k,G5^(1<<k),insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -862,12 +1255,44 @@ namespace Chroma
 	{
 	  int e = ETensor3d(params.deriv_dir,j,k);
 	  if (e != 0)
-	    fin += Real(e) * (Gamma(1 << j) * derivD(tmp,u,k));
+	    fin += Real(e) * (Gamma(1 << j) * threePtD(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xDESeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				const multi1d<ForwardProp_t>& forward_headers,
+				const multi1d<LatticePropagator>& quark_propagators,
+				int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xDESeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int e = ETensor3d(params.deriv_dir,j,k);
+	  if (e != 0)
+	    corr_fn += Real(e) * gammaSgn(G5,1<<j) * twoPtD(tmp,u,k,G5^(1<<j),insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -893,7 +1318,7 @@ namespace Chroma
 	{
 	  int s = symTensor3d(params.deriv_dir,j,k);
 	  if (s != 0)
-	    fin += Real(s) * (Gamma(1 << j) * derivD(tmp,u,k));
+	    fin += Real(s) * (Gamma(1 << j) * threePtD(tmp,u,k));
 	}
       
       END_CODE();
@@ -902,6 +1327,38 @@ namespace Chroma
     }
 
     
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xDT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xDT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int s = symTensor3d(params.deriv_dir,j,k);
+	  if (s != 0)
+	    corr_fn += Real(s) * gammaSgn(G5,1<<j) * twoPtD(tmp,u,k,G5^(1<<j),insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
+    }
+
+
     // Construct a0-(A1xD_T2) sequential source
     LatticePropagator
     MesA0A1xDT2SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
@@ -924,12 +1381,44 @@ namespace Chroma
 	{
 	  int a = antiSymTensor3d(params.deriv_dir,j,k);
 	  if (a != 0)
-	    fin += Real(a) * (Gamma(1 << j) * derivD(tmp,u,k));
+	    fin += Real(a) * (Gamma(1 << j) * threePtD(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xDT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xDT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int a = antiSymTensor3d(params.deriv_dir,j,k);
+	  if (a != 0)
+	    corr_fn += Real(a) * gammaSgn(G5,1<<j) * twoPtD(tmp,u,k,G5^(1<<j),insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -951,11 +1440,39 @@ namespace Chroma
 
       // \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i D_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * derivD(tmp,u,k);
+	fin += Gamma(1 << k) * threePtD(tmp,u,k);
 
       END_CODE();
 
       return project(-(Gamma(1 << 3) * (Gamma(G5) * fin)));
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0B1xDA2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0B1xDA2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i D_i\f$  
+      for(int k=0; k < 3; ++k)
+	corr_fn += gammaSgn(1<<3,G5) * gammaSgn((1<<3)^G5,1<<k) * 
+	  twoPtD(tmp,u,k,(1<<3)^G5^(1<<k),insertion);
+
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -981,12 +1498,45 @@ namespace Chroma
 	{
 	  int e = ETensor3d(params.deriv_dir,j,k);
 	  if (e != 0)
-	    fin += Real(e) * (Gamma(1 << j) * derivD(tmp,u,k));
+	    fin += Real(e) * (Gamma(1 << j) * threePtD(tmp,u,k));
 	}
 
       END_CODE();
 
       return project(-(Gamma(1 << 3) * (Gamma(G5) * fin)));
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0B1xDESeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				const multi1d<ForwardProp_t>& forward_headers,
+				const multi1d<LatticePropagator>& quark_propagators,
+				int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0B1xDESeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+ 
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int e = ETensor3d(params.deriv_dir,j,k);
+	  if (e != 0)
+	    corr_fn += Real(e) * gammaSgn(1<<3,G5) * gammaSgn((1<<3)^G5,1<<j) * 
+	      twoPtD(tmp,u,k,(1<<3)^G5^(1<<j),insertion);
+	}
+
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1012,12 +1562,45 @@ namespace Chroma
 	{
 	  int s = symTensor3d(params.deriv_dir,j,k);
 	  if (s != 0)
-	    fin += Real(s) * (Gamma(1 << j) * derivD(tmp,u,k));
+	    fin += Real(s) * (Gamma(1 << j) * threePtD(tmp,u,k));
 	}
 
       END_CODE();
 
       return project(-(Gamma(1 << 3) * (Gamma(G5) * fin)));
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0B1xDT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0B1xDT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int s = symTensor3d(params.deriv_dir,j,k);
+	  if (s != 0)
+	    corr_fn += Real(s) * gammaSgn(1<<3,G5) * gammaSgn((1<<3)^G5,1<<j) * 
+	      twoPtD(tmp,u,k,(1<<3)^G5^(1<<j),insertion);
+	}
+
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1043,12 +1626,45 @@ namespace Chroma
 	{
 	  int a = antiSymTensor3d(params.deriv_dir,j,k);
 	  if (a != 0)
-	    fin += Real(a) * (Gamma(1 << j) * derivD(tmp,u,k));
+	    fin += Real(a) * (Gamma(1 << j) * threePtD(tmp,u,k));
 	}
 
       END_CODE();
 
       return project(-(Gamma(1 << 3) * (Gamma(G5) * fin)));
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0B1xDT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0B1xDT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 \epsilon_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int a = antiSymTensor3d(params.deriv_dir,j,k);
+	  if (a != 0)
+	    corr_fn += Real(a) * gammaSgn(1<<3,G5) * gammaSgn((1<<3)^G5,1<<j) * 
+	      twoPtD(tmp,u,k,(1<<3)^G5^(1<<j),insertion);
+	}
+
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1070,11 +1686,38 @@ namespace Chroma
 
       // \f$\Gamma_f \equiv \gamma_i D_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * derivD(tmp,u,k);
+	fin += Gamma(1 << k) * threePtD(tmp,u,k);
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0RhoxDA2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				  const multi1d<ForwardProp_t>& forward_headers,
+				  const multi1d<LatticePropagator>& quark_propagators,
+				  int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0RhoxDA2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_i D_i\f$  
+      for(int k=0; k < 3; ++k)
+	corr_fn += twoPtD(tmp,u,k, 1<<k, insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1100,12 +1743,44 @@ namespace Chroma
 	{
 	  int s = symTensor3d(params.deriv_dir,j,k);
 	  if (s != 0)
-	    fin += Real(s) * (Gamma(1 << j) * derivD(tmp,u,k));
+	    fin += Real(s) * (Gamma(1 << j) * threePtD(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0RhoxDT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				  const multi1d<ForwardProp_t>& forward_headers,
+				  const multi1d<LatticePropagator>& quark_propagators,
+				  int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0RhoxDT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int s = symTensor3d(params.deriv_dir,j,k);
+	  if (s != 0)
+	    corr_fn += Real(s) * twoPtD(tmp,u,k, 1<<j, insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1131,12 +1806,44 @@ namespace Chroma
 	{
 	  int a = antiSymTensor3d(params.deriv_dir,j,k);
 	  if (a != 0)
-	    fin += Real(a) * (Gamma(1 << j) * derivD(tmp,u,k));
+	    fin += Real(a) * (Gamma(1 << j) * threePtD(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0RhoxDT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				  const multi1d<ForwardProp_t>& forward_headers,
+				  const multi1d<LatticePropagator>& quark_propagators,
+				  int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0RhoxDT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j D_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int a = antiSymTensor3d(params.deriv_dir,j,k);
+	  if (a != 0)
+	    corr_fn += Real(a) * twoPtD(tmp,u,k, 1<<j, insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1157,7 +1864,7 @@ namespace Chroma
       LatticePropagator tmp = quark_propagators[0];
 
       // \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
-      fin = Gamma(1 << 3) * (Gamma(G5) * derivD(tmp,u,params.deriv_dir));
+      fin = Gamma(1 << 3) * (Gamma(G5) * threePtD(tmp,u,params.deriv_dir));
       
       END_CODE();
 
@@ -1165,6 +1872,31 @@ namespace Chroma
     }
 
  
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0PionxDT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& quark_propagators,
+				   int insertion)
+    {
+      START_CODE();
+
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0PionxDT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
+      LatticeComplex corr_fn = gammaSgn(1<<3,G5) * twoPtD(tmp,u,params.deriv_dir,(1<<3)^G5,insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
+    }
+
+
     //! Construct a0-(PionxB_T1) sequential source
     LatticePropagator
     MesA0PionxBT1SeqSrc::operator()(const multi1d<LatticeColorMatrix>& u,
@@ -1182,11 +1914,36 @@ namespace Chroma
       LatticePropagator tmp = quark_propagators[0];
 
       // \f$\Gamma_f \equiv \gamma_5 B_i\f$  
-      fin = Gamma(G5) * derivB(tmp,u,params.deriv_dir);
+      fin = Gamma(G5) * threePtB(tmp,u,params.deriv_dir);
       
       END_CODE();
 
       return project(fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0PionxBT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& quark_propagators,
+				   int insertion)
+    {
+      START_CODE();
+
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0PionxBT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5 B_i\f$  
+      LatticeComplex corr_fn = twoPtB(tmp,u,params.deriv_dir, G5, insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1212,12 +1969,44 @@ namespace Chroma
 	{
 	  int a = antiSymTensor3d(params.deriv_dir,j,k);
 	  if (a != 0)
-	    fin += Real(a) * (Gamma(1 << j) * derivB(tmp,u,k));
+	    fin += Real(a) * (Gamma(1 << j) * threePtB(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0RhoxBT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				  const multi1d<ForwardProp_t>& forward_headers,
+				  const multi1d<LatticePropagator>& quark_propagators,
+				  int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0RhoxBT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j B_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int a = antiSymTensor3d(params.deriv_dir,j,k);
+	  if (a != 0)
+	    corr_fn += Real(a) * twoPtB(tmp,u,k, 1<<j, insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1243,12 +2032,44 @@ namespace Chroma
 	{
 	  int s = symTensor3d(params.deriv_dir,j,k);
 	  if (s != 0)
-	    fin += Real(s) * (Gamma(1 << j) * derivB(tmp,u,k));
+	    fin += Real(s) * (Gamma(1 << j) * threePtB(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(-fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0RhoxBT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				  const multi1d<ForwardProp_t>& forward_headers,
+				  const multi1d<LatticePropagator>& quark_propagators,
+				  int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0RhoxBT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv s_{ijk}\gamma_j B_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int s = symTensor3d(params.deriv_dir,j,k);
+	  if (s != 0)
+	    corr_fn += Real(s) * twoPtB(tmp,u,k, 1<<j, insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1270,11 +2091,38 @@ namespace Chroma
 
       // \f$\Gamma_f \equiv \gamma_5 \gamma_i B_i\f$  
       for(int k=0; k < 3; ++k)
-	fin += Gamma(1 << k) * derivB(tmp,u,k);
+	fin += Gamma(1 << k) * threePtB(tmp,u,k);
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xBA1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xBA1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5 \gamma_i B_i\f$  
+      for(int k=0; k < 3; ++k)
+	corr_fn += gammaSgn(G5,1<<k) * twoPtB(tmp,u,k, G5^(1<<k), insertion);
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1300,12 +2148,44 @@ namespace Chroma
 	{
 	  int a = antiSymTensor3d(params.deriv_dir,j,k);
 	  if (a != 0)
-	    fin += Real(a) * (Gamma(1 << j) * derivB(tmp,u,k));
+	    fin += Real(a) * (Gamma(1 << j) * threePtB(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xBT1SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xBT1SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j B_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int a = antiSymTensor3d(params.deriv_dir,j,k);
+	  if (a != 0)
+	    corr_fn += Real(a) * gammaSgn(G5,1<<j) * twoPtB(tmp,u,k, G5^(1<<j), insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1331,12 +2211,44 @@ namespace Chroma
 	{
 	  int s = symTensor3d(params.deriv_dir,j,k);
 	  if (s != 0)
-	    fin += Real(s) * (Gamma(1 << j) * derivB(tmp,u,k));
+	    fin += Real(s) * (Gamma(1 << j) * threePtB(tmp,u,k));
 	}
       
       END_CODE();
 
       return project(Gamma(G5) * fin);
+    }
+
+
+    // Compute the 2-pt at the sink
+    Complex 
+    MesA0A1xBT2SeqSrc::twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				 const multi1d<ForwardProp_t>& forward_headers,
+				 const multi1d<LatticePropagator>& quark_propagators,
+				 int insertion)
+    {
+      START_CODE();
+
+      LatticeComplex corr_fn = zero;
+      int G5 = Ns*Ns-1;
+
+      check1Args("MesA0A1xBT2SeqSrc", quark_propagators);
+      setTSrce(forward_headers);
+
+      LatticePropagator tmp = quark_propagators[0];
+
+      // \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j B_k\f$  
+      for(int j=0; j < 3; ++j)
+	for(int k=0; k < 3; ++k)
+	{
+	  int s = symTensor3d(params.deriv_dir,j,k);
+	  if (s != 0)
+	    corr_fn += Real(s) * gammaSgn(G5,1<<j) * twoPtB(tmp,u,k, G5^(1<<j), insertion);
+	}
+      
+      END_CODE();
+
+      return momentumProject(corr_fn);
     }
 
 
@@ -1448,7 +2360,3 @@ namespace Chroma
   }  // end namespace DerivMesonSeqSourceEnv
 
 }  // end namespace Chroma
-
-
-
-  

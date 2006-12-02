@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_meson_seqsrc_w.h,v 3.2 2006-11-28 19:28:57 edwards Exp $
+// $Id: deriv_meson_seqsrc_w.h,v 3.3 2006-12-02 18:16:28 edwards Exp $
 /*! \file
  *  \brief Construct derivative meson sequential sources.
  *
@@ -86,22 +86,26 @@ namespace Chroma
       virtual Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
 				const multi1d<ForwardProp_t>& forward_headers,
 				const multi1d<LatticePropagator>& forward_props,
-				int gamma_insertion)
-	{
-	  QDPIO::cerr << __func__ << ": not implemented" << endl;
-	  QDP_abort(1);
-	}
+				int gamma_insertion) = 0;
 
     protected:
+      //! Get deriv_length
+      virtual int getDerivLength() const = 0;
+
       //! Apply first deriv (nabla) to the right onto source
-      /*!
-       * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
-       *
-       * \return $\f \nabla_\mu F(x,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
-       */
-      virtual LatticePropagator rightNabla(const LatticePropagator& forward_prop,
-					   const multi1d<LatticeColorMatrix>& u,
-					   int mu) const;
+      virtual LatticePropagator nabla(const LatticePropagator& forward_prop,
+				      const multi1d<LatticeColorMatrix>& u,
+				      int mu) const;
+      
+      //! Apply right "D_i" operator onto source
+      virtual LatticePropagator D(const LatticePropagator& forward_prop,
+				  const multi1d<LatticeColorMatrix>& u,
+				  int mu) const;
+      
+      //! Apply right "B_i" operator onto source
+      virtual LatticePropagator B(const LatticePropagator& forward_prop,
+				  const multi1d<LatticeColorMatrix>& u,
+				  int mu) const;
       
       //! Apply left and right "nabla_i" onto the source
       /*!
@@ -109,9 +113,9 @@ namespace Chroma
        *
        * \return $\f \nabla_\mu F(x,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
        */
-      virtual LatticePropagator derivNabla(const LatticePropagator& forward_prop,
-					   const multi1d<LatticeColorMatrix>& u,
-					   int mu) const;
+      virtual LatticePropagator threePtNabla(const LatticePropagator& forward_prop,
+					     const multi1d<LatticeColorMatrix>& u,
+					     int mu) const;
       
       //! Apply left and right "D_i" operator onto source
       /*!
@@ -121,9 +125,9 @@ namespace Chroma
        * 
        * \return $\f D_\mu F(x,0\f$
        */
-      virtual LatticePropagator derivD(const LatticePropagator& forward_prop,
-				       const multi1d<LatticeColorMatrix>& u,
-				       int mu) const;
+      virtual LatticePropagator threePtD(const LatticePropagator& forward_prop,
+					 const multi1d<LatticeColorMatrix>& u,
+					 int mu) const;
       
       //! Apply left and right "B_i" operator onto source
       /*!
@@ -131,12 +135,44 @@ namespace Chroma
        *
        * \return $\fB_\mu F(z,0)\f$
        */
-      virtual LatticePropagator derivB(const LatticePropagator& forward_prop,
-				       const multi1d<LatticeColorMatrix>& u,
-				       int mu) const;
+      virtual LatticePropagator threePtB(const LatticePropagator& forward_prop,
+					 const multi1d<LatticeColorMatrix>& u,
+					 int mu) const;
 
-      //! Get deriv_length
-      virtual int getDerivLength() const = 0;
+      //! Apply left and right "nabla_i" onto the source
+      /*!
+       * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
+       *
+       * \return $\f \nabla_\mu F(x,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
+       */
+      virtual LatticeComplex twoPtNabla(const LatticePropagator& forward_prop,
+					const multi1d<LatticeColorMatrix>& u,
+					int mu, int g, int gamma_insertion) const;
+      
+      //! Apply left and right "D_i" operator onto source
+      /*!
+       * \f$D_i = s_{ijk}\nabla_j\nabla_k\f$
+       *
+       * where  \f$s_{ijk} = +1 \quad\forall i\ne j, j\ne k, i \ne k\f$
+       * 
+       * \return $\f D_\mu F(x,0\f$
+       */
+      virtual LatticeComplex twoPtD(const LatticePropagator& forward_prop,
+				    const multi1d<LatticeColorMatrix>& u,
+				    int mu, int g, int gamma_insertion) const;
+      
+      //! Apply left and right "B_i" operator onto source
+      /*!
+       * \f$B_i = \epsilon_{ijk}\nabla_j\nabla_k\f$
+       *
+       * \return $\fB_\mu F(z,0)\f$
+       */
+      virtual LatticeComplex twoPtB(const LatticePropagator& forward_prop,
+				    const multi1d<LatticeColorMatrix>& u,
+				    int mu, int g, int insertion) const;
+
+      //! Project onto the fixed sink-momentum and return the 2-pt at the sink
+      virtual Complex momentumProject(const LatticeComplex& corr_fn) const;
     };
 
 
@@ -162,6 +198,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -214,6 +256,11 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -265,6 +312,11 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -316,6 +368,11 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -366,6 +423,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -418,6 +481,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -468,6 +537,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -520,6 +595,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -570,6 +651,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -622,6 +709,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -672,6 +765,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -724,6 +823,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -774,6 +879,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -826,6 +937,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -876,6 +993,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -928,6 +1051,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -977,6 +1106,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -1029,6 +1164,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -1079,6 +1220,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -1131,6 +1278,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -1181,6 +1334,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -1233,6 +1392,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -1283,6 +1448,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -1335,6 +1506,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -1385,6 +1562,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -1437,6 +1620,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -1487,6 +1676,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce
@@ -1539,6 +1734,12 @@ namespace Chroma
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
 
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
     protected:
       //! Set t_srce
       multi1d<int>& getTSrce() {return t_srce;}
@@ -1589,6 +1790,12 @@ namespace Chroma
       LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
 				   const multi1d<ForwardProp_t>& forward_headers,
 				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
 
     protected:
       //! Set t_srce

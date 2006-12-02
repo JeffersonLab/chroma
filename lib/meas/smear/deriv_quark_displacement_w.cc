@@ -1,4 +1,4 @@
-// $Id: deriv_quark_displacement_w.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
+// $Id: deriv_quark_displacement_w.cc,v 3.3 2006-12-02 18:16:28 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -8,6 +8,7 @@
 #include "meas/smear/deriv_quark_displacement_w.h"
 #include "meas/smear/quark_displacement_factory.h"
 #include "meas/smear/quark_displacement_aggregate.h"
+#include "meas/smear/displace.h"
 
 #include "util/ferm/symtensor.h"
 #include "util/ferm/antisymtensor.h"
@@ -77,106 +78,6 @@ namespace Chroma
 	return is;
       }
 
-
-      //! Private displacement
-      LatticePropagator displacement(const multi1d<LatticeColorMatrix>& u, 
-				     const LatticePropagator& psi, 
-				     int length, int dir)
-      {
-	if (dir < 0 || dir >= Nd)
-	{
-	  QDPIO::cerr << __func__ << ": invalid direction: dir=" << dir << endl;
-	  QDP_abort(1);
-	}
-
-	LatticePropagator chi = psi;
-
-	if (length > 0)
-	{
-	  for(int n = 0; n < length; ++n)
-	  {
-	    LatticePropagator tmp = shift(chi, FORWARD, dir);
-	    chi = u[dir] * tmp;
-	  }
-	}
-	else // If length = or < 0.  If length == 0, does nothing.
-	{
-	  for(int n = 0; n > length; --n)
-	  {
-	    LatticePropagator tmp = shift(adj(u[dir])*chi, BACKWARD, dir);
-	    chi = tmp;
-	  }
-	}
-	return chi;
-      }
-
-
-      //! Apply first deriv to the right onto source
-      /*!
-       * \ingroup sources
-       *
-       * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
-       *
-       * \return $\f \nabla_\mu F(x)\f$
-       */
-      LatticePropagator rightNabla(const LatticePropagator& F, 
-				   const multi1d<LatticeColorMatrix>& u,
-				   int mu, int length)
-      {
-	return displacement(u, F, length, mu) - displacement(u, F, -length, mu);
-      }
-
-      //! Apply "D_i" operator to the right onto source
-      /*!
-       * \ingroup sources
-       *
-       * \f$D_i = s_{ijk}\nabla_j\nabla_k\f$
-       *
-       * where  \f$s_{ijk} = +1 \quad\forall i\ne j, j\ne k, i \ne k\f$
-       * 
-       * \return $\f F(z,0) D_\mu\f$
-       */
-      LatticePropagator rightD(const LatticePropagator& F,
-			       const multi1d<LatticeColorMatrix>& u,
-			       int mu, int length)
-      {
-	LatticePropagator tmp = zero;
-
-	// Slow implementation - to speed up could compute once the \nabla_j deriv
-	for(int j=0; j < 3; ++j)
-	  for(int k=0; k < 3; ++k)
-	  {
-	    if (symTensor3d(mu,j,k) != 0)
-	      tmp += rightNabla(rightNabla(F,u,j,length), u,k,length);
-	  }
-
-	return tmp;
-      }
-
-      //! Apply "B_i" operator to the right onto source
-      /*!
-       * \ingroup sources
-       *
-       * \f$B_i = \epsilon_{ijk}\nabla_j\nabla_k\f$
-       *
-       * \return $\f F(z,0) B_\mu\f$
-       */
-      LatticePropagator rightB(const LatticePropagator& F,
-			       const multi1d<LatticeColorMatrix>& u,
-			       int mu, int length)
-      {
-	LatticePropagator tmp = zero;
-
-	// Slow implementation - to speed up could compute once the \nabla_j deriv
-	for(int j=0; j < 3; ++j)
-	  for(int k=0; k < 3; ++k)
-	  {
-	    if (antiSymTensor3d(mu,j,k) != 0)
-	      tmp += Real(antiSymTensor3d(mu,j,k)) * rightNabla(rightNabla(F,u,j,length), u,k,length);
-	  }
-
-	return tmp;
-      }
 
 
 
