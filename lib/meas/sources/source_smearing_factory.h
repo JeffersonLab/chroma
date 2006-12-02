@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: source_smearing_factory.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: source_smearing_factory.h,v 3.1 2006-12-02 04:09:41 edwards Exp $
 /*! \file
  *  \brief Factory for producing quark smearing objects
  */
@@ -25,6 +25,19 @@ namespace Chroma
 							  const multi1d<LatticeColorMatrix>&),
 		  StringFactoryError> >
   ThePropSourceSmearingFactory;
+
+
+  //! Propagator source smearing factory (foundry)
+  /*! @ingroup sources */
+  typedef SingletonHolder< 
+    ObjectFactory<QuarkSourceSink<LatticeStaggeredPropagator>, 
+		  std::string,
+		  TYPELIST_3(XMLReader&, const std::string&, const multi1d<LatticeColorMatrix>&),
+		  QuarkSourceSink<LatticeStaggeredPropagator>* (*)(XMLReader&,
+								   const std::string&,
+								   const multi1d<LatticeColorMatrix>&),
+		  StringFactoryError> >
+  TheStagPropSourceSmearingFactory;
 
 
   //! Propagator source smearing factory (foundry)

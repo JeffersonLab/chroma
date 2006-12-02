@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 3.6 2006-09-20 20:28:04 edwards Exp $
+// $Id: sh_source_smearing.cc,v 3.7 2006-12-02 04:09:41 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -45,6 +45,22 @@ namespace Chroma
     namespace
     {
       //! Callback function
+      QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
+						     const std::string& path,
+						     const multi1d<LatticeColorMatrix>& u)
+      {
+	return new SourceSmearing<LatticePropagator>(Params(xml_in, path), u);
+      }
+
+      //! Callback function
+      QuarkSourceSink<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								  const std::string& path,
+								  const multi1d<LatticeColorMatrix>& u)
+      {
+	return new SourceSmearing<LatticeStaggeredPropagator>(Params(xml_in, path), u);
+      }
+
+      //! Callback function
       QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
 						  const multi1d<LatticeColorMatrix>& u)
@@ -68,6 +84,8 @@ namespace Chroma
 	success &= LinkSmearingEnv::registerAll();
 	success &= QuarkSmearingEnv::registerAll();
 	success &= QuarkDisplacementEnv::registerAll();
+	success &= Chroma::ThePropSourceSmearingFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheStagPropSourceSmearingFactory::Instance().registerObject(name, createStagProp);
 	success &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
 	registered = true;
       }
@@ -174,6 +192,135 @@ namespace Chroma
 
       pop(xml);
     }
+
+
+    //! Smear the source
+    template<>
+    void
+    SourceSmearing<LatticePropagator>::operator()(LatticePropagator& quark_source) const
+    {
+//      QDPIO::cout << "Shell source smearing" << endl;
+ 
+      try
+      {
+	//
+	// Create the quark smearing object
+	//
+	std::istringstream  xml_s(params.quark_smearing.xml);
+	XMLReader  smeartop(xml_s);
+	const string smear_path = "/SmearingParam";
+	
+	Handle< QuarkSmearing<LatticePropagator> >
+	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing.id,
+									smeartop,
+									smear_path));
+
+	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.quark_displacement.xml);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+	
+	Handle< QuarkDisplacement<LatticePropagator> >
+	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
+										displacetop,
+										displace_path));
+
+	// Smear and displace
+	if (params.quark_smear_lastP)
+	{
+	  // Smear the colour source
+	  // displace the point source first, then smear
+	  // displacement has to be taken along negative direction.
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
+
+	  // do the smearing
+	  (*quarkSmearing)(quark_source, u_smr);
+	}
+	else
+	{
+	  // do the smearing
+	  (*quarkSmearing)(quark_source, u_smr);
+
+	  // Smear the colour source
+	  // smear the point source first, then displace
+	  // displacement has to be taken along negative direction.
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
+	}
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDP_abort(1);
+      }
+    }
+
+
+
+
+    //! Smear the source
+    template<>
+    void
+    SourceSmearing<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark_source) const
+    {
+//      QDPIO::cout << "Shell source smearing" << endl;
+ 
+      try
+      {
+	//
+	// Create the quark smearing object
+	//
+	std::istringstream  xml_s(params.quark_smearing.xml);
+	XMLReader  smeartop(xml_s);
+	const string smear_path = "/SmearingParam";
+	
+	Handle< QuarkSmearing<LatticeStaggeredPropagator> >
+	  quarkSmearing(TheStagPropSmearingFactory::Instance().createObject(params.quark_smearing.id,
+									    smeartop,
+									    smear_path));
+
+	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.quark_displacement.xml);
+	XMLReader  displacetop(xml_d);
+	const string displace_path = "/Displacement";
+	
+	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
+	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
+										    displacetop,
+										    displace_path));
+
+	// Smear and displace
+	if (params.quark_smear_lastP)
+	{
+	  // Smear the colour source
+	  // displace the point source first, then smear
+	  // displacement has to be taken along negative direction.
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
+
+	  // do the smearing
+	  (*quarkSmearing)(quark_source, u_smr);
+	}
+	else
+	{
+	  // do the smearing
+	  (*quarkSmearing)(quark_source, u_smr);
+
+	  // Smear the colour source
+	  // smear the point source first, then displace
+	  // displacement has to be taken along negative direction.
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
+	}
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDP_abort(1);
+      }
+    }
+
 
 
     //! Smear the source
