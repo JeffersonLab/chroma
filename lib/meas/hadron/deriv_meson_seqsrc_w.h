@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_meson_seqsrc_w.h,v 3.4 2006-12-03 17:41:52 edwards Exp $
+// $Id: deriv_meson_seqsrc_w.h,v 3.5 2006-12-03 20:33:38 edwards Exp $
 /*! \file
  *  \brief Construct derivative meson sequential sources.
  *
@@ -176,7 +176,116 @@ namespace Chroma
     };
 
 
+    //--------------------------------------------------------------------------------------------
+    //! Base class for meson deriv-sequential source construction
+    /*! @ingroup hadron
+     */
+    class DerivMesonSeqSourceBaseNoDir : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Default destructor
+      DerivMesonSeqSourceBaseNoDir(const Params& p) : params(p) {}
 
+      //! Default destructor
+      virtual ~DerivMesonSeqSourceBaseNoDir() {}
+
+      //! Construct the source
+      virtual LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+					   const multi1d<ForwardProp_t>& forward_headers,
+					   const multi1d<LatticePropagator>& forward_props) = 0;
+
+      //! Compute the 2-pt at the sink
+      virtual Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				const multi1d<ForwardProp_t>& forward_headers,
+				const multi1d<LatticePropagator>& forward_props,
+				int gamma_insertion) = 0;
+
+    protected:
+      //! Set t_srce
+      virtual multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      virtual const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      virtual int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      virtual const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+      
+      //! Get decay_dir
+      virtual const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      virtual int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      DerivMesonSeqSourceBaseNoDir() {}
+
+    private:
+      multi1d<int>  t_srce;   /*!< Must come from propagator headers */
+      Params        params;   /*!< Seqsource params */
+    };
+
+
+
+    //! Base class for meson deriv-sequential source construction
+    /*! @ingroup hadron
+     */
+    class DerivMesonSeqSourceBaseDir : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Default destructor
+      DerivMesonSeqSourceBaseDir(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      virtual ~DerivMesonSeqSourceBaseDir() {}
+
+      //! Construct the source
+      virtual LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+					   const multi1d<ForwardProp_t>& forward_headers,
+					   const multi1d<LatticePropagator>& forward_props) = 0;
+
+      //! Compute the 2-pt at the sink
+      virtual Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+				const multi1d<ForwardProp_t>& forward_headers,
+				const multi1d<LatticePropagator>& forward_props,
+				int gamma_insertion) = 0;
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+      //! Get deriv_dir
+      virtual const int getDerivDir() const {return params.deriv_dir;}
+
+    private:
+      //! Hide partial constructor
+      DerivMesonSeqSourceBaseDir() {}
+
+    private:
+      multi1d<int>  t_srce;   /*!< Must come from propagator headers */
+      ParamsDir     params;   /*!< Seqsource params */
+    };
+
+
+    //--------------------------------------------------------------------------------------------
     //! Construct a0-(pionxNabla_T1) sequential source
     /*!
      * \ingroup hadron
@@ -185,11 +294,11 @@ namespace Chroma
      * The sink interpolator structure is
      * \f$\Gamma_f \equiv \gamma_5\nabla_i\f$
      */
-    class MesA0PionxNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0PionxNablaT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0PionxNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0PionxNablaT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0PionxNablaT1SeqSrc() {}
@@ -204,33 +313,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0PionxNablaT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -242,11 +324,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \nabla_i\f$
      */
-    class MesA0A0xNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A0xNablaT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A0xNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A0xNablaT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A0xNablaT1SeqSrc() {}
@@ -261,32 +343,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A0xNablaT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -298,11 +354,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4 \nabla_i\f$
      */
-    class MesA0A02xNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A02xNablaT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A02xNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A02xNablaT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A02xNablaT1SeqSrc() {}
@@ -317,32 +373,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A02xNablaT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -354,11 +384,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4 \gamma_5 \nabla_i\f$
      */
-    class MesA0Pion2xNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0Pion2xNablaT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0Pion2xNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0Pion2xNablaT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0Pion2xNablaT1SeqSrc() {}
@@ -373,32 +403,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0Pion2xNablaT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -410,11 +414,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_i\nabla_i\f$
      */
-    class MesA0RhoxNablaA1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxNablaA1SeqSrc : public DerivMesonSeqSourceBaseNoDir
     {
     public:
       //! Full constructor
-      MesA0RhoxNablaA1SeqSrc(const Params& p) : params(p) {}
+      MesA0RhoxNablaA1SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxNablaA1SeqSrc() {}
@@ -429,32 +433,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxNablaA1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      Params  params;   /*!< Seqsource params */
     };
 
 
@@ -466,11 +444,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j \nabla_k\f$  
      */
-    class MesA0RhoxNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxNablaT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0RhoxNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0RhoxNablaT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxNablaT1SeqSrc() {}
@@ -485,33 +463,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxNablaT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -523,11 +474,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    class MesA0RhoxNablaT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxNablaT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0RhoxNablaT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0RhoxNablaT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxNablaT2SeqSrc() {}
@@ -542,33 +493,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxNablaT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -580,11 +504,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv S_{\alpha jk}\gamma_j D_k\f$  
      */
-    class MesA0RhoxNablaESeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxNablaESeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0RhoxNablaESeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0RhoxNablaESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxNablaESeqSrc() {}
@@ -599,33 +523,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxNablaESeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -637,11 +534,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\gamma_i \nabla_i\f$  
      */
-    class MesA0A1xNablaA1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xNablaA1SeqSrc : public DerivMesonSeqSourceBaseNoDir
     {
     public:
       //! Full constructor
-      MesA0A1xNablaA1SeqSrc(const Params& p) : params(p) {}
+      MesA0A1xNablaA1SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
 
       //! Default destructor
       ~MesA0A1xNablaA1SeqSrc() {}
@@ -656,33 +553,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xNablaA1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      Params  params;   /*!< Seqsource params */
     };
 
 
@@ -694,11 +564,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j \nabla_k\f$  
      */
-    class MesA0A1xNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xNablaT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A1xNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A1xNablaT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A1xNablaT1SeqSrc() {}
@@ -713,33 +583,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xNablaT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -751,11 +594,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j \nabla_k\f$  
      */
-    class MesA0A1xNablaT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xNablaT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A1xNablaT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A1xNablaT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A1xNablaT2SeqSrc() {}
@@ -770,33 +613,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xNablaT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -808,11 +624,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j \nabla_k\f$  
      */
-    class MesA0A1xNablaESeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xNablaESeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A1xNablaESeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A1xNablaESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A1xNablaESeqSrc() {}
@@ -827,33 +643,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xNablaESeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -865,11 +654,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i \nabla_i\f$  
      */
-    class MesA0B1xNablaA1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0B1xNablaA1SeqSrc : public DerivMesonSeqSourceBaseNoDir
     {
     public:
       //! Full constructor
-      MesA0B1xNablaA1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0B1xNablaA1SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
 
       //! Default destructor
       ~MesA0B1xNablaA1SeqSrc() {}
@@ -884,33 +673,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0B1xNablaA1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -922,11 +684,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5\epsilon_{ijk}\gamma_j \nabla_k\f$  
      */
-    class MesA0B1xNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0B1xNablaT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0B1xNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0B1xNablaT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0B1xNablaT1SeqSrc() {}
@@ -941,33 +703,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0B1xNablaT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -979,11 +714,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j \nabla_k\f$  
      */
-    class MesA0B1xNablaT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0B1xNablaT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0B1xNablaT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0B1xNablaT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0B1xNablaT2SeqSrc() {}
@@ -998,33 +733,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0B1xNablaT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1036,11 +744,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j \nabla_k\f$  
      */
-    class MesA0B1xNablaESeqSrc : public DerivMesonSeqSourceBase
+    class MesA0B1xNablaESeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0B1xNablaESeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0B1xNablaESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0B1xNablaESeqSrc() {}
@@ -1055,33 +763,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0B1xNablaESeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1093,11 +774,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 D_i\f$  
      */
-    class MesA0PionxDT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0PionxDT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0PionxDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0PionxDT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0PionxDT2SeqSrc() {}
@@ -1112,33 +793,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0PionxDT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1150,11 +804,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv D_i\f$  
      */
-    class MesA0A0xDT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A0xDT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A0xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A0xDT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A0xDT2SeqSrc() {}
@@ -1169,33 +823,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A0xDT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1207,11 +834,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4 D_i\f$  
      */
-    class MesA0A02xDT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A02xDT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A02xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A02xDT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A02xDT2SeqSrc() {}
@@ -1226,33 +853,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A02xDT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1264,11 +864,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
      */
-    class MesA0Pion2xDT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0Pion2xDT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0Pion2xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0Pion2xDT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0Pion2xDT2SeqSrc() {}
@@ -1283,33 +883,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0Pion2xDT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1321,11 +894,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\gamma_i D_i\f$  
      */
-    class MesA0A1xDA2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xDA2SeqSrc : public DerivMesonSeqSourceBaseNoDir
     {
     public:
       //! Full constructor
-      MesA0A1xDA2SeqSrc(const Params& p) : params(p) {}
+      MesA0A1xDA2SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
 
       //! Default destructor
       ~MesA0A1xDA2SeqSrc() {}
@@ -1340,33 +913,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xDA2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      Params  params;   /*!< Seqsource params */
     };
 
 
@@ -1378,11 +924,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j D_k\f$  
      */
-    class MesA0A1xDT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xDT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A1xDT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A1xDT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A1xDT1SeqSrc() {}
@@ -1397,33 +943,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xDT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1435,11 +954,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5\epsilon_{ijk}\gamma_j D_k\f$  
      */
-    class MesA0A1xDT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xDT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A1xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A1xDT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A1xDT2SeqSrc() {}
@@ -1454,33 +973,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xDT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1492,11 +984,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
      */
-    class MesA0A1xDESeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xDESeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A1xDESeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A1xDESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A1xDESeqSrc() {}
@@ -1511,33 +1003,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xDESeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1549,11 +1014,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i D_i\f$  
      */
-    class MesA0B1xDA2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0B1xDA2SeqSrc : public DerivMesonSeqSourceBaseNoDir
     {
     public:
       //! Full constructor
-      MesA0B1xDA2SeqSrc(const Params& p) : params(p) {}
+      MesA0B1xDA2SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
 
       //! Default destructor
       ~MesA0B1xDA2SeqSrc() {}
@@ -1568,89 +1033,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0B1xDA2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      Params  params;   /*!< Seqsource params */
-    };
-
-    //! Construct a0-(b1xD_E) sequential source
-    /*!
-     * \ingroup hadron
-     *
-     * Operator is  b1 x D_E
-     * The sink interpolator is   
-     * \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
-     */
-    class MesA0B1xDESeqSrc : public DerivMesonSeqSourceBase
-    {
-    public:
-      //! Full constructor
-      MesA0B1xDESeqSrc(const ParamsDir& p) : params(p) {}
-
-      //! Default destructor
-      ~MesA0B1xDESeqSrc() {}
-      
-      //! Construct sequential source
-      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
-				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props);
-
-      //! Compute the 2-pt at the sink
-      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
-			const multi1d<ForwardProp_t>& forward_headers,
-			const multi1d<LatticePropagator>& forward_props,
-			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0B1xDESeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1662,11 +1044,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j D_k\f$  
      */
-    class MesA0B1xDT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0B1xDT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0B1xDT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0B1xDT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0B1xDT1SeqSrc() {}
@@ -1681,33 +1063,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0B1xDT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1719,11 +1074,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_4\gamma_5 \epsilon_{ijk}\gamma_j D_k\f$  
      */
-    class MesA0B1xDT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0B1xDT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0B1xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0B1xDT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0B1xDT2SeqSrc() {}
@@ -1738,33 +1093,36 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
+    };
 
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
 
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
+    //! Construct a0-(b1xD_E) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  b1 x D_E
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
+     */
+    class MesA0B1xDESeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0B1xDESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
+      //! Default destructor
+      ~MesA0B1xDESeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
 
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0B1xDT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
     };
 
 
@@ -1776,11 +1134,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_i D_i\f$  
      */
-    class MesA0RhoxDA2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxDA2SeqSrc : public DerivMesonSeqSourceBaseNoDir
     {
     public:
       //! Full constructor
-      MesA0RhoxDA2SeqSrc(const Params& p) : params(p) {}
+      MesA0RhoxDA2SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxDA2SeqSrc() {}
@@ -1795,33 +1153,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxDA2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      Params  params;   /*!< Seqsource params */
     };
 
 
@@ -1833,11 +1164,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    class MesA0RhoxDT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxDT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0RhoxDT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0RhoxDT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxDT1SeqSrc() {}
@@ -1852,33 +1183,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxDT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -1890,11 +1194,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j D_k\f$  
      */
-    class MesA0RhoxDT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxDT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0RhoxDT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0RhoxDT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxDT2SeqSrc() {}
@@ -1909,33 +1213,36 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
+    };
 
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
 
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
+    //! Construct a0-(rhoxD_E) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  rho x D_E
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv S_{\alpha jk}\gamma_j D_k\f$  
+     */
+    class MesA0RhoxDESeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0RhoxDESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
+      //! Default destructor
+      ~MesA0RhoxDESeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
 
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxDT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
     };
 
 
@@ -1947,11 +1254,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 B_i\f$  
      */
-    class MesA0PionxBT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0PionxBT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0PionxBT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0PionxBT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0PionxBT1SeqSrc() {}
@@ -1966,33 +1273,126 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
+    };
 
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
 
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
+    //! Construct a0-(a0xB_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a0 x B_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv B_i\f$  
+     */
+    class MesA0A0xBT1SeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0A0xBT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
+      //! Default destructor
+      ~MesA0A0xBT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
 
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+    };
 
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
 
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
+    //! Construct a0-(a0_2xB_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a0_2 x B_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4 B_i\f$  
+     */
+    class MesA0A02xBT1SeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0A02xBT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
-    private:
-      //! Hide partial constructor
-      MesA0PionxBT1SeqSrc() {}
+      //! Default destructor
+      ~MesA0A02xBT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
 
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+    };
+
+
+    //! Construct a0-(pion_2xB_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  pion_2 x B_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 B_i\f$  
+     */
+    class MesA0Pion2xBT1SeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0Pion2xBT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
+
+      //! Default destructor
+      ~MesA0Pion2xBT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+    };
+
+
+    //! Construct a0-(rhoxB_A1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is rho x B_A1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_i B_i\f$  
+     */
+    class MesA0RhoxBA1SeqSrc : public DerivMesonSeqSourceBaseNoDir
+    {
+    public:
+      //! Full constructor
+      MesA0RhoxBA1SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
+
+      //! Default destructor
+      ~MesA0RhoxBA1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
     };
 
 
@@ -2004,11 +1404,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \epsilon_{ijk}\gamma_j B_k\f$  
      */
-    class MesA0RhoxBT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxBT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0RhoxBT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0RhoxBT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxBT1SeqSrc() {}
@@ -2023,33 +1423,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxBT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -2061,11 +1434,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv s_{ijk}\gamma_j D_k\f$  
      */
-    class MesA0RhoxBT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0RhoxBT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0RhoxBT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0RhoxBT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0RhoxBT2SeqSrc() {}
@@ -2080,33 +1453,36 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
+    };
 
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
 
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
+    //! Construct a0-(rhoxB_E) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  rho x B_E
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv S_{\alpha jk}\gamma_j D_k\f$  
+     */
+    class MesA0RhoxBESeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0RhoxBESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
+      //! Default destructor
+      ~MesA0RhoxBESeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
 
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0RhoxBT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
     };
 
 
@@ -2118,11 +1494,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 \gamma_i B_i\f$  
      */
-    class MesA0A1xBA1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xBA1SeqSrc : public DerivMesonSeqSourceBaseNoDir
     {
     public:
       //! Full constructor
-      MesA0A1xBA1SeqSrc(const Params& p) : params(p) {}
+      MesA0A1xBA1SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
 
       //! Default destructor
       ~MesA0A1xBA1SeqSrc() {}
@@ -2137,33 +1513,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xBA1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      Params  params;   /*!< Seqsource params */
     };
 
 
@@ -2175,11 +1524,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j B_k\f$  
      */
-    class MesA0A1xBT1SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xBT1SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A1xBT1SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A1xBT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A1xBT1SeqSrc() {}
@@ -2194,33 +1543,6 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xBT1SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
     };
 
 
@@ -2232,11 +1554,11 @@ namespace Chroma
      * The sink interpolator is   
      * \f$\Gamma_f \equiv \gamma_5 s_{ijk}\gamma_j B_k\f$  
      */
-    class MesA0A1xBT2SeqSrc : public DerivMesonSeqSourceBase
+    class MesA0A1xBT2SeqSrc : public DerivMesonSeqSourceBaseDir
     {
     public:
       //! Full constructor
-      MesA0A1xBT2SeqSrc(const ParamsDir& p) : params(p) {}
+      MesA0A1xBT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
       //! Default destructor
       ~MesA0A1xBT2SeqSrc() {}
@@ -2251,33 +1573,156 @@ namespace Chroma
 			const multi1d<ForwardProp_t>& forward_headers,
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion);
+    };
 
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
 
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
+    //! Construct a0-(a1xB_E) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a1 x B_E
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j B_k\f$  
+     */
+    class MesA0A1xBESeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0A1xBESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
 
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
+      //! Default destructor
+      ~MesA0A1xBESeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
 
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+    };
 
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
 
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
+    //! Construct a0-(b1xB_A1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a1 x B_A1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4 \gamma_5 \gamma_i B_i\f$  
+     */
+    class MesA0B1xBA1SeqSrc : public DerivMesonSeqSourceBaseNoDir
+    {
+    public:
+      //! Full constructor
+      MesA0B1xBA1SeqSrc(const Params& p) : DerivMesonSeqSourceBaseNoDir(p) {}
 
-    private:
-      //! Hide partial constructor
-      MesA0A1xBT2SeqSrc() {}
+      //! Default destructor
+      ~MesA0B1xBA1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
 
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+    };
+
+
+    //! Construct a0-(rhoxB_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a11 x B_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4 \gamma_5 \epsilon_{ijk}\gamma_j B_k\f$  
+     */
+    class MesA0B1xBT1SeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0B1xBT1SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
+
+      //! Default destructor
+      ~MesA0B1xBT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+    };
+
+
+    //! Construct a0-(b1xB_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a1 x B_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4 \gamma_5 s_{ijk}\gamma_j B_k\f$  
+     */
+    class MesA0B1xBT2SeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0B1xBT2SeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
+
+      //! Default destructor
+      ~MesA0B1xBT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+    };
+
+
+    //! Construct a0-(b1xB_E) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a1 x B_E
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4 \gamma_5 S_{\alpha jk}\gamma_j B_k\f$  
+     */
+    class MesA0B1xBESeqSrc : public DerivMesonSeqSourceBaseDir
+    {
+    public:
+      //! Full constructor
+      MesA0B1xBESeqSrc(const ParamsDir& p) : DerivMesonSeqSourceBaseDir(p) {}
+
+      //! Default destructor
+      ~MesA0B1xBESeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
     };
 
   }  // end namespace
