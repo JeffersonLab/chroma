@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_meson_seqsrc_w.h,v 3.3 2006-12-02 18:16:28 edwards Exp $
+// $Id: deriv_meson_seqsrc_w.h,v 3.4 2006-12-03 17:41:52 edwards Exp $
 /*! \file
  *  \brief Construct derivative meson sequential sources.
  *
@@ -177,7 +177,7 @@ namespace Chroma
 
 
 
-    //! Construct pion_1-(PionxNabla_T1) sequential source
+    //! Construct a0-(pionxNabla_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -234,7 +234,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A0xNabla_T1) sequential source
+    //! Construct a0-(a0xNabla_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -290,7 +290,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A0_2xNabla_T1) sequential source
+    //! Construct a0-(a0_2xNabla_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -346,7 +346,63 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxNabla_A1) sequential source
+    //! Construct a0-(pion_2xNabla_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  pion_2 x nabla_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4 \gamma_5 \nabla_i\f$
+     */
+    class MesA0Pion2xNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0Pion2xNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0Pion2xNablaT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0Pion2xNablaT1SeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(rhoxNabla_A1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -402,7 +458,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxNabla_T1) sequential source
+    //! Construct a0-(rhoxNabla_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -459,7 +515,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxNabla_T2) sequential source
+    //! Construct a0-(rhoxNabla_T2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -516,7 +572,64 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xNabla_A1) sequential source
+    //! Construct a0-(rhoxNabla_E) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  rho x nabla_E
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv S_{\alpha jk}\gamma_j D_k\f$  
+     */
+    class MesA0RhoxNablaESeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0RhoxNablaESeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0RhoxNablaESeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0RhoxNablaESeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(a1xNabla_A1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -573,7 +686,64 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xNabla_T2) sequential source
+    //! Construct a0-(a1xNabla_T1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a1 x nabla_T1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_5 \epsilon_{ijk}\gamma_j \nabla_k\f$  
+     */
+    class MesA0A1xNablaT1SeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0A1xNablaT1SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0A1xNablaT1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0A1xNablaT1SeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(a1xNabla_T2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -630,7 +800,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xNabla_E) sequential source
+    //! Construct a0-(a1xNabla_E) sequential source
     /*!
      * \ingroup hadron
      *
@@ -687,7 +857,64 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(B1xNabla_T1) sequential source
+    //! Construct a0-(b1xNabla_A1) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  b1 x nabla_A1
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 \gamma_i \nabla_i\f$  
+     */
+    class MesA0B1xNablaA1SeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0B1xNablaA1SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0B1xNablaA1SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0B1xNablaA1SeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(b1xNabla_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -744,7 +971,235 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A0_2xD_T2) sequential source
+    //! Construct a0-(b1xNabla_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  b1 x nabla_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 s_{ijk}\gamma_j \nabla_k\f$  
+     */
+    class MesA0B1xNablaT2SeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0B1xNablaT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0B1xNablaT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0B1xNablaT2SeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(b1xNabla_E) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  b1 x nabla_E
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 S_{\alpha jk}\gamma_j \nabla_k\f$  
+     */
+    class MesA0B1xNablaESeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0B1xNablaESeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0B1xNablaESeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0B1xNablaESeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(pionxD_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  pion x D_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_5 D_i\f$  
+     */
+    class MesA0PionxDT2SeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0PionxDT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0PionxDT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0PionxDT2SeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(a0xD_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a0 x D_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv D_i\f$  
+     */
+    class MesA0A0xDT2SeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0A0xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0A0xDT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0A0xDT2SeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(a0_2xD_T2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -801,7 +1256,64 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xD_A2) sequential source
+    //! Construct a0-(pion_2xD_T2) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  pion_2 x D_T2
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
+     */
+    class MesA0Pion2xDT2SeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0Pion2xDT2SeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0Pion2xDT2SeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0Pion2xDT2SeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(a1xD_A2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -858,64 +1370,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xD_E) sequential source
-    /*!
-     * \ingroup hadron
-     *
-     * Operator is  a1 x D_E
-     * The sink interpolator is   
-     * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
-     */
-    class MesA0A1xDESeqSrc : public DerivMesonSeqSourceBase
-    {
-    public:
-      //! Full constructor
-      MesA0A1xDESeqSrc(const ParamsDir& p) : params(p) {}
-
-      //! Default destructor
-      ~MesA0A1xDESeqSrc() {}
-      
-      //! Construct sequential source
-      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
-				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props);
-
-      //! Compute the 2-pt at the sink
-      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
-			const multi1d<ForwardProp_t>& forward_headers,
-			const multi1d<LatticePropagator>& forward_props,
-			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0A1xDESeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
-    };
-
-
-    //! Construct pion_1-(A1xD_T1) sequential source
+    //! Construct a0-(a1xD_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -972,7 +1427,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xD_T2) sequential source
+    //! Construct a0-(a1xD_T2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1029,7 +1484,64 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(B1xD_A2) sequential source
+    //! Construct a0-(a1xD_E) sequential source
+    /*!
+     * \ingroup hadron
+     *
+     * Operator is  a1 x D_E
+     * The sink interpolator is   
+     * \f$\Gamma_f \equiv \gamma_5 S_{\alpha jk}\gamma_j D_k\f$  
+     */
+    class MesA0A1xDESeqSrc : public DerivMesonSeqSourceBase
+    {
+    public:
+      //! Full constructor
+      MesA0A1xDESeqSrc(const ParamsDir& p) : params(p) {}
+
+      //! Default destructor
+      ~MesA0A1xDESeqSrc() {}
+      
+      //! Construct sequential source
+      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
+				   const multi1d<ForwardProp_t>& forward_headers,
+				   const multi1d<LatticePropagator>& forward_props);
+
+      //! Compute the 2-pt at the sink
+      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
+			const multi1d<ForwardProp_t>& forward_headers,
+			const multi1d<LatticePropagator>& forward_props,
+			int gamma_insertion);
+
+    protected:
+      //! Set t_srce
+      multi1d<int>& getTSrce() {return t_srce;}
+
+      //! Get t_srce
+      const multi1d<int>& getTSrce() const {return t_srce;}
+
+      //! Get t_sink
+      int getTSink() const {return params.t_sink;}
+
+      //! Get sink_mom
+      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
+
+      //! Get decay_dir
+      const int getDecayDir() const {return params.j_decay;}
+
+      //! Get deriv_length
+      int getDerivLength() const {return params.deriv_length;}
+
+    private:
+      //! Hide partial constructor
+      MesA0A1xDESeqSrc() {}
+
+    private:
+      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
+      ParamsDir  params;   /*!< Seqsource params */
+    };
+
+
+    //! Construct a0-(b1xD_A2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1085,7 +1597,7 @@ namespace Chroma
       Params  params;   /*!< Seqsource params */
     };
 
-    //! Construct pion_1-(B1xD_E) sequential source
+    //! Construct a0-(b1xD_E) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1142,7 +1654,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(B1xD_T1) sequential source
+    //! Construct a0-(b1xD_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1199,7 +1711,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(B1xD_T2) sequential source
+    //! Construct a0-(b1xD_T2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1256,7 +1768,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxD_A2) sequential source
+    //! Construct a0-(rhoxD_A2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1313,7 +1825,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxD_T1) sequential source
+    //! Construct a0-(rhoxD_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1370,7 +1882,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxD_T2) sequential source
+    //! Construct a0-(rhoxD_T2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1427,64 +1939,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(PionxD_T2) sequential source
-    /*!
-     * \ingroup hadron
-     *
-     * Operator is  pion x D_T2
-     * The sink interpolator is   
-     * \f$\Gamma_f \equiv \gamma_4\gamma_5 D_i\f$  
-     */
-    class MesA0PionxDT2SeqSrc : public DerivMesonSeqSourceBase
-    {
-    public:
-      //! Full constructor
-      MesA0PionxDT2SeqSrc(const ParamsDir& p) : params(p) {}
-
-      //! Default destructor
-      ~MesA0PionxDT2SeqSrc() {}
-      
-      //! Construct sequential source
-      LatticePropagator operator()(const multi1d<LatticeColorMatrix>& u,
-				   const multi1d<ForwardProp_t>& forward_headers,
-				   const multi1d<LatticePropagator>& forward_props);
-
-      //! Compute the 2-pt at the sink
-      Complex twoPtSink(const multi1d<LatticeColorMatrix>& u,
-			const multi1d<ForwardProp_t>& forward_headers,
-			const multi1d<LatticePropagator>& forward_props,
-			int gamma_insertion);
-
-    protected:
-      //! Set t_srce
-      multi1d<int>& getTSrce() {return t_srce;}
-
-      //! Get t_srce
-      const multi1d<int>& getTSrce() const {return t_srce;}
-
-      //! Get t_sink
-      int getTSink() const {return params.t_sink;}
-
-      //! Get sink_mom
-      const multi1d<int>& getSinkMom() const {return params.sink_mom;}
-
-      //! Get decay_dir
-      const int getDecayDir() const {return params.j_decay;}
-
-      //! Get deriv_length
-      int getDerivLength() const {return params.deriv_length;}
-
-    private:
-      //! Hide partial constructor
-      MesA0PionxDT2SeqSrc() {}
-
-    private:
-      multi1d<int>  t_srce;   /*<! Must come from propagator headers */
-      ParamsDir  params;   /*!< Seqsource params */
-    };
-
-
-    //! Construct pion_1-(PionxB_T1) sequential source
+    //! Construct a0-(pionxB_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1541,7 +1996,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxB_T1) sequential source
+    //! Construct a0-(rhoxB_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1598,7 +2053,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxB_T2) sequential source
+    //! Construct a0-(rhoxB_T2) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1655,7 +2110,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xB_A1) sequential source
+    //! Construct a0-(a1xB_A1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1712,7 +2167,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(RhoxB_T1) sequential source
+    //! Construct a0-(rhoxB_T1) sequential source
     /*!
      * \ingroup hadron
      *
@@ -1769,7 +2224,7 @@ namespace Chroma
     };
 
 
-    //! Construct pion_1-(A1xB_T2) sequential source
+    //! Construct a0-(a1xB_T2) sequential source
     /*!
      * \ingroup hadron
      *
