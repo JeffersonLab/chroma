@@ -124,7 +124,11 @@ Sequential source
     </elem>
 EOF
 
-foreach $seq_src ("a0-a0", "a0-rho_x_1", "a0-rho_y_1", "a0-b1_z", "a0-rho_z_1", "a0-b1_y", "a0-b1_x", "a0-pion_2", "a0-b0", "a0-rho_x_2", "a0-rho_y_2", "a0-a1_z", "a0-rho_z_2", "a0-a1_y", "a0-a1_x", "a0-pion_1", "pion_1-pion_1")
+foreach $seq_src ("a0-a0", "a0-rho_x_1", "a0-rho_y_1", "a0-b1_z", 
+		  "a0-rho_z_1", "a0-b1_y", "a0-b1_x", "a0-pion_2", 
+		  "a0-a0_2", "a0-rho_x_2", "a0-rho_y_2", "a0-a1_z", 
+		  "a0-rho_z_2", "a0-a1_y", "a0-a1_x", "a0-pion_1", 
+		  "pion_1-pion_1")
 {
 
 print <<"EOF";

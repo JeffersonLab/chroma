@@ -124,7 +124,13 @@ Sequential source
     </elem>
 EOF
 
-foreach $seq_src ("NUCL_U_UNPOL", "NUCL_D_UNPOL", "NUCL_U_POL", "NUCL_D_POL", "DELTA_U_UNPOL", "DELTA_D_UNPOL", "NUCL_U_UNPOL_NONREL", "NUCL_D_UNPOL_NONREL", "NUCL_U_POL_NONREL", "NUCL_D_POL_NONREL", "NUCL_U_MIXED_NONREL", "NUCL_D_MIXED_NONREL")
+foreach $seq_src ("NUCL_U_UNPOL", "NUCL_D_UNPOL", 
+		  "NUCL_U_POL", "NUCL_D_POL", 
+		  "DELTA_U_UNPOL", "DELTA_D_UNPOL", 
+		  "NUCL_U_UNPOL_NONREL", "NUCL_D_UNPOL_NONREL", 
+		  "NUCL_U_POL_NONREL", "NUCL_D_POL_NONREL", 
+		  "NUCL_U_MIXED_NONREL", "NUCL_D_MIXED_NONREL",
+		  "NUCL_U_MIXED_NONREL_NEGPAR", "NUCL_D_MIXED_NONREL_NEGPAR")
 {
 
     $prop_ids[1] = "<prop_ids><elem>sh_prop_0</elem><elem>sh_prop_0</elem></prop_ids>";

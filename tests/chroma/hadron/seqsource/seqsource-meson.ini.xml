@@ -1389,7 +1389,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-b0 seqsource
+       a0-a0_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1398,7 +1398,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-b0</SeqSourceType>
+          <SeqSourceType>a0-a0_2</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1442,7 +1442,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-b0 seqprop
+       a0-a0_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1481,7 +1481,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-b0 seqprop test
+       a0-a0_2 seqprop test
       </annotation>
 
       <Name>SEQPROP_TEST</Name>

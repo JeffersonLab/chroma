@@ -127,14 +127,17 @@ EOF
 # Loop over sequential sources
 foreach $deriv_name ("a0-pionxNABLA_T1", "a0-a0xNABLA_T1", "a0-a0_2xNABLA_T1", "a0-pion_2xNABLA_T1", 
 		     "a0-rhoxNABLA_A1", "a0-rhoxNABLA_T1", "a0-rhoxNABLA_T2", "a0-rhoxNABLA_E", 
+		     "a0-rho_2xNABLA_A1", "a0-rho_2xNABLA_T1", "a0-rho_2xNABLA_T2", "a0-rho_2xNABLA_E", 
 		     "a0-a1xNABLA_A1", "a0-a1xNABLA_T1", "a0-a1xNABLA_T2", "a0-a1xNABLA_E", 
 		     "a0-b1xNABLA_A1", "a0-b1xNABLA_T1", "a0-b1xNABLA_T2", "a0-b1xNABLA_E", 
 		     "a0-pionxD_T2", "a0-a0xD_T2", "a0-a0_2xD_T2", "a0-pion_2xD_T2",
 		     "a0-a1xD_A2", "a0-a1xD_T1", "a0-a1xD_T2", "a0-a1xD_E", 
 		     "a0-b1xD_A2", "a0-b1xD_T1", "a0-b1xD_T2", "a0-b1xD_E", 
 		     "a0-rhoxD_A2", "a0-rhoxD_T1", "a0-rhoxD_T2", "a0-rhoxD_E", 
+		     "a0-rho_2xD_A2", "a0-rho_2xD_T1", "a0-rho_2xD_T2", "a0-rho_2xD_E", 
 		     "a0-pionxB_T1", "a0-a0xB_T1", "a0-a0_2xB_T1", "a0-pion_2xB_T1", 
 		     "a0-rhoxB_A1", "a0-rhoxB_T1", "a0-rhoxB_T2", "a0-rhoxB_E", 
+		     "a0-rho_2xB_A1", "a0-rho_2xB_T1", "a0-rho_2xB_T2", "a0-rho_2xB_E", 
 		     "a0-a1xB_A1", "a0-a1xB_T1", "a0-a1xB_T2", "a0-a1xB_E",
 		     "a0-b1xB_A1", "a0-b1xB_T1", "a0-b1xB_T2", "a0-b1xB_E")
 {

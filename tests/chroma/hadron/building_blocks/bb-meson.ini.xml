@@ -1269,7 +1269,7 @@ Sequential source
 
     <elem>
       <annotation>
-       a0-b0 seqsource
+       a0-a0_2 seqsource
       </annotation>
 
       <Name>SEQSOURCE</Name>
@@ -1278,7 +1278,7 @@ Sequential source
         <version>2</version>
         <SeqSource>
           <version>1</version>
-          <SeqSourceType>a0-b0</SeqSourceType>
+          <SeqSourceType>a0-a0_2</SeqSourceType>
           <j_decay>3</j_decay>
           <t_sink>6</t_sink>
           <sink_mom>1 0 0</sink_mom>
@@ -1316,13 +1316,13 @@ Sequential source
         <prop_ids>
           <elem>sh_prop_0</elem>
         </prop_ids>
-        <seqsource_id>seqsource_a0-b0</seqsource_id>
+        <seqsource_id>seqsource_a0-a0_2</seqsource_id>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-       a0-b0 seqprop
+       a0-a0_2 seqprop
       </annotation>
 
       <Name>PROPAGATOR</Name>
@@ -1354,8 +1354,8 @@ Sequential source
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
-        <source_id>seqsource_a0-b0</source_id>
-        <prop_id>seqprop_a0-b0</prop_id>
+        <source_id>seqsource_a0-a0_2</source_id>
+        <prop_id>seqprop_a0-a0_2</prop_id>
       </NamedObject>
     </elem>
 
@@ -1366,7 +1366,7 @@ Sequential source
       <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>seqsource_a0-b0</object_id>
+        <object_id>seqsource_a0-a0_2</object_id>
       </NamedObject>
     </elem>
 
@@ -1399,11 +1399,11 @@ Sequential source
        <FrwdPropId>sh_prop_0</FrwdPropId>
        <BkwdProps>
          <elem>
-           <BkwdPropId>seqprop_a0-b0</BkwdPropId>
+           <BkwdPropId>seqprop_a0-a0_2</BkwdPropId>
            <BkwdPropG5Format>G5_B_G5</BkwdPropG5Format>
            <GammaInsertion>0</GammaInsertion>
            <Flavor>U</Flavor>
-           <BBFileNamePattern>a0-b0_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
+           <BBFileNamePattern>a0-a0_2_qz%c%1d_qy%c%1d_qx%c%1d.bb</BBFileNamePattern>
          </elem>
        </BkwdProps>
       </BuildingBlocks>
