@@ -1,4 +1,4 @@
-// $Id: simple_meson_seqsrc_w.cc,v 3.7 2006-12-02 18:16:28 edwards Exp $
+// $Id: simple_meson_seqsrc_w.cc,v 3.8 2006-12-04 20:38:29 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -531,7 +531,7 @@ namespace Chroma
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pion_2"),
 										      mesA01Pion2SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b0"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0_2"),
 										      mesA0A02SeqSrc);
       
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_x_2"),
