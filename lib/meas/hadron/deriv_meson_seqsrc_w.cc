@@ -1,4 +1,4 @@
-// $Id: deriv_meson_seqsrc_w.cc,v 3.6 2006-12-04 20:38:47 edwards Exp $
+// $Id: deriv_meson_seqsrc_w.cc,v 3.7 2006-12-05 04:52:11 edwards Exp $
 /*! \file
  *  \brief Construct meson sequential sources.
  */
@@ -1239,7 +1239,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -1295,7 +1295,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -1356,7 +1356,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -1417,7 +1417,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -2886,7 +2886,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -2944,7 +2944,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -3007,7 +3007,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -3070,7 +3070,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -3568,7 +3568,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -3626,7 +3626,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -3689,7 +3689,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
@@ -3752,7 +3752,7 @@ namespace Chroma
       
       END_CODE();
 
-      return project(Gamma(1<<3) * fin);
+      return project(-(Gamma(1<<3) * fin));
     }
 
 
