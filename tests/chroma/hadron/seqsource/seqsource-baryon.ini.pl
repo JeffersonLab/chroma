@@ -74,7 +74,7 @@ Sequential source
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
+          <RsdCG>1.0e-16</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </Param>
@@ -230,7 +230,7 @@ print <<"EOF";
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-12</RsdCG>
+          <RsdCG>1.0e-16</RsdCG>
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </Param>
