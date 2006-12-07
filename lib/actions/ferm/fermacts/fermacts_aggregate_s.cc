@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_s.cc,v 3.1 2006-11-17 02:17:31 edwards Exp $
+// $Id: fermacts_aggregate_s.cc,v 3.2 2006-12-07 18:26:18 edwards Exp $
 /*! \file
  *  \brief All Staggered-type fermion actions
  */
@@ -7,6 +7,7 @@
 #include "actions/ferm/fermacts/fermacts_aggregate_s.h"
 
 #include "actions/ferm/fermacts/asqtad_fermact_s.h"
+#include "actions/ferm/fermacts/klein_gordon_fermact_s.h"
 
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
@@ -43,6 +44,7 @@ namespace Chroma
 
 	// 4D actions
 	success &= AsqtadFermActEnv::registerAll();
+	success &= KleinGordonFermActEnv::registerAll();
 
 	registered = true;
       }
