@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.110 2006-12-02 18:24:24 edwards Exp $
+# $Id: Makefile.in,v 3.111 2006-12-07 18:26:48 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -554,6 +554,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
+	actions/ferm/fermacts/klein_gordon_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
@@ -566,6 +567,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/asq_dsl_s.cc \
 	actions/ferm/linop/fat7_links_s.cc \
 	actions/ferm/linop/naik_term_s.cc \
+	actions/ferm/linop/klein_gordon_linop_s.cc \
 	actions/ferm/qprop/quarkprop4_s.cc io/follana_io_s.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/ks_local_loops.cc meas/hadron/mesphas_s.cc \
@@ -911,20 +913,21 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	fermacts_aggregate_s.$(OBJEXT) \
 	asqtad_fermact_params_s.$(OBJEXT) asqtad_fermact_s.$(OBJEXT) \
-	fermbcs_reader_s.$(OBJEXT) fermbcs_aggregate_s.$(OBJEXT) \
-	simple_fermbc_s.$(OBJEXT) \
+	klein_gordon_fermact_s.$(OBJEXT) fermbcs_reader_s.$(OBJEXT) \
+	fermbcs_aggregate_s.$(OBJEXT) simple_fermbc_s.$(OBJEXT) \
 	ferm_createstate_aggregate_s.$(OBJEXT) \
 	ferm_createstate_reader_s.$(OBJEXT) \
 	periodic_fermstate_s.$(OBJEXT) simple_fermstate_s.$(OBJEXT) \
 	asqtad_linop_s.$(OBJEXT) asqtad_mdagm_s.$(OBJEXT) \
 	asq_dsl_s.$(OBJEXT) fat7_links_s.$(OBJEXT) \
-	naik_term_s.$(OBJEXT) quarkprop4_s.$(OBJEXT) \
-	follana_io_s.$(OBJEXT) baryon_s.$(OBJEXT) \
-	mesphas_follana_s.$(OBJEXT) ks_local_loops.$(OBJEXT) \
-	mesphas_s.$(OBJEXT) pions_s.$(OBJEXT) pion_local_s.$(OBJEXT) \
-	stag_propShift_s.$(OBJEXT) stag_scalars_s.$(OBJEXT) \
-	vector_meson_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
-	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
+	naik_term_s.$(OBJEXT) klein_gordon_linop_s.$(OBJEXT) \
+	quarkprop4_s.$(OBJEXT) follana_io_s.$(OBJEXT) \
+	baryon_s.$(OBJEXT) mesphas_follana_s.$(OBJEXT) \
+	ks_local_loops.$(OBJEXT) mesphas_s.$(OBJEXT) pions_s.$(OBJEXT) \
+	pion_local_s.$(OBJEXT) stag_propShift_s.$(OBJEXT) \
+	stag_scalars_s.$(OBJEXT) vector_meson_s.$(OBJEXT) \
+	pion_sing_s.$(OBJEXT) scalar_loops_s.$(OBJEXT) \
+	pseudoscalar_loops_s.$(OBJEXT) \
 	pseudoscalar_stoch_conn_s.$(OBJEXT) \
 	deriv_quark_displacement_s.$(OBJEXT) quark_flavor_s.$(OBJEXT) \
 	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_11) \
@@ -1380,6 +1383,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
+	actions/ferm/fermacts/klein_gordon_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
 	actions/ferm/fermbcs/fermbcs_reader_s.h \
 	actions/ferm/fermbcs/fermbc_factory_s.h \
@@ -1389,11 +1393,12 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermstates/ferm_createstate_reader_s.h \
 	actions/ferm/fermstates/periodic_fermstate_s.h \
 	actions/ferm/fermstates/simple_fermstate_s.h \
+	actions/ferm/linop/linop_s.h \
 	actions/ferm/linop/asqtad_linop_s.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
-	actions/ferm/linop/linop_s.h \
+	actions/ferm/linop/klein_gordon_linop_s.h \
 	actions/ferm/qprop/eoprec_staggered_qprop.h \
 	actions/ferm/qprop/asqtad_qprop.h \
 	actions/ferm/qprop/quarkprop4_s.h io/follana_io_s.h io/io_s.h \
@@ -2105,6 +2110,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
+	actions/ferm/fermacts/klein_gordon_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
 	actions/ferm/fermbcs/fermbcs_reader_s.h \
 	actions/ferm/fermbcs/fermbc_factory_s.h \
@@ -2114,11 +2120,12 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermstates/ferm_createstate_reader_s.h \
 	actions/ferm/fermstates/periodic_fermstate_s.h \
 	actions/ferm/fermstates/simple_fermstate_s.h \
+	actions/ferm/linop/linop_s.h \
 	actions/ferm/linop/asqtad_linop_s.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
-	actions/ferm/linop/linop_s.h \
+	actions/ferm/linop/klein_gordon_linop_s.h \
 	actions/ferm/qprop/eoprec_staggered_qprop.h \
 	actions/ferm/qprop/asqtad_qprop.h \
 	actions/ferm/qprop/quarkprop4_s.h io/follana_io_s.h io/io_s.h \
@@ -2684,6 +2691,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
+	actions/ferm/fermacts/klein_gordon_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
@@ -2696,6 +2704,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/asq_dsl_s.cc \
 	actions/ferm/linop/fat7_links_s.cc \
 	actions/ferm/linop/naik_term_s.cc \
+	actions/ferm/linop/klein_gordon_linop_s.cc \
 	actions/ferm/qprop/quarkprop4_s.cc io/follana_io_s.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/ks_local_loops.cc meas/hadron/mesphas_s.cc \
@@ -3052,6 +3061,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/invsumr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ischiral_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gordon_fermact_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gordon_linop_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ks_local_loops.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kyugauge_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kyuqprop_io.Po@am__quote@
@@ -10528,6 +10539,20 @@ asqtad_fermact_s.obj: actions/ferm/fermacts/asqtad_fermact_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_fermact_s.obj `if test -f 'actions/ferm/fermacts/asqtad_fermact_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/asqtad_fermact_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/asqtad_fermact_s.cc'; fi`
 
+klein_gordon_fermact_s.o: actions/ferm/fermacts/klein_gordon_fermact_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT klein_gordon_fermact_s.o -MD -MP -MF "$(DEPDIR)/klein_gordon_fermact_s.Tpo" -c -o klein_gordon_fermact_s.o `test -f 'actions/ferm/fermacts/klein_gordon_fermact_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/klein_gordon_fermact_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/klein_gordon_fermact_s.Tpo" "$(DEPDIR)/klein_gordon_fermact_s.Po"; else rm -f "$(DEPDIR)/klein_gordon_fermact_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/klein_gordon_fermact_s.cc' object='klein_gordon_fermact_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o klein_gordon_fermact_s.o `test -f 'actions/ferm/fermacts/klein_gordon_fermact_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/klein_gordon_fermact_s.cc
+
+klein_gordon_fermact_s.obj: actions/ferm/fermacts/klein_gordon_fermact_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT klein_gordon_fermact_s.obj -MD -MP -MF "$(DEPDIR)/klein_gordon_fermact_s.Tpo" -c -o klein_gordon_fermact_s.obj `if test -f 'actions/ferm/fermacts/klein_gordon_fermact_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/klein_gordon_fermact_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/klein_gordon_fermact_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/klein_gordon_fermact_s.Tpo" "$(DEPDIR)/klein_gordon_fermact_s.Po"; else rm -f "$(DEPDIR)/klein_gordon_fermact_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/klein_gordon_fermact_s.cc' object='klein_gordon_fermact_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o klein_gordon_fermact_s.obj `if test -f 'actions/ferm/fermacts/klein_gordon_fermact_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/klein_gordon_fermact_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/klein_gordon_fermact_s.cc'; fi`
+
 fermbcs_reader_s.o: actions/ferm/fermbcs/fermbcs_reader_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fermbcs_reader_s.o -MD -MP -MF "$(DEPDIR)/fermbcs_reader_s.Tpo" -c -o fermbcs_reader_s.o `test -f 'actions/ferm/fermbcs/fermbcs_reader_s.cc' || echo '$(srcdir)/'`actions/ferm/fermbcs/fermbcs_reader_s.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/fermbcs_reader_s.Tpo" "$(DEPDIR)/fermbcs_reader_s.Po"; else rm -f "$(DEPDIR)/fermbcs_reader_s.Tpo"; exit 1; fi
@@ -10695,6 +10720,20 @@ naik_term_s.obj: actions/ferm/linop/naik_term_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/naik_term_s.cc' object='naik_term_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o naik_term_s.obj `if test -f 'actions/ferm/linop/naik_term_s.cc'; then $(CYGPATH_W) 'actions/ferm/linop/naik_term_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/naik_term_s.cc'; fi`
+
+klein_gordon_linop_s.o: actions/ferm/linop/klein_gordon_linop_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT klein_gordon_linop_s.o -MD -MP -MF "$(DEPDIR)/klein_gordon_linop_s.Tpo" -c -o klein_gordon_linop_s.o `test -f 'actions/ferm/linop/klein_gordon_linop_s.cc' || echo '$(srcdir)/'`actions/ferm/linop/klein_gordon_linop_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/klein_gordon_linop_s.Tpo" "$(DEPDIR)/klein_gordon_linop_s.Po"; else rm -f "$(DEPDIR)/klein_gordon_linop_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/klein_gordon_linop_s.cc' object='klein_gordon_linop_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o klein_gordon_linop_s.o `test -f 'actions/ferm/linop/klein_gordon_linop_s.cc' || echo '$(srcdir)/'`actions/ferm/linop/klein_gordon_linop_s.cc
+
+klein_gordon_linop_s.obj: actions/ferm/linop/klein_gordon_linop_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT klein_gordon_linop_s.obj -MD -MP -MF "$(DEPDIR)/klein_gordon_linop_s.Tpo" -c -o klein_gordon_linop_s.obj `if test -f 'actions/ferm/linop/klein_gordon_linop_s.cc'; then $(CYGPATH_W) 'actions/ferm/linop/klein_gordon_linop_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/klein_gordon_linop_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/klein_gordon_linop_s.Tpo" "$(DEPDIR)/klein_gordon_linop_s.Po"; else rm -f "$(DEPDIR)/klein_gordon_linop_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/klein_gordon_linop_s.cc' object='klein_gordon_linop_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o klein_gordon_linop_s.obj `if test -f 'actions/ferm/linop/klein_gordon_linop_s.cc'; then $(CYGPATH_W) 'actions/ferm/linop/klein_gordon_linop_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/klein_gordon_linop_s.cc'; fi`
 
 quarkprop4_s.o: actions/ferm/qprop/quarkprop4_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quarkprop4_s.o -MD -MP -MF "$(DEPDIR)/quarkprop4_s.Tpo" -c -o quarkprop4_s.o `test -f 'actions/ferm/qprop/quarkprop4_s.cc' || echo '$(srcdir)/'`actions/ferm/qprop/quarkprop4_s.cc; \
