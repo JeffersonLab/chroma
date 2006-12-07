@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.58 2006-12-02 18:12:22 edwards Exp $
+# $Id: Makefile.am,v 3.59 2006-12-07 18:26:37 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -529,6 +529,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
+	actions/ferm/fermacts/klein_gordon_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
 	actions/ferm/fermbcs/fermbcs_reader_s.h \
 	actions/ferm/fermbcs/fermbc_factory_s.h \
@@ -538,11 +539,12 @@ nobase_include_HEADERS += \
         actions/ferm/fermstates/ferm_createstate_reader_s.h \
         actions/ferm/fermstates/periodic_fermstate_s.h \
         actions/ferm/fermstates/simple_fermstate_s.h \
+	actions/ferm/linop/linop_s.h \
 	actions/ferm/linop/asqtad_linop_s.h \
 	actions/ferm/linop/asqtad_mdagm_s.h \
 	actions/ferm/linop/asq_dsl_s.h \
 	actions/ferm/linop/improvement_terms_s.h \
-	actions/ferm/linop/linop_s.h \
+	actions/ferm/linop/klein_gordon_linop_s.h \
 	actions/ferm/qprop/eoprec_staggered_qprop.h \
 	actions/ferm/qprop/asqtad_qprop.h \
 	actions/ferm/qprop/quarkprop4_s.h \
@@ -1252,6 +1254,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
+	actions/ferm/fermacts/klein_gordon_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
 	actions/ferm/fermbcs/simple_fermbc_s.cc \
@@ -1264,6 +1267,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/asq_dsl_s.cc \
 	actions/ferm/linop/fat7_links_s.cc \
 	actions/ferm/linop/naik_term_s.cc \
+	actions/ferm/linop/klein_gordon_linop_s.cc \
 	actions/ferm/qprop/quarkprop4_s.cc \
 	io/follana_io_s.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
