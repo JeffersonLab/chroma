@@ -27,8 +27,10 @@ Sink smear a prop
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -115,8 +117,10 @@ Sink smear a prop
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
 
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
 
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
@@ -161,7 +165,7 @@ Sink smear a prop
       <chroma>3.21.0</chroma>
       <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:13:28 EST</run_date>
+    <run_date>09 Dec 06 18:16:44 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -183,32 +187,32 @@ Sink smear a prop
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994764814463755</w_plaq>
-    <s_plaq>0.994800871962474</s_plaq>
-    <t_plaq>0.994728756965034</t_plaq>
-    <plane_01_plaq>0.994752408626179</plane_01_plaq>
-    <plane_02_plaq>0.995051671285182</plane_02_plaq>
-    <plane_12_plaq>0.994598535976062</plane_12_plaq>
-    <plane_03_plaq>0.994927926144252</plane_03_plaq>
-    <plane_13_plaq>0.994742138621708</plane_13_plaq>
-    <plane_23_plaq>0.994516206129144</plane_23_plaq>
-    <link>0.379317688059624</link>
+    <w_plaq>0.994764814567235</w_plaq>
+    <s_plaq>0.994800872583356</s_plaq>
+    <t_plaq>0.994728756551113</t_plaq>
+    <plane_01_plaq>0.994752409557501</plane_01_plaq>
+    <plane_02_plaq>0.995051670198639</plane_02_plaq>
+    <plane_12_plaq>0.994598537993928</plane_12_plaq>
+    <plane_03_plaq>0.994927928006897</plane_03_plaq>
+    <plane_13_plaq>0.994742137845606</plane_13_plaq>
+    <plane_23_plaq>0.994516203800837</plane_23_plaq>
+    <link>0.379317687901979</link>
     <pollp>
       <elem>
-        <re>0.967222581617534</re>
-        <im>-0.00121316458201666</im>
+        <re>0.96722258204439</re>
+        <im>-0.00121316457792394</im>
       </elem>
       <elem>
-        <re>0.967032070310476</re>
-        <im>-0.00129617050743036</im>
+        <re>0.967032070271671</re>
+        <im>-0.0012961704569534</im>
       </elem>
       <elem>
-        <re>0.967467519299438</re>
-        <im>-0.00114548285447806</im>
+        <re>0.967467518639751</re>
+        <im>-0.00114548282075096</im>
       </elem>
       <elem>
-        <re>0.879538947173084</re>
-        <im>-0.0104402833220168</im>
+        <re>0.879538946435787</re>
+        <im>-0.0104402832973089</im>
       </elem>
     </pollp>
   </Observables>
@@ -221,7 +225,7 @@ Sink smear a prop
             <chroma>3.21.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:28 EST</run_date>
+          <run_date>09 Dec 06 18:16:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -251,8 +255,10 @@ Sink smear a prop
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -277,37 +283,37 @@ Sink smear a prop
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994764814463755</w_plaq>
-          <s_plaq>0.994800871962474</s_plaq>
-          <t_plaq>0.994728756965034</t_plaq>
-          <plane_01_plaq>0.994752408626179</plane_01_plaq>
-          <plane_02_plaq>0.995051671285182</plane_02_plaq>
-          <plane_12_plaq>0.994598535976062</plane_12_plaq>
-          <plane_03_plaq>0.994927926144252</plane_03_plaq>
-          <plane_13_plaq>0.994742138621708</plane_13_plaq>
-          <plane_23_plaq>0.994516206129144</plane_23_plaq>
-          <link>0.379317688059624</link>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <plane_01_plaq>0.994752409557501</plane_01_plaq>
+          <plane_02_plaq>0.995051670198639</plane_02_plaq>
+          <plane_12_plaq>0.994598537993928</plane_12_plaq>
+          <plane_03_plaq>0.994927928006897</plane_03_plaq>
+          <plane_13_plaq>0.994742137845606</plane_13_plaq>
+          <plane_23_plaq>0.994516203800837</plane_23_plaq>
+          <link>0.379317687901979</link>
           <pollp>
             <elem>
-              <re>0.967222581617534</re>
-              <im>-0.00121316458201666</im>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
             </elem>
             <elem>
-              <re>0.967032070310476</re>
-              <im>-0.00129617050743036</im>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
             </elem>
             <elem>
-              <re>0.967467519299438</re>
-              <im>-0.00114548285447806</im>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
             </elem>
             <elem>
-              <re>0.879538947173084</re>
-              <im>-0.0104402833220168</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>6.64552842259264 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.64552842207646 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -319,7 +325,7 @@ Sink smear a prop
             <chroma>3.21.0</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:28 EST</run_date>
+          <run_date>09 Dec 06 18:16:45 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -371,32 +377,32 @@ Sink smear a prop
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994764814463755</w_plaq>
-          <s_plaq>0.994800871962474</s_plaq>
-          <t_plaq>0.994728756965034</t_plaq>
-          <plane_01_plaq>0.994752408626179</plane_01_plaq>
-          <plane_02_plaq>0.995051671285182</plane_02_plaq>
-          <plane_12_plaq>0.994598535976062</plane_12_plaq>
-          <plane_03_plaq>0.994927926144252</plane_03_plaq>
-          <plane_13_plaq>0.994742138621708</plane_13_plaq>
-          <plane_23_plaq>0.994516206129144</plane_23_plaq>
-          <link>0.379317688059624</link>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <plane_01_plaq>0.994752409557501</plane_01_plaq>
+          <plane_02_plaq>0.995051670198639</plane_02_plaq>
+          <plane_12_plaq>0.994598537993928</plane_12_plaq>
+          <plane_03_plaq>0.994927928006897</plane_03_plaq>
+          <plane_13_plaq>0.994742137845606</plane_13_plaq>
+          <plane_23_plaq>0.994516203800837</plane_23_plaq>
+          <link>0.379317687901979</link>
           <pollp>
             <elem>
-              <re>0.967222581617534</re>
-              <im>-0.00121316458201666</im>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
             </elem>
             <elem>
-              <re>0.967032070310476</re>
-              <im>-0.00129617050743036</im>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
             </elem>
             <elem>
-              <re>0.967467519299438</re>
-              <im>-0.00114548285447806</im>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
             </elem>
             <elem>
-              <re>0.879538947173084</re>
-              <im>-0.0104402833220168</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Observables>
@@ -420,8 +426,10 @@ Sink smear a prop
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -440,87 +448,87 @@ Sink smear a prop
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.64552842259264 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.64552842207646 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.287124e-07</resid>
+            <resid>1.281843e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.068098e-07</resid>
+            <resid>1.216603e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.25958e-07</resid>
+            <resid>1.258726e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.291379e-07</resid>
+            <resid>1.241494e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.411452e-07</resid>
+            <resid>1.48709e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.217351e-07</resid>
+            <resid>1.065006e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.213398e-07</resid>
+            <resid>1.091751e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.241389e-07</resid>
+            <resid>1.188268e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.39809e-07</resid>
+            <resid>1.4363e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.068725e-07</resid>
+            <resid>1.164517e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.166291e-07</resid>
+            <resid>1.108804e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.255549e-07</resid>
+            <resid>1.356697e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.191409099391108 0.0158396868455858 0.00612670427186281 0.00281774783709359 0.0019673008876473 0.0028171130023558 0.00612162635134764 0.015836722339383</prop_corr>
+          <prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -551,32 +559,32 @@ Sink smear a prop
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994764814463755</w_plaq>
-          <s_plaq>0.994800871962474</s_plaq>
-          <t_plaq>0.994728756965034</t_plaq>
-          <plane_01_plaq>0.994752408626179</plane_01_plaq>
-          <plane_02_plaq>0.995051671285182</plane_02_plaq>
-          <plane_12_plaq>0.994598535976062</plane_12_plaq>
-          <plane_03_plaq>0.994927926144252</plane_03_plaq>
-          <plane_13_plaq>0.994742138621708</plane_13_plaq>
-          <plane_23_plaq>0.994516206129144</plane_23_plaq>
-          <link>0.379317688059624</link>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <plane_01_plaq>0.994752409557501</plane_01_plaq>
+          <plane_02_plaq>0.995051670198639</plane_02_plaq>
+          <plane_12_plaq>0.994598537993928</plane_12_plaq>
+          <plane_03_plaq>0.994927928006897</plane_03_plaq>
+          <plane_13_plaq>0.994742137845606</plane_13_plaq>
+          <plane_23_plaq>0.994516203800837</plane_23_plaq>
+          <link>0.379317687901979</link>
           <pollp>
             <elem>
-              <re>0.967222581617534</re>
-              <im>-0.00121316458201666</im>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
             </elem>
             <elem>
-              <re>0.967032070310476</re>
-              <im>-0.00129617050743036</im>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
             </elem>
             <elem>
-              <re>0.967467519299438</re>
-              <im>-0.00114548285447806</im>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
             </elem>
             <elem>
-              <re>0.879538947173084</re>
-              <im>-0.0104402833220168</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Observables>
@@ -624,8 +632,10 @@ Sink smear a prop
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -644,10 +654,10 @@ Sink smear a prop
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.191409099391108 0.0158396868455858 0.00612670427186281 0.00281774783709359 0.0019673008876473 0.0028171130023558 0.00612162635134764 0.015836722339383</forward_prop_corr>
+          <forward_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.191409099391108 0.0158396868455858 0.00612670427186281 0.00281774783709359 0.0019673008876473 0.0028171130023558 0.00612162635134764 0.015836722339383</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -666,8 +676,10 @@ Sink smear a prop
         <wvfIntPar>5</wvfIntPar>
         <no_smear_dir>3</no_smear_dir>
       </SmearingParam>
-      <disp_length>0</disp_length>
-      <disp_dir>0</disp_dir>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
       <LinkSmearing>
         <LinkSmearingType>APE_SMEAR</LinkSmearingType>
         <link_smear_fact>2.5</link_smear_fact>
@@ -692,32 +704,32 @@ Sink smear a prop
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994764814463755</w_plaq>
-          <s_plaq>0.994800871962474</s_plaq>
-          <t_plaq>0.994728756965034</t_plaq>
-          <plane_01_plaq>0.994752408626179</plane_01_plaq>
-          <plane_02_plaq>0.995051671285182</plane_02_plaq>
-          <plane_12_plaq>0.994598535976062</plane_12_plaq>
-          <plane_03_plaq>0.994927926144252</plane_03_plaq>
-          <plane_13_plaq>0.994742138621708</plane_13_plaq>
-          <plane_23_plaq>0.994516206129144</plane_23_plaq>
-          <link>0.379317688059624</link>
+          <w_plaq>0.994764814567235</w_plaq>
+          <s_plaq>0.994800872583356</s_plaq>
+          <t_plaq>0.994728756551113</t_plaq>
+          <plane_01_plaq>0.994752409557501</plane_01_plaq>
+          <plane_02_plaq>0.995051670198639</plane_02_plaq>
+          <plane_12_plaq>0.994598537993928</plane_12_plaq>
+          <plane_03_plaq>0.994927928006897</plane_03_plaq>
+          <plane_13_plaq>0.994742137845606</plane_13_plaq>
+          <plane_23_plaq>0.994516203800837</plane_23_plaq>
+          <link>0.379317687901979</link>
           <pollp>
             <elem>
-              <re>0.967222581617534</re>
-              <im>-0.00121316458201666</im>
+              <re>0.96722258204439</re>
+              <im>-0.00121316457792394</im>
             </elem>
             <elem>
-              <re>0.967032070310476</re>
-              <im>-0.00129617050743036</im>
+              <re>0.967032070271671</re>
+              <im>-0.0012961704569534</im>
             </elem>
             <elem>
-              <re>0.967467519299438</re>
-              <im>-0.00114548285447806</im>
+              <re>0.967467518639751</re>
+              <im>-0.00114548282075096</im>
             </elem>
             <elem>
-              <re>0.879538947173084</re>
-              <im>-0.0104402833220168</im>
+              <re>0.879538946435787</re>
+              <im>-0.0104402832973089</im>
             </elem>
           </pollp>
         </Observables>
@@ -765,8 +777,10 @@ Sink smear a prop
             <wvfIntPar>5</wvfIntPar>
             <no_smear_dir>3</no_smear_dir>
           </SmearingParam>
-          <disp_length>0</disp_length>
-          <disp_dir>0</disp_dir>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
           <LinkSmearing>
             <LinkSmearingType>APE_SMEAR</LinkSmearingType>
             <link_smear_fact>2.5</link_smear_fact>
@@ -785,10 +799,10 @@ Sink smear a prop
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.191409099391108 0.0158396868455858 0.00612670427186281 0.00281774783709359 0.0019673008876473 0.0028171130023558 0.00612162635134764 0.015836722339383</forward_prop_corr>
+          <forward_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2.73462004937053 0.0376392688003418 0.00632471051466782 0.0027380203281492 0.00190721118043177 0.00273924381317276 0.00631206371543515 0.0376226606035967</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.73462005390011 0.0376392693794436 0.00632471040030734 0.00273802027395682 0.00190721115800309 0.00273924380416689 0.00631206398331267 0.0376226613160449</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
