@@ -43,24 +43,12 @@ AC_ARG_ENABLE(sse_wilson_dslash,
     [Build and Use the SSE2 Wilson Dslash Library])
 )
 
-AC_ARG_ENABLE(sse_dwf_cg,
-  AC_HELP_STRING( 
-    [--enable-sse-dwf-cg],
-    [Build and Use the SSE DWF CG Library])
-)
-
 AC_ARG_ENABLE(cg-dwf,
 	AC_HELP_STRING([--enable-cg-dwf=<cpuarch> <cpuarch>=sse,bluelight,altivec]),
 	[cg_dwf_cpu_arch=${enableval}
 	 build_cg_dwf="yes"],
 	[cg_dwf_cpu_arch="none"
-	 build_cg_dwf="no" ]
-)
-
-AC_ARG_ENABLE(altivec_dwf_cg,
-  AC_HELP_STRING( 
-    [--enable-altivec-dwf-cg],
-    [Build and Use the altivec DWF CG Library])
+	 build_cg_dwf="no"]
 )
 
 AC_ARG_WITH(bagel_wilson_dslash,
@@ -68,8 +56,8 @@ AC_ARG_WITH(bagel_wilson_dslash,
     [--with-bagel-wilson-dslash=DIR],
     [Use Peter Boyles BAGEL Wilson Dslash Library installed in DIR]
   ),
-  [ bagel_wilson_dslash_enabled="yes"
-    BAGEL_WILSON_DSLASH_HOME="${with_bagel_wilson_dslash}" ]
+    [bagel_wilson_dslash_enabled="yes"
+     BAGEL_WILSON_DSLASH_HOME="${with_bagel_wilson_dslash}"]
 )
 
 AC_ARG_ENABLE(asqtad_cps_inverter,
@@ -85,9 +73,10 @@ AC_ARG_ENABLE(opt_cfz_linop,
 )
 
 AC_ARG_ENABLE(testcase-runner,
-	AC_HELP_STRING([--enable-testcase-runner=script],
-	[ Use <script> to run testcases: trivial_runner.sh|ibg2_mpi_runner.sh]),	[ chroma_testcase_runner=${enable_testcase_runner} ],
-	[ chroma_testcase_runner="trivial_runner.sh"]
+  AC_HELP_STRING([--enable-testcase-runner=script],
+    [Use <script> to run testcases: trivial_runner.sh|ibg2_mpi_runner.sh]),
+    [chroma_testcase_runner=${enable_testcase_runner}],
+    [chroma_testcase_runner="trivial_runner.sh"]
 )
 
 AC_ARG_WITH(gmp,
@@ -95,9 +84,9 @@ AC_ARG_WITH(gmp,
     [--with-gmp=<DIR>],
     [Enable use of GMP - GNU Multi-Precision library, installed in DIR]
    ),
-   [ gmp_enabled="yes"
-     GMP_HOME=${with_gmp} ],
-   [ gmp_enabled="no" ]
+    [gmp_enabled="yes"
+     GMP_HOME=${with_gmp}],
+    [gmp_enabled="no"]
 )
 
 
@@ -197,7 +186,7 @@ then
 		AC_MSG_NOTICE([Configuring CG-DWF for AltiVec architecture])
 		;;
 	*)
-		AC_MSG_ERROR([Unknown cpu architecture. Use --enable-cpu-arch to select a known one])
+		AC_MSG_ERROR([Unknown cpu architecture. Use --enable-cg-dwf=<arch> to select a known one])
 		;;
 	esac
 
