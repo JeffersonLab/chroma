@@ -824,11 +824,7 @@ Optional Features:
   --enable-sse-wilson-dslash
                           Build and Use the SSE2 Wilson Dslash Library
 
-  --enable-sse-dwf-cg     Build and Use the SSE DWF CG Library
-
   --enable-cg-dwf=<cpuarch> <cpuarch>=sse
-
-  --enable-altivec-dwf-cg Build and Use the altivec DWF CG Library
 
   --enable-asqtad-cps-inverter
                           Wrap the CPS asqtad inverter
@@ -3286,12 +3282,6 @@ if test "${enable_sse_wilson_dslash+set}" = set; then
 
 fi;
 
-# Check whether --enable-sse_dwf_cg or --disable-sse_dwf_cg was given.
-if test "${enable_sse_dwf_cg+set}" = set; then
-  enableval="$enable_sse_dwf_cg"
-
-fi;
-
 # Check whether --enable-cg-dwf or --disable-cg-dwf was given.
 if test "${enable_cg_dwf+set}" = set; then
   enableval="$enable_cg_dwf"
@@ -3303,18 +3293,12 @@ else
 
 fi;
 
-# Check whether --enable-altivec_dwf_cg or --disable-altivec_dwf_cg was given.
-if test "${enable_altivec_dwf_cg+set}" = set; then
-  enableval="$enable_altivec_dwf_cg"
-
-fi;
-
 
 # Check whether --with-bagel_wilson_dslash or --without-bagel_wilson_dslash was given.
 if test "${with_bagel_wilson_dslash+set}" = set; then
   withval="$with_bagel_wilson_dslash"
-   bagel_wilson_dslash_enabled="yes"
-    BAGEL_WILSON_DSLASH_HOME="${with_bagel_wilson_dslash}"
+  bagel_wilson_dslash_enabled="yes"
+     BAGEL_WILSON_DSLASH_HOME="${with_bagel_wilson_dslash}"
 
 fi;
 
@@ -3333,9 +3317,9 @@ fi;
 # Check whether --enable-testcase-runner or --disable-testcase-runner was given.
 if test "${enable_testcase_runner+set}" = set; then
   enableval="$enable_testcase_runner"
-   chroma_testcase_runner=${enable_testcase_runner}
+  chroma_testcase_runner=${enable_testcase_runner}
 else
-   chroma_testcase_runner="trivial_runner.sh"
+  chroma_testcase_runner="trivial_runner.sh"
 
 fi;
 
@@ -3343,10 +3327,10 @@ fi;
 # Check whether --with-gmp or --without-gmp was given.
 if test "${with_gmp+set}" = set; then
   withval="$with_gmp"
-   gmp_enabled="yes"
+  gmp_enabled="yes"
      GMP_HOME=${with_gmp}
 else
-   gmp_enabled="no"
+  gmp_enabled="no"
 
 fi;
 
@@ -3665,8 +3649,8 @@ echo "$as_me: Configuring CG-DWF for BlueLight architecture" >&6;}
 echo "$as_me: Configuring CG-DWF for AltiVec architecture" >&6;}
 		;;
 	*)
-		{ { echo "$as_me:$LINENO: error: Unknown cpu architecture. Use --enable-cpu-arch to select a known one" >&5
-echo "$as_me: error: Unknown cpu architecture. Use --enable-cpu-arch to select a known one" >&2;}
+		{ { echo "$as_me:$LINENO: error: Unknown cpu architecture. Use --enable-cg-dwf=<arch> to select a known one" >&5
+echo "$as_me: error: Unknown cpu architecture. Use --enable-cg-dwf=<arch> to select a known one" >&2;}
    { (exit 1); exit 1; }; }
 		;;
 	esac
