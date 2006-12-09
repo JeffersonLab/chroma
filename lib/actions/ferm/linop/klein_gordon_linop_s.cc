@@ -1,4 +1,4 @@
-// $Id: klein_gordon_linop_s.cc,v 1.1 2006-12-07 18:26:18 edwards Exp $
+// $Id: klein_gordon_linop_s.cc,v 1.2 2006-12-09 19:47:29 edwards Exp $
 /*! \file
  *  \brief Klein-Gordon boson action masquerading action as a staggered action
  */
@@ -64,14 +64,17 @@ namespace Chroma
   {
     START_CODE();
 
-    Real mhalf = -0.5;
-    chi = fact*psi;
+    LatticeFermion tmp;   moveToFastMemoryHint(tmp);
+    tmp = zero;
 
     for(int mu = 0; mu < Nd; ++mu )
     {
-      chi -= u[mu]*shift(psi, FORWARD, mu);
-      chi -= shift(adj(u[mu])*psi, BACKWARD, mu);
+      tmp += u[mu]*shift(psi, FORWARD, mu);
+      tmp += shift(adj(u[mu])*psi, BACKWARD, mu);
     }
+
+    Real mhalf = -0.5;
+    chi = fact*psi + mhalf*tmp;
 
     getFermBC().modifyF(chi);
   
