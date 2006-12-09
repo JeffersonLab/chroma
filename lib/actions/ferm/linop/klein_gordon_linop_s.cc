@@ -1,4 +1,4 @@
-// $Id: klein_gordon_linop_s.cc,v 1.2 2006-12-09 19:47:29 edwards Exp $
+// $Id: klein_gordon_linop_s.cc,v 1.3 2006-12-09 22:22:07 edwards Exp $
 /*! \file
  *  \brief Klein-Gordon boson action masquerading action as a staggered action
  */
@@ -64,7 +64,7 @@ namespace Chroma
   {
     START_CODE();
 
-    LatticeFermion tmp;   moveToFastMemoryHint(tmp);
+    LatticeStaggeredFermion tmp;   moveToFastMemoryHint(tmp);
     tmp = zero;
 
     for(int mu = 0; mu < Nd; ++mu )
