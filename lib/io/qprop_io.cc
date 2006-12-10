@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.12 2006-12-02 18:29:51 edwards Exp $
+// $Id: qprop_io.cc,v 3.13 2006-12-10 02:05:50 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -11,6 +11,50 @@
 
 namespace Chroma 
 {
+
+  // Given a fermion action in string form, return the Mass
+  Real getMass(const GroupXML_t& fermact)
+  {
+    //
+    // Initialize fermion action
+    //
+    std::istringstream  xml_s(fermact.xml);
+    XMLReader  fermacttop(xml_s);
+    XMLReader  top(fermacttop, fermact.path);
+
+    Real Mass;
+
+    try
+    {
+      if (top.count("Mass") != 0) 
+      {
+	read(top, "Mass", Mass);
+      }
+      else if (top.count("Kappa") != 0)
+      {
+	Real Kappa;
+	read(top, "Kappa", Kappa);
+	Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
+      }
+      else if (top.count("m_q") != 0) 
+      {
+	read(top, "m_q", Mass);
+      }
+      else
+      {
+	QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
+	throw std::string("Neither Mass nor Kappa found");
+      }
+    }
+    catch (const std::string& e) 
+    {
+      QDPIO::cerr << "Error reading fermact: " << e << endl;
+      throw e;
+    }
+
+    return Mass;
+  }
+
 
   // Given a fermion action in string form, return the boundary
   /* HACK - THIS DEFINITELY NEEDS IMPROVEMENT */

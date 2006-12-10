@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.7 2006-12-02 18:18:07 edwards Exp $
+// $Id: qprop_io.h,v 3.8 2006-12-10 02:05:50 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -174,6 +174,9 @@ namespace Chroma
     multi1d<ForwardProp_t> forward_props;
   };
 
+
+  //! Given a fermion action in string form, return the Mass
+  Real getMass(const GroupXML_t& fermact);
 
   //! Given a fermion action in string form, return the boundary
   multi1d<int> getFermActBoundary(const GroupXML_t& fermact);
