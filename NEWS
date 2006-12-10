@@ -1,3 +1,14 @@
+12/10/2006 -- Robert Edwards
+	Version 3.21.1. Mostly housecleaning. Removed many obsolete source construction 
+        and quark smearing codes and enums. Added a Klein-Gordon operator. 
+
+12/04/2006 -- Robert Edwards
+	Version 3.21.0. Overhauled sequential source construction. Now have loads
+        of working derivative sources. New regression tests that cross check the
+        sequential propagator via the tie-back test and compares to a 2-pt at
+        the sink. Standardized propagator headers - now have fixed structs and
+        not the floating xml stuff.
+
 11/25/2006 -- Robert Edwards
 	Version 3.20.0. New component integrator codes for HMC. New staggered
         chroma task chain of  MAKE_SOURCE, PROPAGATOR and SINK_SMEARING .
