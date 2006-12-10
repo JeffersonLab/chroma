@@ -1,11 +1,21 @@
-#include "avp_bglf_solver.h"
+// -*- C++ -*-
+/*! \file
+ *  \brief DWF/Bluegene single-prec solver
+ */
 
-using namespace QDP;
-namespace Chroma { 
-  namespace AVPSolver { 
-    
+#include "avp_bglf_solver.h"
 #include <dwf-bluelightf.h>
 
+namespace Chroma 
+{ 
+  //! Bluegene single-prec solver
+  /*!
+   * \ingroup qprop
+   *
+   * @{
+   */
+  namespace AVPSolver 
+  { 
     MIT_bluelightf_DWF_Fermion* BGLDWFSolverF::loadFermionRHS(const void* OuterFermion) const {
       return MIT_bluelightf_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderRHS);
     }
@@ -68,7 +78,9 @@ namespace Chroma {
     void BGLDWFSolverF::fini(void) {
       MIT_bluelightf_DWF_fini();
     }
-  };
-};
+  }
+
+  /*! @} */   // end of group qprop
+}
 
 

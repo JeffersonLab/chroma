@@ -1,17 +1,28 @@
-#include "avp_altivecf_solver.h"
+// -*- C++ -*-
+/*! \file
+ *  \brief DWF/Bluegene altivec solver
+ */
 
-using namespace QDP;
-namespace Chroma { 
-  namespace AVPSolver { 
-    
+#include "avp_altivecf_solver.h"
 #include <dwf-altivecf.h>
 
+namespace Chroma 
+{ 
+  //! Bluegene altivec single-prec solver
+  /*!
+   * \ingroup qprop
+   *
+   * @{
+   */
+  namespace AVPSolver 
+  { 
+  
     MIT_altivecf_DWF_Fermion* AltiVecDWFSolverF::loadFermionRHS(const void* OuterFermion) const {
       return MIT_altivecf_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderRHS);
     }
 
     MIT_altivecf_DWF_Fermion* AltiVecDWFSolverF::loadFermionGuess(const void *OuterFermion) const {
-	return MIT_altivecf_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderGuess);
+      return MIT_altivecf_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderGuess);
     }
 
     MIT_altivecf_DWF_Fermion* AltiVecDWFSolverF::allocateFermion(void) const {
@@ -19,12 +30,12 @@ namespace Chroma {
     }
 
     void AltiVecDWFSolverF::saveFermionSolver(void *OuterFermion, 
-					  MIT_altivecf_DWF_Fermion* CGFermion) const {
+					      MIT_altivecf_DWF_Fermion* CGFermion) const {
       MIT_altivecf_DWF_save_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionWriterSolver, CGFermion);
     }
 
     void AltiVecDWFSolverF::saveFermionOperator(void *OuterFermion, 
-					    MIT_altivecf_DWF_Fermion* CGFermion) const {
+						MIT_altivecf_DWF_Fermion* CGFermion) const {
       MIT_altivecf_DWF_save_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionWriterOperator, CGFermion);
     }
     
@@ -34,21 +45,21 @@ namespace Chroma {
 
     
     int AltiVecDWFSolverF::cgInternal(MIT_altivecf_DWF_Fermion       *psi,
-				  double        *out_eps,
-				  int           *out_iter,
-				  double        M,
-				  double        m_f,
-				  const MIT_altivecf_DWF_Fermion *x0,
-				  const MIT_altivecf_DWF_Fermion *eta,
-				  double        eps,
-				  int           min_iter,
-				  int           max_iter)  const {
+				      double        *out_eps,
+				      int           *out_iter,
+				      double        M,
+				      double        m_f,
+				      const MIT_altivecf_DWF_Fermion *x0,
+				      const MIT_altivecf_DWF_Fermion *eta,
+				      double        eps,
+				      int           min_iter,
+				      int           max_iter)  const {
       return MIT_altivecf_DWF_cg_solver(psi, out_eps, out_iter, g, M, m_f,
-				    x0, eta, eps, min_iter, max_iter);
+					x0, eta, eps, min_iter, max_iter);
     }
     
     void AltiVecDWFSolverF::loadGauge(const void *u,
-				  const void *v) { 
+				      const void *v) { 
       g=MIT_altivecf_DWF_load_gauge(u, v, NULL, &AVPSolverFunctions::gaugeReader);
     }
      
@@ -59,8 +70,8 @@ namespace Chroma {
      
     // Init the system -- Constructor call?
     int AltiVecDWFSolverF::init(const int lattice[5],
-			    void *(*allocator)(size_t size),
-			    void (*deallocator)(void *)) {
+				void *(*allocator)(size_t size),
+				void (*deallocator)(void *)) {
       return MIT_altivecf_DWF_init(lattice, allocator, deallocator);
     }
      
@@ -68,7 +79,10 @@ namespace Chroma {
     void AltiVecDWFSolverF::fini(void) {
       MIT_altivecf_DWF_fini();
     }
-  };
-};
+  }
+
+  /*! @} */   // end of group qprop
+
+}
 
 

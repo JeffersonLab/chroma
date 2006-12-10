@@ -1,4 +1,10 @@
 // -*- C++ -*-
+/*! \file
+ *  \brief Full quark propagator solver
+ *
+ *  Given a complete propagator as a source, this does all the inversions needed
+ */
+
 #ifndef __quarkprop4_multi_w_h__
 #define __quarkprop4_multi_w_h__
 
@@ -12,8 +18,10 @@
 namespace Chroma 
 {
 
+  //! Given a complete propagator as a source, this does all the inversions needed
+  /*! \ingroup qprop */
   void 
-  OverlapFermActBase::multiQuarkProp4(multi1d<LatticePropagator>& q_sol, 
+  OverlapFermActBase::multiQuarkProp4(multi1d<LatticePropagator>& q_sol,
 				      XMLWriter& xml_out,
 				      const LatticePropagator& q_src,
 				      Handle< FermState<LatticeFermion,
