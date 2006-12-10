@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqqNucNuc_w.h,v 3.1 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_qqqNucNuc_w.h,v 3.2 2006-12-10 01:59:59 edwards Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -10,7 +10,6 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/smearing_io.h"
 
 namespace Chroma 
 { 
@@ -33,16 +32,7 @@ namespace Chroma
 
     struct Param_t
     {
-      bool Pt_snk;             // point sink
-      bool Sl_snk;             // shell sink
-      
-      WvfKind       wvf_kind;  // Wave function kind: gauge invariant
-      multi1d<Real> wvf_param; // Array of width's or other parameters
-      //   for "shell" source/sink wave function
-      multi1d<int> wvfIntPar;  // Array of iter numbers to approx. Gaussian or
-      //   terminate CG inversion for Wuppertal smearing
-
-      int max_p2 ;
+      int max_p2;
     } param;
 
     struct NamedObject_t
