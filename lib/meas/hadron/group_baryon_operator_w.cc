@@ -1,8 +1,8 @@
-// $Id: group_baryon_operator_w.cc,v 1.22 2006-11-30 18:59:06 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.23 2006-12-10 02:04:08 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
-#include "chroma.h"
+#include "chromabase.h"
 
 #include "meas/hadron/group_baryon_operator_w.h"
 #include "meas/hadron/baryon_operator_factory_w.h"
