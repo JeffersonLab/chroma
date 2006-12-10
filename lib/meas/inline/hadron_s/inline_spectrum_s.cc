@@ -8,7 +8,6 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "meas/smear/ape_smear.h"
-#include "meas/smear/sink_smear2.h"
 #include "meas/hadron/stag_propShift_s.h"
 
 #include "util/ft/sftmom.h"
