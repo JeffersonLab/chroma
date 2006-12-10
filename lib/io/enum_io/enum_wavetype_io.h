@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_wavetype_io.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: enum_wavetype_io.h,v 3.1 2006-12-10 02:06:25 edwards Exp $
 /*! \file
  * \brief Wavetype enum
  */
@@ -10,7 +10,6 @@
 #include <string>
 #include "singleton.h"
 #include "io/enum_io/enum_type_map.h"
-#include "meas/sources/wavetype.h"
 
 
 namespace Chroma {
@@ -23,7 +22,14 @@ namespace Chroma {
    *
    * @{
    */
-  //! Wave state type
+
+  //! Wave state type 
+  enum WaveStateType
+  {
+    WAVE_TYPE_S_WAVE, 
+    WAVE_TYPE_P_WAVE, 
+    WAVE_TYPE_D_WAVE
+  };
 
   namespace WaveStateTypeEnv { 
     extern const string typeIDString;
