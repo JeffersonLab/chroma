@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.59 2006-12-07 18:26:37 edwards Exp $
+# $Id: Makefile.am,v 3.60 2006-12-10 01:54:50 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -133,10 +133,8 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_simplebctype_io.h \
 	io/enum_io/enum_gaugeacttype_io.h \
 	io/enum_io/enum_plusminus_io.h \
-	io/enum_io/enum_wvfkind_io.h \
 	io/enum_io/enum_quarkspintype_io.h \
 	io/enum_io/enum_qdpvolfmt_io.h \
-	io/enum_io/enum_srcsnktype_io.h \
 	io/enum_io/enum_wavetype_io.h \
 	io/enum_io/enum_heatbathtype_io.h \
 	io/enum_io/enum_md_integrator_type_io.h \
@@ -146,7 +144,7 @@ nobase_include_HEADERS = \
 	io/gauge_io.h io/kyugauge_io.h  \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
         io/readcppacs.h io/cppacs_io.h \
-	io/readszin.h io/smearing_io.h io/szin_io.h \
+	io/readszin.h io/szin_io.h \
         io/writemilc.h io/writeszin.h \
 	io/monomial_io.h \
 	io/hamiltonian_io.h \
@@ -185,8 +183,8 @@ nobase_include_HEADERS = \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
-	meas/smear/laplacian.h meas/smear/smear.h meas/smear/wvfkind.h \
-	meas/smear/sink_smear2.h meas/smear/stout_smear.h \
+	meas/smear/laplacian.h meas/smear/smear.h \
+	meas/smear/stout_smear.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
 	meas/smear/link_smearing_factory.h \
@@ -205,10 +203,9 @@ nobase_include_HEADERS = \
 	meas/smear/no_quark_smearing.h \
 	meas/smear/gaus_quark_smearing.h \
         meas/smear/quark_source_sink.h \
-	meas/sources/sources.h meas/sources/srcsnktype.h \
+	meas/sources/sources.h \
 	meas/sources/source_construction.h \
         meas/sources/srcfil.h \
-	meas/sources/wavetype.h \
         meas/sources/z2_src.h \
         meas/sources/dilute_gauss_src_s.h \
         meas/sources/zN_src.h \
@@ -443,7 +440,7 @@ nobase_include_HEADERS += \
 	meas/hadron/BuildingBlocks_w.h \
         meas/hadron/curcor2_w.h \
         meas/hadron/curcor3_w.h \
-	meas/hadron/DjDk_w.h meas/hadron/D_j_w.h meas/hadron/formfac_w.h \
+        meas/hadron/formfac_w.h \
 	meas/hadron/hadron_w.h meas/hadron/hybmeson_w.h \
 	meas/hadron/meson_seqsrc_w.h \
 	meas/hadron/simple_meson_seqsrc_w.h \
@@ -470,8 +467,6 @@ nobase_include_HEADERS += \
         meas/schrfun/sfpcac_w.h \
         meas/schrfun/sfcurcor_w.h \
         meas/sources/sources_w.h \
-	meas/sources/d_src_w.h \
-	meas/sources/p_src_w.h \
         meas/sources/walfil_w.h \
 	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
@@ -610,7 +605,6 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_seqprop_test_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
-        meas/inline/hadron/inline_spectrumQll.h \
         meas/inline/hadron/inline_static_light_spec_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
         meas/inline/hadron/inline_qqq_w.h \
@@ -664,6 +658,7 @@ nobase_include_HEADERS += \
 #	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
+#        meas/inline/hadron/inline_spectrumQll.h
 
 #
 # Include Path
@@ -794,15 +789,14 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_proptype_io.cc io/enum_io/enum_qdpvolfmt_io.cc \
 	io/enum_io/enum_quarkspintype_io.cc \
 	io/enum_io/enum_simplebctype_io.cc \
-	io/enum_io/enum_srcsnktype_io.cc io/enum_io/enum_wavetype_io.cc \
-	io/enum_io/enum_wvfkind_io.cc \
+	io/enum_io/enum_wavetype_io.cc \
         io/enum_io/enum_stochsrc_io.cc \
         io/aniso_io.cc io/cfgtype_io.cc \
 	io/gauge_io.cc io/kyugauge_io.cc io/kyuqprop_io.cc \
 	io/milc_io.cc io/overlap_state_info.cc \
         io/readcppacs.cc io/cppacs_io.cc\
 	io/param_io.cc io/qprop_io.cc io/readmilc.cc \
-	io/readszin.cc io/smearing_io.cc io/szin_io.cc \
+	io/readszin.cc io/szin_io.cc \
 	io/writemilc.cc io/writeszin.cc \
 	io/monomial_io.cc io/hamiltonian_io.cc \
 	io/xml_group_reader.cc \
@@ -832,7 +826,7 @@ libchroma_a_SOURCES = \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
 	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
 	meas/smear/laplacian.cc \
-	meas/smear/sink_smear2.cc meas/smear/stout_smear.cc \
+	meas/smear/stout_smear.cc \
 	meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc \
@@ -1032,8 +1026,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/baryon_w.cc meas/hadron/BuildingBlocks_w.cc \
 	meas/hadron/curcor2_w.cc \
 	meas/hadron/curcor3_w.cc \
-        meas/hadron/DjDk_w.cc \
-	meas/hadron/D_j_w.cc meas/hadron/formfac_w.cc \
+	meas/hadron/formfac_w.cc \
 	meas/hadron/hybmeson_w.cc meas/hadron/loops_w.cc \
 	meas/hadron/meson_seqsrc_w.cc \
 	meas/hadron/simple_meson_seqsrc_w.cc \
@@ -1055,7 +1048,6 @@ libchroma_a_SOURCES += \
         meas/schrfun/sfcurcor_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc \
-	meas/sources/d_src_w.cc meas/sources/p_src_w.cc \
         meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
@@ -1127,7 +1119,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
-	meas/inline/hadron/inline_spectrumQll.cc \
 	meas/inline/hadron/inline_static_light_spec_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
@@ -1182,6 +1173,7 @@ libchroma_a_SOURCES += \
 # Taken out for now
 #	meas/inline/hadron/inline_spectrum_w.cc
 #	meas/inline/hadron/inline_multipole_w.cc
+#	meas/inline/hadron/inline_spectrumQll.cc
 
 
 #
