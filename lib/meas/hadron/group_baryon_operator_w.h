@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.15 2006-11-30 14:30:33 juge Exp $
+// $Id: group_baryon_operator_w.h,v 1.16 2006-12-10 02:03:43 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -22,7 +22,6 @@
 #include "meas/smear/quark_source_sink.h"
 #include "meas/sources/dilutezN_source_const.h"
 #include "meas/sources/zN_src.h"
-#include "meas/sources/srcsnktype.h"
 
 namespace Chroma
 {
