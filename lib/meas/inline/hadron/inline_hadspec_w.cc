@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.7 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.8 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -277,41 +277,9 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      std::istringstream  xml_s(s.prop_header.prop_header.fermact.xml);
-      XMLReader  fermacttop(xml_s);
-      
       QDPIO::cout << "Try action and mass" << endl;
-      try
-      {
-	XMLReader top(fermacttop, s.prop_header.prop_header.fermact.path);
-
-	// Yuk - need to hop some hoops. This should be isolated.
-	if (top.count("Mass") != 0) 
-	{
-	  read(top, "Mass", s.Mass);
-	}
-	else if (top.count("Kappa") != 0)
-	{
-	  Real Kappa;
-	  read(top, "Kappa", Kappa);
-	  s.Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-	}
-	else if (top.count("m_q") != 0) 
-	{
-	  read(top, "m_q", s.Mass);
-	}
-	else
-	{
-	  QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
-	  throw std::string("Neither Mass nor Kappa found");
-	}
-	s.bc = getFermActBoundary(s.prop_header.prop_header.fermact);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error reading fermact or mass: " << e << endl;
-	QDP_abort(1);
-      }
+      s.Mass = getMass(s.prop_header.prop_header.fermact);
+      s.bc   = getFermActBoundary(s.prop_header.prop_header.fermact);
     
       QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << endl;
       QDPIO::cout << "Mass = " << s.Mass << endl;

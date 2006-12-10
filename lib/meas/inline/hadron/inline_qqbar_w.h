@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqbar_w.h,v 3.1 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_qqbar_w.h,v 3.2 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline construction of qqbar
  *
@@ -35,7 +35,6 @@ namespace Chroma
     struct Param_t
     {
       bool             Dirac_basis;     /*!< Use the Dirac basis for output? */
-      multi1d<int>     nrow;		/*!< Lattice dimension */
     } param;
 
     struct NamedObject_t

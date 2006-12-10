@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_w.h,v 3.3 2006-10-14 04:19:42 edwards Exp $
+// $Id: inline_spectrum_w.h,v 3.4 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
@@ -62,8 +62,6 @@ namespace Chroma
       int           link_smear_num;  // number of smearing hits
       int           BlkMax;          /*!< Max number of iterations */
       Real          BlkAccu;         /*!< Relative error to maximize trace */
-
-      multi1d<int> nrow;
     } param;
 
     struct NamedObject_t

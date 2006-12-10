@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_hadspec_w.h,v 3.3 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_hadspec_w.h,v 3.4 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline hadron spectrum calculations
  *
@@ -11,7 +11,6 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/smearing_io.h"
 
 namespace Chroma 
 { 
@@ -42,7 +41,6 @@ namespace Chroma
 
       int mom2_max;            // (mom)^2 <= mom2_max. mom2_max=7 in szin.
       bool avg_equiv_mom;      // average over equivalent momenta
-      multi1d<int> nrow;
     } param;
 
     struct NamedObject_t

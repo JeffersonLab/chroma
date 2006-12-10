@@ -1,10 +1,12 @@
-// $Id: inline_spectrumQll.cc,v 1.5 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_spectrumQll.cc,v 1.6 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline construction of heavy-light baryon spectrum  
  * (infinitely heavy)
  *
  * Spectrum (Qll) calculations
  */
+
+#error "DEPRECATED - TAKEN OUT OF MAKEFILE"
 
 #include "meas/inline/hadron/inline_spectrumQll.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
@@ -353,41 +355,8 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      std::istringstream  xml_s(prop_header.fermact.xml);
-      XMLReader  fermacttop(xml_s);
-      Real Mass;
-
       QDPIO::cout << "Try action and mass" << endl;
-      try
-      {
-	XMLReader top(fermacttop, prop_header.fermact.path);
-
-	// Yuk - need to hop some hoops. This should be isolated.
-	if (top.count("Mass") != 0) 
-	{
-	  read(top, "Mass", Mass);
-	}
-	else if (top.count("Kappa") != 0)
-	{
-	  Real Kappa;
-	  read(top, "Kappa", Kappa);
-	  Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-	}
-	else if (top.count("m_q") != 0) 
-	{
-	  read(top, "m_q", Mass);
-	}
-	else
-	{
-	  QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
-	  throw std::string("Neither Mass nor Kappa found");
-	}
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << "Error reading fermact or mass: " << e << endl;
-	QDP_abort(1);
-      }
+      Real Mass = getMass(prop_header.fermact);
     
       QDPIO::cout << "FermAct = " << prop_header.fermact.id << endl;
       QDPIO::cout << "Mass = " << Mass << endl;

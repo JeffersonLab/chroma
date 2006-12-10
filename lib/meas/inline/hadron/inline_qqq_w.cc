@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 3.3 2006-11-17 02:17:31 edwards Exp $
+// $Id: inline_qqq_w.cc,v 3.4 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -273,16 +273,18 @@ namespace Chroma
     SftMom phases(0, true, j_decay);
 
     // Sanity check - write out the propagator (pion) correlator in the j_decay direction
+    push(xml_out, "SinkSmearedProp_correlator");
     for(int i=0; i < Nprops; ++i)
     {
       multi1d<Double> prop_corr = sumMulti(localNorm2(TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[i])), 
 					   phases.getSet());
 
-      push(xml_out, "SinkSmearedProp_correlator");
+      push(xml_out, "elem");
       write(xml_out, "correlator_num", i);
       write(xml_out, "sink_smeared_prop_corr", prop_corr);
       pop(xml_out);
     }
+    pop(xml_out);
 
     /*
      * Generalized propagator calculation

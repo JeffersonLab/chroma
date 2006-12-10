@@ -1,17 +1,19 @@
 // -*- C++ -*-
-// $Id: inline_spectrumQll.h,v 1.2 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_spectrumQll.h,v 1.3 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
  * Heavy-light baryon Spectrum calculations (infinitely heavy quark: Qll)
  */
 
+#error "DEPRECATED - TAKEN OUT OF MAKEFILE"
+
+
 #ifndef __inline_spectrumQll_h__
 #define __inline_spectrumQll_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/smearing_io.h"
 
 namespace Chroma 
 { 
@@ -47,8 +49,6 @@ namespace Chroma
       int           link_smear_num;  // number of smearing hits
 
       multi1d<int> Qsrc_coord ;
-
-      multi1d<int> nrow;
     } param;
 
     struct NamedObject_t

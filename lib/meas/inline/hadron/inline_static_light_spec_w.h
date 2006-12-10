@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_static_light_spec_w.h,v 1.1 2006-10-17 15:43:44 kostas Exp $
+// $Id: inline_static_light_spec_w.h,v 1.2 2006-12-10 02:02:42 edwards Exp $
 /*! \file
  * \brief Inline static light spectrum calculations
  *
@@ -11,7 +11,6 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/smearing_io.h"
 
 namespace Chroma 
 { 
@@ -38,8 +37,6 @@ namespace Chroma
       bool BaryonP;            // Baryons spectroscopy
       bool MesonPot;           // Meson potential 
       bool BaryonPot;          // Baryon potential 
-
-      //      multi1d<int> nrow;
     } param;
 
     struct NamedObject_t
