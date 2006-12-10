@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: enum_wvfkind_io.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: enum_wvfkind_io.h,v 3.1 2006-12-10 02:06:45 edwards Exp $
 /*! \file
  * \brief Wavekind enum
  */
@@ -10,7 +10,6 @@
 #include <string>
 #include "singleton.h"
 #include "io/enum_io/enum_type_map.h"
-#include "meas/smear/wvfkind.h"  // This is where the enum is defined
 
 
 namespace Chroma {
@@ -22,6 +21,16 @@ namespace Chroma {
    *
    * @{
    */
+
+  //! Wave-function types for smearing
+  enum WvfKind {
+    WVF_KIND_GAUSSIAN,
+    WVF_KIND_EXPONENTIAL,
+    WVF_KIND_GAUGE_INV_GAUSSIAN,
+    WVF_KIND_WUPPERTAL,
+    WVF_KIND_JACOBI
+  };
+
   namespace WvfKindEnv { 
     extern const string typeIDString;
     extern bool registered; 
