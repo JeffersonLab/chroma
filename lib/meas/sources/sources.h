@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sources.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: sources.h,v 3.1 2006-12-10 02:04:57 edwards Exp $
 
 /*! \file
  * \brief Quark sources
@@ -18,8 +18,6 @@
 
 #include "srcfil.h"
 #include "z2_src.h"
-#include "srcsnktype.h"
-#include "wavetype.h"
 #include "srcfil.h"
 #include "zN_src.h"
 

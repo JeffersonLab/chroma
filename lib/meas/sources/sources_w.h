@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sources_w.h,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: sources_w.h,v 3.1 2006-12-10 02:04:57 edwards Exp $
 /*! \file
  * \brief Quark sources
  *
@@ -9,8 +9,6 @@
 #ifndef __sources_w_h__
 #define __sources_w_h__
 
-#include "p_src_w.h"
-#include "d_src_w.h"
 #include "walfil_w.h"
 
 #endif
