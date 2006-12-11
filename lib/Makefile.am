@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.60 2006-12-10 01:54:50 edwards Exp $
+# $Id: Makefile.am,v 3.61 2006-12-11 17:19:44 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -434,6 +434,7 @@ nobase_include_HEADERS += \
 	meas/hadron/baryon_seqsrc_w.h \
 	meas/hadron/simple_baryon_seqsrc_w.h \
 	meas/hadron/barspinmat_w.h \
+	meas/hadron/baryon_spinmat_funcmap_w.h \
 	meas/hadron/simple_baryon_operator_w.h \
 	meas/hadron/group_baryon_operator_w.h \
 	meas/hadron/barhqlq_w.h meas/hadron/baryon_w.h \
@@ -1021,6 +1022,7 @@ libchroma_a_SOURCES += \
         meas/hadron/baryon_seqsrc_w.cc \
         meas/hadron/simple_baryon_seqsrc_w.cc \
 	meas/hadron/barspinmat_w.cc \
+	meas/hadron/baryon_spinmat_funcmap_w.cc \
         meas/hadron/simple_baryon_operator_w.cc \
         meas/hadron/group_baryon_operator_w.cc \
 	meas/hadron/baryon_w.cc meas/hadron/BuildingBlocks_w.cc \
