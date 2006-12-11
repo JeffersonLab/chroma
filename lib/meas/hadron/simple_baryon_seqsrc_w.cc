@@ -1,4 +1,4 @@
-// $Id: simple_baryon_seqsrc_w.cc,v 3.3 2006-11-28 20:00:49 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.cc,v 3.4 2006-12-11 17:20:34 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -7,7 +7,9 @@
 #include "meas/hadron/seqsource_factory_w.h"
 #include "meas/hadron/barspinmat_w.h"
 #include "meas/hadron/barhqlq_w.h"
+#include "meas/hadron/baryon_spinmat_funcmap_w.h"
 #include "util/ft/sftmom.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 {
@@ -24,6 +26,49 @@ namespace Chroma
   {
     param.writeXML(xml, path);
   }
+
+
+  namespace SimpleBaryonSeqSourceEnv
+  { 
+    //! The T and Spin struct
+    /*! \ingroup hadron */
+    struct SpinMatTsp_t
+    {
+      GroupXML_t  T_xml;          /*!< Holds source xml params*/
+      SpinMatrix  T;
+
+      GroupXML_t  sp_xml;         /*!< Holds source xml params*/
+      SpinMatrix  sp;
+    };
+  }
+
+
+  //! Read a T and sp struct
+  /*! \ingroup hadron */
+  void read(XMLReader& xml, const string& path, SimpleBaryonSeqSourceEnv::SpinMatTsp_t& param)
+  {
+    XMLReader paramtop(xml, path);
+
+    param.T_xml   = readXMLGroup(paramtop, "Projector", "name");
+    param.sp_xml  = readXMLGroup(paramtop, "DiquarkSpin", "name");
+
+    param.T = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(
+      param.T_xml.id, paramtop, param.T_xml.path);
+    param.sp = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(
+      param.sp_xml.id, paramtop, param.sp_xml.path);
+  }
+
+  // Writer
+  void write(XMLWriter& xml, const string& path, const SimpleBaryonSeqSourceEnv::SpinMatTsp_t& param)
+  {
+    push(xml, path);
+
+    xml << param.T_xml.xml;
+    xml << param.sp_xml.xml;
+
+    pop(xml);
+  }
+
 
 
   // Anonymous namespace
@@ -408,6 +453,40 @@ namespace Chroma
 
       //-------------------- callback functions ---------------------------------------
 
+      //! "\bar u O u" insertion in nucleon-nucleon */
+      /*!
+       * \ingroup hadron
+       *
+       * This is a generic version
+       */
+      HadronSeqSource<LatticePropagator>* barNuclNuclU(XMLReader& xml_in,
+						       const std::string& path)
+      {
+	// Determine the spin matrices
+	SpinMatTsp_t spin;
+	read(xml_in, path, spin);
+    
+	return new BarNuclUTCg5(Params(xml_in, path), spin.T, spin.sp);
+      }
+
+
+      //! "\bar d O d" insertion in nucleon-nucleon */
+      /*!
+       * \ingroup hadron
+       *
+       * This is a generic version
+       */
+      HadronSeqSource<LatticePropagator>* barNuclNuclD(XMLReader& xml_in,
+						       const std::string& path)
+      {
+	// Determine the spin matrices
+	SpinMatTsp_t spin;
+	read(xml_in, path, spin);
+    
+	return new BarNuclDTCg5(Params(xml_in, path), spin.T, spin.sp);
+      }
+
+
       //! "\bar u O u" insertion in proton, ie.  "(u C gamma_5 d) u" */
       /*!
        * \ingroup hadron
@@ -611,6 +690,42 @@ namespace Chroma
 	return new BarNuclDTCg5(Params(xml_in, path), BaryonSpinMats::Tmixed(), BaryonSpinMats::Cg5NR());
       }
   
+
+
+      //! "\bar u O u" insertion in delta-delta */
+      /*!
+       * \ingroup hadron
+       *
+       * This is a generic version
+       */
+      HadronSeqSource<LatticePropagator>* barDeltaDeltaU(XMLReader& xml_in,
+							 const std::string& path)
+      {
+	// Determine the spin matrices
+	SpinMatTsp_t spin;
+	read(xml_in, path, spin);
+    
+	return new BarDeltaUTsp(Params(xml_in, path), spin.T, spin.sp);
+      }
+
+
+      //! "\bar d O d" insertion in delta-delta */
+      /*!
+       * \ingroup hadron
+       *
+       * This is a generic version
+       */
+      HadronSeqSource<LatticePropagator>* barDeltaDeltaD(XMLReader& xml_in,
+							 const std::string& path)
+      {
+	// Determine the spin matrices
+	SpinMatTsp_t spin;
+	read(xml_in, path, spin);
+    
+	return new BarDeltaDTsp(Params(xml_in, path), spin.T, spin.sp);
+      }
+
+
       //! "\bar u O u" insertion in Delta^+ "2*(u sp d) u + (u sp u) d" */
       /*!
        * \ingroup hadron
@@ -664,7 +779,16 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	//! Register needed stuff
+	success &= BaryonSpinMatrixEnv::registerAll();
+
 	//! Register all the factories
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL-NUCL_U"), 
+										      barNuclNuclU);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL-NUCL_D"), 
+										      barNuclNuclD);
+
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_UNPOL"), 
 										      barNuclUUnpol);
 
@@ -705,6 +829,12 @@ namespace Chroma
 										      barXiDMixedNR);
 
       
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA-DELTA_U"), 
+										      barDeltaDeltaU);
+
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA-DELTA_D"), 
+										      barDeltaDeltaD);
+
 	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA_U_UNPOL"),
 										      barDeltaUUnpol);
       
