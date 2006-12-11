@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: barspinmat_w.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: barspinmat_w.h,v 3.1 2006-12-11 15:41:16 edwards Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
 
 #ifndef __barspinmat_w_h__
 #define __barspinmat_w_h__
+
+#include "chromabase.h"
 
 namespace Chroma 
 {
