@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.62 2006-12-20 19:14:06 bjoo Exp $
+# $Id: Makefile.am,v 3.63 2006-12-20 20:22:21 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -267,6 +267,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.h \
 	update/molecdyn/integrator/lcm_4mn4fp_recursive.h \
+	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.h \
 	update/molecdyn/integrator/lcm_toplevel_integrator.h \
 	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/hmc/hmc.h\
@@ -893,6 +894,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn4fp_recursive.cc \
+	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
