@@ -11,6 +11,8 @@
 #include "update/molecdyn/integrator/lcm_exp_tdt.h"
 #include "update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h"
 #include "update/molecdyn/integrator/lcm_min_norm2_recursive.h"
+#include "update/molecdyn/integrator/lcm_4mn5fv_recursive.h"
+#include "update/molecdyn/integrator/lcm_4mn4fp_recursive.h"
 
 namespace Chroma 
 {
@@ -60,6 +62,9 @@ namespace Chroma
 	success &=  LatColMatExpTdtIntegratorEnv::registerAll();
 	success &=  LatColMatSTSLeapfrogRecursiveIntegratorEnv::registerAll();
 	success &=  LatColMatMinNorm2RecursiveIntegratorEnv::registerAll();
+
+	success &=  LatColMat4MN4FPRecursiveIntegratorEnv::registerAll();
+	success &=  LatColMat4MN4FVRecursiveIntegratorEnv::registerAll();
 
 	registered = true;
       }
