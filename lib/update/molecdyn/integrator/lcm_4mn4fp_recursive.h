@@ -1,10 +1,10 @@
 // -*- C++ -*-
-// $Id: lcm_4mn4fp_recursive.h,v 3.2 2006-12-20 19:13:47 bjoo Exp $
+// $Id: lcm_4mn4fp_recursive.h,v 3.1 2006-12-20 19:12:43 bjoo Exp $
 
 /*! @file
  * @brief Lat Col Mat 4th order 4 force calculation minimum norm integrator
  *
- * The 4th order 4 force calculation minimum norm integrator (position variant)
+ * The 4th order 5 force calculation minimum norm integrator (position variant)
  * from the paper by Takaishi and deForcrand (eq 26-27). Made recursive through
  * replacing the Momentum update term with a subIntegrator call.
  */

@@ -1,11 +1,12 @@
 // -*- C++ -*-
-// $Id: lcm_4mn5fv_recursive.h,v 1.1 2006-12-20 18:52:31 bjoo Exp $
+// $Id: lcm_4mn5fv_recursive.h,v 1.2 2006-12-20 19:12:43 bjoo Exp $
 
 /*! @file
- * @brief Intgrator for exp(S dt)
+ * @brief Lat Col Mat 4th order 5 force calculation minimum norm integrator
  *
- * A component integrator to integrate exp(Sdt) for some 
- * monomial list S (ie this is a leapP like component)
+ * The 4th order 5 force calculation minimum norm integrator (velocity variant)
+ * from the paper by Takaishi and deForcrand (eq 24-25). Made recursive through
+ * replacing the Momentum update term with a subIntegrator call.
  */
 
 #ifndef LCM_4MN5FV_RECURSIVE_H
@@ -53,7 +54,7 @@ namespace Chroma
 	     const std::string& path, 
 	     const LatColMat4MN5FVRecursiveIntegratorParams& p);
 
-  //! MD integrator interface for PQP leapfrog
+  //! MD integrator interface for 4th order 5 Force Min. Norm. Integrator (Velocity variant)
   /*! @ingroup integrator
    *  Specialised to multi1d<LatticeColorMatrix>
    */
