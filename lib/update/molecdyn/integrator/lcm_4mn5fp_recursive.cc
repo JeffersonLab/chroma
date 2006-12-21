@@ -1,6 +1,6 @@
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
-#include "update/molecdyn/integrator/lcm_4mn5fv_recursive.h"
+#include "update/molecdyn/integrator/lcm_4mn5fp_recursive.h"
 #include "update/molecdyn/integrator/lcm_exp_sdt.h"
 #include "io/xmllog_io.h"
 
@@ -10,7 +10,7 @@ using namespace std;
 namespace Chroma 
 { 
   
-  namespace LatColMat4MN5FVRecursiveIntegratorEnv 
+  namespace LatColMat4MN5FPRecursiveIntegratorEnv 
   {
     namespace
     {
@@ -21,16 +21,16 @@ namespace Chroma
 			 const std::string& path)
       {
 	// Read the integrator params
-	LatColMat4MN5FVRecursiveIntegratorParams p(xml, path);
+	LatColMat4MN5FPRecursiveIntegratorParams p(xml, path);
     
-	return new LatColMat4MN5FVRecursiveIntegrator(p);
+	return new LatColMat4MN5FPRecursiveIntegrator(p);
       }
       
       //! Local registration flag
       bool registered = false;
     }
 
-    const std::string name = "LCM_4MN5FV";
+    const std::string name = "LCM_4MN5FP";
 
     //! Register all the factories
     bool registerAll() 
@@ -46,7 +46,7 @@ namespace Chroma
   }
   
   
-  LatColMat4MN5FVRecursiveIntegratorParams::LatColMat4MN5FVRecursiveIntegratorParams(XMLReader& xml_in, const std::string& path) 
+  LatColMat4MN5FPRecursiveIntegratorParams::LatColMat4MN5FPRecursiveIntegratorParams(XMLReader& xml_in, const std::string& path) 
   {
     XMLReader paramtop(xml_in, path);
     // Default values for the tuning constants
@@ -104,21 +104,21 @@ namespace Chroma
       }
     }
     catch ( const std::string& e ) { 
-      QDPIO::cout << "Error reading XML in LatColMat4MN5FVRecursiveIntegratorParams " << e << endl;
+      QDPIO::cout << "Error reading XML in LatColMat4MN5FPRecursiveIntegratorParams " << e << endl;
       QDP_abort(1);
     }
   }
   
   void read(XMLReader& xml, 
 	    const std::string& path, 
-	    LatColMat4MN5FVRecursiveIntegratorParams& p) {
-    LatColMat4MN5FVRecursiveIntegratorParams tmp(xml, path);
+	    LatColMat4MN5FPRecursiveIntegratorParams& p) {
+    LatColMat4MN5FPRecursiveIntegratorParams tmp(xml, path);
     p = tmp;
   }
 
   void write(XMLWriter& xml, 
 	     const std::string& path, 
-	     const LatColMat4MN5FVRecursiveIntegratorParams& p) {
+	     const LatColMat4MN5FPRecursiveIntegratorParams& p) {
     push(xml, path);
     write(xml, "n_steps", p.n_steps);
     write(xml, "monomial_ids", p.monomial_ids);
@@ -133,7 +133,7 @@ namespace Chroma
   }
 
   
-  void LatColMat4MN5FVRecursiveIntegrator::operator()( 
+  void LatColMat4MN5FPRecursiveIntegrator::operator()( 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
 					     multi1d<LatticeColorMatrix> >& s, 
 					     const Real& traj_length) const
@@ -167,51 +167,51 @@ namespace Chroma
     // But unrolled
     // Map exp( V ) -> expS
     // Map exp( T ) -> subIntegrator() (eg at lowest level of recursion)
-    expSdt(s, theta_dtau);
+    subIntegrator(s, theta_dtau);
     
-    subIntegrator(s, rho_dtau);
+    expSdt(s, rho_dtau);
 
-    expSdt(s, lambda_dtau);
+    subIntegrator(s, lambda_dtau);
     
-    subIntegrator(s, mu_dtau);
+    expSdt(s, mu_dtau);
     
-    expSdt(s, one_minus_two_lambda_plus_theta_dtau_by2);
+    subIntegrator(s, one_minus_two_lambda_plus_theta_dtau_by2);
     
-    subIntegrator(s, one_minus_two_mu_plus_rho_dtau);
+    expSdt(s, one_minus_two_mu_plus_rho_dtau);
     
-    expSdt(s, one_minus_two_lambda_plus_theta_dtau_by2);
+    subIntegrator(s, one_minus_two_lambda_plus_theta_dtau_by2);
     
-    subIntegrator(s, mu_dtau);
+    expSdt(s, mu_dtau);
     
-    expSdt(s, lambda_dtau);
+    subIntegrator(s, lambda_dtau);
     
-    subIntegrator(s, rho_dtau);
+    expSdt(s, rho_dtau);
      
     for(int step=0; step < params.n_steps-1; ++step) {
       // One for the end of the previous and one for the start of current
-      expSdt(s, two_theta_dtau);
+      subIntegrator(s, two_theta_dtau);
       
-      subIntegrator(s, rho_dtau);
+      expSdt(s, rho_dtau);
 
-      expSdt(s, lambda_dtau);
+      subIntegrator(s, lambda_dtau);
 
-      subIntegrator(s, mu_dtau);
+      expSdt(s, mu_dtau);
 
-      expSdt(s, one_minus_two_lambda_plus_theta_dtau_by2);
+      subIntegrator(s, one_minus_two_lambda_plus_theta_dtau_by2);
 
-      subIntegrator(s, one_minus_two_mu_plus_rho_dtau);
+      expSdt(s, one_minus_two_mu_plus_rho_dtau);
 
-      expSdt(s, one_minus_two_lambda_plus_theta_dtau_by2);
+      subIntegrator(s, one_minus_two_lambda_plus_theta_dtau_by2);
 
-      subIntegrator(s, mu_dtau);
+      expSdt(s, mu_dtau);
 
-      expSdt(s, lambda_dtau);
+      subIntegrator(s, lambda_dtau);
 
-      subIntegrator(s, rho_dtau);
+      expSdt(s, rho_dtau);
     }
 
     // Finish off the last one
-    expSdt(s, theta_dtau);
+    subIntegrator(s, theta_dtau);
 
     END_CODE();
 
