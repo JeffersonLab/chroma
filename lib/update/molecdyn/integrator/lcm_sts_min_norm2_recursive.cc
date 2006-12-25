@@ -1,6 +1,6 @@
 #include "chromabase.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
-#include "update/molecdyn/integrator/lcm_min_norm2_recursive.h"
+#include "update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h"
 #include "update/molecdyn/integrator/lcm_exp_sdt.h"
 #include "io/xmllog_io.h"
 
@@ -10,7 +10,7 @@ using namespace std;
 namespace Chroma 
 { 
   
-  namespace LatColMatMinNorm2RecursiveIntegratorEnv 
+  namespace LatColMatSTSMinNorm2RecursiveIntegratorEnv 
   {
     namespace
     {
@@ -21,16 +21,16 @@ namespace Chroma
 			 const std::string& path)
       {
 	// Read the integrator params
-	LatColMatMinNorm2RecursiveIntegratorParams p(xml, path);
+	LatColMatSTSMinNorm2RecursiveIntegratorParams p(xml, path);
     
-	return new LatColMatMinNorm2RecursiveIntegrator(p);
+	return new LatColMatSTSMinNorm2RecursiveIntegrator(p);
       }
       
       //! Local registration flag
       bool registered = false;
     }
 
-    const std::string name = "LCM_MIN_NORM_2";
+    const std::string name = "LCM_STS_MIN_NORM_2";
 
     //! Register all the factories
     bool registerAll() 
@@ -46,7 +46,7 @@ namespace Chroma
   }
   
   
-  LatColMatMinNorm2RecursiveIntegratorParams::LatColMatMinNorm2RecursiveIntegratorParams(XMLReader& xml_in, const std::string& path) 
+  LatColMatSTSMinNorm2RecursiveIntegratorParams::LatColMatSTSMinNorm2RecursiveIntegratorParams(XMLReader& xml_in, const std::string& path) 
   {
     XMLReader paramtop(xml_in, path);
     try {
@@ -89,21 +89,21 @@ namespace Chroma
       }
     }
     catch ( const std::string& e ) { 
-      QDPIO::cout << "Error reading XML in LatColMatMinNorm2RecursiveIntegratorParams " << e << endl;
+      QDPIO::cout << "Error reading XML in LatColMatSTSMinNorm2RecursiveIntegratorParams " << e << endl;
       QDP_abort(1);
     }
   }
   
   void read(XMLReader& xml, 
 	    const std::string& path, 
-	    LatColMatMinNorm2RecursiveIntegratorParams& p) {
-    LatColMatMinNorm2RecursiveIntegratorParams tmp(xml, path);
+	    LatColMatSTSMinNorm2RecursiveIntegratorParams& p) {
+    LatColMatSTSMinNorm2RecursiveIntegratorParams tmp(xml, path);
     p = tmp;
   }
 
   void write(XMLWriter& xml, 
 	     const std::string& path, 
-	     const LatColMatMinNorm2RecursiveIntegratorParams& p) {
+	     const LatColMatSTSMinNorm2RecursiveIntegratorParams& p) {
     push(xml, path);
     write(xml, "n_steps", p.n_steps);
     write(xml, "monomial_ids", p.monomial_ids);
@@ -114,7 +114,7 @@ namespace Chroma
 
   
 
-  void LatColMatMinNorm2RecursiveIntegrator::operator()( 
+  void LatColMatSTSMinNorm2RecursiveIntegrator::operator()( 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
 					     multi1d<LatticeColorMatrix> >& s, 
 					     const Real& traj_length) const
