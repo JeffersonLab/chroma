@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.2 2006-12-02 21:40:30 edwards Exp $
+#  $Id: regres.pl,v 3.3 2006-12-25 21:50:55 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -17,13 +17,5 @@
 	 log         => "hmc.prec_wilson.candidate.xml",
 	 metric      => "$test_dir/hmc/hmc.prec_wilson.metric.xml" ,
 	 controlfile => "$test_dir/hmc/hmc.prec_wilson.log.xml" ,
-     },
-     {
-	 exec_path   => "$top_builddir/mainprogs/main" ,
-	 execute     => "hmc_new" ,
-	 input       => "$test_dir/hmc/hmc_new.prec_wilson.ini.xml" , 
-	 log         => "hmc_new.prec_wilson.candidate.xml",
-	 metric      => "$test_dir/hmc/hmc_new.prec_wilson.metric.xml",
-	 controlfile => "$test_dir/hmc/hmc_new.prec_wilson.log.xml",
      }
      );
