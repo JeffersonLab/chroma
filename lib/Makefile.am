@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.65 2006-12-25 21:40:16 bjoo Exp $
+# $Id: Makefile.am,v 3.66 2006-12-25 21:56:54 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -773,6 +773,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugestates/simple_gaugestate.cc \
 	actions/gauge/gaugestates/stout_gaugestate.cc \
 	io/eigen_io.cc \
+	io/monomial_io.cc \
         io/enum_io/enum_cfgtype_io.cc \
 	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
