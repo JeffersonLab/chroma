@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: integrator.h,v 3.1 2006-11-28 16:49:42 bjoo Exp $
+// $Id: integrator.h,v 3.2 2006-12-25 21:40:17 bjoo Exp $
 
 /*! \file
  * \brief HMD integrators
@@ -19,18 +19,17 @@
 #include "update/molecdyn/integrator/abs_integrator.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
 #include "update/molecdyn/integrator/lcm_integrator_leaps.h"
-#include "update/molecdyn/integrator/lcm_pqp_leapfrog.h"
-#include "update/molecdyn/integrator/lcm_sexton_weingarten.h"
-#include "update/molecdyn/integrator/lcm_minimum_norm2_integrator.h"
-#include "update/molecdyn/integrator/lcm_sw_min_mixed.h"
-
-// Multi timescale integrators from Carsten
-#include "update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h"
-#include "update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h"
-#include "update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h"
-
 #include "update/molecdyn/integrator/integrator_shared.h"
 #include "update/molecdyn/integrator/lcm_toplevel_integrator.h"
+
+#include "update/molecdyn/integrator/lcm_exp_sdt.h"
+#include "update/molecdyn/integrator/lcm_exp_tdt.h"
+#include "update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h"
+#include "update/molecdyn/integrator/lcm_min_norm2_recursive.h"
+#include "update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.h"
+#include "update/molecdyn/integrator/lcm_4mn4fp_recursive.h"
+#include "update/molecdyn/integrator/lcm_4mn5fp_recursive.h"
+#include "update/molecdyn/integrator/lcm_4mn5fv_recursive.h"
 
 #include "update/molecdyn/integrator/integrator_aggregate.h"
 #endif

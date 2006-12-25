@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: integrator_aggregate.h,v 3.3 2006-11-07 23:11:01 bjoo Exp $
+// $Id: integrator_aggregate.h,v 3.4 2006-12-25 21:40:17 bjoo Exp $
 
 #ifndef INTEGRATOR_AGGREGATE_H
 #define INTEGRATOR_AGGREGATE_H
@@ -11,11 +11,6 @@ namespace Chroma
 { 
   //! Registration aggregator
   /*! @ingroup monomial */
-  namespace LCMMDIntegratorAggregateEnv 
-  {
-    bool registerAll();
-  }
-
   namespace LCMMDComponentIntegratorAggregateEnv 
   {
     bool registerAll();

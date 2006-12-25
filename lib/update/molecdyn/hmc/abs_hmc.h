@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hmc.h,v 3.5 2006-12-25 21:10:54 bjoo Exp $
+// $Id: abs_hmc.h,v 3.6 2006-12-25 21:40:17 bjoo Exp $
 /*! \file
  * \brief Abstract HMC trajectory Using the new structure
  *
@@ -23,11 +23,11 @@ namespace Chroma
   //! Abstract HMC trajectory
   /*! @ingroup hmc */
   template<typename P, typename Q>
-  class AbsHMCTrjNew {
+  class AbsHMCTrj {
   public: 
     
     // Virtual destructor
-    virtual ~AbsHMCTrjNew() {};
+    virtual ~AbsHMCTrj() {};
     
 
     // Do the HMC trajectory
@@ -36,8 +36,8 @@ namespace Chroma
     {
       START_CODE();
 
-      AbsMDIntegratorNew<P,Q>& MD = getMDIntegrator();
-      NewAbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
+      AbsMDIntegrator<P,Q>& MD = getMDIntegrator();
+      AbsHamiltonian<P,Q>& H_MC = getMCHamiltonian();
 
       XMLWriter& xml_out = TheXMLOutputWriter::Instance();
       XMLWriter& xml_log = TheXMLLogWriter::Instance();
@@ -153,10 +153,10 @@ namespace Chroma
     
   protected:
     // Get at the Exact Hamiltonian
-    virtual NewAbsHamiltonian<P,Q>& getMCHamiltonian(void) = 0;
+    virtual AbsHamiltonian<P,Q>& getMCHamiltonian(void) = 0;
     
     // Get at the TopLevelIntegrator
-    virtual AbsMDIntegratorNew<P,Q>& getMDIntegrator(void)  = 0;
+    virtual AbsMDIntegrator<P,Q>& getMDIntegrator(void)  = 0;
     
     virtual void refreshP(AbsFieldState<P,Q>& state) const = 0;
     

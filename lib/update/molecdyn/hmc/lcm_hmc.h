@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_hmc.h,v 3.3 2006-12-25 21:10:55 bjoo Exp $
+// $Id: lcm_hmc.h,v 3.4 2006-12-25 21:40:17 bjoo Exp $
 /*! \file
  * \brief HMC trajectory
  *
@@ -13,7 +13,7 @@
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
 #include "update/molecdyn/integrator/abs_integrator.h"
-#include "update/molecdyn/hmc/abs_hmc_new.h"
+#include "update/molecdyn/hmc/abs_hmc.h"
 #include "handle.h"
 // The accept Reject
 #include "update/molecdyn/hmc/global_metropolis_accrej.h"
@@ -26,30 +26,30 @@ namespace Chroma
 
   //! HMC trajectory
   /*! @ingroup hmc */
-  class LatColMatHMCTrjNew : public AbsHMCTrjNew<multi1d<LatticeColorMatrix>, 
+  class LatColMatHMCTrj : public AbsHMCTrj<multi1d<LatticeColorMatrix>, 
 			  multi1d<LatticeColorMatrix> > 
   {
   public:
 
     // Destructor
-    ~LatColMatHMCTrjNew(void) {} 
+    ~LatColMatHMCTrj(void) {} 
 
     // Constructor
-    LatColMatHMCTrjNew( Handle< NewAbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _H_MC,
-			Handle< AbsMDIntegratorNew< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _MD_int)
+    LatColMatHMCTrj( Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _H_MC,
+			Handle< AbsMDIntegrator< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >& _MD_int)
 		     : the_MD(_MD_int), the_H_MC(_H_MC) {}
 
   private:
-    Handle< AbsMDIntegratorNew<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > the_MD; 
+    Handle< AbsMDIntegrator<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > the_MD; 
 
-    Handle< NewAbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > the_H_MC;
+    Handle< AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > the_H_MC;
   protected:
 
-    NewAbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMCHamiltonian(void) { 
+    AbsHamiltonian< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMCHamiltonian(void) { 
       return *the_H_MC;
     }
 
-    AbsMDIntegratorNew< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMDIntegrator(void) {
+    AbsMDIntegrator< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMDIntegrator(void) {
       return *the_MD;
     }
 

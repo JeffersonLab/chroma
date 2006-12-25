@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: md_integrator_factory.h,v 3.3 2006-11-20 19:15:02 bjoo Exp $
+// $Id: md_integrator_factory.h,v 3.4 2006-12-25 21:40:18 bjoo Exp $
 /*! \file
  *  \brief Integrator factories
  */
@@ -29,26 +29,6 @@ namespace Chroma
   /*! @ingroup integrator */
   typedef AbsHamiltonian<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > LCMHam;
   
-  //! A factory for exact non-fermionic monomials
-  /*! @ingroup integrator */
-  typedef SingletonHolder< 
-  ObjectFactory<
-    AbsMDIntegrator< multi1d<LatticeColorMatrix>, 
-		     multi1d<LatticeColorMatrix> >,
-    std::string,
-
-    TYPELIST_3(XMLReader&, 
-	       const std::string&, 
-	       Handle< LCMHam >& ),
-
-    AbsMDIntegrator< multi1d<LatticeColorMatrix>, 
-		     multi1d<LatticeColorMatrix> >* (*)(
-							XMLReader&,
-						        const std::string&,
-							Handle<LCMHam>&),
-    StringFactoryError> >
-  TheMDIntegratorFactory;
-
   //! A factory for component integrators
   /*! @ingroup integrator */
   typedef SingletonHolder< 

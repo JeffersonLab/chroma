@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: exact_hamiltonian.h,v 3.3 2006-11-20 19:12:54 bjoo Exp $
+// $Id: exact_hamiltonian.h,v 3.4 2006-12-25 21:40:17 bjoo Exp $
 /*! \file
  * \brief Exact Hamiltonians
  */
@@ -19,122 +19,47 @@
 namespace Chroma 
 {
 
-  //! Exact Hamiltonian
-  /*! @ingroup hamilton */
-  class ExactLatColMatHamiltonian : public ExactAbsHamiltonian<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > 
-  {
-  public:
-    ExactLatColMatHamiltonian(XMLReader& xml, const std::string path) 
-    {
-      START_CODE();
-
-      XMLReader paramtop(xml,path);
-      multi1d< Handle< 
-	         ExactMonomial<
- 	           multi1d<LatticeColorMatrix>,
-	           multi1d<LatticeColorMatrix> 
-	         > 
-	> > monomial_array;
-
-      try { 
-	read(paramtop, "./Monomials", monomial_array);
-      }
-      catch( const std::string& e ) { 
-	QDPIO::cerr << "Error Reading Monomials " << e << endl;
-	QDP_abort(1);
-      }
-      
-      QDPIO::cout << "Read " << monomial_array.size() << " monomials" << endl;
-      monomials = monomial_array;
-      QDPIO::cout << "Leaving function" << endl;
-    
-      END_CODE();
-    }
-
-    // Constructor
-    ExactLatColMatHamiltonian( multi1d< Handle< ExactMonomial<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > >& monomials_ ) : monomials(monomials_) {}
-
-    // Copy Constructor
-    ExactLatColMatHamiltonian( const ExactLatColMatHamiltonian& H ) : monomials(H.monomials) {}
-
-
-    //! The Kinetic Energy
-    Double mesKE(const AbsFieldState<multi1d<LatticeColorMatrix>,
-		 multi1d<LatticeColorMatrix> >& s) const 
-    {
-      START_CODE();
-
-      // Self Description Rule
-      XMLWriter& xml_out = TheXMLLogWriter::Instance();
-      push(xml_out, "mesKE");
-	
-      // may need to loop over the indices of P?
-      Double KE=Double(0);
-      for(int mu=0; mu < s.getP().size(); mu++) { 
-	KE += norm2((s.getP())[mu]);
-      }
-
-      write(xml_out, "KE", KE);
-      pop(xml_out);
-    
-      END_CODE();
-      return KE;
-    }
-    
-  protected:
-    ExactMonomial<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& getMonomial(int i) const {
-      return *(monomials[i]);
-    }
-
-    int numMonomials(void) const {
-      return monomials.size();
-    }
-
-  private:
-    multi1d< Handle< ExactMonomial<multi1d<LatticeColorMatrix>,
-                                   multi1d<LatticeColorMatrix> > > > monomials;
-  };
 
 
   //! Parameter structure for new Hamiltonian
   /*! @ingroup hamilton */
-  struct NewExactHamParams { 
+  struct ExactHamiltonianParams { 
     
     //! Constructor 
-    NewExactHamParams(XMLReader& xml, const std::string& path); 
+    ExactHamiltonianParams(XMLReader& xml, const std::string& path); 
     multi1d<std::string> monomial_ids; /*!< list of monomial IDs */
 
   };
 
   //! Read the parameters for the Hamiltonian
-  void read(XMLReader& xml, const std::string& path, NewExactHamParams& p);
+  void read(XMLReader& xml, const std::string& path, ExactHamiltonianParams& p);
 
   //! Write the parameters for the Hamiltonian
-  void write(XMLWriter& xml, const std::string& path, const NewExactHamParams& p);
+  void write(XMLWriter& xml, const std::string& path, const ExactHamiltonianParams& p);
 
 
   //! The Exact Hamiltonian Class - supplies internal field refreshment and energy calculations
   /*! @ingroup hamilton */
-  class NewExactHam : public NewAbsHamiltonian< multi1d<LatticeColorMatrix>, 
+  class ExactHamiltonian : public AbsHamiltonian< multi1d<LatticeColorMatrix>, 
 		      multi1d<LatticeColorMatrix> >
   {
   public:
 
     //! Construct from a list of string monomial_ids
-    NewExactHam(const multi1d<std::string>& monomial_ids_)  {
+    ExactHamiltonian(const multi1d<std::string>& monomial_ids_)  {
       create(monomial_ids_);
     }
    
     //! Construct from a parameter structure
-    NewExactHam(const NewExactHamParams& p) {
+    ExactHamiltonian(const ExactHamiltonianParams& p) {
       create(p.monomial_ids);
     }
 
     //! Copy constructor
-    NewExactHam(const NewExactHam& H) : monomials(H.monomials) {}
+    ExactHamiltonian(const ExactHamiltonian& H) : monomials(H.monomials) {}
 
     //! Destructor 
-    ~NewExactHam(void) {}
+    ~ExactHamiltonian(void) {}
 
     //! Internal Field Refreshment 
     void refreshInternalFields(const AbsFieldState<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> >& s)  

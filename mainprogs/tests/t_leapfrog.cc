@@ -98,8 +98,8 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
 
-  NewExactHamParams ham_params(paramtop, "./Hamiltonian");
-  NewExactHam H(ham_params);
+  ExactHamiltonianParams ham_params(paramtop, "./Hamiltonian");
+  ExactHamiltonian H(ham_params);
 
   // create toplevel integrator
   LCMToplevelIntegratorParams int_par(paramtop, "./MDIntegrator");

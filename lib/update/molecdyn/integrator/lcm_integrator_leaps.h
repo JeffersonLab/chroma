@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_integrator_leaps.h,v 3.2 2006-11-20 19:15:02 bjoo Exp $
+// $Id: lcm_integrator_leaps.h,v 3.3 2006-12-25 21:40:17 bjoo Exp $
 
 #ifndef LCM_INTEGRATOR_LEAPS
 #define LCM_INTEGRATOR_LEAPS
@@ -18,33 +18,12 @@ namespace Chroma
   namespace LCMMDIntegratorSteps 
   {
 
-    //! LeapP for just a selected list of monomials
-    /*! @ingroup integrator */
-    void leapP(const Real& dt, 
-
-	       AbsHamiltonian<multi1d<LatticeColorMatrix>,
-	                      multi1d<LatticeColorMatrix> >& H,
-
-	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	                     multi1d<LatticeColorMatrix> >& s);
-
     //! Leap with Q (with all monomials)
     /*! @ingroup integrator */
     void leapQ(const Real& dt, 
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
 	                     multi1d<LatticeColorMatrix> >& s);
 
-
-    //! LeapP for just a selected list of monomials
-    /*! @ingroup integrator */
-    void leapP(const multi1d<int>& monomial_list,
-	       const Real& dt, 
-
-	        AbsHamiltonian<multi1d<LatticeColorMatrix>,
-	                      multi1d<LatticeColorMatrix> >& H,
-
-	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	                     multi1d<LatticeColorMatrix> >& s);
 
     // LeapP update for just a list of Monomials in an array of handles
     void leapP(const multi1d< 

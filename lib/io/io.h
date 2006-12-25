@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 3.1 2006-12-10 02:06:59 edwards Exp $
+// $Id: io.h,v 3.2 2006-12-25 21:40:17 bjoo Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -37,7 +37,6 @@
 #include "io_s.h"
 
 #include "monomial_io.h"
-#include "hamiltonian_io.h"
 
 #include "inline_io.h"
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.64 2006-12-21 22:46:49 bjoo Exp $
+# $Id: Makefile.am,v 3.65 2006-12-25 21:40:16 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -147,7 +147,6 @@ nobase_include_HEADERS = \
 	io/readszin.h io/szin_io.h \
         io/writemilc.h io/writeszin.h \
 	io/monomial_io.h \
-	io/hamiltonian_io.h \
 	io/xml_group_reader.h \
 	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
@@ -254,16 +253,10 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/integrator_aggregate.h \
 	update/molecdyn/integrator/integrator.h \
 	update/molecdyn/integrator/integrator_shared.h \
+	update/molecdyn/integrator/lcm_integrator_leaps.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
-	update/molecdyn/integrator/lcm_integrator_leaps.h \
-	update/molecdyn/integrator/lcm_minimum_norm2_integrator.h \
-	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.h \
-	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.h \
 	update/molecdyn/integrator/lcm_min_norm2_recursive.h \
-	update/molecdyn/integrator/lcm_pqp_leapfrog.h \
-	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.h \
-	update/molecdyn/integrator/lcm_sexton_weingarten.h \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fp_recursive.h\
@@ -273,9 +266,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/hmc/hmc.h\
 	update/molecdyn/hmc/abs_hmc.h \
-	update/molecdyn/hmc/abs_hmc_new.h \
 	update/molecdyn/hmc/lcm_hmc.h \
-	update/molecdyn/hmc/lcm_hmc_new.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/abs_monomial.h \
@@ -293,7 +284,6 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/lu_solve.h \
 	update/molecdyn/predictor/mre_extrap_predictor.h
 
-#	update/molecdyn/integrator/lcm_sw_min_mixed.h \
 nodist_include_HEADERS=chroma_config_internal.h
 
 # Wilson specific headers
@@ -803,7 +793,6 @@ libchroma_a_SOURCES = \
 	io/param_io.cc io/qprop_io.cc io/readmilc.cc \
 	io/readszin.cc io/szin_io.cc \
 	io/writemilc.cc io/writeszin.cc \
-	io/monomial_io.cc io/hamiltonian_io.cc \
 	io/xml_group_reader.cc \
 	meas/eig/eig_spec.cc meas/eig/eig_spec_array.cc \
 	meas/eig/gramschm.cc meas/eig/gramschm_array.cc \
@@ -885,13 +874,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
 	update/molecdyn/integrator/lcm_integrator_leaps.cc \
-	update/molecdyn/integrator/lcm_minimum_norm2_integrator.cc \
-	update/molecdyn/integrator/lcm_minimum_norm2_integrator_mts.cc \
-	update/molecdyn/integrator/lcm_minimum_norm2_qpq_integrator_mts.cc \
 	update/molecdyn/integrator/lcm_min_norm2_recursive.cc \
-	update/molecdyn/integrator/lcm_pqp_leapfrog.cc \
-	update/molecdyn/integrator/lcm_pqp_leapfrog_mts.cc \
-	update/molecdyn/integrator/lcm_sexton_weingarten.cc \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fp_recursive.cc \
@@ -907,7 +890,7 @@ libchroma_a_SOURCES = \
 #	actions/ferm/invert/invbicg.cc
 #       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
-#	update/molecdyn/integrator/lcm_sw_min_mixed.cc 
+
 
 if BUILD_GMP_REMEZ
 nobase_include_HEADERS += actions/ferm/fermacts/remez_gmp.h

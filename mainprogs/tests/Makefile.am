@@ -82,8 +82,7 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_propagator_twisted \
     t_circular_buffer \
     t_precnef \
-    t_preccfz \
-    t_leapfrog_component
+    t_preccfz
 
 #
 # The programs and their dependencies
@@ -177,7 +176,6 @@ t_preccfz_SOURCES = t_preccfz.cc
 t_lwldslash_array_SOURCES = t_lwldslash_array.cc
 t_stout_state_SOURCES = t_stout_state.cc
 t_aniso_gaugeact_SOURCES = t_aniso_gaugeact.cc
-t_leapfrog_component_SOURCES = t_leapfrog_component.cc
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target

@@ -115,6 +115,7 @@ void readNamedMonomialArray(XMLReader& xml,
       os << "./elem["<< i << "]";
       readNamedMonomial(arraytop, os.str(), monomial_id);
       QDPIO::cout << "Read Monomial with monomial id: " << monomial_id <<endl;
+
     }
   }
   catch( const std::string& e) {

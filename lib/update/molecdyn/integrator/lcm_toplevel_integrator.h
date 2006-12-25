@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_toplevel_integrator.h,v 3.2 2006-11-28 16:49:42 bjoo Exp $
+// $Id: lcm_toplevel_integrator.h,v 3.3 2006-12-25 21:40:18 bjoo Exp $
 
 #ifndef __LCM_TOPLEVEL_INTEGRATOR_H_
 #define __LCM_TOPLEVEL_INTEGRATOR_H_
@@ -41,8 +41,8 @@ namespace Chroma {
   void write(XMLWriter& xml, const std::string& path, const LCMToplevelIntegratorParams& p);
 
   class LCMToplevelIntegrator : public 
-  AbsMDIntegratorNew< multi1d<LatticeColorMatrix>,
-		      multi1d<LatticeColorMatrix> >
+  AbsMDIntegrator< multi1d<LatticeColorMatrix>,
+	           multi1d<LatticeColorMatrix> >
   {
   public:
 

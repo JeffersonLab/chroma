@@ -3,7 +3,7 @@
 namespace Chroma { 
 
 
- NewExactHamParams::NewExactHamParams(XMLReader& xml, const std::string& path) 
+ ExactHamiltonianParams::ExactHamiltonianParams(XMLReader& xml, const std::string& path) 
  {
    monomial_ids.resize(0);
    try { 
@@ -17,20 +17,20 @@ namespace Chroma {
  }
   
 
- void read(XMLReader& xml, const std::string& path, NewExactHamParams& p)
+ void read(XMLReader& xml, const std::string& path, ExactHamiltonianParams& p)
  {
-   NewExactHamParams tmp(xml,path);
+   ExactHamiltonianParams tmp(xml,path);
    p = tmp;
  }
 
- void write(XMLWriter& xml, const std::string& path, const NewExactHamParams& p)
+ void write(XMLWriter& xml, const std::string& path, const ExactHamiltonianParams& p)
  {
    push(xml, path);
    write(xml, "monomial_ids", p.monomial_ids);
    pop(xml);
  }
   
- void NewExactHam::create(const multi1d<std::string>& monomial_ids)
+ void ExactHamiltonian::create(const multi1d<std::string>& monomial_ids)
  {
    // Convenience
    typedef Handle<Monomial< multi1d<LatticeColorMatrix>, 
@@ -61,13 +61,13 @@ namespace Chroma {
 
        // Now try to cast it to be an ExactMonomial handle
        try { 
-	 QDPIO::cout << "NewExactHam::create(): Trying to bind monomial with ID " << monomial_ids[i] << endl;
+	 QDPIO::cout << "ExactHamiltonian::create(): Trying to bind monomial with ID " << monomial_ids[i] << endl;
 	    
 	    
 	 monomials[i] = handle.cast<ExactMon>();
        }
        catch( std::bad_cast ) {
-	 QDPIO::cout << "Failed to cast monomial with ID: " << monomial_ids[i] << " to an ExactMonomial in NewExactHam::create() " << endl;
+	 QDPIO::cout << "Failed to cast monomial with ID: " << monomial_ids[i] << " to an ExactMonomial in ExactHamiltonian::create() " << endl;
 	 QDP_abort(1);
        }
      }
