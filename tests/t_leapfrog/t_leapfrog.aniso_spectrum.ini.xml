@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <LeapfrogTest>
-   <Hamiltonian>
     <Monomials>
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
@@ -22,13 +21,21 @@
 	    <decay_dir>3</decay_dir>
           </GaugeBC>
         </GaugeAction>
+	<NamedObject>
+	  <monomial_id>Gauge</monomial_id> 
+	</NamedObject>
       </elem>
     </Monomials>
+   <Hamiltonian>
+      <monomial_ids><elem>Gauge</elem></monomial_ids>
    </Hamiltonian>
    <MDIntegrator>
-	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<n_steps>10</n_steps>
 	<tau0>1.0</tau0>
+	<Integrator>
+	  <Name>LCM_STS_LEAPFROG</Name>
+	  <n_steps>10</n_steps>
+	  <monomial_ids><elem>Gauge</elem></monomial_ids>
+        </Integrator>
    </MDIntegrator>
    <GaugeStartup>
 	<cfg_type>WEAK_FIELD</cfg_type>
