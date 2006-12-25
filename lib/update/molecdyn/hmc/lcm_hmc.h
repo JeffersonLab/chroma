@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_hmc_new.h,v 3.1 2006-11-28 16:49:42 bjoo Exp $
+// $Id: lcm_hmc.h,v 3.3 2006-12-25 21:10:55 bjoo Exp $
 /*! \file
  * \brief HMC trajectory
  *
