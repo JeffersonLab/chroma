@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <LeapfrogTest>
-   <Hamiltonian>
+
     <Monomials>
       <elem>
 	<Name>TWO_FLAVOR_EOPREC_CONSTDET_FERM_MONOMIAL</Name>
@@ -21,6 +21,7 @@
         <ChronologicalPredictor>
           <Name>LAST_SOLUTION_4D_PREDICTOR</Name>
         </ChronologicalPredictor>
+	<NamedObject><monomial_id>ferm_2flav_light</monomial_id></NamedObject>
       </elem>
       <elem>
 	<Name>TWO_FLAVOR_EOPREC_CONSTDET_HASENBUSCH_FERM_MONOMIAL</Name>
@@ -33,12 +34,6 @@
           <FermAct>PARWILSON</FermAct>
 	  <Kappa>0.11</Kappa>
 	  <H>0.5</H>
-          <!--AnisoParam>
-            <anisoP>true</anisoP>
-            <t_dir>3</t_dir>
-            <xi_0>2.464</xi_0>
-            <nu>0.95</nu>
-          </AnisoParam-->
           <FermionBC>
             <FermBC>SIMPLE_FERMBC</FermBC>
             <boundary>1 1 1 -1</boundary>
@@ -48,17 +43,12 @@
           <FermAct>PARWILSON</FermAct>
           <Kappa>0.11</Kappa>
           <H>0.8</H>
-          <!--AnisoParam>
-            <anisoP>true</anisoP>
-            <t_dir>3</t_dir>
-            <xi_0>2.464</xi_0>
-            <nu>0.95</nu>
-          </AnisoParam-->
           <FermionBC>
             <FermBC>SIMPLE_FERMBC</FermBC>
             <boundary>1 1 1 -1</boundary>
           </FermionBC>
         </FermionActionPrec>
+	<NamedObject><monomial_id>ferm_2flav_hasen</monomial_id></NamedObject>
       </elem>
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
@@ -69,26 +59,37 @@
 		<Name>PERIODIC_GAUGEBC</Name>
            </GaugeBC>
         </GaugeAction>
+	<NamedObject><monomial_id>gauge</monomial_id></NamedObject>
       </elem>
     </Monomials>
-   </Hamiltonian>
+   <Hamiltonian>
+     <monomial_ids><elem>ferm_2flav_light</elem>
+                   <elem>ferm_2flav_hasen</elem>
+		   <elem>gauge</elem>
+     </monomial_ids> 
+  </Hamiltonian>
    <MDIntegrator>
-        <Name>LCM_MINIMUM_NORM_2ND_ORDER_QPQ_INTEGRATOR_MTS</Name>
-	<tau>1.0</tau>
-	<number_of_timescales>3</number_of_timescales>
-	<monomial_list>
-	  <elem>2</elem>
-	  <elem>1</elem>
-	  <elem>0</elem>
-	</monomial_list>
-	<n_steps_list>1 1 1</n_steps_list>
-	<lambda_list>0.19 0.19 0.19</lambda_list>
+        <tau0>1.0</tau0>
+	<Integrator>
+ 	  <Name>LCM_TST_MIN_NORM_2</Name>
+	  <n_steps>1</n_steps>
+	  <monomial_ids><elem>ferm_2flav_light</elem></monomial_ids>
+	  <lambda>0.19</lambda>
+	  <SubIntegrator>
+ 	    <Name>LCM_TST_MIN_NORM_2</Name>
+	    <n_steps>1</n_steps>
+	    <monomial_ids><elem>ferm_2flav_hasen</elem></monomial_ids>
+	    <lambda>0.19</lambda>
+
+  	    <SubIntegrator>
+ 	      <Name>LCM_TST_MIN_NORM_2</Name>
+	      <n_steps>1</n_steps>
+	      <monomial_ids><elem>gauge</elem></monomial_ids>
+	      <lambda>0.19</lambda>
+	    </SubIntegrator>
+	  </SubIntegrator>
+        </Integrator>
    </MDIntegrator>
-   <!--MDIntegrator>
-	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<n_steps>100</n_steps>
-	<tau0>0.05</tau0>
-   </MDIntegratori-->
    <GaugeStartup>
 	<cfg_type>UNIT</cfg_type>
 	<cfg_file>DUMMY</cfg_file>

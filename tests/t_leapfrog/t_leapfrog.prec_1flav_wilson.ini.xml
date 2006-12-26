@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <LeapfrogTest>
-   <Hamiltonian>
+
     <Monomials>
       <elem>
 	<Name>ONE_FLAVOR_EOPREC_CONSTDET_FERM_RAT_MONOMIAL</Name>
@@ -23,6 +23,9 @@
           <forceDegree>10</forceDegree>
           <actionDegree>10</actionDegree>
         </Remez>
+	<NamedObject>
+	  <monomial_id>fermion</monomial_id>
+	</NamedObject>
       </elem>
 
       <elem>
@@ -34,13 +37,21 @@
 		<Name>PERIODIC_GAUGEBC</Name>
            </GaugeBC>
         </GaugeAction>
+	<NamedObject>
+	   <monomial_id>gauge</monomial_id>
+	</NamedObject>
       </elem>
     </Monomials>
+   <Hamiltonian>
+     <monomial_ids><elem>fermion</elem><elem>gauge</elem></monomial_ids>
    </Hamiltonian>
    <MDIntegrator>
-	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-	<n_steps>25</n_steps>
 	<tau0>0.1</tau0>
+	<Integrator>
+	  <Name>LCM_STS_LEAPFROG</Name>
+	  <n_steps>25</n_steps>
+          <monomial_ids><elem>fermion</elem><elem>gauge</elem></monomial_ids>
+        </Integrator>
    </MDIntegrator>
    <GaugeStartup>
 	<cfg_type>UNIT</cfg_type>

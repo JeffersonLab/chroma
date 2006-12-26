@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <LeapfrogTest>
-   <Hamiltonian>
+
     <Monomials>
       <elem>
 	<Name>ONE_FLAVOR_EOPREC_CONSTDET_FERM_RAT_MONOMIAL5D</Name>
@@ -28,6 +28,9 @@
           <degree>10</degree>
           <degreePV>10</degreePV>
         </Remez>
+	<NamedObject>
+	  <monomial_id>dwf_1flav</monomial_id>
+	</NamedObject>
       </elem>
 
       <elem>
@@ -39,13 +42,30 @@
 		<Name>PERIODIC_GAUGEBC</Name>
            </GaugeBC>
         </GaugeAction>
+	<NamedObject>
+	  <monomial_id>gauge</monomial_id>
+	</NamedObject>
+
       </elem>
     </Monomials>
+
+   <Hamiltonian>
+      <monomial_ids>
+        <elem>dwf_1flav</elem>
+	<elem>gauge</elem>
+      </monomial_ids>
    </Hamiltonian>
+
    <MDIntegrator>
-        <Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
-        <n_steps>5</n_steps>
         <tau0>1.0</tau0>
+	<Integrator>
+           <Name>LCM_STS_LEAPFROG</Name>
+           <n_steps>5</n_steps>
+           <monomial_ids>
+            <elem>dwf_1flav</elem>
+   	    <elem>gauge</elem>
+           </monomial_ids>
+	</Integrator>   
    </MDIntegrator>
    <GaugeStartup>
         <cfg_type>WEAK_FIELD</cfg_type>
