@@ -1,4 +1,4 @@
-// $Id: inline_stag_to_wils.cc,v 3.2 2006-11-18 04:56:42 kostas Exp $
+// $Id: inline_stag_to_wils.cc,v 3.3 2006-12-26 04:36:42 kostas Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -339,7 +339,7 @@ namespace Chroma
       {
 	XMLReader xml_tmp(stag_record_xml, "/Propagator");
 
-	push(record_xml, "propagator");
+	push(record_xml, "Propagator");
 	//write(record_xml, "ForwardProp", params.param);
 	//record_xml << params.stateInfo;  // write out the stateinfo - might be empty
 	record_xml << xml_tmp;  // write out all the stuff under MakeSource
