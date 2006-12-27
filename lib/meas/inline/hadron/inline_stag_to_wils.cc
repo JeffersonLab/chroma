@@ -1,4 +1,4 @@
-// $Id: inline_stag_to_wils.cc,v 3.3 2006-12-26 04:36:42 kostas Exp $
+// $Id: inline_stag_to_wils.cc,v 3.4 2006-12-27 18:33:13 kostas Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -175,6 +175,8 @@ namespace Chroma
     int t0;
     int j_decay;
     bool make_sourceP = false;
+    bool SmearedSink = false;
+
     QDPIO::cout << "Snarf the staggered propagator from a named buffer" << endl;
     try
     {
@@ -203,6 +205,24 @@ namespace Chroma
 	// All this should be fixed in the future
 	make_sourceP = true;
       }
+      // When smeared sink propagators are found 
+      // I need to do something different
+      else if (stag_record_xml.count("/SinkSmear") != 0)
+      {
+	SmearedSink=true ;
+	PropSourceConst_t source_header;
+
+	read(stag_record_xml, "/SinkSmear/PropSource", source_header);
+	j_decay = source_header.j_decay;
+	t0 = source_header.t_source;
+	t_srce = source_header.getTSrce() ;
+	//Need to figure out what you do for Wall noise, or Corner sources
+	//plane wall or noise source should not be supported.
+	// corner sources do not exist...
+	// All this should be fixed in the future
+	make_sourceP = true;
+      }
+      
       else
       {
 	throw std::string("No appropriate header found");
@@ -337,13 +357,24 @@ namespace Chroma
       XMLBufferWriter record_xml;
       if (make_sourceP)
       {
-	XMLReader xml_tmp(stag_record_xml, "/Propagator");
-
-	push(record_xml, "Propagator");
-	//write(record_xml, "ForwardProp", params.param);
-	//record_xml << params.stateInfo;  // write out the stateinfo - might be empty
-	record_xml << xml_tmp;  // write out all the stuff under MakeSource
-	pop(record_xml);
+	if(SmearedSink){
+	  XMLReader xml_tmp(stag_record_xml, "/SinkSmear");
+	  
+	  push(record_xml, "SinkSmear");
+	  //write(record_xml, "ForwardProp", params.param);
+	  //record_xml << params.stateInfo;  // write out the stateinfo - might be empty
+	  record_xml << xml_tmp;  // write out all the stuff under MakeSource
+	  pop(record_xml);
+	}
+	else{
+	  XMLReader xml_tmp(stag_record_xml, "/Propagator");
+	  
+	  push(record_xml, "Propagator");
+	  //write(record_xml, "ForwardProp", params.param);
+	  //record_xml << params.stateInfo;  // write out the stateinfo - might be empty
+	  record_xml << xml_tmp;  // write out all the stuff under MakeSource
+	  pop(record_xml);
+	}
       } 
 
       // Write the propagator xml info
