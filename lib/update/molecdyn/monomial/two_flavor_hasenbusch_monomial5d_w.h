@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.7 2006-12-28 15:39:00 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.8 2006-12-28 15:40:58 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -161,14 +161,10 @@ namespace Chroma
 	
       const int N5 = FA.size();
       multi1d<Phi> eta(N5);
-      QDPIO::cout << "N5="<<N5<<endl << flush;
-      QDPIO::cout << "1" << endl << flush;
       eta = zero;
 
-      QDPIO::cout << "2" << endl << flush;
       getPhi() = zero;
 
-      QDPIO::cout << "3a" << endl << flush;
 
       // Fill the eta field with gaussian noise
       for(int s=0; s < N5; ++s) {
@@ -185,7 +181,6 @@ namespace Chroma
       // Build  phi = M_2 * (M_2^dag*M_2)^(-1) * M^dag * eta
       multi1d<Phi> tmp(N5);
 
-      QDPIO::cout << "3" << endl << flush;
       tmp=zero;
 
       (*M)(tmp, eta, MINUS);
