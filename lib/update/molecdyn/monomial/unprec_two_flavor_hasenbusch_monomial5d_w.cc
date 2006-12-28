@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.cc,v 3.4 2006-09-20 20:28:05 edwards Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.cc,v 3.5 2006-12-28 15:39:00 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -149,6 +149,9 @@ namespace Chroma
       QDP_abort(1);
     }
     chrono_predictor = tmp;
+
+    QDPIO::cout << "Initing PF field" << endl;
+    getPhi().resize( fermact->size() );
 
     QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: finished " << param.fermact.id << endl;
     

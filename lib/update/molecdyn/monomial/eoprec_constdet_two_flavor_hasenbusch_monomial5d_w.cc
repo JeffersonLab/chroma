@@ -1,4 +1,4 @@
-// $Id: eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc,v 3.2 2006-12-28 15:39:00 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -152,7 +152,10 @@ namespace Chroma
     }
 
     chrono_predictor = tmp;
-    
+
+    // Initialise the phi fields
+    getPhi().resize(fermact->size());
+
     END_CODE();
   }
 

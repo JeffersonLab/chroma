@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.h,v 3.3 2006-09-20 20:28:05 edwards Exp $
+// $Id: unprec_two_flavor_hasenbusch_monomial5d_w.h,v 3.4 2006-12-28 15:39:00 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -28,7 +28,7 @@ namespace Chroma
    * Monomial is expected to be the same for these fermacts
    */
   class UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5D :
-    public  TwoFlavorExactHasenbuschUnprecWilsonTypeFermMonomial5D< 
+    public  TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial5D< 
       multi1d<LatticeColorMatrix>,
       multi1d<LatticeColorMatrix>,
       LatticeFermion> 
