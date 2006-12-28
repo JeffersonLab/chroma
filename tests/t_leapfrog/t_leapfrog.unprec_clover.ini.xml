@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <LeapfrogTest>
-   <Hamiltonian>
+
     <Monomials>
       <elem>
 	<Name>TWO_FLAVOR_UNPREC_FERM_MONOMIAL</Name>
@@ -26,6 +26,9 @@
             <boundary>1 1 1 -1</boundary>
           </FermionBC>
         </FermionAction>
+	<NamedObject>
+	  <monomial_id>clover</monomial_id>
+	</NamedObject>
       </elem>
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
@@ -36,14 +39,23 @@
 		<Name>PERIODIC_GAUGEBC</Name>
            </GaugeBC>
         </GaugeAction>
+	<NamedObject>
+	  <monomial_id>gauge</monomial_id>
+	</NamedObject>
       </elem>
     </Monomials>
+   <Hamiltonian>
+      <monomial_ids><elem>clover</elem><elem>gauge</elem></monomial_ids>
    </Hamiltonian>
    <MDIntegrator>
-	<Name>LCM_PQP_LEAPFROG_INTEGRATOR</Name>
+      <tau0>0.5</tau0>
+      <Integrator>
+	<Name>LCM_STS_LEAPFROG</Name>
 	<n_steps>50</n_steps>
-	<tau0>0.5</tau0>
+        <monomial_ids><elem>clover</elem><elem>gauge</elem></monomial_ids>
+      </Integrator>
    </MDIntegrator>
+
    <GaugeStartup>
 	<cfg_type>DISORDERED</cfg_type>
 	<cfg_file>DUMMY</cfg_file>
