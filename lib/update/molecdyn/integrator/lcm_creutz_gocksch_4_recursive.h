@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_creutz_gocksch_4_recursive.h,v 1.1 2006-12-20 20:23:00 bjoo Exp $
+// $Id: lcm_creutz_gocksch_4_recursive.h,v 1.2 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Lat Col Mat 4th order Creutz-Gocksch (Campostrini?) Integrator
@@ -93,6 +93,15 @@ namespace Chroma
 	monomials[i]->refreshInternalFields(s);
       }
     }
+
+
+    //! Reset Predictors in just this level
+    void resetPredictorsThisLevel(void) const {
+      for(int i=0; i < monomials.size(); ++i) {
+	monomials[i]->resetPredictors();
+      }
+    }
+
   private:
     LatColMatCreutzGocksch4RecursiveIntegratorParams params;
 

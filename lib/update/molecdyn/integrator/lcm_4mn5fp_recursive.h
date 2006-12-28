@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_4mn5fp_recursive.h,v 3.1 2006-12-21 22:46:52 bjoo Exp $
+// $Id: lcm_4mn5fp_recursive.h,v 3.2 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Lat Col Mat 4th order 5 force calculation minimum norm integrator
@@ -97,6 +97,14 @@ namespace Chroma
 	monomials[i]->refreshInternalFields(s);
       }
     }
+
+    //! Reset Predictors in just this level
+    void resetPredictorsThisLevel(void) const {
+      for(int i=0; i < monomials.size(); ++i) {
+	monomials[i]->resetPredictors();
+      }
+    }
+
   private:
     LatColMat4MN5FPRecursiveIntegratorParams params;
 

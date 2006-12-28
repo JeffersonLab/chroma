@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zero_guess_predictor.h,v 3.2 2006-09-20 20:28:06 edwards Exp $
+// $Id: zero_guess_predictor.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
 /*! \file
  * \brief Zero initial guess predictor
  *
@@ -49,7 +49,6 @@ namespace Chroma
     
     // No internal state so reset is a nop
     void reset(void) {
-      QDPIO::cout << "Resetting Chrono Predictor" << endl;
     }
 
     // Ignore new vector
@@ -100,7 +99,6 @@ namespace Chroma
 
     // No internal state so reset is a Nop
     void reset(void) {
-      QDPIO::cout << "Resetting Chrono Predictor" << endl;
     }
 
     // Ignore new vector

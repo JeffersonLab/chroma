@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_exp_sdt.h,v 3.2 2006-11-20 19:15:02 bjoo Exp $
+// $Id: lcm_exp_sdt.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Intgrator for exp(S dt)
@@ -91,6 +91,13 @@ namespace Chroma
 		                   multi1d<LatticeColorMatrix> >& s) const { 
       for(int i=0; i < monomials.size(); i++) { 
 	monomials[i]->refreshInternalFields(s);
+      }
+    }
+
+    //! Reset Predictors in just this level
+    void resetPredictors(void) const {
+      for(int i=0; i < monomials.size(); ++i) {
+	monomials[i]->resetPredictors();
       }
     }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.6 2006-10-19 16:01:35 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 3.7 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -133,6 +133,8 @@ namespace Chroma
       
       // Now HIT IT with the ROCK!!!! (Or in this case M^{dagger})
       (*M)(getPhi(), eta, MINUS);
+
+      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor after field refresh" << endl;
       getMDSolutionPredictor().reset();
 
       END_CODE();
@@ -153,10 +155,13 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // Resetting pseudofermion fields implies resetting the chrono predictor
+      END_CODE();
+    }
+
+    //! Reset predictors
+    virtual void resetPredictors(void) {
       getMDSolutionPredictor().reset();
 
-      END_CODE();
     }
 
   protected:
@@ -174,6 +179,7 @@ namespace Chroma
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
+
 
     //! Get (M^dagM)^{-1} phi
     virtual int getX(Phi& X, const AbsFieldState<P,Q>& s)
@@ -237,7 +243,7 @@ namespace Chroma
       
       // Energy calc doesnt use Chrono Predictor
       X = zero;
-
+      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
       int n_count = getX(X,s);
 
@@ -310,6 +316,7 @@ namespace Chroma
       X[ lin->subset() ] = zero;
 
       // getX noe always uses chrono predictor. Best to Nuke it therefore
+      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
       int n_count = getX(X, s);
       Double action = innerProductReal(getPhi(), X, lin->subset());

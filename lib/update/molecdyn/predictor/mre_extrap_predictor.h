@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mre_extrap_predictor.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
+// $Id: mre_extrap_predictor.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
 /*! \file
  * \brief Minimal residual predictor
  *
@@ -50,7 +50,6 @@ namespace Chroma
     
     // No internal state so reset is a nop
     void reset(void) {
-      QDPIO::cout << "Resetting Chrono Predictor" << endl;
       chrono_buf->reset();
     }
 
@@ -107,7 +106,6 @@ namespace Chroma
 
     // No internal state so reset is a Nop
     void reset(void) {
-      QDPIO::cout << "Resetting Chrono Predictor" << endl;
       chrono_buf->reset();
 
     }

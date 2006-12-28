@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_exp_tdt.h,v 3.2 2006-11-20 19:15:02 bjoo Exp $
+// $Id: lcm_exp_tdt.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Intgrator for exp(T dt)
@@ -79,6 +79,8 @@ namespace Chroma
     void refreshFields(AbsFieldState<multi1d<LatticeColorMatrix>,
 		                   multi1d<LatticeColorMatrix> >& s) const
     {}
+
+    void resetPredictors(void) const {}
 
   private:
     int  n_steps;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 3.5 2006-10-19 16:01:35 edwards Exp $
+// $Id: two_flavor_monomial5d_w.h,v 3.6 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -179,6 +179,7 @@ namespace Chroma
       (*PV)(getPhi(), eta, PLUS);
 
       // Reset the chronological predictor
+      QDPIO::cout << "TwoFlavWilson5DMonomial: resetting Predictor at end of field refresh" << endl;
       getMDSolutionPredictor().reset();
     
       END_CODE();
@@ -204,12 +205,15 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // Reset the chronological predictor
-      getMDSolutionPredictor().reset();
     
       END_CODE();
     }
   
+    //! Reset predictors
+    virtual void resetPredictors(void) {
+      getMDSolutionPredictor().reset();
+
+    }
 
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
@@ -340,6 +344,7 @@ namespace Chroma
 
       // getX() now always uses Chrono predictor. Best to Nuke it for
       // energy calcs
+      QDPIO::cout << "TwoFlavWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
       getMDSolutionPredictor().reset();
       int n_count = getX(X,s);
 
@@ -421,6 +426,7 @@ namespace Chroma
       X = zero;
 
       // Get X now always uses predictor. Best to nuke it therefore
+      QDPIO::cout << "TwoFlavWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
       getMDSolutionPredictor().reset();
       int n_count = getX(X, s);
 

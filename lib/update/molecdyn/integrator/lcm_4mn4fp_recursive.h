@@ -1,10 +1,10 @@
 // -*- C++ -*-
-// $Id: lcm_4mn4fp_recursive.h,v 3.1 2006-12-20 19:12:43 bjoo Exp $
+// $Id: lcm_4mn4fp_recursive.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Lat Col Mat 4th order 4 force calculation minimum norm integrator
  *
- * The 4th order 5 force calculation minimum norm integrator (position variant)
+ * The 4th order 4 force calculation minimum norm integrator (position variant)
  * from the paper by Takaishi and deForcrand (eq 26-27). Made recursive through
  * replacing the Momentum update term with a subIntegrator call.
  */
@@ -94,6 +94,13 @@ namespace Chroma
 				multi1d<LatticeColorMatrix> >& s) const {
       for(int i=0; i < monomials.size(); i++) { 
 	monomials[i]->refreshInternalFields(s);
+      }
+    }
+
+    //! Reset Predictors in just this level
+    void resetPredictorsThisLevel(void) const {
+      for(int i=0; i < monomials.size(); ++i) {
+	monomials[i]->resetPredictors();
       }
     }
   private:

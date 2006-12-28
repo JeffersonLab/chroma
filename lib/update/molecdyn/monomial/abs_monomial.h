@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_monomial.h,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: abs_monomial.h,v 3.2 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Monomials - gauge action or fermion binlinear contributions for HMC
@@ -55,6 +55,9 @@ namespace Chroma
 
     //! Copy pseudofermion fields from another monomial...
     virtual void setInternalFields(const Monomial<P,Q>& m) = 0;
+
+    //! Reset predictors
+    virtual void resetPredictors(void) { /* Nop for most */ }
   };
 
 
@@ -89,6 +92,9 @@ namespace Chroma
 
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) = 0;
+
+    //! Reset predictors
+    virtual void resetPredictors(void) { /* Nop for most */ }
   };
 
   //-------------------------------------------------------------------------------------------
@@ -118,6 +124,9 @@ namespace Chroma
 
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) = 0;
+
+    //! Reset predictors
+    virtual void resetPredictors(void) { /* Nop for most */ }
   };
 
 
@@ -151,6 +160,9 @@ namespace Chroma
 
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) = 0;
+
+    //! Reset predictors
+    virtual void resetPredictors(void) { /* Nop for most */ }
   };
 
 
@@ -181,6 +193,9 @@ namespace Chroma
 
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) = 0;
+
+    //! Reset predictors
+    virtual void resetPredictors(void) { /* Nop for most */ }
   };
 
 
@@ -211,6 +226,9 @@ namespace Chroma
 
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) = 0;
+
+    //! Reset predictors
+    virtual void resetPredictors(void) { /* Nop for most */ }
   };
 
 
@@ -240,6 +258,9 @@ namespace Chroma
 
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) = 0;
+
+    //! Reset predictors
+    virtual void resetPredictors(void) { /* Nop for most */ }
 
   protected:
     //! Get at fermion action for pseudofermion field i
@@ -274,6 +295,9 @@ namespace Chroma
 
     //! Copy pseudofermions if any
     virtual void setInternalFields(const Monomial<P,Q>& m) = 0;
+
+    //! Reset predictors
+    virtual void resetPredictors(void) { /* Nop for most */ }
 
   protected:
     //! Get at fermion action for pseudofermion field i

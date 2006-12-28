@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.5 2006-10-19 16:01:35 edwards Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.6 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -83,9 +83,7 @@ namespace Chroma
       Phi Y=zero;
 
       // Get X out here
-      // (getMDSolutionPredictor())(X);
       int n_count = getX(X,s);
-      // (getMDSolutionPredictor()).newVector(X);
       
       (*lin)(Y, X, PLUS);
 
@@ -184,6 +182,7 @@ namespace Chroma
       (*M_prec)(getPhi(), phi_tmp, PLUS); // (Now get phi = M_prec (M_prec^{-1}\phi)
 
       // Now invert M_prec^{dagger} on it
+      QDPIO::cout << "TwoFlavHasenbuschWilson4DMonomial: resetting Predictor at end of field refresh" << endl;
       getMDSolutionPredictor().reset();
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
 
@@ -210,12 +209,15 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // Resetting pseudofermion fields implies resetting the chrono predictor
-      getMDSolutionPredictor().reset();
 
       END_CODE();
     }
 
+    //! Reset predictors
+    virtual void resetPredictors(void) {
+      getMDSolutionPredictor().reset();
+
+    }
 
     // We want to generate X = (M^dag M)^{-1} M^{\dagger}_prec \phi
     // Which is a normal solve on M^dag M X = M^{\dagger}_prec \phi
@@ -320,7 +322,7 @@ namespace Chroma
       //
       // We now need to multiply by M_prec afterwords
       X = zero;
-
+      QDPIO::cout << "TwoFlavHasenbuschWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
 
       int n_count = getX(X,s);
@@ -408,6 +410,7 @@ namespace Chroma
       X[ lin->subset() ] = zero;
 
       // getX noe always uses chrono predictor. Best to Nuke it therefore
+      QDPIO::cout << "TwoFlavHasenbuschWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
 
       int n_count = getX(X, s);

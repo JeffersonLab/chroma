@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_polyprec_monomial_w.h,v 3.5 2006-10-19 16:01:35 edwards Exp $
+// $Id: two_flavor_polyprec_monomial_w.h,v 3.6 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials
@@ -125,6 +125,7 @@ namespace Chroma
       Phi tmp;
       (*H)(tmp, eta, PLUS);
       Poly->applyA(getPhi(), tmp, PLUS);
+      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor after field refresh" << endl;
       getMDSolutionPredictor().reset();
     
       END_CODE();
@@ -145,10 +146,13 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // Resetting pseudofermion fields implies resetting the chrono predictor
-      getMDSolutionPredictor().reset();
-    
       END_CODE();
+    }
+
+    //! Reset predictors
+    virtual void resetPredictors(void) {
+      getMDSolutionPredictor().reset();
+
     }
 
   protected:
@@ -229,7 +233,7 @@ namespace Chroma
       
       // Energy calc doesnt use Chrono Predictor
       X = zero;
-
+      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
       int n_count = getX(X,s);
 
@@ -302,6 +306,7 @@ namespace Chroma
       X[ lin->subset() ] = zero;
 
       // getX noe always uses chrono predictor. Best to Nuke it therefore
+      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
       int n_count = getX(X, s);
       Double action = innerProductReal(getPhi(), X, lin->subset());

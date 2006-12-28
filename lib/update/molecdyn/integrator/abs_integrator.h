@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 3.5 2006-12-25 21:40:17 bjoo Exp $
+// $Id: abs_integrator.h,v 3.6 2006-12-28 17:34:00 bjoo Exp $
 
 /*! @file
  * @brief Integrators
@@ -34,6 +34,9 @@ namespace Chroma
     //! Refresh fields in this level of the integrator (for R like algorithms)
     virtual void refreshFields(AbsFieldState<multi1d<LatticeColorMatrix>,
 		                   multi1d<LatticeColorMatrix> >& s) const = 0;
+
+    //! Reset any chronological predictors for the integrator
+    virtual void resetPredictors(void) const = 0;
   };
 
   //! MD component integrator that has a sub integrator (recursive)
@@ -59,10 +62,18 @@ namespace Chroma
       getSubIntegrator().refreshFields(s); // Recurse down 
     }
 
+    //! Reset Integrators in this level and sub integrators
+    virtual void resetPredictors(void) const {
+      resetPredictorsThisLevel();  // This level 
+      getSubIntegrator().resetPredictors(); // Recurse down
+    }
+
   protected:
     //! Refresh fields in just this level
     virtual void refreshFieldsThisLevel(AbsFieldState<multi1d<LatticeColorMatrix>,
 		                   multi1d<LatticeColorMatrix> >& s) const = 0;
+
+    virtual void resetPredictorsThisLevel(void) const = 0;
   };
   
 
@@ -79,6 +90,13 @@ namespace Chroma
       // Default behaviour - get the subintegrator and integrate
       // the trajectory of length trajLength
       AbsComponentIntegrator<P,Q>& theIntegrator = getIntegrator();
+
+      // This is a toplevel thing - not embeddable so here is the 
+      // place to reset any predictors
+      QDPIO::cout << "MD: Resetting Chrono Predictors at start of trajectory" << endl;
+      theIntegrator.resetPredictors();
+
+      // This is recursive so no further resets in here.
       theIntegrator(s, trajLength);
     }
     
@@ -86,7 +104,7 @@ namespace Chroma
     virtual void refreshFields(AbsFieldState<P,Q>&s ) const { 
       getIntegrator().refreshFields(s); // Recursively refresh fields
     }
-    
+
     //! Get the trajectory length
     virtual Real getTrajLength(void) const = 0;
 
