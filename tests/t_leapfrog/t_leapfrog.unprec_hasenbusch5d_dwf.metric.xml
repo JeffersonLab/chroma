@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/t_leapfrog/mesE[2]/mesKE/KE" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/t_leapfrog/mesE[2]/mesPE/PEByMonomials/elem[1]/TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial5D/S" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/t_leapfrog/mesE[2]/mesPE/PEByMonomials/elem[2]/GaugeMonomial/S" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

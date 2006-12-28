@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.10 2006-09-15 15:27:04 edwards Exp $
+#  $Id: regres.pl,v 3.11 2006-12-28 15:41:51 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -225,4 +225,21 @@
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout.log.xml" ,
      },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_hasenbusch5d_dwf.ini.xml" , 
+	 log         => "t_leapfrog.prec_hasenbusch5d_dwf.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_hasenbusch5d_dwf.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_hasenbusch5d_dwf.log.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.unprec_hasenbusch5d_dwf.ini.xml" , 
+	 log         => "t_leapfrog.unprec_hasenbusch5d_dwf.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.unprec_hasenbusch5d_dwf.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.unprec_hasenbusch5d_dwf.log.xml" ,
+     }
+
      );
