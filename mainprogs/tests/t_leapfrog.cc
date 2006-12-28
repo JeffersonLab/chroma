@@ -137,9 +137,11 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "Initial energies: KE =" << KE_old << " PE = " << PE_old <<endl;
 
+  QDPIO::cout << "Copying copy list" << endl;
   // Setup fields 
   the_integrator.copyFields();
 
+  QDPIO::cout << "Performing tajectory" << endl;
   QDP::StopWatch swatch;
   swatch.reset();
   swatch.start();
@@ -193,6 +195,7 @@ int main(int argc, char *argv[])
 
   QDPIO::cout << "Time deficit : " << deficit << " sec.  "<< Real(100)*deficit/ total_time << " % of total" << endl;
 
+  QDPIO::cout << "Measuring final energies" << endl;
   
   Double KE_new, PE_new;
   H.mesE(gauge_state, KE_new, PE_new);
