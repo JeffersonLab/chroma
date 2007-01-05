@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.6 2007-01-03 17:53:47 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 3.7 2007-01-05 02:53:28 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -526,13 +526,16 @@ namespace Chroma
 	  /*#+ */
 	  /*# Squeeze in computation of the trace log of the diagonal term */
 	  /*#- */
-	  if ( diag_g[j].elem() > 0 ) { 
+	  if ( diag_g[j].elem() > 0 ) 
+          { 
 	    lrtmp = log(diag_g[j]);
 	  }
-	  else { 
-	    QDPIO::cerr << "Clover term has negative diagonal element: "
-			<< "diag_g[" << j << "]= " << diag_g[j] 
-			<< " at site: " << site << endl;
+	  else
+          { 
+            // Make sure any node can print this message
+	    cerr << "Clover term has negative diagonal element: "
+	         << "diag_g[" << j << "]= " << diag_g[j] 
+	         << " at site: " << site << endl;
 	    QDP_abort(1);
 	  }
 
