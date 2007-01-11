@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.23 2006-12-10 02:04:08 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.24 2007-01-11 06:01:25 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -122,8 +122,7 @@ namespace Chroma
       gaugestuff.link_smearing = readXMLGroup( paramtop, "Param/LinkSmearing", "LinkSmearingType" );
 			read( paramtop, "Param/InputFileName", InputFileName );
 			QDPIO::cout<< "Main input file is " << InputFileName <<endl;
-			
-			gaugestuff.u.resize(Nd);
+			//gaugestuff.u.resize(Nd);
 			read( paramtop, "Cfg", gaugestuff.cfg );
 
 			dilution.resize( NumberofQuarks );
@@ -252,17 +251,17 @@ namespace Chroma
       // The spin basis matrix to goto Dirac
       //spin_rotate_mat = adj( DiracToDRMat() );
 		}
-    void GroupBaryonQQQ::init( const Params& p_, const multi1d<LatticeColorMatrix>& u_ )
+    void GroupBaryonQQQ::init( const Params& p_ )
     {
 			myparams = p_;
-			u_smr = u_;
+			quark.resize(3);
       // The spin basis matrix to goto Dirac
       spin_rotate_mat = adj( DiracToDRMat() );
     } // GroupBaryonQQQ::init
 
     //! Full constructor
-    GroupBaryonQQQ::GroupBaryonQQQ( const Params& p, const multi1d<LatticeColorMatrix>& u_ ) :
-        myparams( p ), u_smr( u_ )
+    GroupBaryonQQQ::GroupBaryonQQQ( const Params& p ) :
+        myparams( p )
 		{
       // The spin basis matrix to goto Dirac
       spin_rotate_mat = adj( DiracToDRMat() );
@@ -278,9 +277,10 @@ namespace Chroma
 					            << myparams.source_smearing.source.id << endl;
 		      Handle< QuarkSourceSink<LatticeFermion> > sourceSmearing(
 							TheFermSourceSmearingFactory::Instance().createObject(
-				               myparams.source_smearing.source.id, //sourcetop,
+				               myparams.source_smearing.source.id, 
 											 smeartop,
-											 myparams.source_smearing.source.path, u_smr )
+											 myparams.source_smearing.source.path, 
+											 myparams.gaugestuff.u )
 							);
         }
         // Create the sink quark smearing object
@@ -292,8 +292,10 @@ namespace Chroma
 					            << myparams.sink_smearing.sink.id << endl;
 					Handle< QuarkSourceSink<LatticeFermion> > sinkSmearing(
 							TheFermSinkSmearingFactory::Instance().createObject(
-											myparams.sink_smearing.sink.id, smeartop,
-											myparams.sink_smearing.sink.path, u_smr )
+											myparams.sink_smearing.sink.id, 
+											smeartop,
+											myparams.sink_smearing.sink.path, 
+											myparams.gaugestuff.u )
 							);
         }
       }
@@ -310,16 +312,14 @@ namespace Chroma
                         multi1d<GroupBaryonOp>& AB, multi1d<GroupBaryonOp>& CB,
                         multi1d<GroupBaryonQQQ>& AQQQ, multi1d<GroupBaryonQQQ>& CQQQ )
     {
-      QDPIO::cout << "Reading input from text file : " << params.InputFileName <<endl;
+      QDPIO::cout << "Reading input from TEXT file : " << params.InputFileName <<endl;
       TextReader reader( params.InputFileName );
-
 // for testing
 #ifdef REDUCETOTIMEDILUTION
 			params.NdilReduce = 12;
 #else
 			params.NdilReduce = 1;
 #endif
-
 			// Lattice sizes
       // ------------------------------------------------------------------------------------
       reader >> params.nrow[ 0 ] >> params.nrow[ 1 ] >> params.nrow[ 2 ] >> params.nrow[ 3 ];
@@ -398,40 +398,34 @@ namespace Chroma
 				// ------------------------------------------------------------------------------------
         reader >> nameindex >> params.Names[ i ];
 				// ------------------------------------------------------------------------------------
-      }	
+      }
       //read( xml, "NumDistinctQQQ", params.NQQQs );
 			// ------------------------------------------------------------------------------------
       reader >> params.NQQQs;
 			// ------------------------------------------------------------------------------------
+#ifdef MAKE_SINK_OPERATORS
       AQQQ.resize( params.NQQQs );
       for(int i=0; i < params.NQQQs; ++i)
       {
-				AQQQ[ i ].init( params, params.gaugestuff.u );
+				AQQQ[ i ].init( params );
 			}
-
-      for(int i=0; i < params.NQQQs; ++i)
-      {
-        AQQQ[ i ].myparams = params;
-        AQQQ[ i ].u_smr = params.gaugestuff.u;
-        AQQQ[ i ].quark.resize( 3 );
-      }
+#endif
+#ifdef MAKE_SOURCE_OPERATORS
       CQQQ.resize( params.NQQQs );
       for(int i=0; i < params.NQQQs; ++i)
       {
-				CQQQ[ i ].init( params, params.gaugestuff.u );
+				CQQQ[ i ].init( params );
 			}
-
-      for(int i=0; i < params.NQQQs; ++i)
-      {
-        CQQQ[ i ].myparams = params;
-        CQQQ[ i ].u_smr = params.gaugestuff.u;
-        CQQQ[ i ].quark.resize( 3 );
-      }
+#endif
 			//
 			// GroupBaryonOperator structures
 			//
+#ifdef MAKE_SINK_OPERATORS
       AB.resize( params.Noperators );
+#endif
+#ifdef MAKE_SOURCE_OPERATORS
       CB.resize( params.Noperators );
+#endif
 			//
 			// Using the BaryonOperator_t structure
 			//
@@ -441,6 +435,7 @@ namespace Chroma
 				// contractions are summed over
 				// AB[ n ].baryonoperator.orderings.resize( params.NsnkOrderings );
         // for(int ord=0; ord < params.NsnkOrderings; ++ord)
+#ifdef MAKE_SINK_OPERATORS
 				AB[ n ].baryonoperator.orderings.resize( 1 );
         for(int ord=0; ord < 1; ++ord)
 				{
@@ -451,10 +446,8 @@ namespace Chroma
         	    {
         	      AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind.resize(1);
         	      AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem.resize( params.Nmomenta, params.nrow[3] );
-        	      for(int t=0;t<params.nrow[3];++t)
-								{
+        	      for(int t=0; t<params.nrow[3]; ++t)
 									AB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem( 0, t ) = cmplx( Real(0), Real(0) );
-        	    	}
 							}
         }
 				AB[ n ].baryonoperator.version = 1;
@@ -466,7 +459,8 @@ namespace Chroma
 				AB[ n ].baryonoperator.quarkOrderings[0][0] = 0;
 				AB[ n ].baryonoperator.quarkOrderings[0][1] = 1;
 				AB[ n ].baryonoperator.quarkOrderings[0][2] = 2;
-
+#endif
+#ifdef MAKE_SOURCE_OPERATORS
 				//CB[ n ].baryonoperator.orderings.resize( params.NsrcOrderings );
         //for(int ord=0; ord < params.NsrcOrderings; ++ord)
 				CB[ n ].baryonoperator.orderings.resize( 1 );
@@ -479,10 +473,10 @@ namespace Chroma
             {
               CB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind.resize(1);
               CB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem.resize( params.Nmomenta, params.nrow[3] );
-              for(int t=0;t<params.nrow[3];++t)CB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem( 0, t ) = cmplx( Real(0), Real(0) );
+              for(int t=0; t<params.nrow[3]; ++t) CB[ n ].baryonoperator.orderings[ ord ].op( i, j, k ).ind[ 0 ].elem( 0, t ) = cmplx( Real(0), Real(0) );
             }
 				}
-				CB[ n ].baryonoperator.version = AB[ n ].baryonoperator.version;
+				CB[ n ].baryonoperator.version = 1;
 				CB[ n ].baryonoperator.mom2_max = params.mom2_max;
 				CB[ n ].baryonoperator.j_decay = params.j_decay;
 				//CB[ n ].baryonoperator.quarkOrderings = params.SrcOrderings;
@@ -491,23 +485,54 @@ namespace Chroma
 				CB[ n ].baryonoperator.quarkOrderings[0][0] = 0;
 				CB[ n ].baryonoperator.quarkOrderings[0][1] = 1;
 				CB[ n ].baryonoperator.quarkOrderings[0][2] = 2;
-      }
-
+#endif
+      } // end n (operators)
       for(int i=0; i < params.NQQQs; ++i)
       {
 				int dL, hash;
-				// ------------------------------------------------------------------------------------
-        reader >> hash
-	       >> AQQQ[ i ].quark[ 0 ].spin
-	       >> AQQQ[ i ].quark[ 1 ].spin
-	       >> AQQQ[ i ].quark[ 2 ].spin
-	       >> AQQQ[ i ].quark[ 0 ].displacement
-	       >> AQQQ[ i ].quark[ 1 ].displacement
-	       >> AQQQ[ i ].quark[ 2 ].displacement
-	       >> dL
-	       >> AQQQ[ i ].NBaryonOps;
-				 // ------------------------------------------------------------------------------------
-
+				int q0spin,q1spin,q2spin,q0disp,q1disp,q2disp,nbops;
+				reader >> hash >> q0spin >> q1spin >> q2spin >> q0disp >> q1disp >> q2disp >> dL >> nbops;
+#ifdef MAKE_SINK_OPERATORS
+				AQQQ[ i ].quark[ 0 ].spin = q0spin;
+				AQQQ[ i ].quark[ 1 ].spin = q1spin;
+				AQQQ[ i ].quark[ 2 ].spin = q2spin;
+				AQQQ[ i ].quark[ 0 ].displacement = q0disp;
+				AQQQ[ i ].quark[ 1 ].displacement = q1disp;
+				AQQQ[ i ].quark[ 2 ].displacement = q2disp;
+	      AQQQ[ i ].NBaryonOps = nbops;
+        for(int j=0; j < 3; ++j)
+        {
+          if ( AQQQ[ i ].quark[ j ].displacement > 0 )
+					{
+						AQQQ[ i ].quark[ j ].disp_len = dL;
+					} 
+					else 
+					{
+						AQQQ[ i ].quark[ j ].disp_len = -dL;
+					}
+				}
+#endif
+#ifdef MAKE_SOURCE_OPERATORS
+				CQQQ[ i ].quark[ 0 ].spin = q0spin;
+				CQQQ[ i ].quark[ 1 ].spin = q1spin;
+				CQQQ[ i ].quark[ 2 ].spin = q2spin;
+				CQQQ[ i ].quark[ 0 ].displacement = q0disp;
+				CQQQ[ i ].quark[ 1 ].displacement = q1disp;
+				CQQQ[ i ].quark[ 2 ].displacement = q2disp;
+	      CQQQ[ i ].NBaryonOps = nbops;
+        for(int j=0; j < 3; ++j)
+        {
+          if ( CQQQ[ i ].quark[ j ].displacement > 0 )
+					{
+						CQQQ[ i ].quark[ j ].disp_len = dL;
+					} 
+					else 
+					{
+						CQQQ[ i ].quark[ j ].disp_len = -dL;
+					}
+				}
+#endif
+#ifdef MAKE_SINK_OPERATORS
         for(int j=0; j < 3; ++j)
         {
           // Make spin index 0 based
@@ -530,7 +555,7 @@ namespace Chroma
             AQQQ[ i ].quark[ j ].disp_ind = -AQQQ[ i ].quark[ j ].displacement + 3;
             AQQQ[ i ].quark[ j ].disp_len = -dL;
           }
-        }
+        } // end j
         AQQQ[ i ].coef.resize( AQQQ[ i ].NBaryonOps );
         AQQQ[ i ].whichBaryonOps.resize( AQQQ[ i ].NBaryonOps );
         AQQQ[ i ].baryon.resize( AQQQ[ i ].NBaryonOps );
@@ -550,7 +575,52 @@ namespace Chroma
 					//
 					AQQQ[ i ].baryon[ n ] = &AB[ (AQQQ[ i ].whichBaryonOps[ n ]) ];
         }
-      } // i : AQQQ[] loop
+#endif
+#ifdef MAKE_SOURCE_OPERATORS
+        for(int j=0; j < 3; ++j)
+        {
+          // Make spin index 0 based
+          CQQQ[ i ].quark[ j ].spin -= 1;
+          if ( CQQQ[ i ].quark[ j ].displacement == 0 )
+          {
+            CQQQ[ i ].quark[ j ].disp_dir = 0;
+            CQQQ[ i ].quark[ j ].disp_len = 0;
+            CQQQ[ i ].quark[ j ].disp_ind = 0;
+          }
+          else if ( CQQQ[ i ].quark[ j ].displacement > 0 )
+          {
+            CQQQ[ i ].quark[ j ].disp_dir = CQQQ[ i ].quark[ j ].displacement - 1;
+            CQQQ[ i ].quark[ j ].disp_ind = CQQQ[ i ].quark[ j ].displacement;
+            CQQQ[ i ].quark[ j ].disp_len = dL;
+          }
+          else
+          {
+            CQQQ[ i ].quark[ j ].disp_dir = -CQQQ[ i ].quark[ j ].displacement - 1;
+            CQQQ[ i ].quark[ j ].disp_ind = -CQQQ[ i ].quark[ j ].displacement + 3;
+            CQQQ[ i ].quark[ j ].disp_len = -dL;
+          }
+        } // end j
+        CQQQ[ i ].coef.resize( CQQQ[ i ].NBaryonOps );
+        CQQQ[ i ].whichBaryonOps.resize( CQQQ[ i ].NBaryonOps );
+        CQQQ[ i ].baryon.resize( CQQQ[ i ].NBaryonOps );
+        //             name                                    coefficient
+        // CQQQ[ <mu,nu,tau> ].whichBaryonOps[ n ]    ,   CQQQ[ <mu,nu,tau> ].coef[ n ]
+        //
+        for(int n=0; n < CQQQ[ i ].NBaryonOps; ++n)
+        {
+          Real re, im;
+					// ------------------------------------------------------------------------------------
+          reader >> CQQQ[ i ].whichBaryonOps[ n ];
+          reader >> re >> im;
+					// ------------------------------------------------------------------------------------
+          CQQQ[ i ].coef[ n ] = cmplx( re, im );
+					//
+					// Storage will be in the GroupBaryonOp class
+					//
+					CQQQ[ i ].baryon[ n ] = &CB[ (CQQQ[ i ].whichBaryonOps[ n ]) ];
+        }
+#endif
+      } // i loop
       //
       // Now for the creation operators
       //
@@ -559,6 +629,7 @@ namespace Chroma
       //      gamma4 = ( 1, 1, -1, -1 )
       // and take the complex conjugate
       //          displacement directions ??????
+#ifdef MAKE_SOURCE_OPERATORS
       for(int i=0; i < params.NQQQs; ++i)
       {
         int spinCount, flipsign;
@@ -566,49 +637,30 @@ namespace Chroma
         flipsign = 0;
         for(int j=0; j < 3; ++j)
         {
-          CQQQ[ i ].quark[ j ].displacement = AQQQ[ i ].quark[ j ].displacement;
-          CQQQ[ i ].quark[ j ].disp_dir = AQQQ[ i ].quark[ j ].disp_dir; // sign
-          CQQQ[ i ].quark[ j ].disp_ind = AQQQ[ i ].quark[ j ].disp_ind;
-          CQQQ[ i ].quark[ j ].spin = AQQQ[ i ].quark[ j ].spin;
           if ( CQQQ[ i ].quark[ j ].spin > 1 ) spinCount++;
         }
         if ( spinCount % 2 ) flipsign = 1;
-
-        CQQQ[ i ].NBaryonOps = AQQQ[ i ].NBaryonOps;
-        CQQQ[ i ].coef.resize( CQQQ[ i ].NBaryonOps );
-        CQQQ[ i ].whichBaryonOps.resize( CQQQ[ i ].NBaryonOps );
-        CQQQ[ i ].baryon.resize( CQQQ[ i ].NBaryonOps );
         //
 				//             name                           coefficient
         // CQQQ[ <mu,nu,tau> ].whichBaryonOps[ n ] , CQQQ[ i ].coef[ n ]
         //
         for(int n=0; n < CQQQ[ i ].NBaryonOps; ++n)
         {
-          Real re, im;
-          CQQQ[ i ].whichBaryonOps[ n ] = AQQQ[ i ].whichBaryonOps[ n ];
-          re = real( AQQQ[ i ].coef[ n ] );
-          im = imag( AQQQ[ i ].coef[ n ] );
           if ( flipsign )
           {
             // cc and -sign
 //            CQQQ[ i ].coef[ n ] = cmplx( -re, im );
             // just sign (cc at the correlator level)
-						CQQQ[ i ].coef[ n ] = cmplx( -re, -im );
-          }
-          else
-          {
-            // just cc
-//            CQQQ[ i ].coef[ n ] = cmplx( re, -im );
-            // no cc at this point (cc at the correlator level)
-						CQQQ[ i ].coef[ n ] = cmplx( re, im );
+//						CQQQ[ i ].coef[ n ] = cmplx( -re, -im );
+						CQQQ[ i ].coef[ n ] *= cmplx( Real(-1), Real(0) );
           }
 					//
 					// Storage will be in the GroupBaryonOp class
 					//
 					CQQQ[ i ].baryon[ n ] = &CB[ CQQQ[ i ].whichBaryonOps[ n ] ];
-        }
+        } // n : CQQQ[ i ].baryon[ n ] loop
       } // i : CQQQ[] loop
-			
+#endif			
 			// solution file names
 			params.qprop.solns.resize( 3 );
       for(int n=0; n < 3; ++n)
@@ -744,12 +796,14 @@ namespace Chroma
           switch ( isign )
           {
 						case PLUS:
-							displacement( u_smr, qq, term_q.disp_len, term_q.disp_dir );
+//							displacement( usmr, qq, term_q.disp_len, term_q.disp_dir );
+							displacement( myparams.gaugestuff.u, qq, term_q.disp_len, term_q.disp_dir );
 							break;
 
 	  				case MINUS:
-//							displacement( u_smr, qq, -term_q.disp_len, term_q.disp_dir );
-							displacement( u_smr, qq, term_q.disp_len, term_q.disp_dir );
+////							displacement( u_smr, qq, -term_q.disp_len, term_q.disp_dir );
+//							displacement( usmr, qq, term_q.disp_len, term_q.disp_dir );
+							displacement( myparams.gaugestuff.u, qq, term_q.disp_len, term_q.disp_dir );
 							break;
           }
           disp_q.insert( std::make_pair( term_q.displacement, qq ) );
@@ -780,8 +834,8 @@ namespace Chroma
       q[ 1 ] = rotateMat() * q2;
       q[ 2 ] = rotateMat() * q3;
       // Displace
-      displaceQuarks( disp_quarks, q, isign );
-			
+//      displaceQuarks( disp_quarks, q,  usmr,  isign );
+      displaceQuarks( disp_quarks, q,  isign );
 			#if 1
       // Source smear after the displacements
       std::istringstream  xml_s( myparams.source_smearing.source.xml );
@@ -789,8 +843,10 @@ namespace Chroma
       Handle< QuarkSourceSink<LatticeFermion> >
 					sourceSmearing(
 						             TheFermSourceSmearingFactory::Instance().createObject(
-		    			                     myparams.source_smearing.source.id, sourcetop,
-							                     myparams.source_smearing.source.path, u_smr ) );
+		    			                     myparams.source_smearing.source.id, 
+																	 sourcetop,
+							                     myparams.source_smearing.source.path, 
+																	 myparams.gaugestuff.u ) );
       for(int i=0; i < disp_quarks.size(); ++i)
       {
         // Make some shorthands to ease my brain
@@ -803,7 +859,6 @@ namespace Chroma
         }
       }
 			#endif
-			
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // GroupBaryonQQQ::displaceSmearQuarks
@@ -836,8 +891,10 @@ namespace Chroma
       Handle< QuarkSourceSink<LatticeFermion> >
 					sinkSmearing(
 					             TheFermSinkSmearingFactory::Instance().createObject(
-											         myparams.sink_smearing.sink.id,   sinktop,
-															 myparams.sink_smearing.sink.path, u_smr ) );
+											         myparams.sink_smearing.sink.id,   
+															 sinktop,
+															 myparams.sink_smearing.sink.path, 
+															 myparams.gaugestuff.u ) );
       for(int i=0; i < q.size(); ++i) 
 			{
         ( *sinkSmearing ) ( q[ i ] );
@@ -845,6 +902,7 @@ namespace Chroma
 			#endif
 			
       // Displace after the smearing
+//      displaceQuarks( disp_quarks, q,  usmr,  isign );
       displaceQuarks( disp_quarks, q, isign );
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
@@ -867,11 +925,15 @@ namespace Chroma
       {
       case PLUS:
 				// Sink
+//				smearDisplaceQuarks( disp_quarks, q1, q2, q3,  usmr,  isign );
+//				smearDisplaceQuarks( disp_quarks, q1, q2, q3,  myparams.gaugestuff.u,  isign );
 				smearDisplaceQuarks( disp_quarks, q1, q2, q3, isign );
 				break;
 
       case MINUS:
 				// Source
+//				displaceSmearQuarks( disp_quarks, q1, q2, q3,  usmr,  isign );
+//				displaceSmearQuarks( disp_quarks, q1, q2, q3,  myparams.gaugestuff.u,  isign );
 				displaceSmearQuarks( disp_quarks, q1, q2, q3, isign );
 				break;
 
@@ -896,6 +958,8 @@ namespace Chroma
       multi1d< map<int, LatticeFermion> > disp_quarks;
       // Depending on whether this is the sink or source, do the 
       // appropriate combination of smearing and displacing
+//      quarkManip( disp_quarks, q1, q2, q3,  usmr,  isign );
+//      quarkManip( disp_quarks, q1, q2, q3, myparams.gaugestuff.u, isign );
       quarkManip( disp_quarks, q1, q2, q3, isign );
       // The return
       LatticeComplex d;
@@ -924,6 +988,8 @@ namespace Chroma
       multi1d< map<int, LatticeFermion> > disp_quarks;
       // Depending on whether this is the sink or source, do the 
       // appropriate combination of smearing and displacing
+//      quarkManip( disp_quarks, q1, q2, q3,  usmr,  isign );
+//      quarkManip( disp_quarks, q1, q2, q3, myparams.gaugestuff.u, isign );
       quarkManip( disp_quarks, q1, q2, q3, isign );
       // The return
       multi1d<LatticeComplex> d( 1 ); //( 6 )
@@ -997,7 +1063,7 @@ namespace Chroma
                                                    const std::string& path,
                                                    const multi1d<LatticeColorMatrix>& u )
       {
-        return new GroupBaryonQQQ( Params( xml_in, path ), u );
+        return new GroupBaryonQQQ( Params( xml_in, path ) );
       }
       //! Local registration flag
       bool registered = false;
