@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.16 2006-12-10 02:03:43 edwards Exp $
+// $Id: group_baryon_operator_w.h,v 1.17 2007-01-11 06:16:33 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -26,9 +26,9 @@
 namespace Chroma
 {
 
-#define MAKE_SOURCE_OPERATORS
-//#define MAKE_SINK_OPERATORS
-#define REDUCETOTIMEDILUTION 1
+//#define MAKE_SOURCE_OPERATORS
+#define MAKE_SINK_OPERATORS
+//#define REDUCETOTIMEDILUTION 1
 
   //! Name and registration
   /*! @ingroup hadron */
@@ -195,7 +195,6 @@ namespace Chroma
 				
 				std::string name;
         Params myparams;
-				multi1d<LatticeColorMatrix> u_smr;
     }; // end class GroupBaryonOp
 
 
@@ -206,9 +205,9 @@ namespace Chroma
     class GroupBaryonQQQ : public BaryonOperator<LatticeFermion>
     {
       public:
-    		void init( const Params& p, const multi1d<LatticeColorMatrix>& u_ );
+    		void init( const Params& p );
         //! Full constructor
-        GroupBaryonQQQ( const Params& p, const multi1d<LatticeColorMatrix>& u_ );
+        GroupBaryonQQQ( const Params& p );
         ~GroupBaryonQQQ(){}
 				// ?
 				std::string name;			
@@ -246,8 +245,7 @@ namespace Chroma
         //! Hide partial constructor
         GroupBaryonQQQ();
         Params myparams;
-        multi1d<LatticeColorMatrix> u_smr;
-        SpinMatrix spin_rotate_mat;
+				SpinMatrix spin_rotate_mat;
 
         //protected:
       	//Handle< QuarkSourceSink<LatticeFermion> > sourceSmearing;
