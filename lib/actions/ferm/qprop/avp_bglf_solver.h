@@ -1,4 +1,5 @@
 // -*- C++ -*-
+// $Id: avp_bglf_solver.h,v 3.3 2007-01-17 02:39:27 edwards Exp $
 /*! \file
  *  \brief DWF/Bluegene single-prec solver
  */
@@ -16,7 +17,7 @@ extern "C" {
 
 namespace Chroma 
 { 
-  //! Bluegene double-prec solver
+  //! Bluegene single-prec solver
   /*!
    * \ingroup qprop
    *
@@ -68,7 +69,6 @@ namespace Chroma
   }
 
   /*! @} */   // end of group qprop
-
 }
 
 #endif

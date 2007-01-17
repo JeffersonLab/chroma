@@ -4,8 +4,10 @@
 
 
 using namespace QDP;
-namespace Chroma { 
-  namespace AVPSolver { 
+namespace Chroma 
+{ 
+  namespace AVPSolver 
+  { 
 
     MIT_ssed_DWF_Fermion* SSEDWFSolverD::loadFermionRHS(const void* OuterFermion) const {
       return MIT_ssed_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderRHS);
@@ -43,7 +45,9 @@ namespace Chroma {
 				  const MIT_ssed_DWF_Fermion *eta,
 				  double        eps,
 				  int           min_iter,
-				  int           max_iter)  const {
+				  int           max_iter)  const 
+    {
+      QDPIO::cout << "Entering MIT_ssed_DWF_cg_solver" << endl;
       return MIT_ssed_DWF_cg_solver(psi, out_eps, out_iter, g, M, m_f,
 				    x0, eta, eps, min_iter, max_iter);
     }

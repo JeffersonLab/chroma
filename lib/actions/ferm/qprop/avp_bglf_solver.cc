@@ -21,7 +21,7 @@ namespace Chroma
     }
 
     MIT_bluelightf_DWF_Fermion* BGLDWFSolverF::loadFermionGuess(const void *OuterFermion) const {
-	return MIT_bluelightf_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderGuess);
+      return MIT_bluelightf_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderGuess);
     }
 
     MIT_bluelightf_DWF_Fermion* BGLDWFSolverF::allocateFermion(void) const {
@@ -52,9 +52,11 @@ namespace Chroma
 				  const MIT_bluelightf_DWF_Fermion *eta,
 				  double        eps,
 				  int           min_iter,
-				  int           max_iter)  const {
+				  int           max_iter)  const 
+    {
+      QDPIO::cout << "Entering MIT_bluelightf_DWF_cg_solver" << endl;
       return MIT_bluelightf_DWF_cg_solver(psi, out_eps, out_iter, g, M, m_f,
-				    x0, eta, eps, min_iter, max_iter);
+					  x0, eta, eps, min_iter, max_iter);
     }
     
     void BGLDWFSolverF::loadGauge(const void *u,

@@ -1,8 +1,10 @@
 #include "avp_ssef_solver.h"
 
 using namespace QDP;
-namespace Chroma { 
-  namespace AVPSolver { 
+namespace Chroma 
+{ 
+  namespace AVPSolver 
+  { 
     
 #include <dwf-ssef.h>
 
@@ -11,7 +13,7 @@ namespace Chroma {
     }
 
     MIT_ssef_DWF_Fermion* SSEDWFSolverF::loadFermionGuess(const void *OuterFermion) const {
-	return MIT_ssef_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderGuess);
+      return MIT_ssef_DWF_load_fermion(OuterFermion, NULL, &AVPSolverFunctions::fermionReaderGuess);
     }
 
     MIT_ssef_DWF_Fermion* SSEDWFSolverF::allocateFermion(void) const {
@@ -42,7 +44,9 @@ namespace Chroma {
 				  const MIT_ssef_DWF_Fermion *eta,
 				  double        eps,
 				  int           min_iter,
-				  int           max_iter)  const {
+				  int           max_iter)  const 
+    {
+      QDPIO::cout << "Entering MIT_ssef_DWF_cg_solver" << endl;
       return MIT_ssef_DWF_cg_solver(psi, out_eps, out_iter, g, M, m_f,
 				    x0, eta, eps, min_iter, max_iter);
     }
@@ -68,7 +72,7 @@ namespace Chroma {
     void SSEDWFSolverF::fini(void) {
       MIT_ssef_DWF_fini();
     }
-  };
-};
+  }
+}
 
 

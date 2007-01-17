@@ -1,4 +1,5 @@
 // -*- C++ -*-
+// $Id: avp_altivecf_solver.h,v 3.3 2007-01-17 02:39:27 edwards Exp $
 /*! \file
  *  \brief DWF/Bluegene altivec solver
  */
@@ -9,7 +10,8 @@
 #include "chromabase.h"
 #include "avp_inverter_interface.h"
 
-extern "C" {
+extern "C" 
+{
   struct MIT_altivecf_DWF_Gauge;
   struct MIT_altivecf_DWF_Fermion;
 };

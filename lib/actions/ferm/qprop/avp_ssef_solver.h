@@ -1,18 +1,34 @@
+// -*- C++ -*-
+// $Id: avp_ssef_solver.h,v 3.4 2007-01-17 02:39:27 edwards Exp $
+/*! \file
+ *  \brief Base class for AVP's SSEF-DWF solver interface
+ */
+
 #ifndef AVP_SSEF_SOLVER_H
 #define AVP_SSEF_SOLVER_H
 
 #include "avp_inverter_interface.h"
 
-extern "C" {
+extern "C" 
+{
   struct MIT_ssef_DWF_Gauge;
   struct MIT_ssef_DWF_Fermion;
 };
 
 using namespace QDP;
-namespace Chroma { 
-  namespace AVPSolver { 
-    
-    class SSEDWFSolverF : public AVPSolverInterface< MIT_ssef_DWF_Gauge, MIT_ssef_DWF_Fermion > {
+namespace Chroma 
+{ 
+  //! AVP's DWF Solver interface
+  /*!
+   * \ingroup qprop
+   *
+   * @{
+   */
+  namespace AVPSolver 
+  { 
+   
+    class SSEDWFSolverF : public AVPSolverInterface< MIT_ssef_DWF_Gauge, MIT_ssef_DWF_Fermion > 
+    {
 public:
     protected:
       MIT_ssef_DWF_Fermion* loadFermionRHS(const void* OuterFermion) const;
@@ -51,7 +67,9 @@ public:
     private:
      MIT_ssef_DWF_Gauge *g;
     };
-  };
-};
+  }
+
+  /*! @} */   // end of group qprop
+}
 
 #endif

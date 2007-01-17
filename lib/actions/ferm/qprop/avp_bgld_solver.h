@@ -1,4 +1,5 @@
 // -*- C++ -*-
+// $Id: avp_bgld_solver.h,v 3.3 2007-01-17 02:39:27 edwards Exp $
 /*! \file
  *  \brief DWF/Bluegene double-prec solver
  */
@@ -66,6 +67,8 @@ namespace Chroma
       MIT_bluelightd_DWF_Gauge *g;
     };
   }
+
+  /*! @} */   // end of group qprop
 }
 
 #endif

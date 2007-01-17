@@ -1,3 +1,9 @@
+// -*- C++ -*-
+// $Id: avp_ssed_solver.h,v 3.4 2007-01-17 02:39:27 edwards Exp $
+/*! \file
+ *  \brief DWF/SSE double-prec solver
+ */
+
 #ifndef AVP_SSED_SOLVER_H
 #define AVP_SSED_SOLVER_H
 
@@ -10,10 +16,19 @@ extern "C" {
 
 
 using namespace QDP;
-namespace Chroma { 
-  namespace AVPSolver { 
+namespace Chroma 
+{ 
+  //! AVP's DWF Solver interface
+  /*!
+   * \ingroup qprop
+   *
+   * @{
+   */
+  namespace AVPSolver 
+  { 
     
-    class SSEDWFSolverD : public AVPSolverInterface< MIT_ssed_DWF_Gauge, MIT_ssed_DWF_Fermion > {
+    class SSEDWFSolverD : public AVPSolverInterface< MIT_ssed_DWF_Gauge, MIT_ssed_DWF_Fermion > 
+    {
     public:
     protected:
       MIT_ssed_DWF_Fermion* loadFermionRHS(const void* OuterFermion) const; 
@@ -51,7 +66,9 @@ namespace Chroma {
     private:
      MIT_ssed_DWF_Gauge *g;
     };
-  };
-};
+  }
+
+  /*! @} */   // end of group qprop
+}
 
 #endif
