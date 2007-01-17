@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.68 2007-01-17 02:50:20 edwards Exp $
+# $Id: Makefile.am,v 3.69 2007-01-17 02:53:59 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -673,14 +673,6 @@ endif
 
 if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-endif
-
-if BUILD_SSE_DWF_CG
-AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DWF_CG_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DWF_CG_DIR@/include
-endif
-
-if BUILD_ALTIVEC_DWF_CG
-AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/include -I$(BUILDDIR)/other_libs/@ALTIVEC_DWF_CG_DIR@/include
 endif
 
 if BUILD_CG_DWF
