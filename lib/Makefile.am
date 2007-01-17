@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.67 2006-12-25 22:54:19 bjoo Exp $
+# $Id: Makefile.am,v 3.68 2007-01-17 02:50:20 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -1195,8 +1195,7 @@ nobase_include_HEADERS += actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
 	actions/ferm/qprop/avp_bgld_solver.h \
 	actions/ferm/qprop/avp_altivecf_solver.h
 
-libchroma_a_SOURCES += actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.cc \
-	actions/ferm/qprop/avp_inverter_interface.cc
+libchroma_a_SOURCES += actions/ferm/qprop/avp_inverter_interface.cc
 endif
 
 if BUILD_CG_DWF_SSE
@@ -1211,15 +1210,6 @@ endif
 
 if BUILD_CG_DWF_ALTIVEC
 libchroma_a_SOURCES += actions/ferm/qprop/avp_altivecf_solver.cc
-endif
-if BUILD_SSE_DWF_CG
-nobase_include_HEADERS += actions/ferm/qprop/eoprec_dwf_qprop_array_sse_w.h
-libchroma_a_SOURCES += actions/ferm/qprop/eoprec_dwf_qprop_array_sse_w.cc
-endif
-
-if BUILD_ALTIVEC_DWF_CG
-nobase_include_HEADERS += actions/ferm/qprop/eoprec_dwf_qprop_array_altivec_w.h
-libchroma_a_SOURCES += actions/ferm/qprop/eoprec_dwf_qprop_array_altivec_w.cc
 endif
 
 if BUILD_PAB_WILSON_DSLASH
