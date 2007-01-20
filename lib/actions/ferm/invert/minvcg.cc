@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 3.4 2006-10-24 04:45:07 edwards Exp $
+// $Id: minvcg.cc,v 3.5 2007-01-20 21:57:31 edwards Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -138,6 +138,8 @@ namespace Chroma
 
     if( toBool( chi_norm < fuzz )) 
     {
+      swatch.stop();
+
       n_count = 0;
 
       QDPIO::cout << "MInvCG: " << n_count << " iterations" << endl;
