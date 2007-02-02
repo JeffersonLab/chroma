@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 3.5 2007-02-02 03:49:51 edwards Exp $
+// $Id: inline_qqq_w.cc,v 3.6 2007-02-02 05:22:47 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -7,6 +7,7 @@
 
 #include "meas/inline/hadron/inline_qqq_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
+#include "meas/hadron/barcomp_w.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
@@ -85,6 +86,10 @@ namespace Chroma
     write(xml, "version", version);
     write(xml, "sparseP", input.sparseP);
     write(xml, "Dirac_basis", input.Dirac_basis);
+    if (input.sparseP)
+    {
+      write(xml, "SpinIndices", input.spin_indices);
+    }
 
     pop(xml);
   }
@@ -320,6 +325,8 @@ namespace Chroma
     // or not
     if (params.param.sparseP)
     {
+      qqq.sparseP = true;
+      qqq.spin_indices = params.param.spin_indices;
       QQQSparse_t barprop;
 
       // Compute generation propagator
@@ -335,6 +342,7 @@ namespace Chroma
     }
     else
     {
+      qqq.sparseP = false;
       QQQDense_t barprop;
 
       // Compute generation propagator

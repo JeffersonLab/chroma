@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.13 2006-12-10 02:05:50 edwards Exp $
+// $Id: qprop_io.cc,v 3.14 2007-02-02 05:22:47 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -174,6 +174,7 @@ namespace Chroma
   // Initialize header with default values
   QQQBarcomp_t::QQQBarcomp_t()
   {
+    sparseP     = false;
     Dirac_basis = true;
     forward_props.resize(3);
   }
@@ -1099,6 +1100,16 @@ namespace Chroma
   }
 
 
+  //! Source/sink spin indices
+  void read(XMLReader& xml, const string& path, QQQSpinIndices_t& input)
+  {
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "source", input.source);
+    read(inputtop, "sink", input.sink);
+  }
+
+
   //! QQQBarcomp header reader
   void read(XMLReader& xml, const string& path, QQQBarcomp_t& param)
   {
@@ -1110,8 +1121,8 @@ namespace Chroma
 
     switch (version) 
     {
-      /**************************************************************************/
     case 1:
+      param.sparseP = false;
       param.Dirac_basis = false;
       param.forward_props.resize(3);
       read(paramtop, "Propagator1", param.forward_props[0]);
@@ -1119,8 +1130,14 @@ namespace Chroma
       read(paramtop, "Propagator3", param.forward_props[2]);
       break;
 
-      /**************************************************************************/
     case 2:
+      param.sparseP = false;
+      read(paramtop, "Dirac_basis", param.Dirac_basis);
+      read(paramtop, "ForwardProps", param.forward_props);
+      break;
+
+    case 3:
+      read(paramtop, "sparseP", param.sparseP);
       read(paramtop, "Dirac_basis", param.Dirac_basis);
       read(paramtop, "ForwardProps", param.forward_props);
       break;
@@ -1130,6 +1147,11 @@ namespace Chroma
       QDPIO::cerr << "QQQBarcomp parameter version " << version 
 		  << " unsupported." << endl;
       QDP_abort(1);
+    }
+
+    if (param.sparseP)
+    {
+      read(paramtop, "SpinIndices", param.spin_indices);
     }
 
     if (param.forward_props.size() != 3)
@@ -1346,15 +1368,32 @@ namespace Chroma
   }
 
 
+  //! Source/sink spin indices
+  void write(XMLWriter& xml, const string& path, const QQQSpinIndices_t& input)
+  {
+    push(xml, path);
+
+    write(xml, "source", input.source);
+    write(xml, "sink", input.sink);
+
+    pop(xml);
+  }
+
+
   //! QQQBarcomp header writer
   void write(XMLWriter& xml, const string& path, const QQQBarcomp_t& param)
   {
     if( path != "." )
       push(xml, path);
 
-    int version = 2;
+    int version = 3;
     write(xml, "version", version);
+    write(xml, "sparseP", param.sparseP);
     write(xml, "Dirac_basis", param.Dirac_basis);
+    if (param.sparseP)
+    {
+      write(xml, "SpinIndices", param.spin_indices);
+    }
     write(xml, "ForwardProps", param.forward_props);
 
     if( path != "." )

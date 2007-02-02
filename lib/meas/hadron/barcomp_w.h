@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barcomp_w.h,v 3.1 2007-02-02 03:49:51 edwards Exp $
+// $Id: barcomp_w.h,v 3.2 2007-02-02 05:22:47 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -13,21 +13,6 @@
 
 namespace Chroma 
 {
-
-  //! Hold source and sink spin indices for a sparse QQQ file
-  struct QQQSpinIndices_t
-  {
-    multi1d<int>  source;
-    multi1d<int>  sink;
-  };
-
-
-  //! Source/sink spin indices
-  void read(XMLReader& xml, const string& path, QQQSpinIndices_t& input);
-
-  //! Source/sink spin indices
-  void write(XMLWriter& xml, const string& path, const QQQSpinIndices_t& input);
-
 
   //! Sparse QQQ object
   struct QQQSparse_t

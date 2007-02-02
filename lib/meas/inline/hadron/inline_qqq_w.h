@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqq_w.h,v 3.3 2007-02-02 03:49:51 edwards Exp $
+// $Id: inline_qqq_w.h,v 3.4 2007-02-02 05:22:47 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -11,7 +11,6 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "meas/hadron/barcomp_w.h"
 #include "io/qprop_io.h"
 
 namespace Chroma 

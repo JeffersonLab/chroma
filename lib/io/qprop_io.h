@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.8 2006-12-10 02:05:50 edwards Exp $
+// $Id: qprop_io.h,v 3.9 2007-02-02 05:22:47 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -157,10 +157,20 @@ namespace Chroma
   };
 
 
+  //! Hold source and sink spin indices for a sparse QQQ file
+  struct QQQSpinIndices_t
+  {
+    multi1d<int>  source;
+    multi1d<int>  sink;
+  };
+
+
   //! Mega structure holding QQQ props
   struct QQQBarcomp_t
   {
     QQQBarcomp_t();                // default constructor
+    multi1d<QQQSpinIndices_t> spin_indices;  // spin indices
+    bool             sparseP;      // Is this data sparsely stored?
     bool             Dirac_basis;  // spin component basis
     multi1d<ForwardProp_t> forward_props;
   };
@@ -256,6 +266,13 @@ namespace Chroma
 
   //! SequentialProp writer
   void write(XMLWriter& xml, const std::string& path, const SequentialProp_t& header);
+
+
+  //! Source/sink spin indices
+  void read(XMLReader& xml, const string& path, QQQSpinIndices_t& input);
+
+  //! Source/sink spin indices
+  void write(XMLWriter& xml, const string& path, const QQQSpinIndices_t& input);
 
 
   //! QQQBarcomp reader

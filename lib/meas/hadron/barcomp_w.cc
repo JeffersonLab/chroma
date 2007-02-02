@@ -1,4 +1,4 @@
-//  $Id: barcomp_w.cc,v 3.1 2007-02-02 03:49:51 edwards Exp $
+//  $Id: barcomp_w.cc,v 3.2 2007-02-02 05:22:47 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
@@ -8,27 +8,6 @@
 namespace Chroma 
 {
  
-  //! Source/sink spin indices
-  void read(XMLReader& xml, const string& path, QQQSpinIndices_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "source", input.source);
-    read(inputtop, "sink", input.sink);
-  }
-
-  //! Source/sink spin indices
-  void write(XMLWriter& xml, const string& path, const QQQSpinIndices_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "source", input.source);
-    write(xml, "sink", input.sink);
-
-    pop(xml);
-  }
-
-
   //! Serialize generalized object
   multi1d<ComplexF> QQQSparse_t::serialize()
   { 
