@@ -209,7 +209,7 @@ QQQ on props
       <chroma>3.22.2</chroma>
       <qdp>1.21.6</qdp>
     </code_version>
-    <run_date>01 Feb 07 22:20:47 EST</run_date>
+    <run_date>02 Feb 07 00:21:01 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -269,7 +269,7 @@ QQQ on props
             <chroma>3.22.2</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Feb 07 22:20:47 EST</run_date>
+          <run_date>02 Feb 07 00:21:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -371,7 +371,7 @@ QQQ on props
             <chroma>3.22.2</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Feb 07 22:20:48 EST</run_date>
+          <run_date>02 Feb 07 00:21:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -888,7 +888,7 @@ QQQ on props
             <chroma>3.22.2</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Feb 07 22:20:50 EST</run_date>
+          <run_date>02 Feb 07 00:21:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -960,7 +960,8 @@ QQQ on props
         </propIds>
         <barcompFile>qqq-v4.qqq.sh_pt.dat</barcompFile>
         <Propagator_input>
-          <version>2</version>
+          <version>3</version>
+          <sparseP>false</sparseP>
           <Dirac_basis>false</Dirac_basis>
           <ForwardProps>
             <elem>
@@ -1196,6 +1197,16 @@ QQQ on props
             <version>5</version>
             <sparseP>true</sparseP>
             <Dirac_basis>true</Dirac_basis>
+            <SpinIndices>
+              <elem>
+                <source>0 1 2</source>
+                <sink>2 1 0</sink>
+              </elem>
+              <elem>
+                <source>1 1 2</source>
+                <sink>3 1 0</sink>
+              </elem>
+            </SpinIndices>
           </Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
@@ -1212,7 +1223,7 @@ QQQ on props
             <chroma>3.22.2</chroma>
             <qdp>1.21.6</qdp>
           </code_version>
-          <run_date>01 Feb 07 22:20:53 EST</run_date>
+          <run_date>02 Feb 07 00:21:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1226,6 +1237,16 @@ QQQ on props
             <version>5</version>
             <sparseP>true</sparseP>
             <Dirac_basis>true</Dirac_basis>
+            <SpinIndices>
+              <elem>
+                <source>0 1 2</source>
+                <sink>2 1 0</sink>
+              </elem>
+              <elem>
+                <source>1 1 2</source>
+                <sink>3 1 0</sink>
+              </elem>
+            </SpinIndices>
           </Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
@@ -1284,7 +1305,8 @@ QQQ on props
         </propIds>
         <barcompFile>qqq-v4.qqq.sh_sh.dat</barcompFile>
         <Propagator_input>
-          <version>2</version>
+          <version>3</version>
+          <sparseP>false</sparseP>
           <Dirac_basis>false</Dirac_basis>
           <ForwardProps>
             <elem>
@@ -1551,3 +1573,8 @@ QQQ on props
             <correlator_num>2</correlator_num>
             <sink_smeared_prop_corr>2837778712.3106 25152146.0715986 447414.165287448 8781.32048772213 582.134680896378 8346.19149087137 447542.891390338 25144702.1812209</sink_smeared_prop_corr>
           </elem>
+        </SinkSmearedProp_correlator>
+      </qqq>
+    </elem>
+  </InlineObservables>
+</chroma>
