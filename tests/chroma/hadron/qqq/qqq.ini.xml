@@ -150,7 +150,6 @@ QQQ on props
       <Param>
         <version>4</version>
         <Dirac_basis>true</Dirac_basis>
-        <nrow>4 4 4 8</nrow>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
@@ -167,9 +166,19 @@ QQQ on props
       <Name>QQQ</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>4</version>
+        <version>5</version>
         <Dirac_basis>true</Dirac_basis>
-        <nrow>4 4 4 8</nrow>
+	<SpinIndices>
+          <elem>
+            <source>0 1 2</source>
+            <sink>2 1 0 </sink>
+          </elem>
+          <elem>
+            <source>1 1 2</source>
+            <sink>3 1 0</sink>
+          </elem>
+	</SpinIndices>
+        <sparseP>true</sparseP>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
