@@ -1,16 +1,17 @@
 // -*- C++ -*-
-// $Id: inline_qqq_w.h,v 3.2 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_qqq_w.h,v 3.3 2007-02-02 03:49:51 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
  * QQQ calcs
  */
 
-#ifndef __inline_qqq_h__
-#define __inline_qqq_h__
+#ifndef __inline_qqq_w_h__
+#define __inline_qqq_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "meas/hadron/barcomp_w.h"
 #include "io/qprop_io.h"
 
 namespace Chroma 
@@ -28,13 +29,15 @@ namespace Chroma
   {
     InlineQQQParams();
     InlineQQQParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
+    void writeXML(XMLWriter& xml_out, const std::string& path);
 
     unsigned long      frequency;
 
     struct Param_t
     {
-      bool             Dirac_basis;     // Use the Dirac basis for output?
+      multi1d<QQQSpinIndices_t> spin_indices;
+      bool                      sparseP;
+      bool                      Dirac_basis;     // Use the Dirac basis for output?
     } param;
 
     struct NamedObject_t

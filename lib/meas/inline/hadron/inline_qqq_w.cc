@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 3.4 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_qqq_w.cc,v 3.5 2007-02-02 03:49:51 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -8,7 +8,6 @@
 #include "meas/inline/hadron/inline_qqq_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
-#include "meas/hadron/barcomp_w.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "util/ferm/diractodr.h"
@@ -57,6 +56,11 @@ namespace Chroma
     switch (version) 
     {
     case 4:
+      input.sparseP = false;
+      break;
+
+    case 5:
+      read(paramtop, "sparseP", input.sparseP);
       break;
 
     default:
@@ -66,6 +70,10 @@ namespace Chroma
     }
 
     read(paramtop, "Dirac_basis", input.Dirac_basis);
+    if (input.sparseP)
+    {
+      read(paramtop, "SpinIndices", input.spin_indices);
+    }
   }
 
   //! Param output
@@ -73,8 +81,9 @@ namespace Chroma
   {
     push(xml, path);
 
-    int version = 4;
+    int version = 5;
     write(xml, "version", version);
+    write(xml, "sparseP", input.sparseP);
     write(xml, "Dirac_basis", input.Dirac_basis);
 
     pop(xml);
@@ -132,15 +141,15 @@ namespace Chroma
 
 
   void
-  InlineQQQParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlineQQQParams::writeXML(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
     // Parameters for source construction
-    Chroma::write(xml_out, "Param", param);
+    write(xml_out, "Param", param);
 
     // Write out the output propagator/source configuration info
-    Chroma::write(xml_out, "NamedObject", named_obj);
+    write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
@@ -186,18 +195,18 @@ namespace Chroma
     StopWatch swatch;
 
     // Write out the input
-    params.write(xml_out, "Input");
+    params.writeXML(xml_out, "Input");
 
     proginfo(xml_out);    // Print out basic program info
 
     // Write out the input
-    params.write(xml_out, "Input");
+    params.writeXML(xml_out, "Input");
 
     // Write out the config info
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 4);
+    write(xml_out, "out_version", 5);
     pop(xml_out);
 
     // Calculate some gauge invariant observables just for info.
@@ -289,7 +298,7 @@ namespace Chroma
     /*
      * Generalized propagator calculation
      */
-    multiNd<Complex> barprop;
+    multi1d<Complex> barprop_1d;
 
     // Switch to Dirac-basis if desired.
     if (params.param.Dirac_basis)
@@ -307,16 +316,37 @@ namespace Chroma
       }
     }
 
-    // Compute generation propagator
-    barcomp(barprop,
-	    quark_propagator[0],
-	    quark_propagator[1],
-	    quark_propagator[2],
-	    phases, t0, bc_spec);
+    // Decide the computational mode depending on whether the data is sparse
+    // or not
+    if (params.param.sparseP)
+    {
+      QQQSparse_t barprop;
 
-    // Convert the data into a mult1d
-    multi1d<Complex> barprop_1d;
-    convertBarcomp(barprop_1d, barprop, j_decay);
+      // Compute generation propagator
+      barcompSparse(barprop,
+		    quark_propagator[0],
+		    quark_propagator[1],
+		    quark_propagator[2],
+		    params.param.spin_indices,
+		    phases, t0, bc_spec);
+
+      // Convert the data into a mult1d
+      barprop_1d = barprop.serialize();
+    }
+    else
+    {
+      QQQDense_t barprop;
+
+      // Compute generation propagator
+      barcomp(barprop,
+	      quark_propagator[0],
+	      quark_propagator[1],
+	      quark_propagator[2],
+	      phases, t0, bc_spec);
+
+      // Convert the data into a mult1d
+      barprop_1d = barprop.serialize();
+    }
 
     // Save the qqq output
     // ONLY SciDAC output format is supported!
