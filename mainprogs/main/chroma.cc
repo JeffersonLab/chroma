@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 3.6 2006-12-02 18:12:01 edwards Exp $
+// $Id: chroma.cc,v 3.7 2007-02-04 22:07:09 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -22,7 +22,7 @@ struct Params_t
 struct Inline_input_t
 {
   Params_t        param;
-  Cfg_t           cfg;
+  GroupXML_t      cfg;
   QDP::Seed       rng_seed;
 };
 
@@ -47,7 +47,7 @@ void read(XMLReader& xml, const std::string& path, Inline_input_t& p)
     XMLReader paramtop(xml, path);
       
     read(paramtop, "Param", p.param);
-    read(paramtop, "Cfg", p.cfg);
+    p.cfg = readXMLGroup(paramtop, "Cfg", "cfg_type");
 
     if (paramtop.count("RNG") > 0)
       read(paramtop, "RNG", p.rng_seed);
@@ -69,6 +69,7 @@ bool linkageHack(void)
 
   // Inline Measurements
   foo &= InlineAggregateEnv::registerAll();
+  foo &= GaugeInitEnv::registerAll();
 
   return foo;
 }
@@ -142,7 +143,17 @@ int main(int argc, char *argv[])
   // Start up the gauge field
   QDPIO::cout << "Attempt to read gauge field" << endl;
   swatch.start();
-  gaugeStartup(gauge_file_xml, gauge_xml, u, input.cfg);
+  {
+    std::istringstream  xml_c(input.cfg.xml);
+    XMLReader  cfgtop(xml_c);
+    QDPIO::cout << "Gauge initialization: cfg_type = " << input.cfg.id << endl;
+
+    Handle< GaugeInit >
+      gaugeInit(TheGaugeInitFactory::Instance().createObject(input.cfg.id,
+							     cfgtop,
+							     input.cfg.path));
+    (*gaugeInit)(gauge_file_xml, gauge_xml, u);
+  }
   swatch.stop();
 
   QDPIO::cout << "Gauge field successfully read: time= " 

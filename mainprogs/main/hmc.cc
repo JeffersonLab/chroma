@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.8 2006-12-25 21:40:18 bjoo Exp $
+// $Id: hmc.cc,v 3.9 2007-02-04 22:07:09 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -13,8 +13,8 @@ namespace Chroma
   
   struct MCControl 
   {
-    Cfg_t cfg;
-    QDP::Seed rng_seed;
+    GroupXML_t    cfg;
+    QDP::Seed     rng_seed;
     unsigned long start_update_num;
     unsigned long n_warm_up_updates;
     unsigned long n_production_updates;
@@ -31,7 +31,7 @@ namespace Chroma
 
     try { 
       XMLReader paramtop(xml, path);
-      read(paramtop, "./Cfg", p.cfg);
+      p.cfg = readXMLGroup(paramtop, "Cfg", "cfg_type");
       read(paramtop, "./RNG", p.rng_seed);
       read(paramtop, "./StartUpdateNum", p.start_update_num);
       read(paramtop, "./NWarmUpUpdates", p.n_warm_up_updates);
@@ -71,7 +71,7 @@ namespace Chroma
     
     try {
       push(xml, path);
-      write(xml, "Cfg", p.cfg);
+      xml << p.cfg.xml;
       write(xml, "RNG", p.rng_seed);
       write(xml, "StartUpdateNum", p.start_update_num);
       write(xml, "NWarmUpUpdates", p.n_warm_up_updates);
@@ -211,11 +211,13 @@ namespace Chroma
       p_new.n_updates_this_run = total - update_no;
     }
 
-    // Set the name of the config 
-    p_new.cfg.cfg_file = restart_config_filename.str();
+    // Set the name and type of the config 
+    {
+      SZINQIOGaugeInitEnv::Params  cfg;
+      cfg.cfg_file = restart_config_filename.str();
 
-    // Hijack this for now and assumes it means what I want it to mean
-    p_new.cfg.cfg_type = CFG_TYPE_SZINQIO;
+      p_new.cfg = SZINQIOGaugeInitEnv::createXMLGroup(cfg);
+    }
 
 
     push(restart_data_buffer, "Params");
@@ -531,7 +533,17 @@ Chroma::initialize(&argc, &argv);
     StopWatch swatch;
     swatch.reset();
     swatch.start();
-    gaugeStartup(file_xml, config_xml, u, mc_control.cfg);
+    {
+      std::istringstream  xml_c(mc_control.cfg.xml);
+      XMLReader  cfgtop(xml_c);
+      QDPIO::cout << "Gauge initialization: cfg_type = " << mc_control.cfg.id << endl;
+
+      Handle< GaugeInit >
+	gaugeInit(TheGaugeInitFactory::Instance().createObject(mc_control.cfg.id,
+							       cfgtop,
+							       mc_control.cfg.path));
+      (*gaugeInit)(file_xml, config_xml, u);
+    }
     swatch.stop();
     QDPIO::cout << "Gauge field successfully initialized: time= " 
 		<< swatch.getTimeInSeconds() 
