@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 3.7 2007-02-04 22:07:09 edwards Exp $
+// $Id: chroma.cc,v 3.8 2007-02-04 22:40:16 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -143,6 +143,7 @@ int main(int argc, char *argv[])
   // Start up the gauge field
   QDPIO::cout << "Attempt to read gauge field" << endl;
   swatch.start();
+  try 
   {
     std::istringstream  xml_c(input.cfg.xml);
     XMLReader  cfgtop(xml_c);
@@ -153,6 +154,26 @@ int main(int argc, char *argv[])
 							     cfgtop,
 							     input.cfg.path));
     (*gaugeInit)(gauge_file_xml, gauge_xml, u);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "CHROMA: caught cast error" << endl;
+    QDP_abort(1);
+  }
+  catch(const std::string& e) 
+  {
+    QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::exception& e) 
+  {
+    QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << endl;
+    QDP_abort(1);
+  }
+  catch(...)
+  {
+    QDPIO::cerr << "CHROMA: caught generic exception during measurement" << endl;
+    QDP_abort(1);
   }
   swatch.stop();
 

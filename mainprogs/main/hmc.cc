@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.9 2007-02-04 22:07:09 edwards Exp $
+// $Id: hmc.cc,v 3.10 2007-02-04 22:40:16 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -543,6 +543,26 @@ Chroma::initialize(&argc, &argv);
 							       cfgtop,
 							       mc_control.cfg.path));
       (*gaugeInit)(file_xml, config_xml, u);
+    }
+    catch(std::bad_cast) 
+    {
+      QDPIO::cerr << "hmc: caught cast error" << endl;
+      QDP_abort(1);
+    }
+    catch(const std::string& e) 
+    {
+      QDPIO::cerr << "hmc: Caught Exception: " << e << endl;
+      QDP_abort(1);
+    }
+    catch(std::exception& e) 
+    {
+      QDPIO::cerr << "hmc: Caught standard library exception: " << e.what() << endl;
+      QDP_abort(1);
+    }
+    catch(...)
+    {
+      QDPIO::cerr << "hmc: caught generic exception during measurement" << endl;
+      QDP_abort(1);
     }
     swatch.stop();
     QDPIO::cout << "Gauge field successfully initialized: time= " 
