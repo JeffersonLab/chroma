@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.69 2007-01-17 02:53:59 edwards Exp $
+# $Id: Makefile.am,v 3.70 2007-02-04 22:07:39 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -229,6 +229,19 @@ nobase_include_HEADERS = \
 	util/gauge/eesu3.h \
 	util/gauge/gauge.h \
 	util/gauge/gauge_startup.h \
+	util/gauge/gauge_init.h \
+	util/gauge/gauge_init_factory.h \
+	util/gauge/gauge_init_aggregate.h \
+	util/gauge/milc_gauge_init.h \
+	util/gauge/nersc_gauge_init.h \
+	util/gauge/szin_gauge_init.h \
+	util/gauge/szinqio_gauge_init.h \
+	util/gauge/kyu_gauge_init.h \
+	util/gauge/disordered_gauge_init.h \
+	util/gauge/unit_gauge_init.h \
+	util/gauge/cppacs_gauge_init.h \
+	util/gauge/weak_gauge_init.h \
+	util/gauge/sf_gauge_init.h \
 	util/gauge/hotst.h util/gauge/reunit.h \
 	util/gauge/rgauge.h util/gauge/shift2.h \
         util/gauge/su2extract.h util/gauge/su3proj.h \
@@ -847,7 +860,19 @@ libchroma_a_SOURCES = \
         util/ft/sftmom.cc util/ft/single_phase.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gauge_startup.cc util/gauge/hotst.cc \
+	util/gauge/gauge_startup.cc \
+	util/gauge/gauge_init_aggregate.cc \
+	util/gauge/milc_gauge_init.cc \
+	util/gauge/nersc_gauge_init.cc \
+	util/gauge/szin_gauge_init.cc \
+	util/gauge/szinqio_gauge_init.cc \
+	util/gauge/kyu_gauge_init.cc \
+	util/gauge/disordered_gauge_init.cc \
+	util/gauge/unit_gauge_init.cc \
+	util/gauge/cppacs_gauge_init.cc \
+	util/gauge/weak_gauge_init.cc \
+	util/gauge/sf_gauge_init.cc \
+	util/gauge/hotst.cc \
 	util/gauge/reunit.cc util/gauge/rgauge.cc \
 	util/gauge/shift2.cc \
 	util/gauge/su2extract.cc util/gauge/su3proj.cc \
