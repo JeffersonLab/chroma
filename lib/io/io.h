@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 3.2 2006-12-25 21:40:17 bjoo Exp $
+// $Id: io.h,v 3.3 2007-02-04 22:08:39 edwards Exp $
 
 #ifndef __io_h__
 #define __io_h__
@@ -18,6 +18,9 @@
 
 #include "enum_io/enum_io.h"
 
+#include "xml_group_reader.h"
+#include "cfgtype_io.h"
+
 #include "readszin.h"
 #include "qprop_io.h"
 #include "szin_io.h"
@@ -31,7 +34,6 @@
 #include "writemilc.h"
 
 #include "param_io.h"
-#include "cfgtype_io.h"
 #include "aniso_io.h"
 #include "io_w.h"
 #include "io_s.h"
