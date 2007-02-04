@@ -1,4 +1,4 @@
-// $Id: szinqio_gauge_init.cc,v 3.1 2007-02-04 22:06:42 edwards Exp $
+// $Id: szinqio_gauge_init.cc,v 3.2 2007-02-04 22:52:41 edwards Exp $
 /*! \file
  *  \brief Read a SZINQIO config
  */
@@ -86,7 +86,7 @@ namespace Chroma
 
       XMLBufferWriter xml_tmp;
       write(xml_tmp, "Cfg", p);
-      foo.xml = xml_tmp.str();
+      foo.xml = xml_tmp.printCurrentContext();
       foo.id = name;
       foo.path = "/Cfg";
 
