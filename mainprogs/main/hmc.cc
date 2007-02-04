@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.11 2007-02-04 22:41:53 edwards Exp $
+// $Id: hmc.cc,v 3.12 2007-02-04 22:44:15 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -525,6 +525,7 @@ Chroma::initialize(&argc, &argv);
 
   // Start up the config
   multi1d<LatticeColorMatrix> u(Nd);
+  try
   {
     XMLReader file_xml;
     XMLReader config_xml;
@@ -533,7 +534,6 @@ Chroma::initialize(&argc, &argv);
     StopWatch swatch;
     swatch.reset();
     swatch.start();
-    try
     {
       std::istringstream  xml_c(mc_control.cfg.xml);
       XMLReader  cfgtop(xml_c);
@@ -545,26 +545,6 @@ Chroma::initialize(&argc, &argv);
 							       mc_control.cfg.path));
       (*gaugeInit)(file_xml, config_xml, u);
     }
-    catch(std::bad_cast) 
-    {
-      QDPIO::cerr << "hmc: caught cast error" << endl;
-      QDP_abort(1);
-    }
-    catch(const std::string& e) 
-    {
-      QDPIO::cerr << "hmc: Caught Exception: " << e << endl;
-      QDP_abort(1);
-    }
-    catch(std::exception& e) 
-    {
-      QDPIO::cerr << "hmc: Caught standard library exception: " << e.what() << endl;
-      QDP_abort(1);
-    }
-    catch(...)
-    {
-      QDPIO::cerr << "hmc: caught generic exception during measurement" << endl;
-      QDP_abort(1);
-    }
     swatch.stop();
     QDPIO::cout << "Gauge field successfully initialized: time= " 
 		<< swatch.getTimeInSeconds() 
@@ -574,6 +554,27 @@ Chroma::initialize(&argc, &argv);
     write(xml_out, "Config_info", config_xml);
     write(xml_log, "Config_info", config_xml);
   }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "hmc: caught cast error" << endl;
+    QDP_abort(1);
+  }
+  catch(const std::string& e) 
+  {
+    QDPIO::cerr << "hmc: Caught Exception: " << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::exception& e) 
+  {
+    QDPIO::cerr << "hmc: Caught standard library exception: " << e.what() << endl;
+    QDP_abort(1);
+  }
+  catch(...)
+  {
+    QDPIO::cerr << "hmc: caught generic exception during measurement" << endl;
+    QDP_abort(1);
+  }
+
   
   // Set up the monomials
   try { 
