@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 3.9 2006-11-17 02:17:32 edwards Exp $
+// $Id: sh_source_const.cc,v 3.10 2007-02-04 22:09:03 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -208,13 +208,12 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-	  const string link_path = "/LinkSmearing";
 	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
 	
 	  Handle< LinkSmearing >
 	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
 									 linktop,
-									 link_path));
+									 params.link_smearing.path));
 	  (*linkSmearing)(u_smr);
 	}
 
