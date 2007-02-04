@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.12 2007-02-04 22:44:15 edwards Exp $
+// $Id: hmc.cc,v 3.13 2007-02-04 22:49:13 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -466,6 +466,9 @@ namespace Chroma
 
     // Inline Measurements
     foo &= InlineAggregateEnv::registerAll();
+
+    // Gauge initialization
+    foo &= GaugeInitEnv::registerAll();
 
     return foo;
   }
