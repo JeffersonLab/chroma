@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.10 2007-02-04 22:40:16 edwards Exp $
+// $Id: hmc.cc,v 3.11 2007-02-04 22:41:53 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -533,6 +533,7 @@ Chroma::initialize(&argc, &argv);
     StopWatch swatch;
     swatch.reset();
     swatch.start();
+    try
     {
       std::istringstream  xml_c(mc_control.cfg.xml);
       XMLReader  cfgtop(xml_c);
