@@ -1,4 +1,4 @@
-// $Id: link_smearing_aggregate.cc,v 3.4 2007-02-04 22:09:03 edwards Exp $
+// $Id: link_smearing_aggregate.cc,v 3.5 2007-02-04 22:57:36 edwards Exp $
 /*! \file
  *  \brief All link smearing applicators
  */
@@ -45,7 +45,7 @@ namespace Chroma
       XMLBufferWriter xml_tmp;
       NoLinkSmearingEnv::Params  non;
       write(xml_tmp, "LinkSmearing", non);
-      nope.xml = xml_tmp.str();
+      nope.xml = xml_tmp.printCurrentContext();
       nope.id = NoLinkSmearingEnv::name;
       nope.path = "LinkSmearing";
 
