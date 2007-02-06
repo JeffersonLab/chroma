@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.70 2007-02-04 22:07:39 edwards Exp $
+# $Id: Makefile.am,v 3.71 2007-02-06 15:27:36 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -390,8 +390,10 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lDeltaLs_w.h \
 	actions/ferm/linop/lwldslash_base_w.h \
 	actions/ferm/linop/lwldslash_w.h \
+	actions/ferm/linop/lwldslash_qdpopt_w.h \
 	actions/ferm/linop/lwldslash_base_array_w.h \
 	actions/ferm/linop/lwldslash_array_w.h \
+	actions/ferm/linop/lwldslash_array_qdpopt_w.h \
 	actions/ferm/linop/clover_term_w.h \
 	actions/ferm/linop/clover_term_base_w.h \
 	actions/ferm/linop/clover_term_qdp_w.h \
@@ -987,8 +989,10 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/lovlap_double_pass_w.cc \
 	actions/ferm/linop/lwldslash_base_w.cc \
 	actions/ferm/linop/lwldslash_w.cc \
+	actions/ferm/linop/lwldslash_qdpopt_w.cc\
 	actions/ferm/linop/lwldslash_base_array_w.cc \
 	actions/ferm/linop/lwldslash_array_w.cc \
+	actions/ferm/linop/lwldslash_array_qdpopt_w.cc \
 	actions/ferm/linop/overlapbu_linop_w.cc \
 	actions/ferm/linop/eoprec_dwf_linop_array_w.cc \
 	actions/ferm/linop/eoprec_nef_general_linop_array_w.cc \

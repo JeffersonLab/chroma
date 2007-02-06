@@ -33,7 +33,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog
+bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new
 
 #
 # add the programs to build in here
@@ -110,6 +110,7 @@ t_follana_io_s_SOURCES = t_follana_io_s.cc
 t_follana_pion_s_SOURCES = t_follana_pion_s.cc
 t_lwldslash_sse_SOURCES = t_lwldslash_sse.cc
 t_lwldslash_pab_SOURCES = t_lwldslash_pab.cc
+t_lwldslash_new_SOURCES = t_lwldslash_new.cc
 t_ovlap_bj_SOURCES = t_ovlap_bj.cc
 t_ovlap_double_pass_SOURCES = t_ovlap_double_pass.cc
 t_g5eps_bj_SOURCES = t_g5eps_bj.cc

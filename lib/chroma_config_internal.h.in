@@ -1,8 +1,5 @@
 /* lib/chroma_config_internal.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Build ALTIVEC DWF CG */
-#undef BUILD_ALTIVEC_DWF_CG
-
 /* Build optimized Continued Frac. (CFZ) LinOp */
 #undef BUILD_CFZ_CFZ_LINOP
 
@@ -17,9 +14,6 @@
 
 /* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
-
-/* Build SSE DWF CG */
-#undef BUILD_SSE_DWF_CG
 
 /* Build SSE Dslash Op */
 #undef BUILD_SSE_WILSON_DSLASH

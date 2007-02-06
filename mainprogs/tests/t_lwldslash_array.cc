@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_array.cc,v 3.1 2006-06-13 20:14:23 bjoo Exp $
+// $Id: t_lwldslash_array.cc,v 3.2 2007-02-06 15:27:38 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -6,7 +6,6 @@
 #include "chroma.h"
 
 using namespace Chroma;
-
 
 int main(int argc, char **argv)
 {
@@ -59,7 +58,7 @@ int main(int argc, char **argv)
 					  multi1d<LatticeColorMatrix> >(u));
 
   // Naive Dslash
-  QDPWilsonDslash D(state);
+  QDPWilsonDslashOpt D(state);
 
   QDPIO::cout << "Done" << endl;
 
@@ -256,7 +255,7 @@ int main(int argc, char **argv)
 
   // Naive Dslash
   QDPIO::cout << "Consturcting Naive 5D Dslash, N5=" << N5 << endl;
-  QDPWilsonDslashArray D5(state,N5);
+  QDPWilsonDslashArrayOpt D5(state,N5);
   QDPIO::cout << "Done" << endl;
 
 
