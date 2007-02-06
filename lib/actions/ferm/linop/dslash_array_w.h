@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_array_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: dslash_array_w.h,v 3.1 2007-02-06 15:20:56 bjoo Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -11,6 +11,11 @@
 
 // The QDP naive dslash class: QDPWilsonDslashArray
 #include "lwldslash_array_w.h"
+
+// An optimised version of the dslash class in QDP++
+// Using fused operations and temporaries 
+// Still too much comms tho.
+#include "lwldslash_array_qdpopt_w.h"
 
 
 // The following is an ifdef lis that switches in optimised
@@ -37,7 +42,7 @@ typedef PABWilsonDslashArray WilsonDslashArray;
 // Bottom line, if no optimised Dslash-s exist then the naive QDP Dslash
 // becomes the WilsonDslash
 namespace Chroma {
-typedef QDPWilsonDslashArray WilsonDslashArray;
+typedef QDPWilsonDslashArrayOpt WilsonDslashArray;
 }  // end namespace Chroma
 #endif
 
