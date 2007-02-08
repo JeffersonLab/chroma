@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_w.cc,v 3.2 2006-08-26 02:08:40 edwards Exp $
+// $Id: lwldslash_array_w.cc,v 3.3 2007-02-08 15:48:37 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -193,7 +193,6 @@ namespace Chroma
 	;
       break;
 
-      getFermBC().modifyF(chi, QDP::rb[cb]);
     }
 
     END_CODE();

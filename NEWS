@@ -1,3 +1,7 @@
+ 8/02/2007 -- Balint Joo
+	Bug fix for linking: Removed enum_wvfkind files to attic. Unincluded
+	them from  enum_io.h
+
 12/10/2006 -- Balint Joo
 	Version 3.22.1. Bug fix in how MD chronological predictor is reset.
 
