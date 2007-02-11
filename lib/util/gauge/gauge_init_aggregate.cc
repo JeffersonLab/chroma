@@ -1,4 +1,4 @@
-// $Id: gauge_init_aggregate.cc,v 3.1 2007-02-04 22:06:42 edwards Exp $
+// $Id: gauge_init_aggregate.cc,v 3.2 2007-02-11 22:57:40 edwards Exp $
 /*! \file
  * @brief Gauge initialization
  */
@@ -7,6 +7,7 @@
 
 #include "util/gauge/milc_gauge_init.h"
 #include "util/gauge/nersc_gauge_init.h"
+#include "util/gauge/szin_gauge_init.h"
 #include "util/gauge/szinqio_gauge_init.h"
 #include "util/gauge/kyu_gauge_init.h"
 #include "util/gauge/disordered_gauge_init.h"
@@ -33,6 +34,7 @@ namespace Chroma
 	// gauge initialization
 	success &= MILCGaugeInitEnv::registerAll();
 	success &= NERSCGaugeInitEnv::registerAll();
+	success &= SZINGaugeInitEnv::registerAll();
 	success &= SZINQIOGaugeInitEnv::registerAll();
 	success &= KYUGaugeInitEnv::registerAll();
 	success &= DisorderedGaugeInitEnv::registerAll();
