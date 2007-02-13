@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.71 2007-02-06 15:27:36 bjoo Exp $
+# $Id: Makefile.am,v 3.72 2007-02-13 22:25:02 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -20,7 +20,9 @@ nobase_include_HEADERS = \
 	lmdagm.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
         named_obj.h polylinop.h \
-        tprec_linop.h tprec_logdet_linop.h \
+        tprec_linop.h \
+	central_tprec_linop.h \
+	tprec_logdet_linop.h \
         teoprec_linop.h teoprec_logdet_linop.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
@@ -429,6 +431,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/polynomial_op.h \
 	actions/ferm/linop/polprec_op.h \
 	actions/ferm/linop/eoprec_slic_linop_w.h \
+	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
@@ -1026,6 +1029,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc \
 	actions/ferm/linop/eoprec_slic_linop_w.cc \
+	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
