@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.1 2007-02-13 22:25:04 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.2 2007-02-15 19:59:42 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -125,7 +125,7 @@ namespace Chroma
     //! Flopcounter
     unsigned long nFlops() const 
     { 
-      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
+      //      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
       return 0;
     }
 

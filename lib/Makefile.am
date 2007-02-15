@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.72 2007-02-13 22:25:02 bjoo Exp $
+# $Id: Makefile.am,v 3.73 2007-02-15 19:59:40 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -308,6 +308,7 @@ nobase_include_HEADERS += \
         wilstype_polyfermact_w.h \
         wilstype_fermact_w.h unprec_wilstype_fermact_w.h eoprec_wilstype_fermact_w.h \
         eoprec_constdet_wilstype_fermact_w.h eoprec_logdet_wilstype_fermact_w.h \
+	unprec_s_cprec_t_wilstype_fermact_w.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
@@ -337,6 +338,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.h \
 	actions/ferm/fermacts/unprec_w12_fermact_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
+        actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 	actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.h \
@@ -753,6 +755,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop.cc \
+	actions/ferm/qprop/unprec_s_cprec_t_fermact_qprop_w.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
 	actions/ferm/qprop/asqtad_qprop.cc \
@@ -961,6 +964,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc \
 	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
+	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_w.cc \

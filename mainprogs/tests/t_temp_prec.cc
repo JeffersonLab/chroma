@@ -1,4 +1,4 @@
-// $Id: t_temp_prec.cc,v 3.1 2007-02-13 22:25:04 bjoo Exp $
+// $Id: t_temp_prec.cc,v 3.2 2007-02-15 19:59:42 bjoo Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -9,6 +9,7 @@
 #include "chroma.h"
 
 #include "central_tprec_linop.h"
+#include "actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h"
 #include "actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h"
 using namespace Chroma;
 

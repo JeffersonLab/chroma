@@ -1,4 +1,7 @@
- 8/02/2007 -- Balint Joo
+15/02/2007 -- Balint
+	First cut Unprec Space Central Prec Time Wilson Fermions. Complete with regression tests 
+
+8/02/2007 -- Balint Joo
 	Bug fix for linking: Removed enum_wvfkind files to attic. Unincluded
 	them from  enum_io.h
 
