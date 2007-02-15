@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.2 2007-02-15 19:59:42 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.3 2007-02-15 22:40:18 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -11,7 +11,7 @@
 #include "central_tprec_linop.h"
 
 #include "actions/ferm/linop/dslash_w.h"
-
+#include "actions/ferm/linop/central_tprec_nospin_utils.h"
 
 namespace Chroma 
 { 
@@ -132,18 +132,6 @@ namespace Chroma
 
 
   private:
-    //! Apply the Nt*Nc matrix T
-    inline
-    void TOp(LatticeHalfFermion& chi, const LatticeHalfFermion& psi, enum PlusMinus isign) const;
-
-    //! Invert T using Sherman-Morrison Woodbury
-    inline
-    void invTOp(LatticeHalfFermion& chi, const LatticeHalfFermion& psi, enum PlusMinus isign) const;
-
-
-    //! Invert 3by3 complex matrix (not SU3)
-    inline
-    void invert3by3( CMat& M_inv, const CMat& M) const;  
 
     AnisoParam_t aniso;
     Real fact;  // tmp holding  Nd+Mass
@@ -152,26 +140,12 @@ namespace Chroma
     Handle< FermState<T,P,Q> > fs;
     multi1d<LatticeColorMatrix> u;
 
+    multi2d< int  > tsite; // One row for each spatial site, one column for each timeslice
+    multi2d< CMat > P_mat; // Same thing but holding the matrices
+    multi2d< CMat > P_mat_dag; // Same thing but holding the matrices
 
-    int x_index;
-    int y_index;
-    int z_index;
-    int t_index;
-    int Nx;
-    int Ny;
-    int Nz;
-    int Nt;
-    
-    
-
-    
-
-    multi3d< multi1d<int> > tsite;
-    multi3d< multi1d< CMat > > P_mat;
-    multi3d< multi1d< CMat > > P_mat_dag;
-
-    multi3d< CMat > Q_mat_inv;
-    multi3d< CMat > Q_mat_dag_inv;
+    multi1d< CMat > Q_mat_inv;        // Just one matrix for each spatial site ( 1+P[t=0] )^{-1}
+    multi1d< CMat > Q_mat_dag_inv;    // Just one matrix for each spatial site ( 1+P_dag[t=Nt-1])^{-1}
 
   };
 

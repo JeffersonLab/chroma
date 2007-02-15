@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.73 2007-02-15 19:59:40 bjoo Exp $
+# $Id: Makefile.am,v 3.74 2007-02-15 22:40:15 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -433,6 +433,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/polynomial_op.h \
 	actions/ferm/linop/polprec_op.h \
 	actions/ferm/linop/eoprec_slic_linop_w.h \
+	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
