@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_linop.h,v 3.1 2007-02-13 22:25:04 bjoo Exp $
+// $Id: central_tprec_linop.h,v 3.2 2007-02-16 22:52:23 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -235,6 +235,159 @@ namespace Chroma
 
   };
 
+
+
+  //-----------------------------------------------------------------------------------
+  //! Time preconditioned linear operator
+  /*! @ingroup linop
+   *
+   * Support for time preconditioned linear operators with ILU spatial preconditioning
+   * Given a matrix M written in block form:
+   *
+   *  M = D_t  +  D_s
+   *
+   * Preconditioning consists of writing:
+   *
+   *   D_t = P_{-} T  + P_{+} T^\dagger 
+   *
+   *  Then define T+ = P_{+} + P_{-} T
+   *              T- = P_{-} + P_{+} T^\dagger 
+   *
+   * T is same as before - essentailly the T+ and T- are like the 
+   * C_L^{-1} and C_R^{-1} of the unpreconditioned case.
+   *
+   *
+   * We now write   C_L^{-1}  = [ T+_{ee} Ds_{eo}  ]
+   *                            [    0    T+_{oo}  ]
+   *
+   * and C_R^{-1} = [ T-_{ee}  0       ]
+   *                [ Ds_{oe}  T-_{oo} ]
+   *
+   * and 
+   *  M = C_L^{-1} +  C_R^{-1} - 1
+   * 
+   * The preconditioning is:    M = C_L^{-1} C_L M C_R C_R^{-1} = C_L^{-1} ( \tilde{M} ) C_R^{-1} 
+   * with the preconditioned matrix:
+   *
+   *  \tilde{M} = C_R + C_L - C_L C_R 
+   * 
+   *  C_R = [ ( T-_{ee} )^{-1}                                      0           ]
+   *        [-( T-_{oo} )^{-1} Ds_{oe} ( T-_{ee} )^{-1}        (T-_{oo})^{-1}   ]
+   *
+   * and 
+   *
+   *  C_L = [ ( T+_{ee} )^{-1}    -( T+_{ee} )^{-1} Ds_{eo} ( T+_{oo} )^{-1}   ]
+   *        [       0                             T+_{oo}^{-1}                 ]
+   *
+   *
+   *  why is this a preconditioning? Certainly it is an ILU form  C_R is lower, C_L is upper and there is a residual term... C_L C_R
+   *
+   */
+
+  //! For now, no forces just yet - come later...
+  template<typename T, typename P, typename Q>
+  class ILUPrecSpaceCentralPrecTimeLinearOperator : public DiffLinearOperator<T,P,Q>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~ILUPrecSpaceCentralPrecTimeLinearOperator() {}
+
+    //! Defined on the entire lattice
+    const OrderedSubset& subset() const {return all;}
+
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+
+    //! The time direction
+    virtual int tDir() const = 0;
+
+    //! Apply inv (C_L)^{-1}
+    virtual void invCLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+
+    //! Apply inv (C_R)^{-1}
+    virtual void invCRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+
+    //! Apply C_L
+    virtual void cLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+    
+    //! Apply C_R
+    virtual void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+
+    //! Apply the operator onto a source vector
+    virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const
+    {
+      T   tmp1, tmp2; moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
+
+      switch (isign)
+      {
+      case PLUS:
+	//  chi   = ( C_R + C_L - C_L C_R ) psi
+	cRightLinOp(tmp1, psi, isign);
+	cLeftLinOp(tmp2, tmp1, isign);
+
+	cLeftLinOp(tmp1, psi, isign);
+	cRightLinOp(chi, psi, isign);
+	
+	tmp1 -= tmp2;
+	chi += tmp1;
+	break;
+
+      case MINUS:
+	//  chi   =  ( C_R^\dag + C_L^\dag - C_R^\dag C_L^\dag ) \psi
+
+	cLeftLinOp(tmp1, psi, isign);
+	cRightLinOp(tmp2, tmp1, isign);
+
+	cLeftLinOp(tmp1, psi, isign);
+	cRightLinOp(chi, psi, isign);
+
+	tmp1 -= tmp2;
+	chi += tmp1;
+
+	break;
+
+      default:
+	QDPIO::cerr << "unknown sign" << endl;
+	QDP_abort(1);
+      }
+    }
+
+    //! Apply the UNPRECONDITIONED operator onto a source vector
+    /*! Mainly intended for debugging */
+    virtual void unprecLinOp(T& chi, const T& psi, 
+			     enum PlusMinus isign) const
+    {
+
+      switch (isign) { 
+      case PLUS:
+	{
+	  T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
+
+	  invCRightLinOp(tmp1, psi, isign);
+	  (*this)(tmp2, tmp1, isign);
+	  invCLeftLinOp(chi, tmp2, isign);
+	}
+	break;
+      case MINUS:
+	{
+	  T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
+
+	  invCLeftLinOp(tmp1, psi, isign);
+	  (*this)(tmp2, tmp1, isign);
+	  invCRightLinOp(chi, tmp2, isign);
+	}
+	break;
+      default:
+	QDPIO::cerr << "unknown sign" << endl;
+	QDP_abort(1);
+      }
+
+    }
+
+    //! Apply the d/dt of the preconditioned linop
+    virtual void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
+
+  };
 }
 
 #endif

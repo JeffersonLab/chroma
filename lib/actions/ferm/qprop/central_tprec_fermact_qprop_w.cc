@@ -1,4 +1,4 @@
-// $Id: unprec_s_cprec_t_fermact_qprop_w.cc,v 1.1 2007-02-15 19:59:42 bjoo Exp $
+// $Id: central_tprec_fermact_qprop_w.cc,v 1.1 2007-02-16 22:52:23 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -6,6 +6,7 @@
  */
 
 #include "unprec_s_cprec_t_wilstype_fermact_w.h"
+#include "iluprec_s_cprec_t_wilstype_fermact_w.h"
 
 namespace Chroma 
 { 
@@ -13,8 +14,8 @@ namespace Chroma
   /*! \ingroup qprop
    *
    */
-  template<typename T, typename P, typename Q>
-  class UnprecSpaceCentralPrecTimeFermActQprop : public SystemSolver<T>
+  template<typename T, typename P, typename Q, template <typename, typename, typename> class L>
+  class CentralPrecTimeFermActQprop : public SystemSolver<T>
   {
   public:
     //! Constructor
@@ -22,12 +23,12 @@ namespace Chroma
      * \param A_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    UnprecSpaceCentralPrecTimeFermActQprop(Handle< UnprecSpaceCentralPrecTimeLinearOperator<T,P,Q> > A_,
+    CentralPrecTimeFermActQprop(Handle< L<T,P,Q> > A_,
 					   Handle< LinOpSystemSolver<T> > invA_) : A(A_), invA(invA_) 
       {}
 
     //! Destructor is automatic
-    ~UnprecSpaceCentralPrecTimeFermActQprop() {}
+    ~CentralPrecTimeFermActQprop() {}
 
     //! Return the subset on which the operator acts
     const OrderedSubset& subset() const {return all;}
@@ -80,9 +81,9 @@ namespace Chroma
 
   private:
     // Hide default constructor
-    UnprecSpaceCentralPrecTimeFermActQprop() {}
+    CentralPrecTimeFermActQprop() {}
 
-    Handle< UnprecSpaceCentralPrecTimeLinearOperator<T,P,Q> > A;
+    Handle< L<T,P,Q> > A;
     Handle< LinOpSystemSolver<T> > invA;
   };
 
@@ -96,8 +97,17 @@ namespace Chroma
   UnprecSpaceCentralPrecTimeWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 								 const GroupXML_t& invParam) const
   {
-    return new UnprecSpaceCentralPrecTimeFermActQprop<LF,LCM,LCM>(Handle< UnprecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
-								  Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+    return new CentralPrecTimeFermActQprop<LF,LCM,LCM,UnprecSpaceCentralPrecTimeLinearOperator>(Handle< UnprecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
+												Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+  }
+
+  template<>
+  SystemSolver<LF>* 
+  ILUPrecSpaceCentralPrecTimeWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
+								 const GroupXML_t& invParam) const
+  {
+    return new CentralPrecTimeFermActQprop<LF,LCM,LCM,ILUPrecSpaceCentralPrecTimeLinearOperator>(Handle< ILUPrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
+												 Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
   }
   
 } // namespace Chroma 

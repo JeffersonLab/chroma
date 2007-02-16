@@ -1,4 +1,4 @@
-// $Id: t_temp_prec.cc,v 3.2 2007-02-15 19:59:42 bjoo Exp $
+// $Id: t_temp_prec.cc,v 3.3 2007-02-16 22:52:23 bjoo Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -11,6 +11,7 @@
 #include "central_tprec_linop.h"
 #include "actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h"
 #include "actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h"
+#include "actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h"
 using namespace Chroma;
 
 
@@ -266,6 +267,102 @@ int main(int argc, char **argv)
   
   D_w(psi1, chi, MINUS);
   D_temp_prec.unprecLinOp(psi2, chi, MINUS);
+  diff = psi2 - psi1;
+  QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+
+
+  // ==============================================================================================
+  // ILU Prec Op
+  // ===========================================================================================
+
+
+  QDPIO::cout << "ILU Prec Op: " << endl;
+  ILUPrecSCprecTWilsonLinOp D_temp_prec2(fs, Mass, aniso );
+
+  tmp1 = Gamma(15)*chi;
+  D_temp_prec2.invCRightLinOp(tmp2, tmp1, PLUS);
+  psi1 = Gamma(15)*tmp2;
+
+  // psi2 = ( C_L^{-1} )^\dagger  \chi
+  D_temp_prec2.invCLeftLinOp(psi2, chi, MINUS);
+  diff = psi2 - psi1;
+  QDPIO::cout << " Gamma5_1  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  
+
+  // Other way 
+  // psi1 = \gamma_5  C_L^{-1} \gamma_5 \chi
+  tmp1 = Gamma(15)*chi; 
+  D_temp_prec2.invCLeftLinOp(tmp2, tmp1, PLUS);
+  psi1 = Gamma(15)*tmp2;
+
+  // psi2 = ( C_R^{-1} )^\dagger  \chi
+  D_temp_prec2.invCRightLinOp(psi2, chi, MINUS);
+  diff = psi2 - psi1;
+  QDPIO::cout << " Gamma5_2  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+
+  // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
+  gaussian(chi);
+  D_temp_prec2.cLeftLinOp(psi1, chi, PLUS);
+  D_temp_prec2.invCLeftLinOp(tmp1, psi1, PLUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CL CL_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+
+  D_temp_prec2.cLeftLinOp(psi1, chi, MINUS);
+  D_temp_prec2.invCLeftLinOp(tmp1, psi1, MINUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CL CL_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec2.invCLeftLinOp(psi1, chi, PLUS);
+  D_temp_prec2.cLeftLinOp(tmp1, psi1, PLUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CL_INV CL + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec2.invCLeftLinOp(psi1, chi, MINUS);
+  D_temp_prec2.cLeftLinOp(tmp1, psi1, MINUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CL_INV CL - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+
+  // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
+  gaussian(chi);
+  D_temp_prec2.cRightLinOp(psi1, chi, PLUS);
+  D_temp_prec2.invCRightLinOp(tmp1, psi1, PLUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CR CR_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec2.cRightLinOp(psi1, chi, MINUS);
+  D_temp_prec2.invCRightLinOp(tmp1, psi1, MINUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CR CR_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec2.invCRightLinOp(psi1, chi, PLUS);
+  D_temp_prec2.cRightLinOp(tmp1, psi1, PLUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CR_INV CR + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec2.invCRightLinOp(psi1, chi, MINUS);
+  D_temp_prec2.cRightLinOp(tmp1, psi1, MINUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CR_INV CR - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+
+  // Now test against the normal  D_op =  C_L^{-1} unprecOp() C_R^{-1}
+  D_w(psi1, chi, PLUS);
+  D_temp_prec2.unprecLinOp(psi2, chi, PLUS);
+  diff = psi2 - psi1;
+  QDPIO::cout << " D_2 + = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  
+  D_w(psi1, chi, MINUS);
+  D_temp_prec2.unprecLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
   QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
   
