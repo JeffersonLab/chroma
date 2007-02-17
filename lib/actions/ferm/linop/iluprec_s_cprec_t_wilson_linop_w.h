@@ -65,6 +65,7 @@ namespace Chroma
     }
 
     //! Apply inv (C_L)^{-1}
+    inline
     void invCLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const { 
 
       switch(isign) { 
@@ -99,6 +100,7 @@ namespace Chroma
     }
 
     //! Apply inv (C_R)^{-1}
+    inline
     void invCRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const {
       switch(isign) { 
       case PLUS: 
@@ -132,6 +134,7 @@ namespace Chroma
     }
 
     //! Apply C_L
+    inline
     void cLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const { 
       switch(isign) { 
       case PLUS: 
@@ -190,6 +193,7 @@ namespace Chroma
     }
     
     //! Apply C_R
+    inline
     void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const {
       switch(isign) { 
       case PLUS: 
@@ -249,7 +253,11 @@ namespace Chroma
       };
     }
 
-        
+    // A = 0 so A-1 = -1 => (A-1) psi = -psi and also for the dagger.
+    inline
+    void AMinusOneOp(T& chi, const T& psi, enum PlusMinus isign) const { 
+      chi = Real(-1)*psi;
+    }
     
     //! Flopcounter
     unsigned long nFlops() const 

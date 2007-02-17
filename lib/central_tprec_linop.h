@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_linop.h,v 3.2 2007-02-16 22:52:23 bjoo Exp $
+// $Id: central_tprec_linop.h,v 3.3 2007-02-17 03:51:08 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -244,7 +244,7 @@ namespace Chroma
    * Support for time preconditioned linear operators with ILU spatial preconditioning
    * Given a matrix M written in block form:
    *
-   *  M = D_t  +  D_s
+   *  M = D_t  +  D_s  + A 
    *
    * Preconditioning consists of writing:
    *
@@ -264,12 +264,16 @@ namespace Chroma
    *                [ Ds_{oe}  T-_{oo} ]
    *
    * and 
-   *  M = C_L^{-1} +  C_R^{-1} - 1
+   *  M = C_L^{-1} +  C_R^{-1}  + tilda{A}
+   *
+   * where tilde{A} = A - 1
+   *
+   * So trivial wilson like case: A = 0, clover case A = -1/4 sigma_munu F_munu
    * 
    * The preconditioning is:    M = C_L^{-1} C_L M C_R C_R^{-1} = C_L^{-1} ( \tilde{M} ) C_R^{-1} 
    * with the preconditioned matrix:
    *
-   *  \tilde{M} = C_R + C_L - C_L C_R 
+   *  \tilde{M} = C_R + C_L + C_L (A - 1) C_R 
    * 
    *  C_R = [ ( T-_{ee} )^{-1}                                      0           ]
    *        [-( T-_{oo} )^{-1} Ds_{oe} ( T-_{ee} )^{-1}        (T-_{oo})^{-1}   ]
@@ -313,6 +317,9 @@ namespace Chroma
     //! Apply C_R
     virtual void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
+    //! Apply A - 1
+    virtual void AMinusOneOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+
     //! Apply the operator onto a source vector
     virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const
     {
@@ -321,27 +328,40 @@ namespace Chroma
       switch (isign)
       {
       case PLUS:
-	//  chi   = ( C_R + C_L - C_L C_R ) psi
-	cRightLinOp(tmp1, psi, isign);
-	cLeftLinOp(tmp2, tmp1, isign);
+	//  chi   = ( C_R + C_L + C_L (A - 1 ) C_R ) psi
+	//         = C_L psi + (1  + C_L (A-1))  C_R psi
+	//
+	//  chi = C_L psi
+	cLeftLinOp(chi, psi, isign);
 
-	cLeftLinOp(tmp1, psi, isign);
-	cRightLinOp(chi, psi, isign);
+	// tmp1 = C_R psi
+	cRightLinOp(tmp1, psi, isign);
+
+	// chi = C_L psi + C_R psi 
+	chi += tmp1;
 	
-	tmp1 -= tmp2;
+	// tmp1 = C_L (A-1) C_R psi 
+	AMinusOneOp(tmp2, tmp1, isign);
+	cLeftLinOp(tmp1, tmp2, isign);
+
 	chi += tmp1;
 	break;
 
       case MINUS:
-	//  chi   =  ( C_R^\dag + C_L^\dag - C_R^\dag C_L^\dag ) \psi
-
-	cLeftLinOp(tmp1, psi, isign);
-	cRightLinOp(tmp2, tmp1, isign);
-
-	cLeftLinOp(tmp1, psi, isign);
+	//  chi   =  ( C_R^\dag + C_L^\dag + C_R^\dag (A-1)^\dag  C_L^\dag ) \psi
+	//        =  C_R^\dag psi +(1  +  C_R^\dag (A-1)^\dag) C_L^\dag \psi
 	cRightLinOp(chi, psi, isign);
+	
+	// tmp1 = C_L^\dag \psi
+	cLeftLinOp( tmp1, psi, isign);
+	
+	// chi = C_R^\dag \psi + C_L^\dag \psi
+	chi += tmp1;
 
-	tmp1 -= tmp2;
+	// tmp2 = (A-1)^\dag C_L^\dag psi
+	AMinusOneOp( tmp2, tmp1, isign);
+	cRightLinOp( tmp1, tmp2, isign);
+
 	chi += tmp1;
 
 	break;
@@ -388,6 +408,8 @@ namespace Chroma
     virtual void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
 
   };
+
+
 }
 
 #endif
