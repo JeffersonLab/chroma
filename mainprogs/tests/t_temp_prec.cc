@@ -1,4 +1,4 @@
-// $Id: t_temp_prec.cc,v 3.4 2007-02-17 03:51:08 bjoo Exp $
+// $Id: t_temp_prec.cc,v 3.5 2007-02-18 18:50:58 bjoo Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -8,10 +8,6 @@
 
 #include "chroma.h"
 
-#include "central_tprec_linop.h"
-#include "actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h"
-#include "actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h"
-#include "actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h"
 
 using namespace Chroma;
 
@@ -364,6 +360,114 @@ int main(int argc, char **argv)
   
   D_w(psi1, chi, MINUS);
   D_temp_prec2.unprecLinOp(psi2, chi, MINUS);
+  diff = psi2 - psi1;
+  QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+
+  // ==============================================================================================
+  // ILU Prec Clover Op
+  // ===========================================================================================
+
+  CloverFermActParams p;
+  p.Mass=0.01;
+  p.clovCoeffR = 0.91;
+  p.clovCoeffT = 1.07;
+  p.u0 = 1.0;
+
+  p.anisoParam.anisoP = true;
+  p.anisoParam.t_dir = 3;
+  p.anisoParam.xi_0 = 2.464;
+  p.anisoParam.nu = 0.95;
+  
+
+  QDPIO::cout << "ILU Prec Clover Op: " << endl;
+  ILUPrecSCprecTCloverLinOp D_temp_prec_clover(fs, p );
+
+  UnprecCloverLinOp D_clov(fs, p);
+  
+  tmp1 = Gamma(15)*chi;
+  D_temp_prec_clover.invCRightLinOp(tmp2, tmp1, PLUS);
+  psi1 = Gamma(15)*tmp2;
+
+  // psi2 = ( C_L^{-1} )^\dagger  \chi
+  D_temp_prec_clover.invCLeftLinOp(psi2, chi, MINUS);
+  diff = psi2 - psi1;
+  QDPIO::cout << " Gamma5_1  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  
+
+  // Other way 
+  // psi1 = \gamma_5  C_L^{-1} \gamma_5 \chi
+  tmp1 = Gamma(15)*chi; 
+  D_temp_prec_clover.invCLeftLinOp(tmp2, tmp1, PLUS);
+  psi1 = Gamma(15)*tmp2;
+
+  // psi2 = ( C_R^{-1} )^\dagger  \chi
+  D_temp_prec_clover.invCRightLinOp(psi2, chi, MINUS);
+  diff = psi2 - psi1;
+  QDPIO::cout << " Gamma5_2  = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+
+  // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
+  gaussian(chi);
+  D_temp_prec_clover.cLeftLinOp(psi1, chi, PLUS);
+  D_temp_prec_clover.invCLeftLinOp(tmp1, psi1, PLUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CL CL_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+
+  D_temp_prec_clover.cLeftLinOp(psi1, chi, MINUS);
+  D_temp_prec_clover.invCLeftLinOp(tmp1, psi1, MINUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CL CL_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec_clover.invCLeftLinOp(psi1, chi, PLUS);
+  D_temp_prec_clover.cLeftLinOp(tmp1, psi1, PLUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CL_INV CL + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec_clover.invCLeftLinOp(psi1, chi, MINUS);
+  D_temp_prec_clover.cLeftLinOp(tmp1, psi1, MINUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CL_INV CL - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+
+  // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
+  gaussian(chi);
+  D_temp_prec_clover.cRightLinOp(psi1, chi, PLUS);
+  D_temp_prec_clover.invCRightLinOp(tmp1, psi1, PLUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CR CR_INV + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec_clover.cRightLinOp(psi1, chi, MINUS);
+  D_temp_prec_clover.invCRightLinOp(tmp1, psi1, MINUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CR CR_INV - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec_clover.invCRightLinOp(psi1, chi, PLUS);
+  D_temp_prec_clover.cRightLinOp(tmp1, psi1, PLUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CR_INV CR + = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+  D_temp_prec_clover.invCRightLinOp(psi1, chi, MINUS);
+  D_temp_prec_clover.cRightLinOp(tmp1, psi1, MINUS);
+
+  diff = tmp1 - chi;
+  QDPIO::cout << " CR_INV CR - = " << sqrt(norm2(diff)/norm2(chi)) << endl;
+
+
+  // Now test against the normal  D_op =  C_L^{-1} unprecOp() C_R^{-1}
+  D_clov(psi1, chi, PLUS);
+  D_temp_prec_clover.unprecLinOp(psi2, chi, PLUS);
+  diff = psi2 - psi1;
+  QDPIO::cout << " D_2 + = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
+  
+  D_clov(psi1, chi, MINUS);
+  D_temp_prec_clover.unprecLinOp(psi2, chi, MINUS);
   diff = psi2 - psi1;
   QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
   

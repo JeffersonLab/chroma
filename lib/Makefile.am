@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.75 2007-02-16 22:52:21 bjoo Exp $
+# $Id: Makefile.am,v 3.76 2007-02-18 18:50:57 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -341,6 +341,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
         actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h \
         actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h \
+        actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 	actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.h \
@@ -438,6 +439,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
@@ -970,6 +972,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
+	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_w.cc \
@@ -1040,6 +1043,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/eoprec_slic_linop_w.cc \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
+	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \

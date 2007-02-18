@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 3.1 2006-10-19 16:01:31 edwards Exp $
+// $Id: linop_w.h,v 3.2 2007-02-18 18:50:58 bjoo Exp $
 
 /*! \file
  * \brief Linear operators
@@ -16,15 +16,20 @@
 #include "dslash_array_w.h"
 
 #include "unprec_wilson_linop_w.h"
-#include "eoprec_wilson_linop_w.h"
-#include "overlapbu_linop_w.h"
-
 #include "unprec_parwilson_linop_w.h"
-#include "eoprec_parwilson_linop_w.h"
-
 #include "unprec_dwf4d_linop_w.h"
 #include "unprec_pdwf4d_linop_w.h"
 #include "unprec_ppdwf4d_linop_w.h"
+#include "unprec_clover_linop_w.h"
+
+#include "eoprec_wilson_linop_w.h"
+#include "eoprec_clover_linop_w.h"
+#include "eoprec_parwilson_linop_w.h"
+
+#include "unprec_s_cprec_t_wilson_linop_w.h"
+
+#include "iluprec_s_cprec_t_wilson_linop_w.h"
+#include "iluprec_s_cprec_t_clover_linop_w.h"
 
 #include "unprec_dwflike_linop_base_array_w.h"
 #include "unprec_dwf_linop_array_w.h"
@@ -61,6 +66,7 @@
 #include "lg5Rherm_w.h"
 
 #include "unprec_dwftransf_linop_w.h"
+#include "overlapbu_linop_w.h"
 
 #endif
 
