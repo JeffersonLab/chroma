@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqq_w.h,v 3.5 2007-02-22 04:51:21 edwards Exp $
+// $Id: inline_qqq_w.h,v 3.6 2007-02-22 04:52:42 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -47,7 +47,7 @@ namespace Chroma
     };
 
 
-    //! Inline measurement of Wilson loops
+    //! Inline measurement of QQQ's
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {
