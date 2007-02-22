@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: twisted_fermbc_w.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
+// $Id: twisted_fermbc_w.h,v 3.3 2007-02-22 21:11:45 bjoo Exp $
 /*! \file
  *  \brief Twisted fermionic BC
  */
@@ -125,7 +125,7 @@ namespace Chroma
  
     //! Modify fermion fields in place under a subset
     /*! NOP */
-    void modifyF(T& psi, const OrderedSubset& s) const {}
+    void modifyF(T& psi, const Subset& s) const {}
 
     //! Modify fermion fields in place
     /*! NOP */
@@ -133,7 +133,7 @@ namespace Chroma
     
     //! Modify fermion fields in place under a subset
     /*! NOP */
-    void modifyF(multi1d<T>& psi, const OrderedSubset& s) const {}
+    void modifyF(multi1d<T>& psi, const Subset& s) const {}
 
     //! Zero some gauge-like field in place on the masked links
     /*! NOP */

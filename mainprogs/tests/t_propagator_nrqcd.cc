@@ -1,4 +1,4 @@
-// $Id: t_propagator_nrqcd.cc,v 3.1 2006-07-03 15:26:11 edwards Exp $
+// $Id: t_propagator_nrqcd.cc,v 3.2 2007-02-22 21:11:50 bjoo Exp $
 /*! \file
  *  \brief Main code for NRQCD propagator generation
  *   
@@ -489,10 +489,10 @@ void time_evolve(LatticeFermion & Gplus,
 {
   const int tdir = 3 ;
 
-  UnorderedSet timeslice;
+  Set timeslice;
   timeslice.make(TimeSliceFunc(tdir)) ;
 
-  UnorderedSubset this_time = timeslice[t+1] ;
+  Subset this_time = timeslice[t+1] ;
 
   LatticeFermion tmp = shift(adj(u[tdir])*Gnow, BACKWARD, tdir);
   Gplus[this_time] = tmp ;
@@ -522,11 +522,11 @@ void apply_lowest_ke(LatticeFermion & Gout,
 {
   const int tdir = 3 ;
 
-  UnorderedSet timeslice;
+  Set timeslice;
   timeslice.make(TimeSliceFunc(tdir)) ;
 
 
-  UnorderedSubset this_time = timeslice[t] ;
+  Subset this_time = timeslice[t] ;
 
   LatticeFermion  Gout_all ;
 

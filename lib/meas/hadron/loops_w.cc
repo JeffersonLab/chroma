@@ -1,4 +1,4 @@
-//  $Id: loops_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
+//  $Id: loops_w.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 //
 
 #include "chromabase.h"
@@ -59,7 +59,7 @@ void loops(const LatticeFermion &q_source,
   push(xml_gamma, xml_tag);
 
   // Machinery to do timeslice sums with 
-  UnorderedSet timeslice;
+  Set timeslice;
   timeslice.make(TimeSliceFunc(Nd-1));
 
   multi1d<DComplex> corr_fn_t(length);

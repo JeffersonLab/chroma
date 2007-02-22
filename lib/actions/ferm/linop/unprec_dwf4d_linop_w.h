@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf4d_linop_w.h,v 3.1 2006-07-03 15:26:09 edwards Exp $
+// $Id: unprec_dwf4d_linop_w.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned projected DWF operator to 4D
  */
@@ -42,7 +42,7 @@ namespace Chroma
     int size() const {return D->size();}
 
     //! Operator lives on the entire lattice
-    inline const OrderedSubset& subset() const {return all;}
+    inline const Subset& subset() const {return all;}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */

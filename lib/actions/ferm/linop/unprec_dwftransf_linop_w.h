@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwftransf_linop_w.h,v 3.1 2006-07-03 15:26:09 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -45,7 +45,7 @@ namespace Chroma
     ~UnprecDWFTransfLinOp() {}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs,
@@ -100,7 +100,7 @@ namespace Chroma
     ~UnprecDWFTransfMdagMLinOp() {}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
@@ -148,7 +148,7 @@ namespace Chroma
     ~UnprecDWFTransfDenLinOp() {}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const 

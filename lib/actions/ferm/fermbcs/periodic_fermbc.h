@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: periodic_fermbc.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: periodic_fermbc.h,v 3.1 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -37,7 +37,7 @@ namespace Chroma
  
     //! Modify fermion fields in place under a subset
     /*! NOP */
-    void modifyF(T& psi, const OrderedSubset& s) const {}
+    void modifyF(T& psi, const Subset& s) const {}
 
     //! Modify fermion fields in place
     /*! NOP */
@@ -45,7 +45,7 @@ namespace Chroma
     
     //! Modify fermion fields in place under a subset
     /*! NOP */
-    void modifyF(multi1d<T>& psi, const OrderedSubset& s) const {}
+    void modifyF(multi1d<T>& psi, const Subset& s) const {}
 
     //! Zero some gauge-like field in place on the masked links
     void zero(P& ds_u) const {}

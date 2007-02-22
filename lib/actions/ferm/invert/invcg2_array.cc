@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 3.3 2006-09-07 01:26:43 bjoo Exp $
+// $Id: invcg2_array.cc,v 3.4 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -75,7 +75,7 @@ namespace Chroma
     START_CODE();
 
     const int N = psi.size();
-    const OrderedSubset& s = M.subset();
+    const Subset& s = M.subset();
 
     SystemSolverResults_t res;
 

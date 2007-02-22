@@ -1,4 +1,4 @@
-// $Id: invmr.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: invmr.cc,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 
 /*! \file
  *  \brief Minimal-Residual (MR) for a generic fermion Linear Operator
@@ -72,7 +72,7 @@ void InvCG2(const LinearOperator& A,
 {
   START_CODE();
 
-  const OrderedSubset& s = M.subset();
+  const Subset& s = M.subset();
 
   LatticeFermion Ar;
   Complex a;

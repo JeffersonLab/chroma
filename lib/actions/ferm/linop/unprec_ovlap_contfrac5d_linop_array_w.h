@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_linop_array_w.h,v 3.1 2006-10-19 16:01:32 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_linop_array_w.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -59,7 +59,7 @@ namespace Chroma
     ~UnprecOvlapContFrac5DLinOpArray() {}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}

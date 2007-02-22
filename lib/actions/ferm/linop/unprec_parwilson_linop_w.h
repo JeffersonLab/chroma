@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_parwilson_linop_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_parwilson_linop_w.h,v 3.1 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator with parity breaking term
  */
@@ -58,7 +58,7 @@ namespace Chroma
     ~UnprecParWilsonLinOp() {}
 
     //! Only defined on the odd subset
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}

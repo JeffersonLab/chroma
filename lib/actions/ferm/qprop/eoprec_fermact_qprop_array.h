@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_fermact_qprop_array.h,v 3.1 2006-10-19 16:01:33 edwards Exp $
+// $Id: eoprec_fermact_qprop_array.h,v 3.2 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -57,7 +57,7 @@ namespace Chroma
     int size() const {return A->size();}
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lovddag_double_pass_w.h,v 3.1 2006-10-19 16:01:31 edwards Exp $
+// $Id: lovddag_double_pass_w.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Internal Overlap-pole operator
  */
@@ -80,7 +80,7 @@ namespace Chroma
     ~lovddag_double_pass() {}
  
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;

@@ -1,4 +1,4 @@
-// $Id: inline_ritz_H_w.cc,v 3.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: inline_ritz_H_w.cc,v 3.3 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -354,7 +354,7 @@ namespace Chroma
   {
 
     // Try and get lowest eigenvalue of MM
-    const OrderedSubset& s = MM->subset();
+    const Subset& s = MM->subset();
   
     multi1d<Real> lambda(params.Neig+params.Ndummy);
     multi1d<Real> check_norm(params.Neig);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_linop.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
+// $Id: eoprec_constdet_linop.h,v 3.2 2007-02-22 21:11:44 bjoo Exp $
 /*! @file
  * @brief Preconditioned 4D Linop with Gauge Independent Even-Even part
  */
@@ -253,7 +253,7 @@ namespace Chroma
     virtual ~EvenOddPrecConstDetLinearOperatorArray() {}
 
     //! Only defined on the odd lattice
-    const OrderedSubset& subset() const {return rb[1];}
+    const Subset& subset() const {return rb[1];}
 
     //! Expected length of array index
     virtual int size(void) const = 0;

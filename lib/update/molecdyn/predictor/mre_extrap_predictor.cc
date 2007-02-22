@@ -93,7 +93,7 @@ namespace Chroma
   {
     START_CODE();
 
-    const OrderedSubset& s= A.subset();
+    const Subset& s= A.subset();
 
     
     int Nvec = chrono_buf->size();
@@ -282,7 +282,7 @@ namespace Chroma
   {
     START_CODE();
 
-    const OrderedSubset& s= A.subset();
+    const Subset& s= A.subset();
     
     int Nvec = chrono_buf->size();
 

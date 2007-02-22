@@ -1,4 +1,4 @@
-// $Id: wlmesferm_w.cc,v 3.0 2006-04-03 04:59:10 edwards Exp $
+// $Id: wlmesferm_w.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 
 #error "NOT FULLY CONVERTED"
 
@@ -27,7 +27,7 @@ void WlMesFerm(const multi1d<LatticeColorMatrix>& u,
 	       const LatticeFermion& chi,
 	       const LatticeFermion& psi,
 	       Double& w_ferm,
-	       const OrderedSubset& sub)
+	       const Subset& sub)
 {
   START_CODE();
   

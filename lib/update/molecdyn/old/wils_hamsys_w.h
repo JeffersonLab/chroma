@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wils_hamsys_w.h,v 3.0 2006-04-03 04:59:10 edwards Exp $
+// $Id: wils_hamsys_w.h,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  *  \brief HMC
  */
@@ -112,7 +112,7 @@ public:
     // Get a handle on a state with fermionic BC's
     Handle<const ConnectState> g_state(fermAct.createState(u));
 
-    const OrderedSubset& s = (fermAct.linOp(g_state))->subset();
+    const Subset& s = (fermAct.linOp(g_state))->subset();
     Double FE=0;
 
     // FE = phi^{dag} ( M^dag M )^{-1} phi

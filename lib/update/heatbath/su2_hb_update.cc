@@ -8,15 +8,15 @@ namespace Chroma
 
   void print_field(const LatticeReal& a0);
   void su2_a_0(const LatticeReal&, LatticeReal& ,
-	       const OrderedSubset& sub, const int NmaxHB,
+	       const Subset& sub, const int NmaxHB,
 	       LatticeBoolean& lAccept);
   void su2_a_0_kp(const LatticeReal&, LatticeReal& ,
-		  const OrderedSubset& sub, const int NmaxHB,
+		  const Subset& sub, const int NmaxHB,
 		  LatticeBoolean& lAccept);
 
   void su2_hb_update(LatticeColorMatrix& u_mu, const LatticeColorMatrix& 
 		     u_mu_staple, Double BetaMC, const int su2_index,
-		     const OrderedSubset& sub, const int NmaxHB) 
+		     const Subset& sub, const int NmaxHB) 
   {
     // ****************************************** 
     //              Parameters
@@ -103,7 +103,7 @@ namespace Chroma
   }
 
   void su2_a_0(const LatticeReal& weight, LatticeReal& a_0, 
-	       const OrderedSubset& sub,const int NmaxHB,
+	       const Subset& sub,const int NmaxHB,
 	       LatticeBoolean& lAccept) 
   {
     // received weight=SqDet*BetaMC
@@ -141,7 +141,7 @@ namespace Chroma
   }
 
   void su2_a_0_kp(const LatticeReal& weight, LatticeReal& a_0,
-		  const OrderedSubset& sub, const int NmaxHB,
+		  const Subset& sub, const int NmaxHB,
 		  LatticeBoolean& lAccept) 
   {
     // received weight=SqDet*BetaMC

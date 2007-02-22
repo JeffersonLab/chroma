@@ -16,7 +16,7 @@ void InvRelGMRESR_CG_a(const LinearOperator<T>& PrecMM,
 			 int MaxGMRESRPrec,
 			 int& n_count)
 {
-  const OrderedSubset&  s= UnprecMM.subset();
+  const Subset&  s= UnprecMM.subset();
 
   x[s] = zero;
   T r; 

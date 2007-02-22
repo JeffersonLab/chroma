@@ -1,4 +1,4 @@
-// $Id: invcg2_prec_wilson.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: invcg2_prec_wilson.cc,v 3.1 2007-02-22 21:11:50 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -73,7 +73,7 @@ void InvCG2EvenOddPrecWilsLinOp(const WilsonDslash &D,
 			   int& n_count)
 {
   // Always work on checkerboard 1. -- Chroma convention for even odd prec solver
-  const OrderedSubset&  s = rb[1];
+  const Subset&  s = rb[1];
 
   // Length of vectors; -- subset length times Ns (Nc*Complex taken care of below)
   int n_3vec = (s.end() - s.start() + 1)*Ns;

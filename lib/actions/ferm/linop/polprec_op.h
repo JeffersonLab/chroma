@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polprec_op.h,v 3.1 2006-08-26 05:42:33 edwards Exp $
+// $Id: polprec_op.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Maybe usefull for polynomial preconditioning. It contructs an
  *     operator that is \f$QP(Q^2)Q\f$, where \f$Q = \gamma_5 M\f$, with M any 4D dirac
@@ -42,14 +42,14 @@ namespace Chroma
     //! Subset comes from underlying operator
     // Hopefully the subsets of the preconditioner and the matrix
     // are the same...
-    inline const OrderedSubset& subset() const {return M->subset();}
+    inline const Subset& subset() const {return M->subset();}
 
     inline void g5M(T& out, const T& in,  enum PlusMinus isign) const 
       {
 	const int G5=Ns*Ns-1;
       
 	T  tmp;
-	const OrderedSubset& sub = M->subset();
+	const Subset& sub = M->subset();
       
 	// [ Gamma(5) D ]^{dag} = Gamma(5) D
 	// using D = gamma_5 D^{dag} gamma_5
@@ -83,7 +83,7 @@ namespace Chroma
 	P  ds_tmp;
       
       
-	const OrderedSubset& sub = M->subset();
+	const Subset& sub = M->subset();
 
 	T g5Mchi,g5Mpsi ;
 	T g5Pg5Mchi, g5Pg5Mpsi ;

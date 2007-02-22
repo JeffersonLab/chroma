@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 3.1 2006-08-25 23:56:51 edwards Exp $
+// $Id: sunfill.cc,v 3.2 2007-02-22 21:11:50 bjoo Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -84,20 +84,11 @@ namespace Chroma
   sunFill(LatticeColorMatrix& d, 
 	  const multi1d<LatticeReal>& r,
 	  int su2_index,
-	  const UnorderedSubset& s)
+	  const Subset& s)
   {
     sunFill_t(d, r, su2_index, s);
   }
 
-
-  void
-  sunFill(LatticeColorMatrix& d,
-	  const multi1d<LatticeReal>& r,
-	  int su2_index,
-	  const OrderedSubset& s)
-  {
-    sunFill_t(d, r, su2_index, s);
-  }
 
 }  // end namespace Chroma
 

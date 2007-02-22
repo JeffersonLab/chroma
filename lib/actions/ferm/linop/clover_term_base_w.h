@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 3.2 2006-08-26 05:44:20 edwards Exp $
+// $Id: clover_term_base_w.h,v 3.3 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -25,7 +25,7 @@ namespace Chroma
     virtual ~CloverTermBase() {}
 
     //! Subset is all here
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Invert
     /*!

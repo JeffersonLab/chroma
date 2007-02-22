@@ -1,4 +1,4 @@
-// $Id: su3hb.cc,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: su3hb.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup heatbath update of SU(Nc) matrix U with action
  */
@@ -34,7 +34,7 @@ namespace Chroma
 	     int& ntrials,
 	     int& nfails,
 	     HeatbathType algorithm,
-	     const OrderedSubset& sub)
+	     const Subset& sub)
   {
     START_CODE();
   

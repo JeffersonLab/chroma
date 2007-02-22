@@ -1,6 +1,9 @@
-//  $Id: qqbar_w.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
+//  $Id: qqbar_w.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 //  $Log: qqbar_w.cc,v $
-//  Revision 3.0  2006-04-03 04:59:00  edwards
+//  Revision 3.1  2007-02-22 21:11:49  bjoo
+//  Removed Ordered and Unordered Subsets and Sets. Now just have Subsets and Sets -not Unordered or Ordered - passes regressions with suitable QDP where QDP has SSE disabled
+//
+//  Revision 3.0  2006/04/03 04:59:00  edwards
 //  Major overhaul of fermion and gauge action interface. Basically,
 //  all fermacts and gaugeacts now carry out  <T,P,Q>  template parameters. These are
 //  the fermion type, the "P" - conjugate momenta, and "Q" - generalized coordinates
@@ -57,7 +60,7 @@ void compute_qqbar( multi2d<DPropagator>& qqbar,
   QDPIO::cout<<"Starting the qqbar code\n";
 
   // Length of lattice in decay direction
-  UnorderedSet sft_set(phases.getSet()) ;
+  Set sft_set(phases.getSet()) ;
   int length(sft_set.numSubsets());
   QDPIO::cout<<"Time length: "<<length<<endl ;
 
@@ -96,7 +99,7 @@ void compute_qqbar( multi2d<DPropagator>& qqbar,
   QDPIO::cout<<"Starting the qqbar code\n";
 
   // Length of lattice in decay direction
-  UnorderedSet sft_set(phases.getSet()) ;
+  Set sft_set(phases.getSet()) ;
   int length(sft_set.numSubsets());
   //QDPIO::cout<<"Time length: "<<length<<endl ;
 

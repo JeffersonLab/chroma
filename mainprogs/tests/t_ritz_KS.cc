@@ -1,4 +1,4 @@
-// $Id: t_ritz_KS.cc,v 3.1 2006-09-20 20:28:06 edwards Exp $
+// $Id: t_ritz_KS.cc,v 3.2 2007-02-22 21:11:50 bjoo Exp $
 
 #include "chroma.h"
 
@@ -197,7 +197,7 @@ void RitzCode4D(Handle< LinearOperator<LatticeFermion> >& MM,
 {
 
   // Try and get lowest eigenvalue of MM
-  const OrderedSubset& s = MM->subset();
+  const Subset& s = MM->subset();
   
   multi1d<Real> lambda(input.ritz_params.Neig+input.ritz_params.Ndummy);
   multi1d<Real> check_norm(input.ritz_params.Neig);
@@ -319,7 +319,7 @@ void RitzCode4DHw(Handle< LinearOperator<LatticeFermion> >& MM,
 {
 
   // Try and get lowest eigenvalue of MM
-  const OrderedSubset& s = MM->subset();
+  const Subset& s = MM->subset();
   
   multi1d<Real> lambda(input.ritz_params.Neig+input.ritz_params.Ndummy);
   multi1d<Real> check_norm(input.ritz_params.Neig);
@@ -499,7 +499,7 @@ void RitzCode5D(Handle< LinearOperatorArray<LatticeFermion> >& MM,
 {
   // Try and get lowest eigenvalue of MM
   int N5 = MM->size();
-  const OrderedSubset& s = MM->subset();
+  const Subset& s = MM->subset();
   
   multi1d<Real> lambda(input.ritz_params.Neig+input.ritz_params.Ndummy);
   multi1d<Real> check_norm(input.ritz_params.Neig);

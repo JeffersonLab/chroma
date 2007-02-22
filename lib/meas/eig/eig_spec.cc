@@ -1,4 +1,4 @@
-// $Id: eig_spec.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: eig_spec.cc,v 3.1 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Compute low lying eigenvalues of the hermitian H
  */
@@ -59,7 +59,7 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 {
   START_CODE();
   
-  const OrderedSubset& sub = M.subset(); // Subset over which M acts
+  const Subset& sub = M.subset(); // Subset over which M acts
   
   push(xml_out, "EigSpecRitzCG");
 
@@ -150,7 +150,7 @@ void EigSpecRitzKS(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 {
   START_CODE();
 
-  const OrderedSubset& s = M.subset(); // Subset over which M acts
+  const Subset& s = M.subset(); // Subset over which M acts
   
   // Sanity Checks: 
   // Make sure lambda_H is large enough
@@ -335,7 +335,7 @@ void fixMMev2Mev(const LinearOperator<LatticeFermion>& M,  // The Op to fix to
 {
   START_CODE();
 
-  const OrderedSubset& s = M.subset(); // Subset over which M acts
+  const Subset& s = M.subset(); // Subset over which M acts
   
    // Sanity checking
   if( n_eig > lambda.size() ) { 

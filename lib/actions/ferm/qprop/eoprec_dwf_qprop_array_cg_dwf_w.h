@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.4 2006-11-20 21:02:44 bjoo Exp $
+// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.5 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -52,7 +52,7 @@ namespace Chroma
     int size() const {return N5;}
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!

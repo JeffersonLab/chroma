@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermbc.h,v 3.2 2006-08-15 21:45:50 bjoo Exp $
+// $Id: fermbc.h,v 3.3 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -27,7 +27,7 @@ namespace Chroma
     virtual void modifyF(T& psi) const = 0;
 
     //! Modify fermion fields in place under a subset
-    virtual void modifyF(T& psi, const OrderedSubset& s) const = 0;
+    virtual void modifyF(T& psi, const Subset& s) const = 0;
 
     //! Modify fermion fields in place
     /*! Convenience function */
@@ -35,7 +35,7 @@ namespace Chroma
 
     //! Modify fermion fields in place under a subset
     /*! Convenience function */
-    virtual void modifyF(multi1d<T>& psi, const OrderedSubset& s) const = 0;
+    virtual void modifyF(multi1d<T>& psi, const Subset& s) const = 0;
 
     //! Modify U fields according to the fermion BC in place
     virtual void modify(Q& u) const = 0;

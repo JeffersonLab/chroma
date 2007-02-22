@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: su3proj.h,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: su3proj.h,v 3.1 2007-02-22 21:11:50 bjoo Exp $
 /*! \file
  *  \ingroup gauge
  *  \author Subsetting added by A. Hart
@@ -23,12 +23,7 @@ void su3proj(LatticeColorMatrix& u,
 void su3proj(LatticeColorMatrix& u, 
 	     const LatticeColorMatrix& w, 
 	     int su2_index,
-	     const OrderedSubset& mstag);
-
-void su3proj(LatticeColorMatrix& u, 
-	     const LatticeColorMatrix& w, 
-	     int su2_index,
-	     const UnorderedSubset& mstag);
+	     const Subset& mstag);
 
 };
 #endif

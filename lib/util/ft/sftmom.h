@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.1 2006-08-19 19:29:33 flemingg Exp $
+//  $Id: sftmom.h,v 3.2 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -29,7 +29,7 @@ public:
   { init(mom2_max, origin_offset_, mom_offset_, avg_equiv_mom_, j_decay); }
 
   //! The set to be used in sumMulti
-  const UnorderedSet& getSet() const { return sft_set; }
+  const Set& getSet() const { return sft_set; }
 
   //! Number of momenta
   int numMom() const { return num_mom; }
@@ -83,7 +83,7 @@ private:
   multi1d<int> origin_offset;
   multi1d<int> mom_offset;
   multi1d<LatticeComplex> phases;
-  UnorderedSet sft_set;
+  Set sft_set;
 };
 
 }  // end namespace Chroma

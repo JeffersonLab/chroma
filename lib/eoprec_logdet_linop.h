@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_logdet_linop.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
+// $Id: eoprec_logdet_linop.h,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Preconditioned  Linear Operators where the Even Even part depends on the gauge field.
  *
@@ -105,7 +105,7 @@ namespace Chroma
     virtual ~EvenOddPrecLogDetLinearOperator() {}
 
     //! Only defined on the odd lattice
-    const OrderedSubset& subset() const {return rb[1];}
+    const Subset& subset() const {return rb[1];}
 
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
@@ -294,7 +294,7 @@ namespace Chroma
     virtual ~EvenOddPrecLogDetLinearOperatorArray() {}
 
     //! Only defined on the odd lattice
-    const OrderedSubset& subset() const {return rb[1];}
+    const Subset& subset() const {return rb[1];}
 
     //! Get the szie expected of arrays
     virtual int size() const = 0;

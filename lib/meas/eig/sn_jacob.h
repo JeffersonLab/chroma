@@ -1,4 +1,4 @@
-// $Id: sn_jacob.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: sn_jacob.h,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 #ifndef __sn_jacob_h__
 #define __sn_jacob_h__
 
@@ -28,7 +28,7 @@ int SN_Jacob(multi1d<LatticeFermion>& psi,
 	     multi1d<Complex>& off_diag, 
 	     Real tolerance, 
 	     int N_max,
-	     const OrderedSubset& sub);
+	     const Subset& sub);
 
 }  // end namespace Chroma
 

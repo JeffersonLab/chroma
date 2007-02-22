@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tprec_linop.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
+// $Id: tprec_linop.h,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -45,7 +45,7 @@ namespace Chroma
     virtual ~TimePrecLinearOperator() {}
 
     //! Defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;

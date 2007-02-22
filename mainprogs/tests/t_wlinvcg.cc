@@ -1,4 +1,4 @@
-// $Id: t_wlinvcg.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
+// $Id: t_wlinvcg.cc,v 3.1 2007-02-22 21:11:50 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -74,7 +74,7 @@ void WlInvCG2(const LinearOperator& M,
 	      int MaxCG, 
 	      int& n_count)
 {
-  const OrderedSubset& s = M.subset();
+  const Subset& s = M.subset();
 
   LatticeFermion mp;
   Real a;

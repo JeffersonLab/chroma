@@ -1,4 +1,4 @@
-// $Id: ritz.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: ritz.cc,v 3.1 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -126,7 +126,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   T Apsi;
   T Ap;
 
-  const OrderedSubset& s = A.subset(); // Subset over which A acts
+  const Subset& s = A.subset(); // Subset over which A acts
 
   //  Make Psi_all(N_eig-1) orthogonal to the previous eigenvectors  */
   int N_eig_index = N_eig - 1;

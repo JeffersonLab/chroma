@@ -1,4 +1,4 @@
-// $Id: minvcg.cc,v 3.5 2007-01-20 21:57:31 edwards Exp $
+// $Id: minvcg.cc,v 3.6 2007-02-22 21:11:46 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -80,7 +80,7 @@ namespace Chroma
   {
     START_CODE();
 
-    const OrderedSubset& sub = A.subset();
+    const Subset& sub = A.subset();
 
     if (shifts.size() != RsdCG.size()) 
     {

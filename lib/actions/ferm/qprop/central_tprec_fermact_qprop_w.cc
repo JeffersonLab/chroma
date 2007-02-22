@@ -1,4 +1,4 @@
-// $Id: central_tprec_fermact_qprop_w.cc,v 1.1 2007-02-16 22:52:23 bjoo Exp $
+// $Id: central_tprec_fermact_qprop_w.cc,v 1.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -31,7 +31,7 @@ namespace Chroma
     ~CentralPrecTimeFermActQprop() {}
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!

@@ -17,7 +17,7 @@ void su2_hb_update(LatticeColorMatrix& u_mu,
 			const LatticeColorMatrix& u_mu_staple, 
 			Double BetaMC, 
 			const int su2_index,
-			const OrderedSubset& sub, 
+			const Subset& sub, 
 			const int NmaxHB);
 
 }  // end namespace Chroma

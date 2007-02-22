@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: spatial_two_plaq_gaugeact.h,v 1.2 2006-09-20 20:28:00 edwards Exp $
+// $Id: spatial_two_plaq_gaugeact.h,v 1.3 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -70,7 +70,7 @@ namespace Chroma
 
     //! Return the set on which the gauge action is defined
     /*! Defined on the even-off (red/black) set */
-    const OrderedSet& getSet() const {return rb;}
+    const Set& getSet() const {return rb;}
 
     //! Compute staple
     void staple(LatticeColorMatrix& result,

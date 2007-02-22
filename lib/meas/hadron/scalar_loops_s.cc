@@ -1,4 +1,4 @@
-// $Id: scalar_loops_s.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: scalar_loops_s.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 
 #include "chromabase.h"
 #include"scalar_loops_s.h"
@@ -30,7 +30,7 @@ namespace Chroma
   void local_scalar_loop::compute(LatticeStaggeredFermion & q_source, 
 				  LatticeStaggeredFermion & psi, int isample)
   {
-    UnorderedSet timeslice;
+    Set timeslice;
     timeslice.make(TimeSliceFunc(Nd-1));
 
     LatticeComplex TrG_s0 ; 
@@ -46,7 +46,7 @@ namespace Chroma
   void non_local_scalar_loop::compute(LatticeStaggeredFermion & q_source, 
 				      LatticeStaggeredFermion & psi, int isample)
   {
-    UnorderedSet timeslice;
+    Set timeslice;
     timeslice.make(TimeSliceFunc(Nd-1));
 
     LatticeStaggeredFermion psi_sca1 ;

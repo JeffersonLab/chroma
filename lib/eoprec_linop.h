@@ -95,7 +95,7 @@ namespace Chroma
     virtual ~EvenOddPrecLinearOperator() {}
 
     //! Only defined on the odd lattice
-    const OrderedSubset& subset() const {return rb[1];}
+    const Subset& subset() const {return rb[1];}
 
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
@@ -315,7 +315,7 @@ namespace Chroma
     virtual ~EvenOddPrecLinearOperatorArray() {}
 
     //! Only defined on the odd lattice
-    const OrderedSubset& subset() const {return rb[1];}
+    const Subset& subset() const {return rb[1];}
 
     //! Expected length of array index
     virtual int size(void) const = 0;

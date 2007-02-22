@@ -1,4 +1,4 @@
-// $Id: t_follana_io_s.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: t_follana_io_s.cc,v 3.1 2007-02-22 21:11:50 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
   LatticeComplex corr_fn = trace(adj(qprop)*qprop);
 
-  UnorderedSet timeslice;
+  Set timeslice;
   timeslice.make(TimeSliceFunc(3));
 
   /* Project on zero momentum: Do a slice-wise sum. */

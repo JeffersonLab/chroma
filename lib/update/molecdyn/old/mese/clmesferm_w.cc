@@ -1,4 +1,4 @@
-// $Id: clmesferm_w.cc,v 3.0 2006-04-03 04:59:10 edwards Exp $
+// $Id: clmesferm_w.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 
 #error "NOT FULLY CONVERTED - MAJOR CHANGES OR SUPPORT FOR FIELD-STRENGTH F NEEDED. HERE FOR IDEAS TO HELP WITH OVERALL CLASS STRUCTURE"
 
@@ -25,7 +25,7 @@ void ClMesFerm(const multi1d<LatticeColorMatrix>& u,
 	       const LatticeFermion& psi,
 	       const Real& Kappa,
 	       Double& w_ferm,
-	       const OrderedSubset& sub)
+	       const Subset& sub)
 {   
   LATTICE_TRIANG(clov);
   LATTICE_TRIANG(invclov);

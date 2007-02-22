@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
+// $Id: lmdagm.h,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 
 #ifndef __lmdagm_h__
 #define __lmdagm_h__
@@ -30,7 +30,7 @@ namespace Chroma
     ~MdagMLinOp() {}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
@@ -78,7 +78,7 @@ namespace Chroma
     int size() const {return A->size();}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
@@ -120,7 +120,7 @@ namespace Chroma
     ~approx_lmdagm() {}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
@@ -171,7 +171,7 @@ namespace Chroma
     const FermBC<T,P,Q>& getFermBC() const {return A->getFermBC();}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
@@ -261,7 +261,7 @@ namespace Chroma
     int size() const {return A->size();}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */

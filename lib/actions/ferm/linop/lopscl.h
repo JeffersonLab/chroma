@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lopscl.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lopscl.h,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 
 #ifndef __lopscl_h__
 #define __lopscl_h__
@@ -33,13 +33,13 @@ namespace Chroma
     ~lopscl() {}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
-	const OrderedSubset& sub = A->subset();
+	const Subset& sub = A->subset();
 	(*A)(chi, psi, isign);
 	chi[sub] *= scale_fact;
       }
@@ -72,13 +72,13 @@ namespace Chroma
     ~approx_lopscl() {}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
-	const OrderedSubset& sub = A->subset();
+	const Subset& sub = A->subset();
 	(*A)(chi, psi, isign);
 	chi[sub] *= scale_fact;
       }
@@ -87,7 +87,7 @@ namespace Chroma
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const
       {
-	const OrderedSubset& sub = A->subset();
+	const Subset& sub = A->subset();
 	(*A)(chi, psi, isign, epsilon);
 	chi[sub] *= scale_fact;
       }
@@ -125,13 +125,13 @@ namespace Chroma
     int size() const {return A->size();}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
     inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
       {
-	const OrderedSubset& sub = A->subset();
+	const Subset& sub = A->subset();
 
 	(*A)(chi, psi, isign);
 	for(int i = 0; i < size(); i++) { 

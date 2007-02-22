@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_cg.h,v 3.3 2006-10-15 04:17:00 edwards Exp $
+// $Id: syssolver_mdagm_cg.h,v 3.4 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -50,7 +50,7 @@ namespace Chroma
     ~MdagMSysSolverCG() {}
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return A->subset();}
+    const Subset& subset() const {return A->subset();}
 
     //! Solver the linear system
     /*!

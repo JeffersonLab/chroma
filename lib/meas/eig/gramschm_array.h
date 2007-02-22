@@ -1,4 +1,4 @@
-// $Id: gramschm_array.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: gramschm_array.h,v 3.1 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -26,7 +26,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
 		   const int Npsi,
 		   const multi2d<LatticeFermion>& vec, 
 		   const int Nvec,
-		   const OrderedSubset& s);
+		   const Subset& s);
 
 
 //! Gram Schmidt rothogonalisation
@@ -45,7 +45,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec, 
 		   const int Nvec,
-		   const OrderedSubset& s);
+		   const Subset& s);
 
 
 //! Gram Schmidt rothogonalisation
@@ -62,7 +62,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
  */
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec,
-		   const OrderedSubset& s);
+		   const Subset& s);
 
 
 //! Gram Schmidt rothogonalisation
@@ -81,7 +81,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec, 
 		   const int Nvec,
-		   const OrderedSubset& s);
+		   const Subset& s);
 
 
 //! Gram Schmidt rothogonalisation
@@ -98,7 +98,7 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec,
-		   const OrderedSubset& s);
+		   const Subset& s);
 
 //! Gram Schmidt rothogonalisation
 /*!
@@ -114,7 +114,7 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi,
 		   const multi1d<LatticeFermion>& vec,
-		   const OrderedSubset& s);
+		   const Subset& s);
 
 }  // end namespace Chroma
 

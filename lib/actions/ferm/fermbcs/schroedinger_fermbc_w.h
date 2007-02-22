@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: schroedinger_fermbc_w.h,v 3.2 2006-08-26 02:08:40 edwards Exp $
+// $Id: schroedinger_fermbc_w.h,v 3.3 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Fermion action boundary conditions
  */
@@ -49,7 +49,7 @@ namespace Chroma
 
     //! Modify fermion fields in place under a subset
     virtual void modifyF(LatticeFermion& psi, 
-			 const OrderedSubset& s) const
+			 const Subset& s) const
     {
       START_CODE();
 
@@ -68,7 +68,7 @@ namespace Chroma
     
     //! Modify fermion fields in place under a subset
     virtual void modifyF(multi1d<LatticeFermion>& psi, 
-			 const OrderedSubset& s) const
+			 const Subset& s) const
     {
       QDP_error_exit("not implemented");
     }

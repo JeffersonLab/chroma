@@ -1,4 +1,4 @@
-//  $Id: asq_dsl_s.h,v 3.1 2006-09-19 16:04:23 edwards Exp $
+//  $Id: asq_dsl_s.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief The "asq" or "asqtad" dslash operator D'
  */
@@ -82,7 +82,7 @@ namespace Chroma
 		enum PlusMinus isign, int cb) const;
   
     //! Subset is all here
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
     
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return state->getBC();}

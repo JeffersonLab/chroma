@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reunit.cc,v 3.2 2006-08-25 23:56:51 edwards Exp $
+// $Id: reunit.cc,v 3.3 2007-02-22 21:11:49 bjoo Exp $
 
 /*! \file
  *  \ingroup gauge
@@ -463,7 +463,7 @@ namespace Chroma {
   }
   
   void reunit(LatticeColorMatrix& xa,
-	      const UnorderedSubset& mstag)
+	      const Subset& mstag)
   {
     START_CODE();
 
@@ -474,20 +474,7 @@ namespace Chroma {
     
     END_CODE();
   }
-  
-  void reunit(LatticeColorMatrix& xa,
-	      const OrderedSubset& mstag)
-  {
-    START_CODE();
 
-    LatticeBoolean bad;
-    int numbad;
-    
-    reunit_t(xa, bad, numbad, REUNITARIZE, mstag);
-    
-    END_CODE();
-  }
-  
   // Overloaded definitions, with numbad and ruflag
   void reunit(LatticeColorMatrix& xa,
 	      int& numbad, 
@@ -505,7 +492,7 @@ namespace Chroma {
   void reunit(LatticeColorMatrix& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag,
-	      const UnorderedSubset& mstag)
+	      const Subset& mstag)
   {
     START_CODE();
 
@@ -516,19 +503,6 @@ namespace Chroma {
     END_CODE();
   }
   
-  void reunit(LatticeColorMatrix& xa,
-	      int& numbad, 
-	      enum Reunitarize ruflag,
-	      const OrderedSubset& mstag)
-  {
-    START_CODE();
-
-    LatticeBoolean bad;
-    
-    reunit_t(xa, bad, numbad, REUNITARIZE, mstag);
-    
-    END_CODE();
-  }
   
   // Overloaded definitions, with bad, numbad and ruflag
   void reunit(LatticeColorMatrix& xa, 
@@ -543,18 +517,10 @@ namespace Chroma {
 	      LatticeBoolean& bad, 
 	      int& numbad, 
 	      enum Reunitarize ruflag,
-	      const UnorderedSubset& mstag)
+	      const Subset& mstag)
   {
     reunit_t(xa, bad, numbad, ruflag, mstag);
   }
   
-  void reunit(LatticeColorMatrix& xa, 
-	      LatticeBoolean& bad, 
-	      int& numbad, 
-	      enum Reunitarize ruflag,
-	      const OrderedSubset& mstag)
-  {
-    reunit_t(xa, bad, numbad, ruflag, mstag);
-  }
   
 } // End namespace

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lDeltaLs_w.h,v 3.1 2006-10-19 16:01:30 edwards Exp $
+// $Id: lDeltaLs_w.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *   Apply DeltaLs = (1/4)(1-eps^2) to a fermion field.
 
@@ -27,7 +27,7 @@ namespace Chroma
     ~lDeltaLs() {}
  
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;

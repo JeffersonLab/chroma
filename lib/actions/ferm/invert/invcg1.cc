@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 3.3 2006-11-18 02:48:09 kostas Exp $
+// $Id: invcg1.cc,v 3.4 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -75,7 +75,7 @@ InvCG1_a(const LinearOperator<T>& A,
 {
   START_CODE();
 
-  const OrderedSubset& s = A.subset();
+  const Subset& s = A.subset();
 
   SystemSolverResults_t  res;
 

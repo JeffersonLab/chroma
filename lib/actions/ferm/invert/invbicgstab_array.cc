@@ -1,4 +1,4 @@
-// $Id: invbicgstab_array.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: invbicgstab_array.cc,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -18,7 +18,7 @@ void InvBiCGStab_a(const LinearOperatorArray<T>& A,
 {
   const int N = psi.size();
 
-  const OrderedSubset& s = A.subset();
+  const Subset& s = A.subset();
 
   // Not converged
   bool convP = false;

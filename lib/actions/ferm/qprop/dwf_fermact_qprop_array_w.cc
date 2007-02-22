@@ -1,4 +1,4 @@
-// $Id: dwf_fermact_qprop_array_w.cc,v 3.3 2006-10-19 17:36:07 edwards Exp $
+// $Id: dwf_fermact_qprop_array_w.cc,v 3.4 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Base class for unprec and even-odd preconditioned DWF qprop
  */
@@ -37,7 +37,7 @@ namespace Chroma
     ~DWFQprop() {}
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!

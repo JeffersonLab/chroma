@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sun_proj.h,v 3.1 2006-08-25 23:56:51 edwards Exp $
+// $Id: sun_proj.h,v 3.2 2007-02-22 21:11:50 bjoo Exp $
 /*! \file
  *  \ingroup gauge
  *  \author Subsetting added by A. Hart
@@ -30,14 +30,7 @@ namespace Chroma
 		LatticeColorMatrix& v,
 		const Real& BlkAccu, 
 		int BlkMax,
-		const OrderedSubset& mstag);
-
-  // Unordered subsets
-  void sun_proj(const LatticeColorMatrix& w, 
-		LatticeColorMatrix& v,
-		const Real& BlkAccu, 
-		int BlkMax,
-		const UnorderedSubset& mstag);
+		const Subset& mstag);
 
 
 } // End namespace

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: polynomial_op.h,v 3.4 2006-08-26 05:50:06 edwards Exp $
+// $Id: polynomial_op.h,v 3.5 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Polynomial filter for 4D Dirac operators. It creates an approximation
  *    to 1/Q^2 in the range \f$[\mu, \lambda_{max}]\f$ with \f$Q = \gamma5 M\f$
@@ -187,7 +187,7 @@ namespace Chroma
     const FermBC<T,P,Q>& getFermBC() const {return M->getFermBC();}
     
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return M->subset();}
+    inline const Subset& subset() const {return M->subset();}
 
     //! Returns  the roots
     multi1d<DComplex> Roots() const {

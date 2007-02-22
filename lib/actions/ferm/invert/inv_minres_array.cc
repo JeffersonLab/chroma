@@ -17,7 +17,7 @@ void InvMINRES_a(const LinearOperatorArray<T>& A,
 
   // Compute v_1 = b - A x_0 
   int N5 = A.size();
-  const OrderedSubset& s = A.subset();
+  const Subset& s = A.subset();
 
   multi1d<T> v(N5);
   multi1d<T> Av(N5);

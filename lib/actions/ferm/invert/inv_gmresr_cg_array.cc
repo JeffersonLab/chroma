@@ -20,7 +20,7 @@ void InvGMRESR_CG_a(const LinearOperatorArray<T>& PrecMM,
 {
   START_CODE();
 
-  const OrderedSubset&  s= UnprecM.subset();
+  const Subset&  s= UnprecM.subset();
   int N5 = UnprecM.size();
 
   // Sanity checks

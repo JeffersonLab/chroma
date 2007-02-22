@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lg5Rherm_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lg5Rherm_w.h,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 
 #ifndef __lg5Rherm_h__
 #define __lg5Rherm_h__
@@ -47,7 +47,7 @@ namespace Chroma
     ~lg5RHermArray() {}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return D->subset();}
+    inline const Subset& subset() const {return D->subset();}
 
     //! The size of the 5D operator
     inline int size() const { return D->size(); }
@@ -57,7 +57,7 @@ namespace Chroma
     inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
       {
 	multi1d<T>  tmp(D->size());  moveToFastMemoryHint(tmp);
-	const OrderedSubset& sub = (*D).subset();
+	const Subset& sub = (*D).subset();
 	int N5 = (*D).size();
 	// Operator is hermitian so can ignore isign
 

@@ -1,4 +1,4 @@
-// $Id: inv_rel_cg1.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: inv_rel_cg1.cc,v 3.1 2007-02-22 21:11:45 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -27,7 +27,7 @@ void InvRelCG1_a(const LinearOperator<T>& A,
 {
   START_CODE();
 
-  const OrderedSubset& s = A.subset();
+  const Subset& s = A.subset();
 
   Real chi_sq = Real(norm2(chi,s));
   Real rsd_sq = (RsdCG * RsdCG)*chi_sq;

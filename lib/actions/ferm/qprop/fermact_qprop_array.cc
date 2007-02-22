@@ -1,4 +1,4 @@
-// $Id: fermact_qprop_array.cc,v 3.2 2006-07-03 15:26:09 edwards Exp $
+// $Id: fermact_qprop_array.cc,v 3.3 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic non-preconditioned fermion operator
  *
@@ -39,7 +39,7 @@ namespace Chroma
     int size() const {return A->size();}
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!

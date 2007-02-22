@@ -1,4 +1,4 @@
-// $Id: ritz_array.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: ritz_array.cc,v 3.1 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Ritz code for eigenvalues
  */
@@ -129,8 +129,8 @@ void RitzArray_t(const LinearOperatorArray<T>& A, // Herm Pos Def
   multi1d<T> Apsi(N5);
   multi1d<T> Ap(N5);
 
-  const OrderedSubset& s = A.subset(); // Subset over which A acts
-//  const OrderedSubset& s = all;
+  const Subset& s = A.subset(); // Subset over which A acts
+//  const Subset& s = all;
 
 
   //  Make Psi_all(N_eig-1) orthogonal to the previous eigenvectors  */

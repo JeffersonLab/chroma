@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_stoch_conn_s.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: pseudoscalar_stoch_conn_s.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 #include "chromabase.h"
 #include "pseudoscalar_stoch_conn_s.h"
 #include "util/gauge/stag_phases_s.h"
@@ -43,7 +43,7 @@ void fourlink_pseudoscalar_stoch_conn::compute(
   // Array to describe shifts in cube
   multi1d<int> delta(Nd);
 
-  UnorderedSet timeslice;
+  Set timeslice;
   timeslice.make(TimeSliceFunc(Nd-1));
 
   LatticeStaggeredFermion psi_eta4_1 ;

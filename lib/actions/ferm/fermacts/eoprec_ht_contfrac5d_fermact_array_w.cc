@@ -1,4 +1,4 @@
-// $Id: eoprec_ht_contfrac5d_fermact_array_w.cc,v 3.1 2006-10-19 16:01:27 edwards Exp $
+// $Id: eoprec_ht_contfrac5d_fermact_array_w.cc,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) action
  */
@@ -400,7 +400,7 @@ namespace Chroma
     ~HtContFrac5DQprop() {}
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver.h,v 3.2 2006-07-03 15:26:06 edwards Exp $
+// $Id: syssolver.h,v 3.3 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Linear system solvers
  */
@@ -47,7 +47,7 @@ namespace Chroma
     virtual SystemSolverResults_t operator() (T& psi, const T& chi) const = 0;
 
     //! Return the subset on which the operator acts
-    virtual const OrderedSubset& subset() const = 0;
+    virtual const Subset& subset() const = 0;
   };
 
 
@@ -78,7 +78,7 @@ namespace Chroma
     virtual SystemSolverResults_t operator() (multi1d<T>& psi, const multi1d<T>& chi) const = 0;
 
     //! Return the subset on which the operator acts
-    virtual const OrderedSubset& subset() const = 0;
+    virtual const Subset& subset() const = 0;
   };
 
 
@@ -110,7 +110,7 @@ namespace Chroma
 					      const T& chi) const = 0;
 
     //! Return the subset on which the operator acts
-    virtual const OrderedSubset& subset() const = 0;
+    virtual const Subset& subset() const = 0;
   };
 
 
@@ -145,7 +145,7 @@ namespace Chroma
 					      const multi1d<T>& chi) const = 0;
 
     //! Return the subset on which the operator acts
-    virtual const OrderedSubset& subset() const = 0;
+    virtual const Subset& subset() const = 0;
   };
 
 }

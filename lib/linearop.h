@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linearop.h,v 3.3 2006-10-19 16:01:26 edwards Exp $
+// $Id: linearop.h,v 3.4 2007-02-22 21:11:45 bjoo Exp $
 
 /*! @file
  * @brief Linear Operators
@@ -41,7 +41,7 @@ namespace Chroma
     }
 
     //! Return the subset on which the operator acts
-    virtual const OrderedSubset& subset() const = 0;
+    virtual const Subset& subset() const = 0;
     
     //! Return the number of flops performed by operator()
     //! Base linop returns 0 and this can be overridden
@@ -78,7 +78,7 @@ namespace Chroma
     }
 
     //! Return the subset on which the operator acts
-    virtual const OrderedSubset& subset() const = 0;
+    virtual const Subset& subset() const = 0;
 
     //! Return the number of flops performed by operator()
     //! Base linop returns 0 and this can be overridden
@@ -172,7 +172,7 @@ namespace Chroma
     virtual ~UnprecLinearOperator() {}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
   };
 
 
@@ -190,7 +190,7 @@ namespace Chroma
     virtual ~UnprecLinearOperatorArray() {}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
   };
 
 

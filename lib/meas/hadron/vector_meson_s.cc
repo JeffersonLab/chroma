@@ -104,7 +104,7 @@ vector_meson::compute(
   LatticeComplex corr_fn_s;
 
   // Machinery to do timeslice sums with 
-  UnorderedSet timeslice;
+  Set timeslice;
   timeslice.make(TimeSliceFunc(Nd-1));
 
   // Phases

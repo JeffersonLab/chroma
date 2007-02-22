@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_cps_wrapper_qprop.h,v 3.3 2006-09-06 03:43:22 edwards Exp $
+// $Id: asqtad_cps_wrapper_qprop.h,v 3.4 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -52,7 +52,7 @@ namespace Chroma
     ~AsqtadCPSWrapperQprop();
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!

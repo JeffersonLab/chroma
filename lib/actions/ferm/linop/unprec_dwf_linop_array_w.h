@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_dwf_linop_array_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_dwf_linop_array_w.h,v 3.1 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion linear operator
  */
@@ -41,7 +41,7 @@ namespace Chroma
     inline int size() const {return N5;}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}

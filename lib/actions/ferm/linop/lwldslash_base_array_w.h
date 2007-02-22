@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_array_w.h,v 3.1 2006-08-26 05:50:06 edwards Exp $
+// $Id: lwldslash_base_array_w.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -56,7 +56,7 @@ namespace Chroma
     virtual ~WilsonDslashBaseArray() {}
 
     //! Subset is all here
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     /**
      * Apply a vector dslash

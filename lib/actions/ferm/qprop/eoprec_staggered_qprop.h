@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_staggered_qprop.h,v 3.3 2006-11-18 02:46:18 kostas Exp $
+// $Id: eoprec_staggered_qprop.h,v 3.4 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -48,7 +48,7 @@ namespace Chroma
     ~EvenOddFermActQprop() {}
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!

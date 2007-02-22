@@ -1,4 +1,4 @@
-// $Id: gramschm_array.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: gramschm_array.cc,v 3.1 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -28,7 +28,7 @@ namespace Chroma {
 template< typename T>
 void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
 		     const multi2d<T>& vec, const int Nvec,
-		     const OrderedSubset& sub) 
+		     const Subset& sub) 
 {
 
   START_CODE();
@@ -90,7 +90,7 @@ template <typename T>
 void GramSchmArray_T(multi1d<T>& psi, 
 		     const multi2d<T>& vec, 
 		     const int Nvec,
-		     const OrderedSubset& sub) 
+		     const Subset& sub) 
 {
 
   START_CODE();
@@ -136,7 +136,7 @@ void GramSchmArray_T(multi1d<T>& psi,
 template <typename T>
 void GramSchmArray_T(multi1d<T>& psi, 
 		     const multi1d<T>& vec,
-		     const OrderedSubset& sub) 
+		     const Subset& sub) 
 {
 
   START_CODE();
@@ -176,7 +176,7 @@ void GramSchmArray_T(multi1d<T>& psi,
 
 void GramSchmArray(multi2d<LatticeFermion>& psi, const int Npsi, 
 		   const multi2d<LatticeFermion>& vec, const int Nvec,
-		   const OrderedSubset& sub) 
+		   const Subset& sub) 
 {
   GramSchmArray_T(psi, Npsi, vec, Nvec, sub);
 }
@@ -197,7 +197,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi, const int Npsi,
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec, 
 		   const int Nvec,
-		   const OrderedSubset& sub) 
+		   const Subset& sub) 
 {
   START_CODE();
 
@@ -221,7 +221,7 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  */
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec, const int Nvec,
-		   const OrderedSubset& sub) 
+		   const Subset& sub) 
 {
   GramSchmArray_T(psi, psi.size2(), vec, Nvec, sub);
 }
@@ -242,7 +242,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
  */
 void GramSchmArray(multi2d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec,
-		   const OrderedSubset& sub) 
+		   const Subset& sub) 
 {
   GramSchmArray_T(psi, psi.size2(), vec, vec.size2(), sub);
 }
@@ -262,7 +262,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
 		   const multi2d<LatticeFermion>& vec,
-		   const OrderedSubset& sub) 
+		   const Subset& sub) 
 {
   GramSchmArray_T(psi, vec, vec.size2(), sub);
 }
@@ -284,7 +284,7 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi, 
 		   const multi1d<LatticeFermion>& vec,
-		   const OrderedSubset& sub) 
+		   const Subset& sub) 
 {
   GramSchmArray_T(psi,vec,sub);
 }

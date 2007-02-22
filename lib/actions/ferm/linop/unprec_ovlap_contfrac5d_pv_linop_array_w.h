@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.h,v 3.1 2006-10-19 16:01:33 edwards Exp $
+// $Id: unprec_ovlap_contfrac5d_pv_linop_array_w.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Pauli-Villars Continued Fraction 5D
  */
@@ -59,7 +59,7 @@ namespace Chroma
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Apply the operator onto a source vector
     void operator() (multi1d<LatticeFermion>& chi, 

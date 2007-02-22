@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: llincomb.h,v 3.1 2006-08-18 15:52:43 edwards Exp $
+// $Id: llincomb.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 
 #ifndef __llincomb_h__
 #define __llincomb_h__
@@ -33,13 +33,13 @@ namespace Chroma
     ~llincomb() {}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
-	const OrderedSubset& sub = A->subset();
+	const Subset& sub = A->subset();
 	(*A)(chi, psi, isign);
 	chi[sub] *= scale_fact;
 	chi[sub] += add_const*psi;

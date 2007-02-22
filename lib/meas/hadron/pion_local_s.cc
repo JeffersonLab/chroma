@@ -85,7 +85,7 @@ namespace Chroma {
     LatticeComplex latt_corr_fn;
 
     // Machinery to do timeslice sums with 
-    UnorderedSet timeslice;
+    Set timeslice;
     timeslice.make(TimeSliceFunc(Nd-1));
 
     // Counters/Indices

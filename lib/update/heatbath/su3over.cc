@@ -1,4 +1,4 @@
-// $Id: su3over.cc,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: su3over.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  *  \brief Do one SU(2) subgroup microcanonical overrelaxation update of SU(Nc)
  */
@@ -27,7 +27,7 @@ namespace Chroma
   void su3over(LatticeColorMatrix& u,
 	       const LatticeColorMatrix& w,
 	       int su2_index,
-	       const OrderedSubset& sub)
+	       const Subset& sub)
   {
     START_CODE();
                       

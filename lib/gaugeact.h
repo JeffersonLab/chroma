@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gaugeact.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: gaugeact.h,v 3.1 2007-02-22 21:11:45 bjoo Exp $
 
 /*! @file
  * @brief Class structure for gauge actions
@@ -50,7 +50,7 @@ namespace Chroma
     }
 
     //! Return the set on which the gauge action is defined
-    virtual const OrderedSet& getSet(void) const = 0;
+    virtual const Set& getSet(void) const = 0;
 
     //! Compute dS/dU
     /*! Default version. Derived class should override this if needed. */

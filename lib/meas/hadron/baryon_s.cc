@@ -1,5 +1,5 @@
 /* + */
-/* $Id: baryon_s.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $ ($Date: 2006-04-03 04:58:59 $) */
+/* $Id: baryon_s.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $ ($Date: 2007-02-22 21:11:49 $) */
 
 /* This routine is specific to staggered fermions! */
 
@@ -103,7 +103,7 @@ namespace Chroma {
 
     // --- pasted from mesons_w ---
     // Create the time-slice set
-    UnorderedSet timeslice;
+    Set timeslice;
     timeslice.make(TimeSliceFunc(j_decay));
 
     // Length of lattice in j_decay direction
@@ -241,7 +241,7 @@ namespace Chroma {
 
     // --- pasted from mesons_w ---
     // Create the time-slice set
-    UnorderedSet timeslice;
+    Set timeslice;
     timeslice.make(TimeSliceFunc(j_decay));
 
     // Length of lattice in j_decay direction
@@ -415,7 +415,7 @@ namespace Chroma {
 
     // --- pasted from mesons_w ---
     // Create the time-slice set
-    UnorderedSet timeslice;
+    Set timeslice;
     timeslice.make(TimeSliceFunc(j_decay));
 
     // Length of lattice in j_decay direction

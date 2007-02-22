@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_mdagm_s.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: asqtad_mdagm_s.h,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -61,7 +61,7 @@ namespace Chroma
     ~AsqtadMdagM() {}
 
     //! Only defined on the even subset
-    const OrderedSubset& subset() const {return rb[0];}
+    const Subset& subset() const {return rb[0];}
 
     //! Return the fermion BC object for this linear operator
     const FermBC<LatticeStaggeredFermion,

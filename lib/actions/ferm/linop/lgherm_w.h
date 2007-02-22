@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lgherm_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lgherm_w.h,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 
 #ifndef __lgherm_h__
 #define __lgherm_h__
@@ -33,7 +33,7 @@ namespace Chroma
     ~lgherm() {}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
@@ -42,7 +42,7 @@ namespace Chroma
 	const int G5=Ns*Ns-1;
 
 	T  tmp;
-	const OrderedSubset& sub = A->subset();
+	const Subset& sub = A->subset();
 
 	// [ Gamma(5) D ]^{dag} = Gamma(5) D
 	// using D = gamma_5 D^{dag} gamma_5
@@ -83,7 +83,7 @@ namespace Chroma
     int size() const {return A->size();}
 
     //! Subset comes from underlying operator
-    inline const OrderedSubset& subset() const {return A->subset();}
+    inline const Subset& subset() const {return A->subset();}
 
     //! Apply the operator onto a source vector
     /*! For this operator, the sign is ignored */
@@ -92,7 +92,7 @@ namespace Chroma
 	const int G5=Ns*Ns-1;
 
 	multi1d<T>  tmp(size());
-	const OrderedSubset& sub = A->subset();
+	const Subset& sub = A->subset();
 
 	// [ Gamma_5 D ]^{dag} = Gamma_5 D 
 	// using D = gamma_5 D^{dag} gamma_5

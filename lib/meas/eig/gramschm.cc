@@ -1,4 +1,4 @@
-// $Id: gramschm.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: gramschm.cc,v 3.1 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -26,7 +26,7 @@ namespace Chroma {
 template< typename T>
 void GramSchm_T(multi1d<T>& psi, const int Npsi,
 		const multi1d<T>& vec, const int Nvec,
-		const OrderedSubset& sub)
+		const Subset& sub)
 {
   START_CODE();
 
@@ -66,7 +66,7 @@ template <typename T>
 void GramSchm_T(T& psi, 
 		const multi1d<T>& vec, 
 		const int Nvec,
-		const OrderedSubset& sub) 
+		const Subset& sub) 
 {
 
   START_CODE();
@@ -100,7 +100,7 @@ void GramSchm_T(T& psi,
 template <typename T>
 void GramSchm_T(T& psi, 
 		const T& vec,
-		const OrderedSubset& sub) 
+		const Subset& sub) 
 {
 
   START_CODE();
@@ -127,7 +127,7 @@ void GramSchm_T(T& psi,
 
 void GramSchm(multi1d<LatticeFermion>& psi, const int Npsi, 
 	      const multi1d<LatticeFermion>& vec, const int Nvec,
-	      const OrderedSubset& sub) 
+	      const Subset& sub) 
 {
   GramSchm_T(psi, Npsi, vec, Nvec, sub);
 }
@@ -148,7 +148,7 @@ void GramSchm(multi1d<LatticeFermion>& psi, const int Npsi,
 void GramSchm(LatticeFermion& psi, 
 	      const multi1d<LatticeFermion>& vec, 
 	      const int Nvec,
-	      const OrderedSubset& sub) 
+	      const Subset& sub) 
 {
   START_CODE();
 
@@ -172,7 +172,7 @@ void GramSchm(LatticeFermion& psi,
  */
 void GramSchm(multi1d<LatticeFermion>& psi, 
 	      const multi1d<LatticeFermion>& vec, const int Nvec,
-	      const OrderedSubset& sub) 
+	      const Subset& sub) 
 {
   GramSchm_T(psi, psi.size(), vec, Nvec, sub);
 }
@@ -193,7 +193,7 @@ void GramSchm(multi1d<LatticeFermion>& psi,
  */
 void GramSchm(multi1d<LatticeFermion>& psi, 
 	      const multi1d<LatticeFermion>& vec,
-	      const OrderedSubset& sub) 
+	      const Subset& sub) 
 {
   GramSchm_T(psi, psi.size(), vec, vec.size(), sub);
 }
@@ -213,7 +213,7 @@ void GramSchm(multi1d<LatticeFermion>& psi,
  */
 void GramSchm(LatticeFermion& psi, 
 	      const multi1d<LatticeFermion>& vec,
-	      const OrderedSubset& sub)
+	      const Subset& sub)
 {
   GramSchm_T(psi, vec, vec.size(), sub);
 }
@@ -235,7 +235,7 @@ void GramSchm(LatticeFermion& psi,
  */
 void GramSchm(LatticeFermion& psi, 
 	      const LatticeFermion& vec,
-	      const OrderedSubset& sub) 
+	      const Subset& sub) 
 {
 
   START_CODE();

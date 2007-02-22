@@ -1,4 +1,4 @@
-// $Id: minvcg_array.cc,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: minvcg_array.cc,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -83,7 +83,7 @@ namespace Chroma
     START_CODE();
 
     // Setup
-    const OrderedSubset& sub = A.subset();
+    const Subset& sub = A.subset();
     int n_shift = shifts.size();
     int N = A.size();
     FlopCounter flopcount;

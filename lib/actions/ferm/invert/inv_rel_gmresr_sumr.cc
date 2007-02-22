@@ -18,7 +18,7 @@ void InvRelGMRESR_SUMR_a(const LinearOperator<T>& PrecU,
 			 int MaxGMRESRPrec,
 			 int& n_count)
 {
-  const OrderedSubset&  s= UnprecU.subset();
+  const Subset&  s= UnprecU.subset();
 
   x[s] = zero;
   T r; 

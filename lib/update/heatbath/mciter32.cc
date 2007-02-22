@@ -1,4 +1,4 @@
-// $Id: mciter32.cc,v 3.0 2006-04-03 04:59:07 edwards Exp $
+// $Id: mciter32.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -45,7 +45,7 @@ namespace Chroma {
 void mciter32(multi1d<LatticeColorMatrix>& u, 
 	      int n_over, int nheat,
 	      int& ntrials, int& nfails,
-	      const OrderedSet& ss,
+	      const Set& ss,
 	      const multi3d<int>& neighsubl)
 {
   START_CODE();

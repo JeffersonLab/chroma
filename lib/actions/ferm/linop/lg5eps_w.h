@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lg5eps_w.h,v 3.1 2006-10-19 16:01:31 edwards Exp $
+// $Id: lg5eps_w.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Internal pole epsilon operator. Just the unitary part
  *
@@ -77,7 +77,7 @@ namespace Chroma
     ~lg5eps() {}
  
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;

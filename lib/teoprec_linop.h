@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: teoprec_linop.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
+// $Id: teoprec_linop.h,v 3.2 2007-02-22 21:11:45 bjoo Exp $
 /*! @file
  * @brief Even-odd Time-preconditioned Linear Operators
  */
@@ -120,7 +120,7 @@ namespace Chroma
     virtual ~EvenOddTimePrecLinearOperator() {}
 
     //! Only defined on the odd lattice
-    const OrderedSubset& subset() const {return rb[1];}   // not correct, need space-rb
+    const Subset& subset() const {return rb[1];}   // not correct, need space-rb
 
     //! Apply the even-even block onto a source vector
     /*! This does not need to be optimized */

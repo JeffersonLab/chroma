@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_ovdwf_linop_array_w.h,v 3.0 2006-04-03 04:58:52 edwards Exp $
+// $Id: unprec_ovdwf_linop_array_w.h,v 3.1 2007-02-22 21:11:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Overlap-DWF (Borici) linear operator
  */
@@ -48,7 +48,7 @@ namespace Chroma
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
     //! Only defined on the entire lattice
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Apply the operator onto a source vector
     void operator() (multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 

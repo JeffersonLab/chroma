@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reunit.h,v 3.1 2006-08-15 13:17:24 bjoo Exp $
+// $Id: reunit.h,v 3.2 2007-02-22 21:11:50 bjoo Exp $
 
 /*! \file
  *  \ingroup gauge
@@ -32,25 +32,18 @@ namespace Chroma {
   void reunit(LatticeColorMatrix& xa);
   
   void reunit(LatticeColorMatrix& xa,
-	      const UnorderedSubset& mstag);
-  
-  void reunit(LatticeColorMatrix& xa,
-	      const OrderedSubset& mstag);
+	      const Subset& mstag);
   
   // With ruflag
   void reunit(LatticeColorMatrix& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag);
   
-  void reunit(LatticeColorMatrix& xa,
-	      int& numbad, 
-	      enum Reunitarize ruflag,
-	      const UnorderedSubset& mstag);
   
   void reunit(LatticeColorMatrix& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag,
-	      const OrderedSubset& mstag);
+	      const Subset& mstag);
   
   // With numbad and ruflag
   void reunit(LatticeColorMatrix& xa, 
@@ -58,17 +51,12 @@ namespace Chroma {
 	      int& numbad, 
 	      enum Reunitarize ruflag);
   
-  void reunit(LatticeColorMatrix& xa, 
-	      LatticeBoolean& bad, 
-	      int& numbad, 
-	      enum Reunitarize ruflag,
-	      const UnorderedSubset& mstag);
   
   void reunit(LatticeColorMatrix& xa, 
 	      LatticeBoolean& bad, 
 	      int& numbad, 
 	      enum Reunitarize ruflag,
-	      const OrderedSubset& mstag);
+	      const Subset& mstag);
   
 }; // End namespace
 #endif

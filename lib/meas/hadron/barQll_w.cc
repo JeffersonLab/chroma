@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.6 2006-10-17 14:05:27 kostas Exp $ 
+// $Id: barQll_w.cc,v 1.7 2007-02-22 21:11:49 bjoo Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -151,7 +151,7 @@ void HeavyQuarkProp(LatticeColorMatrix& Qprop,
 		    const multi1d<int>& src_coord,int length)
 {
 
-  UnorderedSet slice ;
+  Set slice ;
   slice.make(TimeSliceFunc(Nd-1));
 
   Qprop = 0.0 ;

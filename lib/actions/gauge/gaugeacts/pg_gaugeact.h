@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pg_gaugeact.h,v 3.1 2006-09-20 20:28:00 edwards Exp $
+// $Id: pg_gaugeact.h,v 3.2 2007-02-22 21:11:48 bjoo Exp $
 /*! \file
  *  \brief Parallelgram gauge action
  */
@@ -66,7 +66,7 @@ namespace Chroma
 
     //! Return the set on which the gauge action is defined
     /*! Defined on the even-off (red/black) set */
-    const OrderedSet& getSet() const {return rb;}
+    const Set& getSet() const {return rb;}
 
     //! Compute staple
     /*! Default version. Derived class should override this if needed. */

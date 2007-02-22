@@ -1,4 +1,4 @@
-// $Id: invcg1_array.cc,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: invcg1_array.cc,v 3.1 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -75,7 +75,7 @@ void InvCG1_a(const LinearOperatorArray<T>& A,
   START_CODE();
 
   const int N = psi.size();
-  const OrderedSubset& s = A.subset();
+  const Subset& s = A.subset();
 
   multi1d<T> Ap(N);             moveToFastMemoryHint(Ap);
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_ht_contfrac5d_linop_array_w.h,v 3.1 2006-10-19 16:01:30 edwards Exp $
+// $Id: eoprec_ht_contfrac5d_linop_array_w.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
  */
@@ -61,7 +61,7 @@ namespace Chroma
 
     //! Only defined on the entire lattice
     // INHERIT THIS?
-    // const OrderedSubset& subset() const {return all;}
+    // const Subset& subset() const {return all;}
 
     //! Apply the even-even block onto a source vector
     inline

@@ -1,4 +1,4 @@
-// $Id: t_bicgstab.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: t_bicgstab.cc,v 3.1 2007-02-22 21:11:50 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -222,7 +222,7 @@ int main(int argc, char **argv)
       // 4D BiCGStab test
       Handle<const LinearOperator<LatticeFermion> > D(S_f->linOp(state));
       
-      const OrderedSubset& s = D->subset();
+      const Subset& s = D->subset();
 
       LatticeFermion psi, chi;
       psi[s] = zero;
@@ -253,7 +253,7 @@ int main(int argc, char **argv)
       // 4D BiCGStab test
       Handle<const LinearOperator<multi1d< LatticeFermion> > > D(S_f_a->linOp(state));
       
-      const OrderedSubset& s = (*D).subset();
+      const Subset& s = (*D).subset();
       int N = (*D).size();
 
 
