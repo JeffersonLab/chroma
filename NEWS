@@ -1,3 +1,6 @@
+22/02/2007 -- Balint Joo
+	Version 3.22.5 - Stamp before making subset related changes
+
 18/02/2007 -- Balint Joo
  	Added ILU Preconditioned space and  Central Preconditioned Time Wilson And Clover 
 	Actions. Amazingly these actually work.
