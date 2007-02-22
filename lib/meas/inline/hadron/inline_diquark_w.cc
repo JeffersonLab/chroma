@@ -1,4 +1,4 @@
-// $Id: inline_diquark_w.cc,v 1.1 2007-02-22 06:58:55 edwards Exp $
+// $Id: inline_diquark_w.cc,v 1.2 2007-02-22 15:51:15 edwards Exp $
 /*! \file
  * \brief Inline construction of the diquark within a QQQ
  *
@@ -7,7 +7,7 @@
 
 #include "meas/inline/hadron/inline_diquark_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/hadron/barcomp_w.h"
+#include "meas/hadron/diquark_w.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
@@ -299,20 +299,12 @@ namespace Chroma
 	}
       }
 
-      // Output
-      multi1d<LatticeComplex> diquark_1d;
-      {
-	// Compute diquark
-	QQDiquarkContract diquark;
+      // Compute diquark
+      QQDiquarkContract_t diquark;
 
-	QQDiquark(diquark,
-		  quark_propagator[0],
-		  quark_propagator[1]);
-
-	// Serialize the data into a mult1d
-	diquark_1d = diquark.serialize();
-      }
-
+      QQDiquark(diquark,
+		quark_propagator[0],
+		quark_propagator[1]);
 
       // Now save the diquark object
       try
@@ -329,10 +321,11 @@ namespace Chroma
 	write(record_xml, "Diquark", diquark_header);
     
 	// Store the source
-	TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.diquark_id);
-	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.diquark_id) = diquark_1d;
-	TheNamedObjMap::Instance().get(params.named_obj.source_id).setFileXML(file_xml);
-	TheNamedObjMap::Instance().get(params.named_obj.source_id).setRecordXML(record_xml);
+	TheNamedObjMap::Instance().create<QQDiquarkContract_t>(params.named_obj.diquark_id);
+	TheNamedObjMap::Instance().getData<QQDiquarkContract_t>(params.named_obj.diquark_id) = 
+	  diquark;
+	TheNamedObjMap::Instance().get(params.named_obj.diquark_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.diquark_id).setRecordXML(record_xml);
 
 	QDPIO::cout << "Diquark successfully update" << endl;
       }
