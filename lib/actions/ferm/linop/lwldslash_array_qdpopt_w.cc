@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_qdpopt_w.cc,v 3.2 2007-02-08 15:48:37 bjoo Exp $
+// $Id: lwldslash_array_qdpopt_w.cc,v 3.3 2007-02-23 21:38:11 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -244,6 +244,7 @@ namespace Chroma
       break;
     }
 
+    getFermBC().modifyF(chi, QDP::rb[cb]);
     END_CODE();
   }
 
