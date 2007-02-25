@@ -1,4 +1,4 @@
-// $Id: unique_id.cc,v 1.1 2007-02-25 22:36:54 edwards Exp $
+// $Id: unique_id.cc,v 1.2 2007-02-25 22:37:35 edwards Exp $
 /*! \file
  *  \brief Generate a unique id
  */
@@ -12,6 +12,9 @@ namespace Chroma
   //! Return a unique id
   /*!
    * \ingroup info
+   *
+   *  The id is return type a string. This gives maximal flexibility allowing
+   *  the way the ID is generated to change in the future.
    */
   std::string uniqueId()
   {
