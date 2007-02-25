@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.76 2007-02-18 18:50:57 bjoo Exp $
+# $Id: Makefile.am,v 3.77 2007-02-25 22:35:48 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -251,7 +251,10 @@ nobase_include_HEADERS = \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
 	util/gauge/stout_utils.h \
-        util/info/info.h util/info/proginfo.h util/info/printgeom.h \
+        util/info/info.h \
+        util/info/proginfo.h \
+        util/info/printgeom.h \
+        util/info/unique_id.h \
         util/util.h \
 	update/update.h \
 	update/heatbath/heatbath.h \
@@ -452,6 +455,8 @@ nobase_include_HEADERS += \
         io/overlap_state_info.h  \
 	meas/eig/eig_w.h meas/eig/ischiral_w.h \
 	meas/hadron/barcomp_w.h \
+	meas/hadron/barcomp_diquark_w.h \
+	meas/hadron/diquark_w.h \
 	meas/hadron/mescomp_w.h \
 	meas/hadron/baryon_seqsrc_w.h \
 	meas/hadron/simple_baryon_seqsrc_w.h \
@@ -630,7 +635,9 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_mesonspec_w.h \
         meas/inline/hadron/inline_static_light_spec_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
+        meas/inline/hadron/inline_diquark_w.h \
         meas/inline/hadron/inline_qqq_w.h \
+        meas/inline/hadron/inline_qqq_diquark_w.h \
 	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
@@ -895,7 +902,9 @@ libchroma_a_SOURCES = \
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
 	util/gauge/weak_field.cc \
 	util/gauge/stout_utils.cc \
-	util/info/printgeom.cc util/info/proginfo.cc \
+	util/info/printgeom.cc \
+        util/info/proginfo.cc \
+        util/info/unique_id.cc \
         update/heatbath/su3over.cc \
 	update/heatbath/su2_hb_update.cc \
 	update/heatbath/mciter.cc \
@@ -1051,7 +1060,10 @@ libchroma_a_SOURCES += \
 	actions/ferm/qprop/quarkprop4_w.cc \
 	io/readszinferm_w.cc io/readszinqprop_w.cc \
 	io/writeszinqprop_w.cc \
-	meas/eig/ischiral_w.cc meas/hadron/barcomp_w.cc \
+	meas/eig/ischiral_w.cc \
+	meas/hadron/barcomp_w.cc \
+	meas/hadron/barcomp_diquark_w.cc \
+	meas/hadron/diquark_w.cc \
         meas/hadron/mescomp_w.cc \
 	meas/hadron/barhqlq_w.cc \
         meas/hadron/baryon_seqsrc_w.cc \
@@ -1158,7 +1170,9 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_static_light_spec_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
+	meas/inline/hadron/inline_diquark_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
+	meas/inline/hadron/inline_qqq_diquark_w.cc \
 	meas/inline/hadron/inline_qqbar_w.cc \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
