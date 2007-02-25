@@ -158,7 +158,7 @@ QQQ on props
           <elem>sh_pt_prop</elem>
           <elem>sh_pt_prop</elem>
         </prop_ids>
-        <qqq_file>qqq-v4.qqq.sh_pt.dat</qqq_file>
+        <qqq_file>qqq.qqq.sh_pt.dat</qqq_file>
       </NamedObject>
     </elem>
 
@@ -187,7 +187,7 @@ QQQ on props
           <elem>sh_sh_prop</elem>
           <elem>sh_sh_prop</elem>
         </prop_ids>
-        <qqq_file>qqq-v4.qqq.sh_sh.dat</qqq_file>
+        <qqq_file>qqq.qqq.sh_sh.dat</qqq_file>
       </NamedObject>
     </elem>
 

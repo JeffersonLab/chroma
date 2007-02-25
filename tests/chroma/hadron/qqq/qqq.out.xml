@@ -161,7 +161,7 @@ QQQ on props
           <elem>sh_pt_prop</elem>
           <elem>sh_pt_prop</elem>
         </prop_ids>
-        <qqq_file>qqq-v4.qqq.sh_pt.dat</qqq_file>
+        <qqq_file>qqq.qqq.sh_pt.dat</qqq_file>
       </NamedObject>
     </elem>
 
@@ -190,7 +190,7 @@ QQQ on props
           <elem>sh_sh_prop</elem>
           <elem>sh_sh_prop</elem>
         </prop_ids>
-        <qqq_file>qqq-v4.qqq.sh_sh.dat</qqq_file>
+        <qqq_file>qqq.qqq.sh_sh.dat</qqq_file>
       </NamedObject>
     </elem>
 
@@ -206,10 +206,10 @@ QQQ on props
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.22.2</chroma>
-      <qdp>1.21.6</qdp>
+      <chroma>3.22.5</chroma>
+      <qdp>1.21.9</qdp>
     </code_version>
-    <run_date>02 Feb 07 00:21:01 EST</run_date>
+    <run_date>25 Feb 07 17:33:55 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -266,10 +266,10 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.2</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.22.5</chroma>
+            <qdp>1.21.9</qdp>
           </code_version>
-          <run_date>02 Feb 07 00:21:01 EST</run_date>
+          <run_date>25 Feb 07 17:33:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -368,10 +368,10 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.2</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.22.5</chroma>
+            <qdp>1.21.9</qdp>
           </code_version>
-          <run_date>02 Feb 07 00:21:02 EST</run_date>
+          <run_date>25 Feb 07 17:33:56 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -453,7 +453,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>0</id>
+      <id>231010436</id>
     </make_source>
 
         </Source_file_info>
@@ -503,7 +503,7 @@ QQQ on props
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.281843e-07</resid>
+            <resid>1.2373e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
@@ -515,25 +515,25 @@ QQQ on props
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.258726e-07</resid>
+            <resid>1.258796e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.241494e-07</resid>
+            <resid>1.255881e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.48709e-07</resid>
+            <resid>1.51199e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.065006e-07</resid>
+            <resid>1.16672e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
@@ -551,13 +551,13 @@ QQQ on props
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.4363e-07</resid>
+            <resid>1.437715e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.164517e-07</resid>
+            <resid>1.164219e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
@@ -569,14 +569,14 @@ QQQ on props
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.356697e-07</resid>
+            <resid>1.345462e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</prop_corr>
+          <prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -641,7 +641,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>0</id>
+      <id>231010438</id>
     </propagator>
 
         </Prop_file_info>
@@ -708,10 +708,10 @@ QQQ on props
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</forward_prop_corr>
+          <forward_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -790,7 +790,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>0</id>
+      <id>231010438</id>
     </propagator>
 
         </Prop_file_info>
@@ -857,10 +857,10 @@ QQQ on props
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</forward_prop_corr>
+          <forward_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2837778712.3106 25152146.0715986 447414.165287448 8781.32048772213 582.134680896378 8346.19149087137 447542.891390338 25144702.1812209</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2837778712.3503 25152145.99311 447414.192229708 8781.32065657813 582.134779005244 8346.18984025173 447542.894587651 25144702.0561291</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -880,15 +880,15 @@ QQQ on props
               <elem>sh_pt_prop</elem>
               <elem>sh_pt_prop</elem>
             </prop_ids>
-            <qqq_file>qqq-v4.qqq.sh_pt.dat</qqq_file>
+            <qqq_file>qqq.qqq.sh_pt.dat</qqq_file>
           </NamedObject>
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.2</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.22.5</chroma>
+            <qdp>1.21.9</qdp>
           </code_version>
-          <run_date>02 Feb 07 00:21:04 EST</run_date>
+          <run_date>25 Feb 07 17:33:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -910,7 +910,7 @@ QQQ on props
               <elem>sh_pt_prop</elem>
               <elem>sh_pt_prop</elem>
             </prop_ids>
-            <qqq_file>qqq-v4.qqq.sh_pt.dat</qqq_file>
+            <qqq_file>qqq.qqq.sh_pt.dat</qqq_file>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
@@ -958,7 +958,7 @@ QQQ on props
           <elem>sh_pt_prop</elem>
           <elem>sh_pt_prop</elem>
         </propIds>
-        <barcompFile>qqq-v4.qqq.sh_pt.dat</barcompFile>
+        <barcompFile>qqq.qqq.sh_pt.dat</barcompFile>
         <Propagator_input>
           <version>3</version>
           <sparseP>false</sparseP>
@@ -1031,7 +1031,9 @@ QQQ on props
                 <j_decay>3</j_decay>
                 <t_source>0</t_source>
               </PropSource>
-              <Config_info></Config_info>
+              <Config_info><weak_field>
+</weak_field>
+</Config_info>
             </elem>
             <elem>
               <version>1</version>
@@ -1100,7 +1102,9 @@ QQQ on props
                 <j_decay>3</j_decay>
                 <t_source>0</t_source>
               </PropSource>
-              <Config_info></Config_info>
+              <Config_info><weak_field>
+</weak_field>
+</Config_info>
             </elem>
             <elem>
               <version>1</version>
@@ -1169,22 +1173,24 @@ QQQ on props
                 <j_decay>3</j_decay>
                 <t_source>0</t_source>
               </PropSource>
-              <Config_info></Config_info>
+              <Config_info><weak_field>
+</weak_field>
+</Config_info>
             </elem>
           </ForwardProps>
         </Propagator_input>
         <SinkSmearedProp_correlator>
           <elem>
             <correlator_num>0</correlator_num>
-            <sink_smeared_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>1</correlator_num>
-            <sink_smeared_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>2</correlator_num>
-            <sink_smeared_prop_corr>0.191409103027083 0.0158396872798443 0.00612670426037519 0.00281774780491541 0.00196730084151816 0.00281711298744994 0.00612162651162209 0.0158367227866577</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</sink_smeared_prop_corr>
           </elem>
         </SinkSmearedProp_correlator>
       </qqq>
@@ -1215,15 +1221,15 @@ QQQ on props
               <elem>sh_sh_prop</elem>
               <elem>sh_sh_prop</elem>
             </prop_ids>
-            <qqq_file>qqq-v4.qqq.sh_sh.dat</qqq_file>
+            <qqq_file>qqq.qqq.sh_sh.dat</qqq_file>
           </NamedObject>
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.2</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.22.5</chroma>
+            <qdp>1.21.9</qdp>
           </code_version>
-          <run_date>02 Feb 07 00:21:08 EST</run_date>
+          <run_date>25 Feb 07 17:34:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1255,7 +1261,7 @@ QQQ on props
               <elem>sh_sh_prop</elem>
               <elem>sh_sh_prop</elem>
             </prop_ids>
-            <qqq_file>qqq-v4.qqq.sh_sh.dat</qqq_file>
+            <qqq_file>qqq.qqq.sh_sh.dat</qqq_file>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
@@ -1303,7 +1309,7 @@ QQQ on props
           <elem>sh_sh_prop</elem>
           <elem>sh_sh_prop</elem>
         </propIds>
-        <barcompFile>qqq-v4.qqq.sh_sh.dat</barcompFile>
+        <barcompFile>qqq.qqq.sh_sh.dat</barcompFile>
         <Propagator_input>
           <version>3</version>
           <sparseP>false</sparseP>
@@ -1390,7 +1396,9 @@ QQQ on props
                 <j_decay>3</j_decay>
                 <t_source>0</t_source>
               </PropSource>
-              <Config_info></Config_info>
+              <Config_info><weak_field>
+</weak_field>
+</Config_info>
             </elem>
             <elem>
               <version>1</version>
@@ -1473,7 +1481,9 @@ QQQ on props
                 <j_decay>3</j_decay>
                 <t_source>0</t_source>
               </PropSource>
-              <Config_info></Config_info>
+              <Config_info><weak_field>
+</weak_field>
+</Config_info>
             </elem>
             <elem>
               <version>1</version>
@@ -1556,22 +1566,24 @@ QQQ on props
                 <j_decay>3</j_decay>
                 <t_source>0</t_source>
               </PropSource>
-              <Config_info></Config_info>
+              <Config_info><weak_field>
+</weak_field>
+</Config_info>
             </elem>
           </ForwardProps>
         </Propagator_input>
         <SinkSmearedProp_correlator>
           <elem>
             <correlator_num>0</correlator_num>
-            <sink_smeared_prop_corr>2837778712.3106 25152146.0715986 447414.165287448 8781.32048772213 582.134680896378 8346.19149087137 447542.891390338 25144702.1812209</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778712.3503 25152145.99311 447414.192229708 8781.32065657813 582.134779005244 8346.18984025173 447542.894587651 25144702.0561291</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>1</correlator_num>
-            <sink_smeared_prop_corr>2837778712.3106 25152146.0715986 447414.165287448 8781.32048772213 582.134680896378 8346.19149087137 447542.891390338 25144702.1812209</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778712.3503 25152145.99311 447414.192229708 8781.32065657813 582.134779005244 8346.18984025173 447542.894587651 25144702.0561291</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>2</correlator_num>
-            <sink_smeared_prop_corr>2837778712.3106 25152146.0715986 447414.165287448 8781.32048772213 582.134680896378 8346.19149087137 447542.891390338 25144702.1812209</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778712.3503 25152145.99311 447414.192229708 8781.32065657813 582.134779005244 8346.18984025173 447542.894587651 25144702.0561291</sink_smeared_prop_corr>
           </elem>
         </SinkSmearedProp_correlator>
       </qqq>
