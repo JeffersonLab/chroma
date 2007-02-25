@@ -1,4 +1,4 @@
-// $Id: inline_propagator_s.cc,v 3.1 2006-11-17 02:17:31 edwards Exp $
+// $Id: inline_propagator_s.cc,v 3.2 2007-02-25 22:39:29 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -11,6 +11,7 @@
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "util/info/unique_id.h"
 #include "actions/ferm/fermacts/fermact_factory_s.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_s.h"
 #include "meas/inline/make_xml_file.h"
@@ -401,8 +402,7 @@ namespace Chroma
 
 	XMLBufferWriter file_xml;
 	push(file_xml, "propagator");
-	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	write(file_xml, "id", id);
+	write(file_xml, "id", uniqueId());  // NOTE: new ID form
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;

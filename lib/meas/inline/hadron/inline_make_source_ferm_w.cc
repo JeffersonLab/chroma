@@ -1,4 +1,4 @@
-// $Id: inline_make_source_ferm_w.cc,v 3.3 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_make_source_ferm_w.cc,v 3.4 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source for lattice fermions
  *
@@ -14,6 +14,7 @@
 
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "util/info/unique_id.h"
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
@@ -255,8 +256,7 @@ namespace Chroma
 
       XMLBufferWriter file_xml;
       push(file_xml, "make_source");
-      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-      write(file_xml, "id", id);
+      write(file_xml, "id", uniqueId());  // NOTE: new ID form
       pop(file_xml);
 
       XMLBufferWriter record_xml;

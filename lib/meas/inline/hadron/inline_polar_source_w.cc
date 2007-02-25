@@ -1,4 +1,4 @@
-// $Id: inline_polar_source_w.cc,v 1.3 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_polar_source_w.cc,v 1.4 2007-02-25 22:39:28 edwards Exp $
 // Code for sequential source construction
 
 #error "THIS CODE IS NOT READY YET"
@@ -342,8 +342,7 @@ int main(int argc, char **argv)
   {
     XMLBufferWriter file_xml;
     push(file_xml, "make_source");
-    int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-    write(file_xml, "id", id);
+    write(file_xml, "id", uniqueId());  // NOTE: new ID form
     pop(file_xml);
 
     XMLBufferWriter record_xml;

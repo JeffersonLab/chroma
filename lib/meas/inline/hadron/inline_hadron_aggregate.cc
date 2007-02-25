@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.15 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.16 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -19,7 +19,9 @@
 #include "meas/inline/hadron/inline_stag_to_wils.h"
 //#include "meas/inline/hadron/inline_spectrum_w.h"
 #include "meas/inline/hadron/inline_sink_smear_w.h"
+#include "meas/inline/hadron/inline_diquark_w.h"
 #include "meas/inline/hadron/inline_qqq_w.h"
+#include "meas/inline/hadron/inline_qqq_diquark_w.h"
 #include "meas/inline/hadron/inline_qqbar_w.h"
 #include "meas/inline/hadron/inline_building_blocks_w.h"
 #include "meas/inline/hadron/inline_noisy_building_blocks_w.h"
@@ -74,6 +76,8 @@ namespace Chroma
 //	success &= InlineSpectrumEnv::registerAll();
 	success &= InlineStagToWilsEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();
+	success &= InlineDiquarkEnv::registerAll();
+	success &= InlineQQQDiquarkEnv::registerAll();
 	success &= InlineQQQEnv::registerAll();
 	success &= InlineQQbarEnv::registerAll();
 	success &= InlineBuildingBlocksEnv::registerAll();

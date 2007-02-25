@@ -1,4 +1,4 @@
-//  $Id: diquark_w.cc,v 1.1 2007-02-22 06:58:55 edwards Exp $
+//  $Id: diquark_w.cc,v 1.2 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  *  \brief Construct a diquark object
  */
@@ -8,28 +8,38 @@
 namespace Chroma 
 {
  
-  //! Serialize generalized object
-  multi1d<LatticeComplex> QQDiquarkContract_t::serialize()
+  //! Unpack a quark
+  /*!
+   * \ingroup hadron
+   *
+   * We need this fast, so at the expense of a lot of memory we will
+   * expose all the color/spin indices of each propagator into a temporary
+   */
+  multi2d< multi2d<LatticeComplex> > unpackQuark(const LatticePropagator& quark_propagator)
   {
-    multi1d<int> ranks(6);
+    multi2d< multi2d<LatticeComplex> > qc(Ns,Ns);
 
-    multi1d<LatticeComplex> barprop_1d(Ns*Ns*Ns*Ns*Nc*Nc);
+    for(int scol=0; scol < Ns; ++scol)             // spin col
+    {
+      for(int srow=0; srow < Ns; ++srow)           // spin row
+      {
+	LatticeColorMatrix color_mat = peekSpin(quark_propagator,
+						srow,scol);  // (srow,scol)
 
-    int cnt = 0;
-    for(ranks[0]=0; ranks[0] < Ns; ++ranks[0])             // sf_2
-      for(ranks[1]=0; ranks[1] < Ns; ++ranks[1])           // sf_1
-	for(ranks[2]=0; ranks[2] < Ns; ++ranks[2])         // si_2
-	  for(ranks[3]=0; ranks[3] < Ns; ++ranks[3])       // si_1
-	    for(ranks[4] = 0; ranks[4] < Nc; ++ranks[4])   // cf
-	      for(ranks[5] = 0; ranks[5] < Nc; ++ranks[5]) // ci
-	      {
-		diquark_1d[cnt++] = comp[ranks];
-	      }
+	qc(srow,scol).resize(Nc,Nc);
 
-    return diquark_1d;
+	for(int ccol=0; ccol < Nc; ++ccol)         // color col
+	  for(int crow=0; crow < Nc; ++crow)       // color row
+	  {
+	    qc(srow,scol)(crow,ccol) = peekColor(color_mat,
+						 crow,ccol);  // (crow,ccol)
+	  }
+      }
+    }
+
+    return qc;
   }
-
-
+  
 
   //! Construct a QQ diquark object
   /*!
@@ -53,39 +63,14 @@ namespace Chroma
 
     // We need this fast, so at the expense of a lot of memory we will
     // expose all the color/spin indices of each propagator into a temporary
-    multi2d< multi2d<LatticeComplex> > qc_1(Ns,Ns);
-    multi2d< multi2d<LatticeComplex> > qc_2(Ns,Ns);
-
-    for(int sf=0; sf < Ns; ++sf)             // sf
-    {
-      for(int si=0; si < Ns; ++si)           // si
-      {
-	LatticeColorMatrix color_mat1 = peekSpin(quark_propagator_1,
-						 si,sf);  // (si,sf)
-	LatticeColorMatrix color_mat2 = peekSpin(quark_propagator_2,
-						 si,sf);  // (si,sf)
-
-	qc_1(sf,si).resize(Nc,Nc);
-	qc_2(sf,si).resize(Nc,Nc);
-
-	for(int cf=0; cf < Nc; ++cf)         // cf
-	  for(int ci=0; ci < Nc; ++ci)       // ci
-	  {
-	    qc_1(sf,si)(cf,ci) = peekColor(color_mat1,
-					   ci,cf);  // (ci,cf)
-	    
-	    qc_2(sf,si)(cf,ci) = peekColor(color_mat2,
-					   ci,cf);  // (ci,cf)
-	  }
-      }
-    }
-
+    multi2d< multi2d<LatticeComplex> > qc_1 = unpackQuark(quark_propagator_1);
+    multi2d< multi2d<LatticeComplex> > qc_2 = unpackQuark(quark_propagator_2);
 
     // Final diquark contractions
     multi1d<int> ranks(6);
     ranks = Ns;
-    ranks[4] = Nc;
-    ranks[5] = Nc;
+    ranks[4] = Nc;  // cf
+    ranks[5] = Nc;  // ci
 
     diquark.comp.resize(ranks);
 
@@ -94,8 +79,8 @@ namespace Chroma
 	for(ranks[2]=0; ranks[2] < Ns; ++ranks[2])         // si_2
 	  for(ranks[3]=0; ranks[3] < Ns; ++ranks[3])       // si_1
 	  {
-	    const multi2d<LatticeComplex>& q_1 = qc_1(ranks[1],ranks[3]);
-	    const multi2d<LatticeComplex>& q_2 = qc_2(ranks[0],ranks[2]);
+	    const multi2d<LatticeComplex>& q_1 = qc_1(ranks[3],ranks[1]);  // Note: transpose in barcomp
+	    const multi2d<LatticeComplex>& q_2 = qc_2(ranks[2],ranks[0]);  // Note: transpose in barcomp
 
 	    // Contract over color indices with antisym tensors
 	    // Permutations: +(0,1,2)+(1,2,0)+(2,0,1)-(1,0,2)-(0,2,1)-(2,1,0)
@@ -127,7 +112,6 @@ namespace Chroma
 	    ranks[4] = 2; ranks[5] = 1;
 	    diquark.comp[ranks] = q_1(0,2)*q_2(1,0) - q_1(1,2)*q_2(0,0) - q_1(0,0)*q_2(1,2) + q_1(1,0)*q_2(0,2);
 	  }
-      }
 
     END_CODE();
   }

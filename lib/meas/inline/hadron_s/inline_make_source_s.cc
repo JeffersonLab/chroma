@@ -1,4 +1,4 @@
-// $Id: inline_make_source_s.cc,v 3.1 2006-11-17 02:17:31 edwards Exp $
+// $Id: inline_make_source_s.cc,v 3.2 2007-02-25 22:39:29 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -14,6 +14,7 @@
 
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "util/info/unique_id.h"
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
@@ -248,8 +249,7 @@ namespace Chroma
 
 	XMLBufferWriter file_xml;
 	push(file_xml, "make_source");
-	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	write(file_xml, "id", id);
+	write(file_xml, "id", uniqueId());  // NOTE: new ID form
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;

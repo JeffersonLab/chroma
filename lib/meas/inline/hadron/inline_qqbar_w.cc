@@ -1,4 +1,4 @@
-// $Id: inline_qqbar_w.cc,v 3.3 2006-11-17 02:17:31 edwards Exp $
+// $Id: inline_qqbar_w.cc,v 3.4 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of qqbar
  *
@@ -11,6 +11,7 @@
 #include "meas/hadron/mescomp_w.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "util/info/unique_id.h"
 #include "util/ferm/diractodr.h"
 #include "meas/inline/io/named_objmap.h"
 
@@ -315,8 +316,7 @@ namespace Chroma
     {
       XMLBufferWriter file_xml;
       push(file_xml, "qqbar");
-      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-      write(file_xml, "id", id);
+      write(file_xml, "id", uniqueId());  // NOTE: new ID form
       pop(file_xml);
 
       XMLBufferWriter record_xml;

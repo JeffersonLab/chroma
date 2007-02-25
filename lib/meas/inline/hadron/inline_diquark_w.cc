@@ -1,4 +1,4 @@
-// $Id: inline_diquark_w.cc,v 1.2 2007-02-22 15:51:15 edwards Exp $
+// $Id: inline_diquark_w.cc,v 1.3 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of the diquark within a QQQ
  *
@@ -11,6 +11,7 @@
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "util/info/unique_id.h"
 #include "util/ferm/diractodr.h"
 #include "meas/inline/io/named_objmap.h"
 
@@ -56,6 +57,7 @@ namespace Chroma
       switch (version) 
       {
       case 1:
+	break;
 
       default:
 	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
@@ -236,9 +238,7 @@ namespace Chroma
 	  // Try to invert this record XML into a ChromaProp struct
 	  // Also pull out the id of this source
 	  {
-	    read(prop_record_xml, "/SinkSmear/PropSink", diquark_header.forward_props[i].sink_header);
-	    read(prop_record_xml, "/SinkSmear/ForwardProp", diquark_header.forward_props[i].prop_header);
-	    read(prop_record_xml, "/SinkSmear/PropSource", diquark_header.forward_props[i].source_header);
+	    read(prop_record_xml, "/SinkSmear", diquark_header.forward_props[i]);
 	  }
 	}
 	catch( std::bad_cast ) 
@@ -313,8 +313,7 @@ namespace Chroma
 
 	XMLBufferWriter file_xml;
 	push(file_xml, "diquark");
-	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	write(file_xml, "id", id);
+	write(file_xml, "id", uniqueId());  // NOTE: new ID form
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;

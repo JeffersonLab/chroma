@@ -1,4 +1,4 @@
-// $Id: inline_qqq_w.cc,v 3.8 2007-02-22 04:51:21 edwards Exp $
+// $Id: inline_qqq_w.cc,v 3.9 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of qqq_w
  *
@@ -11,6 +11,7 @@
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "util/info/unique_id.h"
 #include "util/ferm/diractodr.h"
 #include "meas/inline/io/named_objmap.h"
 
@@ -252,9 +253,7 @@ namespace Chroma
 	  // Try to invert this record XML into a ChromaProp struct
 	  // Also pull out the id of this source
 	  {
-	    read(prop_record_xml, "/SinkSmear/PropSink", qqq.forward_props[i].sink_header);
-	    read(prop_record_xml, "/SinkSmear/ForwardProp", qqq.forward_props[i].prop_header);
-	    read(prop_record_xml, "/SinkSmear/PropSource", qqq.forward_props[i].source_header);
+	    read(prop_record_xml, "/SinkSmear", qqq.forward_props[i]);
 	  }
 	}
 	catch( std::bad_cast ) 
@@ -360,8 +359,7 @@ namespace Chroma
       {
 	XMLBufferWriter file_xml;
 	push(file_xml, "qqq");
-	int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-	write(file_xml, "id", id);
+	write(file_xml, "id", uniqueId());  // NOTE: new ID form
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;

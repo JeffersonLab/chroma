@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: diquark_w.h,v 1.1 2007-02-22 06:58:55 edwards Exp $
+// $Id: diquark_w.h,v 1.2 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  *  \brief Construct a diquark object
  */
@@ -17,11 +17,18 @@ namespace Chroma
   //! Dense QQDiquark object
   struct QQDiquarkContract_t
   {
-    //! Serialize generalized object
-    multi1d<ComplexF> serialize();
-
     multiNd<LatticeComplex>  comp;
   };
+
+
+  //! Unpack a quark
+  /*!
+   * \ingroup hadron
+   *
+   * We need this fast, so at the expense of a lot of memory we will
+   * expose all the color/spin indices of each propagator into a temporary
+   */
+  multi2d< multi2d<LatticeComplex> > unpackQuark(const LatticePropagator& quark_propagator);
 
 
   //! Construct a QQ diquark object

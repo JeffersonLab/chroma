@@ -1,4 +1,4 @@
-// $Id: inline_propagator_ferm_w.cc,v 3.4 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_propagator_ferm_w.cc,v 3.5 2007-02-25 22:39:28 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator returning only a single lattice fermion
  *
@@ -11,6 +11,7 @@
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
+#include "util/info/unique_id.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "meas/inline/make_xml_file.h"
@@ -388,8 +389,7 @@ namespace Chroma
 
       XMLBufferWriter file_xml;
       push(file_xml, "propagator");
-      int id = 0;    // NEED TO FIX THIS - SOMETHING NON-TRIVIAL NEEDED
-      write(file_xml, "id", id);
+      write(file_xml, "id", uniqueId());  // NOTE: new ID form
       pop(file_xml);
 
       XMLBufferWriter record_xml;
