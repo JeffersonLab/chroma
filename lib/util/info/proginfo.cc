@@ -1,4 +1,4 @@
-//  $Id: proginfo.cc,v 3.0 2006-04-03 04:59:13 edwards Exp $
+//  $Id: proginfo.cc,v 3.1 2007-02-25 22:37:04 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
@@ -10,18 +10,19 @@
 #include <ctime>
 
 
-namespace Chroma {
-
-//! Print out basic information about this program
-/*!
- * \ingroup info
- *
- *
- *  \param xml          The XML stream to which to write the information.
- */
-
-void proginfo(XMLWriter& xml)
+namespace Chroma  
 {
+
+  //! Print out basic information about this program
+  /*!
+   * \ingroup info
+   *
+   *
+   *  \param xml          The XML stream to which to write the information.
+   */
+
+  void proginfo(XMLWriter& xml)
+  {
     START_CODE();
 
     push(xml,"ProgramInfo");
@@ -34,7 +35,10 @@ void proginfo(XMLWriter& xml)
     std::time_t now;
 
     if(std::time(&now)==-1)
-	QDPIO::cerr<<"proginfo: Cannot get the time.\n";
+    {
+      QDPIO::cerr<<"proginfo: Cannot get the time.\n";
+      return;
+    }
     std::tm *tp = std::localtime(&now);
 
     char date[64];
@@ -45,6 +49,6 @@ void proginfo(XMLWriter& xml)
     pop(xml);
 
     END_CODE();
-}
+  }
 
 }  // end namespace Chroma
