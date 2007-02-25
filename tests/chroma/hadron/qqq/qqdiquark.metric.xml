@@ -6,8 +6,8 @@
 
 <assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[5]/qqq/SinkSmearedProp_correlator/elem[1]/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[7]/qqq/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[6]/qqq/SinkSmearedProp_correlator/elem[1]/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[8]/qqq/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="2.0e-5"/>
 
 </assertions>
