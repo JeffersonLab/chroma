@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.14 2007-02-02 05:22:47 edwards Exp $
+// $Id: qprop_io.cc,v 3.15 2007-02-26 02:12:54 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -1110,6 +1110,44 @@ namespace Chroma
   }
 
 
+  // Initialize header with default values
+  QQDiquark_t::QQDiquark_t()
+  {
+    Dirac_basis = true;
+    forward_props.resize(2);
+  }
+
+
+  //! QQDiquark header reader
+  void read(XMLReader& xml, const string& path, QQDiquark_t& param)
+  {
+    XMLReader paramtop(xml, path);
+
+    int version;
+    read(paramtop, "version", version);
+
+    switch (version) 
+    {
+    case 1:
+      break;
+
+    default:
+      QDPIO::cerr << "QQDiquark parameter version " << version 
+		  << " unsupported." << endl;
+      QDP_abort(1);
+    }
+
+    read(paramtop, "Dirac_basis", param.Dirac_basis);
+    read(paramtop, "ForwardProps", param.forward_props);
+    if (param.forward_props.size() != 2)
+    {
+      QDPIO::cerr << "QQDiquark: unexpected number of forward_props = " 
+		  << param.forward_props.size() << endl; 
+      QDP_abort(1);
+    }
+  }
+
+
   //! QQQBarcomp header reader
   void read(XMLReader& xml, const string& path, QQQBarcomp_t& param)
   {
@@ -1377,6 +1415,22 @@ namespace Chroma
     write(xml, "sink", input.sink);
 
     pop(xml);
+  }
+
+
+  //! QQDiquark header writer
+  void write(XMLWriter& xml, const string& path, const QQDiquark_t& param)
+  {
+    if( path != "." )
+      push(xml, path);
+
+    int version = 1;
+    write(xml, "version", version);
+    write(xml, "Dirac_basis", param.Dirac_basis);
+    write(xml, "ForwardProps", param.forward_props);
+
+    if( path != "." )
+      pop(xml);
   }
 
 

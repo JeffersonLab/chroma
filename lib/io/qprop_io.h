@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.9 2007-02-02 05:22:47 edwards Exp $
+// $Id: qprop_io.h,v 3.10 2007-02-26 02:12:54 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -165,6 +165,15 @@ namespace Chroma
   };
 
 
+  //! Mega structure holding QQ diquark object
+  struct QQDiquark_t
+  {
+    QQDiquark_t();                 /*!< default constructor */
+    bool             Dirac_basis;  /*!< spin component basis */
+    multi1d<ForwardProp_t> forward_props;
+  };
+
+
   //! Mega structure holding QQQ props
   struct QQQBarcomp_t
   {
@@ -273,6 +282,13 @@ namespace Chroma
 
   //! Source/sink spin indices
   void write(XMLWriter& xml, const string& path, const QQQSpinIndices_t& input);
+
+
+  //! QQDiquark reader
+  void read(XMLReader& xml, const std::string& path, QQDiquark_t& header);
+
+  //! QQDiquark writer
+  void write(XMLWriter& xml, const std::string& path, const QQDiquark_t& header);
 
 
   //! QQQBarcomp reader
