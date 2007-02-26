@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 3.3 2006-09-15 15:28:12 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 3.4 2007-02-26 02:11:54 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -35,6 +35,8 @@ $top_srcdir = &abs_path($ARGV[0]);
 $top_builddir = &abs_path($ARGV[1]);
 $run = &abs_path(dirname($ARGV[3])) . "/" . basename($ARGV[3]);
 
+$start_time = time();
+printf "\nStart date = %s\n\n", scalar(localtime($start_time));
 printf "Source directory = %s\n", $top_srcdir;
 printf "Build directory  = %s\n", $top_builddir;
 printf "Run command      = %s\n", $run;
@@ -178,8 +180,15 @@ for $file (&regresDirs())
     }
 }
 
-printf("\nTotal of $num_errors failures\n"); 
+$end_time = time();
+printf "\nEnd date = %s\n", scalar(localtime($end_time));
+$time_diff = $end_time - $start_time;
+if ($time_diff > 1) 
+{
+  printf "Regression time = %d secs = %.1f min\n", $time_diff, $time_diff/60.0;
+}
 
+printf("\nTotal of $num_errors failures\n"); 
 exit($num_errors);
 
 
