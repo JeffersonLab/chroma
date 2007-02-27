@@ -1,4 +1,4 @@
-// $Id: central_tprec_fermact_qprop_w.cc,v 1.2 2007-02-22 21:11:47 bjoo Exp $
+// $Id: central_tprec_fermact_qprop_w.cc,v 1.3 2007-02-27 20:28:35 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -7,6 +7,7 @@
 
 #include "unprec_s_cprec_t_wilstype_fermact_w.h"
 #include "iluprec_s_cprec_t_wilstype_fermact_w.h"
+#include "eo3dprec_s_cprec_t_wilstype_fermact_w.h"
 
 namespace Chroma 
 { 
@@ -110,4 +111,107 @@ namespace Chroma
 												 Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
   }
   
+
+  //! Propagator for unpreconditioned space centrally preconditioned time FermAct
+  /*! \ingroup qprop
+   *
+   */
+  template<typename T, typename P, typename Q, template <typename, typename, typename> class L>
+  class EO3DPrecCentralPrecTimeFermActQprop : public SystemSolver<T>
+  {
+  public:
+    //! Constructor
+    /*!
+     * \param A_         Linear operator ( Read )
+     * \param invParam_  inverter parameters ( Read )
+     */
+    EO3DPrecCentralPrecTimeFermActQprop(Handle< L<T,P,Q> > A_,
+					   Handle< LinOpSystemSolver<T> > invA_) : A(A_), invA(invA_) 
+      {}
+
+    //! Destructor is automatic
+    ~EO3DPrecCentralPrecTimeFermActQprop() {}
+
+    //! Return the subset on which the operator acts
+    const Subset& subset() const {return all;}
+
+    //! Solver the linear system
+    /*!
+     * \param psi      quark propagator ( Modify )
+     * \param chi      source ( Read )
+     * \return number of CG iterations
+     */
+    SystemSolverResults_t operator() (T& psi, const T& chi) const
+    {
+      START_CODE();
+
+      // We need to solve    C_L^{1}( 1 + C_L D_s C_R )C_R^{-1} \psi = \chi
+      //
+      // We do this by solving ( 1 + C_L D_s C_R ) \psi' = \chi'
+      // with \chi' = C_L \chi
+      //
+      // and then at the end C_R^{-1] \psi = \psi' => \psi = C_R \psi'
+      //
+      // First compute \chi'
+      T chi_prime;
+      A->cLeftLinOp(chi_prime, chi, PLUS,0);
+      A->cLeftLinOp(chi_prime, chi, PLUS,1);
+
+      // Now I want chi'' = ( 1   0             ) ( chi'_e )
+      //                    ( -M_oe M_ee^{-1} 1 ) ( chi'_o ) 
+      T tmp1, tmp2;
+      A->evenEvenInvLinOp(tmp1, chi_prime, PLUS);
+      A->oddEvenLinOp(tmp2, tmp1, PLUS);
+      chi_prime[rb3[1]] -= tmp2;
+      
+
+      T psi_prime = zero;
+      // Call inverter
+      QDPIO::cout << "Solving" << endl;
+      SystemSolverResults_t res = (*invA)(psi_prime, chi_prime);
+      A->evenEvenInvLinOp(psi_prime, chi_prime, PLUS);
+
+      QDPIO::cout <<"Reconstructing" << endl;
+
+      // ( 1 - M_ee^{-1} M_eo )
+      // ( 0          1       )
+      A->evenOddLinOp(tmp1, psi_prime, PLUS);
+      A->evenEvenInvLinOp(tmp2, tmp1, PLUS);
+      psi_prime[rb3[0]] -= tmp2;
+
+      // Reconstruct psi = C_R psi_prime
+      A->cRightLinOp(psi, psi_prime, PLUS,0);
+      A->cRightLinOp(psi, psi_prime, PLUS,1);
+
+      // Compute residual
+      {
+	T  r;
+	A->unprecLinOp(r, psi, PLUS);
+	r -= chi;
+	res.resid = sqrt(norm2(r));
+      }
+
+      END_CODE();
+
+      return res;
+    }
+
+  private:
+    // Hide default constructor
+    EO3DPrecCentralPrecTimeFermActQprop() {}
+
+    Handle< L<T,P,Q> > A;
+    Handle< LinOpSystemSolver<T> > invA;
+  };
+
+  template<>
+  SystemSolver<LF>* 
+  EO3DPrecSpaceCentralPrecTimeConstDetWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
+									   const GroupXML_t& invParam) const
+  {
+    return new EO3DPrecCentralPrecTimeFermActQprop<LF,LCM,LCM,EO3DPrecSpaceCentralPrecTimeLinearOperator>(Handle< EO3DPrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
+												      Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+  }
+
+
 } // namespace Chroma 

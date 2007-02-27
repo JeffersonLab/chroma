@@ -1,4 +1,4 @@
-// $Id: t_temp_prec.cc,v 3.5 2007-02-18 18:50:58 bjoo Exp $
+// $Id: t_temp_prec.cc,v 3.6 2007-02-27 20:28:35 bjoo Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -11,7 +11,7 @@
 
 using namespace Chroma;
 
-
+#include "actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h"
 //! To insure linking of code, place the registered code flags here
 /*! This is the bit of code that dictates what fermacts are in use */
 bool linkage_hack()
@@ -471,6 +471,162 @@ int main(int argc, char **argv)
   diff = psi2 - psi1;
   QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
   
+  // Schur Style preconditioning
+  EO3DPrecSCprecTWilsonLinOp D_schur_tprec(fs, Mass, aniso);
+
+  QDPIO::cout << "Schur Style preconditioning tests " << endl;
+  QDPIO::cout << "================================= " << endl;
+
+
+
+  for(int cb=0; cb < 2; cb++) { 
+    gaussian(chi,rb3[cb]);
+    
+    tmp1[rb3[cb]] = Gamma(15)*chi;
+    D_schur_tprec.invCRightLinOp(tmp2, tmp1, PLUS,cb);
+    psi1[rb3[cb]] = Gamma(15)*tmp2;
+    
+    // psi2 = ( C_L^{-1} )^\dagger  \chi
+    D_schur_tprec.invCLeftLinOp(psi2, chi, MINUS,cb);
+    diff[rb3[cb]] = psi2 - psi1;
+    QDPIO::cout << "cb="<<cb<<" Gamma5_1  = " << sqrt( norm2(diff,rb3[cb]) / norm2(psi1,rb3[cb]) ) << endl;
+
+
+    // Other way 
+    // psi1 = \gamma_5  C_L^{-1} \gamma_5 \chi
+    tmp1[rb3[cb]] = Gamma(15)*chi; 
+    D_schur_tprec.invCLeftLinOp(tmp2, tmp1, PLUS, cb);
+    psi1[rb3[cb]] = Gamma(15)*tmp2;
+
+    // psi2 = ( C_R^{-1} )^\dagger  \chi
+    D_schur_tprec.invCRightLinOp(psi2, chi, MINUS, cb);
+    diff[rb3[cb]] = psi2 - psi1;
+    QDPIO::cout << "cb="<<cb<< " Gamma5_2  = " << sqrt( norm2(diff, rb3[cb]) / norm2(psi1,rb3[cb]) ) << endl;
+
+    // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
+    gaussian(chi,rb3[cb]);
+    D_schur_tprec.cLeftLinOp(psi1, chi, PLUS,cb);
+    D_schur_tprec.invCLeftLinOp(tmp1, psi1, PLUS,cb);
+
+    diff[rb3[cb]] = tmp1 - chi;
+    QDPIO::cout << "cb="<<cb<<" CL CL_INV + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+
+
+    D_schur_tprec.cLeftLinOp(psi1, chi, MINUS,cb);
+    D_schur_tprec.invCLeftLinOp(tmp1, psi1, MINUS,cb);
+
+    diff[rb3[cb]] = tmp1 - chi;
+    QDPIO::cout << "cb="<<cb<<" CL CL_INV - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+
+    D_schur_tprec.invCLeftLinOp(psi1, chi, PLUS,cb);
+    D_schur_tprec.cLeftLinOp(tmp1, psi1, PLUS,cb);
+
+    diff[rb3[cb]] = tmp1 - chi;
+    QDPIO::cout << "cb="<<cb<<" CL_INV CL + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+
+    D_schur_tprec.invCLeftLinOp(psi1, chi, MINUS,cb);
+    D_schur_tprec.cLeftLinOp(tmp1, psi1, MINUS,cb);
+
+    diff[rb3[cb]] = tmp1 - chi;
+    QDPIO::cout << "cb="<<cb<<" CL_INV CL - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+
+    // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
+    gaussian(chi,rb3[cb]);
+    D_schur_tprec.cRightLinOp(psi1, chi, PLUS,cb);
+    D_schur_tprec.invCRightLinOp(tmp1, psi1, PLUS,cb);
+    
+    diff[rb3[cb]] = tmp1 - chi;
+    QDPIO::cout << "cb="<<cb<< " CR CR_INV + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    
+    D_schur_tprec.cRightLinOp(psi1, chi, MINUS,cb);
+    D_schur_tprec.invCRightLinOp(tmp1, psi1, MINUS,cb);
+    
+    diff[rb3[cb]] = tmp1 - chi;
+    QDPIO::cout << "cb="<<cb<< " CR CR_INV - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    
+    D_schur_tprec.invCRightLinOp(psi1, chi, PLUS,cb);
+    D_schur_tprec.cRightLinOp(tmp1, psi1, PLUS,cb);
+
+    diff[rb3[cb]] = tmp1 - chi;
+    QDPIO::cout << "cb="<<cb<<" CR_INV CR + = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+    
+    D_schur_tprec.invCRightLinOp(psi1, chi, MINUS,cb);
+    D_schur_tprec.cRightLinOp(tmp1, psi1, MINUS,cb);
+    
+    diff[rb3[cb]] = tmp1 - chi;
+    QDPIO::cout << "cb="<<cb<<" CR_INV CR - = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+  }
+
+  // D_w is unpreconditioned
+  //  D_w1, chi, PLUS);
+  gaussian(chi);
+  D_schur_tprec.cRightLinOp(tmp1, chi, PLUS, 0);
+  D_schur_tprec.cRightLinOp(tmp1, chi, PLUS, 1);
+
+  D_w(tmp2, tmp1, PLUS);
+
+  D_schur_tprec.cLeftLinOp(psi1, tmp2, PLUS, 0);
+  D_schur_tprec.cLeftLinOp(psi1, tmp2, PLUS, 1);
+
+  // --------------
+
+  D_schur_tprec.evenEvenLinOp(psi2, chi, PLUS);
+  D_schur_tprec.evenOddLinOp(tmp1, chi, PLUS);
+  psi2[rb3[0]] += tmp1;
+
+  D_schur_tprec.oddOddLinOp(psi2, chi, PLUS);
+  D_schur_tprec.oddEvenLinOp(tmp1, chi, PLUS);
+  psi2[rb3[1]] += tmp1;
+
+ 
+  for(int cb=0; cb < 2; cb++) { 
+    diff[rb3[cb]] = psi2 - psi1;
+    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+  }
+
+  gaussian(chi);
+  D_w(psi1, chi, PLUS);
+  D_schur_tprec.unprecLinOp(psi2,chi,PLUS);
+  for(int cb=0; cb < 2; cb++) { 
+    diff[rb3[cb]] = psi2 - psi1;
+    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+  }
+
+
+  gaussian(chi);
+  D_schur_tprec.cLeftLinOp(tmp1, chi, MINUS, 0);
+  D_schur_tprec.cLeftLinOp(tmp1, chi, MINUS, 1);
+
+  D_w(tmp2, tmp1, MINUS);
+
+  D_schur_tprec.cRightLinOp(psi1, tmp2, MINUS, 0);
+  D_schur_tprec.cRightLinOp(psi1, tmp2, MINUS, 1);
+
+  // --------------
+
+
+  D_schur_tprec.evenEvenLinOp(psi2, chi, MINUS);
+  D_schur_tprec.evenOddLinOp(tmp1, chi, MINUS);
+  psi2[rb3[0]] += tmp1;
+
+  D_schur_tprec.oddOddLinOp(psi2, chi, MINUS);
+  D_schur_tprec.oddEvenLinOp(tmp1, chi, MINUS);
+  psi2[rb3[1]] += tmp1;
+
+ 
+  for(int cb=0; cb < 2; cb++) { 
+    diff[rb3[cb]] = psi2 - psi1;
+    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+  }
+
+  gaussian(chi);
+  D_w(psi1, chi, MINUS);
+  D_schur_tprec.unprecLinOp(psi2,chi,MINUS);
+  for(int cb=0; cb < 2; cb++) { 
+    diff[rb3[cb]] = psi2 - psi1;
+    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+  }
+
   
   // Time to bolt
   Chroma::finalize();

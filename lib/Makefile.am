@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.77 2007-02-25 22:35:48 edwards Exp $
+# $Id: Makefile.am,v 3.78 2007-02-27 20:28:32 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -313,6 +313,7 @@ nobase_include_HEADERS += \
         eoprec_constdet_wilstype_fermact_w.h eoprec_logdet_wilstype_fermact_w.h \
 	unprec_s_cprec_t_wilstype_fermact_w.h \
 	iluprec_s_cprec_t_wilstype_fermact_w.h \
+	eo3dprec_s_cprec_t_wilstype_fermact_w.h \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
@@ -345,6 +346,7 @@ nobase_include_HEADERS += \
         actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h \
         actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h \
         actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h \
+	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 	actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.h \
@@ -441,8 +443,9 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/eoprec_slic_linop_w.h \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
-	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h 
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
+	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_Linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
@@ -981,7 +984,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
-	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc \
+	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc\
+	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc\
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_w.cc \
@@ -1053,6 +1057,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
+	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
