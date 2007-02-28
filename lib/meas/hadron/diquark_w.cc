@@ -1,4 +1,4 @@
-//  $Id: diquark_w.cc,v 1.2 2007-02-25 22:39:28 edwards Exp $
+//  $Id: diquark_w.cc,v 1.3 2007-02-28 03:28:16 edwards Exp $
 /*! \file
  *  \brief Construct a diquark object
  */
@@ -63,8 +63,8 @@ namespace Chroma
 
     // We need this fast, so at the expense of a lot of memory we will
     // expose all the color/spin indices of each propagator into a temporary
-    multi2d< multi2d<LatticeComplex> > qc_1 = unpackQuark(quark_propagator_1);
-    multi2d< multi2d<LatticeComplex> > qc_2 = unpackQuark(quark_propagator_2);
+    multi2d< multi2d<LatticeComplex> > qc_1(unpackQuark(quark_propagator_1));
+    multi2d< multi2d<LatticeComplex> > qc_2(unpackQuark(quark_propagator_2));
 
     // Final diquark contractions
     multi1d<int> ranks(6);
@@ -79,8 +79,8 @@ namespace Chroma
 	for(ranks[2]=0; ranks[2] < Ns; ++ranks[2])         // si_2
 	  for(ranks[3]=0; ranks[3] < Ns; ++ranks[3])       // si_1
 	  {
-	    const multi2d<LatticeComplex>& q_1 = qc_1(ranks[3],ranks[1]);  // Note: transpose in barcomp
-	    const multi2d<LatticeComplex>& q_2 = qc_2(ranks[2],ranks[0]);  // Note: transpose in barcomp
+	    const multi2d<LatticeComplex>& q_1 = qc_1(ranks[3],ranks[1]);  // Note: oddball transpose
+	    const multi2d<LatticeComplex>& q_2 = qc_2(ranks[2],ranks[0]);  // Note: oddball transpose
 
 	    // Contract over color indices with antisym tensors
 	    // Permutations: +(0,1,2)+(1,2,0)+(2,0,1)-(1,0,2)-(0,2,1)-(2,1,0)
