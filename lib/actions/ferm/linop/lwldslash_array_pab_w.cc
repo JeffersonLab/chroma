@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_pab_w.cc,v 3.5 2007-02-23 21:38:11 bjoo Exp $
+// $Id: lwldslash_array_pab_w.cc,v 3.6 2007-02-28 21:32:06 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -8,12 +8,10 @@
 #include "actions/ferm/linop/lwldslash_w_pab.h"
 #include "actions/ferm/linop/lwldslash_array_pab_w.h"
 
-
 #include <wfm.h>
 
 namespace Chroma 
 { 
-
   //! Empty constructor. Must use create later
   PABWilsonDslashArray::PABWilsonDslashArray()
   {
@@ -81,25 +79,6 @@ namespace Chroma
       }
     }
 
-    // I probably need the local size here...
-    const multi1d<int>& lsize= Layout::subgridLattSize();
-    const multi1d<int>& machsize = Layout::logicalSize();
-
-    // Set up the wilson thingie
-    wil.instruction_reg_num=1;
-
-    for(int i = 0; i < Nd; i++) { 
-      wil.local_latt[i] = lsize[i];
-    
-      if( machsize[i] == 1 ) {
-	wil.local_comm[i] = 1;
-
-      }
-      else {
-	wil.local_comm[i] = 0;
-      }
-    }
-    wil.instruction_reg_num=1;
 
     // Rearrange the gauge
 
@@ -130,7 +109,7 @@ namespace Chroma
     }
 
 
-    wil_cbsize=Layout::sitesOnNode()/2;
+
 
     // Rearrange gauge from  Dir,Site, Matrix 
     // to Site, Dir, Matrix
@@ -143,32 +122,66 @@ namespace Chroma
       }
     }
 
+    // Need this
+
+    wil_cbsize=Layout::sitesOnNode()/2;
     if ( PABDslashEnv::refcount == 0 ) { 
-         wfm_vec_init(&wil);
+      // I probably need the local size here...
+      const multi1d<int>& lsize= Layout::subgridLattSize();
+      const multi1d<int>& machsize = Layout::logicalSize();
+      
+      // Set up the wilson thingie
+      for(int i = 0; i < Nd; i++) { 
+	wil.local_latt[i] = lsize[i];
+	
+	if( machsize[i] == 1 ) {
+	  wil.local_comm[i] = 1;
+
+	}
+	else {
+	  wil.local_comm[i] = 0;
+	}
+      }
+
+
+
+      wfm_vec_init(&wil);
+
+#ifdef CHROMA_WFM_NO_END
+      // If we never call the end, 
+      // the refcount is a lock variable
+      // and we never increase it
+      PABDslashEnv::refcount = 1;
+#endif
+      
     }
+
+#ifndef CHROMA_WFM_NO_END
+    // Correct refcounting 
     PABDslashEnv::refcount++;
+#endif
 
     END_CODE();
   }
 
   PABWilsonDslashArray::~PABWilsonDslashArray(void) 
   {
-    START_CODE();
-    QDPIO::cout << "~PABWilsonDslashArray() refcount=" << PABDslashEnv::refcount << flush;
+
+#ifndef CHROMA_WFM_NO_END
+    // Only deal with refcount defreases if the refcount is at least 1
     if( PABDslashEnv::refcount > 0 ) {
-	QDPIO::cout << "...decrementing refcount" << flush;
-	PABDslashEnv::refcount--;
-     
 
-        if( PABDslashEnv::refcount == 0 ) {
-	  QDPIO::cout << "...refcount reached 0. Finalizing" << flush << endl;
-	  wfm_vec_end(&wil);
-        }
+      // Always decrease the refcount
+      PABDslashEnv::refcount--;
+
+      // Only call free when the refcount == 0
+      if( PABDslashEnv::refcount == 0 ) { 
+	wfm_vec_end(&wil);
+      }
     }
+#endif 
 
-    QDPIO::cout << "Packed gauge pointer is: " << packed_gauge <<endl;
-    QDPIO::cout << "~PABWilsnDslashArray() freeing gauge field" << endl << flush ;
-   
+    // Free the gauge field tho
     QDP::Allocator::theQDPAllocator::Instance().free(packed_gauge);
     
     END_CODE();

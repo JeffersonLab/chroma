@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 3.3 2006-12-02 18:21:41 edwards Exp $
+// $Id: lwldslash_w_pab.cc,v 3.4 2007-02-28 21:32:06 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -7,8 +7,6 @@
 #include "actions/ferm/linop/lwldslash_w_pab.h"
 
 #include <wfm.h>
-
-#define WFM_NO_END 1
 
 namespace Chroma 
 {
@@ -69,23 +67,6 @@ namespace Chroma
       }
     }
 
-    // I probably need the local size here...
-    const multi1d<int>& lsize= Layout::subgridLattSize();
-    const multi1d<int>& machsize = Layout::logicalSize();
-
-    // Set up the wilson thingie
-    for(int i = 0; i < Nd; i++) { 
-      wil.local_latt[i] = lsize[i];
-    
-      if( machsize[i] == 1 ) {
-	wil.local_comm[i] = 1;
-
-      }
-      else {
-	wil.local_comm[i] = 0;
-      }
-    }
-
     // Rearrange the gauge
     // Allocate the packed gauge
     // Now use the QDP allocator system which calls qalloc on QCDOC
@@ -112,13 +93,8 @@ namespace Chroma
 	QDP_abort(1);
       }
     }
-    
-    wil_cbsize=Layout::sitesOnNode()/2;
 
-    // Rearrange gauge from  Dir,Site, Matrix 
-    // to Site, Dir, Matrix
-    // (and sites are ordered in cb order)
-  
+    // Pack the gauge field.
     int volume=Layout::sitesOnNode();
     for(int ix=0; ix < volume; ix++) { 
       for(int mu=0; mu < 4; mu++) { 
@@ -126,12 +102,39 @@ namespace Chroma
       }
     }
 
+    wil_cbsize=Layout::sitesOnNode()/2;
+
+    // If the refcount is 0 -- Init the Vector (both dslash-es)
     if ( PABDslashEnv::refcount == 0 ) { 
-         wfm_vec_init(&wil);
+      // I probably need the local size here...
+      const multi1d<int>& lsize= Layout::subgridLattSize();
+      const multi1d<int>& machsize = Layout::logicalSize();
+
+      // Set up the wilson thingie
+      for(int i = 0; i < Nd; i++) { 
+	wil.local_latt[i] = lsize[i];
+	
+	if( machsize[i] == 1 ) {
+	  wil.local_comm[i] = 1;
+	  
+	}
+	else {
+	  wil.local_comm[i] = 0;
+	}
+      }
+      
+     
+      // Init the OP
+      wfm_vec_init(&wil);
+#ifdef CHROMA_WFM_NO_END
+      // Refcount is a lock variable
+      // to control instantiation
+      PABDslashEnv::refcount = 1;
+#endif
     }
-#if defined(WFM_NO_END)
-    PABDslashEnv::refcount = 1;
-#else
+
+#ifndef CHROMA_WFM_NO_END
+    // Always increase the refcount
     PABDslashEnv::refcount++;
 #endif
 
@@ -141,12 +144,16 @@ namespace Chroma
 
   PABWilsonDslash::~PABWilsonDslash() 
   {
-#if defined(WFM_NO_END)
-    if( PABDslashEnv::refcount > 0 ) 
-    {
+
+#ifndef CHROMA_WFM_NO_END
+    // Only deal with refcount decreases if the refcount is at least 1
+    if( PABDslashEnv::refcount > 0 ) {
+
+      // Always decrease the refcount
       PABDslashEnv::refcount--;
-    
-      if( PABDslashEnv::refcount == 0 ) {
+      if( PABDslashEnv::refcount == 0 ) { 
+	
+	// Only call free when refcount ==0
 	wfm_vec_end(&wil);
       }
     }
