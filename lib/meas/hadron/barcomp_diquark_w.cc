@@ -1,4 +1,4 @@
-//  $Id: barcomp_diquark_w.cc,v 1.1 2007-02-25 22:39:03 edwards Exp $
+//  $Id: barcomp_diquark_w.cc,v 1.2 2007-02-28 03:28:40 edwards Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator using a diquark
  */
@@ -45,7 +45,7 @@ namespace Chroma
 
     // We need this fast, so at the expense of a lot of memory we will
     // expose all the color/spin indices of each propagator into a temporary
-    multi2d< multi2d<LatticeComplex> > qc_3 = unpackQuark(quark_propagator_3);
+    multi2d< multi2d<LatticeComplex> > qc_3(unpackQuark(quark_propagator_3));
 
     // Temporaries
     multi1d<DComplex> hsum;
@@ -126,7 +126,7 @@ namespace Chroma
 
     // We need this fast, so at the expense of a lot of memory we will
     // expose all the color/spin indices of each propagator into a temporary
-    multi2d< multi2d<LatticeComplex> > qc_3 = unpackQuark(quark_propagator_3);
+    multi2d< multi2d<LatticeComplex> > qc_3(unpackQuark(quark_propagator_3));
 
     // Temporaries
     multi1d<DComplex> hsum;
@@ -141,8 +141,9 @@ namespace Chroma
 	    for(ranks[4]=0; ranks[4] < Ns; ++ranks[4])   // si_2
 	      for(ranks[5]=0; ranks[5] < Ns; ++ranks[5]) // si_1
 	      {
-		// Here is where the odd-ball transpose is being done.
-		// Note: source is first and sink is last. Don't blame RGE...
+		// Here we carry on the odd-ball transpose.
+		// Note: source is first and sink is last. This makes it
+		// compatible with barcomp_w.cc . Don't blame RGE...
 		rnk[0] = ranks[1];
 		rnk[1] = ranks[2];
 		rnk[2] = ranks[4];
@@ -153,7 +154,7 @@ namespace Chroma
 		for(rnk[4]=0; rnk[4] < Nc; ++rnk[4])         // color row
 		  for(rnk[5]=0; rnk[5] < Nc; ++rnk[5])       // color col
 		  {
-		    b_prop += diquark.comp[rnk] * qc_3(ranks[0],ranks[3])(rnk[4],rnk[5]);
+		    b_prop += diquark.comp[rnk] * qc_3(ranks[3],ranks[0])(rnk[4],rnk[5]);
 		  }
 
 		/* Project on zero momentum: Do a slice-wise sum. */
