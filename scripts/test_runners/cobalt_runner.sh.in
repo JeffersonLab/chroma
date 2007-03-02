@@ -6,7 +6,7 @@
 # parallel code
 ####################################################
 
-retstring=`cqsub -m vn -n 2 -c 4 -t 10:00 $*`
+retstring=`cqsub -e BGL_APP_L1_SWOA=1 -m vn -n 2 -c 4 -t 10:00 $*`
 jobid=`echo $retstring | awk '{ print $4}'`
 echo Job Id is $jobid
 
@@ -15,9 +15,9 @@ while [ "X${qstat_string}X" != "XX" ];
 do
 	qstat_string=`cqstat | grep $jobid`
 	job_state=`echo $qstat_string | awk '{ print $5}'`
-	if [ "X${job_state}X" != "XX"];
+	if [ "X${job_state}X" != "XX" ];
         then 
-	  echo Job state is $job_state. Sleeping for 10 seconds
+#	  echo Job state is $job_state. Sleeping for 10 seconds
 	  sleep 10;
         fi
 done
