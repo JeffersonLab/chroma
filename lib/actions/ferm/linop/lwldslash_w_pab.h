@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 3.2 2007-03-01 14:53:57 bjoo Exp $
+// $Id: lwldslash_w_pab.h,v 3.3 2007-03-02 18:25:18 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -12,8 +12,8 @@
 
 #include <wfm.h>
 
-//#undef CHROMA_WFM_NO_END
-#define CHROMA_WFM_NO_END 1
+#undef CHROMA_WFM_NO_END
+// #define CHROMA_WFM_NO_END 1
 
 namespace Chroma 
 { 
@@ -106,6 +106,5 @@ namespace Chroma
 
 
 } // End Namespace Chroma
-
 
 #endif
