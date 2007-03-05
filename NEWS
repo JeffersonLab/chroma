@@ -1,3 +1,13 @@
+05/03/2007 -- Balint Joo
+	Version 3.22.7 - BG/L fixes for BAGEL dslash op (refcounting etc)
+	      New CG-DWF option --enable-cg-dwf-lowmem for a lower memory CG-DWF
+	      New CG option --enable-cg-solver-restart for a single CG restart
+	      RsdCG and MaxCG can be independently speficied by <RsdCGRestart>
+	      and <MaxCGRestart> in the inv Param file. This works by default
+	      for CG-DWF solves and the tags are respected in other CG solvers if
+	      --enable-cg-solver-restart is enabled. Otherwise these XML tags
+	      are ignored.  
+
 27/02/2007 -- Balint Joo
 	Version 3.22.6 - Cleanded out subsets. Regressions pass but needs recent 
 	QDP++ (1.22.0 at least). Merged in Robert's recent changes. Added Schur Preconditioned Space,
