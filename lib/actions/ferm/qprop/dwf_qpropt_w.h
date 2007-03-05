@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwf_qpropt_w.h,v 3.10 2007-03-05 16:13:59 bjoo Exp $
+// $Id: dwf_qpropt_w.h,v 3.11 2007-03-05 19:36:32 bjoo Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -32,8 +32,13 @@
 #define SINGLE_PREC_SOLVER
 #define DOUBLE_PREC_SOLVER
 
+
 // Include the qprop file
+#ifdef CHROMA_USE_CG_DWF_LOWMEM
+#include "actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h"
+#else
 #include "actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h"
+#endif
 
 // Define types 
 namespace Chroma { 
@@ -60,7 +65,11 @@ namespace Chroma {
 #include "actions/ferm/qprop/avp_altivecf_solver.h"
 // Enable only single prec solver
 #define SINGLE_PREC_SOLVER
+#ifdef CHROMA_USE_CG_DWF_LOWMEM
+#include "actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h"
+#else
 #include "actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h"
+#endif
 // To satisfy type requirements pass the type of single prec 
 // as the double prec solver. However this will be turned off by
 // the fact that we have not defined DOUBLE_PREC_SOLVER

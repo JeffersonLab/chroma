@@ -1,16 +1,16 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h,v 3.1 2007-03-05 16:13:59 bjoo Exp $
+// $Id: eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h,v 3.2 2007-03-05 19:36:32 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
 
 #include "chroma_config.h"
+#if defined(CHROMA_USE_CG_DWF_LOWMEM)
 
-#ifdef CHROMA_USE_CG_DWF_LOWMEM
-#warning Using Lower Mem Version of CG-DWF solver
 
 #ifndef __prec_dwf_qprop_array_cg_dwf_lowmem_w_h__
 #define __prec_dwf_qprop_array_cg_dwf_lowmem_w_h__
+
 
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "io/aniso_io.h"
@@ -288,7 +288,7 @@ namespace Chroma
     Real Mass;
     int  N5;
     AnisoParam_t anisoParam;
-    SysSolverCGDWFParams invParam;
+    SysSolverCGParams invParam;
     multi1d<int> lattice_size;
     multi1d<LatticeColorMatrix> u;
     multi1d<LatticeColorMatrix> v;
@@ -297,4 +297,4 @@ namespace Chroma
 }
 #endif
 
-#endif
+#endif // CHROMA_USE_CG_DWF_LOWMEM

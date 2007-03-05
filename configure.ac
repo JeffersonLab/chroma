@@ -52,9 +52,15 @@ AC_ARG_ENABLE(cg-dwf,
 )
 
 AC_ARG_ENABLE(cg-dwf-lowmem,
-	AC_HELP_STRING([--enable-cg-dwf-lowmem=<yes/no>]), 
+	AC_HELP_STRING([--enable-cg-dwf-lowmem=<yes/no> Enable Low/High Memory mode of CG-DWF inverter]), 
 	[ cg_dwf_lowmem="yes"],
 	[ cg_dwf_lowmem="no" ]
+)
+
+AC_ARG_ENABLE(cg-solver-restart,
+	AC_HELP_STRING([ Enable a single restart in the CG linop syssolvers ]),
+	[cg_do_one_restart="yes"],
+	[cg_do_one_restart="no"]
 )
 
 AC_ARG_WITH(bagel_wilson_dslash,
@@ -228,6 +234,12 @@ else
 	AC_MSG_NOTICE([Configuring CG-DWF for Higher Memory Mode])
 fi
 
+if [ test "x${cg_do_one_restart}x" = "xyesx" ];
+then
+	 AC_MSG_NOTICE([Enabling restart in CG Syssolvers ])	
+	 AC_DEFINE([CHROMA_DO_ONE_CG_RESTART],[1],[Enable Restart in linop syssolvers])
+fi
+ 
 dnl QCDOC Wilson Dslash stuff
 
 if test "X${bagel_wilson_dslash_enabled}X" = "XyesX";

@@ -18,6 +18,9 @@
 /* Build SSE Dslash Op */
 #undef BUILD_SSE_WILSON_DSLASH
 
+/* Enable Restart in linop syssolvers */
+#undef CHROMA_DO_ONE_CG_RESTART
+
 /* Switch in Lower Memory File */
 #undef CHROMA_USE_CG_DWF_LOWMEM
 

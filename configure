@@ -824,7 +824,9 @@ Optional Features:
 
   --enable-cg-dwf=<cpuarch> <cpuarch>=sse
 
-  --enable-cg-dwf-lowmem=<yes/no>
+  --enable-cg-dwf-lowmem=<yes/no> Enable Low/High Memory mode of CG-DWF inverter
+
+   Enable a single restart in the CG linop syssolvers
 
   --enable-asqtad-cps-inverter
                           Wrap the CPS asqtad inverter
@@ -3292,6 +3294,15 @@ else
 
 fi;
 
+# Check whether --enable-cg-solver-restart or --disable-cg-solver-restart was given.
+if test "${enable_cg_solver_restart+set}" = set; then
+  enableval="$enable_cg_solver_restart"
+  cg_do_one_restart="yes"
+else
+  cg_do_one_restart="no"
+
+fi;
+
 
 # Check whether --with-bagel_wilson_dslash or --without-bagel_wilson_dslash was given.
 if test "${with_bagel_wilson_dslash+set}" = set; then
@@ -3731,6 +3742,17 @@ _ACEOF
 else
 	{ echo "$as_me:$LINENO: Configuring CG-DWF for Higher Memory Mode" >&5
 echo "$as_me: Configuring CG-DWF for Higher Memory Mode" >&6;}
+fi
+
+if  test "x${cg_do_one_restart}x" = "xyesx" ;
+then
+	 { echo "$as_me:$LINENO: Enabling restart in CG Syssolvers " >&5
+echo "$as_me: Enabling restart in CG Syssolvers " >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_DO_ONE_CG_RESTART 1
+_ACEOF
+
 fi
 
 

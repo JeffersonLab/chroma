@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_cg_array.h,v 3.4 2007-02-22 21:11:46 bjoo Exp $
+// $Id: syssolver_linop_cg_array.h,v 3.5 2007-03-05 19:36:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -7,6 +7,7 @@
 #ifndef __syssolver_linop_cg_array_h__
 #define __syssolver_linop_cg_array_h__
 
+#include "chroma_config.h"
 #include "handle.h"
 #include "syssolver.h"
 #include "linearop.h"
@@ -69,11 +70,20 @@ namespace Chroma
 	(*A)(chi_tmp, chi, MINUS);
 
 	SystemSolverResults_t res;  // initialized by a constructor
-	for(int i=0; i < invParam.numRestarts; ++i)
 	{
-	  int n_count = res.n_count;
+
 	  res = InvCG2(*A, chi_tmp, psi, invParam.RsdCG, invParam.MaxCG);
+	
+
+#ifdef CHROMA_DO_ONE_CG_RESTART
+
+	  int n_count = res.n_count;
+
+	  // One automatic restart (if enabled)
+	  res = InvCG2(*A, chi_tmp, psi, invParam.RsdCGRestart, invParam.MaxCGRestart);
 	  res.n_count += n_count;
+#endif
+
 	}
 
 	END_CODE();
