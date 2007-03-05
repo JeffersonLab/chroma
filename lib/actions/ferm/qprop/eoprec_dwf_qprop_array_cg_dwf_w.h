@@ -1,15 +1,19 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.6 2007-03-02 20:58:42 bjoo Exp $
+// $Id: eoprec_dwf_qprop_array_cg_dwf_w.h,v 3.7 2007-03-05 16:08:00 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
+
+#include "chroma_config.h"
+
+#ifndef CHROMA_USE_CG_DWF_LOWMEM
 
 #ifndef __prec_dwf_qprop_array_cg_dwf_w_h__
 #define __prec_dwf_qprop_array_cg_dwf_w_h__
 
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "io/aniso_io.h"
-#include "actions/ferm/invert/syssolver_cgdwf_params.h"
+#include "actions/ferm/invert/syssolver_cg_params.h"
 
 
 namespace Chroma
@@ -52,7 +56,7 @@ namespace Chroma
     int size() const {return N5;}
 
     //! Return the subset on which the operator acts
-    const Subset& subset() const {return all;}
+    const OrderedSubset& subset() const {return all;}
 
     //! Solver the linear system
     /*!
@@ -81,113 +85,34 @@ namespace Chroma
       int single_count = 0;
       int double_count = 0;
       res.n_count = 0;
-
-      StopWatch swatch, swatch_total, swatch_solver;
-      {
 #ifdef SINGLE_PREC_SOLVER
-	double rsd = toDouble(invParam.RsdCGSingle);
+      {
+
+	double rsd = toDouble(invParam.RsdCG);
 	double rsd_sq = rsd * rsd;
-	int    max_iter = invParam.MaxCGSingle;
+	int    max_iter = invParam.MaxCG;
 
-	swatch_total.reset(); swatch_solver.reset(); 
-	swatch_total.start();
-
-	// Init solver
-	std::string dwf_error_str = "single prec.";
-
-	QDPIO::cout << "CGDWFQpropT: Initializing Single Precision Solver " << endl;
-	swatch.reset(); swatch.start();
-	int stat = single_prec_solver.init(lattice_size.slice(), NULL, NULL);
-	if ( stat != 0) {
-	  
-	  QDPIO::cerr << __func__ << ": error in SP solver init: " << dwf_error_str << " error code is " << stat << endl;
-	  QDP_abort(1);
-	}
-	swatch.stop();
-	QDPIO::cout << "CGDWFQpropT: Single Prec Solver init took: " << swatch.getTimeInSeconds() << " seconds " << endl;
-	
-	// load the gauge
-	swatch.reset(); swatch.start();
-	single_prec_solver.loadGauge(&u, &v);
-	swatch.stop();
-	QDPIO::cout << "CGDWFQpropT: Single Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << endl;
-
-	
-	// Call the solver
 	QDPIO::cout << "CGDWFQpropT: Beginning Single Precision Solve" << endl;
-	swatch_solver.start();
 	single_prec_solver.cgSolver(psi, M5, m_f, 
-				    chi, psi, rsd_sq, max_iter, out_eps, single_count);
-	swatch_solver.stop();
-	// Delete the gauge
-	QDPIO::cout << "CGDWFQpropT: Deleting Single Precision Solver Gauge Field " << endl;
-	single_prec_solver.deleteGauge();
-	
-	QDPIO::cout << "CGDWFQPropT: Finalizing Single Precision Solver " << endl;
-	// Destroy the solver
-	single_prec_solver.fini();
-	swatch_total.stop();
-	double tot_time = swatch_total.getTimeInSeconds();
-	double sol_time = swatch_solver.getTimeInSeconds();
-
-	QDPIO::cout << "CGDWFQPropT: Total solution time: " << tot_time << " Time in Single Prec Solver: " << sol_time << " Single Prec Overhead: " << 100.0*(tot_time-sol_time)/sol_time << "%" << endl;
-
+				  chi, psi, rsd_sq, max_iter, out_eps, single_count);
 	res.n_count += single_count;
       }
 #endif
 #ifdef DOUBLE_PREC_SOLVER
       {
-
-	double rsd = toDouble(invParam.RsdCGDouble);
+	double rsd = toDouble(invParam.RsdCGRestart);
 	double rsd_sq = rsd * rsd;
-	int    max_iter = invParam.MaxCGDouble;
+	int    max_iter = invParam.MaxCGRestart;
 
-	swatch_total.reset(); swatch_solver.reset(); 
-	swatch_total.start();
-	
-	// Init the solver
-	std::string dwf_error_str2 = "double prec.";
-	
-	QDPIO::cout << "CGDWFQpropT: Initializing Double Precision Solver " << endl;
-	swatch.reset(); swatch.start();
-	int stat2 = double_prec_solver.init(lattice_size.slice(), NULL, NULL);
-	if ( stat2 != 0) {
-	  QDPIO::cerr << __func__ << ": error in DP solver init: " << dwf_error_str2 << " error code is " << stat2 << endl;
-	  QDP_abort(1);
-	}
-	swatch.stop();
-	QDPIO::cout << "CGDWFQpropT: Double Prec Solver init took: " << swatch.getTimeInSeconds() << " seconds " << endl;
-
-	// Load the gauge field
-	swatch.reset(); swatch.start();
-	double_prec_solver.loadGauge(&u, &v);
-	swatch.stop();
-	QDPIO::cout << "Double Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << endl;
-	
-	// Do the solve
 	QDPIO::cout << "CGDWFQpropT: Beginning Double Precision Solve" << endl;
-	swatch_solver.start();
 	double_prec_solver.cgSolver(psi, M5, m_f, 
 				    chi, psi, rsd_sq, max_iter, out_eps, double_count);
-	swatch_solver.stop();
-	
-	// Delete the gauge field
-	double_prec_solver.deleteGauge();
-	
-	// Kill the solver
-	double_prec_solver.fini();
-	swatch_total.stop();
-	double tot_time = swatch_total.getTimeInSeconds();
-	double sol_time = swatch_solver.getTimeInSeconds();
-
-	QDPIO::cout << "CGDWFQPropT: Total solution time: " << tot_time << " Time in Double Prec Solver: " << sol_time << " Double Prec Overhead: " << 100.0*(tot_time-sol_time)/sol_time << "%" << endl;
-      
-	
-	res.n_count += double_count;
+        res.n_count += double_count;
       }
 #endif
-      QDPIO::cout << "CGDWFQpropT: Single Prec. Iters = " << single_count << " Double Prec. Iters = " << double_count << " Total Iters = " << res.n_count << endl;
+	QDPIO::cout << "CGDWFQpropT: Single Prec. Iters = " << single_count << " Double Prec. Iters = " << double_count << " Total Iters = " << res.n_count << endl;
       
+      // Compute actual residual
       {
 	multi1d<LatticeFermion>  r(N5);
 	A->unprecLinOp(r, psi, PLUS);
@@ -229,9 +154,8 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      lattice_size.resize(Nd+1);
+      multi1d<int> lattice_size(Nd+1);
       lattice_size[Nd] = N5;
-
       for(int i=0; i < Nd; ++i)
 	lattice_size[i] = Layout::lattSize()[i];
       
@@ -241,8 +165,26 @@ namespace Chroma
 	QDP_abort(1);
       }
    
-      u.resize(Nd);
-      u = state->getLinks();
+#ifdef SINGLE_PREC_SOLVER
+      std::string dwf_error_str = "single prec.";
+      int stat = single_prec_solver.init(lattice_size.slice(), NULL, NULL);
+      if ( stat != 0) {
+	
+	QDPIO::cerr << __func__ << ": error in SP solver init: " << dwf_error_str << " error code is " << stat << endl;
+	QDP_abort(1);
+      }
+#endif  
+#ifdef DOUBLE_PREC_SOLVER
+      std::string dwf_error_str2 = "double prec.";
+      int stat2 = double_prec_solver.init(lattice_size.slice(), NULL, NULL);
+      if ( stat2 != 0) {
+	
+	QDPIO::cerr << __func__ << ": error in DP solver init: " << dwf_error_str2 << " error code is " << stat2 << endl;
+	QDP_abort(1);
+      }
+#endif
+      // Transform the U fields
+      multi1d<LatticeColorMatrix> u = state->getLinks();
       
       if (anisoParam.anisoP) {
 	
@@ -257,9 +199,24 @@ namespace Chroma
       }
       
       // Construct shifted gauge field
-      v.resize(Nd);
+      multi1d<LatticeColorMatrix> v(Nd);
       for (int i = 0; i < Nd; i++)
 	v[i] = shift(u[i], -1, i); // as viewed from the destination
+
+      StopWatch swatch;
+#ifdef SINGLE_PREC_SOLVER      
+      
+      swatch.reset(); swatch.start();
+      single_prec_solver.loadGauge(&u, &v);
+      swatch.stop();
+      QDPIO::cout << "Single Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << endl;
+#endif 
+#ifdef DOUBLE_PREC_SOLVER
+      swatch.reset(); swatch.start();
+      double_prec_solver.loadGauge(&u, &v);
+      swatch.stop();
+      QDPIO::cout << "Double Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << endl;
+#endif 
 
       QDPIO::cout << "exiting CGDWFQpropT::init" << endl;
     }
@@ -267,15 +224,24 @@ namespace Chroma
     //! Private internal destructor
     void fini() {
       QDPIO::cout << "CGDWFQpropT: calling destructor" << endl;
+#ifdef SINGLE_PREC_SOLVER
+      single_prec_solver.deleteGauge();
+      single_prec_solver.fini();
+#endif
+
+#ifdef DOUBLE_PREC_SOLVER
+      double_prec_solver.deleteGauge();
+      double_prec_solver.fini();
+#endif 
     }
       
   private:
 #ifdef SINGLE_PREC_SOLVER
-    mutable SinglePrecSolver  single_prec_solver;
+    SinglePrecSolver  single_prec_solver;
 #endif
 
 #ifdef DOUBLE_PREC_SOLVER
-    mutable DoublePrecSolver double_prec_solver;
+    DoublePrecSolver double_prec_solver;
 #endif
 
     Handle< EvenOddPrecConstDetLinearOperatorArray<T,P,Q> > A;
@@ -283,11 +249,10 @@ namespace Chroma
     Real Mass;
     int  N5;
     AnisoParam_t anisoParam;
-    SysSolverCGDWFParams invParam;
-    multi1d<int> lattice_size;
-    multi1d<LatticeColorMatrix> u;
-    multi1d<LatticeColorMatrix> v;
+    SysSolverCGParams invParam;
   };
 
 }
+#endif
+
 #endif
