@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_pab_w.h,v 3.2 2006-04-04 15:29:18 edwards Exp $
+// $Id: lwldslash_array_pab_w.h,v 3.3 2007-03-05 20:03:16 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -122,5 +122,6 @@ namespace Chroma
 
 } // End Namespace Chroma
 
+#undef free
 
 #endif

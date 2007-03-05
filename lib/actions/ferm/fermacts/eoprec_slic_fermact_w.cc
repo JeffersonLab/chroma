@@ -1,13 +1,15 @@
-// $Id: eoprec_slic_fermact_w.cc,v 3.1 2006-10-19 16:01:27 edwards Exp $
+// $Id: eoprec_slic_fermact_w.cc,v 3.2 2007-03-05 20:03:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action
  */
 
 #include "chromabase.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/linop/eoprec_slic_linop_w.h"
 #include "actions/ferm/fermacts/eoprec_slic_fermact_w.h"
 
-#include "actions/ferm/fermacts/fermact_factory_w.h"
+//#include "actions/ferm/fermacts/fermact_factory_w.h"
+
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 #include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
 #include "actions/ferm/fermstates/stout_fermstate_w.h"

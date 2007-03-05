@@ -1,13 +1,15 @@
-// $Id: unprec_clover_fermact_w.cc,v 3.2 2006-09-20 20:27:59 edwards Exp $
+// $Id: unprec_clover_fermact_w.cc,v 3.3 2007-03-05 20:03:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Clover fermion action
  */
 
 #include "chromabase.h"
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+
 #include "actions/ferm/linop/unprec_clover_linop_w.h"
 #include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
 
-#include "actions/ferm/fermacts/fermact_factory_w.h"
+//#include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 namespace Chroma

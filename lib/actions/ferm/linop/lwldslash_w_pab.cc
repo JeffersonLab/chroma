@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 3.4 2007-02-28 21:32:06 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 3.5 2007-03-05 20:03:16 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -152,7 +152,7 @@ namespace Chroma
       // Always decrease the refcount
       PABDslashEnv::refcount--;
       if( PABDslashEnv::refcount == 0 ) { 
-	
+        QDPIO::cout << "Freeing the dslash" << endl;	
 	// Only call free when refcount ==0
 	wfm_vec_end(&wil);
       }

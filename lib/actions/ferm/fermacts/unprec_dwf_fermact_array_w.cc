@@ -1,13 +1,16 @@
-// $Id: unprec_dwf_fermact_array_w.cc,v 3.6 2006-10-11 15:42:26 edwards Exp $
+// $Id: unprec_dwf_fermact_array_w.cc,v 3.7 2007-03-05 20:03:16 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned domain-wall fermion action
  */
 
 #include "chromabase.h"
+
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+
 #include "actions/ferm/fermacts/unprec_dwf_fermact_array_w.h"
 #include "actions/ferm/linop/unprec_dwf_linop_array_w.h"
 
-#include "actions/ferm/fermacts/fermact_factory_w.h"
+// #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
 #include "actions/ferm/qprop/quarkprop4_w.h"

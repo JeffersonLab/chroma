@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: singleton.h,v 3.1 2006-09-15 02:46:47 edwards Exp $
+// $Id: singleton.h,v 3.2 2007-03-05 20:03:16 bjoo Exp $
 /*! @file
  * @brief Singleton support
  */
@@ -12,6 +12,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <new>
+#undef MEMWATCH
 
 namespace Chroma
 {

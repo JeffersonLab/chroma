@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_slic_linop_w.h,v 3.1 2006-10-19 16:01:30 edwards Exp $
+// $Id: eoprec_slic_linop_w.h,v 3.2 2007-03-05 20:03:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -9,13 +9,12 @@
 
 #include "state.h"
 #include "fermbc.h"
+#include "actions/ferm/fermstates/stout_fermstate_w.h"
+#include "actions/ferm/fermstates/simple_fermstate.h"
 #include "eoprec_logdet_linop.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/clover_term_w.h"
-#include "actions/ferm/fermstates/stout_fermstate_w.h"
-#include "actions/ferm/fermstates/simple_fermstate.h"
-
 
 namespace Chroma 
 { 
