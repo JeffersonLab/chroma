@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.79 2007-03-02 20:58:39 bjoo Exp $
+# $Id: Makefile.am,v 3.80 2007-03-05 16:13:55 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -71,7 +71,6 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_polyprec_factory.h \
 	actions/ferm/invert/syssolver_polyprec_aggregate.h \
 	actions/ferm/invert/syssolver_cg_params.h \
-	actions/ferm/invert/syssolver_cgdwf_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
@@ -758,7 +757,6 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
 	actions/ferm/invert/syssolver_cg_params.cc \
-	actions/ferm/invert/syssolver_cgdwf_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
@@ -1247,7 +1245,9 @@ libchroma_a_SOURCES += \
 endif
 
 if BUILD_CG_DWF
-nobase_include_HEADERS += actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
+nobase_include_HEADERS += \
+	actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
+        actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h \
 	actions/ferm/qprop/avp_inverter_interface.h \
 	actions/ferm/qprop/avp_ssef_solver.h \
 	actions/ferm/qprop/avp_ssed_solver.h \

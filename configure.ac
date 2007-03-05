@@ -51,6 +51,12 @@ AC_ARG_ENABLE(cg-dwf,
 	 build_cg_dwf="no"]
 )
 
+AC_ARG_ENABLE(cg-dwf-lowmem,
+	AC_HELP_STRING([--enable-cg-dwf-lowmem=<yes/no>]), 
+	[ cg_dwf_lowmem="yes"],
+	[ cg_dwf_lowmem="no" ]
+)
+
 AC_ARG_WITH(bagel_wilson_dslash,
   AC_HELP_STRING(
     [--with-bagel-wilson-dslash=DIR],
@@ -214,6 +220,13 @@ AM_CONDITIONAL(BUILD_CG_DWF_ALTIVEC,
 	[test "x${cg_dwf_cpu_arch}x" = "xaltivecx" \
 	 -a "x${build_cg_dwf}x"="xyesx" ])
 
+if [ test "x${cg_dwf_lowmem}x" = "xyesx" ];
+then
+	AC_MSG_NOTICE([Configuring CG-DWF in Lower Memory Mode])
+	AC_DEFINE([CHROMA_USE_CG_DWF_LOWMEM],[1], [Switch in Lower Memory File])
+else
+	AC_MSG_NOTICE([Configuring CG-DWF for Higher Memory Mode])
+fi
 
 dnl QCDOC Wilson Dslash stuff
 

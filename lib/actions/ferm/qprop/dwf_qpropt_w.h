@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwf_qpropt_w.h,v 3.9 2006-10-19 17:39:17 edwards Exp $
+// $Id: dwf_qpropt_w.h,v 3.10 2007-03-05 16:13:59 bjoo Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -45,8 +45,14 @@ namespace Chroma {
 // Enable both single and a double prec solver
 #define SINGLE_PREC_SOLVER
 #define DOUBLE_PREC_SOLVER
+
 // Include the qprop file
+#ifdef CHROMA_USE_CG_DWF_LOWMEM
+#include "actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h"
+#else
 #include "actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h"
+#endif
+
 namespace Chroma { 
   typedef Chroma::CGDWFQpropT< AVPSolver::BGLDWFSolverF, AVPSolver::BGLDWFSolverD>  DWFQpropT;
 }

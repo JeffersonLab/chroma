@@ -1,4 +1,4 @@
-// $Id: syssolver_cg_params.cc,v 3.2 2006-10-15 04:17:00 edwards Exp $
+// $Id: syssolver_cg_params.cc,v 3.3 2007-03-05 16:13:58 bjoo Exp $
 /*! \file
  *  \brief Params of CG inverter
  */
@@ -15,17 +15,19 @@ namespace Chroma
 
     read(paramtop, "RsdCG", param.RsdCG);
     read(paramtop, "MaxCG", param.MaxCG);
+    
+    if( paramtop.count("RsdCGRestart") > 0 ) { 
+      read(paramtop, "RsdCGRestart", param.RsdCGRestart);
+    }
+    else {
+      param.RsdCGRestart = param.RsdCG;
+    }
 
-    if (paramtop.count("numRestarts") > 0)
-      read(paramtop, "numRestarts", param.numRestarts);
-    else
-      param.numRestarts = 1;
-
-    if (param.numRestarts <= 0)
-    {
-      QDPIO::cerr << __func__ << ": invalid SysSolverCGParams::numRestarts = " 
-		  << param.numRestarts << endl;
-      QDP_abort(1);
+    if( paramtop.count("MaxCGRestart") > 0 ) { 
+      read(paramtop, "MaxCGRestart", param.MaxCGRestart);
+    }
+    else {
+      param.MaxCGRestart = param.MaxCG;
     }
   }
 
@@ -39,8 +41,8 @@ namespace Chroma
     write(xml, "invType", "CG_INVERTER");
     write(xml, "RsdCG", param.RsdCG);
     write(xml, "MaxCG", param.MaxCG);
-    write(xml, "numRestarts", param.numRestarts);
-
+    write(xml, "RsdCGRestart", param.RsdCGRestart);
+    write(xml, "MaxCGRestart", param.RsdCGRestart);
     pop(xml);
   }
 
@@ -49,7 +51,8 @@ namespace Chroma
   {
     RsdCG = zero;
     MaxCG = 0;
-    numRestarts = 1;
+    RsdCGRestart = RsdCG;
+    MaxCGRestart = MaxCG;
   }
 
   //! Read parameters

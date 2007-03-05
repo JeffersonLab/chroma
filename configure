@@ -824,6 +824,8 @@ Optional Features:
 
   --enable-cg-dwf=<cpuarch> <cpuarch>=sse
 
+  --enable-cg-dwf-lowmem=<yes/no>
+
   --enable-asqtad-cps-inverter
                           Wrap the CPS asqtad inverter
 
@@ -3281,6 +3283,15 @@ else
 
 fi;
 
+# Check whether --enable-cg-dwf-lowmem or --disable-cg-dwf-lowmem was given.
+if test "${enable_cg_dwf_lowmem+set}" = set; then
+  enableval="$enable_cg_dwf_lowmem"
+   cg_dwf_lowmem="yes"
+else
+   cg_dwf_lowmem="no"
+
+fi;
+
 
 # Check whether --with-bagel_wilson_dslash or --without-bagel_wilson_dslash was given.
 if test "${with_bagel_wilson_dslash+set}" = set; then
@@ -3708,6 +3719,19 @@ else
 fi
 
 
+if  test "x${cg_dwf_lowmem}x" = "xyesx" ;
+then
+	{ echo "$as_me:$LINENO: Configuring CG-DWF in Lower Memory Mode" >&5
+echo "$as_me: Configuring CG-DWF in Lower Memory Mode" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_USE_CG_DWF_LOWMEM 1
+_ACEOF
+
+else
+	{ echo "$as_me:$LINENO: Configuring CG-DWF for Higher Memory Mode" >&5
+echo "$as_me: Configuring CG-DWF for Higher Memory Mode" >&6;}
+fi
 
 
 if test "X${bagel_wilson_dslash_enabled}X" = "XyesX";

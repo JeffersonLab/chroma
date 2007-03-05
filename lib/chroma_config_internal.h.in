@@ -18,6 +18,9 @@
 /* Build SSE Dslash Op */
 #undef BUILD_SSE_WILSON_DSLASH
 
+/* Switch in Lower Memory File */
+#undef CHROMA_USE_CG_DWF_LOWMEM
+
 /* Name of package */
 #undef PACKAGE
 
