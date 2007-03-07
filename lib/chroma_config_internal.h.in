@@ -24,6 +24,9 @@
 /* Switch in Lower Memory File */
 #undef CHROMA_USE_CG_DWF_LOWMEM
 
+/* Use QMT Threads library */
+#undef CHROMA_USE_QMT_THREADS
+
 /* Name of package */
 #undef PACKAGE
 

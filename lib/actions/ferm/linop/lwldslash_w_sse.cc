@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 3.1 2007-03-07 00:03:00 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -159,10 +159,14 @@ namespace Chroma
      * cbs to support such flexibility.
      *
      */
+    int source_cb = 1 - cb;
+    int target_cb = cb;
+    int cbsites = QDP::Layout::sitesOnNode()/2;
+
     sse_su3dslash_wilson((SSEREAL *)&(packed_gauge[0]),
 			 (SSEREAL *)&(psi.elem(0).elem(0).elem(0).real()),
 			 (SSEREAL *)&(chi.elem(0).elem(0).elem(0).real()),
-			 (int)isign, (1-cb));
+			 (int)isign, source_cb);
   
 
     getFermBC().modifyF(chi, QDP::rb[cb]);

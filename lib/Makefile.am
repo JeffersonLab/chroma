@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.80 2007-03-05 16:13:55 bjoo Exp $
+# $Id: Makefile.am,v 3.81 2007-03-07 00:02:58 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -713,6 +713,10 @@ endif
 
 if BUILD_CG_DWF
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@CG_DWF_DIR@ -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
+endif
+
+if BUILD_QMT
+AM_CXXFLAGS += @QMT_CXXFLAGS@
 endif
 
 lib_LIBRARIES = libchroma.a

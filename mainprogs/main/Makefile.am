@@ -27,6 +27,12 @@ AM_LDFLAGS  += -L$(BUILDDIR)/other_libs/@CG_DWF_DIR@
 LDADD += -lcg-dwf
 endif
 
+if BUILD_QMT
+AM_CXXFLAGS += @QMT_CXXFLAGS@
+AM_LDFLAGS  += @QMT_LDFLAGS@
+LDADD += @QMT_LIBS@
+endif
+
 #
 # Local Headers
 #

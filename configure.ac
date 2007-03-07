@@ -101,6 +101,15 @@ AC_ARG_WITH(gmp,
     [gmp_enabled="no"]
 )
 
+AC_ARG_WITH(qmt,
+   AC_HELP_STRING(
+    [--with-qmt=<DIR>],
+    [Enable use of QMT Threads library installed in DIR]
+   ),
+   [ qmt_enabled="yes"
+     QMT_HOME=${with_qmt} ],
+   [ qmt_enabled="no" ]
+)
 
 
 if test "X${QDPXX_HOME}X" = "XX" ; then
@@ -386,10 +395,24 @@ else
 	AC_SUBST(GMP_LIBS, "")
 fi
 
-
 AM_CONDITIONAL(BUILD_GMP_REMEZ,
   [test "x${gmp_enabled}x" = "xyesx" ])
 
+dnl QMT Threads stuff
+if test "X${qmt_enabled}X" == "XyesX"; 
+then
+	AC_MSG_NOTICE([Configuring QMT Threading])
+	AC_DEFINE([CHROMA_USE_QMT_THREADS], [1], [ Use QMT Threads library ])
+	AC_SUBST(QMT_CXXFLAGS, "-I${QMT_HOME}/include")
+	AC_SUBST(QMT_LDFLAGS, "-L${QMT_HOME}/lib")
+	AC_SUBST(QMT_LIBS, "-lqmt -lpthread -lm")
+else 
+	AC_SUBST(QMT_CXXFLAGS, "")
+	AC_SUBST(QMT_LDFLAGS, "")
+	AC_SUBST(QMT_LIBS, "")
+
+fi
+AM_CONDITIONAL(BUILD_QMT, [test "x${qmt_enabled}x" = "xyesx" ])
 
 case "${chroma_testcase_runner}" in
 trivial)

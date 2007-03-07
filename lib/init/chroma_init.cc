@@ -3,8 +3,17 @@
  *  \brief Initialization of Chroma
  */
 
+#include "chroma_config.h"
+
+// If we use threads, include the header
+#ifdef CHROMA_USE_QMT_THREADS
+#include <qmt.h>    
+#endif 
+
+
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
+
 
 namespace Chroma 
 {
@@ -170,7 +179,24 @@ namespace Chroma
       
     }
 
-    // Init done
+
+#ifdef CHROMA_USE_QMT_THREADS
+    {
+      // Initialize threads
+      QDPIO::cout << "Initializing threads..." ;
+      int thread_status = qmt_init();
+      if( thread_status == 0 ) { 
+	QDPIO::cout << "Success" << endl;
+	QDPIO::cout << "Created: " << qmt_num_threads() << " threads" << endl;
+	QDPIO::cout << "My tread ID is: " << qmt_thread_id() << endl;
+      }
+      else { 
+	QDPIO::cout << "Failure... qmt_init() returned " << thread_status << endl;
+	
+	QDP_abort(1);
+      }
+    }
+#endif 
   }
 
 
@@ -179,6 +205,13 @@ namespace Chroma
   {
     if (! QDP_isInitialized())
       return;
+
+    
+#ifdef CHROMA_USE_QMT_THREADS
+    // Finalize threads
+    QDPIO::cout << "Finalizing threads" << endl;
+    qmt_finalize();
+#endif 
 
     /*
     if( xmlInputP ) { 

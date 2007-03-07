@@ -1,4 +1,4 @@
-// $Id: t_lwldslash_array.cc,v 3.2 2007-02-06 15:27:38 bjoo Exp $
+// $Id: t_lwldslash_array.cc,v 3.3 2007-03-07 00:03:01 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -66,6 +66,7 @@ int main(int argc, char **argv)
   push(xml,"Unoptimized_test");
 
   int isign, cb, loop, iter=1;
+
   bool first = true;
   for(isign = 1; isign >= -1; isign -= 2) {
     for(cb = 0; cb < 2; ++cb) { 
@@ -197,6 +198,7 @@ int main(int argc, char **argv)
 
   pop(xml);
 
+
   LatticeFermion chi3;
   Double n2;
 
@@ -246,7 +248,7 @@ int main(int argc, char **argv)
     }
   }
 
-	  
+
   // Now do the vector case:
   multi1d<LatticeFermion> chis1(N5);
   multi1d<LatticeFermion> chis2(N5);
