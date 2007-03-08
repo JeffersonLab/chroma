@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: check_regres_runner.pl,v 1.1 2006-06-07 20:51:34 bjoo Exp $
+#  $Id: check_regres_runner.pl,v 1.2 2007-03-08 20:52:36 bjoo Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -62,8 +62,34 @@ for $file (&regresDirs())
     {
 	my($exec_path) =  $h->{"exec_path"} ; 
 	my($execute)   =  $h->{"execute"} ; 
-	my($candidate) =  $h->{"output"} ; 
-	my($outdir)    =  $h->{"output"} ; 
+	my($candidate);
+	my($outdir);
+	my($out_file);
+	my($log_file);
+	if ( $h->{"output"} ne "" && $h->{"log"} ne "" )
+        {
+	    die "Found both an output and a log entry - need only 1\n";
+        }
+
+        if ( $h->{"output"} ne "" )
+        {
+	    $candidate =  $h->{"output"} ; 
+	    $outdir    =  $h->{"output"} ; 
+	    $out_file  =  $candidate;
+	    $log_file  =  "XMLLOG";
+        }
+        elsif ( $h->{"log"} ne "" )
+        {
+	    $candidate =  $h->{"log"} ; 
+	    $outdir    =  $h->{"log"} ; 
+	    $out_file  =  "XMLDAT";
+	    $log_file  =  $candidate;
+        }
+        else
+        {
+	    die "Did not find either an  output or a log entry\n";
+        }
+
 	my($metric)    =  $h->{"metric"} ; 
 	my($control)   =  $h->{"controlfile"} ; 
 	my($input)     =  $h->{"input"} ; 
