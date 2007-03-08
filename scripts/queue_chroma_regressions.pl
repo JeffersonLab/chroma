@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: queue_chroma_regressions.pl,v 1.1 2007-03-08 20:59:25 bjoo Exp $
+#  $Id: queue_chroma_regressions.pl,v 1.2 2007-03-08 21:02:56 bjoo Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -15,7 +15,7 @@
 #   Perhaps, this should be incorporated in the autoconf
 #   tool chain.
 
-die "Usage: queue_chroma_regressions.pl  top_srcdir  top_builddir  queue_command\n" unless scalar(@ARGV) == 4;
+die "Usage: queue_chroma_regressions.pl  top_srcdir  top_builddir  queue_command\n" unless scalar(@ARGV) == 3;
 
 use File::Basename;
 
