@@ -1,9 +1,10 @@
-// $Id: lwldslash_array_pab_w.cc,v 3.6 2007-02-28 21:32:06 bjoo Exp $
+// $Id: lwldslash_array_pab_w.cc,v 3.7 2007-03-08 14:18:07 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
 
 #include "chromabase.h"
+#include "chroma_config.h"
 // Need this for the refcount namespace
 #include "actions/ferm/linop/lwldslash_w_pab.h"
 #include "actions/ferm/linop/lwldslash_array_pab_w.h"
@@ -143,7 +144,10 @@ namespace Chroma
 	}
       }
 
-
+#ifdef CHROMA_USE_SLOPPY_BAGEL_DSLASH
+      wil.BGL = true;
+      wil.SloppyPrecision = true;
+#endif 
 
       wfm_vec_init(&wil);
 

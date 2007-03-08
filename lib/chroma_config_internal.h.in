@@ -27,6 +27,9 @@
 /* Use QMT Threads library */
 #undef CHROMA_USE_QMT_THREADS
 
+/* Enable Sloppy Precision in Bagel Wilson Dslash */
+#undef CHROMA_USE_SLOPPY_BAGEL_DSLASH
+
 /* Name of package */
 #undef PACKAGE
 

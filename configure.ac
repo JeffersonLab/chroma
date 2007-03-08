@@ -72,6 +72,14 @@ AC_ARG_WITH(bagel_wilson_dslash,
      BAGEL_WILSON_DSLASH_HOME="${with_bagel_wilson_dslash}"]
 )
 
+AC_ARG_ENABLE(bagel_wilson_dslash_sloppy,
+	AC_HELP_STRING(
+        [--enable-bagel-wilson-dslash-sloppy], 
+	[Enable Sloppy Precision in BAGEL Dslash -- different internal and external precisions]),
+	[bagel_wilson_dslash_sloppy="yes"],
+	[bagel_wilson_dslash_sloppy="no"]
+)
+
 AC_ARG_ENABLE(asqtad_cps_inverter,
    AC_HELP_STRING(
     [--enable-asqtad-cps-inverter],
@@ -304,7 +312,21 @@ then
     AC_MSG_RESULT(no)
     AC_MSG_ERROR([Cannot compile/link a program with Bagel Wilson Dslash. Use --with-bagel-wilson-dslash=<dir> to select a working version.])
   fi 
+
+  if test "X${bagel_wilson_dslash_sloppy}X" = "XyesX";
+  then 
+    AC_MSG_RESULT([Enabling Sloppy Precision in Bagel Wilson Dslash])
+    AC_DEFINE([CHROMA_USE_SLOPPY_BAGEL_DSLASH], 
+              [1], 
+	      [Enable Sloppy Precision in Bagel Wilson Dslash])
+  fi
+else
+  if test "X${bagel_wilson_dslash_sloppy}X" = "XyesX";
+  then 
+    AC_MSG_WARN([Enabling Sloppy Precision has no effect if not using --with-bagel-wilson-dslash option])
+  fi
 fi
+
 
 AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH, [test "x${bagel_wilson_dslash_enabled}x" = "xyesx" ])
 

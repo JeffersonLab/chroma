@@ -1,9 +1,10 @@
-// $Id: lwldslash_w_pab.cc,v 3.6 2007-03-05 20:09:37 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 3.7 2007-03-08 14:18:07 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
 
 #include "chromabase.h"
+#include "chroma_config.h"
 #include "actions/ferm/linop/lwldslash_w_pab.h"
 
 #include <wfm.h>
@@ -122,7 +123,11 @@ namespace Chroma
 	  wil.local_comm[i] = 0;
 	}
       }
-      
+
+#ifdef CHROMA_USE_SLOPPY_BAGEL_DSLASH
+      wil.BGL = true;
+      wil.SloppyPrecision = true;
+#endif      
      
       // Init the OP
       wfm_vec_init(&wil);
