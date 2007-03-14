@@ -1,0 +1,32 @@
+#! /bin/bash 
+#####################################################
+# Trivial Runner Script 
+# Suitable for running on scalar machines or places
+# where no special invocation is needed for running
+# parallel code
+####################################################
+
+# Gueue script for load leveller
+command=$1 
+shift
+args=$*
+workdir=`pwd`
+test_name=`basename ${workdir}`
+echo Workdir: $workdir
+echo Command: $command
+echo args: $args
+ncore=4
+echo Writing JCS Script
+cat > ${test_name}.jcs << EOF
+# @ job_type = parallel
+# @ executable = /bgl/BlueLight/ppcfloor/bglsys/bin/mpirun
+# @ environment = BGL_APP_L1_SWOA=1
+# @ arguments = -verbose 1 -mode VN -connect TORUS -np ${ncore} -cwd ${workdir} -exe ${command} -args "${args}"
+# @ wall_clock_limit = 20:00
+# @ initialdir = ${workdir} 
+# @ input = /dev/null
+# @ output = ${test_name}.out
+# @ error  = ${test_name}.err
+# @ queue
+EOF
+llsubmit ${test_name}.jcs
