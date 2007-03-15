@@ -20,9 +20,14 @@ namespace Chroma
   };
 
 
+  //! Writes a ForceCalc_t
+  /*! @ingroup molecdyn */
+  void write(XMLWriter& xml_out, const string& path, const ForceCalc_t& param);
+
   //! Helper function for calculating forces
   /*! @ingroup molecdyn */
   ForceCalc_t forceCalc(const multi1d<LatticeColorMatrix>& F);
+
 
 }
 #endif
