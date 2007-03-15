@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.152 2007-03-08 14:18:05 bjoo Exp $
+# $Id: Makefile.in,v 3.153 2007-03-15 04:48:55 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -285,6 +285,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
+	update/molecdyn/monomial/force_calc.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
@@ -725,9 +726,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	unique_id.$(OBJEXT) su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) \
 	mciter.$(OBJEXT) exact_hamiltonian.$(OBJEXT) \
 	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
-	integrator_aggregate.$(OBJEXT) integrator_shared.$(OBJEXT) \
-	lcm_toplevel_integrator.$(OBJEXT) lcm_exp_sdt.$(OBJEXT) \
-	lcm_exp_tdt.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
+	force_calc.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
+	integrator_shared.$(OBJEXT) lcm_toplevel_integrator.$(OBJEXT) \
+	lcm_exp_sdt.$(OBJEXT) lcm_exp_tdt.$(OBJEXT) \
+	lcm_integrator_leaps.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive.$(OBJEXT) \
 	lcm_sts_leapfrog_recursive.$(OBJEXT) \
@@ -1195,6 +1197,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/monomial/genapprox.h \
+	update/molecdyn/monomial/force_calc.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -1860,6 +1863,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/monomial/genapprox.h \
+	update/molecdyn/monomial/force_calc.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -2340,6 +2344,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
+	update/molecdyn/monomial/force_calc.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
@@ -2869,6 +2874,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermbcs_reader_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fixed_random_ferm_monomial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/force_calc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzglue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzwilp.Po@am__quote@
@@ -6468,6 +6474,20 @@ genapprox.obj: update/molecdyn/monomial/genapprox.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/genapprox.cc' object='genapprox.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o genapprox.obj `if test -f 'update/molecdyn/monomial/genapprox.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/genapprox.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/genapprox.cc'; fi`
+
+force_calc.o: update/molecdyn/monomial/force_calc.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT force_calc.o -MD -MP -MF "$(DEPDIR)/force_calc.Tpo" -c -o force_calc.o `test -f 'update/molecdyn/monomial/force_calc.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/force_calc.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/force_calc.Tpo" "$(DEPDIR)/force_calc.Po"; else rm -f "$(DEPDIR)/force_calc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/force_calc.cc' object='force_calc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o force_calc.o `test -f 'update/molecdyn/monomial/force_calc.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/force_calc.cc
+
+force_calc.obj: update/molecdyn/monomial/force_calc.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT force_calc.obj -MD -MP -MF "$(DEPDIR)/force_calc.Tpo" -c -o force_calc.obj `if test -f 'update/molecdyn/monomial/force_calc.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/force_calc.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/force_calc.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/force_calc.Tpo" "$(DEPDIR)/force_calc.Po"; else rm -f "$(DEPDIR)/force_calc.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/force_calc.cc' object='force_calc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o force_calc.obj `if test -f 'update/molecdyn/monomial/force_calc.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/force_calc.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/force_calc.cc'; fi`
 
 integrator_aggregate.o: update/molecdyn/integrator/integrator_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT integrator_aggregate.o -MD -MP -MF "$(DEPDIR)/integrator_aggregate.Tpo" -c -o integrator_aggregate.o `test -f 'update/molecdyn/integrator/integrator_aggregate.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/integrator_aggregate.cc; \
