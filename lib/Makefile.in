@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.154 2007-03-15 15:38:11 edwards Exp $
+# $Id: Makefile.in,v 3.155 2007-03-16 20:08:37 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -285,7 +285,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
-	update/molecdyn/monomial/force_calc.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
@@ -342,6 +341,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc \
+	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_w.cc \
@@ -415,6 +415,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc \
+	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
@@ -726,10 +727,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	unique_id.$(OBJEXT) su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) \
 	mciter.$(OBJEXT) exact_hamiltonian.$(OBJEXT) \
 	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
-	force_calc.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
-	integrator_shared.$(OBJEXT) lcm_toplevel_integrator.$(OBJEXT) \
-	lcm_exp_sdt.$(OBJEXT) lcm_exp_tdt.$(OBJEXT) \
-	lcm_integrator_leaps.$(OBJEXT) \
+	integrator_aggregate.$(OBJEXT) integrator_shared.$(OBJEXT) \
+	lcm_toplevel_integrator.$(OBJEXT) lcm_exp_sdt.$(OBJEXT) \
+	lcm_exp_tdt.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive.$(OBJEXT) \
 	lcm_sts_leapfrog_recursive.$(OBJEXT) \
@@ -776,6 +776,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	iluprec_s_cprec_t_wilson_fermact_w.$(OBJEXT) \
 	iluprec_s_cprec_t_clover_fermact_w.$(OBJEXT) \
 	eo3dprec_s_cprec_t_wilson_fermact_w.$(OBJEXT) \
+	eo3dprec_s_cprec_t_clover_fermact_w.$(OBJEXT) \
 	unprec_zolo_nef_fermact_array_w.$(OBJEXT) \
 	poly_cheb_fermact_w.$(OBJEXT) fermbcs_aggregate_w.$(OBJEXT) \
 	fermbcs_reader_w.$(OBJEXT) simple_fermbc_w.$(OBJEXT) \
@@ -830,6 +831,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	iluprec_s_cprec_t_wilson_linop_w.$(OBJEXT) \
 	iluprec_s_cprec_t_clover_linop_w.$(OBJEXT) \
 	eo3dprec_s_cprec_t_wilson_linop_w.$(OBJEXT) \
+	eo3dprec_s_cprec_t_clover_linop_w.$(OBJEXT) \
 	dwf_fermact_qprop_array_w.$(OBJEXT) dwf_quarkprop4_w.$(OBJEXT) \
 	nef_quarkprop4_w.$(OBJEXT) quarkprop4_multi_w.$(OBJEXT) \
 	quarkprop4_w.$(OBJEXT) readszinferm_w.$(OBJEXT) \
@@ -1197,7 +1199,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/monomial/genapprox.h \
-	update/molecdyn/monomial/force_calc.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -1248,6 +1249,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h \
+	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 	actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.h \
@@ -1863,7 +1865,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/monomial/genapprox.h \
-	update/molecdyn/monomial/force_calc.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -1914,6 +1915,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h \
+	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h \
 	actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.h \
@@ -2344,7 +2346,6 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
-	update/molecdyn/monomial/force_calc.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
@@ -2400,6 +2401,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc \
+	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_w.cc \
@@ -2474,6 +2476,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc \
+	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
@@ -2811,6 +2814,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_simplebctype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_stochsrc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_wavetype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eo3dprec_s_cprec_t_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eo3dprec_s_cprec_t_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_clover_extfield_fermact_w.Po@am__quote@
@@ -2874,7 +2879,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermbcs_reader_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fixed_random_ferm_monomial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/force_calc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzglue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzwilp.Po@am__quote@
@@ -6475,20 +6479,6 @@ genapprox.obj: update/molecdyn/monomial/genapprox.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o genapprox.obj `if test -f 'update/molecdyn/monomial/genapprox.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/genapprox.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/genapprox.cc'; fi`
 
-force_calc.o: update/molecdyn/monomial/force_calc.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT force_calc.o -MD -MP -MF "$(DEPDIR)/force_calc.Tpo" -c -o force_calc.o `test -f 'update/molecdyn/monomial/force_calc.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/force_calc.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/force_calc.Tpo" "$(DEPDIR)/force_calc.Po"; else rm -f "$(DEPDIR)/force_calc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/force_calc.cc' object='force_calc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o force_calc.o `test -f 'update/molecdyn/monomial/force_calc.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/force_calc.cc
-
-force_calc.obj: update/molecdyn/monomial/force_calc.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT force_calc.obj -MD -MP -MF "$(DEPDIR)/force_calc.Tpo" -c -o force_calc.obj `if test -f 'update/molecdyn/monomial/force_calc.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/force_calc.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/force_calc.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/force_calc.Tpo" "$(DEPDIR)/force_calc.Po"; else rm -f "$(DEPDIR)/force_calc.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/force_calc.cc' object='force_calc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o force_calc.obj `if test -f 'update/molecdyn/monomial/force_calc.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/force_calc.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/force_calc.cc'; fi`
-
 integrator_aggregate.o: update/molecdyn/integrator/integrator_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT integrator_aggregate.o -MD -MP -MF "$(DEPDIR)/integrator_aggregate.Tpo" -c -o integrator_aggregate.o `test -f 'update/molecdyn/integrator/integrator_aggregate.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/integrator_aggregate.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/integrator_aggregate.Tpo" "$(DEPDIR)/integrator_aggregate.Po"; else rm -f "$(DEPDIR)/integrator_aggregate.Tpo"; exit 1; fi
@@ -7272,6 +7262,20 @@ eo3dprec_s_cprec_t_wilson_fermact_w.obj: actions/ferm/fermacts/eo3dprec_s_cprec_
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc' object='eo3dprec_s_cprec_t_wilson_fermact_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eo3dprec_s_cprec_t_wilson_fermact_w.obj `if test -f 'actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc'; fi`
+
+eo3dprec_s_cprec_t_clover_fermact_w.o: actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eo3dprec_s_cprec_t_clover_fermact_w.o -MD -MP -MF "$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Tpo" -c -o eo3dprec_s_cprec_t_clover_fermact_w.o `test -f 'actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Tpo" "$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Po"; else rm -f "$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc' object='eo3dprec_s_cprec_t_clover_fermact_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eo3dprec_s_cprec_t_clover_fermact_w.o `test -f 'actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc
+
+eo3dprec_s_cprec_t_clover_fermact_w.obj: actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eo3dprec_s_cprec_t_clover_fermact_w.obj -MD -MP -MF "$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Tpo" -c -o eo3dprec_s_cprec_t_clover_fermact_w.obj `if test -f 'actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Tpo" "$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Po"; else rm -f "$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc' object='eo3dprec_s_cprec_t_clover_fermact_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eo3dprec_s_cprec_t_clover_fermact_w.obj `if test -f 'actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc'; fi`
 
 unprec_zolo_nef_fermact_array_w.o: actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_zolo_nef_fermact_array_w.o -MD -MP -MF "$(DEPDIR)/unprec_zolo_nef_fermact_array_w.Tpo" -c -o unprec_zolo_nef_fermact_array_w.o `test -f 'actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc; \
@@ -8294,6 +8298,20 @@ eo3dprec_s_cprec_t_wilson_linop_w.obj: actions/ferm/linop/eo3dprec_s_cprec_t_wil
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc' object='eo3dprec_s_cprec_t_wilson_linop_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eo3dprec_s_cprec_t_wilson_linop_w.obj `if test -f 'actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc'; fi`
+
+eo3dprec_s_cprec_t_clover_linop_w.o: actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eo3dprec_s_cprec_t_clover_linop_w.o -MD -MP -MF "$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Tpo" -c -o eo3dprec_s_cprec_t_clover_linop_w.o `test -f 'actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Tpo" "$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Po"; else rm -f "$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc' object='eo3dprec_s_cprec_t_clover_linop_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eo3dprec_s_cprec_t_clover_linop_w.o `test -f 'actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc
+
+eo3dprec_s_cprec_t_clover_linop_w.obj: actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eo3dprec_s_cprec_t_clover_linop_w.obj -MD -MP -MF "$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Tpo" -c -o eo3dprec_s_cprec_t_clover_linop_w.obj `if test -f 'actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Tpo" "$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Po"; else rm -f "$(DEPDIR)/eo3dprec_s_cprec_t_clover_linop_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc' object='eo3dprec_s_cprec_t_clover_linop_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eo3dprec_s_cprec_t_clover_linop_w.obj `if test -f 'actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc'; fi`
 
 dwf_fermact_qprop_array_w.o: actions/ferm/qprop/dwf_fermact_qprop_array_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dwf_fermact_qprop_array_w.o -MD -MP -MF "$(DEPDIR)/dwf_fermact_qprop_array_w.Tpo" -c -o dwf_fermact_qprop_array_w.o `test -f 'actions/ferm/qprop/dwf_fermact_qprop_array_w.cc' || echo '$(srcdir)/'`actions/ferm/qprop/dwf_fermact_qprop_array_w.cc; \
@@ -11405,6 +11423,7 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_Linop_w.h \
+	actions/ferm/linop/eo3dprec_s_cprec_t_clover_Linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
