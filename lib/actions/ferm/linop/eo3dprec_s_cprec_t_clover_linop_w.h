@@ -168,7 +168,7 @@ namespace Chroma
       enum PlusMinus opp_sign = (isign == PLUS ? MINUS : PLUS );
 
       T tmp1;
-      chi=zero;
+      chi[rb3[0]]=zero;
       evenEvenLinOp(tmp1, psi, opp_sign);
       Real RsdCG=Real(1.0e-8);
       int MaxCG=200;
