@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 3.3 2007-02-22 21:11:46 bjoo Exp $
+// $Id: clover_term_base_w.h,v 3.4 2007-03-16 18:25:26 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -26,6 +26,9 @@ namespace Chroma
 
     //! Subset is all here
     const Subset& subset() const {return all;}
+
+
+    virtual void applySite(LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int site) const = 0;
 
     //! Invert
     /*!

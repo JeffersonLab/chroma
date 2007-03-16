@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.3 2006-07-20 20:06:31 edwards Exp $
+// $Id: clover_term_qdp_w.h,v 3.4 2007-03-16 18:25:26 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -84,6 +84,9 @@ namespace Chroma
      */
     void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 
+
+    void applySite(LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int site) const;
+
     //! Calculates Tr_D ( Gamma_mat L )
     void triacntr(LatticeColorMatrix& B, int mat, int cb) const;
 
@@ -116,6 +119,7 @@ namespace Chroma
     multi1d<bool> choles_done;   // Keep note of whether the decomposition has been done
                                  // on a particular checkerboard. 
     multi1d<PrimitiveClovTriang>  tri;
+    
   };
 
 
