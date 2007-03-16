@@ -1,4 +1,4 @@
-// $Id: t_temp_prec.cc,v 3.6 2007-02-27 20:28:35 bjoo Exp $
+// $Id: t_temp_prec.cc,v 3.7 2007-03-16 18:23:57 bjoo Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -12,6 +12,7 @@
 using namespace Chroma;
 
 #include "actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h"
+#include "actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.h"
 //! To insure linking of code, place the registered code flags here
 /*! This is the bit of code that dictates what fermacts are in use */
 bool linkage_hack()
@@ -622,6 +623,26 @@ int main(int argc, char **argv)
   gaussian(chi);
   D_w(psi1, chi, MINUS);
   D_schur_tprec.unprecLinOp(psi2,chi,MINUS);
+  for(int cb=0; cb < 2; cb++) { 
+    diff[rb3[cb]] = psi2 - psi1;
+    QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+  }
+
+
+
+  // -----------------------------------------------------------------
+  EO3DPrecSCprecTCloverLinOp D_schur_clov_tprec(fs,p);
+  gaussian(chi);
+  D_clov(psi1, chi, PLUS);
+  D_schur_clov_tprec.unprecLinOp(psi2,chi,PLUS);
+  for(int cb=0; cb < 2; cb++) { 
+    diff[rb3[cb]] = psi2 - psi1;
+    QDPIO::cout << "cb="<<cb<<" D+ = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
+  }
+
+  gaussian(chi);
+  D_clov(psi1, chi, MINUS);
+  D_schur_clov_tprec.unprecLinOp(psi2,chi,MINUS);
   for(int cb=0; cb < 2; cb++) { 
     diff[rb3[cb]] = psi2 - psi1;
     QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
