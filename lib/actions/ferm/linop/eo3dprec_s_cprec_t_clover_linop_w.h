@@ -113,8 +113,8 @@ namespace Chroma
     inline
     void diagLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3) const { 
       // This is now  1 + C_L (A-fact) C_R on even even
-      T tmp1;
-      T tmp2;
+      T tmp1 = zero;
+      T tmp2 = zero; 
 
       switch(isign) { 
       case PLUS: 
@@ -126,7 +126,7 @@ namespace Chroma
 	    int site=tab[j];
 	    APlusFact.applySite(tmp2, tmp1, PLUS, site);
 	  }
-	  tmp2 -= fact * tmp1;
+	  tmp2[rb3[cb3]] -= fact * tmp1;
 
 	  cLeftLinOp(tmp1, tmp2, PLUS, cb3);
 
@@ -142,7 +142,7 @@ namespace Chroma
 	    APlusFact.applySite(tmp2, tmp1, MINUS, site);
 	  }
 
-	  tmp2 -= fact * tmp1;
+	  tmp2[rb3[cb3]] -= fact * tmp1;
 	  cRightLinOp(tmp1, tmp2, MINUS, cb3);
 	  chi[rb3[cb3]] = psi + tmp1;
 	}
@@ -168,9 +168,10 @@ namespace Chroma
       enum PlusMinus opp_sign = (isign == PLUS ? MINUS : PLUS );
 
       T tmp1;
+      chi=zero;
       evenEvenLinOp(tmp1, psi, opp_sign);
       Real RsdCG=Real(1.0e-8);
-      int MaxCG=1000;
+      int MaxCG=200;
       InvCG2( eeLin, tmp1, chi, RsdCG, MaxCG);
 
     }
