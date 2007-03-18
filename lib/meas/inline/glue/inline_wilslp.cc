@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.9 2006-09-21 19:42:07 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.10 2007-03-18 21:59:15 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -7,6 +7,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/wilslp.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/inline/make_xml_file.h"
 
 #include "actions/gauge/gaugestates/gauge_createstate_factory.h"
 #include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
@@ -127,6 +128,12 @@ namespace Chroma
 
       // Ids
       read(paramtop, "NamedObject", named_obj);
+
+      // Possible alternate XML file pattern
+      if (paramtop.count("xml_file") != 0) 
+      {
+	read(paramtop, "xml_file", xml_file);
+      }
     }
     catch(const std::string& e) 
     {
@@ -136,9 +143,35 @@ namespace Chroma
   }
 
 
+  // Function call
   void 
   InlineWilsonLoop::operator()(unsigned long update_no,
 			       XMLWriter& xml_out) 
+  {
+    // If xml file not empty, then use alternate
+    if (params.xml_file != "")
+    {
+      string xml_file = makeXMLFileName(params.xml_file, update_no);
+
+      push(xml_out, "WilsonLoop");
+      write(xml_out, "update_no", update_no);
+      write(xml_out, "xml_file", xml_file);
+      pop(xml_out);
+
+      XMLFileWriter xml(xml_file);
+      func(update_no, xml);
+    }
+    else
+    {
+      func(update_no, xml_out);
+    }
+  }
+
+
+  // Real work done here
+  void 
+  InlineWilsonLoop::func(unsigned long update_no,
+			 XMLWriter& xml_out) 
   {
     START_CODE();
 

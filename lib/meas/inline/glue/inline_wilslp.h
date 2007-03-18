@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_wilslp.h,v 3.6 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_wilslp.h,v 3.7 2007-03-18 21:59:15 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -44,6 +44,8 @@ namespace Chroma
     {
       std::string   gauge_id;
     } named_obj;
+
+    std::string xml_file;  // Alternate XML file pattern
   };
 
 
@@ -63,6 +65,11 @@ namespace Chroma
     //! Do the measurement
     void operator()(const unsigned long update_no,
 		    XMLWriter& xml_out); 
+
+  protected:
+    //! Do the measurement
+    void func(const unsigned long update_no,
+	      XMLWriter& xml_out); 
 
   private:
     InlineWilsonLoopParams params;
