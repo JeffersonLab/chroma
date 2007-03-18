@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_propagator_w.h,v 3.3 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_propagator_w.h,v 3.4 2007-03-18 21:58:10 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -45,7 +45,7 @@ namespace Chroma
     std::string xml_file;  // Alternate XML file pattern
   };
 
-  //! Inline measurement of Wilson loops
+  //! Inline propagator calculation
   /*! \ingroup inlinehadron */
   class InlinePropagator : public AbsInlineMeasurement 
   {
