@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 3.2 2007-02-22 21:11:48 bjoo Exp $
+// $Id: wilson_gaugeact.h,v 3.3 2007-03-20 13:44:54 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
@@ -26,7 +26,7 @@ namespace Chroma
   struct WilsonGaugeActParams 
   {
     // Base Constructor
-    WilsonGaugeActParams();
+    WilsonGaugeActParams() {} 
     
     // Read params from some root path
     WilsonGaugeActParams(XMLReader& xml_in, const std::string& path);
