@@ -1,26 +1,26 @@
-// $Id: wilson_gaugeact.cc,v 3.5 2007-03-22 19:06:26 bjoo Exp $
+// $Id: temporal_wilson_gaugeact.cc,v 3.1 2007-03-22 19:06:26 bjoo Exp $
 /*! \file
  *  \brief Wilson gauge action
  */
 
 #include "chromabase.h"
-#include "actions/gauge/gaugeacts/wilson_gaugeact.h"
+#include "actions/gauge/gaugeacts/temporal_wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
 #include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 
 namespace Chroma
 {
  
-  namespace WilsonGaugeActEnv 
+  namespace TemporalWilsonGaugeActEnv 
   { 
     GaugeAction< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeAct(XMLReader& xml, 
 											    const std::string& path) 
     {
-      return new WilsonGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
-				WilsonGaugeActParams(xml, path));
+      return new TemporalWilsonGaugeAct(CreateGaugeStateEnv::reader(xml, path), 
+					WilsonGaugeActParams(xml, path));
     }
 
-    const std::string name = "WILSON_GAUGEACT";
+    const std::string name = "TEMPORAL_WILSON_GAUGEACT";
 
     //! Local registration flag
     static bool registered = false;
@@ -39,9 +39,10 @@ namespace Chroma
   }
 
 
+
   // Private initializer
   void
-  WilsonGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
+  TemporalWilsonGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
   {
     START_CODE();
 

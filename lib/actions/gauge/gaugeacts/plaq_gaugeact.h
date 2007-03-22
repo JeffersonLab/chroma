@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 3.4 2007-02-22 21:11:48 bjoo Exp $
+// $Id: plaq_gaugeact.h,v 3.5 2007-03-22 19:06:26 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -95,15 +95,43 @@ namespace Chroma
 		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const;
 
+    //! Compute staple
+    void stapleSpatial(LatticeColorMatrix& result,
+		const Handle< GaugeState<P,Q> >& state,
+		int mu, int cb, int t_dir) const;
+
+    //! Compute staple
+    void stapleTemporal(LatticeColorMatrix& result,
+		const Handle< GaugeState<P,Q> >& state,
+		int mu, int cb, int t_dir) const;
+
     //! Compute dS/dU
     void deriv(multi1d<LatticeColorMatrix>& result,
 	       const Handle< GaugeState<P,Q> >& state) const;
+
+    //! compute spatial dS/dU given a time direction
+    void derivSpatial(multi1d<LatticeColorMatrix>& result,
+		      const Handle< GaugeState<P,Q> >& state,
+		      int t_dir) const;
+
+    //! compute spatial dS/dU given a time direction
+    void derivTemporal(multi1d<LatticeColorMatrix>& result,
+		       const Handle< GaugeState<P,Q> >& state,
+		       int t_dir) const;
+
 
     //! Produce a gauge create state object
     const CreateGaugeState<P,Q>& getCreateState() const {return *cgs;}
 
     //! Compute the actions
     Double S(const Handle< GaugeState<P,Q> >& state) const;
+
+    //! Compute the spatial part of the action given a time direction
+    Double spatialS(const Handle< GaugeState<P,Q> >& state, int t_dir) const;
+
+    //! Compute the temporal part of the action given a time direction
+    Double temporalS(const Handle< GaugeState<P,Q> >& state, int t_dir) const;
+
 
     //! Destructor is automatic
     ~PlaqGaugeAct() {}

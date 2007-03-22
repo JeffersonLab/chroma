@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.5 2006-09-20 20:28:00 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 3.6 2007-03-22 19:06:26 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -138,26 +138,23 @@ namespace Chroma
     // Supposedly it works.
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
-				 
+    
     int t_dir   = tDir();
     bool AnisoP = anisoP();
     Double xi02 = anisoFactor() * anisoFactor();
-
+    
     u_mu_staple = zero;
-    for(int nu=0; nu<Nd; nu++) 
-    {
+    for(int nu=0; nu<Nd; nu++) {
       if( nu == mu ) continue;
-
+      
       Real xi02_tmp;
-      if( AnisoP && (mu == t_dir || nu == t_dir) )
-      {
+      if( AnisoP && (mu == t_dir || nu == t_dir) ) {
 	xi02_tmp = xi02;
       }
-      else
-      {
+      else {
 	xi02_tmp = 1.0;
       }
-
+      
       // anisotropic lattice, time-like staple
       // +forward staple
       u_mu_staple[rb[cb]]+=
@@ -170,6 +167,125 @@ namespace Chroma
 	shift(adj(u[mu]),BACKWARD,nu)*
 	shift(u[nu],BACKWARD,nu)*
 	xi02_tmp;
+    }
+    
+    END_CODE();
+  }
+
+  //! Compute staple
+  /*!
+   * \param u_mu_staple   result      ( Write )
+   * \param state         gauge field ( Read )
+   * \param mu            direction for staple ( Read )
+   * \param cb            subset on which to compute ( Read )
+   */
+  void
+  PlaqGaugeAct::stapleSpatial(LatticeColorMatrix& u_mu_staple,
+			      const Handle< GaugeState<P,Q> >& state,
+			      int mu, int cb, int t_dir) const
+  {
+    START_CODE();
+
+
+    u_mu_staple = zero;
+    if( mu == t_dir ) return; // Short circuit. 
+
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
+
+
+    int t_dir   = tDir();
+    bool AnisoP = anisoP();
+    Double xi02 = anisoFactor() * anisoFactor();
+    
+    
+    for(int nu=0; nu<Nd; nu++) {
+      
+      if( (nu != mu)&&(nu != t_dir) ) {  // nu is spatial
+
+	Real xi02_tmp;
+	if( AnisoP && (mu == t_dir || nu == t_dir) ) {
+	  xi02_tmp = xi02;
+	}
+	else {
+	  xi02_tmp = 1.0;
+	}
+	
+	// anisotropic lattice, time-like staple
+	// +forward staple
+	u_mu_staple[rb[cb]]+=
+	  shift(u[nu],FORWARD,mu)*
+	  shift(adj(u[mu]),FORWARD,nu)*adj(u[nu])*
+	  xi02_tmp;
+	// +backward staple
+	u_mu_staple[rb[cb]]+=
+	  shift(shift(adj(u[nu]),FORWARD,mu),BACKWARD,nu)*
+	  shift(adj(u[mu]),BACKWARD,nu)*
+	  shift(u[nu],BACKWARD,nu)*
+	  xi02_tmp;
+      }
+    }
+
+    END_CODE();
+  }
+
+
+  //! Compute staple
+  /*!
+   * \param u_mu_staple   result      ( Write )
+   * \param state         gauge field ( Read )
+   * \param mu            direction for staple ( Read )
+   * \param cb            subset on which to compute ( Read )
+   */
+  void
+  PlaqGaugeAct::stapleTemporal(LatticeColorMatrix& u_mu_staple,
+			      const Handle< GaugeState<P,Q> >& state,
+			      int mu, int cb, int t_dir) const
+  {
+    START_CODE();
+
+    // This bit of code was taken from  chroma/lib/update/heatbath/u_staple.cc
+    // Supposedly it works.
+
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    u_mu_staple = zero;
+
+
+    int t_dir   = tDir();
+    bool AnisoP = anisoP();
+    Double xi02 = anisoFactor() * anisoFactor();
+
+    
+    for(int nu=0; nu<Nd; nu++) {
+      bool doit_mu_is_time;
+      bool doit_nu_is_time;
+
+      doit_mu_is_time = ( mu == t_dir ) && (nu != t_dir); // true for ts plaquettes
+      doit_nu_is_time = ( nu == t_dir ) && (mu != t_dir); // true for st plaquettes
+
+      if( doit_mu_is_time || doit_nu_is_time ) {
+
+	Real xi02_tmp;
+	if( AnisoP && (mu == t_dir || nu == t_dir) ) {
+	  xi02_tmp = xi02;
+	}
+	else {
+	  xi02_tmp = 1.0;
+	}
+      
+	// anisotropic lattice, time-like staple
+	// +forward staple
+	u_mu_staple[rb[cb]]+=
+	  shift(u[nu],FORWARD,mu)*
+	  shift(adj(u[mu]),FORWARD,nu)*adj(u[nu])*
+	  xi02_tmp;
+	// +backward staple
+	u_mu_staple[rb[cb]]+=
+	  shift(shift(adj(u[nu]),FORWARD,mu),BACKWARD,nu)*
+	  shift(adj(u[mu]),BACKWARD,nu)*
+	  shift(u[nu],BACKWARD,nu)*
+	  xi02_tmp;
+      }
     }
 
     END_CODE();
@@ -271,6 +387,113 @@ namespace Chroma
     END_CODE();
   }
 
+
+  //! compute spatial dS/dU given a time direction
+  void 
+  PlaqGaugeAct::derivSpatial(multi1d<LatticeColorMatrix>& result,
+			     const Handle< GaugeState<P,Q> >& state,
+			     int t_dir) const
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+
+    LatticeColorMatrix tmp_0;
+    LatticeColorMatrix tmp_1;
+    LatticeColorMatrix tmp_2;
+
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
+    ds_u = zero;
+
+    for(int mu = 0; mu < Nd; mu++) {
+      for(int nu=mu+1; nu < Nd; nu++) {
+
+	// Pick out spatial plaquettes only
+	if( (mu != t_dir) && (nu != t_dir) ) {
+
+	  for(int cb=0; cb < 2; cb++) { 
+	    tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
+	    tmp_0[rb[cb]] *= coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
+	    tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
+	    tmp_2[rb[cb]] = u[nu]*tmp_1;
+	    ds_u[nu][rb[cb]] += tmp_2;
+	    ds_u[mu][rb[cb]] += adj(tmp_2);
+	    ds_u[mu][rb[1-cb]] += shift(tmp_1, BACKWARD, nu)*shift(u[nu], BACKWARD, nu);
+	    tmp_1[rb[cb]] = adj(u[nu])*u[mu];
+	    ds_u[nu][rb[1-cb]] += shift(adj(tmp_0),BACKWARD,mu)*shift(tmp_1, BACKWARD, mu);
+	  }
+	}
+      }
+      
+      // It is 1/(4Nc) to account for normalisation relevant to fermions
+      // in the taproj, which is a factor of 2 different from the 
+      // one used here.
+      ds_u[mu] *= Real(-1)/(Real(2*Nc));
+    }
+
+
+    // Zero the force on any fixed boundaries
+    getGaugeBC().zero(ds_u);
+
+    END_CODE();
+
+  }
+  
+  //! compute spatial dS/dU given a time direction
+  void 
+  PlaqGaugeAct::derivTemporal(multi1d<LatticeColorMatrix>& result,
+			      const Handle< GaugeState<P,Q> >& state,
+			      int t_dir) const
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+
+    LatticeColorMatrix tmp_0;
+    LatticeColorMatrix tmp_1;
+    LatticeColorMatrix tmp_2;
+
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
+    ds_u = zero;
+
+    for(int mu = 0; mu < Nd; mu++) {
+      for(int nu=mu+1; nu < Nd; nu++) {
+
+	// Pick out temporal plaquettes only
+	if( (mu == t_dir) || (nu == t_dir) ) {
+
+	  for(int cb=0; cb < 2; cb++) { 
+	    tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
+	    tmp_0[rb[cb]] *= coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
+	    tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
+	    tmp_2[rb[cb]] = u[nu]*tmp_1;
+	    ds_u[nu][rb[cb]] += tmp_2;
+	    ds_u[mu][rb[cb]] += adj(tmp_2);
+	    ds_u[mu][rb[1-cb]] += shift(tmp_1, BACKWARD, nu)*shift(u[nu], BACKWARD, nu);
+	    tmp_1[rb[cb]] = adj(u[nu])*u[mu];
+	    ds_u[nu][rb[1-cb]] += shift(adj(tmp_0),BACKWARD,mu)*shift(tmp_1, BACKWARD, mu);
+	  }
+	}
+      }
+      
+      // It is 1/(4Nc) to account for normalisation relevant to fermions
+      // in the taproj, which is a factor of 2 different from the 
+      // one used here.
+      ds_u[mu] *= Real(-1)/(Real(2*Nc));
+    }
+
+
+    // Zero the force on any fixed boundaries
+    getGaugeBC().zero(ds_u);
+
+    END_CODE();
+
+
+  }
+
+
   // Get the gauge action
   //
   // S = -(coeff/(Nc) Sum Re Tr Plaq
@@ -318,5 +541,79 @@ namespace Chroma
     return S_pg;
   } 
 
+  //! Compute the spatial part of the action given a time direction
+  Double PlaqGaugeAct::spatialS(const Handle< GaugeState<P,Q> >& state, int t_dir) const
+  {
+    START_CODE();
+
+    Double S_pg = zero;
+
+    // Handle< const GaugeState<P,Q> > u_bc(createState(u));
+    // Apply boundaries
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
+    // Compute the average plaquettes
+    for(int mu=1; mu < Nd; ++mu)
+    {
+      for(int nu=0; nu < mu; ++nu)
+      {
+	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
+	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
+	/* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
+	if( (nu != t_dir) && (mu != t_dir) ) {
+	  Double tmp = 
+	    sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
+	  
+	  S_pg += tmp * Double(coeffs[mu][nu]);
+	}
+      }
+    }
+
+    // Normalize
+    S_pg *= Double(-1)/Double(Nc);
+    
+    END_CODE();
+
+    return S_pg;
+
+  }
+
+    //! Compute the temporal part of the action given a time direction
+  Double PlaqGaugeAct::temporalS(const Handle< GaugeState<P,Q> >& state, int t_dir) const
+  {
+    START_CODE();
+
+    Double S_pg = zero;
+
+    // Handle< const GaugeState<P,Q> > u_bc(createState(u));
+    // Apply boundaries
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
+    // Compute the average plaquettes
+    for(int mu=1; mu < Nd; ++mu)
+    {
+      for(int nu=0; nu < mu; ++nu)
+      {
+	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
+	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
+	/* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
+	if( (nu == t_dir) || (mu == t_dir) ) {
+	  Double tmp = 
+	    sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
+	  
+	  S_pg += tmp * Double(coeffs[mu][nu]);
+	}
+      }
+    }
+
+    // Normalize
+    S_pg *= Double(-1)/Double(Nc);
+    
+    END_CODE();
+
+    return S_pg;
+
+  }
+  
 }
 

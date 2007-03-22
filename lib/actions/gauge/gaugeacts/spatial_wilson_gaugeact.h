@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: wilson_gaugeact.h,v 3.4 2007-03-22 19:06:26 bjoo Exp $
+// $Id: spatial_wilson_gaugeact.h,v 3.1 2007-03-22 19:06:26 bjoo Exp $
 /*! \file
- *  \brief Wilson gauge action
+ *  \brief Spatial Wilson gauge action
  */
 
-#ifndef __wilson_gaugeact_h__
-#define __wilson_gaugeact_h__
+#ifndef __spatial_wilson_gaugeact_h__
+#define __spatial_wilson_gaugeact_h__
 
 #include "gaugeact.h"
 #include "gaugebc.h"
@@ -16,11 +16,13 @@ namespace Chroma
 {
 
   /*! @ingroup gaugeacts */
-  namespace WilsonGaugeActEnv 
+  namespace SpatialWilsonGaugeActEnv 
   { 
     extern const string name;
     bool registerAll();
   }
+
+    
 
   //! Wilson gauge action
   /*! \ingroup gaugeacts
@@ -28,22 +30,22 @@ namespace Chroma
    * The standard Wilson gauge action
    */
 
-  class WilsonGaugeAct : public LinearGaugeAction
+  class SpatialWilsonGaugeAct : public LinearGaugeAction
   {
   public:
     //! General CreateGaugeState<P,Q>
-    WilsonGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+    SpatialWilsonGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		   const Real& beta)
       {param.beta = beta; init(cgs_);}
 
     //! General CreateGaugeState<P,Q>
-    WilsonGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+    SpatialWilsonGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		   const Real& beta,
 		   const AnisoParam_t& aniso)
       {param.beta = beta; param.aniso = aniso; init(cgs_);}
 
     //! Read beta from a param struct
-    WilsonGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+    SpatialWilsonGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 		   const WilsonGaugeActParams& p) :
       param(p) {init(cgs_);}
 
@@ -66,24 +68,24 @@ namespace Chroma
 		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const
     {
-      plaq->staple(result,state,mu,cb);
+      plaq->spatialStaple(result,state,mu,cb,param.aniso.t_dir);
     }
 
     //! Compute dS/dU
     void deriv(multi1d<LatticeColorMatrix>& result,
 	       const Handle< GaugeState<P,Q> >& state) const
     {
-      plaq->deriv(result,state);
+      plaq->derivSpatial(result,state,param.aniso.t_dir);
     }
 
     //! Compute the actions
     Double S(const Handle< GaugeState<P,Q> >& state) const
     {
-      return plaq->S(state);
+      return plaq->spatialS(state, param.aniso.t_dir);
     }
 
     //! Destructor is automatic
-    ~WilsonGaugeAct() {}
+    ~SpatialWilsonGaugeAct() {}
 
     // Accessors -- non mutable members.
     const Real getBeta(void) const {return param.beta;}
@@ -96,9 +98,9 @@ namespace Chroma
     void init(Handle< CreateGaugeState<P,Q> > cgs);
 
     //! Partial constructor
-    WilsonGaugeAct() {}
+    SpatialWilsonGaugeAct() {}
     //! Hide assignment
-    void operator=(const WilsonGaugeAct& a) {}
+    void operator=(const SpatialWilsonGaugeAct& a) {}
 
   private:
     Handle<PlaqGaugeAct> plaq;  // Hold a plaquette gaugeact
