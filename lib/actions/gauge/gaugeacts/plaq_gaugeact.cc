@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.6 2007-03-22 19:06:26 bjoo Exp $
+// $Id: plaq_gaugeact.cc,v 3.7 2007-03-22 19:52:04 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -192,9 +192,6 @@ namespace Chroma
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
-
-
-    int t_dir   = tDir();
     bool AnisoP = anisoP();
     Double xi02 = anisoFactor() * anisoFactor();
     
@@ -251,7 +248,6 @@ namespace Chroma
     u_mu_staple = zero;
 
 
-    int t_dir   = tDir();
     bool AnisoP = anisoP();
     Double xi02 = anisoFactor() * anisoFactor();
 
@@ -390,7 +386,7 @@ namespace Chroma
 
   //! compute spatial dS/dU given a time direction
   void 
-  PlaqGaugeAct::derivSpatial(multi1d<LatticeColorMatrix>& result,
+  PlaqGaugeAct::derivSpatial(multi1d<LatticeColorMatrix>& ds_u,
 			     const Handle< GaugeState<P,Q> >& state,
 			     int t_dir) const
   {
@@ -442,7 +438,7 @@ namespace Chroma
   
   //! compute spatial dS/dU given a time direction
   void 
-  PlaqGaugeAct::derivTemporal(multi1d<LatticeColorMatrix>& result,
+  PlaqGaugeAct::derivTemporal(multi1d<LatticeColorMatrix>& ds_u,
 			      const Handle< GaugeState<P,Q> >& state,
 			      int t_dir) const
   {

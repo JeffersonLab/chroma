@@ -1,5 +1,5 @@
 #include "chromabase.h"
-#include "actions/gauge/gaugeacts/wilson_gaugeacts_param.h"
+#include "actions/gauge/gaugeacts/wilson_gaugeact_params.h"
 
 namespace Chroma {
 
