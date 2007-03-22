@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.82 2007-03-16 18:23:39 bjoo Exp $
+# $Id: Makefile.am,v 3.83 2007-03-22 17:39:21 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -293,6 +293,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/monomial/genapprox.h \
+	update/molecdyn/monomial/force_monitors.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -920,6 +921,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/genapprox.cc \
+	update/molecdyn/monomial/force_monitors.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \

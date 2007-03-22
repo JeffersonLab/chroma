@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.5 2006-10-19 16:01:35 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.6 2007-03-22 17:39:23 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -11,6 +11,7 @@
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
+#include "update/molecdyn/monomial/force_monitors.h"
 #include "actions/ferm/fermacts/remez_coeff.h"
 #include <typeinfo>
 
@@ -88,8 +89,6 @@ namespace Chroma
 
       // Loop over nth-roots, so the pseudoferms
       multi1d<int> n_count(getNthRoot());
-      multi1d<Real> F_sq(getNthRoot());
-
       QDPIO::cout << "nthRoot = " << getNthRoot() << endl;
 
       for(int n=0; n < getNthRoot(); ++n)
@@ -115,23 +114,14 @@ namespace Chroma
 	    F_tmp[mu] -= fpfe.res[i] * F_1[mu];
 	}
 
-
-	// Now we derive the action with respect to thin links
-	// THIS IS EXTREMELY WASTEFUL BUT IS NEEDED IF YOU
-	// WANT TO MONITOR POLE BY POLE
-	state->deriv(F_tmp);
-
-	F += F_tmp;	
-	F_sq[n] = norm2(F_tmp);   // monitor force from each nth-root
+	// Concious choice. Don't monitor forces by pole 
+	// Just accumulate it
+	F += F_tmp;
       }
 
-      
-
-      Real F_sq_tot = norm2(F);   // monitor total force
-
+      state->deriv(F);
       write(xml_out, "n_count", n_count);
-      write(xml_out, "F_sq", F_sq);
-      write(xml_out, "F_sq_tot", F_sq);
+      monitorForces(xml_out, "Forces", F);
       pop(xml_out);
 
       END_CODE();

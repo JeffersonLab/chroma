@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_logdet_ee_monomial_w.h,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_logdet_ee_monomial_w.h,v 3.2 2007-03-22 17:39:23 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned log(det(A_ee))
  */
@@ -10,8 +10,9 @@
 #include "eoprec_logdet_wilstype_fermact_w.h"
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
-
+#include "update/molecdyn/monomial/force_monitors.h"
 #include "io/xmllog_io.h"
+
 
 namespace Chroma 
 {
@@ -51,8 +52,7 @@ namespace Chroma
 	
       state->deriv(F);
 
-      Double F_sq = norm2(F);
-      write(xml_out, "F_sq", F_sq);
+      monitorForces(xml_out, "Forces", F);
       pop(xml_out);
 
       END_CODE();

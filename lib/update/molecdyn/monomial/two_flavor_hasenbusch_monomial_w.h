@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.6 2006-12-28 17:34:00 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.7 2007-03-22 17:39:23 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -11,6 +11,7 @@
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
+#include "update/molecdyn/monomial/force_monitors.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
@@ -108,10 +109,9 @@ namespace Chroma
       // now derive it with respect to the thin links if needs be
       state->deriv(F);
 
-      Double F_sq = norm2(F);
-
       write(xml_out, "n_count", n_count);
-      write(xml_out, "F_sq", F_sq);
+      monitorForces(xml_out, "n_count", F);
+
       pop(xml_out);
 
       END_CODE();

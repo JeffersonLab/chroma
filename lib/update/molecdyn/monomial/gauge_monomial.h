@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge_monomial.h,v 3.3 2006-09-20 20:28:05 edwards Exp $
+// $Id: gauge_monomial.h,v 3.4 2007-03-22 17:39:23 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action monomial wrapper
  */
@@ -11,7 +11,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
-
+#include "update/molecdyn/monomial/force_monitors.h"
 #include "io/xmllog_io.h"
 
 namespace Chroma 
@@ -69,8 +69,7 @@ namespace Chroma
 
       getGaugeAct().deriv(F, g_state);
 
-      Double F_sq = norm2(F);
-      write(xml_out, "F_sq", F_sq);
+      monitorForces(xml_out, "Forces", F);
       pop(xml_out);
 
       END_CODE();

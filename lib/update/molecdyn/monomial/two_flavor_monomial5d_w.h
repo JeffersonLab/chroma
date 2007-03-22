@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 3.6 2006-12-28 17:34:00 bjoo Exp $
+// $Id: two_flavor_monomial5d_w.h,v 3.7 2007-03-22 17:39:23 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -11,6 +11,7 @@
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
+#include "update/molecdyn/monomial/force_monitors.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
@@ -105,7 +106,11 @@ namespace Chroma
       // I could do this at the end but this way I can continue
       // monitoring
       state->deriv(F);
-      Double F_pv_sq = norm2(F);  // monitor force
+
+
+      write(xml_out, "n_count", n_count);      
+      monitorForces(xml_out, "ForcesPV", F);
+
 
 
       // First interior term
@@ -119,16 +124,11 @@ namespace Chroma
       // Now get derivative with respect to thin links if action is 
       // fat linked
       state->deriv(FM);
-      
-      Double F_m_sq = norm2(FM);  // monitor force
+      monitorForces(xml_out, "ForcesOperator", FM);
 
       F -= FM;  // NOTE SIGN
-      Double F_sq = norm2(F);  // monitor force
+      monitorForces(xml_out, "Forces", F);
 
-      write(xml_out, "n_count", n_count);
-      write(xml_out, "F_m_sq", F_m_sq);
-      write(xml_out, "F_pv_sq", F_pv_sq);
-      write(xml_out, "F_sq", F_sq);
       pop(xml_out);
     
       END_CODE();

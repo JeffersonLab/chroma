@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 3.5 2006-10-19 16:01:34 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 3.6 2007-03-22 17:39:23 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -11,6 +11,7 @@
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
+#include "update/molecdyn/monomial/force_monitors.h"
 #include "actions/ferm/fermacts/remez_coeff.h"
 
 #include <typeinfo>
@@ -75,9 +76,9 @@ namespace Chroma
       F = zero;
 
       // Force term for the linop
-      multi1d<int> n_m_count(getNthRoot());
-      multi1d<Real> F_m_sq(getNthRoot());
+
       {
+	multi1d<int> n_m_count(getNthRoot());
 	// Get linear operator
 	Handle< const DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(state));
 	
@@ -109,26 +110,25 @@ namespace Chroma
 
 	    // Reweight each contribution in partial fraction
 	    for(int mu=0; mu < F.size(); mu++)
-
-
 	      F_tmp[mu] -= fpfe.res[i] * F_1[mu];
 	  }
 
-	  // Take compute the force with respect to thin links
-	  // This is wasteful to do here, 
-	  // and could be done at the very end, but that would 
-	  // screw up the monitoring
-	  state->deriv(F_tmp);
-
-	  F_m_sq[n] = norm2(F_tmp);    // monitor force form each nth-root
+	  // We are not monitoring by pole anymore, so I will
+	  // Just accumulate this and take one derivative at the end
 	  F += F_tmp;                  // add on base force terms
 	}
-      }
 
+	// Take the derivative with respect to possibly fat links
+	state->deriv(F);
+
+      // Write out the n_count array and the Forces for the Base Operator
+	write(xml_out, "n_m_count", n_m_count);    
+	monitorForces(xml_out, "ForcesOperator", F);
+      }
       // Force term for the PV
-      multi1d<int> n_pv_count(getNthRootPV());
-      multi1d<Real> F_pv_sq(getNthRootPV());
+
       {
+	multi1d<int> n_pv_count(getNthRootPV());
 	// Get Pauli-Villars linear operator
 	Handle< const DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(state));
 	
@@ -137,7 +137,10 @@ namespace Chroma
 
 	multi1d< multi1d<Phi> > X;
 	multi1d<Phi> Y;
-	P  F_1, F_2, F_tmp(Nd);
+	P  F_1, F_2, F_tmp(Nd), F_PV(Nd);
+
+	// Total Force for PV
+	F_PV = zero;
 
 	// Loop over nth-roots, so the pseudoferms
 	for(int n=0; n < getNthRootPV(); ++n)
@@ -160,31 +163,26 @@ namespace Chroma
 
 	    // Reweight each contribution in partial fraction
 	    for(int mu=0; mu < F.size(); mu++)
-
 	      F_tmp[mu] -= fpvpfe.res[i] * F_1[mu];
 	  }
 
-	  // Take compute the force with respect to thin links
-	  // This is wasteful to do here, 
-	  // and could be done at the very end, but that would 
-	  // screw up the monitoring
-	  state->deriv(F_tmp);
 
-
-	  F_pv_sq[n] = norm2(F_tmp);    // monitor force form each nth-root
-	  F += F_tmp;   // add on PV force term
+	  // Accumulate force for n-th roots
+	  // Dont recurse to thin links, since we are not monitoring by poles anymore
+	  F_PV += F_tmp;
 	}
+      
+	// Recurse down links
+	state->deriv(F_PV);
+	write(xml_out, "n_pv_count", n_pv_count);
+	monitorForces(xml_out, "ForcesPV", F_PV);
+
+	// Add Pauli-Villars to the total.      
+	F += F_PV;
       }
+	
+      monitorForces(xml_out, "Forces", F);
 
-
-
-      Real F_sq = norm2(F);
-
-      write(xml_out, "n_m_count", n_m_count);
-      write(xml_out, "n_pv_count", n_pv_count);
-      write(xml_out, "F_m_sq", F_m_sq);
-      write(xml_out, "F_pv_sq", F_pv_sq);
-      write(xml_out, "F_sq", F_sq);
       pop(xml_out);
     
       END_CODE();

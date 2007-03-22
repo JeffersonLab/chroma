@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.7 2006-12-28 17:34:00 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 3.8 2007-03-22 17:39:23 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -12,6 +12,7 @@
 #include "eoprec_logdet_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
+#include "update/molecdyn/monomial/force_monitors.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
@@ -95,10 +96,9 @@ namespace Chroma
       // now derive it with respect to the thin links if needs be
       state->deriv(F);
       
-      Double F_sq = norm2(F);
-
       write(xml_out, "n_count", n_count);
-      write(xml_out, "F_sq", F_sq);
+      monitorForces(xml_out, "Forces", F);
+
       pop(xml_out);
 
       END_CODE();
@@ -502,28 +502,19 @@ namespace Chroma
       lin->deriv(F_tmp, Y, X, PLUS);
       F += F_tmp;
  
-      for(int mu=0; mu < F.size(); ++mu)
+      for(int mu=0; mu < F.size(); ++mu) {
 	F[mu] *= Real(-1);
-
+      }
    
-      // F now holds derivative with respect to possibly fat links
-      // now derive it with respect to the thin links if needs be
-      state->deriv(F);
-      Double F_sq = norm2(F);
       
       lin->derivLogDetEvenEvenLinOp(F_tmp, PLUS);
       for(int mu =0; mu < Nd; mu++) { 
-	F_tmp[mu] *= Real(-2); 
+	F[mu] += Real(-2)*F_tmp[mu]; 
       }
-      state->deriv(F_tmp);
-      Double F_logdet_sq = norm2(F_tmp);
+      
+      state->deriv(F);
       write(xml_out, "n_count", n_count);
-      write(xml_out, "F_oo_sq", F_sq);
-      write(xml_out, "F_logdet_sq", F_logdet_sq);
-
-      F += F_tmp;
-      F_sq = norm2(F);
-      write(xml_out, "F_sq", F_sq);
+      monitorForces(xml_out, "Forces", F);
       pop(xml_out);
 
       END_CODE();
