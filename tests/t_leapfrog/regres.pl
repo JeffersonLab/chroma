@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.11 2006-12-28 15:41:51 bjoo Exp $
+#  $Id: regres.pl,v 3.12 2007-03-22 19:51:31 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -240,6 +240,22 @@
 	 log         => "t_leapfrog.unprec_hasenbusch5d_dwf.candidate.xml",
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.unprec_hasenbusch5d_dwf.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.unprec_hasenbusch5d_dwf.log.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.wilson_gaugeact.ini.xml" , 
+	 log         => "t_leapfrog.wilson_gaugeact.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.wilson_gaugeact.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.wilson_gaugeact.log.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.wilson_gaugeact_st.ini.xml" , 
+	 log         => "t_leapfrog.wilson_gaugeact_st.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.wilson_gaugeact_st.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.wilson_gaugeact_st.log.xml" ,
      }
 
      );

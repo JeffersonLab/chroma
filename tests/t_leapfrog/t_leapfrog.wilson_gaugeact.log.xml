@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+
+
+<t_leapfrog>
+  <mesE>
+    <mesKE>
+      <KE>8208.90473856774</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>1</num_terms>
+      <PEByMonomials>
+        <elem>
+          <GaugeMonomial>
+            <S>-15279.0953589443</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <leapP>
+    <dt>0.05</dt>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>42.22199 42.21716 42.20434 46.6622</F_sq_per_direction>
+              <F_avg_per_direction>4.588011 4.587714 4.586995 5.318819</F_avg_per_direction>
+              <F_max_per_direction>9.68899 9.686794 9.685498 9.686733</F_max_per_direction>
+              <F_sq>173.3057</F_sq>
+              <F_avg>19.08154</F_avg>
+              <F_max>9.68899</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.1</dt>
+  </leapQ>
+  <leapP>
+    <dt>0.05</dt>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>41.00623 41.08197 40.98434 45.36174</F_sq_per_direction>
+              <F_avg_per_direction>4.521923 4.52616 4.520556 5.247919</F_avg_per_direction>
+              <F_max_per_direction>9.601974 9.594011 9.596349 9.60208</F_max_per_direction>
+              <F_sq>168.4343</F_sq>
+              <F_avg>18.81656</F_avg>
+              <F_max>9.60208</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <mesE>
+    <mesKE>
+      <KE>8053.49274671092</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>1</num_terms>
+      <PEByMonomials>
+        <elem>
+          <GaugeMonomial>
+            <S>-15117.6759531602</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+</t_leapfrog>
