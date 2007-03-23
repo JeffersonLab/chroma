@@ -120,7 +120,7 @@ namespace Chroma {
       
       // Deal with Anisotropic integration
       if ( p.anisoP ) { 
-	Real factor = Real(1) / sqrt(p.xi_mom);
+	Real factor = Real(1) / p.xi_mom;
 	// Set the step size
 	LCMMDIntegratorSteps::theAnisoStepSizeArray::Instance().setAnisoStepSize(p.t_dir, factor);
 
