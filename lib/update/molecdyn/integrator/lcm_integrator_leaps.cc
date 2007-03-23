@@ -9,8 +9,6 @@ namespace Chroma
   namespace LCMMDIntegratorSteps 
   { 
 
-
-
     //! LeapP for just a selected list of monomials
     void leapP(const multi1d< 
 	       Handle<   Monomial< multi1d<LatticeColorMatrix>, 
@@ -27,7 +25,15 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self Description rule
       push(xml_out, "leapP");
-      write(xml_out, "dt",dt);
+      write(xml_out, "dt", dt);
+      multi1d<Real> real_step_size(Nd);
+
+      // Work out the array of step sizes (including all scaling factors
+      for(int mu =0; mu < Nd; mu++) 
+      {
+	real_step_size[mu] = dt * theAnisoStepSizeArray::Instance().getStepSizeFactor(mu);
+      }
+      write(xml_out, "dt_actual_per_dir", real_step_size);
       
       // Force Term
       multi1d<LatticeColorMatrix> dsdQ(Nd);
@@ -50,9 +56,10 @@ namespace Chroma
       pop(xml_out); // ForcesByMonomial
       pop(xml_out); // AbsHamiltonianForce 
 
-      for(int mu =0; mu < Nd; mu++) 
-      {
-	(s.getP())[mu] += dt * dsdQ[mu];
+
+      for(int mu =0; mu < Nd; mu++) {
+
+	(s.getP())[mu] += real_step_size[mu] * dsdQ[mu];
 	
 	// taproj it...
 	taproj( (s.getP())[mu] );
@@ -76,6 +83,14 @@ namespace Chroma
       // Self description rule
       push(xml_out, "leapQ");
       write(xml_out, "dt", dt);
+      multi1d<Real> real_step_size(Nd);
+
+      // Work out the array of step sizes (including all scaling factors
+      for(int mu =0; mu < Nd; mu++) 
+      {
+	real_step_size[mu] = dt * theAnisoStepSizeArray::Instance().getStepSizeFactor(mu);
+      }
+      write(xml_out, "dt_actual_per_dir", real_step_size);
       
       // Constant
       const multi1d<LatticeColorMatrix>& p_mom = s.getP();
@@ -86,7 +101,7 @@ namespace Chroma
       for(int mu = 0; mu < Nd; mu++) 
       {
 	//  dt*p[mu]
-	tmp_1 = dt*(s.getP())[mu];
+	tmp_1 = real_step_size[mu]*(s.getP())[mu];
 	
 	// tmp_1 = exp(dt*p[mu])  
 	// expmat(tmp_1, EXP_TWELFTH_ORDER);

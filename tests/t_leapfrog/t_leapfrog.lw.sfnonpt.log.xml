@@ -19,18 +19,19 @@
   </mesE>
   <leapP>
     <dt>0.02</dt>
+    <dt_actual_per_dir>0.02 0.02 0.02 0.02</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>51.4015 51.39483 51.36643 60.20385</F_sq_per_direction>
-              <F_avg_per_direction>5.062522 5.062131 5.060684 6.042916</F_avg_per_direction>
-              <F_max_per_direction>10.67947 10.68879 10.67783 11.21412</F_max_per_direction>
-              <F_sq>214.3666</F_sq>
-              <F_avg>21.22825</F_avg>
-              <F_max>11.21412</F_max>
+              <F_sq_per_direction>1.749629 1.799991 1.729464 14.42903</F_sq_per_direction>
+              <F_avg_per_direction>0.8391597 0.8631744 0.8482698 2.130166</F_avg_per_direction>
+              <F_max_per_direction>3.308926 3.198673 3.139517 10.00476</F_max_per_direction>
+              <F_sq>4.92703</F_sq>
+              <F_avg>1.170192</F_avg>
+              <F_max>10.00476</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -39,21 +40,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>51.23527 51.25915 51.17525 59.95298</F_sq_per_direction>
-              <F_avg_per_direction>5.0545 5.055666 5.05133 6.031142</F_avg_per_direction>
-              <F_max_per_direction>10.66917 10.67342 10.67615 11.21129</F_max_per_direction>
-              <F_sq>213.6227</F_sq>
-              <F_avg>21.19264</F_avg>
-              <F_max>11.21129</F_max>
+              <F_sq_per_direction>2.061337 2.188955 2.028713 14.68928</F_sq_per_direction>
+              <F_avg_per_direction>0.9430513 0.9754272 0.9490727 2.25345</F_avg_per_direction>
+              <F_max_per_direction>3.87734 3.796996 3.538476 10.02489</F_max_per_direction>
+              <F_sq>5.242071</F_sq>
+              <F_avg>1.28025</F_avg>
+              <F_max>10.02489</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -62,21 +65,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>50.70511 50.78258 50.6365 59.25507</F_sq_per_direction>
-              <F_avg_per_direction>5.028554 5.032453 5.024883 5.997903</F_avg_per_direction>
-              <F_max_per_direction>10.64542 10.64353 10.66279 11.15176</F_max_per_direction>
-              <F_sq>211.3792</F_sq>
-              <F_avg>21.08379</F_avg>
-              <F_max>11.15176</F_max>
+              <F_sq_per_direction>2.992398 3.199279 2.926266 15.46258</F_sq_per_direction>
+              <F_avg_per_direction>1.167447 1.207855 1.1668 2.486976</F_avg_per_direction>
+              <F_max_per_direction>4.579599 5.055118 4.029883 10.07254</F_max_per_direction>
+              <F_sq>6.145132</F_sq>
+              <F_avg>1.50727</F_avg>
+              <F_max>10.07254</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -85,21 +90,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>49.85634 50.00533 49.79506 58.16815</F_sq_per_direction>
-              <F_avg_per_direction>4.986603 4.994199 4.983251 5.945579</F_avg_per_direction>
-              <F_max_per_direction>10.6117 10.60857 10.64739 11.06119</F_max_per_direction>
-              <F_sq>207.8249</F_sq>
-              <F_avg>20.90963</F_avg>
-              <F_max>11.06119</F_max>
+              <F_sq_per_direction>4.414263 4.702038 4.297534 16.60451</F_sq_per_direction>
+              <F_avg_per_direction>1.430958 1.478574 1.423004 2.737567</F_avg_per_direction>
+              <F_max_per_direction>5.2605 6.275456 4.785845 10.15343</F_max_per_direction>
+              <F_sq>7.504587</F_sq>
+              <F_avg>1.767526</F_avg>
+              <F_max>10.15343</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -108,21 +115,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>48.75679 48.98855 48.71751 56.77748</F_sq_per_direction>
-              <F_avg_per_direction>4.931587 4.943556 4.92933 5.877751</F_avg_per_direction>
-              <F_max_per_direction>10.56253 10.55862 10.62103 10.97205</F_max_per_direction>
-              <F_sq>203.2403</F_sq>
-              <F_avg>20.68222</F_avg>
-              <F_max>10.97205</F_max>
+              <F_sq_per_direction>6.149015 6.516576 5.970929 17.91553</F_sq_per_direction>
+              <F_avg_per_direction>1.694704 1.747389 1.679481 2.969519</F_avg_per_direction>
+              <F_max_per_direction>5.878259 7.365953 5.534675 10.20659</F_max_per_direction>
+              <F_sq>9.138012</F_sq>
+              <F_avg>2.022773</F_avg>
+              <F_max>10.20659</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -131,21 +140,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>47.4869 47.80561 47.48268 55.18435</F_sq_per_direction>
-              <F_avg_per_direction>4.86711 4.883805 4.866668 5.79884</F_avg_per_direction>
-              <F_max_per_direction>10.5006 10.49536 10.58253 10.86876</F_max_per_direction>
-              <F_sq>197.9595</F_sq>
-              <F_avg>20.41642</F_avg>
-              <F_max>10.86876</F_max>
+              <F_sq_per_direction>8.006094 8.447219 7.763145 19.1829</F_sq_per_direction>
+              <F_avg_per_direction>1.937368 1.993295 1.91559 3.166286</F_avg_per_direction>
+              <F_max_per_direction>6.760397 8.292552 6.238431 10.21663</F_max_per_direction>
+              <F_sq>10.84984</F_sq>
+              <F_avg>2.253135</F_avg>
+              <F_max>10.21663</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -154,21 +165,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>46.12949 46.53286 46.17175 53.49427</F_sq_per_direction>
-              <F_avg_per_direction>4.797048 4.8185 4.799077 5.713687</F_avg_per_direction>
-              <F_max_per_direction>10.42894 10.42081 10.53278 10.78369</F_max_per_direction>
-              <F_sq>192.3284</F_sq>
-              <F_avg>20.12831</F_avg>
-              <F_max>10.78369</F_max>
+              <F_sq_per_direction>9.814575 10.3164 9.509834 20.22143</F_sq_per_direction>
+              <F_avg_per_direction>2.147986 2.205644 2.120691 3.319384</F_avg_per_direction>
+              <F_max_per_direction>7.547371 9.046328 6.781014 10.17538</F_max_per_direction>
+              <F_sq>12.46556</F_sq>
+              <F_avg>2.448426</F_avg>
+              <F_max>10.17538</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -177,21 +190,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>44.76122 45.24176 44.85985 51.80672</F_sq_per_direction>
-              <F_avg_per_direction>4.725183 4.751137 4.730277 5.627144</F_avg_per_direction>
-              <F_max_per_direction>10.35068 10.3623 10.4733 10.69296</F_max_per_direction>
-              <F_sq>186.6696</F_sq>
-              <F_avg>19.83374</F_avg>
-              <F_max>10.69296</F_max>
+              <F_sq_per_direction>11.44366 11.98644 11.08481 20.90455</F_sq_per_direction>
+              <F_avg_per_direction>2.322046 2.379916 2.29032 3.425306</F_avg_per_direction>
+              <F_max_per_direction>8.149384 9.635169 7.220813 10.03974</F_max_per_direction>
+              <F_sq>13.85486</F_sq>
+              <F_avg>2.604397</F_avg>
+              <F_max>10.03974</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -200,21 +215,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>43.44693 43.99358 43.61026 50.20766</F_sq_per_direction>
-              <F_avg_per_direction>4.654924 4.684895 4.663605 5.543715</F_avg_per_direction>
-              <F_max_per_direction>10.26887 10.32173 10.40608 10.59992</F_max_per_direction>
-              <F_sq>181.2584</F_sq>
-              <F_avg>19.54714</F_avg>
-              <F_max>10.59992</F_max>
+              <F_sq_per_direction>12.80968 13.36784 12.40637 21.1815</F_sq_per_direction>
+              <F_avg_per_direction>2.459078 2.515483 2.423886 3.484535</F_avg_per_direction>
+              <F_max_per_direction>8.589088 10.07699 7.562253 9.767181</F_max_per_direction>
+              <F_sq>14.94135</F_sq>
+              <F_avg>2.720746</F_avg>
+              <F_max>10.07699</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -223,21 +240,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>42.23698 42.83668 42.47166 48.76517</F_sq_per_direction>
-              <F_avg_per_direction>4.589128 4.622468 4.601829 5.467269</F_avg_per_direction>
-              <F_max_per_direction>10.18627 10.28475 10.33336 10.5164</F_max_per_direction>
-              <F_sq>176.3105</F_sq>
-              <F_avg>19.28069</F_avg>
-              <F_max>10.5164</F_max>
+              <F_sq_per_direction>13.87231 14.41644 13.43357 21.07932</F_sq_per_direction>
+              <F_avg_per_direction>2.561042 2.614133 2.523107 3.501224</F_avg_per_direction>
+              <F_max_per_direction>8.893529 10.39392 7.926154 9.575131</F_max_per_direction>
+              <F_sq>15.70041</F_sq>
+              <F_avg>2.799876</F_avg>
+              <F_max>10.39392</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -246,21 +265,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>41.16729 41.80627 41.47789 47.5279</F_sq_per_direction>
-              <F_avg_per_direction>4.530025 4.565993 4.547066 5.400854</F_avg_per_direction>
-              <F_max_per_direction>10.11028 10.25114 10.25747 10.43958</F_max_per_direction>
-              <F_sq>171.9793</F_sq>
-              <F_avg>19.04394</F_avg>
-              <F_max>10.43958</F_max>
+              <F_sq_per_direction>14.62478 15.12397 14.15688 20.69026</F_sq_per_direction>
+              <F_avg_per_direction>2.631172 2.678986 2.590894 3.483211</F_avg_per_direction>
+              <F_max_per_direction>9.08972 10.60765 8.184135 9.327826</F_max_per_direction>
+              <F_sq>16.14897</F_sq>
+              <F_avg>2.846066</F_avg>
+              <F_max>10.60765</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -269,21 +290,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>40.26092 40.92581 40.64959 46.52565</F_sq_per_direction>
-              <F_avg_per_direction>4.479224 4.517052 4.500784 5.346598</F_avg_per_direction>
-              <F_max_per_direction>10.05704 10.22064 10.18055 10.36752</F_max_per_direction>
-              <F_sq>168.362</F_sq>
-              <F_avg>18.84366</F_avg>
-              <F_max>10.36752</F_max>
+              <F_sq_per_direction>15.08233 15.50648 14.58744 20.14678</F_sq_per_direction>
+              <F_avg_per_direction>2.673165 2.713703 2.630564 3.442276</F_avg_per_direction>
+              <F_max_per_direction>9.201602 10.73631 8.33764 9.057513</F_max_per_direction>
+              <F_sq>16.33075</F_sq>
+              <F_avg>2.864927</F_avg>
+              <F_max>10.73631</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -292,21 +315,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>39.53062 40.20912 39.99672 45.7714</F_sq_per_direction>
-              <F_avg_per_direction>4.437779 4.476722 4.463874 5.3057</F_avg_per_direction>
-              <F_max_per_direction>10.01469 10.19307 10.10447 10.30033</F_max_per_direction>
-              <F_sq>165.5079</F_sq>
-              <F_avg>18.68408</F_avg>
-              <F_max>10.30033</F_max>
+              <F_sq_per_direction>15.27198 15.59374 14.74778 19.58869</F_sq_per_direction>
+              <F_avg_per_direction>2.690639 2.721945 2.64534 3.393987</F_avg_per_direction>
+              <F_max_per_direction>9.248271 10.79253 8.390407 8.737085</F_max_per_direction>
+              <F_sq>16.30054</F_sq>
+              <F_avg>2.862978</F_avg>
+              <F_max>10.79253</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -315,21 +340,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>38.9814 39.66272 39.52137 45.26417</F_sq_per_direction>
-              <F_avg_per_direction>4.406272 4.445652 4.436745 5.278504</F_avg_per_direction>
-              <F_max_per_direction>9.983113 10.16836 10.03073 10.2376</F_max_per_direction>
-              <F_sq>163.4297</F_sq>
-              <F_avg>18.56717</F_avg>
-              <F_max>10.2376</F_max>
+              <F_sq_per_direction>15.22512 15.4213 14.66531 19.12982</F_sq_per_direction>
+              <F_avg_per_direction>2.686821 2.70706 2.638081 3.353757</F_avg_per_direction>
+              <F_max_per_direction>9.243171 10.78264 8.347797 8.827655</F_max_per_direction>
+              <F_sq>16.11039</F_sq>
+              <F_avg>2.84643</F_avg>
+              <F_max>10.78264</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -338,21 +365,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>38.61256 39.28767 39.2202 44.99223</F_sq_per_direction>
-              <F_avg_per_direction>4.384896 4.424128 4.419424 5.264625</F_avg_per_direction>
-              <F_max_per_direction>9.977634 10.14651 9.960448 10.17851</F_max_per_direction>
-              <F_sq>162.1127</F_sq>
-              <F_avg>18.49307</F_avg>
-              <F_max>10.17851</F_max>
+              <F_sq_per_direction>14.97309 15.02574 14.36881 18.83308</F_sq_per_direction>
+              <F_avg_per_direction>2.664417 2.671951 2.611217 3.330387</F_avg_per_direction>
+              <F_max_per_direction>9.193961 10.7068 8.216167 8.873354</F_max_per_direction>
+              <F_sq>15.80018</F_sq>
+              <F_avg>2.819493</F_avg>
+              <F_max>10.7068</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -361,21 +390,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>38.41919 39.08088 39.08609 44.93608</F_sq_per_direction>
-              <F_avg_per_direction>4.373521 4.412127 4.411636 5.263096</F_avg_per_direction>
-              <F_max_per_direction>9.978827 10.12758 9.987043 10.12199</F_max_per_direction>
-              <F_sq>161.5222</F_sq>
-              <F_avg>18.46038</F_avg>
-              <F_max>10.12758</F_max>
+              <F_sq_per_direction>14.54545 14.44276 13.88744 18.7012</F_sq_per_direction>
+              <F_avg_per_direction>2.625643 2.619105 2.566834 3.32172</F_avg_per_direction>
+              <F_max_per_direction>9.102828 10.55962 8.101329 8.87786</F_max_per_direction>
+              <F_sq>15.39421</F_sq>
+              <F_avg>2.783325</F_avg>
+              <F_max>10.55962</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -384,21 +415,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>38.39281 39.03569 39.10908 45.07107</F_sq_per_direction>
-              <F_avg_per_direction>4.371731 4.409344 4.412861 5.272536</F_avg_per_direction>
-              <F_max_per_direction>9.989871 10.11167 10.04008 10.06675</F_max_per_direction>
-              <F_sq>161.6086</F_sq>
-              <F_avg>18.46647</F_avg>
-              <F_max>10.11167</F_max>
+              <F_sq_per_direction>13.97023 13.70767 13.25151 18.68516</F_sq_per_direction>
+              <F_avg_per_direction>2.572372 2.550776 2.506871 3.318686</F_avg_per_direction>
+              <F_max_per_direction>8.967124 10.33145 7.945509 8.843742</F_max_per_direction>
+              <F_sq>14.90364</F_sq>
+              <F_avg>2.737176</F_avg>
+              <F_max>10.33145</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -407,21 +440,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>38.52147 39.1419 39.27652 45.3693</F_sq_per_direction>
-              <F_avg_per_direction>4.378842 4.415207 4.42235 5.291276</F_avg_per_direction>
-              <F_max_per_direction>10.02515 10.09891 10.10082 10.02062</F_max_per_direction>
-              <F_sq>162.3092</F_sq>
-              <F_avg>18.50768</F_avg>
-              <F_max>10.10082</F_max>
+              <F_sq_per_direction>13.27525 12.85716 12.49409 18.7064</F_sq_per_direction>
+              <F_avg_per_direction>2.506366 2.469293 2.433404 3.311376</F_avg_per_direction>
+              <F_max_per_direction>8.78027 10.00981 7.82465 8.841289</F_max_per_direction>
+              <F_sq>14.33323</F_sq>
+              <F_avg>2.68011</F_avg>
+              <F_max>10.00981</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -430,21 +465,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>38.78955 39.38557 39.57277 45.80086</F_sq_per_direction>
-              <F_avg_per_direction>4.39391 4.428876 4.439137 5.317476</F_avg_per_direction>
-              <F_max_per_direction>10.06973 10.08944 10.16433 10.10272</F_max_per_direction>
-              <F_sq>163.5488</F_sq>
-              <F_avg>18.5794</F_avg>
-              <F_max>10.16433</F_max>
+              <F_sq_per_direction>12.48993 11.93132 11.65254 18.68413</F_sq_per_direction>
+              <F_avg_per_direction>2.42953 2.377396 2.348972 3.292431</F_avg_per_direction>
+              <F_max_per_direction>8.53301 9.581187 7.670526 9.002167</F_max_per_direction>
+              <F_sq>13.68948</F_sq>
+              <F_avg>2.612082</F_avg>
+              <F_max>9.581187</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -453,21 +490,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>39.17748 39.74868 39.97866 46.33452</F_sq_per_direction>
-              <F_avg_per_direction>4.415739 4.449248 4.462037 5.349201</F_avg_per_direction>
-              <F_max_per_direction>10.14373 10.12709 10.22533 10.19399</F_max_per_direction>
-              <F_sq>165.2393</F_sq>
-              <F_avg>18.67623</F_avg>
-              <F_max>10.22533</F_max>
+              <F_sq_per_direction>11.64668 10.97503 10.76908 18.55888</F_sq_per_direction>
+              <F_avg_per_direction>2.344185 2.278507 2.256876 3.258423</F_avg_per_direction>
+              <F_max_per_direction>8.215029 9.033027 7.461448 9.139795</F_max_per_direction>
+              <F_sq>12.98742</F_sq>
+              <F_avg>2.534497</F_avg>
+              <F_max>9.139795</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -476,21 +515,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>39.66168 40.20907 40.4713 46.93819</F_sq_per_direction>
-              <F_avg_per_direction>4.442901 4.474982 4.489655 5.384485</F_avg_per_direction>
-              <F_max_per_direction>10.24005 10.19392 10.27858 10.28492</F_max_per_direction>
-              <F_sq>167.2802</F_sq>
-              <F_avg>18.79202</F_avg>
-              <F_max>10.28492</F_max>
+              <F_sq_per_direction>10.7816 10.03765 9.889942 18.30614</F_sq_per_direction>
+              <F_avg_per_direction>2.253342 2.176963 2.161403 3.209644</F_avg_per_direction>
+              <F_max_per_direction>7.817027 8.355858 7.194608 9.482731</F_max_per_direction>
+              <F_sq>12.25383</F_sq>
+              <F_avg>2.450338</F_avg>
+              <F_max>9.482731</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -499,21 +540,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>40.21497 40.74081 41.02425 47.57935</F_sq_per_direction>
-              <F_avg_per_direction>4.473785 4.50454 4.52043 5.421391</F_avg_per_direction>
-              <F_max_per_direction>10.32314 10.24923 10.31916 10.36981</F_max_per_direction>
-              <F_sq>169.5594</F_sq>
-              <F_avg>18.92015</F_avg>
-              <F_max>10.36981</F_max>
+              <F_sq_per_direction>9.933957 9.17083 9.062974 17.93844</F_sq_per_direction>
+              <F_avg_per_direction>2.160888 2.078263 2.067909 3.149658</F_avg_per_direction>
+              <F_max_per_direction>7.333261 7.702578 6.868467 9.944485</F_max_per_direction>
+              <F_sq>11.52655</F_sq>
+              <F_avg>2.36418</F_avg>
+              <F_max>9.944485</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -522,21 +565,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>40.80761 41.31512 41.60838 48.22579</F_sq_per_direction>
-              <F_avg_per_direction>4.506676 4.536257 4.552692 5.458067</F_avg_per_direction>
-              <F_max_per_direction>10.38724 10.2892 10.3429 10.44354</F_max_per_direction>
-              <F_sq>171.9569</F_sq>
-              <F_avg>19.05369</F_avg>
-              <F_max>10.44354</F_max>
+              <F_sq_per_direction>9.144433 8.424385 8.333787 17.49776</F_sq_per_direction>
+              <F_avg_per_direction>2.071564 1.989134 1.982445 3.084918</F_avg_per_direction>
+              <F_max_per_direction>7.016209 7.36957 6.812356 10.265</F_max_per_direction>
+              <F_sq>10.85009</F_sq>
+              <F_avg>2.282015</F_avg>
+              <F_max>10.265</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -545,21 +590,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>41.40873 41.90175 42.19343 48.84664</F_sq_per_direction>
-              <F_avg_per_direction>4.539839 4.568437 4.584759 5.492811</F_avg_per_direction>
-              <F_max_per_direction>10.44012 10.31118 10.34672 10.50171</F_max_per_direction>
-              <F_sq>174.3506</F_sq>
-              <F_avg>19.18585</F_avg>
-              <F_max>10.50171</F_max>
+              <F_sq_per_direction>8.452271 7.840952 7.74129 17.04225</F_sq_per_direction>
+              <F_avg_per_direction>1.990751 1.916905 1.91063 3.024103</F_avg_per_direction>
+              <F_max_per_direction>6.970737 7.007545 6.728262 10.46434</F_max_per_direction>
+              <F_sq>10.26919</F_sq>
+              <F_avg>2.210597</F_avg>
+              <F_max>10.46434</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -568,21 +615,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>41.98836 42.47091 42.75 49.4138</F_sq_per_direction>
-              <F_avg_per_direction>4.57164 4.599453 4.615047 5.524142</F_avg_per_direction>
-              <F_max_per_direction>10.48971 10.31393 10.37209 10.54067</F_max_per_direction>
-              <F_sq>176.6231</F_sq>
-              <F_avg>19.31028</F_avg>
-              <F_max>10.54067</F_max>
+              <F_sq_per_direction>7.8917 7.450583 7.313464 16.63159</F_sq_per_direction>
+              <F_avg_per_direction>1.923942 1.867568 1.857011 2.976316</F_avg_per_direction>
+              <F_max_per_direction>6.88023 6.829253 6.580717 10.56476</F_max_per_direction>
+              <F_sq>9.821835</F_sq>
+              <F_avg>2.156209</F_avg>
+              <F_max>10.56476</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -591,21 +640,23 @@
   </leapP>
   <leapQ>
     <dt>0.04</dt>
+    <dt_actual_per_dir>0.04 0.04 0.04 0.04</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.02</dt>
+    <dt_actual_per_dir>0.02 0.02 0.02 0.02</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
         <elem>
           <GaugeMonomial>
             <Forces>
-              <F_sq_per_direction>42.51938 42.99524 43.25172 49.9034</F_sq_per_direction>
-              <F_avg_per_direction>4.600639 4.627856 4.642175 5.550864</F_avg_per_direction>
-              <F_max_per_direction>10.51212 10.31738 10.42289 10.55761</F_max_per_direction>
-              <F_sq>178.6697</F_sq>
-              <F_avg>19.42153</F_avg>
-              <F_max>10.55761</F_max>
+              <F_sq_per_direction>7.488352 7.26654 7.064385 16.31449</F_sq_per_direction>
+              <F_avg_per_direction>1.875733 1.843887 1.824696 2.947943</F_avg_per_direction>
+              <F_max_per_direction>6.737776 6.654429 6.366695 10.58658</F_max_per_direction>
+              <F_sq>9.533443</F_sq>
+              <F_avg>2.123065</F_avg>
+              <F_max>10.58658</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>

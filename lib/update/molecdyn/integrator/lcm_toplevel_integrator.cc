@@ -2,6 +2,7 @@
 #include "meas/inline/io/named_objmap.h"
 #include "update/molecdyn/integrator/lcm_toplevel_integrator.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
+#include "update/molecdyn/integrator/lcm_integrator_leaps.h"
 
 namespace Chroma { 
 
@@ -42,11 +43,32 @@ namespace Chroma {
 	std::ostringstream os;
 	integrator_xml_reader.print(os);
 	integrator_xml = os.str();
+
+	// Look for anisotropic integration.
+	// (Optional)
+	if( paramtop.count("anisoP") == 1 ) { 
+	  read(paramtop, "anisoP", anisoP);
+	  read(paramtop, "t_dir", t_dir);
+	  if( t_dir < 0  || t_dir >= Nd ) { 
+	    QDPIO::cout << "Value of t_dir must be 0 <= t_dir < Nd. t_dir is " << t_dir << endl;
+	    QDP_abort(1);
+	  }
+	  read(paramtop, "xi_mom", xi_mom);
+	}
+	else { 
+	  // If there is no data then set defaults for isotropy
+	  anisoP = false;
+	  t_dir = 3;
+	  xi_mom = 1;
+	}
+
       }
       catch(const std::string& e) { 
 	QDPIO::cout << "Caught Exception Reading XML: " << e << endl;
 	QDP_abort(1);
       }
+
+      
   }
 
   //! Read the Integrator Params
@@ -65,6 +87,11 @@ namespace Chroma {
     std::istringstream int_is(p.integrator_xml);
     XMLReader int_reader(int_is);
     xml << int_reader;  
+    if( p.anisoP ) {
+      write(xml, "anisoP", p.anisoP);
+      write(xml, "t_dir", p.t_dir);
+      write(xml, "xi_mom", p.xi_mom);
+    }
     pop(xml);
   }
 
@@ -90,6 +117,14 @@ namespace Chroma {
 									TheMDComponentIntegratorFactory::Instance().createObject(integrator_name, integrator_reader, root));
       
       top_integrator = h;
+      
+      // Deal with Anisotropic integration
+      if ( p.anisoP ) { 
+	Real factor = Real(1) / sqrt(p.xi_mom);
+	// Set the step size
+	LCMMDIntegratorSteps::theAnisoStepSizeArray::Instance().setAnisoStepSize(p.t_dir, factor);
+
+      }
   }
     
   void LCMToplevelIntegrator::copyFields(void) const { 

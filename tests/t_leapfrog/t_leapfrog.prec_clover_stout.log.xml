@@ -26,6 +26,7 @@
   </mesE>
   <leapP>
     <dt>0.1</dt>
+    <dt_actual_per_dir>0.1 0.1 0.1 0.1</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
@@ -33,12 +34,12 @@
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <n_count>44</n_count>
             <Forces>
-              <F_sq_per_direction>0.2201483 0.2393821 0.2364704 0.2796382</F_sq_per_direction>
-              <F_avg_per_direction>0.3243574 0.3397707 0.3341436 0.4174137</F_avg_per_direction>
-              <F_max_per_direction>1.032029 1.099719 1.353485 1.392052</F_max_per_direction>
-              <F_sq>0.975639</F_sq>
-              <F_avg>1.415685</F_avg>
-              <F_max>1.392052</F_max>
+              <F_sq_per_direction>0.1627322 0.2045497 0.1724876 0.3367634</F_sq_per_direction>
+              <F_avg_per_direction>0.2730066 0.3095505 0.284735 0.4461353</F_avg_per_direction>
+              <F_max_per_direction>1.049454 1.11001 0.9621577 1.645478</F_max_per_direction>
+              <F_sq>0.2191332</F_sq>
+              <F_avg>0.3283569</F_avg>
+              <F_max>1.645478</F_max>
             </Forces>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
@@ -47,9 +48,11 @@
   </leapP>
   <leapQ>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
@@ -57,12 +60,12 @@
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <n_count>54</n_count>
             <Forces>
-              <F_sq_per_direction>0.2587292 0.2828543 0.2722791 0.2887389</F_sq_per_direction>
-              <F_avg_per_direction>0.3516822 0.3663391 0.3588752 0.4271655</F_avg_per_direction>
-              <F_max_per_direction>1.115885 1.235826 1.324766 1.334141</F_max_per_direction>
-              <F_sq>1.102602</F_sq>
-              <F_avg>1.504062</F_avg>
-              <F_max>1.334141</F_max>
+              <F_sq_per_direction>0.1370479 0.1652299 0.1387557 0.3361836</F_sq_per_direction>
+              <F_avg_per_direction>0.2503909 0.2771731 0.25474 0.4500242</F_avg_per_direction>
+              <F_max_per_direction>0.9639017 1.012723 0.891421 1.579766</F_max_per_direction>
+              <F_sq>0.1943043</F_sq>
+              <F_avg>0.3080821</F_avg>
+              <F_max>1.579766</F_max>
             </Forces>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
@@ -71,9 +74,11 @@
   </leapP>
   <leapQ>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
@@ -81,12 +86,12 @@
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <n_count>52</n_count>
             <Forces>
-              <F_sq_per_direction>0.2731307 0.3053381 0.2869244 0.3028696</F_sq_per_direction>
-              <F_avg_per_direction>0.3595234 0.3785469 0.36859 0.4398251</F_avg_per_direction>
-              <F_max_per_direction>1.311561 1.349188 1.325663 1.382782</F_max_per_direction>
-              <F_sq>1.168263</F_sq>
-              <F_avg>1.546486</F_avg>
-              <F_max>1.382782</F_max>
+              <F_sq_per_direction>0.1112686 0.1233152 0.1091883 0.3269998</F_sq_per_direction>
+              <F_avg_per_direction>0.226321 0.2403 0.2246137 0.4485549</F_avg_per_direction>
+              <F_max_per_direction>0.8123954 0.8638768 0.7933826 1.577633</F_max_per_direction>
+              <F_sq>0.167693</F_sq>
+              <F_avg>0.2849474</F_avg>
+              <F_max>1.577633</F_max>
             </Forces>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
@@ -95,9 +100,11 @@
   </leapP>
   <leapQ>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
@@ -105,12 +112,12 @@
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <n_count>52</n_count>
             <Forces>
-              <F_sq_per_direction>0.2555119 0.2882015 0.2696668 0.329069</F_sq_per_direction>
-              <F_avg_per_direction>0.3477019 0.3697995 0.3580761 0.4572605</F_avg_per_direction>
-              <F_max_per_direction>1.336658 1.246504 1.263145 1.481711</F_max_per_direction>
-              <F_sq>1.142449</F_sq>
-              <F_avg>1.532838</F_avg>
-              <F_max>1.481711</F_max>
+              <F_sq_per_direction>0.1270204 0.1445154 0.1323797 0.3251807</F_sq_per_direction>
+              <F_avg_per_direction>0.2411897 0.2588244 0.2453355 0.4489778</F_avg_per_direction>
+              <F_max_per_direction>0.952719 0.9472747 0.841177 1.55188</F_max_per_direction>
+              <F_sq>0.1822741</F_sq>
+              <F_avg>0.2985818</F_avg>
+              <F_max>1.55188</F_max>
             </Forces>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
@@ -119,9 +126,11 @@
   </leapP>
   <leapQ>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
@@ -129,12 +138,12 @@
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <n_count>47</n_count>
             <Forces>
-              <F_sq_per_direction>0.5932826 0.6146235 0.5624197 0.3939587</F_sq_per_direction>
-              <F_avg_per_direction>0.5029383 0.5144433 0.4999072 0.4977017</F_avg_per_direction>
-              <F_max_per_direction>4.166879 3.93468 2.824879 1.594427</F_max_per_direction>
-              <F_sq>2.164284</F_sq>
-              <F_avg>2.014991</F_avg>
-              <F_max>4.166879</F_max>
+              <F_sq_per_direction>0.6377642 0.6601211 0.5644204 0.3674841</F_sq_per_direction>
+              <F_avg_per_direction>0.4827217 0.4926486 0.4764303 0.4749099</F_avg_per_direction>
+              <F_max_per_direction>5.65399 5.169528 3.80233 1.630266</F_max_per_direction>
+              <F_sq>0.5574474</F_sq>
+              <F_avg>0.4816776</F_avg>
+              <F_max>5.65399</F_max>
             </Forces>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>
@@ -143,9 +152,11 @@
   </leapP>
   <leapQ>
     <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
   </leapQ>
   <leapP>
     <dt>0.1</dt>
+    <dt_actual_per_dir>0.1 0.1 0.1 0.1</dt_actual_per_dir>
     <AbsHamiltonianForce>
       <num_terms>1</num_terms>
       <ForcesByMonomial>
@@ -153,12 +164,12 @@
           <TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
             <n_count>41</n_count>
             <Forces>
-              <F_sq_per_direction>1.70542 1.683987 1.8499 0.5243748</F_sq_per_direction>
-              <F_avg_per_direction>0.8538492 0.8662997 0.8938994 0.5753233</F_avg_per_direction>
-              <F_max_per_direction>5.63587 3.79223 4.497013 1.837002</F_max_per_direction>
-              <F_sq>5.763683</F_sq>
-              <F_avg>3.189372</F_avg>
-              <F_max>5.63587</F_max>
+              <F_sq_per_direction>2.021666 2.049914 2.259425 0.4675612</F_sq_per_direction>
+              <F_avg_per_direction>0.9003835 0.9284388 0.9584912 0.5375872</F_avg_per_direction>
+              <F_max_per_direction>5.795876 4.987464 5.820237 1.636933</F_max_per_direction>
+              <F_sq>1.699642</F_sq>
+              <F_avg>0.8312252</F_avg>
+              <F_max>5.820237</F_max>
             </Forces>
           </TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial>
         </elem>

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_toplevel_integrator.h,v 3.3 2006-12-25 21:40:18 bjoo Exp $
+// $Id: lcm_toplevel_integrator.h,v 3.4 2007-03-23 20:21:39 bjoo Exp $
 
 #ifndef __LCM_TOPLEVEL_INTEGRATOR_H_
 #define __LCM_TOPLEVEL_INTEGRATOR_H_
@@ -32,6 +32,10 @@ namespace Chroma {
     Real tau0;
     multi1d<IDPair> copy_list;
     std::string integrator_xml;
+    bool anisoP;
+    int t_dir;
+    Real xi_mom;
+
   };
 
   //! Read the Integrator Params
