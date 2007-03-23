@@ -1,9 +1,10 @@
-// $Id: force_monitors.cc,v 3.1 2007-03-22 17:39:23 bjoo Exp $
+// $Id: force_monitors.cc,v 3.2 2007-03-23 16:01:01 bjoo Exp $
 /*! @file
  * @brief Helper function for calculating forces
  */
 
 #include "update/molecdyn/monomial/force_monitors.h"
+#include "util/gauge/taproj.h"
 
 namespace Chroma 
 { 
@@ -52,7 +53,18 @@ namespace Chroma
 
     for(int mu=0; mu < F.size(); ++mu)
     {
-      f2[mu] = localNorm2(F[mu]);
+      // This may be expensive
+      LatticeColorMatrix F_tmp = F[mu];
+
+      // Force will get taproj-ed at the end...
+      // Make sure we look at the right hing
+      taproj(F_tmp);
+
+      // Jansens measure
+      // -2 Tr F^2 = -2 ( -F^\dagger F ) = 2 F^\dagger F
+      // the 2 counteracts taproj normalization maybe?
+      f2[mu] = Real(-2)*real(trace(F_tmp*F_tmp));
+
       f1[mu] = sqrt(f2[mu]);
     }
 
@@ -73,6 +85,10 @@ namespace Chroma
       forces.F_avg += forces.F_avg_dir[mu];
     }
 
+    // Divide F_sq and F_avg by the number of directions now (for average)
+    Real fact_tmp = Real(1)/Real(Nd);
+    forces.F_sq *= fact_tmp;
+    forces.F_avg *= fact_tmp;
 
     // Find the maximum of the 4 directions.
     forces.F_max = forces.F_max_dir[0];

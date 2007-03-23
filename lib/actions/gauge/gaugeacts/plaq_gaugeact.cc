@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.7 2007-03-22 19:52:04 bjoo Exp $
+// $Id: plaq_gaugeact.cc,v 3.8 2007-03-23 16:01:00 bjoo Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -314,10 +314,12 @@ namespace Chroma
 
     ds_u = zero;
 
+
     for(int mu = 0; mu < Nd; mu++)
     {
       for(int nu=mu+1; nu < Nd; nu++) 
       {
+
 	for(int cb=0; cb < 2; cb++) 
 	{ 
 	  tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
@@ -337,7 +339,6 @@ namespace Chroma
       // one used here.
       ds_u[mu] *= Real(-1)/(Real(2*Nc));
     }
-
 
 #if 0
     ds_u.resize(Nd);
@@ -401,7 +402,7 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
     ds_u = zero;
-
+    
     for(int mu = 0; mu < Nd; mu++) {
       for(int nu=mu+1; nu < Nd; nu++) {
 
@@ -426,8 +427,8 @@ namespace Chroma
       // in the taproj, which is a factor of 2 different from the 
       // one used here.
       ds_u[mu] *= Real(-1)/(Real(2*Nc));
-    }
 
+    }
 
     // Zero the force on any fixed boundaries
     getGaugeBC().zero(ds_u);
@@ -479,7 +480,6 @@ namespace Chroma
       // one used here.
       ds_u[mu] *= Real(-1)/(Real(2*Nc));
     }
-
 
     // Zero the force on any fixed boundaries
     getGaugeBC().zero(ds_u);
