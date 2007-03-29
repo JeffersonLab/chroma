@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.7 2007-03-22 17:39:23 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.8 2007-03-29 19:35:36 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -110,7 +110,7 @@ namespace Chroma
       state->deriv(F);
 
       write(xml_out, "n_count", n_count);
-      monitorForces(xml_out, "n_count", F);
+      monitorForces(xml_out, "Forces", F);
 
       pop(xml_out);
 
