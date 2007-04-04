@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 3.2 2006-08-26 05:50:06 edwards Exp $
+// $Id: clover_term_base_w.cc,v 3.3 2007-04-04 20:58:02 bjoo Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -8,6 +8,7 @@
 
 namespace Chroma 
 { 
+
 
   //! Return flops performed by the operator()
   unsigned long 
@@ -76,9 +77,11 @@ namespace Chroma
     LatticeColorMatrix staple_back;
 
     LatticeColorMatrix u_nu_for_mu = shift(u[nu],FORWARD, mu); // Can reuse these later
-    LatticeColorMatrix u_mu_for_nu = shift(u[mu],FORWARD, nu)
-      ;
+    LatticeColorMatrix u_mu_for_nu = shift(u[mu],FORWARD, nu);
+
     LatticeColorMatrix u_tmp1, u_tmp2, u_tmp3;
+    LatticeColorMatrix u_tmp4,u_tmp5;
+    LatticeColorMatrix lambda_tmp;
 
     //   u_tmp1 =   <-------
     //              |
@@ -125,8 +128,10 @@ namespace Chroma
     //    |         |        re  use  u_tmp1 =  | 
     //    V         |                           V
     //   CB       1-CB       
-    u_tmp3[rb[1-cb]] = u[nu]*shift(Lambda, FORWARD, nu);
-    ds_u[rb[cb]] = shift(u_tmp3,FORWARD, mu)*u_tmp1;
+    lambda_tmp  = shift(Lambda, FORWARD, nu);
+    u_tmp3[rb[1-cb]] = u[nu]*lambda_tmp;
+    u_tmp4[rb[cb]] = shift(u_tmp3,FORWARD, mu);
+    ds_u[rb[cb]] = u_tmp4*u_tmp1;
     
     // 2)
     //
@@ -136,10 +141,9 @@ namespace Chroma
     //    |        |       re use u[mu](x+nu) = u_mu_for_nu
     //    V        |
     //    1-CB    CB        
-    u_tmp3[rb[1-cb]] = shift(Lambda, FORWARD, nu)*adj(u[nu]);
-    ds_u[rb[1-cb]] = u_nu_for_mu
-      *adj(u_mu_for_nu)
-      *u_tmp3;
+    u_tmp3[rb[1-cb]] = lambda_tmp*adj(u[nu]);
+    u_tmp4[rb[1-cb]] = u_nu_for_mu*adj(u_mu_for_nu);
+    ds_u[rb[1-cb]] = u_tmp4 * u_tmp3;
 
     // Terms 3) and 4)
     //
@@ -165,7 +169,8 @@ namespace Chroma
     //                  u_tmp2 =  |           | = u_tmp1
     //                            |           V
     //                     (1-CB) <--------   X CB
-    u_tmp3[rb[1-cb]] = shift(u_tmp1, FORWARD, mu)*u_tmp2;
+    u_tmp4 = shift(u_tmp1, FORWARD,mu);
+    u_tmp3[rb[1-cb]] = u_tmp4*u_tmp2;
     
     // 4)
     //
@@ -175,12 +180,14 @@ namespace Chroma
     //   |        |
     //   X <----- V 1-CB
     //   CB
-    u_tmp3[rb[cb]] = adj(u_nu_for_mu)*adj(u[mu])*Lambda*u[nu];
+    u_tmp4[rb[cb]] = Lambda*u[nu];
+    u_tmp5[rb[cb]] = adj(u[mu])*u_tmp4;
+    u_tmp3[rb[cb]] = adj(u_nu_for_mu)*u_tmp5;
     
     //  u_tmp3 now holds the last 2 terms, one on each of its checkerboards, but Now I need
     //  to shift them both together onto ds_u  (Hence full both CB additions on ds_u below
-    ds_u -= shift(u_tmp3, BACKWARD, nu);
-
+    u_tmp4 = shift(u_tmp3, BACKWARD, nu);
+    ds_u -= u_tmp4;
 
     // STAPLE TERMS:
     
@@ -201,7 +208,9 @@ namespace Chroma
     //    |        |    re use computed staple 
     //    V        |
     //   1-CB      X CB	  
-    ds_u[rb[1-cb]] += shift(Lambda, FORWARD, mu)*staple_for;
+    lambda_tmp = shift(Lambda, FORWARD, mu);
+    u_tmp4 = shift(staple_back, BACKWARD, nu);
+    ds_u[rb[1-cb]] += lambda_tmp*staple_for;
 
     // 7)
     //
@@ -211,7 +220,7 @@ namespace Chroma
     //    |       |   re use computed staple 
     //    |       |
     //    <-------V 
-    ds_u[rb[cb]]  -= shift(staple_back, BACKWARD, nu) * Lambda;
+    ds_u[rb[cb]]  -= u_tmp4 * Lambda;
 
     // 8)
     //
@@ -220,7 +229,8 @@ namespace Chroma
     //    |       |  reuse computed staple 
     //    |       |
     //    <-------V
-    ds_u[rb[1-cb]] -= shift(Lambda, FORWARD, mu)*shift(staple_back, BACKWARD, nu);
+    ds_u[rb[1-cb]] -= lambda_tmp*u_tmp4;
+
 
     END_CODE();
   }
@@ -240,7 +250,8 @@ namespace Chroma
 			     enum PlusMinus isign, int cb) const
   {
     START_CODE();
-    
+
+
     // Do I still need to do this?
     if( ds_u.size() != Nd ) { 
       ds_u.resize(Nd);
@@ -291,6 +302,7 @@ namespace Chroma
 
 	  LatticeColorMatrix ds_tmp;
 	  deriv_loops(mu, nu, cb, ds_tmp, sigma_XY_dag);
+
 	  ds_u[mu] += ds_tmp;
 	} // End if mu != nu
 	
@@ -300,7 +312,6 @@ namespace Chroma
 
     // Clear out the deriv on any fixed links
     getFermBC().zero(ds_u);
-
     END_CODE();
   }
 
