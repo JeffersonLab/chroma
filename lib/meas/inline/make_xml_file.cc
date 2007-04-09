@@ -1,9 +1,11 @@
-// $Id: make_xml_file.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: make_xml_file.cc,v 3.1 2007-04-09 18:41:57 bjoo Exp $
 /*! \file
  *  \brief Make xml file writer
  */
 
 #include "meas/inline/make_xml_file.h"
+#include <ostream>
+using namespace std;
 
 namespace Chroma
 {
@@ -16,9 +18,16 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    std::string xml;
     // Could/should allow file pattern
-    string xml = xml_file;
-
+    if( update_no == 0 ) { 
+      xml = xml_file;
+    }
+    else { 
+      std::ostringstream os;
+      os << xml_file << "." << update_no;
+      xml = os.str();
+    }    
     // Return xml
     return xml;
   }

@@ -1,10 +1,11 @@
-// $Id: inline_plaquette.cc,v 3.5 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_plaquette.cc,v 3.6 2007-04-09 18:41:57 bjoo Exp $
 /*! \file
  *  \brief Inline plaquette
  */
 
 #include "meas/inline/glue/inline_plaquette.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
+#include "meas/inline/make_xml_file.h"
 #include "meas/glue/mesplq.h"
 #include "meas/inline/io/named_objmap.h"
 
@@ -111,6 +112,7 @@ namespace Chroma
     frequency = 0; 
     param.cgs          = CreateGaugeStateEnv::nullXMLGroup();
     named_obj.gauge_id = InlineDefaultGaugeField::getId();
+    xml_file ="";
   }
 
   InlinePlaquetteParams::InlinePlaquetteParams(XMLReader& xml_in, const std::string& path) 
@@ -129,6 +131,11 @@ namespace Chroma
 
       // Ids
       read(paramtop, "NamedObject", named_obj);
+
+      // Possible alternate XML file pattern
+      if (paramtop.count("xml_file") != 0) {
+	read(paramtop, "xml_file", xml_file);
+      }
     }
     catch(const std::string& e) 
     {
@@ -141,6 +148,26 @@ namespace Chroma
   void 
   InlinePlaquette::operator()(unsigned long update_no,
 			      XMLWriter& xml_out) 
+  {
+    if( params.xml_file != "" ) {
+      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      push( xml_out, "Plaquette");
+      write(xml_out, "update_no", update_no);
+      write(xml_out, "xml_file", xml_file);
+      pop(xml_out);
+
+      XMLFileWriter xml(xml_file);
+      func(update_no, xml);
+    }
+    else {
+      func(update_no, xml_out);
+    }
+
+  }
+
+  void 
+  InlinePlaquette::func(const unsigned long update_no, 
+			XMLWriter& xml_out) 
   {
     START_CODE();
     

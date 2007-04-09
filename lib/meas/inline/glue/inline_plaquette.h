@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_plaquette.h,v 3.2 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_plaquette.h,v 3.3 2007-04-09 18:41:57 bjoo Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -37,6 +37,8 @@ namespace Chroma
     {
       std::string   gauge_id;
     } named_obj;
+
+    std::string xml_file;
   };
 
 
@@ -53,7 +55,13 @@ namespace Chroma
     void operator()(unsigned long update_no,
 		    XMLWriter& xml_out); 
 
+  protected:
+    void func(const unsigned long update_no, 
+	      XMLWriter& xml_out);
+
   private:
+
+
     InlinePlaquetteParams params;
   };
 
