@@ -1,4 +1,4 @@
-// $Id: pion_sing_s.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: pion_sing_s.h,v 3.1 2007-04-11 15:29:53 egregory Exp $
 #ifndef PION_SING_S_H
 #define PION_SING_S_H
 
@@ -21,11 +21,18 @@ namespace Chroma {
       LatticeStaggeredPropagator four_shift_quark_prop,
       int j_decay) ;
 
+    // the fuzz sink version
+    void compute(
+		 LatticeStaggeredPropagator local_quark_prop,
+		 LatticeStaggeredPropagator four_shift_quark_prop,
+		 int j_decay, const multi1d<LatticeColorMatrix> & u_smr,
+		 int fuzz_width);
 
     void
     compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 	    int j_decay) { } 
 
+  
 
     staggered_pion_singlet(int t_len, 
 			   const multi1d<LatticeColorMatrix> & uin,
