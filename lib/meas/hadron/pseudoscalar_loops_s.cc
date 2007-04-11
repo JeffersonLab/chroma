@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_loops_s.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
+// $Id: pseudoscalar_loops_s.cc,v 3.2 2007-04-11 15:23:08 egregory Exp $
 #include "chromabase.h"
 #include "pseudoscalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"
@@ -135,5 +135,91 @@ void zerolink_pseudoscalar_loop::compute(
   corr += corr_fn[isample] ;
 
 }
+
+void fourlink_pseudoscalar_loop_fuzz::compute(LatticeStaggeredFermion & q_source, 
+				LatticeStaggeredFermion & psi_fuzz, int isample)
+{
+  // Array to describe shifts in cube
+  multi1d<int> delta(Nd);
+
+  Set timeslice;
+  timeslice.make(TimeSliceFunc(Nd-1));
+
+  LatticeStaggeredFermion psi_eta4 ;
+
+  delta = 0;
+  delta[0] = delta[1] = delta[2] = delta[3] = 1;
+ 
+  psi_eta4 = shift_deltaProp(delta, psi_fuzz);
+
+  LatticeComplex TrG_eta4 ; 
+  using namespace StagPhases;
+
+  TrG_eta4 = -alpha(0)*alpha(1)*alpha(2)*alpha(3)*localInnerProduct(q_source, psi_eta4);
+
+  corr_fn[isample] = sumMulti(TrG_eta4, timeslice);
+  corr += corr_fn[isample] ;
+}
+
+
+
+void threelink_pseudoscalar_loop_fuzz::compute(
+					  LatticeStaggeredFermion & q_source, 
+					  LatticeStaggeredFermion & psi_fuzz, 
+					  int isample)
+{
+  // Array to describe shifts in cube
+  multi1d<int> delta(Nd);
+
+  Set timeslice;
+  timeslice.make(TimeSliceFunc(Nd-1));
+
+  LatticeStaggeredFermion  psi_eta3 ;
+
+  delta = 0;
+  delta[0] = delta[1] = delta[2]  = 1;
+ 
+  psi_eta3 = shift_deltaProp(delta, psi_fuzz);
+
+  LatticeComplex TrG_eta3 ; 
+
+  using namespace StagPhases;
+  TrG_eta3 = alpha(0)*alpha(1)*alpha(2)*localInnerProduct(q_source, psi_eta3);
+
+  corr_fn[isample] = sumMulti(TrG_eta3, timeslice);
+  corr += corr_fn[isample] ;
+
+}
+
+void fourlink_pseudoscalar_kilcup_loop_fuzz::compute(LatticeStaggeredFermion & psi_fuzz,
+						int isample, Real mass){
+
+  // Array to describe shifts in cube
+  multi1d<int> delta(Nd);
+
+  Set timeslice;
+  timeslice.make(TimeSliceFunc(Nd-1));
+
+  LatticeStaggeredFermion psi_eta4 ;
+
+  delta = 0;
+  delta[0] = delta[1] = delta[2] = delta[3] = 1;
+ 
+  psi_eta4 = shift_deltaProp(delta, psi_fuzz);
+
+  LatticeComplex TrG_eta4 ; 
+  using namespace StagPhases;
+
+  TrG_eta4 = -2*mass*alpha(0)*alpha(1)*alpha(2)*alpha(3)
+                    *localInnerProduct(psi_eta4, psi_fuzz);
+
+  corr_fn[isample] = sumMulti(TrG_eta4, timeslice);
+  corr += corr_fn[isample] ;
+}
+
+void fourlink_pseudoscalar_kilcup_loop_fuzz::compute(
+						LatticeStaggeredFermion & q_source,
+				LatticeStaggeredFermion & psi_fuzz, int isample){}
+
 
 }  // end namespace Chroma
