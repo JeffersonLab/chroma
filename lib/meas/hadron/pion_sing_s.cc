@@ -66,6 +66,8 @@ namespace Chroma {
     int j_decay)
   {
 
+    //non-fuzzed version
+
     // Paranoid Checks
 
     if( Nd != 4 ) { 
@@ -130,6 +132,8 @@ namespace Chroma {
 
 
 
-  }
+  }// end non-fuzzed sink version
+
+  /**********************************************************************/
 
 }  // end namespace Chroma
