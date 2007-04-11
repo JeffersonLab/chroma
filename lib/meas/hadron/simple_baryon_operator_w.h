@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_baryon_operator_w.h,v 1.5 2006-11-23 16:17:53 edwards Exp $
+// $Id: simple_baryon_operator_w.h,v 1.6 2007-04-11 04:55:30 juge Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */
@@ -54,12 +54,26 @@ namespace Chroma
 					 const LatticeFermion& quark3,
 					 enum PlusMinus isign) const;
 
+      multi1d<LatticeComplex> operator()(const LatticeFermion& quark1, 
+					 const LatticeFermion& quark2, 
+					 const LatticeFermion& quark3,
+           int* qindices,
+					 enum PlusMinus isign) const
+           {
+            QDPIO::cerr << "Not implemented yet\n";
+           }
+      LatticeComplex operator()(const LatticeFermion& quark1, 
+					 const LatticeFermion& quark2, 
+					 const LatticeFermion& quark3,
+           int* qindices ) const
+           {
+            QDPIO::cerr << "Not implemented yet\n";
+           }
+
       //! Add this hack for the moment
       LatticeComplex operator()(const LatticeFermion& quark1, 
 				const LatticeFermion& quark2, 
-				const LatticeFermion& quark3,
-				int i,
-				enum PlusMinus isign) const
+				const LatticeFermion& quark3) const
 	{
 	  QDPIO::cerr << "BarNuclCg5 operator not implemented at this moment\n";
 	  QDP_abort(1);

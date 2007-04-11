@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: group_baryon_operator_w.h,v 1.17 2007-01-11 06:16:33 juge Exp $
+// $Id: group_baryon_operator_w.h,v 1.18 2007-04-11 04:55:30 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -25,9 +25,9 @@
 
 namespace Chroma
 {
-
 //#define MAKE_SOURCE_OPERATORS
 #define MAKE_SINK_OPERATORS
+#define PARALLEL_RUN
 //#define REDUCETOTIMEDILUTION 1
 
   //! Name and registration
@@ -216,13 +216,26 @@ namespace Chroma
         multi1d<LatticeComplex> operator() ( const LatticeFermion& quark1,
                                              const LatticeFermion& quark2,
                                              const LatticeFermion& quark3,
-                                             enum PlusMinus isign ) const;
+																						 int* qindices,
+                                             enum PlusMinus isign 
+                                           ) const;
 
         LatticeComplex operator() ( const LatticeFermion& quark1,
                                     const LatticeFermion& quark2,
                                     const LatticeFermion& quark3,
-																		int not_used,
-                                    enum PlusMinus isign ) const;
+																		int* qindices
+                                  ) const;
+        //! Compute the operator
+        multi1d<LatticeComplex> operator() ( const LatticeFermion& quark1,
+                                             const LatticeFermion& quark2,
+                                             const LatticeFermion& quark3,
+                                             enum PlusMinus isign 
+                                           ) const;
+
+        LatticeComplex operator() ( const LatticeFermion& quark1,
+                                    const LatticeFermion& quark2,
+                                    const LatticeFermion& quark3
+                                  ) const;
 
         struct QuarkTerm_t
         {
@@ -254,25 +267,22 @@ namespace Chroma
         //! Construct array of maps of displacements
         void displaceQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
                              const multi1d<LatticeFermion>& q,
-                             enum PlusMinus isign ) const;
-        //! First displace then smear the quarks
-        void displaceSmearQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
-                                  const LatticeFermion& q1,
-                                  const LatticeFermion& q2,
-                                  const LatticeFermion& q3,
-                                  enum PlusMinus isign ) const;
+														 int* qindices
+                           ) const;
         //! First smear then displace the quarks
         void smearDisplaceQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
                                   const LatticeFermion& q1,
                                   const LatticeFermion& q2,
                                   const LatticeFermion& q3,
-                                  enum PlusMinus isign ) const;
+																	int* qindices
+                                ) const;
         //! Manipulate the quark fields
         void quarkManip( multi1d< map<int, LatticeFermion> >& disp_quarks,
                          const LatticeFermion& q1,
                          const LatticeFermion& q2,
                          const LatticeFermion& q3,
-                         enum PlusMinus isign ) const;
+												 int* qindices
+                       ) const;
         //! The spin basis matrix to goto Dirac
         const SpinMatrix& rotateMat() const
         {
@@ -326,40 +336,29 @@ $ProjCoeffDir = "$ENV{HOME}/src2/work2/projection_coefficients/Nucleons";
 #------------------------------------------------------------------------
 # Input file for operator indices (note that the range op - doesn't work)
 # an example is given below ...
-$OperatorIndicesFile = "test.in";
-#$OperatorIndicesFile = "from_point2all.in";
+$OperatorIndicesFile = "from_point2all.in";
 #------------------------------------------------------------------------
 # Lattice Size
-@Nsize = ( 4, 4, 4, 6 ); 
-#@Nsize = ( 12, 12, 12, 48 ); 
+@Nsize = ( 12, 12, 12, 48 ); 
 $Nt = $Nsize[ 3 ];
 #------------------------------------------------------------------------
 # Hybrid list size
-if( 0 ) {
-	#@Ndil = ( 24, 6, 18 );
-	$q=1; $NTdil[$q] = $Nt; $NCdil[$q] = 1; $NSdil[$q] = 4; $NXdil[$q] = 1;
-	$q=2; $NTdil[$q] = $Nt; $NCdil[$q] = 1; $NSdil[$q] = 1; $NXdil[$q] = 1;
-	$q=3; $NTdil[$q] = $Nt; $NCdil[$q] = 3; $NSdil[$q] = 1; $NXdil[$q] = 1;
-} else {
-	for(my $q=1; $q<=3; ++$q) 
-	{
-		#@Ndil = ( 6, 6, 6 );
-		$NTdil[$q] = $Nt; $NCdil[$q] = 1; $NSdil[$q] = 1; $NXdil[$q] = 1;
-		#@Ndil = ( 72, 72, 72 );
-		$NTdil[$q] = $Nt; $NCdil[$q] = 3; $NSdil[$q] = 4; $NXdil[$q] = 1;
-	}
+for(my $q=1; $q<=3; ++$q) 
+{
+	$NTdil[$q] = $Nt; $NCdil[$q] = 1; $NSdil[$q] = 1; $NXdil[$q] = 1;
+	#$NTdil[$q] = $Nt; $NCdil[$q] = 3; $NSdil[$q] = 4; $NXdil[$q] = 1;
 }
 for(my $q=1; $q<=3; ++$q){ $NH[$q]=$NTdil[$q]*$NCdil[$q]*$NSdil[$q]*$NXdil[$q]; }
 #
 @Ndil = ( $NH[1], $NH[2], $NH[3] );
 #------------------------------------------------------------------------
 # Different displacement lengths
-@DispLengths = ( 1 );
+@DispLengths = ( 3 );
 # all the channels
 @Channels = ( 'G1g', 'G1u', 'G2g', 'G2u', 'Hg', 'Hu' );
 #------------------------------------------------------------------------
 # Solution file names  arg: stub, time-dil, colour-dil, spin-dil, space-dil, ".lime"
-$qstub = "zN_prop_q"; $qext = ""; 
+$qstub = "wl_6p1_12_48_m0p305_nu0p902"; $qext = ".lime"; 
 @qpropFileNames = ();
 for(my $q=1; $q<=3; ++$q)
 {
@@ -865,6 +864,7 @@ sub make_qprop_names
 			$i++; }}
 	return( @FileNames );
 }
+
 1;
 # end
 */

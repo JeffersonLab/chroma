@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.24 2007-01-11 06:01:25 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.25 2007-04-11 04:55:30 juge Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -18,11 +18,11 @@
 #include "meas/sources/source_smearing_factory.h"
 #include "meas/sinks/sink_smearing_aggregate.h"
 #include "meas/sinks/sink_smearing_factory.h"
-#include "meas/smear/displacement.h"
 
 #include "meas/sources/dilutezN_source_const.h"
 #include "meas/sources/zN_src.h"
 #include "meas/smear/quark_source_sink.h"
+#include "meas/smear/displacement.h"
 
 #include "util/ferm/diractodr.h"
 #include "util/ft/sftmom.h"
@@ -33,6 +33,28 @@ using std::map;
 
 namespace Chroma
 { 
+
+  void displacementSub(const multi1d<LatticeColorMatrix>& u, 
+		       LatticeFermion& chi, 
+		       int length, int dir)
+  {
+    LatticeFermion tmp;
+    if (length > 0)
+      for(int n = 0; n < length; ++n)
+	{
+	  tmp = shift(chi, FORWARD, dir);
+	  chi = u[dir] * tmp;
+	}
+    else // If length = or < 0.  If length == 0, does nothing.
+      for(int n = 0; n > length; --n)
+	{
+	  tmp = shift(adj(u[dir])*chi, BACKWARD, dir);
+	  chi = tmp;
+	}
+  }
+  
+
+
 	  //! Baryon sequential sources
 	  /*! \ingroup hadron */
 	  namespace GroupBaryonOperatorEnv
@@ -122,13 +144,11 @@ namespace Chroma
       gaugestuff.link_smearing = readXMLGroup( paramtop, "Param/LinkSmearing", "LinkSmearingType" );
 			read( paramtop, "Param/InputFileName", InputFileName );
 			QDPIO::cout<< "Main input file is " << InputFileName <<endl;
-			//gaugestuff.u.resize(Nd);
 			read( paramtop, "Cfg", gaugestuff.cfg );
 
 			dilution.resize( NumberofQuarks );
 			for(int i=0; i < NumberofQuarks; ++i) dilution[ i ].N = 4; // Z(4) noise
 			for(int i=0; i < NumberofQuarks; ++i) dilution[ i ].j_decay = 3; // time-direction
-			//read( paramtop, "DilutionScheme", dilution );
 
 		} // end Params::Params
 
@@ -431,11 +451,11 @@ namespace Chroma
 			//
       for(int n=0; n < params.Noperators; ++n)
       {
+#ifdef MAKE_SINK_OPERATORS
         // This is 1 now because all the 
 				// contractions are summed over
 				// AB[ n ].baryonoperator.orderings.resize( params.NsnkOrderings );
         // for(int ord=0; ord < params.NsnkOrderings; ++ord)
-#ifdef MAKE_SINK_OPERATORS
 				AB[ n ].baryonoperator.orderings.resize( 1 );
         for(int ord=0; ord < 1; ++ord)
 				{
@@ -493,16 +513,16 @@ namespace Chroma
 				int q0spin,q1spin,q2spin,q0disp,q1disp,q2disp,nbops;
 				reader >> hash >> q0spin >> q1spin >> q2spin >> q0disp >> q1disp >> q2disp >> dL >> nbops;
 #ifdef MAKE_SINK_OPERATORS
-				AQQQ[ i ].quark[ 0 ].spin = q0spin;
-				AQQQ[ i ].quark[ 1 ].spin = q1spin;
-				AQQQ[ i ].quark[ 2 ].spin = q2spin;
+				AQQQ[ i ].quark[ 0 ].spin = q0spin -1;
+				AQQQ[ i ].quark[ 1 ].spin = q1spin -1;
+				AQQQ[ i ].quark[ 2 ].spin = q2spin -1;
 				AQQQ[ i ].quark[ 0 ].displacement = q0disp;
 				AQQQ[ i ].quark[ 1 ].displacement = q1disp;
 				AQQQ[ i ].quark[ 2 ].displacement = q2disp;
 	      AQQQ[ i ].NBaryonOps = nbops;
         for(int j=0; j < 3; ++j)
         {
-          if ( AQQQ[ i ].quark[ j ].displacement > 0 )
+          if ( AQQQ[ i ].quark[ j ].displacement >= 0 )
 					{
 						AQQQ[ i ].quark[ j ].disp_len = dL;
 					} 
@@ -513,16 +533,16 @@ namespace Chroma
 				}
 #endif
 #ifdef MAKE_SOURCE_OPERATORS
-				CQQQ[ i ].quark[ 0 ].spin = q0spin;
-				CQQQ[ i ].quark[ 1 ].spin = q1spin;
-				CQQQ[ i ].quark[ 2 ].spin = q2spin;
+				CQQQ[ i ].quark[ 0 ].spin = q0spin -1;
+				CQQQ[ i ].quark[ 1 ].spin = q1spin -1;
+				CQQQ[ i ].quark[ 2 ].spin = q2spin -1;
 				CQQQ[ i ].quark[ 0 ].displacement = q0disp;
 				CQQQ[ i ].quark[ 1 ].displacement = q1disp;
 				CQQQ[ i ].quark[ 2 ].displacement = q2disp;
 	      CQQQ[ i ].NBaryonOps = nbops;
         for(int j=0; j < 3; ++j)
         {
-          if ( CQQQ[ i ].quark[ j ].displacement > 0 )
+          if ( CQQQ[ i ].quark[ j ].displacement >= 0 )
 					{
 						CQQQ[ i ].quark[ j ].disp_len = dL;
 					} 
@@ -535,8 +555,6 @@ namespace Chroma
 #ifdef MAKE_SINK_OPERATORS
         for(int j=0; j < 3; ++j)
         {
-          // Make spin index 0 based
-          AQQQ[ i ].quark[ j ].spin -= 1;
           if ( AQQQ[ i ].quark[ j ].displacement == 0 )
           {
             AQQQ[ i ].quark[ j ].disp_dir = 0;
@@ -579,8 +597,6 @@ namespace Chroma
 #ifdef MAKE_SOURCE_OPERATORS
         for(int j=0; j < 3; ++j)
         {
-          // Make spin index 0 based
-          CQQQ[ i ].quark[ j ].spin -= 1;
           if ( CQQQ[ i ].quark[ j ].displacement == 0 )
           {
             CQQQ[ i ].quark[ j ].disp_dir = 0;
@@ -628,7 +644,6 @@ namespace Chroma
       //       index     0  1   2   3
       //      gamma4 = ( 1, 1, -1, -1 )
       // and take the complex conjugate
-      //          displacement directions ??????
 #ifdef MAKE_SOURCE_OPERATORS
       for(int i=0; i < params.NQQQs; ++i)
       {
@@ -649,9 +664,8 @@ namespace Chroma
           if ( flipsign )
           {
             // cc and -sign
-//            CQQQ[ i ].coef[ n ] = cmplx( -re, im );
-            // just sign (cc at the correlator level)
-//						CQQQ[ i ].coef[ n ] = cmplx( -re, -im );
+            // CQQQ[ i ].coef[ n ] = cmplx( -re, im );
+            // flip sign (cc at the correlator level)
 						CQQQ[ i ].coef[ n ] *= cmplx( Real(-1), Real(0) );
           }
 					//
@@ -674,7 +688,7 @@ namespace Chroma
 				}
 			}
       reader.close();
-			
+
       QDPIO::cout << "Reading input from text file DONE " << endl;
     } // void ReadTextInput
 		
@@ -773,7 +787,8 @@ namespace Chroma
     void
     GroupBaryonQQQ::displaceQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
                                     const multi1d<LatticeFermion>& q,
-                                    enum PlusMinus isign ) const
+																		int* qindices                                   
+                                  ) const
     {
       START_CODE();
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
@@ -782,7 +797,7 @@ namespace Chroma
       {
         // Make some shorthands to ease my brain
         map<int, LatticeFermion>& disp_q = disp_quarks[ i ];
-        const QuarkTerm_t& term_q = quark[ i ];
+				const QuarkTerm_t& term_q = quark[ qindices[ i ] ];
         // If no entry, then create a displaced version of the quark
         if ( disp_q.find( term_q.displacement ) == disp_q.end() )
         {
@@ -791,78 +806,17 @@ namespace Chroma
           //		   << " disp=" << quark[i].displacement << " disp=" << term_q.displacement
           //		   << " len =" << quark[i].disp_len			<< " len=" << term_q.disp_len
           //		   << " dir =" << quark[i].disp_dir			<< " dir=" << term_q.disp_dir
+          //		   << " spin=" << quark[i].spin		    	<< " spin=" << term_q.spin
           //		   << endl;
           LatticeFermion qq = q[ i ];
-          switch ( isign )
-          {
-						case PLUS:
-//							displacement( usmr, qq, term_q.disp_len, term_q.disp_dir );
-							displacement( myparams.gaugestuff.u, qq, term_q.disp_len, term_q.disp_dir );
-							break;
-
-	  				case MINUS:
-////							displacement( u_smr, qq, -term_q.disp_len, term_q.disp_dir );
-//							displacement( usmr, qq, term_q.disp_len, term_q.disp_dir );
-							displacement( myparams.gaugestuff.u, qq, term_q.disp_len, term_q.disp_dir );
-							break;
-          }
+          displacementSub( myparams.gaugestuff.u, qq, term_q.disp_len, term_q.disp_dir );
           disp_q.insert( std::make_pair( term_q.displacement, qq ) );
         }
       } // for i
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // void GroupBaryonQQQ::displaceQuarks
-
-
-    //! First displace then smear the quarks
-    void
-    GroupBaryonQQQ::displaceSmearQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
-                                         const LatticeFermion& q1,
-                                         const LatticeFermion& q2,
-                                         const LatticeFermion& q3,
-                                         enum PlusMinus isign ) const
-    {
-      START_CODE();
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-      multi1d<LatticeFermion> q( 3 );
-      // Rotate the quarks up-front.
-      // NOTE: this step assumes the spin rotation commutes with the
-      // quark smearing and the displacement
-      // However, we are careful about the ordering of the smearing and
-      // the displacement
-      q[ 0 ] = rotateMat() * q1;
-      q[ 1 ] = rotateMat() * q2;
-      q[ 2 ] = rotateMat() * q3;
-      // Displace
-//      displaceQuarks( disp_quarks, q,  usmr,  isign );
-      displaceQuarks( disp_quarks, q,  isign );
-			#if 1
-      // Source smear after the displacements
-      std::istringstream  xml_s( myparams.source_smearing.source.xml );
-      XMLReader  sourcetop( xml_s );
-      Handle< QuarkSourceSink<LatticeFermion> >
-					sourceSmearing(
-						             TheFermSourceSmearingFactory::Instance().createObject(
-		    			                     myparams.source_smearing.source.id, 
-																	 sourcetop,
-							                     myparams.source_smearing.source.path, 
-																	 myparams.gaugestuff.u ) );
-      for(int i=0; i < disp_quarks.size(); ++i)
-      {
-        // Make some shorthands to ease my brain
-        map<int, LatticeFermion>& disp_q = disp_quarks[ i ];
-        // Loop over all keys
-        for ( std::map<int, LatticeFermion>::const_iterator mm = disp_q.begin();
-              mm != disp_q.end(); ++mm )
-        {
-          ( *sourceSmearing ) ( disp_q[ mm->first ] );
-        }
-      }
-			#endif
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-      END_CODE();
-    } // GroupBaryonQQQ::displaceSmearQuarks
-
+    
 
     //! First smear then displace the quarks
     void
@@ -870,7 +824,8 @@ namespace Chroma
                                          const LatticeFermion& q1,
                                          const LatticeFermion& q2,
                                          const LatticeFermion& q3,
-                                         enum PlusMinus isign ) const
+																				 int* qindices
+                                       ) const
     { 
 			START_CODE();
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
@@ -880,129 +835,126 @@ namespace Chroma
       // quark smearing and the displacement
       // However, we are careful about the ordering of the smearing and
       // the displacement
-      q[ 0 ] = rotateMat() * q1;
-      q[ 1 ] = rotateMat() * q2;
-      q[ 2 ] = rotateMat() * q3;
-			
-			#if 0 // already done at beginning so that there are no repetitions
-      // Sink smear the quarks
-      std::istringstream  xml_s( myparams.sink_smearing.sink.xml );
-      XMLReader  sinktop( xml_s );
-      Handle< QuarkSourceSink<LatticeFermion> >
-					sinkSmearing(
-					             TheFermSinkSmearingFactory::Instance().createObject(
-											         myparams.sink_smearing.sink.id,   
-															 sinktop,
-															 myparams.sink_smearing.sink.path, 
-															 myparams.gaugestuff.u ) );
-      for(int i=0; i < q.size(); ++i) 
-			{
-        ( *sinkSmearing ) ( q[ i ] );
-			}
-			#endif
-			
+//      q[ 0 ] = rotateMat() * q1;
+//      q[ 1 ] = rotateMat() * q2;
+//      q[ 2 ] = rotateMat() * q3;
+      q[ 0 ] = q1;
+      q[ 1 ] = q2;
+      q[ 2 ] = q3;
       // Displace after the smearing
-//      displaceQuarks( disp_quarks, q,  usmr,  isign );
-      displaceQuarks( disp_quarks, q, isign );
+      displaceQuarks( disp_quarks, q, qindices );
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
     } // void GroupBaryonQQQ::smearDisplaceQuarks
 
-
-    //! Manipulate the quark fields
-    void
-    GroupBaryonQQQ::quarkManip( multi1d< map<int, LatticeFermion> >& disp_quarks,
-                                const LatticeFermion& q1,
-                                const LatticeFermion& q2,
-                                const LatticeFermion& q3,
-                                enum PlusMinus isign ) const
-    {
-      START_CODE();
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
-      // Depending on whether this is the sink or source, do the 
-      // appropriate combination of smearing and displacing
-      switch ( isign )
-      {
-      case PLUS:
-				// Sink
-//				smearDisplaceQuarks( disp_quarks, q1, q2, q3,  usmr,  isign );
-//				smearDisplaceQuarks( disp_quarks, q1, q2, q3,  myparams.gaugestuff.u,  isign );
-				smearDisplaceQuarks( disp_quarks, q1, q2, q3, isign );
-				break;
-
-      case MINUS:
-				// Source
-//				displaceSmearQuarks( disp_quarks, q1, q2, q3,  usmr,  isign );
-//				displaceSmearQuarks( disp_quarks, q1, q2, q3,  myparams.gaugestuff.u,  isign );
-				displaceSmearQuarks( disp_quarks, q1, q2, q3, isign );
-				break;
-
-      default:
-				QDPIO::cerr << name << ": illegal isign" << endl;
-				QDP_abort( 1 );
-      }
-      //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-      END_CODE();
-    } // void GroupBaryonQQQ::quarkManip
-
+		
+		//! hack to avoid compiler errors
+		LatticeComplex GroupBaryonQQQ::operator() ( const LatticeFermion& q1,
+		                                            const LatticeFermion& q2,
+																								const LatticeFermion& q3
+																							) const
+		{ 
+			START_CODE();
+			LatticeComplex d;
+			return d;
+			END_CODE();
+		}		
+		multi1d<LatticeComplex> GroupBaryonQQQ::operator() ( const LatticeFermion& q1,
+		                                                     const LatticeFermion& q2,
+																												 const LatticeFermion& q3,
+																												 enum PlusMinus isign ) const
+		{ 
+			START_CODE();
+			multi1d<LatticeComplex> d(1);
+			return d;
+			END_CODE();
+		}
+    
+    
+    // for the creation operator		
     //! Compute the operator
     LatticeComplex 
     GroupBaryonQQQ::operator() ( const LatticeFermion& q1,
                                  const LatticeFermion& q2,
                                  const LatticeFermion& q3,
-																 int   not_used,
-                                 enum  PlusMinus isign ) const
+																 int* qindices 
+                               ) const
     { 
 			START_CODE();
       // The result of displace and smearing (in some unspecified order here)
       multi1d< map<int, LatticeFermion> > disp_quarks;
       // Depending on whether this is the sink or source, do the 
       // appropriate combination of smearing and displacing
-//      quarkManip( disp_quarks, q1, q2, q3,  usmr,  isign );
-//      quarkManip( disp_quarks, q1, q2, q3, myparams.gaugestuff.u, isign );
-      quarkManip( disp_quarks, q1, q2, q3, isign );
+      smearDisplaceQuarks( disp_quarks, q1, q2, q3, qindices );
       // The return
       LatticeComplex d;
+
+      LatticeColorVector c0 = peekSpin( disp_quarks[ 0 ].find( quark[ qindices[ 0 ] ].displacement ) ->second,
+					                              quark[ qindices[ 0 ] ].spin );
+      LatticeColorVector c1 = peekSpin( disp_quarks[ 1 ].find( quark[ qindices[ 1 ] ].displacement ) ->second,
+					                              quark[ qindices[ 1 ] ].spin );
+      LatticeColorVector c2 = peekSpin( disp_quarks[ 2 ].find( quark[ qindices[ 2 ] ].displacement ) ->second,
+					                              quark[ qindices[ 2 ] ].spin );
+/*
+      multi1d<LatticeFermion> q( 3 );
+      // Rotate the quarks up-front.
+      // NOTE: this step assumes the spin rotation commutes with the
+      // quark smearing and the displacement
+      // However, we are careful about the ordering of the smearing and
+      // the displacement
+      q[ 0 ] = rotateMat() * q1;
+      q[ 1 ] = rotateMat() * q2;
+      q[ 2 ] = rotateMat() * q3;
+*/
       // Contract over color indices with antisym tensors
-			d = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
-                                   quark[ 0 ].spin ),
-                         peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
-                                   quark[ 1 ].spin ),
-                         peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
-                                   quark[ 2 ].spin ) 
-											 );
+      d = colorContract( c0, c1, c2 );
+
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-			END_CODE();
+      END_CODE();
       return d;
     } // LatticeComplex GroupBaryonQQQ::operator()
 
+    // for the annihilation operator
     multi1d<LatticeComplex>
     GroupBaryonQQQ::operator() ( const LatticeFermion& q1,
                                  const LatticeFermion& q2,
                                  const LatticeFermion& q3,
+																 int* qindices,
                                  enum PlusMinus isign ) const
     { 
-			START_CODE();
+      START_CODE();
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
       // The result of displace and smearing (in some unspecified order here)
       multi1d< map<int, LatticeFermion> > disp_quarks;
       // Depending on whether this is the sink or source, do the 
       // appropriate combination of smearing and displacing
-//      quarkManip( disp_quarks, q1, q2, q3,  usmr,  isign );
-//      quarkManip( disp_quarks, q1, q2, q3, myparams.gaugestuff.u, isign );
-      quarkManip( disp_quarks, q1, q2, q3, isign );
+      smearDisplaceQuarks( disp_quarks, q1, q2, q3, qindices );
       // The return
       multi1d<LatticeComplex> d( 1 ); //( 6 )
       // Contract over color indices with antisym tensors
-			d[ 0 ] = colorContract( peekSpin( disp_quarks[ 0 ].find( quark[ 0 ].displacement ) ->second,
-                                        quark[ 0 ].spin ),
-                              peekSpin( disp_quarks[ 1 ].find( quark[ 1 ].displacement ) ->second,
-                                        quark[ 1 ].spin ),
-                              peekSpin( disp_quarks[ 2 ].find( quark[ 2 ].displacement ) ->second,
-                                        quark[ 2 ].spin ) 
-														);
+
+      LatticeColorVector c0 = peekSpin( disp_quarks[ 0 ].find( quark[ qindices[ 0 ] ].displacement ) ->second,
+					                              quark[ qindices[ 0 ] ].spin );
+      LatticeColorVector c1 = peekSpin( disp_quarks[ 1 ].find( quark[ qindices[ 1 ] ].displacement ) ->second,
+					                              quark[ qindices[ 1 ] ].spin );
+      LatticeColorVector c2 = peekSpin( disp_quarks[ 2 ].find( quark[ qindices[ 2 ] ].displacement ) ->second,
+					                              quark[ qindices[ 2 ] ].spin );
+/*
+      multi1d<LatticeFermion> q( 3 );
+      // Rotate the quarks up-front.
+      // NOTE: this step assumes the spin rotation commutes with the
+      // quark smearing and the displacement
+      // However, we are careful about the ordering of the smearing and
+      // the displacement
+      q[ 0 ] = rotateMat() * q1;
+      q[ 1 ] = rotateMat() * q2;
+      q[ 2 ] = rotateMat() * q3;
+*/
+      // Contract over color indices with antisym tensors
+      d[ 0 ] = colorContract( c0, c1, c2 );
+
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
-			END_CODE();
+      END_CODE();
       return d;
     } // multi1d<LatticeComplex> GroupBaryonQQQ::operator()
 
