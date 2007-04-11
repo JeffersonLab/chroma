@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.84 2007-03-22 20:20:28 bjoo Exp $
+# $Id: Makefile.am,v 3.85 2007-04-11 03:44:27 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -17,7 +17,7 @@ nobase_include_HEADERS = \
         boundcond.h create_state.h fermact.h \
 	fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h handle.h lib.h \
 	linearop.h eo_linop.h eoprec_linop.h eoprec_constdet_linop.h eoprec_logdet_linop.h \
-	lmdagm.h objfactory.h objfunctor.h primitives.h \
+	ldag.h lmdagm.h objfactory.h objfunctor.h primitives.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h typetraits.h \
         named_obj.h polylinop.h \
         tprec_linop.h \
@@ -48,8 +48,10 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
 	actions/ferm/invert/invcg1_array.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
-	actions/ferm/invert/invmr.h actions/ferm/invert/minvcg.h \
+	actions/ferm/invert/invmr.h \
+        actions/ferm/invert/minvcg.h \
         actions/ferm/invert/minvcg_array.h \
+        actions/ferm/invert/minvmr.h \
 	actions/ferm/invert/minv_rel_cg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
 	actions/ferm/invert/invsumr.h actions/ferm/invert/minvsumr.h \
@@ -71,6 +73,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_polyprec_factory.h \
 	actions/ferm/invert/syssolver_polyprec_aggregate.h \
 	actions/ferm/invert/syssolver_cg_params.h \
+	actions/ferm/invert/syssolver_mr_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
@@ -78,6 +81,11 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
 	actions/ferm/invert/syssolver_mdagm_cg_array.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
+	actions/ferm/invert/multi_syssolver_mr_params.h \
+	actions/ferm/invert/multi_syssolver_linop.h \
+	actions/ferm/invert/multi_syssolver_linop_factory.h \
+	actions/ferm/invert/multi_syssolver_linop_aggregate.h \
+	actions/ferm/invert/multi_syssolver_linop_mr.h \
 	actions/ferm/invert/multi_syssolver_mdagm.h \
 	actions/ferm/invert/multi_syssolver_mdagm_factory.h \
 	actions/ferm/invert/multi_syssolver_mdagm_aggregate.h \
@@ -750,6 +758,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/invcg2.cc \
 	actions/ferm/invert/invcg2_array.cc \
 	actions/ferm/invert/invcg2_timing_hacks.cc \
+        actions/ferm/invert/invmr.cc \
 	actions/ferm/invert/invsumr.cc \
 	actions/ferm/invert/inv_gmresr_cg_array.cc \
 	actions/ferm/invert/inv_minres_array.cc \
@@ -767,6 +776,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
 	actions/ferm/invert/syssolver_cg_params.cc \
+	actions/ferm/invert/syssolver_mr_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
@@ -775,6 +785,9 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \
+	actions/ferm/invert/multi_syssolver_mr_params.cc \
+	actions/ferm/invert/multi_syssolver_linop_aggregate.cc \
+	actions/ferm/invert/multi_syssolver_linop_mr.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
@@ -950,7 +963,6 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc
 #	actions/ferm/invert/invbicg.cc
-#       actions/ferm/invert/invmr.cc 
 #       util/gauge/eesu2.cc 
 
 
