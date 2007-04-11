@@ -1,4 +1,4 @@
-// $Id: scalar_loops_s.cc,v 3.2 2007-04-11 21:44:46 egregory Exp $
+// $Id: scalar_loops_s.cc,v 3.3 2007-04-11 21:51:54 egregory Exp $
 
 #include "chromabase.h"
 #include"scalar_loops_s.h"
@@ -73,7 +73,7 @@ namespace Chroma
 				  LatticeStaggeredFermion & psi_fuzz, 
 				       int isample)
   {
-    UnorderedSet timeslice;
+    Set timeslice;
     timeslice.make(TimeSliceFunc(Nd-1));
 
     LatticeComplex TrG_s0 ; 
@@ -90,7 +90,7 @@ namespace Chroma
 				      LatticeStaggeredFermion & psi_fuzz, 
 					   int isample)
   {
-    UnorderedSet timeslice;
+    Set timeslice;
     timeslice.make(TimeSliceFunc(Nd-1));
 
     LatticeStaggeredFermion psi_sca1 ;
