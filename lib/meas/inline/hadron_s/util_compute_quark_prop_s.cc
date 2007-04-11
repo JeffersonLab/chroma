@@ -80,7 +80,8 @@ namespace Chroma {
 
     if( gauge_shift ){
 
-      if((type_of_src == LOCAL_SRC) || (type_of_src == FUZZED_SRC)){
+      //      if((type_of_src == LOCAL_SRC) || (type_of_src == FUZZED_SRC)){
+      if((type_of_src == LOCAL_SRC)){
 	problem = true;
 	more_info = 
 	  "Source type not gauge invariant.\nProbably not what you want.";
@@ -139,6 +140,8 @@ namespace Chroma {
     LatticeStaggeredFermion q_source_fuzz ; 
     int ncg_had = 0 ;
 
+static int flag=1;
+
     QDPIO::cout << "Inversion for Color =  " << color_source << endl;
     q_source = zero ;
 
@@ -180,7 +183,6 @@ namespace Chroma {
 
 	  PropIndexTodelta(src_ind, coord) ;
 	  srcfil(q_source, coord,color_source ) ;
-
 
 	  fuzz_smear(u_smr, q_source,q_source_fuzz, fuzz_width, j_decay) ;
 
@@ -241,7 +243,6 @@ namespace Chroma {
     // safety checks
     check_qprop_source_compatability(type_of_src, gauge_shift, sym_shift,
 				     QPROP_NO_FUZZ);
-
 
 
     if( type_of_src == LOCAL_SRC ){
