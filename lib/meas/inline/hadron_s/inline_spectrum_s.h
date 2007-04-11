@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.2 2006-09-20 20:28:03 edwards Exp $
+// $Id: inline_spectrum_s.h,v 3.3 2007-04-11 14:57:06 egregory Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -42,6 +42,7 @@ namespace Chroma
       bool disconnected_local ;         // disconnected loops local
       bool disconnected_fuzz  ;         // disconnected loops fuzz
       bool ps4link_singlet_conn ;  
+      bool ps4link_singlet_conn_fuzz ;  
       bool eight_pions;                 // all pseudoscalar meson tastes
       bool eight_scalars;               // all scalar meson tastes
       bool eight_rhos;                  // all vector meson tastes
