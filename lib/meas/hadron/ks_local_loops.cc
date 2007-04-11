@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 3.1 2006-06-11 06:30:33 edwards Exp $ ($Date: 2006-06-11 06:30:33 $) */
+/* $Id: ks_local_loops.cc,v 3.2 2007-04-11 15:08:10 egregory Exp $ ($Date: 2007-04-11 15:08:10 $) */
 
 
 #include "fermact.h"
@@ -522,7 +522,7 @@ void ks_local_loops(
 
 //  fuzz the loops
 
-void ks_fuzz_loops(
+void ks_fuzz_loops_X(
 		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi ,
@@ -660,6 +660,195 @@ void ks_fuzz_loops(
   eta4_loop.dump(xml_out) ;
   eta4_kilcup_loop.dump(xml_out) ;
   eta0_loop.dump(xml_out) ;
+
+  // end of this section
+  pop(xml_out);
+
+}
+
+  /**********************************************************************/
+
+//  fuzz the loops
+
+void ks_fuzz_loops(
+		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
+		 LatticeStaggeredFermion & q_source, 
+		 LatticeStaggeredFermion & psi ,
+		 LatticeStaggeredFermion & psi_fuzz ,
+		 const multi1d<LatticeColorMatrix> & u,
+		 const multi1d<LatticeColorMatrix> & u_smr,
+		 XMLWriter & xml_out, 
+		 bool gauge_shift,
+		 bool sym_shift,
+		 bool loop_checkpoint,
+		 int t_length,
+		 Real Mass,
+		 int Nsamp,
+		 Real RsdCG,
+		 int CFGNO,
+		 VolSrc_type volume_source,
+		 int fuzz_width, 
+		 int src_seperation,
+		 int j_decay){
+
+  int src_tslice=0;
+  int src_color_ind = 0;
+  int src_parity_ind = 0;
+  int src_corner_ind =0;
+  Real coverage_fraction;
+  int j;
+  int fuzz_index;
+
+    push(xml_out,"fuzz_loops_s");
+
+    // write common parameters
+    write(xml_out, "Mass" , Mass);
+
+
+    write_out_source_type(xml_out, volume_source);
+
+
+    write(xml_out, "Number_of_samples" , Nsamp);
+    write(xml_out, "fuzz_width" , fuzz_width);
+
+
+    Stag_shift_option type_of_shift ; 
+    if( gauge_shift ){
+      if(sym_shift){
+	type_of_shift = SYM_GAUGE_INVAR ;
+      }else{
+	type_of_shift = GAUGE_INVAR ;
+      }
+    }else{
+      if(sym_shift){
+	type_of_shift = SYM_NON_GAUGE_INVAR ;
+      }else{
+	type_of_shift = NON_GAUGE_INVAR ;
+      }
+    }
+
+   // set up the loop code
+    local_scalar_loop               scalar_one_loop(t_length,Nsamp,
+						    u,type_of_shift) ;
+    non_local_scalar_loop           scalar_two_loop(t_length,Nsamp,
+						    u,type_of_shift) ;
+    threelink_pseudoscalar_loop     eta3_loop(t_length,Nsamp,
+					      u,type_of_shift) ;
+    fourlink_pseudoscalar_loop      eta4_loop(t_length,Nsamp,
+					      u,type_of_shift) ;
+
+    fourlink_pseudoscalar_kilcup_loop eta4_kilcup_loop(t_length, Nsamp,
+						       u,type_of_shift) ;
+
+    // for test purposes
+    zerolink_pseudoscalar_loop        eta0_loop(t_length, Nsamp,
+						u,type_of_shift);
+
+
+
+    // fuzzed loops here
+    local_scalar_loop_fuzz       scalar_one_loop_fuzz(t_length, Nsamp, u,
+						      type_of_shift);
+    non_local_scalar_loop_fuzz   scalar_two_loop_fuzz(t_length,Nsamp, u,
+						      type_of_shift);
+    threelink_pseudoscalar_loop_fuzz     eta3_loop_fuzz(t_length,Nsamp,
+							u,type_of_shift);
+    fourlink_pseudoscalar_loop_fuzz      eta4_loop_fuzz(t_length,Nsamp,
+							u,type_of_shift);
+
+    fourlink_pseudoscalar_kilcup_loop_fuzz eta4_kilcup_loop_fuzz(t_length,
+								 Nsamp, u,
+								type_of_shift);
+
+
+
+    // set up the loop code
+
+    // Seed the RNG with the cfg number for now
+    QDP::Seed seed;
+    seed = CFGNO;
+    RNG::setrn(seed);
+
+
+    for(int i = 0; i < Nsamp; ++i){
+      psi = zero;                // note this is ``zero'' and not 0
+      RNG::savern(seed);
+      QDPIO::cout << "SEED = " << seed << endl;
+
+      QDPIO::cout << "Noise sample: " << i << endl;
+
+      // Fill the volume with random noise 
+      coverage_fraction = fill_volume_source(q_source, volume_source,
+					     t_length, &src_tslice,
+					     &src_color_ind, &src_parity_ind,
+					     &src_corner_ind, src_seperation,
+					     j_decay);
+
+      // Compute the solution vector for the particular source
+      SystemSolverResults_t res = (*qprop)(psi, q_source);
+      
+      push(xml_out,"Qprop_noise");
+      write(xml_out, "Noise_number" , i);
+      write(xml_out, "RsdCG" , RsdCG);
+      write(xml_out, "n_count", res.n_count);
+      write(xml_out, "Seed" , seed);
+      pop(xml_out);
+
+      fuzz_smear(u_smr, psi,psi_fuzz, fuzz_width, j_decay) ;
+
+
+      // compute the un-fuzzed operators
+      scalar_one_loop.compute(q_source,psi,i);
+      scalar_two_loop.compute(q_source,psi,i);
+      eta3_loop.compute(q_source,psi,i);
+      eta4_loop.compute(q_source,psi,i);
+      eta4_kilcup_loop.compute(psi,i, Mass);
+      eta0_loop.compute(q_source,psi,i);
+
+      // now compute the fuzzed operators
+      scalar_one_loop_fuzz.compute(q_source,psi_fuzz,i);
+      scalar_two_loop_fuzz.compute(q_source,psi_fuzz,i) ;
+      eta3_loop_fuzz.compute(q_source,psi_fuzz,i) ;
+      eta4_loop_fuzz.compute(q_source,psi_fuzz,i) ;
+      eta4_kilcup_loop_fuzz.compute(psi_fuzz,i, Mass);
+
+
+
+
+      if(loop_checkpoint){
+        //write each measurement to the XML file
+
+	scalar_one_loop.dump(xml_out,i) ;
+	scalar_two_loop.dump(xml_out,i) ;
+	eta3_loop.dump(xml_out,i) ;
+	eta4_loop.dump(xml_out,i) ;
+	eta4_kilcup_loop.dump(xml_out,i) ;
+        eta0_loop.dump(xml_out,i) ;
+
+	scalar_one_loop_fuzz.dump(xml_out,i) ;
+	scalar_two_loop_fuzz.dump(xml_out,i) ;
+	eta3_loop_fuzz.dump(xml_out,i) ;
+	eta4_loop_fuzz.dump(xml_out,i) ;
+	eta4_kilcup_loop_fuzz.dump(xml_out,i) ;
+      }
+    
+    
+    } // Nsamples
+
+    // write output from the loop calc
+  scalar_one_loop.dump(xml_out) ;
+  scalar_two_loop.dump(xml_out) ;
+  eta3_loop.dump(xml_out) ;
+  eta4_loop.dump(xml_out) ;
+  eta4_kilcup_loop.dump(xml_out) ;
+
+  eta0_loop.dump(xml_out) ;
+
+  scalar_one_loop_fuzz.dump(xml_out) ;
+  scalar_two_loop_fuzz.dump(xml_out) ;
+  eta3_loop_fuzz.dump(xml_out) ;
+  eta4_loop_fuzz.dump(xml_out) ;
+  eta4_kilcup_loop_fuzz.dump(xml_out) ;
 
   // end of this section
   pop(xml_out);

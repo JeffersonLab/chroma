@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: loops_s.h,v 3.1 2007-04-11 15:06:52 egregory Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H
@@ -68,10 +68,11 @@ namespace Chroma {
       char *cnum;
       string snum;
 
+
       cnum=(char*)malloc(10*sizeof(char));
 
       sprintf(cnum,"%d",i);
-
+  
       snum=cnum;
       free(cnum);
 
@@ -84,8 +85,10 @@ namespace Chroma {
       write(xml_out, inner_tag, corr_fn[i]);
       pop(xml_out);
       pop(xml_out);
-    }
+   }
 
+
+ 
     staggered_loops(int t_len, int t_sample, 
 		    const multi1d<LatticeColorMatrix> & uin, 
 		    Stag_shift_option type_of_shift_in) : 
