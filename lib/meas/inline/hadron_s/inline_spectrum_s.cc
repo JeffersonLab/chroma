@@ -117,6 +117,22 @@ namespace Chroma {
 			 Real RsdCG, Real Mass, 
 			 int j_decay, int t_source, int t_length);
 
+  int compute_vary_singlet_ps(LatticeStaggeredFermion & psi,
+       	           LatticeStaggeredPropagator & quark_propagator_Lsink_Lsrc,
+	       	   LatticeStaggeredPropagator & quark_propagator_Fsink_Lsrc,
+		   LatticeStaggeredPropagator & quark_propagator_Lsink_Fsrc,
+		   LatticeStaggeredPropagator & quark_propagator_Fsink_Fsrc,
+		   stag_src_type type_of_src,
+		   bool gauge_shift,
+		   bool sym_shift,
+		   const multi1d<LatticeColorMatrix> & u ,
+		   const multi1d<LatticeColorMatrix> & u_smr ,
+		   Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
+		   XMLWriter & xml_out,
+		   Real RsdCG, Real Mass, 
+		   int j_decay, int t_source, int t_length, 
+			      int fuzz_width);
+
 }
 
 // ----------
@@ -177,6 +193,7 @@ namespace Chroma {
     read(paramtop, "disconnected_local", param.disconnected_local);
     read(paramtop, "disconnected_fuzz", param.disconnected_fuzz);
     read(paramtop, "singletPs_Conn_local", param.ps4link_singlet_conn);
+    read(paramtop, "singletPs_Conn_local_fuzz", param.ps4link_singlet_conn_fuzz);
 
     read(paramtop, "eight_pions", param.eight_pions);
     read(paramtop, "eight_scalars", param.eight_scalars);
@@ -505,7 +522,7 @@ namespace Chroma {
 
 
     if( do_fuzzing ){
-      //      type_of_src = FUZZED_SRC ;
+      type_of_src = FUZZED_SRC ;
 
       QDPIO::cout << "FUZZED SOURCE INVERSIONS"  << endl;
 
@@ -513,6 +530,7 @@ namespace Chroma {
 	psi = zero;            // note this is ``zero'' and not 0
 
 	const int src_ind = 0 ;
+
 	ncg_had += compute_quark_propagator_s(psi,type_of_src, 
 					      gauge_shift, sym_shift, 
 					      fuzz_width,
@@ -538,7 +556,7 @@ namespace Chroma {
     return ncg_had;
   }
 /***************************************************************************/
-  int
+   int
   MakeCornerProp(LatticeStaggeredFermion & psi,
 		 bool gauge_shift, bool sym_shift,
 		 const multi1d<LatticeColorMatrix> & u ,
@@ -680,6 +698,7 @@ namespace Chroma {
 
     bool do_Baryon_local         = params.param.Baryon_local;
     bool do_ps4_singlet          = params.param.ps4link_singlet_conn;
+    bool do_ps4_singlet_fuzz     = params.param.ps4link_singlet_conn_fuzz;
 
     bool do_Baryon_vary          = params.param.Baryon_vary ;
     bool do_LocalPion_vary       = params.param.LocalPion_vary;
@@ -696,35 +715,37 @@ namespace Chroma {
     bool do_variational_spectra  = false;
 
     bool need_basic_8            = false;  
-    bool need_local_corner_prop  = false;
+
     bool need_fuzzed_corner_prop = false;
 
     bool done_ps4_singlet        = false;
+    bool done_ps4_singlet_fuzz   = false;
     bool done_local_baryons      = false;
+    bool done_fuzzed_baryons      = false;
     bool done_local_disc_loops   = false;
+    bool done_fuzzed_disc_loops   = false;
 
-    bool have_basic_8            = false;
-    bool have_local_corner_prop  = false;
-    bool have_fuzzed_corner_prop = false;
 
     //shouldnt be hard-coded
     stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
 
 
-    if( do_Baryon_vary || do_LocalPion_vary){
+    if( ( do_Baryon_vary || do_LocalPion_vary)|| 
+	(do_fuzzed_disc_loops||do_ps4_singlet_fuzz)){
+      // need smeared links
       do_fuzzing = true ;
     }
 
-    if ( do_Baryon_vary || do_LocalPion_vary){
+    if (( do_Baryon_vary || do_LocalPion_vary)||(do_ps4_singlet_fuzz)) {
+
+      // make the fuzzed corner props
+      // (LsrcLsnk, LsrcFsnk,FsrcLsink,FsrcFsnk)
+
       do_variational_spectra = true;
     }
 
     if( do_8_pions || do_8_scalars || do_8_rhos){
       need_basic_8 = true;
-    }
-
-    if ((do_Baryon_local) || (do_ps4_singlet)){
-      need_local_corner_prop = true;
     }
 
 
@@ -817,21 +838,24 @@ namespace Chroma {
     LatticeStaggeredFermion q_source ; 
 
 
-    // Do disconnected loops --- independent of other measurements
+    // Do local disconnected loops if we are not going to do fuzzed 
+    //   disconnected loops.
 
-    if ((  do_local_disc_loops ) && (do_stoch_conn_corr )){
+    if (((  do_local_disc_loops ) && (do_stoch_conn_corr )) && 
+	(!do_fuzzed_disc_loops)){
       push(xml_out, "disconnected_loops");
       ks_local_loops_and_stoch_conn(qprop, q_source, psi , u, xml_out, 
 				    gauge_shift, sym_shift, loop_checkpoint,
-				    t_length, Mass, Nsamp, RsdCG, CFGNO, volume_source, 
-				    src_seperation, j_decay);
+				    t_length, Mass, Nsamp, RsdCG, CFGNO, 
+				    volume_source, src_seperation, j_decay);
       pop(xml_out);
 
       done_local_disc_loops = true;
     }
 
 
-    if(( do_local_disc_loops  )  && (!done_local_disc_loops)){
+    if((( do_local_disc_loops  )  && (!done_local_disc_loops))&&
+       (!do_fuzzed_disc_loops)){
       push(xml_out, "disconnected_loops");
 
       ks_local_loops(qprop, q_source, psi , u, xml_out, 
@@ -877,7 +901,10 @@ namespace Chroma {
       // if we need to do 4-link singlets and local baryons, do them here
       // so we can re-use the stag_pro[0] as the local corner prop
 
-      if(( do_ps4_singlet ) && (!done_ps4_singlet)) {
+      if((( do_ps4_singlet ) && (!done_ps4_singlet))&&(!do_ps4_singlet_fuzz)) {
+	//only do the non-fuzzed ps singlet if we are not doing the fuzzed 
+	// ps singlet connected, as the latter does both
+
 	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
 
 	ncg_had += 
@@ -909,7 +936,7 @@ namespace Chroma {
       }
 
  
-    } // basic 8 and no fuzzing
+    } // basic 8 
 
 
 
@@ -943,44 +970,6 @@ namespace Chroma {
 					quark_propagator_Fsink_Fsrc );
 
 
-	//re-use quark_propagator_Lsink_Lsrc here for 
-	// 4-link singlets and local baryons.
-
-	if(( do_ps4_singlet ) && (!done_ps4_singlet)) {
-
-	  type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
-
-	  ncg_had += 
-	    compute_singlet_ps(psi,quark_propagator_Lsink_Lsrc, type_of_src, 
-			       gauge_shift, sym_shift, u, qprop, xml_out, 
-			       RsdCG, Mass, j_decay, t_source, t_length);
-
-	  done_ps4_singlet = true;
-	}
-
-
-	if(( do_Baryon_local ) && (!done_local_baryons)) {
-
-	  push(xml_out, "baryon_correlators");
-
-	  // describe the source
-	  string NN ;
-	  write(xml_out, "source_time", t_source);
-	  push(xml_out, "smearing_info");
-	  NN = "L" ;
-	  write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
-	  pop(xml_out);
-	  string b_tag("srcLLL_sinkLLL_nucleon") ;
-	  ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc,
-			    quark_propagator_Lsink_Lsrc,
-			    quark_propagator_Lsink_Lsrc,
-			    xml_out, j_decay,
-			    t_length) ;
-
-	  pop(xml_out);
-	  done_local_baryons = true;
-	}
-
 
 
 	if( do_Baryon_vary ) {
@@ -991,6 +980,10 @@ namespace Chroma {
 				quark_propagator_Fsink_Lsrc,
 				quark_propagator_Lsink_Fsrc,
 				quark_propagator_Fsink_Fsrc) ;
+
+	  done_local_baryons = true;
+	  done_fuzzed_baryons = true;
+
 	}
 
 
@@ -1006,8 +999,28 @@ namespace Chroma {
 
 
 
-	// if we need to do 4-link singlets and local baryons, do them here so
-	// we can re-use quark_propagator_Lsink_Lsrc as the local corner prop
+
+	if(( do_ps4_singlet_fuzz ) && (!done_ps4_singlet_fuzz)) {
+
+
+	  ncg_had += 
+	    compute_vary_singlet_ps(psi, quark_propagator_Lsink_Lsrc,
+				    quark_propagator_Fsink_Lsrc,
+				    quark_propagator_Lsink_Fsrc,
+				    quark_propagator_Fsink_Fsrc,
+				    type_of_src, gauge_shift, sym_shift, u ,
+				    u_smr , qprop, xml_out, RsdCG, Mass, 
+				    j_decay, t_source, t_length,fuzz_width);
+
+	  done_ps4_singlet = true;
+	  done_ps4_singlet_fuzz = true;
+
+	}
+
+
+	// if we need to do local 4-link singlets and local baryons, 
+	// do them here so we can re-use quark_propagator_Lsink_Lsrc 
+	// as the local corner prop
 
 	if(( do_ps4_singlet ) && (!done_ps4_singlet)) {
 	  type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
@@ -1047,7 +1060,9 @@ namespace Chroma {
 
 
 
-      if(( do_fuzzed_disc_loops  )) {
+      // still have the smeared links if needed for fuzzed loops
+
+      if(( do_fuzzed_disc_loops  )&&(!done_fuzzed_disc_loops)) {
 	push(xml_out, "disconnected_loops");
 	ks_fuzz_loops(qprop,q_source, psi ,psi_fuzz , u, u_smr,xml_out, 
 		      gauge_shift, sym_shift, loop_checkpoint, t_length, Mass, 
@@ -1055,6 +1070,8 @@ namespace Chroma {
 		      src_seperation, j_decay);
 
 	pop(xml_out);
+	done_local_disc_loops = true;
+	done_fuzzed_disc_loops  = true;
       }
 
 
