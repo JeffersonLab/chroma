@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 3.5 2006-11-18 04:40:18 kostas Exp $
+// $Id: quarkprop4_s.cc,v 3.6 2007-04-11 03:42:33 edwards Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -11,6 +11,7 @@
 #include "actions/ferm/qprop/quarkprop4_s.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/multi_syssolver_linop_factory.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_factory.h"
 
 
@@ -205,6 +206,23 @@ namespace Chroma
 									paramtop,
 									invParam.path,
 									linOp(state));
+  }
+
+
+  //! Return a linear operator solver for this action to solve (M+shift_i)*psi_i = chi 
+  /*! \ingroup qprop */
+  template<>
+  LinOpMultiSystemSolver<LF>*
+  StaggeredTypeFermAct<LF,LCM,LCM>::mInvLinOp(Handle< FermState<LF,LCM,LCM> > state,
+					      const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    return TheLinOpStagFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
+									     paramtop,
+									     invParam.path,
+									     linOp(state));
   }
 
 

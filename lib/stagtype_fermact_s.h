@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stagtype_fermact_s.h,v 3.1 2006-10-19 16:01:26 edwards Exp $
+// $Id: stagtype_fermact_s.h,v 3.2 2007-04-11 03:43:26 edwards Exp $
 
 /*! @file
  * @brief Staggered-like fermion actions
@@ -40,7 +40,13 @@ namespace Chroma
     virtual MdagMSystemSolver<T>* invMdagM(Handle< FermState<T,P,Q> > state,
 					   const GroupXML_t& invParam) const;
 
+    //! Return a multi-shift linear operator solver for this action to solve (M+shift)*psi=chi 
+    /*! Default implementation */
+    virtual LinOpMultiSystemSolver<T>* mInvLinOp(Handle< FermState<T,P,Q> > state,
+						 const GroupXML_t& invParam) const;
+
     //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+    /*! Default implementation */
     virtual MdagMMultiSystemSolver<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
 						 const GroupXML_t& invParam) const;
 
