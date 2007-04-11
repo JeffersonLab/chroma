@@ -1,5 +1,8 @@
 // -*- C++ -*-
-// $Id: lmdagm.h,v 3.2 2007-02-22 21:11:45 bjoo Exp $
+// $Id: lmdagm.h,v 3.3 2007-04-11 03:44:00 edwards Exp $
+/*! \file
+ * \brief M^dag*M composition of a linear operator
+ */
 
 #ifndef __lmdagm_h__
 #define __lmdagm_h__
