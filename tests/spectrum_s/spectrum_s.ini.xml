@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.ini.xml,v 3.1 2006-08-24 21:07:11 edwards Exp $
+; $Id: spectrum_s.ini.xml,v 3.2 2007-04-11 22:10:01 egregory Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -28,7 +28,8 @@
 
 <fuzz_width>2</fuzz_width>
  <disconnected_local>true</disconnected_local>
- <disconnected_fuzz>false</disconnected_fuzz>
+ <disconnected_fuzz>true</disconnected_fuzz>
+<singletPs_Conn_local_fuzz>true</singletPs_Conn_local_fuzz>
 <Number_sample>4</Number_sample>
 <CFGNO>234</CFGNO>
 <volume_src>T_DILUTE_GAUSS</volume_src>
