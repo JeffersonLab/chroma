@@ -6,10 +6,10 @@
 type="real_array" comparison="relative" tolerance="0.001"/>
 
 
-<assertion xpath="/chroma/InlineObservables/elem[1]/spectrum_s/disconnected_loops/local_loops_s/loop_gamma5_cross_gamma5/MeanError/loop" type="real_array" comparison="relative" tolerance="0.001"/>
+<assertion xpath="/chroma/InlineObservables/elem[1]/spectrum_s/disconnected_loops//loop_gamma5_cross_gamma5/MeanError/loop" type="real_array" comparison="relative" tolerance="0.001"/>
 
 
-<assertion xpath="/chroma/InlineObservables/elem[1]/spectrum_s/Computation_4link_pseudoscalar/SingletPseudoscalar/gamma5_CROSS_one/Pi" type="real_array" comparison="relative" tolerance="0.001"/>
+<assertion xpath="/chroma/InlineObservables/elem[1]/spectrum_s/Computation_4link_pseudoscalar/LocalSource/LocalSink/SingletPseudoscalar/gamma5_CROSS_one/Pi" type="real_array" comparison="relative" tolerance="0.001"/>
 
 
 </assertions>
