@@ -2,7 +2,7 @@
 
 <chroma>
 <annotation>
-; $Id: spectrum_s.ini.xml,v 3.2 2006-09-21 19:45:55 edwards Exp $
+; $Id: spectrum_s.ini.xml,v 3.3 2007-04-14 20:00:55 edwards Exp $
 ;
 ; Chroma input file for staggered Spectrum_s measurement.
 ;
@@ -33,49 +33,49 @@
       <!-- Staggered spectrum -->
       <Name>SPECTRUM_S</Name>
       <Frequency>1</Frequency>
-      <Param>
-        <version>9</version>
+<Param>
+ <version>9</version>
  
-        <Meson_local>true</Meson_local>
-        <Baryon_local>true</Baryon_local>
-        <Baryon_vary>true</Baryon_vary>
-        <singletPs_Conn_local>true</singletPs_Conn_local>
-        <eight_pions>true</eight_pions>
-        <eight_scalars>true</eight_scalars>
-        <eight_rhos>true</eight_rhos>
-        <LocalPion_vary>true</LocalPion_vary>
+ <Meson_local>true</Meson_local>
+ <Baryon_local>true</Baryon_local>
+ <Baryon_vary>true</Baryon_vary>
+ <singletPs_Conn_local>true</singletPs_Conn_local>
+ <eight_pions>true</eight_pions>
+ <eight_scalars>true</eight_scalars>
+ <eight_rhos>false</eight_rhos>
+<LocalPion_vary>true</LocalPion_vary>
 
-        <fuzz_width>2</fuzz_width>
-        <disconnected_local>true</disconnected_local>
-        <disconnected_fuzz>false</disconnected_fuzz>
-        <Number_sample>4</Number_sample>
-        <CFGNO>234</CFGNO>
-        <volume_src>T_DILUTE_GAUSS</volume_src>
+<fuzz_width>2</fuzz_width>
+ <disconnected_local>true</disconnected_local>
+ <disconnected_fuzz>true</disconnected_fuzz>
+<singletPs_Conn_local_fuzz>true</singletPs_Conn_local_fuzz>
+<Number_sample>4</Number_sample>
+<CFGNO>234</CFGNO>
+<volume_src>T_DILUTE_GAUSS</volume_src>
 
-        <gauge_invar_oper>true</gauge_invar_oper>
-        <sym_shift_oper>true</sym_shift_oper>
-        <loop_checkpoint>true</loop_checkpoint>
-        <src_seperation>4</src_seperation>
+<gauge_invar_oper>true</gauge_invar_oper>
+<sym_shift_oper>true</sym_shift_oper>
+<loop_checkpoint>true</loop_checkpoint>
+<src_seperation>4</src_seperation>
 
-	<!-- This is not supported here -->
-        <!-- do_gauge_transform>false</do_gauge_transform -->
+<do_gauge_transform>false</do_gauge_transform>
 
-        <GFAccu>2.0e-6</GFAccu>
-        <OrPara>1.8</OrPara>
-        <GFMax>500</GFMax>
+<GFAccu>2.0e-6</GFAccu>
+<OrPara>1.8</OrPara>
+<GFMax>500</GFMax>
 
-        <j_decay>3</j_decay>
-        <nrow>4 4 4 4</nrow>
-        <boundary>1 1 1 1</boundary>
-        <t_srce> 0 0 0 0 </t_srce>
-      </Param>
+<j_decay>3</j_decay>
+ <nrow>4 4 4 4</nrow>
+ <boundary>1 1 1 1</boundary>
+<t_srce> 0 0 0 0 </t_srce>
+</Param>
 
-      <Inversion>
-        <Mass>0.1</Mass>
-        <u0>0.463032</u0>
-        <RsdCG>0.00001</RsdCG>
-        <MaxCG>3000</MaxCG>
-      </Inversion>
+<Inversion>
+<Mass>0.1</Mass>
+<u0>0.463032</u0>
+<RsdCG>0.00001</RsdCG>
+<MaxCG>3000</MaxCG>
+</Inversion>
 
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
