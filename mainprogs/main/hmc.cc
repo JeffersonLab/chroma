@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.13 2007-02-04 22:49:13 edwards Exp $
+// $Id: hmc.cc,v 3.14 2007-04-16 15:49:48 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -23,6 +23,8 @@ namespace Chroma
     std::string   save_prefix;
     QDP_volfmt_t  save_volfmt;
     std::string   inline_measurement_xml;
+    bool          repro_checkP;
+    int           repro_check_frequency;
   };
   
   void read(XMLReader& xml, const std::string& path, MCControl& p) 
@@ -40,7 +42,27 @@ namespace Chroma
       read(paramtop, "./SaveInterval", p.save_interval);
       read(paramtop, "./SavePrefix", p.save_prefix);
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
-      
+
+
+      // Default values: repro check is on, frequency is 10%
+      p.repro_checkP = true;
+      p.repro_check_frequency = 10;
+
+
+      // Now overwrite with user values
+      if( paramtop.count("./ReproCheckP") == 1 ) {
+	// Read user value if given
+	read(paramtop, "./ReproCheckP", p.repro_checkP);
+      }
+
+      // If we do repro checking, read the frequency
+      if( p.repro_checkP ) { 
+	if( paramtop.count("./ReproCheckFrequency") == 1 ) {
+	  // Read user value if given
+	  read(paramtop, "./ReproCheckFrequency", p.repro_check_frequency);
+	}
+      }
+
       if( paramtop.count("./InlineMeasurements") == 0 ) {
 	XMLBufferWriter dummy;
 	push(dummy, "InlineMeasurements");
@@ -80,6 +102,11 @@ namespace Chroma
       write(xml, "SaveInterval", p.save_interval);
       write(xml, "SavePrefix", p.save_prefix);
       write(xml, "SaveVolfmt", p.save_volfmt);
+      write(xml, "ReproCheckP", p.repro_checkP);
+      if( p.repro_checkP ) { 
+	write(xml, "ReproCheckFrequency", p.repro_check_frequency);
+      }
+
       xml << p.inline_measurement_xml;
       
       pop(xml);
@@ -251,7 +278,15 @@ namespace Chroma
     END_CODE();
   }
 
+
  
+  // Predeclare this 
+  bool checkReproducability( const multi1d<LatticeColorMatrix>& P_new, 
+			     const multi1d<LatticeColorMatrix>& Q_new,
+			     const QDP::Seed& seed_new,
+			     const multi1d<LatticeColorMatrix>& P_old,
+			     const multi1d<LatticeColorMatrix>& Q_old,
+			     const QDP::Seed& seed_old );
 
   template<typename UpdateParams>
   void doHMC(multi1d<LatticeColorMatrix>& u,
@@ -329,21 +364,109 @@ namespace Chroma
 	write(xml_out, "WarmUpP", warm_up_p);
 	write(xml_log, "WarmUpP", warm_up_p);
 
-        QDPIO::cout << "Before HMC trajectory call" << endl;
 
-	// Do the trajectory without accepting 
-	swatch.reset();
-	swatch.start();
-	theHMCTrj( gauge_state, warm_up_p );
-	swatch.stop();
 
-        QDPIO::cout << "After HMC trajectory call: time= "
-		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
 
-	write(xml_out, "seconds_for_trajectory", swatch.getTimeInSeconds());
-	write(xml_log, "seconds_for_trajectory", swatch.getTimeInSeconds());
+	// Check if I need to do any reproducibility testing
+	if( mc_control.repro_checkP 
+	    && (cur_update % mc_control.repro_check_frequency == 0 ) 
+	    ) { 
 
+	  // Yes - reproducibility trajectory
+	  // Save fields and RNG at start of trajectory
+	  QDPIO::cout << "Saving start config and RNG seed for reproducability test" << endl;
+
+	  GaugeFieldState repro_bkup_start( gauge_state.getP(), gauge_state.getQ());
+	  QDP::Seed rng_seed_bkup_start;
+	  QDP::RNG::savern(rng_seed_bkup_start);
+	  
+	  // DO the trajectory
+	  QDPIO::cout << "Before HMC trajectory call" << endl;
+	  swatch.reset(); 
+	  swatch.start();
+	  theHMCTrj( gauge_state, warm_up_p ); 
+	  swatch.stop(); 
+	  
+	  QDPIO::cout << "After HMC trajectory call: time= "
+		      << swatch.getTimeInSeconds() 
+		      << " secs" << endl;
+	  
+	  write(xml_out, "seconds_for_trajectory", swatch.getTimeInSeconds());
+	  write(xml_log, "seconds_for_trajectory", swatch.getTimeInSeconds());
+
+	  // Save the fields and RNG at the end
+	  QDPIO::cout << "Saving end config and RNG seed for reproducability test" << endl;
+	  GaugeFieldState repro_bkup_end( gauge_state.getP(), gauge_state.getQ());
+	  QDP::Seed rng_seed_bkup_end;
+	  QDP::RNG::savern(rng_seed_bkup_end);
+
+	  // Restore the starting field and the starting RNG
+	  QDPIO::cout << "Restoring start config and RNG for reproducability test" << endl;
+
+	  gauge_state.getP() = repro_bkup_start.getP(); 
+	  gauge_state.getQ() = repro_bkup_start.getQ(); 
+	  QDP::RNG::setrn(rng_seed_bkup_start); 
+
+	  // Do the repro trajectory
+	  QDPIO::cout << "Before HMC repro trajectory call" << endl;
+	  swatch.reset(); 
+	  swatch.start();
+	  theHMCTrj( gauge_state, warm_up_p ); 
+	  swatch.stop(); 
+	  
+	  QDPIO::cout << "After HMC repro trajectory call: time= "
+		      << swatch.getTimeInSeconds() 
+		      << " secs" << endl;
+	  
+	  write(xml_out, "seconds_for_repro_trajectory", swatch.getTimeInSeconds());
+	  write(xml_log, "seconds_for_repro_trajectory", swatch.getTimeInSeconds());
+ 
+	  // Save seed at end of traj for comparison
+	  QDP::Seed rng_seed_end2;
+	  QDP::RNG::savern(rng_seed_end2);
+
+
+	  // Check the reproducibility 
+	  bool pass = checkReproducability( gauge_state.getP(), 
+					    gauge_state.getQ(), 
+					    rng_seed_end2,
+					    repro_bkup_end.getP(), 
+					    repro_bkup_end.getQ(), 
+					    rng_seed_bkup_end);
+
+	  
+	  if( !pass ) { 
+	    QDPIO::cout << "Reproducability check failed on update " << cur_update << endl;
+	    QDPIO::cout << "Aborting" << endl;
+	    write(xml_out, "ReproCheck", pass);
+	    write(xml_log, "ReproCheck", pass);
+	    QDP_abort(1);
+	  }
+	  else { 
+	    QDPIO::cout << "Reproducability check passed on update " << cur_update << endl;
+	    write(xml_out, "ReproCheck", pass);
+	    write(xml_log, "ReproCheck", pass);
+	  }
+
+
+	}
+	else { 
+
+	  // Do the trajectory without accepting
+	  QDPIO::cout << "Before HMC trajectory call" << endl;
+	  swatch.reset();
+	  swatch.start();
+	  theHMCTrj( gauge_state, warm_up_p );
+	  swatch.stop();
+	
+	  QDPIO::cout << "After HMC trajectory call: time= "
+		      << swatch.getTimeInSeconds() 
+		      << " secs" << endl;
+	  
+	  write(xml_out, "seconds_for_trajectory", swatch.getTimeInSeconds());
+	  write(xml_log, "seconds_for_trajectory", swatch.getTimeInSeconds());
+
+	}
 	swatch.reset();
 	swatch.start();
 
@@ -667,3 +790,79 @@ Chroma::initialize(&argc, &argv);
   exit(0);
 }
 
+
+// Repro check
+namespace Chroma { 
+
+  bool 
+  checkReproducability( const multi1d<LatticeColorMatrix>& P_new, 
+			const multi1d<LatticeColorMatrix>& Q_new,
+			const QDP::Seed& seed_new,
+			const multi1d<LatticeColorMatrix>& P_old,
+			const multi1d<LatticeColorMatrix>& Q_old,
+			const QDP::Seed& seed_old ) 
+  {
+    
+    // Compare local contributions of P
+    int diffs_found = 0;
+    if ( P_new.size() != P_old.size() ) { 
+      // Something bad happened if P_old and P_new are not the same
+      return false;
+    }
+    
+    if ( Q_new.size() != Q_old.size() ) { 
+      // Something bad happened if Q_old and Q_new are not the same
+      return false;
+    }
+    
+    // Count the number of bytes to compare
+    int bytes=
+      2*Nc*Nc*Layout::sitesOnNode()*sizeof(WordType< LatticeColorMatrix >::Type_t);
+    
+    // Compare P_s
+    for(int mu=0; mu < P_new.size(); mu++) { 
+      const unsigned char *p1 = (const unsigned char *)P_new[mu].getF();
+      const unsigned char *p2 = (const unsigned char *)P_old[mu].getF();
+      for(int b=0; b < bytes; b++) {
+	unsigned char diff = *p1 - *p2; 
+	if( diff != 0 ) diffs_found++;
+	p1++; p2++;
+      }
+    }
+    
+    // Sum up the number of diffs found globally
+    Internal::globalSum(diffs_found);
+    
+    if( diffs_found != 0 ) { 
+      QDPIO::cout << "Found " << diffs_found << " different bytes in momentum repro check" << endl;
+      return false;
+    }
+    
+    diffs_found = 0;
+    for(int mu=0; mu < P_new.size(); mu++) { 
+      const unsigned char *p1 = (const unsigned char *)Q_new[mu].getF();
+      const unsigned char *p2 = (const unsigned char *)Q_old[mu].getF();
+      for(int b=0; b < bytes; b++) {
+	unsigned char diff = *p1 - *p2; 
+	if( diff != 0 ) diffs_found++;
+	p1++; p2++;
+      }
+    }
+    
+    // Sum up the number of diffs found globally
+    Internal::globalSum(diffs_found);
+    
+    if( diffs_found != 0 ) { 
+      QDPIO::cout << "Found " << diffs_found << " different bytes in gauge repro check" << endl;
+      return false;
+    }
+  
+    if( ! toBool( seed_new == seed_old ) ) { 
+      QDPIO::cout << "New and old RNG seeds do not match " << endl;
+      return false;
+    }
+    
+    return true;
+  }
+
+}

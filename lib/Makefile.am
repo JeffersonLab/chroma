@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.85 2007-04-11 03:44:27 edwards Exp $
+# $Id: Makefile.am,v 3.86 2007-04-16 15:49:46 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -295,7 +295,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.h \
 	update/molecdyn/integrator/lcm_toplevel_integrator.h \
 	update/molecdyn/integrator/md_integrator_factory.h \
-	update/molecdyn/hmc/hmc.h\
+	update/molecdyn/hmc/hmc.h \
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
@@ -456,10 +456,10 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/eoprec_slic_linop_w.h \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
-	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h 
+	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
-	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_Linop_w.h \
-	actions/ferm/linop/eo3dprec_s_cprec_t_clover_Linop_w.h \
+	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
 	actions/ferm/qprop/quarkprop4_w.h \
 	actions/ferm/qprop/dwf_qpropt_w.h \
@@ -595,7 +595,7 @@ nobase_include_HEADERS += \
 	meas/hadron/hadron_corr_s.h \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 	meas/hadron/pions_s.h \
-        meas/hadron/pion_local_s.h\
+        meas/hadron/pion_local_s.h \
 	meas/hadron/loops_s.h \
 	meas/hadron/stoch_conn_s.h \
 	meas/hadron/scalar_loops_s.h \
@@ -610,7 +610,7 @@ nobase_include_HEADERS += \
 	meas/smear/quark_flavor_s.h \
         meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h \
-	util/gauge/gauge_s.h util/gauge/stag_phases_s.h\
+	util/gauge/gauge_s.h util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h
 
 

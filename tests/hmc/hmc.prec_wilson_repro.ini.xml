@@ -23,7 +23,8 @@
     <SaveInterval>2</SaveInterval>
     <SavePrefix>dummy_run</SavePrefix>
     <SaveVolfmt>SINGLEFILE</SaveVolfmt>
-    <ReproCheckP>false</ReproCheckP>
+    <ReproCheckP>true</ReproCheckP>
+    <ReproCheckFrequency>2</ReproCheckFrequency>
     <InlineMeasurements>
       <elem>
         <Name>POLYAKOV_LOOP</Name>

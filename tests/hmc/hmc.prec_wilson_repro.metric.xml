@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/hmc/doHMC/MCUpdates/elem[1]/Update/HMCTrajectory/deltaKE" type="double" comparison="relative" tolerance="1.0e-4"/>
+<assertion xpath="/hmc/doHMC/MCUpdates/elem[1]/Update/HMCTrajectory/deltaPE" type="double" comparison="relative" tolerance="1.0e-4"/>
+<assertion xpath="/hmc/doHMC/MCUpdates/elem[2]/Update/ReproCheck" type="string" comparison="equality" tolerance="ignore" />
+
+</assertions>
