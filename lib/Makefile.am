@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.86 2007-04-16 15:49:46 bjoo Exp $
+# $Id: Makefile.am,v 3.87 2007-04-17 03:11:25 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -28,10 +28,6 @@ nobase_include_HEADERS = \
 	actions/boson/operator/klein_gord.h \
 	actions/ferm/ferm.h \
 	actions/ferm/fermacts/fermacts.h \
-	actions/ferm/fermacts/bigfloat.h \
-	actions/ferm/fermacts/remez.h \
-	actions/ferm/fermacts/remez_coeff.h \
-	actions/ferm/fermacts/remez_stub.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/periodic_fermbc.h \
@@ -305,6 +301,10 @@ nobase_include_HEADERS = \
 	update/molecdyn/monomial/gauge_monomial.h \
 	update/molecdyn/monomial/genapprox.h \
 	update/molecdyn/monomial/force_monitors.h \
+	update/molecdyn/monomial/bigfloat.h \
+	update/molecdyn/monomial/remez.h \
+	update/molecdyn/monomial/remez_coeff.h \
+	update/molecdyn/monomial/remez_stub.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -967,8 +967,8 @@ libchroma_a_SOURCES = \
 
 
 if BUILD_GMP_REMEZ
-nobase_include_HEADERS += actions/ferm/fermacts/remez_gmp.h
-libchroma_a_SOURCES += actions/ferm/fermacts/remez_gmp.cc
+nobase_include_HEADERS += update/molecdyn/monomial/remez_gmp.h
+libchroma_a_SOURCES += update/molecdyn/monomial/remez_gmp.cc
 endif
 
 
