@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: bigfloat.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: bigfloat.h,v 3.1 2007-04-17 03:13:04 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -14,7 +14,8 @@ namespace Chroma
 {
 
   //! Bigfloat
-  /*!
+  /*! @ingroup monomial
+   *
    * Simple C++ wrapper for multiprecision datatype used for Remez
    * algorithm
    *

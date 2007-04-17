@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: remez.h,v 3.1 2007-04-17 03:13:04 edwards Exp $
 /*! \file
  *  \brief Redirector for Remez algorithm for finding nth roots
  */
@@ -19,6 +19,7 @@
 // GMP (Gnu Multi-Precision) version
 namespace Chroma
 {
+  /*! @ingroup monomial */
   typedef RemezGMP   Remez;
 }
 
@@ -29,6 +30,7 @@ namespace Chroma
 // Dummy version
 namespace Chroma
 {
+  /*! @ingroup monomial */
   typedef RemezStub   Remez;
 }
 

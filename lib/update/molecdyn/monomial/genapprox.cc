@@ -1,17 +1,18 @@
-// $Id: genapprox.cc,v 3.1 2006-08-26 02:08:42 edwards Exp $
+// $Id: genapprox.cc,v 3.2 2007-04-17 03:13:04 edwards Exp $
 /*! @file
  * @brief Wrapper for Remez code
  */
 
-#include "chromabase.h"
-#include "actions/ferm/fermacts/remez.h"
+#include "update/molecdyn/monomial/remez.h"
 #include "update/molecdyn/monomial/genapprox.h"
 
 namespace Chroma 
 { 
  
   //! Wrapper for Remez code
-  /*! Compute partial fraction expansions for force, action and heat-bath */
+  /*! @ingroup molecdyn
+   * Compute partial fraction expansions for force, action and heat-bath 
+   */
   void generateApprox(RemezCoeff_t& fpfe, RemezCoeff_t& spfe, RemezCoeff_t& sipfe,
 		      const Real& lower, const Real& upper,
 		      int num_frac, int den_frac, int force_degree, int action_degree,

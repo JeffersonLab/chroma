@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 3.6 2007-03-22 17:39:23 bjoo Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 3.7 2007-04-17 03:13:04 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -12,7 +12,7 @@
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/monomial/force_monitors.h"
-#include "actions/ferm/fermacts/remez_coeff.h"
+#include "update/molecdyn/monomial/remez_coeff.h"
 
 #include <typeinfo>
 

@@ -1,9 +1,9 @@
-// $Id: remez_gmp.cc,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: remez_gmp.cc,v 3.1 2007-04-17 03:13:04 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
 
-#include "actions/ferm/fermacts/remez_gmp.h"
+#include "update/molecdyn/monomial/remez_gmp.h"
 
 #define JMAX 1000 //Maximum number of iterations of Newton's approximation
 

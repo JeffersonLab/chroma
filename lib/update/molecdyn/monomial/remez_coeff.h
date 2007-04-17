@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez_coeff.h,v 3.0 2006-04-03 04:58:46 edwards Exp $
+// $Id: remez_coeff.h,v 3.1 2007-04-17 03:13:04 edwards Exp $
 /*! \file
  *  \brief Remez algorithm coefficients
  */
@@ -12,7 +12,10 @@
 namespace Chroma
 {
   //! Convenient structure to package Remez coeffs
-  /*! f(x) = norm + \sum_i res[i]/(x+pole[i]) */
+  /*! @ingroup molecdyn
+   *
+   * f(x) = norm + \sum_i res[i]/(x+pole[i]) 
+   */
   struct RemezCoeff_t
   {
     multi1d<Real>   res;

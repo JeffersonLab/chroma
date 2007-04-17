@@ -6,7 +6,8 @@
 #ifndef __genapprox_h__
 #define __genapprox_h__
 
-#include "actions/ferm/fermacts/remez_coeff.h"
+#include "chromabase.h"
+#include "update/molecdyn/monomial/remez_coeff.h"
 
 namespace Chroma
 {
