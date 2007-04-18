@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.8 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.9 2007-04-18 21:55:08 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -381,7 +381,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 14);
+    write(xml_out, "out_version", 15);
     pop(xml_out);
 
 
