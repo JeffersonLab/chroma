@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 3.1 2006-11-28 19:28:10 edwards Exp $
+// $Id: barhqlq_w.cc,v 3.2 2007-04-18 21:53:31 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -310,7 +310,7 @@ namespace Chroma
       return;
 
     // Setup the return stuff
-    const int num_baryons = 16;
+    const int num_baryons = 17;
     int num_mom = phases.numMom();
     barprop.resize(num_baryons,num_mom,length);
 
@@ -521,6 +521,17 @@ namespace Chroma
 					      T_mixed, Cg5);
 	break;
 
+      case 16:
+	// Proton_negpar_3; use also for Lambda_negpar_3!
+	// |P_7, s_z=1/2> = (d C gamma_5 (1/2)(1 - g_4) u) "u_up", see comments at top
+	// C g_5 NR negpar = (1/2)*C gamma_5 * ( 1 - g_4 )
+	// T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
+	//   = (1 - Gamma(8) + i G(3) - i G(11)) / 2
+	b_prop = Baryon2PtContractions::sigma2pt(quark_propagator_1, quark_propagator_2, 
+						 BaryonSpinMats::TmixedNegPar(), 
+						 BaryonSpinMats::Cg5NRnegPar());
+	break;
+		  
       default:
 	QDP_error_exit("Unknown baryon", baryons);
       }
