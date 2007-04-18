@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqbar_w.h,v 3.2 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_qqbar_w.h,v 3.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline construction of qqbar
  *
@@ -46,7 +46,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of quark-antiquark 2-pt correlators
   /*! \ingroup inlinehadron */
   class InlineQQbar : public AbsInlineMeasurement 
   {

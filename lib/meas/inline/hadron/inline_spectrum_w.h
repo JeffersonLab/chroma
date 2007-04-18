@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_w.h,v 3.4 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_spectrum_w.h,v 3.5 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline spectrum calculations
  *
@@ -74,7 +74,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of spectrum
   /*! \ingroup inlinehadron */
   class InlineSpectrum : public AbsInlineMeasurement 
   {

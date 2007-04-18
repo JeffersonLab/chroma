@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_multi_propagator_w.h,v 3.1 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_multi_propagator_w.h,v 3.2 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  *  \brief Inline construction of multi_propagator -- overlap only
  *  
@@ -47,7 +47,7 @@ namespace Chroma
     std::string xml_file;  // Alternate XML file pattern
   };
 
-  //! Inline measurement of Wilson loops
+  //! Inline task for multi-mass propagators
   /*! \ingroup inlinehadron */
   class InlineMultiPropagator : public AbsInlineMeasurement 
   {

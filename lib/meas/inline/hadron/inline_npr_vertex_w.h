@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_vertex_w.h,v 1.2 2006-11-02 22:26:10 edwards Exp $
+// $Id: inline_npr_vertex_w.h,v 1.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -51,7 +51,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of NPR vertices
   /*! \ingroup inlinehadron */
   class InlineNprVertex : public AbsInlineMeasurement 
   {

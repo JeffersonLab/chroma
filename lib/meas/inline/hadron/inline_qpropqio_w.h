@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qpropqio_w.h,v 3.2 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_qpropqio_w.h,v 3.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropqio
  *
@@ -45,7 +45,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline task for quark prop IO
   /*! \ingroup inlinehadron */
   class InlineQpropQIO : public AbsInlineMeasurement 
   {

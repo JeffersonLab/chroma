@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_building_blocks_w.h,v 3.4 2006-10-14 04:52:16 edwards Exp $
+// $Id: inline_building_blocks_w.h,v 3.5 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -67,7 +67,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of 3-pt functions writing building-blocks
   /*! \ingroup inlinehadron */
   class InlineBuildingBlocks : public AbsInlineMeasurement 
   {

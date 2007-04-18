@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stag_to_wils.h,v 3.1 2006-11-18 04:40:18 kostas Exp $
+// $Id: inline_stag_to_wils.h,v 3.2 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -41,7 +41,7 @@ namespace Chroma
     std::string xml_file;  // Alternate XML file pattern
   };
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of staggered-to-wilson conversion
   /*! \ingroup inlinehadron */
   class InlineStagToWils : public AbsInlineMeasurement 
   {

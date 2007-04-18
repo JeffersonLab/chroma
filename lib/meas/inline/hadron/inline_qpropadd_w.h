@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qpropadd_w.h,v 3.2 2006-11-28 19:30:03 edwards Exp $
+// $Id: inline_qpropadd_w.h,v 3.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline measurement of qpropadd
  *
@@ -41,7 +41,7 @@ namespace Chroma
     };
 
 
-    //! Inline measurement of Wilson loops
+    //! Inline measurement of to add two props
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {

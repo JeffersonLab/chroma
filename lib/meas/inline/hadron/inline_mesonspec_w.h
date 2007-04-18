@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mesonspec_w.h,v 3.4 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_mesonspec_w.h,v 3.5 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline meson spectrum calculations
  *
@@ -70,7 +70,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of meson 2-pt functions
   /*! \ingroup inlinehadron */
   class InlineMesonSpec : public AbsInlineMeasurement 
   {

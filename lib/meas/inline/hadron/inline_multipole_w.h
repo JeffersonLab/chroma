@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_multipole_w.h,v 3.1 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_multipole_w.h,v 3.2 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  *  \brief Inline multipole measurements
  */
@@ -52,7 +52,7 @@ namespace Chroma
     std::string xml_file;  // Alternate XML file pattern
   };
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of multipole expansion
   /*! \ingroup inlinehadron */
   class InlineMultipole : public AbsInlineMeasurement 
   {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqqNucNuc_w.h,v 3.2 2006-12-10 01:59:59 edwards Exp $
+// $Id: inline_qqqNucNuc_w.h,v 3.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -48,7 +48,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of baryon-baryon 2-pt correlators
   /*! \ingroup inlinehadron */
   class InlineQQQNucNuc : public AbsInlineMeasurement 
   {

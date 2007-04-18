@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_sink_smear_w.h,v 3.2 2006-12-02 18:18:07 edwards Exp $
+// $Id: inline_sink_smear_w.h,v 3.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline sink_smear propagators
  *
@@ -42,7 +42,7 @@ namespace Chroma
     };
 
 
-    //! Inline measurement of Wilson loops
+    //! Inline task for sinking smearing propagators
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_noisy_building_blocks_w.h,v 3.2 2006-10-11 14:06:11 edwards Exp $
+// $Id: inline_noisy_building_blocks_w.h,v 3.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -71,7 +71,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of noisy building blocks
   /*! \ingroup inlinehadron */
   class InlineNoisyBuildingBlocks : public AbsInlineMeasurement 
   {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_mres_w.h,v 3.3 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_mres_w.h,v 3.4 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline mres calculations
  *
@@ -48,7 +48,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of chiral fermion residual mass
   /*! \ingroup inlinehadron */
   class InlineMres : public AbsInlineMeasurement 
   {

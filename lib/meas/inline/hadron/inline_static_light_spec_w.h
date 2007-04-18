@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_static_light_spec_w.h,v 1.2 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_static_light_spec_w.h,v 1.3 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline static light spectrum calculations
  *
@@ -56,7 +56,7 @@ namespace Chroma
   };
 
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of static-light quark spectroscopy
   /*! \ingroup inlinehadron */
   class InlineStaticLightSpec : public AbsInlineMeasurement 
   {

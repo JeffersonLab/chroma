@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_w.h,v 1.5 2006-11-03 20:21:07 hwlin Exp $
+// $Id: inline_npr_w.h,v 1.6 2007-04-18 02:32:26 edwards Exp $
 /*! \file
  * \brief Inline construction of Landau gauge propagator
  *
@@ -52,7 +52,7 @@ namespace Chroma
     std::string xml_file;  // Alternate XML file pattern
   };
 
-  //! Inline measurement of Wilson loops
+  //! Inline measurement of NPR
   /*! \ingroup inlinehadron */
   class InlineNpr : public AbsInlineMeasurement 
   {
