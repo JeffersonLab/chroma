@@ -1,3 +1,7 @@
+19/04/2007 -- Robert Edwards
+	Version 3.23.0 - Moved around some monomial files in anticipation of big reorg
+        of Remez and InvertParam groups. New output from hadspec.
+
 05/03/2007 -- Balint Joo
 	Version 3.22.7 - BG/L fixes for BAGEL dslash op (refcounting etc)
 	      New CG-DWF option --enable-cg-dwf-lowmem for a lower memory CG-DWF
