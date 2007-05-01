@@ -1,4 +1,4 @@
-// $Id: central_tprec_fermact_qprop_w.cc,v 1.3 2007-02-27 20:28:35 bjoo Exp $
+// $Id: central_tprec_fermact_qprop_w.cc,v 1.4 2007-05-01 13:07:13 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -52,12 +52,14 @@ namespace Chroma
       // and then at the end C_R^{-1] \psi = \psi' => \psi = C_R \psi'
       //
       // First compute \chi'
-      T chi_prime;
+      T chi_prime=zero;
       QDPIO::cout << "Preparing LinOp" << endl;
       A->cLeftLinOp(chi_prime, chi, PLUS);
 
 
+      psi=zero;
       T psi_prime = zero;
+
       // Call inverter
       QDPIO::cout << "Solving" << endl;
       SystemSolverResults_t res = (*invA)(psi_prime, chi_prime);
@@ -69,7 +71,7 @@ namespace Chroma
 
       // Compute residual
       {
-	T  r;
+	T  r=zero;
 	A->unprecLinOp(r, psi, PLUS);
 	r -= chi;
 	res.resid = sqrt(norm2(r));
