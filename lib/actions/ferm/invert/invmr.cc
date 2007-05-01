@@ -1,4 +1,4 @@
-// $Id: invmr.cc,v 3.2 2007-04-11 03:41:01 edwards Exp $
+// $Id: invmr.cc,v 3.3 2007-05-01 14:39:13 bjoo Exp $
 /*! \file
  *  \brief Minimal-Residual (MR) for a generic fermion Linear Operator
  */
@@ -37,7 +37,7 @@ namespace Chroma
    *  \param psi     Solution                    (Modify)
    *  \param RsdCG   MR residual accuracy        (Read)
    *  \param MRovpar Overrelaxation parameter    (Read)
-   *  \param MaxCG   Maximum MR iterations       (Read)
+   *  \param MaxMR   Maximum MR iterations       (Read)
 
    * Local Variables:
 
@@ -52,7 +52,7 @@ namespace Chroma
 
    * Global Variables:
 
-   *  MaxCG       Maximum number of MR iterations allowed
+   *  MaxMR       Maximum number of MR iterations allowed
    *  RsdCG       Maximum acceptable MR residual (relative to source)
    *
    * Subroutines:
@@ -68,8 +68,8 @@ namespace Chroma
 	  const T& chi,
 	  T& psi,
 	  const Real& MRovpar,
-	  const Real& RsdCG, 
-	  int MaxCG)
+	  const Real& RsdMR, 
+	  int MaxMR)
   {
     START_CODE();
 
@@ -94,7 +94,7 @@ namespace Chroma
     swatch.reset();
     swatch.start();
 
-    Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi_internal,s));
+    Real rsd_sq = (RsdMR * RsdMR) * Real(norm2(chi_internal,s));
     flopcount.addSiteFlops(4*Nc*Ns,s);
         
     /*  r[0]  :=  Chi - M . Psi[0] */
@@ -112,21 +112,21 @@ namespace Chroma
 
 //  QDPIO::cout << "InvMR: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
 
-    /*  IF |r[0]| <= RsdCG |Chi| THEN RETURN; */
+    /*  IF |r[0]| <= RsdMR |Chi| THEN RETURN; */
     if ( toBool(cp  <=  rsd_sq) )
     {
       res.n_count = 0;
       res.resid   = sqrt(cp);
       swatch.stop();
-      flopcount.report("invcg2", swatch.getTimeInSeconds());
+      flopcount.report("invMR", swatch.getTimeInSeconds());
       revertFromFastMemoryHint(psi,true);
       END_CODE();
       return res;
     }
 
-    /*  FOR k FROM 1 TO MaxCG DO */
+    /*  FOR k FROM 1 TO MaxMR DO */
     k = 0;
-    while( (k < MaxCG) && (toBool(cp > rsd_sq)) )
+    while( (k < MaxMR) && (toBool(cp > rsd_sq)) )
     {
       ++k;
 
@@ -171,7 +171,7 @@ namespace Chroma
       res.resid = sqrt(actual_res);
     }
 
-    if ( res.n_count == MaxCG )
+    if ( res.n_count == MaxMR )
       QDPIO::cerr << "Nonconvergence Warning" << endl;
     
     END_CODE();
@@ -186,10 +186,10 @@ namespace Chroma
 	const LatticeFermion& chi,
 	LatticeFermion& psi,
 	const Real& MRovpar,
-	const Real& RsdCG, 
-	int MaxCG)
+	const Real& RsdMR, 
+	int MaxMR)
   {
-    return InvMR_a(M, chi, psi, MRovpar, RsdCG, MaxCG);
+    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR);
   }
 
 
@@ -200,10 +200,10 @@ namespace Chroma
 	const LatticeStaggeredFermion& chi,
 	LatticeStaggeredFermion& psi,
 	const Real& MRovpar,
-	const Real& RsdCG, 
-	int MaxCG)
+	const Real& RsdMR, 
+	int MaxMR)
   {
-    return InvMR_a(M, chi, psi, MRovpar, RsdCG, MaxCG);
+    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR);
   }
 
   /*! @} */  // end of group invert

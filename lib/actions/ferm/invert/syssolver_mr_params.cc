@@ -1,4 +1,4 @@
-// $Id: syssolver_mr_params.cc,v 1.1 2007-04-11 03:42:07 edwards Exp $
+// $Id: syssolver_mr_params.cc,v 1.2 2007-05-01 14:39:13 bjoo Exp $
 /*! \file
  *  \brief Params of CG inverter
  */
@@ -13,8 +13,8 @@ namespace Chroma
   {
     XMLReader paramtop(xml, path);
 
-    read(paramtop, "RsdCG", param.RsdCG);
-    read(paramtop, "MaxCG", param.MaxCG);
+    read(paramtop, "RsdMR", param.RsdMR);
+    read(paramtop, "MaxMR", param.MaxMR);
 
     if (paramtop.count("MROver") > 0)
       read(paramtop, "MROver", param.MROver);
@@ -30,8 +30,8 @@ namespace Chroma
 //  int version = 1;
 //  write(xml, "version", version);
     write(xml, "invType", "MR_INVERTER");
-    write(xml, "RsdCG", param.RsdCG);
-    write(xml, "MaxCG", param.MaxCG);
+    write(xml, "RsdMR", param.RsdMR);
+    write(xml, "MaxMR", param.MaxMR);
     write(xml, "MROver", param.MROver);
     pop(xml);
   }
@@ -39,8 +39,8 @@ namespace Chroma
   //! Default constructor
   SysSolverMRParams::SysSolverMRParams()
   {
-    RsdCG = zero;
-    MaxCG = 0;
+    RsdMR = zero;
+    MaxMR = 0;
     MROver = 1.0;
   }
 

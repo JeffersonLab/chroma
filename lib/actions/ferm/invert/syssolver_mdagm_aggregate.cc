@@ -1,4 +1,4 @@
-// $Id: syssolver_mdagm_aggregate.cc,v 3.4 2006-11-16 20:39:15 bjoo Exp $
+// $Id: syssolver_mdagm_aggregate.cc,v 3.5 2007-05-01 14:39:13 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -7,6 +7,7 @@
 
 
 #include "actions/ferm/invert/syssolver_mdagm_cg.h"
+#include "actions/ferm/invert/syssolver_mdagm_bicgstab.h"
 #include "actions/ferm/invert/syssolver_mdagm_cg_timing.h"
 #include "actions/ferm/invert/syssolver_mdagm_cg_array.h"
 
@@ -28,6 +29,7 @@ namespace Chroma
 	// Sources
 	success &= MdagMSysSolverCGEnv::registerAll();
 	success &= MdagMSysSolverCGTimingsEnv::registerAll();
+	success &= MdagMSysSolverBiCGStabEnv::registerAll();
 	registered = true;
       }
       return success;

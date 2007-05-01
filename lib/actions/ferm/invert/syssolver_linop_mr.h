@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_mr.h,v 1.1 2007-04-11 03:42:07 edwards Exp $
+// $Id: syssolver_linop_mr.h,v 1.2 2007-05-01 14:39:13 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by MR
  */
@@ -62,12 +62,9 @@ namespace Chroma
       {
 	START_CODE();
 
-	T chi_tmp;
-	(*A)(chi_tmp, chi, MINUS);
-
 	SystemSolverResults_t res;  // initialized by a constructor
 	{
-	  res = InvMR(*A, chi_tmp, psi, invparam.MRover, invParam.RsdMR, invParam.MaxMR);
+	  res = InvMR(*A, chi, psi, invParam.MROver, invParam.RsdMR, invParam.MaxMR);
 	}
 
 	END_CODE();
