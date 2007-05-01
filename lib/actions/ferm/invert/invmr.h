@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invmr.h,v 3.2 2007-05-01 14:39:13 bjoo Exp $
+// $Id: invmr.h,v 3.3 2007-05-01 15:27:27 bjoo Exp $
 /*! \file
  *  \brief Minimal-Residual (MR) for a generic fermion Linear Operator
  */
@@ -71,7 +71,8 @@ namespace Chroma
 	T& psi,
 	const Real& MRovpar,
 	const Real& RsdMR, 
-	int MaxMR);
+	int MaxMR,
+	enum PlusMinus isign);
 
   /*! @} */  // end of group invert
 

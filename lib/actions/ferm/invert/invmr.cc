@@ -1,4 +1,4 @@
-// $Id: invmr.cc,v 3.3 2007-05-01 14:39:13 bjoo Exp $
+// $Id: invmr.cc,v 3.4 2007-05-01 15:27:27 bjoo Exp $
 /*! \file
  *  \brief Minimal-Residual (MR) for a generic fermion Linear Operator
  */
@@ -69,7 +69,8 @@ namespace Chroma
 	  T& psi,
 	  const Real& MRovpar,
 	  const Real& RsdMR, 
-	  int MaxMR)
+	  int MaxMR, 
+	  enum PlusMinus isign)
   {
     START_CODE();
 
@@ -99,7 +100,7 @@ namespace Chroma
         
     /*  r[0]  :=  Chi - M . Psi[0] */
     /*  r  :=  M . Psi  */
-    M(Mr, psi, PLUS);
+    M(Mr, psi, isign);
     flopcount.addFlops(M.nFlops());
 
     T r;                moveToFastMemoryHint(r);
@@ -132,7 +133,7 @@ namespace Chroma
 
       /*  a[k-1] := < M.r[k-1], r[k-1] >/ < M.r[k-1], M.r[k-1] > ; */
       /*  Mr = M * r  */
-      M(Mr, r, PLUS);  flopcount.addFlops(M.nFlops());
+      M(Mr, r, isign);  flopcount.addFlops(M.nFlops());
 
       /*  c = < M.r, r > */
       c = innerProduct(Mr, r, s);  flopcount.addSiteFlops(4*Nc*Ns,s);
@@ -166,7 +167,7 @@ namespace Chroma
 
     // Compute the actual residual
     {
-      M(Mr, psi, PLUS);
+      M(Mr, psi, isign);
       Double actual_res = norm2(chi_internal - Mr,s);
       res.resid = sqrt(actual_res);
     }
@@ -187,9 +188,10 @@ namespace Chroma
 	LatticeFermion& psi,
 	const Real& MRovpar,
 	const Real& RsdMR, 
-	int MaxMR)
+	int MaxMR,
+	enum PlusMinus isign)
   {
-    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR);
+    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR, isign);
   }
 
 
@@ -201,9 +203,10 @@ namespace Chroma
 	LatticeStaggeredFermion& psi,
 	const Real& MRovpar,
 	const Real& RsdMR, 
-	int MaxMR)
+	int MaxMR,
+	enum PlusMinus isign)
   {
-    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR);
+    return InvMR_a(M, chi, psi, MRovpar, RsdMR, MaxMR, isign);
   }
 
   /*! @} */  // end of group invert
