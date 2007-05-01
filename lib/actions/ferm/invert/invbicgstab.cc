@@ -1,4 +1,4 @@
-// $Id: invbicgstab.cc,v 3.1 2007-02-22 21:11:46 bjoo Exp $
+// $Id: invbicgstab.cc,v 3.2 2007-05-01 12:47:24 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -9,25 +9,29 @@
 namespace Chroma {
 
 template<typename T>
-void InvBiCGStab_a(const LinearOperator<T>& A,
-		   const T& chi,
-		   T& psi,
-		   const Real& RsdCG, 
-		   int MaxCG, 
-		   int& n_count)
+SystemSolverResults_t
+InvBiCGStab_a(const LinearOperator<T>& A,
+	      const T& chi,
+	      T& psi,
+	      const Real& RsdBiCGStab,
+	      int MaxBiCGStab, 
+	      enum PlusMinus isign)
+
 {
+  SystemSolverResults_t ret;
+
   const Subset& s = A.subset();
 
   bool convP = false;
   Real chi_sq =  Real(norm2(chi,s));
-  Real rsd_sq =  RsdCG*RsdCG*chi_sq;
+  Real rsd_sq =  RsdBiCGStab*RsdBiCGStab*chi_sq;
 
   // First get r = r0 = chi - A psi
   T r;
   T r0;
 
   // Get A psi, use r0 as a temporary
-  A(r0, psi, PLUS);
+  A(r0, psi, isign);
 
   // now work out r= chi - Apsi = chi - r0
   r[s] = chi - r0;
@@ -57,7 +61,7 @@ void InvBiCGStab_a(const LinearOperator<T>& A,
   omega = Real(1);
 
   // The iterations 
-  for(int k = 1; k <= MaxCG && !convP ; k++) { 
+  for(int k = 1; k <= MaxBiCGStab && !convP ; k++) { 
     
     // rho_{k+1} = < r_0 | r >
     rho = innerProduct(r0,r,s);
@@ -80,7 +84,7 @@ void InvBiCGStab_a(const LinearOperator<T>& A,
     p[s] = r + beta*tmp;
     
     // v = Ap
-    A(v,p,PLUS);
+    A(v,p,isign);
 
     // alpha = rho_{k+1} / < r_0 | v >
     // put <r_0 | v > into tmp
@@ -101,7 +105,7 @@ void InvBiCGStab_a(const LinearOperator<T>& A,
     r[s]  -=  alpha*v;
     
     // t = As  = Ar 
-    A(t,r,PLUS);
+    A(t,r,isign);
     
     // omega = < t | s > / < t | t > = < t | r > / norm2(t);
 
@@ -132,37 +136,56 @@ void InvBiCGStab_a(const LinearOperator<T>& A,
 
     r_norm = norm2(r,s);
 
-    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << endl;
+    //    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << endl;
     if( toBool(r_norm < rsd_sq ) ) {
       convP = true;
+      ret.resid = sqrt(r_norm);
+      ret.n_count = k;
+
     }
     else { 
       convP = false;
     }
 
-    n_count = k;
 
 
   }
 
-  if ( n_count == MaxCG ) { 
+  QDPIO::cout << "InvBiCGStab: k = " << ret.n_count << " resid = " << ret.resid << endl;
+  if ( ret.n_count == MaxBiCGStab ) { 
     QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << endl;
-    QDP_abort(1);
   }
 
+  return ret;
 }
 
 
 // Fix here for now
 template<>
-void InvBiCGStab(const LinearOperator<LatticeFermion>& A,
-		 const LatticeFermion& chi,
-		 LatticeFermion& psi,
-		 const Real& RsdCG, 
-		 int MaxCG, 
-		 int& n_count)
+SystemSolverResults_t
+InvBiCGStab(const LinearOperator<LatticeFermion>& A,
+	    const LatticeFermion& chi,
+	    LatticeFermion& psi,
+	    const Real& RsdBiCGStab, 
+	    int MaxBiCGStab, 
+	    enum PlusMinus isign)
+
 {
-  InvBiCGStab_a(A, chi, psi, RsdCG, MaxCG, n_count);
+  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+}
+
+// Staggered
+template<>
+SystemSolverResults_t
+InvBiCGStab(const LinearOperator<LatticeStaggeredFermion>& A,
+	    const LatticeStaggeredFermion& chi,
+	    LatticeStaggeredFermion& psi,
+	    const Real& RsdBiCGStab, 
+	    int MaxBiCGStab, 
+	    enum PlusMinus isign)
+
+{
+  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
 }
 
 }  // end namespace Chroma
