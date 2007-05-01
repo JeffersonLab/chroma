@@ -49,7 +49,7 @@ for($file_ctr = 0; $file_ctr <= $#ARGV - 2; $file_ctr++){
 #
 # We now want to write out the information that specifies the diquark
 
-	print TMPQUARK "$flav[$first] $flav[$second] $sink[$first] $sink[$second] $len_sink $src[$first] $src[$second] $len_src\n";
+	print TMPQUARK "$flav[$first] $flav[$second] $sink[$first] $sink[$second] $len_snk $src[$first] $src[$second] $len_src\n";
     }
 }
 close(TMPQUARK);
