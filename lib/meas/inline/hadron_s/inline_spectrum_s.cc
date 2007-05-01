@@ -916,7 +916,7 @@ namespace Chroma {
       }
 
 
-      if(( do_Baryon_local) &&(!done_local_baryons)) {
+      if((( do_Baryon_local) &&(!done_local_baryons)) && (!do_Baryon_vary)) {
 
 	push(xml_out, "baryon_correlators");
 
