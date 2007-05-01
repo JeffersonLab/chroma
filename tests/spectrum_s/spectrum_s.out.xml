@@ -5,10 +5,10 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>3.22.3</chroma>
-      <qdp>1.21.8</qdp>
+      <chroma>3.22.7</chroma>
+      <qdp>1.23.0</qdp>
     </code_version>
-    <run_date>11 Apr 07 23:00:07 BST</run_date>
+    <run_date>01 May 07 14:40:46 BST</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -84,21 +84,21 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>1.088302</time_in_sec>
+    <time_in_sec>0.936758</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>649</n_count>
-    <time_in_sec>1.116792</time_in_sec>
+    <time_in_sec>1.006707</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>1.090272</time_in_sec>
+    <time_in_sec>0.983347</time_in_sec>
   </Qprop>
   <Pseudoscalars>
     <Lsink_Lsrc>
@@ -208,74 +208,47 @@
       </Here_are_all_16_scalars>
     </Lsink_Lsrc>
   </Scalars>
-  <baryon_correlators>
-    <source_time>0</source_time>
-    <smearing_info>
-      <smearing_basis>
-        <element_tag>L</element_tag>
-        <source_type>LOCAL_SRC</source_type>
-      </smearing_basis>
-    </smearing_info>
-    <srcLLL_sinkLLL_nucleon>
-      <elem>
-        <re>0.02748238</re>
-        <im>-0.001050684</im>
-      </elem>
-      <elem>
-        <re>0.003423369</re>
-        <im>-0.001350973</im>
-      </elem>
-      <elem>
-        <re>0.0022016</re>
-        <im>0.001374628</im>
-      </elem>
-      <elem>
-        <re>0.0005150855</re>
-        <im>0.006797341</im>
-      </elem>
-    </srcLLL_sinkLLL_nucleon>
-  </baryon_correlators>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>1.093465</time_in_sec>
+    <time_in_sec>0.997631</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>1.092905</time_in_sec>
+    <time_in_sec>0.96537</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>635</n_count>
-    <time_in_sec>1.084749</time_in_sec>
+    <time_in_sec>1.078362</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>617</n_count>
-    <time_in_sec>1.054296</time_in_sec>
+    <time_in_sec>0.958018</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>1.094206</time_in_sec>
+    <time_in_sec>0.972024</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>613</n_count>
-    <time_in_sec>1.046774</time_in_sec>
+    <time_in_sec>0.91538</time_in_sec>
   </Qprop>
   <baryon_correlators>
     <source_time>0</source_time>
@@ -506,19 +479,19 @@
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>644</n_count>
-      <time_in_sec>1.097253</time_in_sec>
+      <time_in_sec>0.96674</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>636</n_count>
-      <time_in_sec>1.084108</time_in_sec>
+      <time_in_sec>0.965075</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>620</n_count>
-      <time_in_sec>1.055552</time_in_sec>
+      <time_in_sec>0.898487</time_in_sec>
     </Qprop>
     <LocalSource>
       <LocalSink>
