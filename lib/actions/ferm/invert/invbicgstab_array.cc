@@ -1,4 +1,4 @@
-// $Id: invbicgstab_array.cc,v 3.2 2007-05-01 12:47:24 bjoo Exp $
+// $Id: invbicgstab_array.cc,v 3.3 2007-05-01 12:50:12 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -14,7 +14,6 @@ InvBiCGStab_a(const LinearOperatorArray<T>& A,
 	      const multi1d<T> & chi,
 	      multi1d<T>& psi,
 	      const Real& RsdBiCGStab, 
-	      const Real& Relax,
 	      int MaxBiCGStab) 
 {
   SystemSolverResults_t ret;
@@ -195,12 +194,11 @@ InvBiCGStab(const LinearOperatorArray<LatticeFermion>& A,
 	    const multi1d<LatticeFermion>& chi,
 	    multi1d<LatticeFermion>& psi,
 	    const Real& RsdBiCGStab, 
-	    const Real& Relax,
 	    int MaxBiCGStab)
 
 
 {
-  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, Relax,  MaxBiCGStab);
+  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab);
 }
 
 }  // end namespace Chroma
