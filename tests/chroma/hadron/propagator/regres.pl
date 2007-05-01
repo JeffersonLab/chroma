@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.4 2007-02-16 22:52:23 bjoo Exp $
+#  $Id: regres.pl,v 3.5 2007-05-01 14:54:42 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -73,6 +73,14 @@
 	 output      => "prec_clover-stout3d.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.bicgstab.ini.xml" , 
+	 output      => "prec_clover-stout3d.bicgstab.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.bicgstab.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.bicgstab.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
