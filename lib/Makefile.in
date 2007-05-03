@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.168 2007-05-01 15:06:16 bjoo Exp $
+# $Id: Makefile.in,v 3.169 2007-05-03 22:42:48 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -525,6 +525,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
+	meas/inline/hadron/inline_npr_w.cc \
 	meas/inline/hadron/inline_stag_to_wils.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_make_source_s.cc \
@@ -929,7 +930,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_mres_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
 	inline_qpropadd_w.$(OBJEXT) inline_qqqNucNuc_w.$(OBJEXT) \
 	inline_stoch_baryon_w.$(OBJEXT) inline_stoch_meson_w.$(OBJEXT) \
-	inline_npr_vertex_w.$(OBJEXT) inline_stag_to_wils.$(OBJEXT) \
+	inline_npr_vertex_w.$(OBJEXT) inline_npr_w.$(OBJEXT) \
+	inline_stag_to_wils.$(OBJEXT) \
 	inline_hadron_aggregate_s.$(OBJEXT) \
 	inline_make_source_s.$(OBJEXT) inline_propagator_s.$(OBJEXT) \
 	inline_sink_smear_s.$(OBJEXT) inline_spectrum_s.$(OBJEXT) \
@@ -1540,6 +1542,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
 	meas/inline/hadron/inline_npr_vertex_w.h \
+	meas/inline/hadron/inline_npr_w.h \
 	meas/inline/hadron/inline_stag_to_wils.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/inline_make_source_s.h \
@@ -2297,6 +2300,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
 	meas/inline/hadron/inline_npr_vertex_w.h \
+	meas/inline/hadron/inline_npr_w.h \
 	meas/inline/hadron/inline_stag_to_wils.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/inline_make_source_s.h \
@@ -2792,6 +2796,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
+	meas/inline/hadron/inline_npr_w.cc \
 	meas/inline/hadron/inline_stag_to_wils.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_make_source_s.cc \
@@ -3160,6 +3165,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_nersc_write_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_noisy_building_blocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_npr_vertex_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_npr_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_plaquette.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_propagator_ferm_w.Po@am__quote@
@@ -10430,6 +10436,20 @@ inline_npr_vertex_w.obj: meas/inline/hadron/inline_npr_vertex_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_npr_vertex_w.cc' object='inline_npr_vertex_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_npr_vertex_w.obj `if test -f 'meas/inline/hadron/inline_npr_vertex_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_npr_vertex_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_npr_vertex_w.cc'; fi`
+
+inline_npr_w.o: meas/inline/hadron/inline_npr_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_npr_w.o -MD -MP -MF "$(DEPDIR)/inline_npr_w.Tpo" -c -o inline_npr_w.o `test -f 'meas/inline/hadron/inline_npr_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_npr_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_npr_w.Tpo" "$(DEPDIR)/inline_npr_w.Po"; else rm -f "$(DEPDIR)/inline_npr_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_npr_w.cc' object='inline_npr_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_npr_w.o `test -f 'meas/inline/hadron/inline_npr_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_npr_w.cc
+
+inline_npr_w.obj: meas/inline/hadron/inline_npr_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_npr_w.obj -MD -MP -MF "$(DEPDIR)/inline_npr_w.Tpo" -c -o inline_npr_w.obj `if test -f 'meas/inline/hadron/inline_npr_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_npr_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_npr_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_npr_w.Tpo" "$(DEPDIR)/inline_npr_w.Po"; else rm -f "$(DEPDIR)/inline_npr_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_npr_w.cc' object='inline_npr_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_npr_w.obj `if test -f 'meas/inline/hadron/inline_npr_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_npr_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_npr_w.cc'; fi`
 
 inline_stag_to_wils.o: meas/inline/hadron/inline_stag_to_wils.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_stag_to_wils.o -MD -MP -MF "$(DEPDIR)/inline_stag_to_wils.Tpo" -c -o inline_stag_to_wils.o `test -f 'meas/inline/hadron/inline_stag_to_wils.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_stag_to_wils.cc; \
