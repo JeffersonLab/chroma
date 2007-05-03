@@ -1,4 +1,4 @@
-// $Id: inline_npr_w.cc,v 1.4 2006-10-28 05:13:32 kostas Exp $
+// $Id: inline_npr_w.cc,v 1.5 2007-05-03 22:41:53 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR propagator
  *
@@ -87,29 +87,10 @@ namespace Chroma
       else
 	frequency = 1;
 
-      // Parameters for source construction
-      read(paramtop, "Param", param);
-
-      // Read any auxiliary state information
-      if( paramtop.count("Param/StateInfo") == 1 ) {
-	XMLReader xml_state_info(paramtop, "Param/StateInfo");
-	std::ostringstream os;
-	xml_state_info.print(os);
-	stateInfo = os.str();
-      }
-      else { 
-	XMLBufferWriter s_i_xml;
-	push(s_i_xml, "StateInfo");
-	pop(s_i_xml);
-	stateInfo = s_i_xml.printCurrentContext();
-      }
-
-      //Read the types of sources to do.
-      //It does point source or derivative source
-      read(paramtop, "NprSources", NprSources);
-
-      // Read in the output npr/source configuration info
+       // Read in the output npr/source configuration info
       read(paramtop, "max_mom2", max_mom2);
+
+      read(paramtop, "filename", filename);
 
       // Read in the output npr/source configuration info
       read(paramtop, "NamedObject", named_obj);
@@ -129,24 +110,18 @@ namespace Chroma
 
 
   void
-  InlineNprParams::writeXML(XMLWriter& xml_out, const std::string& path) 
+  InlineNprParams::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
-    write(xml_out, "Param", param);
-    {
-      //QDP::write(xml_out, "StateInfo", stateInfo);
-      istringstream header_is(stateInfo);
-      XMLReader xml_header(header_is);
-      xml_out << xml_header;
-    }
-    write(xml_out, "NprSources", NprSources);
-    write(xml_out, "max_mom2", max_mom2);
-    write(xml_out, "NamedObject", named_obj);
+    QDP::write(xml_out, "filename", filename);
+    QDP::write(xml_out, "max_mom2", max_mom2);
+    Chroma::write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
   }
 
+  /**
   void InlineNpr::make_source(LatticePropagator& src,
 			      const Handle<const ConnectState>& state,
 			      const mult1d<ind>& t_source,
@@ -171,7 +146,7 @@ namespace Chroma
       }
     }
   }
-
+  **/
 
   // Function call
   void 
@@ -200,8 +175,7 @@ namespace Chroma
 
   // Real work done here
   void 
-  InlineNpr::func(unsigned long update_no,
-			 XMLWriter& xml_out) 
+  InlineNpr::func(unsigned long update_no, XMLWriter& xml_out) 
   {
     START_CODE();
     
@@ -231,15 +205,27 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
     
+    XMLReader prop_file_xml,prop_xml ;
+    TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
+    TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_xml);
+    LatticePropagator quark_propagator = TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+
     push(xml_out, "npr");
     write(xml_out, "update_no", update_no);
-    
+    XMLBufferWriter file_xml;
+    push(file_xml, "NPR_W");
+    push(file_xml, "Output_version");
+    write(file_xml, "out_version", 1);
+    pop(file_xml);
+    proginfo(file_xml);    // Print out basic program info
+    params.write(file_xml, "Input");
+
     QDPIO::cout << InlineNprEnv::name << ": npr calculation" << endl;
     
     proginfo(xml_out);    // Print out basic program info
     
     // Write out the input
-    params.writeXML(xml_out, "Input");
+    params.write(xml_out, "Input");
     
     // Write out the config header
     write(xml_out, "Config_info", gauge_xml);
@@ -247,174 +233,55 @@ namespace Chroma
     push(xml_out, "Output_version");
     write(xml_out, "out_version", 1);
     pop(xml_out);
-    
+    write(xml_out, "Config_info", gauge_xml);
+    write(xml_out, "Propagator_info", prop_xml);
+
+    write(file_xml, "Config_info", gauge_xml);
+    write(file_xml, "Propagator_info", prop_xml);
+
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
     
-    // Landau Gauge fix
-    coulGauge(u, nrl_gf, Nd+1, GFAccu, GFMax, OrlxDo, OrPara);
-    //                   ^^^^  Makes it Landau gauge
-    // gauge field is now gauge-fixed
-    // Calculate some gauge invariant observables just for info.
-    MesPlq(xml_out, "GaugeFixedObservables", u);
-    
-
-    //
-    // Loop over the source color and spin, creating the source
-    // and calling the relevant propagator routines. The QDP
-    // terminology is that a propagator is a matrix in color
-    // and spin space
-    //
-    try
-      {
-	TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.prop_id);
-      }
-    catch (std::bad_cast)
-      {
-	QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
-		    << endl;
-	QDP_abort(1);
-      }
-    catch (const string& e) 
-      {
-	QDPIO::cerr << InlineNprEnv::name << ": error creating prop: " << e << endl;
-	QDP_abort(1);
-      }
-    
-    
-    
-    // Cast should be valid now
-    LatticePropagator& quark_propagator = 
-      TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
-    
-    //
-    // Initialize fermion action
-    //
-    std::istringstream  xml_s(params.param.fermact.xml);
-    XMLReader  fermacttop(xml_s);
-    QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
-    
-    
-    // Deal with auxiliary (and polymorphic) state information
-    // eigenvectors, eigenvalues etc. The XML for this should be
-    // stored as a string called "stateInfo" in the param struct.
-
-    // Make a reader for the stateInfo
-    std::istringstream state_info_is(params.stateInfo);
-    XMLReader state_info_xml(state_info_is);
-    string state_info_path="/StateInfo";
-    //
-    // Try the factories
-    //
-    bool success = false;
-    
-    if (! success)
-      {
-	try
-	  {
-	    StopWatch swatch;
-	    swatch.reset();
-	    QDPIO::cout << "Try the various factories" << endl;
-	    
-	    // Typedefs to save typing
-	    typedef LatticeFermion               T;
-	    typedef multi1d<LatticeColorMatrix>  P;
-	    typedef multi1d<LatticeColorMatrix>  Q;
-	    
-	    // Generic Wilson-Type stuff
-	    Handle< FermionAction<T,P,Q> >
-	      S_f(TheFermionActionFactory::Instance().createObject(params.param.fermact.id,fermacttop,params.param.fermact.path));
-	    
-	    
-	    Handle< FermState<T,P,Q> > state(S_f->createState(u));
-	    //				 state_info_xml,
-	    //				 state_info_path));  // uses phase-multiplied u-fields
-	    
-	    LatticePropagator quark_prop_source ;
-	    multi1d<int> t_source(Nd);
-	    
-	    SftMom phases(params.max_mom2, t_source, false, Nd); // 4D fourier transform
-	    
-	    // Set the source in the midle of the lattice
-	    for(int mu(0);mu<Nd;mu++)
-	      t_source[mu] = Layout::lattSize()[mu]/2 ; 
-	    
-	    j_decay = Nd-1 ; // 
-
-	    push(xml_out,"Propagators");
-	    for(int k(0);k<params.NprSources.size();k++){
-	      push(xml_out,"elem") ;
-	      int ncg_had = 0;
-
-	      make_source(quark_prop_source,state,t_source,NprSources[k]);
+    // Make sure that the source location is irrelevant
+    SftMom phases(params.max_mom2, false, Nd); // 4D fourier transform
+        	      
+    //now need to Fourier transform 
+    multi1d<DPropagator> FF(phases.numMom());//= sumMulti(quark_propagator,phases.getSet());
+    for (int m(0); m < FF.size(); m++){
+      multi1d<DPropagator> tt ;
+      tt = sumMulti(phases[m]*quark_propagator, phases.getSet()) ;
+      FF[m] =  tt[0] ;
+    }
 	      
-	      QDPIO::cout<<"Suitable factory found: compute the quark prop";
-	      QDPIO::cout<<" with source id "<<NprSources[k]<<endl;
-	      swatch.start();
-	      S_f->quarkProp(quark_propagator, 
-			     xml_out, 
-			     quark_prop_source,
-			     t_source[Nd-1], j_decay,
-			     state, 
-			     params.param.invParam, 
-			     params.param.quarkSpinType,
-			     params.param.obsvP,
-			     ncg_had);
-	      swatch.stop();
-	      QDPIO::cout << "Propagator computed: time= " 
-			  << swatch.getTimeInSeconds() 
-			  << " secs" << endl;
-	      
-	      //now need to Fourier transform 
-	      multi1d<Propagator> = sumMulti(quark_propagator,phases.getSet());	      
-	      write(xml_out,"Source",NprSources[k]);
-	      push(xml_out,"Relaxation_Iterations");
-	      write(xml_out, "ncg_had", ncg_had);
-	      pop(xml_out);
-	      
-	      // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
-	      {
-		// Initialize the slow Fourier transform phases
-		SftMom ph(0, true, Nd-1);
-		
-		multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
-						     ph.getSet());
-		
-		push(xml_out, "Prop_correlator");
-		write(xml_out, "prop_corr", prop_corr);
-		pop(xml_out);
-	      }
-
-
-	      //all I need to do now is save the momenta in a binary xml file
-
-	      //********************************//
-	      //** HERE COMES TH WRITING CODE **//
-	      //********************************//
-
-	      success = true;
-	      pop(xml_out);//elem
-	    }
-	    pop(xml_out): // Propagators
-   
-
-	  }
-	catch (const std::string& e) 
-	  {
-	    QDPIO::cout << InlineNprEnv::name << ": caught exception around quarkprop: " << e << endl;
-	  }
-      }
-	
-	
-    if (! success)
-      {
-	QDPIO::cerr << "Error: no fermact found" << endl;
-	QDP_abort(1);
-      }
+    push(xml_out,"FT_prop") ;
+    write(xml_out,"prop",FF);
+    pop(xml_out) ;
+     
+    pop(file_xml); //NPR_W
+    QDPFileWriter FFfile(file_xml, params.filename, QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+    for(int p(0) ; p<phases.numMom();p++){
+      XMLBufferWriter record_xml;
+      push(record_xml, "prop_desc");//write out the momemtum of each bit
+      write(record_xml, "mom", phases.numToMom(p));
+      pop(record_xml);
+      write(FFfile,record_xml,FF[p]);
+    }
     
-    
+    // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
+    {
+      // Initialize the slow Fourier transform phases
+      SftMom ph(0, true, Nd-1);
+      
+      multi1d<Double> prop_corr = sumMulti(localNorm2(quark_propagator), 
+					   ph.getSet());
+      
+      push(xml_out, "Prop_correlator");
+      write(xml_out, "prop_corr", prop_corr);
+      pop(xml_out);
+    }
+              
     pop(xml_out);  // npr
-    
+
     snoop.stop();
     QDPIO::cout << InlineNprEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 

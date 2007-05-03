@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_w.h,v 1.6 2007-04-18 02:32:26 edwards Exp $
+// $Id: inline_npr_w.h,v 1.7 2007-05-03 22:41:53 kostas Exp $
 /*! \file
  * \brief Inline construction of Landau gauge propagator
  *
@@ -32,27 +32,23 @@ namespace Chroma
   {
     InlineNprParams();
     InlineNprParams(XMLReader& xml_in, const std::string& path);
-    void writeXML(XMLWriter& xml_out, const std::string& path);
+    void write(XMLWriter& xml_out, const std::string& path);
 
     unsigned long     frequency;
 
-    ChromaProp_t      param;
-    std::string       stateInfo;
-
-    multi1d<int> NprSources ; // mu>3 or mu<0 means point source
     int max_mom2 ; // max p^2
+    std::string filename ;
 
     struct NamedObject_t
     {
       std::string     gauge_id;
-      //std::string     source_id;
       std::string     prop_id;
     } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern
   };
 
-  //! Inline measurement of NPR
+  //! Inline measurement of Wilson loops
   /*! \ingroup inlinehadron */
   class InlineNpr : public AbsInlineMeasurement 
   {
@@ -60,7 +56,7 @@ namespace Chroma
     ~InlineNpr() {}
     InlineNpr(const InlineNprParams& p) : params(p) {}
     InlineNpr(const InlineNpr& p) : params(p.params) {}
-
+ 
     unsigned long getFrequency(void) const {return params.frequency;}
 
     //! Do the measurement
@@ -72,11 +68,6 @@ namespace Chroma
     void func(const unsigned long update_no,
 	      XMLWriter& xml_out); 
     
-    void make_source(LatticePropagator& src,
-		     const Handle<const ConnectState>& state,
-		     const multi1d<int>& t_source,
-		     int mu) ;
-
   private:
     InlineNprParams params;
   };
