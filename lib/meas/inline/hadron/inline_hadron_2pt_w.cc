@@ -1,4 +1,4 @@
-// $Id: inline_hadron_2pt_w.cc,v 3.1 2007-04-18 02:32:26 edwards Exp $
+// $Id: inline_hadron_2pt_w.cc,v 3.2 2007-05-09 17:19:44 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -12,9 +12,6 @@
 #include "util/info/proginfo.h"
 //#include "io/param_io.h"
 #include "io/qprop_io.h"
-#include "meas/hadron/mesons2_w.h"
-#include "meas/hadron/barhqlq_w.h"
-#include "meas/hadron/curcor2_w.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/smear/no_quark_displacement.h"
@@ -39,13 +36,9 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    read(paramtop, "MesonP", param.MesonP);
-    read(paramtop, "CurrentP", param.CurrentP);
-    read(paramtop, "BaryonP", param.BaryonP);
-    read(paramtop, "time_rev", param.time_rev);
-
     read(paramtop, "mom2_max", param.mom2_max);
     read(paramtop, "avg_equiv_mom", param.avg_equiv_mom);
+    read(paramtop, "mom_origin", param.mom_origin);
   }
 
 
@@ -57,35 +50,31 @@ namespace Chroma
     int version = 1;
     write(xml, "version", version);
 
-    write(xml, "MesonP", param.MesonP);
-    write(xml, "CurrentP", param.CurrentP);
-    write(xml, "BaryonP", param.BaryonP);
-
-    write(xml, "time_rev", param.time_rev);
-
     write(xml, "mom2_max", param.mom2_max);
     write(xml, "avg_equiv_mom", param.avg_equiv_mom);
+    write(xml, "mom_origin", param.mom_origin);
 
     pop(xml);
   }
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineHadron2PtEnv::Params::NamedObject_t::Props_t& input)
+  void read(XMLReader& xml, const string& path, InlineHadron2PtEnv::Params::NamedObject_t::Correlators_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "first_id", input.first_id);
-    read(inputtop, "second_id", input.second_id);
+    read(inputtop, "prop_ids", input.prop_ids);
+
+    input.correlators = readXMLGroup(inputtop, "Correlators", "CorrelatorType");
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineHadron2PtEnv::Params::NamedObject_t::Props_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineHadron2PtEnv::Params::NamedObject_t::Correlators_t& input)
   {
     push(xml, path);
 
-    write(xml, "first_id", input.first_id);
-    write(xml, "second_id", input.second_id);
+    xml << input.correlators.xml;
+    write(xml, "prop_ids", input.prop_ids);
 
     pop(xml);
   }
@@ -97,7 +86,8 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
-    read(inputtop, "sink_pairs", input.sink_pairs);
+    read(inputtop, "output_file", input.output_file);
+    read(inputtop, "Correlators", input.correlators);
   }
 
   //! Propagator output
@@ -106,7 +96,8 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "gauge_id", input.gauge_id);
-    write(xml, "sink_pairs", input.sink_pairs);
+    write(xml, "output_file", input.output_file);
+    write(xml, "Correlators", input.correlators);
 
     pop(xml);
   }
@@ -136,6 +127,10 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	// Make sure all hadron 2pt function objects are registered
+	success &= Hadron2PtEnv::registerAll();
+
+	// Register this object
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
       }
@@ -361,12 +356,11 @@ namespace Chroma
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-      push(xml_out, "hadspec");
+      push(xml_out, "Hadron2Pt");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << " HADSPEC: Spectroscopy for Wilson-like fermions" << endl;
-      QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
-      QDPIO::cout << "     volume: " << Layout::lattSize()[0];
+      QDPIO::cout << " HADRON2PT: Spectroscopy for Wilson-like fermions" << endl;
+      QDPIO::cout << "    Volume: " << Layout::lattSize()[0];
       for (int i=1; i<Nd; ++i) {
 	QDPIO::cout << " x " << Layout::lattSize()[i];
       }
@@ -381,9 +375,18 @@ namespace Chroma
       write(xml_out, "Config_info", gauge_xml);
 
       push(xml_out, "Output_version");
-      write(xml_out, "out_version", 14);
+      write(xml_out, "out_version", 1);
       pop(xml_out);
 
+      // Start the data file output
+      XMLBufferWriter file_xml;
+      push(file_xml, "Hadron2Pt");
+      write(file_xml, "id", uniqueId());  // NOTE: new ID form
+      pop(file_xml);
+
+      // Write the scalar data
+      QDPFileWriter qio_output(file_xml, params.named_obj.output_file, 
+			       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
 
       // First calculate some gauge invariant observables just for info.
       MesPlq(xml_out, "Observables", u);
@@ -394,7 +397,8 @@ namespace Chroma
       // Now loop over the various fermion pairs
       for(int lpair=0; lpair < params.named_obj.sink_pairs.size(); ++lpair)
       {
-	const InlineHadron2PtEnv::Params::NamedObject_t::Props_t named_obj = params.named_obj.sink_pairs[lpair];
+	const InlineHadron2PtEnv::Params::NamedObject_t::Props_t named_obj = 
+	  params.named_obj.sink_pairs[lpair];
 
 	push(xml_out, "elem");
 
@@ -530,39 +534,56 @@ namespace Chroma
 	QDPIO::cout << "Source type = " << src_type << endl;
 	QDPIO::cout << "Sink type = "   << snk_type << endl;
 
-	// Do the mesons first
-	if (params.param.MesonP) 
+	// Compute possibly several correlators
+	multi1d<HadronCorrelator_t> hadron_corrs;
+	// Factory constructions
+	try
 	{
-	  mesons2(sink_prop_1, sink_prop_2, phases, t0,
-		  xml_out, source_sink_type + "_Wilson_Mesons");
-	} // end if (MesonP)
-
-
-	// Do the currents next
-	if (params.param.CurrentP) 
-	{
-	  // Construct the rho vector-current and the pion axial current divergence
-	  if (snk_type == "Point")
+	  // Create and use the hadron 2pt object
 	  {
-	    curcor2(u, sink_prop_1, sink_prop_2, phases, 
-		    t0, 3,
-		    xml_out, src_type + "_Point_Meson_Currents");
-	  }
-	} // end if (CurrentP)
-      
+	    std::istringstream  xml_s(named_obj.correlators[lpair].corr.xml);
+	    XMLReader  hadtop(xml_s);
+	
+	    Handle< HadronCorrelator<LatticePropagator> > hadron2PtCorr(
+	      TheHadron2PtCorrelatorFactory::Instance().createObject(
+		named_obj.correlators[lpair].corr_xml.id,
+		hadtop,
+		named_obj.correlators[lpair].corr_xml.id));
 
-	// Do the baryons
-	if (params.param.BaryonP) 
+	    hadron_corrs = (*hadron2PtCorr)(u);
+
+#if 0
+	    barhqlq(sink_prop_2, sink_prop_1, phases, 
+		    t0, bc_spec, params.param.time_rev, 
+		    xml_out, source_sink_type + "_Wilson_Baryons");
+#endif
+
+	  }
+	}
+	catch(const std::string& e) 
 	{
-	  barhqlq(sink_prop_2, sink_prop_1, phases, 
-		  t0, bc_spec, params.param.time_rev, 
-		  xml_out, source_sink_type + "_Wilson_Baryons");
-	} // end if (BaryonP)
+	  QDPIO::cerr << InlineHadron2PtEnv::name << ": Caught Exception inserting: " 
+		      << e << endl;
+	  QDP_abort(1);
+	}
+
+
+	// Fourier transform the results and save them
+	for(int had=0; had < hadron_corrs.size(); ++had)
+	{
+	  multi2d<DComplex> hsum(phases.sft(hadron_corrs[had].corr));
+
+	  // Save the qio output file entry
+	  write(qio_output, hadron_corrs[had].hadron_xml, hsum);
+	}
 
 	pop(xml_out);  // array element
       }
       pop(xml_out);  // Wilson_spectroscopy
-      pop(xml_out);  // hadspec
+      pop(xml_out);  // Hadron2Pt
+
+      // Close data file
+      close(qio_output);
 
       snoop.stop();
       QDPIO::cout << InlineHadron2PtEnv::name << ": total time = "

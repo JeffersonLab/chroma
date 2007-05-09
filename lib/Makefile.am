@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.91 2007-05-09 12:52:55 mcneile Exp $
+# $Id: Makefile.am,v 3.92 2007-05-09 17:19:44 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -174,6 +174,9 @@ nobase_include_HEADERS = \
         meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h \
 	meas/hadron/hadron_seqsource.h \
+	meas/hadron/hadron_2pt.h \
+	meas/hadron/hadron_2pt_aggregate.h \
+	meas/hadron/hadron_2pt_factory.h \
 	meas/hadron/mesQl_w.h \
 	meas/hadron/mesQlPOT_w.h \
 	meas/hadron/barQll_w.h \
@@ -495,6 +498,7 @@ nobase_include_HEADERS += \
 	meas/hadron/simple_meson_seqsrc_w.h \
 	meas/hadron/deriv_meson_seqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h \
+	meas/hadron/simple_meson_2pt_w.h \
 	meas/hadron/mesons_w.h \
 	meas/hadron/mesons2_w.h \
         meas/hadron/seqpiontest_w.h \
@@ -679,7 +683,6 @@ nobase_include_HEADERS += \
 	meas/inline/hadron_s/inline_make_source_s.h \
 	meas/inline/hadron_s/inline_propagator_s.h \
 	meas/inline/hadron_s/inline_sink_smear_s.h \
-	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/inline_apply_fermstate_s.h \
         meas/inline/hadron_s/util_compute_quark_prop_s.h \
 	meas/inline/io/io.h \
@@ -710,6 +713,7 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_link_smear.h
 
 # Taken out for now
+#	meas/inline/hadron_s/inline_spectrum_s.h
 #	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
@@ -876,6 +880,8 @@ libchroma_a_SOURCES = \
 	meas/glue/wilslp.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/hadron_seqsource.cc \
+	meas/hadron/hadron_2pt.cc \
+	meas/hadron/hadron_2pt_aggregate.cc \
 	meas/hadron/mesQl_w.cc \
 	meas/hadron/mesQlPOT_w.cc \
 	meas/hadron/barQll_w.cc \
@@ -1127,6 +1133,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/simple_meson_seqsrc_w.cc \
 	meas/hadron/deriv_meson_seqsrc_w.cc \
 	meas/hadron/photon_seqsrc_w.cc \
+	meas/hadron/simple_meson_2pt_w.cc \
         meas/hadron/mesons_w.cc \
         meas/hadron/mesons2_w.cc \
 	meas/hadron/qqq_w.cc meas/hadron/qqbar_w.cc \
@@ -1236,7 +1243,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron_s/inline_make_source_s.cc \
 	meas/inline/hadron_s/inline_propagator_s.cc \
 	meas/inline/hadron_s/inline_sink_smear_s.cc \
-	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \
@@ -1269,6 +1275,7 @@ libchroma_a_SOURCES += \
 	meas/inline/smear/inline_link_smear.cc
 
 # Taken out for now
+#	meas/inline/hadron_s/inline_spectrum_s.cc
 #	meas/inline/hadron/inline_spectrum_w.cc
 #	meas/inline/hadron/inline_multipole_w.cc
 #	meas/inline/hadron/inline_spectrumQll.cc
