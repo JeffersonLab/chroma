@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.90 2007-05-03 22:42:48 kostas Exp $
+# $Id: Makefile.am,v 3.91 2007-05-09 12:52:55 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -572,6 +572,8 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
+	actions/ferm/fermacts/hisq_fermact_params_s.h \
+	actions/ferm/fermacts/hisq_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermacts/klein_gordon_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
@@ -591,6 +593,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/klein_gordon_linop_s.h \
 	actions/ferm/qprop/eoprec_staggered_qprop.h \
 	actions/ferm/qprop/asqtad_qprop.h \
+	actions/ferm/qprop/hisq_qprop.h \
 	actions/ferm/qprop/quarkprop4_s.h \
 	io/follana_io_s.h io/io_s.h \
 	meas/eig/eig_s.h meas/hadron/baryon_s.h \
@@ -807,6 +810,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/eoprec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
 	actions/ferm/qprop/asqtad_qprop.cc \
+	actions/ferm/qprop/hisq_qprop.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
@@ -1332,6 +1336,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
+	actions/ferm/fermacts/hisq_fermact_params_s.cc \
+	actions/ferm/fermacts/hisq_fermact_s.cc \
 	actions/ferm/fermacts/klein_gordon_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
