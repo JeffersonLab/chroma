@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 3.4 2006-11-19 04:59:08 edwards Exp $
+// $Id: t_propagator_s.cc,v 3.5 2007-05-09 12:51:18 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  */
@@ -13,6 +13,9 @@
 
 #include "meas/hadron/stag_propShift_s.h"
 
+#include "actions/ferm/fermacts/hisq_fermact_params_s.h"
+#include "actions/ferm/fermacts/hisq_fermact_s.h"
+#include "actions/ferm/qprop/hisq_qprop.h"
 
 /*
  *  Here we have various temporary definitions
@@ -350,10 +353,18 @@ int main(int argc, char **argv)
   //
   // Initialize fermion action
   //
+#if 0
   AsqtadFermActParams asq_param;
   asq_param.Mass = input.param.Mass;
   asq_param.u0   = input.param.u0;
   AsqtadFermAct S_f(cfs, asq_param);
+#endif
+  HisqFermActParams hisq_param;
+  hisq_param.Mass = input.param.Mass;
+  hisq_param.u0   = input.param.u0;
+  HisqFermAct S_f(cfs, hisq_param);
+
+
 
   // Set up a state for the current u,
   // (compute fat & triple links)
