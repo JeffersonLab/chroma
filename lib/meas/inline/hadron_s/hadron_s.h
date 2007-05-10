@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_s.h,v 3.2 2007-05-10 17:43:48 edwards Exp $
+// $Id: hadron_s.h,v 3.3 2007-05-10 17:48:28 edwards Exp $
 
 /*! \file
  * \brief Inline measurements for hadron observables
@@ -20,6 +20,6 @@
 #include "inline_make_source_s.h"
 #include "inline_propagator_s.h"
 #include "inline_sink_smear_s.h"
-//#include "inline_spectrum_s.h"   // not used by UKQCD
+#include "inline_spectrum_s.h"
 
 #endif
