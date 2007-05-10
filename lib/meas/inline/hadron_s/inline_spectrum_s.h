@@ -1,12 +1,10 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.4 2007-05-09 17:19:44 edwards Exp $
+// $Id: inline_spectrum_s.h,v 3.5 2007-05-10 17:46:29 edwards Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
  * Staggered spectrum calculations
  */
-
-#error "NOT BEING USED - UKQCD USES MAINPROG SPECTRUM_S"
 
 #ifndef __inline_spectrum_s_h__
 #define __inline_spectrum_s_h__
