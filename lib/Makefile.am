@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.92 2007-05-09 17:19:44 edwards Exp $
+# $Id: Makefile.am,v 3.93 2007-05-10 17:47:50 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -622,7 +622,8 @@ nobase_include_HEADERS += \
         meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h \
 	util/gauge/gauge_s.h util/gauge/stag_phases_s.h \
-	meas/inline/hadron_s/inline_hadron_aggregate_s.h
+	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
+	meas/inline/hadron_s/inline_spectrum_s.h
 
 
 #
@@ -713,7 +714,6 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_link_smear.h
 
 # Taken out for now
-#	meas/inline/hadron_s/inline_spectrum_s.h
 #	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
@@ -1244,6 +1244,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron_s/inline_propagator_s.cc \
 	meas/inline/hadron_s/inline_sink_smear_s.cc \
 	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
+	meas/inline/hadron_s/inline_spectrum_s.cc \
         meas/inline/hadron_s/util_compute_quark_prop_s.cc \
         meas/inline/hadron_s/util_compute_singlet_ps.cc \
         meas/inline/hadron_s/util_compute_meson_s.cc \
@@ -1275,7 +1276,6 @@ libchroma_a_SOURCES += \
 	meas/inline/smear/inline_link_smear.cc
 
 # Taken out for now
-#	meas/inline/hadron_s/inline_spectrum_s.cc
 #	meas/inline/hadron/inline_spectrum_w.cc
 #	meas/inline/hadron/inline_multipole_w.cc
 #	meas/inline/hadron/inline_spectrumQll.cc
