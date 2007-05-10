@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.171 2007-05-09 17:21:15 edwards Exp $
+# $Id: Makefile.in,v 3.172 2007-05-10 17:50:23 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -50,7 +50,6 @@ POST_UNINSTALL = :
 @BUILD_GMP_REMEZ_TRUE@am__append_6 = update/molecdyn/monomial/remez_gmp.cc
 
 # Taken out for now
-#	meas/inline/hadron_s/inline_spectrum_s.cc
 #	meas/inline/hadron/inline_spectrum_w.cc
 #	meas/inline/hadron/inline_multipole_w.cc
 #	meas/inline/hadron/inline_spectrumQll.cc
@@ -538,6 +537,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron_s/inline_propagator_s.cc \
 	meas/inline/hadron_s/inline_sink_smear_s.cc \
 	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
+	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/hadron_s/util_compute_quark_prop_s.cc \
 	meas/inline/hadron_s/util_compute_singlet_ps.cc \
 	meas/inline/hadron_s/util_compute_meson_s.cc \
@@ -944,7 +944,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_hadron_aggregate_s.$(OBJEXT) \
 	inline_make_source_s.$(OBJEXT) inline_propagator_s.$(OBJEXT) \
 	inline_sink_smear_s.$(OBJEXT) \
-	inline_apply_fermstate_s.$(OBJEXT) \
+	inline_apply_fermstate_s.$(OBJEXT) inline_spectrum_s.$(OBJEXT) \
 	util_compute_quark_prop_s.$(OBJEXT) \
 	util_compute_singlet_ps.$(OBJEXT) \
 	util_compute_meson_s.$(OBJEXT) \
@@ -1516,8 +1516,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
 	util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
-	io/inline_io.h meas/inline/inline.h \
-	meas/inline/abs_inline_measurement.h \
+	meas/inline/hadron_s/inline_spectrum_s.h io/inline_io.h \
+	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
 	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
 	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
@@ -2279,8 +2279,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
 	util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
-	io/inline_io.h meas/inline/inline.h \
-	meas/inline/abs_inline_measurement.h \
+	meas/inline/hadron_s/inline_spectrum_s.h io/inline_io.h \
+	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
 	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
 	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
@@ -2359,7 +2359,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 nodist_include_HEADERS = chroma_config_internal.h
 
 # Taken out for now
-#	meas/inline/hadron_s/inline_spectrum_s.h
 #	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
@@ -2827,6 +2826,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron_s/inline_propagator_s.cc \
 	meas/inline/hadron_s/inline_sink_smear_s.cc \
 	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
+	meas/inline/hadron_s/inline_spectrum_s.cc \
 	meas/inline/hadron_s/util_compute_quark_prop_s.cc \
 	meas/inline/hadron_s/util_compute_singlet_ps.cc \
 	meas/inline/hadron_s/util_compute_meson_s.cc \
@@ -3218,6 +3218,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_sink_smear_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_sink_smear_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_smear_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_spectrum_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stag_to_wils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_static_light_spec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_baryon_w.Po@am__quote@
@@ -10620,6 +10621,20 @@ inline_apply_fermstate_s.obj: meas/inline/hadron_s/inline_apply_fermstate_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_apply_fermstate_s.cc' object='inline_apply_fermstate_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_apply_fermstate_s.obj `if test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_apply_fermstate_s.cc'; fi`
+
+inline_spectrum_s.o: meas/inline/hadron_s/inline_spectrum_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_spectrum_s.o -MD -MP -MF "$(DEPDIR)/inline_spectrum_s.Tpo" -c -o inline_spectrum_s.o `test -f 'meas/inline/hadron_s/inline_spectrum_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_spectrum_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_spectrum_s.Tpo" "$(DEPDIR)/inline_spectrum_s.Po"; else rm -f "$(DEPDIR)/inline_spectrum_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_spectrum_s.cc' object='inline_spectrum_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_spectrum_s.o `test -f 'meas/inline/hadron_s/inline_spectrum_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_spectrum_s.cc
+
+inline_spectrum_s.obj: meas/inline/hadron_s/inline_spectrum_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_spectrum_s.obj -MD -MP -MF "$(DEPDIR)/inline_spectrum_s.Tpo" -c -o inline_spectrum_s.obj `if test -f 'meas/inline/hadron_s/inline_spectrum_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_spectrum_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_spectrum_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_spectrum_s.Tpo" "$(DEPDIR)/inline_spectrum_s.Po"; else rm -f "$(DEPDIR)/inline_spectrum_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_spectrum_s.cc' object='inline_spectrum_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_spectrum_s.obj `if test -f 'meas/inline/hadron_s/inline_spectrum_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_spectrum_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_spectrum_s.cc'; fi`
 
 util_compute_quark_prop_s.o: meas/inline/hadron_s/util_compute_quark_prop_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util_compute_quark_prop_s.o -MD -MP -MF "$(DEPDIR)/util_compute_quark_prop_s.Tpo" -c -o util_compute_quark_prop_s.o `test -f 'meas/inline/hadron_s/util_compute_quark_prop_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/util_compute_quark_prop_s.cc; \
