@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invbicgstab.h,v 3.1 2007-05-01 12:47:24 bjoo Exp $
+// $Id: invbicgstab.h,v 3.2 2007-05-11 02:32:32 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -10,17 +10,24 @@
 #include "linearop.h"
 #include "syssolver.h"
 
-namespace Chroma {
+namespace Chroma 
+{
 
-template<typename T>
-SystemSolverResults_t
-InvBiCGStab(const LinearOperator<T>& A,
-	    const T& chi,
-	    T& psi,
-	    const Real& RsdBiCGStab,
-	    int MaxBiCGStab,
-	    enum PlusMinus isign);
+  //! Bi-CG stabilized
+  /*! \ingroup invert
+   *
+   * @{
+   */
+  template<typename T>
+  SystemSolverResults_t
+  InvBiCGStab(const LinearOperator<T>& A,
+	      const T& chi,
+	      T& psi,
+	      const Real& RsdBiCGStab,
+	      int MaxBiCGStab,
+	      enum PlusMinus isign);
 
+  /*! @} */  // end of group invert
 	    
 }  // end namespace Chroma
 
