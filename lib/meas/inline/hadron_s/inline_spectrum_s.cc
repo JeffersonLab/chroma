@@ -842,7 +842,7 @@ namespace Chroma {
     //   disconnected loops.
 
     if (((  do_local_disc_loops ) && (do_stoch_conn_corr )) && 
-	(!do_fuzzed_disc_loops)){
+    	(!do_fuzzed_disc_loops)){
       push(xml_out, "disconnected_loops");
       ks_local_loops_and_stoch_conn(qprop, q_source, psi , u, xml_out, 
 				    gauge_shift, sym_shift, loop_checkpoint,
@@ -1064,11 +1064,20 @@ namespace Chroma {
 
       if(( do_fuzzed_disc_loops  )&&(!done_fuzzed_disc_loops)) {
 	push(xml_out, "disconnected_loops");
+
 	ks_fuzz_loops(qprop,q_source, psi ,psi_fuzz , u, u_smr,xml_out, 
 		      gauge_shift, sym_shift, loop_checkpoint, t_length, Mass, 
 		      Nsamp, RsdCG, CFGNO, volume_source, fuzz_width, 
 		      src_seperation, j_decay);
 
+/* for testing
+
+	ks_fuzz_loops_stoch_conn(qprop,q_source,psi ,psi_fuzz ,u,u_smr,
+				      xml_out, gauge_shift, sym_shift,
+				      loop_checkpoint, t_length, Mass, Nsamp,
+				      RsdCG, CFGNO, volume_source, fuzz_width, 
+				      src_seperation, j_decay);
+*/
 	pop(xml_out);
 	done_local_disc_loops = true;
 	done_fuzzed_disc_loops  = true;
