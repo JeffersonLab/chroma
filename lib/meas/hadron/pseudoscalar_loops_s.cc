@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_loops_s.cc,v 3.2 2007-04-11 15:23:08 egregory Exp $
+// $Id: pseudoscalar_loops_s.cc,v 3.3 2007-05-17 15:29:23 egregory Exp $
 #include "chromabase.h"
 #include "pseudoscalar_loops_s.h"
 #include "util/gauge/stag_phases_s.h"
@@ -192,6 +192,7 @@ void threelink_pseudoscalar_loop_fuzz::compute(
 }
 
 void fourlink_pseudoscalar_kilcup_loop_fuzz::compute(LatticeStaggeredFermion & psi_fuzz,
+					       LatticeStaggeredFermion & psi,
 						int isample, Real mass){
 
   // Array to describe shifts in cube
@@ -205,7 +206,7 @@ void fourlink_pseudoscalar_kilcup_loop_fuzz::compute(LatticeStaggeredFermion & p
   delta = 0;
   delta[0] = delta[1] = delta[2] = delta[3] = 1;
  
-  psi_eta4 = shift_deltaProp(delta, psi_fuzz);
+  psi_eta4 = shift_deltaProp(delta, psi);
 
   LatticeComplex TrG_eta4 ; 
   using namespace StagPhases;
