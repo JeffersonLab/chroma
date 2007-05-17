@@ -1,4 +1,4 @@
-// $Id: pseudoscalar_loops_s.h,v 3.1 2007-04-11 15:24:13 egregory Exp $
+// $Id: pseudoscalar_loops_s.h,v 3.2 2007-05-17 15:29:57 egregory Exp $
 #ifndef PSEUDOSCALAR_LOOPS_S_H
 #define PSEUDOSCALAR_LOOPS_S_H
 
@@ -200,10 +200,13 @@ namespace Chroma {
   {
   public :
 
-    void compute(LatticeStaggeredFermion & q_source, 
-		 LatticeStaggeredFermion & psi, int isample) ; 
+        void compute(LatticeStaggeredFermion & q_source, 
+    		 LatticeStaggeredFermion & psi, int isample) ; 
 
-    void compute(LatticeStaggeredFermion & psi, int isample, Real mass) ; 
+    //    void compute(LatticeStaggeredFermion & psi, int isample, Real mass) ; 
+    void compute(LatticeStaggeredFermion & psi_fuzz,
+		 LatticeStaggeredFermion & psi,
+		 int isample, Real mass);
 
     fourlink_pseudoscalar_kilcup_loop_fuzz(int t_len, int nsample,
 				      const multi1d<LatticeColorMatrix> & uin, 
