@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 3.3 2007-05-14 13:41:26 egregory Exp $ ($Date: 2007-05-14 13:41:26 $) */
+/* $Id: ks_local_loops.cc,v 3.4 2007-05-17 15:30:38 egregory Exp $ ($Date: 2007-05-17 15:30:38 $) */
 
 
 #include "fermact.h"
@@ -829,7 +829,7 @@ void ks_fuzz_loops(
       scalar_two_loop_fuzz.compute(q_source,psi_fuzz,i) ;
       eta3_loop_fuzz.compute(q_source,psi_fuzz,i) ;
       eta4_loop_fuzz.compute(q_source,psi_fuzz,i) ;
-      eta4_kilcup_loop_fuzz.compute(psi_fuzz,i, Mass);
+      eta4_kilcup_loop_fuzz.compute(psi_fuzz,psi,i, Mass);
 
 
 
@@ -1239,7 +1239,7 @@ void ks_fuzz_loops_stoch_conn(
       scalar_two_loop_fuzz.compute(q_source,psi_fuzz,i) ;
       eta3_loop_fuzz.compute(q_source,psi_fuzz,i) ;
       eta4_loop_fuzz.compute(q_source,psi_fuzz,i) ;
-      eta4_kilcup_loop_fuzz.compute(psi_fuzz,i, Mass);
+      eta4_kilcup_loop_fuzz.compute(psi_fuzz,psi,i, Mass);
 
 
 
