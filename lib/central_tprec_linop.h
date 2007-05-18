@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_linop.h,v 3.5 2007-02-27 20:28:34 bjoo Exp $
+// $Id: central_tprec_linop.h,v 3.6 2007-05-18 20:22:55 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -328,40 +328,32 @@ namespace Chroma
       switch (isign)
       {
       case PLUS:
-	//  chi   = ( C_R + C_L + C_L (A - 1 ) C_R ) psi
-	//         = C_L psi + (1  + C_L (A-1))  C_R psi
+	// Eisenstat's Trick:
+	//  chi   = ( C_L + C_R + C_L (A - 1 ) C_R ) psi
+	//        =   C_L ( 1 + (A - 1 ) C_R) psi +   C_R psi
 	//
-	//  chi = C_L psi
-	cLeftLinOp(chi, psi, isign);
-
-	// tmp1 = C_R psi
+	//  eval as  tmp1 = C_R psi
+	//           tmp2 = psi + (A-1)tmp1
+	//           chi   = C_L tmp2 
+	//           chi  += tmp1
 	cRightLinOp(tmp1, psi, isign);
-
-	// chi = C_L psi + C_R psi 
+	AMinusOneOp(tmp2, tmp1,isign);
+	tmp2 +=psi;
+	cLeftLinOp(chi, tmp2, isign);
 	chi += tmp1;
-	
-	// tmp1 = C_L (A-1) C_R psi 
-	AMinusOneOp(tmp2, tmp1, isign);
-	cLeftLinOp(tmp1, tmp2, isign);
 
-	chi += tmp1;
 	break;
 
       case MINUS:
+	// Eisenstat's Trick:
+
 	//  chi   =  ( C_R^\dag + C_L^\dag + C_R^\dag (A-1)^\dag  C_L^\dag ) \psi
-	//        =  C_R^\dag psi +(1  +  C_R^\dag (A-1)^\dag) C_L^\dag \psi
-	cRightLinOp(chi, psi, isign);
-	
-	// tmp1 = C_L^\dag \psi
-	cLeftLinOp( tmp1, psi, isign);
-	
-	// chi = C_R^\dag \psi + C_L^\dag \psi
-	chi += tmp1;
+	//        =  C^R\dag ( 1 + (A-1)^\dag C_L^\dag ) psi + C_L^\dag \psi
 
-	// tmp2 = (A-1)^\dag C_L^\dag psi
-	AMinusOneOp( tmp2, tmp1, isign);
-	cRightLinOp( tmp1, tmp2, isign);
-
+	cLeftLinOp(tmp1, psi, isign);
+	AMinusOneOp(tmp2, tmp1, isign);
+	tmp2 += psi;
+	cRightLinOp(chi, tmp2, isign);
 	chi += tmp1;
 
 	break;
