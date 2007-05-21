@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rect_gaugeact.h,v 3.5 2007-02-22 21:11:48 bjoo Exp $
+// $Id: rect_gaugeact.h,v 3.6 2007-05-21 22:21:54 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -85,8 +85,29 @@ namespace Chroma
     void deriv(multi1d<LatticeColorMatrix>& result,
 	       const Handle< GaugeState<P,Q> >& state) const;
 
+    //! compute spatial dS/dU given a time direction
+    void derivSpatial(multi1d<LatticeColorMatrix>& result,
+		      const Handle< GaugeState<P,Q> >& state) const;
+
+
+		      
+
+    //! compute spatial dS/dU given a time direction
+    // No t_dir param is needed as it is hidden in the params
+    void derivTemporal(multi1d<LatticeColorMatrix>& result,
+		       const Handle< GaugeState<P,Q> >& state) const;
+
+
+
+
     //! Compute the actions
     Double S(const Handle< GaugeState<P,Q> >& state) const;
+
+    //! Compute the spatial part of the action given a time direction
+    Double spatialS(const Handle< GaugeState<P,Q> >& state) const;
+
+    //! Compute the temporal part of the action given a time direction
+    Double temporalS(const Handle< GaugeState<P,Q> >& state) const;
 
     //! Produce a gauge create state object
     const CreateGaugeState<P,Q>& getCreateState() const {return *cgs;}
@@ -118,6 +139,18 @@ namespace Chroma
   private:
     Handle< CreateGaugeState<P,Q> >  cgs;  // Create gauge state
     RectGaugeActParams params; // THe parameter struct
+
+    // A function for computing the  contribution from one rectangle 
+    // in the mu/nu plane specified.
+    void deriv_part(int mu, int nu, Real c_munu,
+		    multi1d<LatticeColorMatrix>& ds_u, 
+		    const multi1d<LatticeColorMatrix>& u) const;
+
+    // A function for computing the contribution to the action from 
+    // one rectangle int he mu,nu plane specified
+    void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
+		const multi1d<LatticeColorMatrix>& u) const;
+
   };
 
 };

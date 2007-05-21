@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.8 2006-09-24 20:58:30 edwards Exp $
+// $Id: rect_gaugeact.cc,v 3.9 2007-05-21 22:21:54 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -131,9 +131,9 @@ namespace Chroma
   }
 
   inline
-  void deriv_part(int mu, int nu, Real c_munu,
-		  multi1d<LatticeColorMatrix>& ds_u, 
-		  const multi1d<LatticeColorMatrix>& u) 
+  void RectGaugeAct::deriv_part(int mu, int nu, Real c_munu,
+				multi1d<LatticeColorMatrix>& ds_u, 
+				const multi1d<LatticeColorMatrix>& u) const
   {
     START_CODE();
 
@@ -267,8 +267,11 @@ namespace Chroma
   RectGaugeAct::deriv(multi1d<LatticeColorMatrix>& ds_u,
 		      const Handle< GaugeState<P,Q> >& state) const
   {
-    START_CODE();
+    START_CODE()
 
+
+#if 1
+    // More efficient version
     QDP::StopWatch swatch;
     swatch.reset();
     swatch.start();
@@ -315,6 +318,130 @@ namespace Chroma
     getGaugeBC().zero(ds_u);
     swatch.stop();
     RectGaugeActEnv::time_spent += swatch.getTimeInSeconds();
+#else
+
+    // This version uses new deriv_spatial/deriv_temporal structure.
+    // Above version saves a couple of closings of the staples
+    // so is faster and should be preferred.
+    // This is for testing only
+    ds_u.resize(Nd);
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+    
+    ds_u = zero;
+    ds_tmp = zero;
+
+    derivSpatial(ds_u, state);
+    derivTemporal(ds_tmp, state);
+    
+    for(int mu=0; mu < Nd; ++mu) { 
+      ds_u[mu] += ds_tmp[mu];
+    }
+#endif
+    END_CODE();
+  }
+
+  void
+  RectGaugeAct::derivSpatial(multi1d<LatticeColorMatrix>& ds_u,
+			     const Handle< GaugeState<P,Q> >& state) const
+
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+    Real c;
+
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    
+    ds_u = zero;
+    ds_tmp = zero; 
+    const int t_dir = params.aniso.t_dir;
+
+    // Use spatial coefficient
+    c = params.coeff_s;
+
+    for(int mu=0; mu < Nd; mu++) { 
+      for(int nu=0; nu < Nd; nu++) { 
+	
+	// Ensure mu!=nu (so we have a rectangle instead of a line
+	//        also that mu and nu are both spatial (neither is t_dir)
+	if ( (mu != nu ) && (mu != t_dir) && (nu != t_dir) ) {
+
+	  deriv_part(mu, nu, c, ds_u, u);
+
+	  ds_tmp[mu] += ds_u[mu];
+	  ds_tmp[nu] += ds_u[nu];
+
+	}	  
+      }
+    }
+
+    for(int mu = 0; mu < Nd; mu++) { 
+      if( mu != t_dir ) {
+	ds_u[mu] = u[mu]*ds_tmp[mu];
+      }
+    }
+    getGaugeBC().zero(ds_u); 
+    
+
+    END_CODE();
+  }
+
+
+  void
+  RectGaugeAct::derivTemporal(multi1d<LatticeColorMatrix>& ds_u,
+			      const Handle< GaugeState<P,Q> >& state) const
+
+  {
+    START_CODE();
+
+    QDP::StopWatch swatch;
+    swatch.reset();
+    swatch.start();
+
+    ds_u.resize(Nd);
+    Real c;
+    int mu, nu;
+
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    
+    ds_u = zero;
+    ds_tmp = zero; 
+
+    // length 1 in the t_dir (nu = t_dir) 
+    const int t_dir = params.aniso.t_dir;
+    nu = t_dir;
+    c = params.coeff_t2;
+    for(mu=0; mu < Nd; mu++) { 
+      if( mu != nu ) { 
+	deriv_part(mu,nu,c,ds_u, u);
+	ds_tmp[mu] += ds_u[mu];
+	ds_tmp[nu] += ds_u[nu];
+      }
+    }
+
+
+    // length 2 in the t_dir (mu = t_dir)
+    mu = t_dir;
+    c = params.coeff_t1;
+    for(int nu=0; nu < Nd; nu++) { 
+      if( (!params.no_temporal_2link) && (nu != mu ) ) {  
+	  deriv_part(mu, nu, c, ds_u, u);
+
+	  ds_tmp[mu] += ds_u[mu];
+	  ds_tmp[nu] += ds_u[nu];
+      } 
+    }     
+
+
+    for(int mu = 0; mu < Nd; mu++) { 
+      ds_u[mu] = u[mu]*ds_tmp[mu];
+    }
+    getGaugeBC().zero(ds_u);
+      
     END_CODE();
   }
 
@@ -331,15 +458,12 @@ namespace Chroma
   // S = -coeff * (V*Nd*(Nd-1)/2) w_rect 
   //   = -coeff * (V*Nd*(Nd-1)/2)*(2/(V*Nd*(Nd-1)*Nc))* Sum Re Tr Rect
   //   = -coeff * (1/(Nc)) * Sum Re Tr Rect
-  inline
-  void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
-	      const multi1d<LatticeColorMatrix>& u);
-  
   Double
   RectGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
   {
     START_CODE();
-    
+
+#if 1    
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
     LatticeReal lgimp = zero;
     Real c; 
@@ -375,11 +499,88 @@ namespace Chroma
     END_CODE();
 
     return S_rect;
-  }
-  
+#else
 
-  void S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
-	      const multi1d<LatticeColorMatrix>& u)
+    // This way ought to work, but has two reductions -- one sum re tr
+    // in spatialS and one sum re tr in the temporalS so the old way 
+    // with just 1 reduction is more efficient. Enable this for testing 
+    // only
+    START_CODE();
+    Double S_rect = spatialS(state) + temporalS(state);
+    END_CODE();
+    return S_rect;
+#endif
+  }
+
+
+  Double
+  RectGaugeAct::spatialS(const Handle< GaugeState<P,Q> >& state) const
+  {
+    START_CODE();
+    
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    LatticeReal lgimp = zero;
+    Real c; 
+    const int t_dir = params.aniso.t_dir;
+    c = params.coeff_s;
+
+    for(int mu=0; mu < Nd; ++mu) { 
+      for(int nu = 0; nu < Nd; ++nu) { 
+	if( (mu != nu) && (mu != t_dir) && (nu != t_dir) ) { 
+	  S_part(mu, nu, c, lgimp, u);
+	}
+      }
+    }
+
+    Double S_rect = sum(lgimp);
+    S_rect *= -Double(1) / Double(Nc);   // note sign here
+
+    END_CODE();
+
+    return S_rect;
+  }
+
+  Double
+  RectGaugeAct::temporalS(const Handle< GaugeState<P,Q> >& state) const
+  {
+    START_CODE();
+    
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    LatticeReal lgimp = zero;
+
+    Real c; 
+ 
+    int t_dir = params.aniso.t_dir;
+    int nu = t_dir;
+    c  = params.coeff_t2;
+
+    for(int mu=0; mu < Nd; ++mu) {
+      if( mu != nu ) { 
+	S_part(mu,nu, c, lgimp, u);
+      }
+    }
+    
+    // previous mu out of scope by here
+    int mu = t_dir;
+    c = params.coeff_t1;
+    for(nu = 0; nu < Nd; ++nu) { 
+      if( (!params.no_temporal_2link) &&  (nu != mu) ) { 
+	S_part(mu,nu, c, lgimp, u);
+      }
+    }
+
+    Double S_rect = sum(lgimp);
+    S_rect *= -Double(1) / Double(Nc);   // note sign here
+
+    END_CODE();
+
+    return S_rect;
+  }
+
+  
+  inline 
+  void RectGaugeAct::S_part(int mu, int nu, Real c, LatticeReal& lgimp, 
+			    const multi1d<LatticeColorMatrix>& u) const
   {
     START_CODE();
 
