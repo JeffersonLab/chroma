@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.10 2007-03-22 19:52:04 bjoo Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.11 2007-05-22 14:19:42 bjoo Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */
@@ -21,6 +21,8 @@
 #include "actions/gauge/gaugeacts/rbc_gaugeact.h"
 #include "actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h"
+#include "actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.h"
+#include "actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.h"
 
 #include "actions/gauge/gaugebcs/gaugebc_aggregate.h"
 #include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
@@ -60,6 +62,8 @@ namespace Chroma
 	success &= SpatialTwoPlaqGaugeActEnv::registerAll();
 	success &= PlaqPlusSpatialTwoPlaqGaugeActEnv::registerAll();
 	success &= AnisoSpectrumGaugeActEnv::registerAll();
+	success &= AnisoSymSpatialGaugeActEnv::registerAll();	
+	success &= AnisoSymTemporalGaugeActEnv::registerAll();
 
 	registered = true;
       }
