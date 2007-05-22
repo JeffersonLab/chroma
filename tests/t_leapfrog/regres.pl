@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.14 2007-05-01 14:47:28 bjoo Exp $
+#  $Id: regres.pl,v 3.15 2007-05-22 14:50:59 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -273,6 +273,31 @@
 	 log         => "t_leapfrog.wilson_gaugeact_aniso_mom.candidate.xml",
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.wilson_gaugeact_aniso_mom.metric.xml" ,
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.wilson_gaugeact_aniso_mom.log.xml" ,
+     },
+
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_spatial_plus_temporal.ini.xml" , 
+	 log         => "t_leapfrog.aniso_sym_spatial_plus_temporal.log.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_spatial_plus_temporal.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_spatial_plus_temporal.log.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_spatial.ini.xml" , 
+	 log         => "t_leapfrog.aniso_sym_spatial.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_spatial.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_spatial.log.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_temporal.ini.xml",
+	 log         => "t_leapfrog.aniso_sym_temporal.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_temporal.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.aniso_sym_temporal.log.xml" ,
      }
 
 
