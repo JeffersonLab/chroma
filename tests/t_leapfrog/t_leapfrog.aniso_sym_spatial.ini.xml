@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+    <Monomials>
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+	  <Name>ANISO_SYM_SPATIAL_GAUGEACT</Name>
+	  <beta>1.7</beta>
+	  <u_s>0.73698</u_s>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>5</xi_0>
+          </AnisoParam>
+	  <GaugeBC>
+	    <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+	    <SchrPhiMult>2.0</SchrPhiMult>
+	    <loop_extent>2</loop_extent>
+	    <decay_dir>3</decay_dir>
+          </GaugeBC>
+        </GaugeAction>
+	<NamedObject>
+	  <monomial_id>Gauge</monomial_id> 
+	</NamedObject>
+      </elem>
+    </Monomials>
+   <Hamiltonian>
+      <monomial_ids><elem>Gauge</elem></monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+	<tau0>1.0</tau0>
+	<Integrator>
+	  <Name>LCM_STS_LEAPFROG</Name>
+	  <n_steps>10</n_steps>
+	  <monomial_ids><elem>Gauge</elem></monomial_ids>
+        </Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>WEAK_FIELD</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>4 4 4 8</nrow>
+</LeapfrogTest>
