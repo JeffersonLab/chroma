@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.93 2007-05-10 17:47:50 edwards Exp $
+# $Id: Makefile.am,v 3.94 2007-05-22 14:51:17 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -105,6 +105,9 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
+	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.h \
+	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.h \
+	actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.h \
 	actions/gauge/gaugeacts/wilson_gaugeact_params.h \
 	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.h \
@@ -822,6 +825,9 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc \
+	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc \
+	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc \
+	actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc \
 	actions/gauge/gaugeacts/wilson_gaugeact_params.cc \
 	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.cc \
