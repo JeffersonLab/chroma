@@ -1,4 +1,4 @@
-// $Id: aniso_sym_spatial_gaugeact.cc,v 3.1 2007-05-22 14:19:42 bjoo Exp $
+// $Id: aniso_sym_spatial_gaugeact.cc,v 3.2 2007-05-24 19:36:05 bjoo Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -10,7 +10,7 @@
 #include "actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.h"
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
 #include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
-
+#include "actions/gauge/gaugeacts/aniso_sym_shared_functions.h"
 namespace Chroma
 {
  
@@ -43,9 +43,95 @@ namespace Chroma
 
   }
 
+  Double AnisoSymSpatialGaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
+  {
+    START_CODE();
+
+    LatticeReal lgimp=zero;
+    const multi1d<LatticeColorMatrix>& u_bc = state->getLinks();
+
+    
+    for(int mu = 0; mu < Nd; mu++) { 
+      for(int nu = 0 ; nu < Nd; nu++) { 
+	if ( ( mu != nu ) && (mu != param.aniso.t_dir) 
+	     && ( nu != param.aniso.t_dir ) ) {
+      
+	  AnisoSym::S_part(mu, 
+			   nu, 
+			   param.aniso.t_dir,
+			   plaq_c_s, 
+			   rect_c_s, 
+			   true,
+			   lgimp,
+			   u_bc);
+
+	}
+      }
+    }
+    Double ret_val = sum(lgimp);
+    ret_val *= -Double(1)/Double(Nc);
+
+    END_CODE();
+
+    return ret_val;
+  }
+
+
+  //! Compute dS/dU
+  void AnisoSymSpatialGaugeAct::deriv(multi1d<LatticeColorMatrix>& result,
+	     const Handle< GaugeState<P,Q> >& state) const 
+  {
+    START_CODE();
+
+    const multi1d<LatticeColorMatrix>& u_bc = state->getLinks();
+    multi1d<LatticeColorMatrix> ds_tmp(Nd);
+    result.resize(Nd);
+    for(int mu =0; mu < Nd; mu++) { 
+      result[mu] = zero;
+      ds_tmp[mu] = zero;
+    }
+    
+
+
+
+    for(int mu = 0; mu < Nd; mu++) { 
+      for(int nu = 0 ; nu < Nd; nu++) { 
+
+	// mu and nu both have to be spatial and not equal to each other
+	// It is OK to accumulate into ds_tmp
+	if( ( mu != nu ) && (mu != param.aniso.t_dir) 
+	    && (nu != param.aniso.t_dir ) ) {
+
+
+	  AnisoSym::deriv_part(mu, 
+			       nu, 
+			       param.aniso.t_dir,
+			       plaq_c_s, 
+			       rect_c_s, 
+			       true,
+			       ds_tmp,
+			       u_bc);
+
+
+	  
+	}
+      }
+    }
+
+    // Close loops
+    for(int mu=0 ; mu < Nd; mu++) { 
+      result[mu] = u_bc[mu]*ds_tmp[mu];
+    }
+
+    // Apply boundaries
+    getGaugeBC().zero(result);
+    END_CODE();
+
+  }
+
   // Private initializer
   void
-  AnisoSymSpatialGaugeAct::init(Handle< CreateGaugeState<P,Q> > cgs)
+  AnisoSymSpatialGaugeAct::init(void)
   {
     START_CODE();
 
@@ -57,28 +143,16 @@ namespace Chroma
     Real u_s_2 = param.u_s * param.u_s;
     Real u_s_4 = u_s_2 * u_s_2;
     Real u_s_6 = u_s_4 * u_s_2;
-    Real u_s_8 = u_s_4 * u_s_4;
 
-    // Coefficients for the plaquette term (eq 4 in hep-lat/9911003)
-    Real plaq_c_s = param.beta * Real(5) / ( Real(3) * u_s_4 );
+    // Compute coefficient of spatial plaquettes and rectangles
+    plaq_c_s = param.beta * Real(5)/( Real(3)* u_s_4 );
+    rect_c_s =  - param.beta / ( Real(12)*u_s_6 );
 
-    // Parameter needed for gauge act, but should never be used
-    // Real plaq_c_t = param.beta * Real(4) / ( Real(3) * u_s_2 * u_t_2 );
-    Real plaq_c_t = Real(0);
-
-    plaq = new PlaqGaugeAct(cgs, plaq_c_s, plaq_c_t, param.aniso);
-
-    
-    // Coefficients for the rectangle 
-    Real rect_c_s = - param.beta / ( Real(12)*u_s_6 );
-    
-    // Loops that are short in the time direction
-    // Param needed for rect_gaugeact driver, but never used
-    Real rect_c_t_2 = 0;
-    bool no_temporal_2link = true;
-    Real rect_c_t_1 = 0; 
-
-    rect = new RectGaugeAct(cgs, rect_c_s, rect_c_t_1, rect_c_t_2, no_temporal_2link, param.aniso);
+    // Now take care of anisotropy
+    if ( param.aniso.anisoP == true ) { 
+      plaq_c_s /= param.aniso.xi_0;
+      rect_c_s /= param.aniso.xi_0;
+    }
     
     END_CODE();
   } 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: aniso_sym_spatial_gaugeact.h,v 3.1 2007-05-22 14:19:42 bjoo Exp $
+// $Id: aniso_sym_spatial_gaugeact.h,v 3.2 2007-05-24 19:36:05 bjoo Exp $
 /*! \file
  *  \brief Spatial part of Tree level LW action
  */
@@ -43,7 +43,7 @@ namespace Chroma
     //! Read beta from a param struct
     AnisoSymSpatialGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 			  const AnisoSymSpatialGaugeActParams& p) :
-      param(p) {init(cgs_);}
+      cgs(cgs_), param(p) {init();}
 
     //! Is anisotropy used?
     bool anisoP() const {return param.aniso.anisoP; }
@@ -71,22 +71,25 @@ namespace Chroma
 
     //! Compute dS/dU
     void deriv(multi1d<LatticeColorMatrix>& result,
-	       const Handle< GaugeState<P,Q> >& state) const
-    {
-      plaq->derivSpatial(result,state,param.aniso.t_dir); 
-      multi1d<LatticeColorMatrix> tmp;
-      rect->derivSpatial(tmp,state);
-      result += tmp;
-    }
-
+	       const Handle< GaugeState<P,Q> >& state) const;
+      /*
+	{
+	plaq->derivSpatial(result,state,param.aniso.t_dir); 
+	multi1d<LatticeColorMatrix> tmp;
+	rect->derivSpatial(tmp,state);
+	result += tmp;
+	}
+      */
     //! Compute the actions
-    Double S(const Handle< GaugeState<P,Q> >& state) const
+    Double S(const Handle< GaugeState<P,Q> >& state) const;
+    /*
     {
       return plaq->spatialS(state, param.aniso.t_dir) + rect->spatialS(state);
     }
+    */
 
     //! Produce a gauge create state object
-    const CreateGaugeState<P,Q>& getCreateState() const {return plaq->getCreateState();}
+    const CreateGaugeState<P,Q>& getCreateState() const {return *cgs;}
 
     //! Destructor is automatic
     ~AnisoSymSpatialGaugeAct() {}
@@ -99,15 +102,20 @@ namespace Chroma
 
   protected:
     //! Private initializer
-    void init(Handle< CreateGaugeState<P,Q> > cgs);
+    //    void init(Handle< CreateGaugeState<P,Q> > cgs_);
+    void init(void);
 
     //! Hide assignment
     void operator=(const AnisoSymSpatialGaugeAct& a) {}
 
   private:
+    const Handle< CreateGaugeState<P,Q> > cgs;
     AnisoSymSpatialGaugeActParams    param;    /*!< The couplings and anisotropy*/
-    Handle<PlaqGaugeAct>           plaq;     /*!< Hold a plaquette gaugeact */
-    Handle<RectGaugeAct>           rect;     /*!< Hold a rectangle gaugeact */
+    //   Handle<PlaqGaugeAct>           plaq;     /*!< Hold a plaquette gaugeact */
+    //   Handle<RectGaugeAct>           rect;     /*!< Hold a rectangle gaugeact */
+
+    Real plaq_c_s;
+    Real rect_c_s;
     
   };
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: aniso_sym_temporal_gaugeact.h,v 3.1 2007-05-22 14:19:42 bjoo Exp $
+// $Id: aniso_sym_temporal_gaugeact.h,v 3.2 2007-05-24 19:36:05 bjoo Exp $
 /*! \file
  *  \brief Temporal Part of Tree Level LW gauge action
  *
@@ -44,7 +44,7 @@ namespace Chroma
     //! Read beta from a param struct
     AnisoSymTemporalGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
 			  const AnisoSymGaugeActParams& p) :
-      param(p) {init(cgs_);}
+    cgs(cgs_),  param(p) {init();}
 
     //! Is anisotropy used?
     bool anisoP() const {return param.aniso.anisoP; }
@@ -72,23 +72,14 @@ namespace Chroma
 
     //! Compute dS/dU
     void deriv(multi1d<LatticeColorMatrix>& result,
-	       const Handle< GaugeState<P,Q> >& state) const
-    {
-      plaq->derivTemporal(result,state,param.aniso.t_dir);
-      
-      multi1d<LatticeColorMatrix> tmp;
-      rect->derivTemporal(tmp,state);
-      result += tmp;
-    }
+	       const Handle< GaugeState<P,Q> >& state) const;
 
     //! Compute the actions
-    Double S(const Handle< GaugeState<P,Q> >& state) const
-    {
-      return plaq->temporalS(state, param.aniso.t_dir) + rect->temporalS(state);
-    }
+    Double S(const Handle< GaugeState<P,Q> >& state) const;
+
 
     //! Produce a gauge create state object
-    const CreateGaugeState<P,Q>& getCreateState() const {return plaq->getCreateState();}
+    const CreateGaugeState<P,Q>& getCreateState() const {return *cgs; }
 
     //! Destructor is automatic
     ~AnisoSymTemporalGaugeAct() {}
@@ -102,15 +93,16 @@ namespace Chroma
 
   protected:
     //! Private initializer
-    void init(Handle< CreateGaugeState<P,Q> > cgs);
+    void init(void);
 
     //! Hide assignment
     void operator=(const AnisoSymTemporalGaugeAct& a) {}
 
   private:
+    const Handle< CreateGaugeState<P,Q> > cgs;
     AnisoSymGaugeActParams    param;    /*!< The couplings and anisotropy*/
-    Handle<PlaqGaugeAct>           plaq;     /*!< Hold a plaquette gaugeact */
-    Handle<RectGaugeAct>           rect;     /*!< Hold a rectangle gaugeact */
+    Real plaq_c_t;    /*!< Temporal plaquette coupling */
+    Real rect_c_t_2;  /*!< Temporal \mu x 2\nu rectangle coupling */
     
   };
 

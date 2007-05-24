@@ -1,4 +1,4 @@
-// $Id: rect_gaugeact.cc,v 3.9 2007-05-21 22:21:54 bjoo Exp $
+// $Id: rect_gaugeact.cc,v 3.10 2007-05-24 19:36:05 bjoo Exp $
 /*! \file
  *  \brief Rectangle gauge action
  */
@@ -663,10 +663,18 @@ namespace Chroma
   {
     START_CODE();
 
+    Real xi_0;
+    if ( aniso_.anisoP == true ) { 
+      xi_0 = aniso_.xi_0;
+    }
+    else {
+      xi_0 = 1;
+    }
+
     // Setup the params structure
-    params.coeff_s = coeff_s_ / aniso_.xi_0 ;
-    params.coeff_t1 = coeff_t1_ * aniso_.xi_0 ;
-    params.coeff_t2 = coeff_t2_ * aniso_.xi_0;
+    params.coeff_s = coeff_s_ / xi_0 ;
+    params.coeff_t1 = coeff_t1_ * xi_0 ;
+    params.coeff_t2 = coeff_t2_ * xi_0;
     params.no_temporal_2link = no_temporal_2link_ ;
     params.aniso = aniso_ ;          // Rely on struct copy constructor here
     
@@ -675,16 +683,24 @@ namespace Chroma
 
   //! Read rectangle coefficient from a param struct
   RectGaugeAct::RectGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
-			     const RectGaugeActParams& p) : cgs(cgs_), params(p) 
+			     const RectGaugeActParams& p) : cgs(cgs_) 
   {
     START_CODE();
 
+    Real xi_0;
+    
     // It is at this point we take into account the anisotropy
-    if( params.aniso.anisoP ) { 
-      params.coeff_s = p.coeff_s / p.aniso.xi_0;
-      params.coeff_t1 = p.coeff_t1 * p.aniso.xi_0;
-      params.coeff_t2 = p.coeff_t2 * p.aniso.xi_0;
+    if( p.aniso.anisoP ) { 
+      xi_0 = p.aniso.xi_0;
     }
+    else {
+      xi_0 = Real(1);
+    }
+
+    params.coeff_s = p.coeff_s / xi_0;
+    params.coeff_t1 = p.coeff_t1 * xi_0;
+    params.coeff_t2 = p.coeff_t2 * xi_0;
+    params.aniso = p.aniso;
     
     END_CODE();
   }
