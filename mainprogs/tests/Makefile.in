@@ -80,7 +80,8 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_prec_twoflav_wilson_monomial$(EXEEXT) t_hamiltonian$(EXEEXT) \
 	t_hmc$(EXEEXT) t_propagator_twisted$(EXEEXT) \
 	t_circular_buffer$(EXEEXT) t_precnef$(EXEEXT) \
-	t_preccfz$(EXEEXT) t_aniso_sym_force$(EXEEXT)
+	t_preccfz$(EXEEXT) t_aniso_sym_force$(EXEEXT) \
+	t_monomial_force$(EXEEXT)
 subdir = mainprogs/tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -291,6 +292,11 @@ t_mesplq_OBJECTS = $(am_t_mesplq_OBJECTS)
 t_mesplq_LDADD = $(LDADD)
 t_mesplq_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
+am_t_monomial_force_OBJECTS = t_monomial_force.$(OBJEXT)
+t_monomial_force_OBJECTS = $(am_t_monomial_force_OBJECTS)
+t_monomial_force_LDADD = $(LDADD)
+t_monomial_force_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_mres_4d_OBJECTS = t_mres_4d.$(OBJEXT)
 t_mres_4d_OBJECTS = $(am_t_mres_4d_OBJECTS)
 t_mres_4d_LDADD = $(LDADD)
@@ -527,8 +533,9 @@ SOURCES = $(t_aniso_gaugeact_SOURCES) $(t_aniso_sym_force_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) \
 	$(t_lwldslash_new_SOURCES) $(t_lwldslash_pab_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) \
-	$(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
+	$(t_mesplq_SOURCES) $(t_monomial_force_SOURCES) \
+	$(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) \
+	$(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
 	$(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) \
 	$(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) \
 	$(t_prec_nef_SOURCES) \
@@ -566,8 +573,9 @@ DIST_SOURCES = $(t_aniso_gaugeact_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) \
 	$(t_lwldslash_new_SOURCES) $(t_lwldslash_pab_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_mres_4d_SOURCES) $(t_msumr_SOURCES) \
-	$(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
+	$(t_mesplq_SOURCES) $(t_monomial_force_SOURCES) \
+	$(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) \
+	$(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
 	$(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) \
 	$(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) \
 	$(t_prec_nef_SOURCES) \
@@ -827,6 +835,7 @@ t_stout_state_SOURCES = t_stout_state.cc
 t_aniso_gaugeact_SOURCES = t_aniso_gaugeact.cc
 t_temp_prec_SOURCES = t_temp_prec.cc
 t_aniso_sym_force_SOURCES = t_aniso_sym_force.cc
+t_monomial_force_SOURCES = t_monomial_force.cc
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
@@ -1007,6 +1016,9 @@ t_mesons_w$(EXEEXT): $(t_mesons_w_OBJECTS) $(t_mesons_w_DEPENDENCIES)
 t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES) 
 	@rm -f t_mesplq$(EXEEXT)
 	$(CXXLINK) $(t_mesplq_LDFLAGS) $(t_mesplq_OBJECTS) $(t_mesplq_LDADD) $(LIBS)
+t_monomial_force$(EXEEXT): $(t_monomial_force_OBJECTS) $(t_monomial_force_DEPENDENCIES) 
+	@rm -f t_monomial_force$(EXEEXT)
+	$(CXXLINK) $(t_monomial_force_LDFLAGS) $(t_monomial_force_OBJECTS) $(t_monomial_force_LDADD) $(LIBS)
 t_mres_4d$(EXEEXT): $(t_mres_4d_OBJECTS) $(t_mres_4d_DEPENDENCIES) 
 	@rm -f t_mres_4d$(EXEEXT)
 	$(CXXLINK) $(t_mres_4d_LDFLAGS) $(t_mres_4d_OBJECTS) $(t_mres_4d_LDADD) $(LIBS)
@@ -1175,6 +1187,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_sse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_monomial_force.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mres_4d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_msumr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_neflinop.Po@am__quote@
