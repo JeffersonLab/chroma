@@ -133,7 +133,9 @@ int main(int argc, char *argv[])
     // Get a monomial
     Monomial<P,Q>& the_mon = *( mon_handles[mon] );
     QDPIO::cout << "Timing monomial force: " << monomial_test_ids[mon] << endl;
-    
+    QDPIO::cout << "Refreshing internal fields: " << endl;
+
+    the_mon.refreshInternalFields(gauge_state);
     P F;
 
     seconds = 0;
@@ -149,8 +151,11 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       seconds = swatch.getTimeInSeconds();
+      Internal::globalSum(seconds);
+      seconds /= (double)Layout::numNodes();
       QDPIO::cout << "." << flush;
     }
+
     QDPIO::cout << " " << seconds << "(s)"<< endl;
 
     QDPIO::cout << "Timing monomial force: " << monomial_test_ids[mon] << " with " << hits << " hits " << endl;
@@ -160,8 +165,10 @@ int main(int argc, char *argv[])
       the_mon.dsdq(F,gauge_state);
     }
     swatch.stop();
-    seconds = swatch.getTimeInSeconds();
-    
+    seconds = swatch.getTimeInSeconds(); 
+    Internal::globalSum(seconds);
+    seconds /= (double)Layout::numNodes();
+   
     QDPIO::cout << "monomial_id = " << monomial_test_ids[mon]
 		<< ", Nhits = " << hits 
                 << ", Time = " << seconds << "(s)" 
@@ -192,8 +199,11 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     seconds = swatch.getTimeInSeconds();
+    Internal::globalSum(seconds);
+    seconds /= (double)Layout::numNodes();
     QDPIO::cout << "." << flush;
   }
+
   QDPIO::cout << " " << seconds << "(s)"<< endl;
 
   
@@ -207,6 +217,8 @@ int main(int argc, char *argv[])
   }
   swatch.stop();
   seconds = swatch.getTimeInSeconds();
+  Internal::globalSum(seconds);
+  seconds /= (double)Layout::numNodes();
 
   QDPIO::cout << "taproj"
 	      << ", Nhits = " << hits 
@@ -236,6 +248,9 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     seconds = swatch.getTimeInSeconds();
+    Internal::globalSum(seconds);
+    seconds /= (double)Layout::numNodes();
+
     QDPIO::cout << "." << flush;
   }
   QDPIO::cout << " " << seconds << "(s)"<< endl;
@@ -250,6 +265,8 @@ int main(int argc, char *argv[])
   }
   swatch.stop();
   seconds = swatch.getTimeInSeconds();
+  Internal::globalSum(seconds);
+  seconds /= (double)Layout::numNodes();
     
   QDPIO::cout << "expmat"
 	      << ", Nhits = " << hits 
@@ -280,6 +297,9 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     seconds = swatch.getTimeInSeconds();
+    Internal::globalSum(seconds);
+    seconds /= (double)Layout::numNodes();
+
     QDPIO::cout << "." << flush;
   }
   QDPIO::cout << " " << seconds << "(s)"<< endl;
@@ -294,6 +314,8 @@ int main(int argc, char *argv[])
   }
   swatch.stop();
   seconds = swatch.getTimeInSeconds();
+  Internal::globalSum(seconds);
+  seconds /= (double)Layout::numNodes();
     
   QDPIO::cout << "reunit" 
 	      << ", Nhits = " << hits 
