@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<MonomialTests>
+    <Monomials>
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+	  <Name>ANISO_SPECTRUM_GAUGEACT</Name>
+	  <beta>1.7</beta>
+	  <u_s>0.73698</u_s>
+	  <u_t>1</u_t>
+	  <omega>3</omega>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>5</xi_0>
+          </AnisoParam>
+	  <GaugeBC>
+	    <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+	    <SchrPhiMult>2.0</SchrPhiMult>
+	    <loop_extent>2</loop_extent>
+	    <decay_dir>3</decay_dir>
+          </GaugeBC>
+        </GaugeAction>
+	<NamedObject>
+	  <monomial_id>Gauge</monomial_id> 
+	</NamedObject>
+      </elem>
+    </Monomials>
+    <MonomialTestIds>
+      <elem>Gauge</elem>
+    </MonomialTestIds>
+     <GaugeStartup>
+	<cfg_type>WEAK_FIELD</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>4 4 4 8</nrow>
+</MonomialTests>
