@@ -294,6 +294,7 @@ namespace Chroma {
     staggered_pion_singlet pion_singlet_LsrcLsink(t_length,u);
     staggered_pion_singlet pion_singlet_FsrcLsink(t_length,u);
     staggered_pion_singlet pion_singlet_LsrcFsink(t_length,u);
+    staggered_pion_singlet pion_singlet_FsrcFsink(t_length,u);
  
     push(xml_out,"LocalSource");
     push(xml_out,"LocalSink");
@@ -317,6 +318,13 @@ namespace Chroma {
     pion_singlet_FsrcLsink.dump(t_source,xml_out ) ;
 
     pop(xml_out); //local sink
+
+    push(xml_out,"FuzzSink");
+    pion_singlet_FsrcFsink.compute(quark_propagator_Fsink_Fsrc,
+				   quark_propagator_4link,j_decay);
+    pion_singlet_FsrcFsink.dump(t_source,xml_out ) ;
+    pop(xml_out); //fuzz sink
+
     pop(xml_out); //fuzz source
 
 
