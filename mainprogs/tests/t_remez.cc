@@ -1,4 +1,4 @@
-// $Id: t_remez.cc,v 3.0 2006-04-03 04:59:16 edwards Exp $
+// $Id: t_remez.cc,v 3.1 2007-05-30 20:21:11 edwards Exp $
 /*! \file
  *  \brief Test the Remez code
  */
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
   long prec = 80;
   int degree = 14;
   unsigned long power_num = 1;
-  unsigned long power_den = 4;
+  unsigned long power_den = 2;
 
   Remez  remez(lower, upper, prec);
 
