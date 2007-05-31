@@ -176,8 +176,10 @@ namespace Chroma
   {
     // single node only !!!
     double temp,fuzz=1e-44;
-    for(int i=0;i<Layout::sitesOnNode();i++) {
-      temp=toDouble(peekSite(a0,Layout::siteCoords(Layout::nodeNumber(),i)));
+    const int nodeSites = Layout::sitesOnNode();
+    const int nodeNumber = Layout::nodeNumber();
+    for(int i=0;i<nodeSites;i++) {
+      temp=toDouble(peekSite(a0,Layout::siteCoords(nodeNumber,i)));
       if(temp > fuzz || temp<-fuzz) cout<<temp<<" ";
       //if(temp > -0.1 && temp <0.01) cout<<temp<<" ";
       //cout<<temp<<" ";
