@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.8 2007-03-16 18:25:26 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 3.9 2007-05-31 20:49:00 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -217,7 +217,9 @@ namespace Chroma
     LatticeColorMatrix f3;
     LatticeColorMatrix f4;
     LatticeColorMatrix f5;
-    
+
+    const int nodeSites = QDP::Layout::sitesOnNode();
+
     START_CODE();
   
     if ( Nd != 4 )
@@ -271,10 +273,10 @@ namespace Chroma
       }
     */
 
-    tri.resize(QDP::Layout::sitesOnNode());  // hold local lattice
+    tri.resize(nodeSites);  // hold local lattice
     
     /*# Construct diagonal */
-    for(int site = 0; site < QDP::Layout::sitesOnNode(); ++site)
+    for(int site = 0; site < nodeSites; ++site)
     {
 
       for(int jj = 0; jj < 2; jj++)
@@ -290,7 +292,7 @@ namespace Chroma
 
     /* The appropriate clover coeffients are already included in the
        field strengths F(mu,nu)! */
-    for(int site = 0; site < QDP::Layout::sitesOnNode(); ++site)
+    for(int site = 0; site < nodeSites; ++site)
     {
       RComplex<REAL> E_minus;
       RComplex<REAL> B_minus;
