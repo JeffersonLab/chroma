@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.2 2007-06-01 18:54:26 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -6,6 +6,8 @@
 #include "named_obj.h"
 #include "meas/inline/io/qio_write_obj_funcmap.h"
 #include "meas/inline/io/named_objmap.h"
+
+#include "meas/hadron/diquark_w.h"
 #include "util/ferm/eigeninfo.h"
 
 namespace Chroma
@@ -18,6 +20,7 @@ namespace Chroma
     // Anonymous namespace
     namespace
     {
+      //------------------------------------------------------------------------
       //! Write a propagator
       void QIOWriteLatProp(const string& buffer_id,
 			   const string& file, 
@@ -72,6 +75,7 @@ namespace Chroma
       }
 
 
+      //------------------------------------------------------------------------
       //! Write a fermion
       void QIOWriteLatFerm(const string& buffer_id,
 			   const string& file, 
@@ -130,6 +134,7 @@ namespace Chroma
 #endif
 
 
+      //------------------------------------------------------------------------
       //! Write a propagator
       void QIOWriteLatStagProp(const string& buffer_id,
 			       const string& file, 
@@ -184,6 +189,7 @@ namespace Chroma
       }
 
 
+      //------------------------------------------------------------------------
       //! Write a gauge field in floating precision
       void QIOWriteArrayLatColMat(const string& buffer_id,
 				  const string& file, 
@@ -244,6 +250,54 @@ namespace Chroma
       }
 
 
+      //------------------------------------------------------------------------
+      //! Write a QQDiquark object in floating precision
+      void QIOWriteQQDiquarkContract(const string& buffer_id,
+				     const string& file, 
+				     QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      {
+	XMLBufferWriter file_xml, record_xml;
+
+	const QQDiquarkContract_t& obj = 
+	  TheNamedObjMap::Instance().getData<QQDiquarkContract_t>(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+    
+	// QIO cannot deal with multiNd arrays, so we have to flatten to a 
+	// 1-D array. This is okay since a QQDiquarkContract object has a fixed
+	// size.
+
+	const int sz_qq = Ns*Ns*Ns*Ns*Nc*Nc;
+	multi1d<LatticeComplex> obj_1d(sz_qq);
+
+	int cnt = 0;
+	multi1d<int> ranks(6);
+	const multi1d<int>& sz = obj.comp.size();
+	for(ranks[0]=0; ranks[0] < sz[0]; ++ranks[0])
+	  for(ranks[1]=0; ranks[1] < sz[1]; ++ranks[1])
+	    for(ranks[2]=0; ranks[2] < sz[2]; ++ranks[2])
+	      for(ranks[3]=0; ranks[3] < sz[3]; ++ranks[3])
+		for(ranks[4]=0; ranks[4] < sz[4]; ++ranks[4])
+		  for(ranks[5]=0; ranks[5] < sz[5]; ++ranks[5])
+		  {
+		    // Sanity check - the size better match
+		    if (cnt >= sz_qq)
+		    {
+		      QDPIO::cerr << __func__ << ": size mismatch for multi1Nd object" << endl;
+		      QDP_abort(1);
+		    }
+
+		    obj_1d[cnt++] = obj.comp[ranks];
+		  }
+
+
+	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+	write(to,record_xml,obj_1d);
+	close(to);
+      }
+
+
+      //------------------------------------------------------------------------
       //! Write out an EigenInfo Type
       void QIOWriteEigenInfo(const string& buffer_id,
 			     const string& file,
@@ -335,8 +389,6 @@ namespace Chroma
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
 								      QIOWriteLatFerm);
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfo"), 
-								      QIOWriteEigenInfo);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
 //								    QIOWriteLatFermF);
 //      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
@@ -355,6 +407,12 @@ namespace Chroma
 								      QIOWriteArrayLatColMatF);
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixD"), 
 								      QIOWriteArrayLatColMatD);
+
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("QQDiquarkContract"), 
+								      QIOWriteQQDiquarkContract);
+
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfo"), 
+								      QIOWriteEigenInfo);
 
 	registered = true;
       }

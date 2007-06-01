@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.2 2006-11-28 14:02:24 bjoo Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.3 2007-06-01 18:54:26 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -6,6 +6,8 @@
 #include "named_obj.h"
 #include "meas/inline/io/qio_read_obj_funcmap.h"
 #include "meas/inline/io/named_objmap.h"
+
+#include "meas/hadron/diquark_w.h"
 #include "util/ferm/eigeninfo.h"
 
 namespace Chroma
@@ -18,6 +20,7 @@ namespace Chroma
     // Anonymous namespace
     namespace
     {
+      //------------------------------------------------------------------------
       //! Read a propagator
       void QIOReadLatProp(const string& buffer_id,
 			  const string& file, 
@@ -76,6 +79,7 @@ namespace Chroma
 
 
 
+      //------------------------------------------------------------------------
       //! Read a fermion
       void QIOReadLatFerm(const string& buffer_id,
 			  const string& file, 
@@ -136,6 +140,7 @@ namespace Chroma
       }
 #endif
 
+      //------------------------------------------------------------------------
       //! Read a propagator
       void QIOReadArrayLatColMat(const string& buffer_id,
 				 const string& file, 
@@ -179,7 +184,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
       }
 
-     //! Read a Double Prec Gauge Field
+      //! Read a Double Prec Gauge Field
       void QIOReadArrayLatColMatD(const string& buffer_id,
 				  const string& file, 
 				  QDP_serialparallel_t serpar)
@@ -203,12 +208,62 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
       }
 
+
+      //------------------------------------------------------------------------
+      //! Read a QQDiquark object in floating precision
+      void QIOReadQQDiquarkContract(const string& buffer_id,
+				    const string& file, 
+				    QDP_serialparallel_t serpar)
+      {
+	// Read the 1-d flattened array version
+	XMLReader file_xml, record_xml;
+	const int sz_qq = Ns*Ns*Ns*Ns*Nc*Nc;
+	multi1d<LatticeComplex> obj_1d(sz_qq);
+
+	QDPFileReader to(file_xml,file,serpar);
+	read(to,record_xml,obj_1d);
+	close(to);
+
+	// Create the named object
+	TheNamedObjMap::Instance().create<QQDiquarkContract_t>(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+
+	// Convert the 1-d object into an N-d object
+	QQDiquarkContract_t& obj = TheNamedObjMap::Instance().getData<QQDiquarkContract_t>(buffer_id);
+	multi1d<int> sz(6);
+	sz = Ns;
+	sz[4] = Nc;  // cf
+	sz[5] = Nc;  // ci
+	obj.comp.resize(sz);
+
+	int cnt = 0;
+	multi1d<int> ranks(6);
+	for(ranks[0]=0; ranks[0] < sz[0]; ++ranks[0])
+	  for(ranks[1]=0; ranks[1] < sz[1]; ++ranks[1])
+	    for(ranks[2]=0; ranks[2] < sz[2]; ++ranks[2])
+	      for(ranks[3]=0; ranks[3] < sz[3]; ++ranks[3])
+		for(ranks[4]=0; ranks[4] < sz[4]; ++ranks[4])
+		  for(ranks[5]=0; ranks[5] < sz[5]; ++ranks[5])
+		  {
+		    // Sanity check - the size better match
+		    if (cnt >= sz_qq)
+		    {
+		      QDPIO::cerr << __func__ << ": size mismatch for multi1Nd object" << endl;
+		      QDP_abort(1);
+		    }
+
+		    obj.comp[ranks] = obj_1d[cnt++];
+		  }
+
+      }
+
+
+      //------------------------------------------------------------------------
       void QIOReadEigenInfo(const string& buffer_id,
 			    const string& file,
 			    QDP_serialparallel_t serpar)
       {
-
-      
 	multi1d<Real64> evalsD;
 
 	// BUG? Need to read these as an array even though there is only one
@@ -319,6 +374,9 @@ namespace Chroma
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixD"), 
 								     QIOReadArrayLatColMatD);
 
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("QQDiquarkContract"), 
+								     QIOReadQQDiquarkContract);
+	
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfo"),
 								     QIOReadEigenInfo);
 
