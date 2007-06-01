@@ -179,6 +179,37 @@ QQQ on props
     </elem>
 
     <elem>
+      <annotation>
+        Write the named object and then erase the memory object
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_sh_diquark</object_id>
+        <object_type>QQDiquarkContract</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_sh_diquark.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Read the named object
+      </annotation>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_sh_diquark</object_id>
+        <object_type>QQDiquarkContract</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_sh_diquark.lime</file_name>
+      </File>
+    </elem>
+
+    <elem>
       <Name>QQQ_DIQUARK</Name>
       <Frequency>1</Frequency>
       <Param>

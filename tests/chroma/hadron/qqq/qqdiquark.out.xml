@@ -182,6 +182,37 @@ QQQ on props
     </elem>
 
     <elem>
+      <annotation>
+        Write the named object and then erase the memory object
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_sh_diquark</object_id>
+        <object_type>QQDiquarkContract</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_sh_diquark.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Read the named object
+      </annotation>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_sh_diquark</object_id>
+        <object_type>QQDiquarkContract</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_sh_diquark.lime</file_name>
+      </File>
+    </elem>
+
+    <elem>
       <Name>QQQ_DIQUARK</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -235,16 +266,16 @@ QQQ on props
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.22.5</chroma>
-      <qdp>1.21.9</qdp>
+      <chroma>3.23.0</chroma>
+      <qdp>1.23.0</qdp>
     </code_version>
-    <run_date>25 Feb 07 17:34:11 EST</run_date>
+    <run_date>01 Jun 07 15:31:14 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
-      <logical_size>1 1 1 1</logical_size>
-      <subgrid_size>4 4 4 8</subgrid_size>
+      <logical_size>1 1 1 2</logical_size>
+      <subgrid_size>4 4 4 4</subgrid_size>
       <total_volume>512</total_volume>
-      <subgrid_volume>512</subgrid_volume>
+      <subgrid_volume>256</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
   <RNG>
@@ -260,32 +291,32 @@ QQQ on props
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994764814567235</w_plaq>
-    <s_plaq>0.994800872583356</s_plaq>
-    <t_plaq>0.994728756551113</t_plaq>
-    <plane_01_plaq>0.994752409557501</plane_01_plaq>
-    <plane_02_plaq>0.995051670198639</plane_02_plaq>
-    <plane_12_plaq>0.994598537993928</plane_12_plaq>
-    <plane_03_plaq>0.994927928006897</plane_03_plaq>
-    <plane_13_plaq>0.994742137845606</plane_13_plaq>
-    <plane_23_plaq>0.994516203800837</plane_23_plaq>
-    <link>0.379317687901979</link>
+    <w_plaq>0.994764814463755</w_plaq>
+    <s_plaq>0.994800871962474</s_plaq>
+    <t_plaq>0.994728756965034</t_plaq>
+    <plane_01_plaq>0.994752408626179</plane_01_plaq>
+    <plane_02_plaq>0.995051671285182</plane_02_plaq>
+    <plane_12_plaq>0.994598535976062</plane_12_plaq>
+    <plane_03_plaq>0.994927926144252</plane_03_plaq>
+    <plane_13_plaq>0.994742138621708</plane_13_plaq>
+    <plane_23_plaq>0.994516206129144</plane_23_plaq>
+    <link>0.379317688059624</link>
     <pollp>
       <elem>
-        <re>0.96722258204439</re>
-        <im>-0.00121316457792394</im>
+        <re>0.967222581617534</re>
+        <im>-0.00121316458201666</im>
       </elem>
       <elem>
-        <re>0.967032070271671</re>
-        <im>-0.0012961704569534</im>
+        <re>0.967032070310476</re>
+        <im>-0.00129617050743036</im>
       </elem>
       <elem>
-        <re>0.967467518639751</re>
-        <im>-0.00114548282075096</im>
+        <re>0.967467519299438</re>
+        <im>-0.00114548285447806</im>
       </elem>
       <elem>
-        <re>0.879538946435787</re>
-        <im>-0.0104402832973089</im>
+        <re>0.879538947173084</re>
+        <im>-0.0104402833220168</im>
       </elem>
     </pollp>
   </Observables>
@@ -295,16 +326,16 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.5</chroma>
-            <qdp>1.21.9</qdp>
+            <chroma>3.23.0</chroma>
+            <qdp>1.23.0</qdp>
           </code_version>
-          <run_date>25 Feb 07 17:34:11 EST</run_date>
+          <run_date>01 Jun 07 15:31:14 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
+            <logical_size>1 1 1 2</logical_size>
+            <subgrid_size>4 4 4 4</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_volume>256</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
@@ -358,37 +389,37 @@ QQQ on props
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994764814567235</w_plaq>
-          <s_plaq>0.994800872583356</s_plaq>
-          <t_plaq>0.994728756551113</t_plaq>
-          <plane_01_plaq>0.994752409557501</plane_01_plaq>
-          <plane_02_plaq>0.995051670198639</plane_02_plaq>
-          <plane_12_plaq>0.994598537993928</plane_12_plaq>
-          <plane_03_plaq>0.994927928006897</plane_03_plaq>
-          <plane_13_plaq>0.994742137845606</plane_13_plaq>
-          <plane_23_plaq>0.994516203800837</plane_23_plaq>
-          <link>0.379317687901979</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <plane_01_plaq>0.994752408626179</plane_01_plaq>
+          <plane_02_plaq>0.995051671285182</plane_02_plaq>
+          <plane_12_plaq>0.994598535976062</plane_12_plaq>
+          <plane_03_plaq>0.994927926144252</plane_03_plaq>
+          <plane_13_plaq>0.994742138621708</plane_13_plaq>
+          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.96722258204439</re>
-              <im>-0.00121316457792394</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032070271671</re>
-              <im>-0.0012961704569534</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967467518639751</re>
-              <im>-0.00114548282075096</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879538946435787</re>
-              <im>-0.0104402832973089</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>6.64552842207646 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.64552842259264 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -397,16 +428,16 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.5</chroma>
-            <qdp>1.21.9</qdp>
+            <chroma>3.23.0</chroma>
+            <qdp>1.23.0</qdp>
           </code_version>
-          <run_date>25 Feb 07 17:34:12 EST</run_date>
+          <run_date>01 Jun 07 15:31:14 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
+            <logical_size>1 1 1 2</logical_size>
+            <subgrid_size>4 4 4 4</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_volume>256</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -452,37 +483,37 @@ QQQ on props
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994764814567235</w_plaq>
-          <s_plaq>0.994800872583356</s_plaq>
-          <t_plaq>0.994728756551113</t_plaq>
-          <plane_01_plaq>0.994752409557501</plane_01_plaq>
-          <plane_02_plaq>0.995051670198639</plane_02_plaq>
-          <plane_12_plaq>0.994598537993928</plane_12_plaq>
-          <plane_03_plaq>0.994927928006897</plane_03_plaq>
-          <plane_13_plaq>0.994742137845606</plane_13_plaq>
-          <plane_23_plaq>0.994516203800837</plane_23_plaq>
-          <link>0.379317687901979</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <plane_01_plaq>0.994752408626179</plane_01_plaq>
+          <plane_02_plaq>0.995051671285182</plane_02_plaq>
+          <plane_12_plaq>0.994598535976062</plane_12_plaq>
+          <plane_03_plaq>0.994927926144252</plane_03_plaq>
+          <plane_13_plaq>0.994742138621708</plane_13_plaq>
+          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.96722258204439</re>
-              <im>-0.00121316457792394</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032070271671</re>
-              <im>-0.0012961704569534</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967467518639751</re>
-              <im>-0.00114548282075096</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879538946435787</re>
-              <im>-0.0104402832973089</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>231010452</id>
+      <id>239293874</id>
     </make_source>
 
         </Source_file_info>
@@ -525,87 +556,87 @@ QQQ on props
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.64552842207646 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.64552842259264 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.2373e-07</resid>
+            <resid>1.232659e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.216603e-07</resid>
+            <resid>1.097333e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.258796e-07</resid>
+            <resid>1.397813e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.255881e-07</resid>
+            <resid>1.199907e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.51199e-07</resid>
+            <resid>1.218479e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.16672e-07</resid>
+            <resid>1.259563e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.091751e-07</resid>
+            <resid>1.048385e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.188268e-07</resid>
+            <resid>1.053114e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.437715e-07</resid>
+            <resid>1.25593e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.164219e-07</resid>
+            <resid>1.180159e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.108804e-07</resid>
+            <resid>1.203633e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.345462e-07</resid>
+            <resid>1.163258e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</prop_corr>
+          <prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -640,37 +671,37 @@ QQQ on props
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994764814567235</w_plaq>
-          <s_plaq>0.994800872583356</s_plaq>
-          <t_plaq>0.994728756551113</t_plaq>
-          <plane_01_plaq>0.994752409557501</plane_01_plaq>
-          <plane_02_plaq>0.995051670198639</plane_02_plaq>
-          <plane_12_plaq>0.994598537993928</plane_12_plaq>
-          <plane_03_plaq>0.994927928006897</plane_03_plaq>
-          <plane_13_plaq>0.994742137845606</plane_13_plaq>
-          <plane_23_plaq>0.994516203800837</plane_23_plaq>
-          <link>0.379317687901979</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <plane_01_plaq>0.994752408626179</plane_01_plaq>
+          <plane_02_plaq>0.995051671285182</plane_02_plaq>
+          <plane_12_plaq>0.994598535976062</plane_12_plaq>
+          <plane_03_plaq>0.994927926144252</plane_03_plaq>
+          <plane_13_plaq>0.994742138621708</plane_13_plaq>
+          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.96722258204439</re>
-              <im>-0.00121316457792394</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032070271671</re>
-              <im>-0.0012961704569534</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967467518639751</re>
-              <im>-0.00114548282075096</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879538946435787</re>
-              <im>-0.0104402832973089</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>231010453</id>
+      <id>239293875</id>
     </propagator>
 
         </Prop_file_info>
@@ -737,10 +768,10 @@ QQQ on props
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</forward_prop_corr>
+          <forward_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -789,37 +820,37 @@ QQQ on props
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994764814567235</w_plaq>
-          <s_plaq>0.994800872583356</s_plaq>
-          <t_plaq>0.994728756551113</t_plaq>
-          <plane_01_plaq>0.994752409557501</plane_01_plaq>
-          <plane_02_plaq>0.995051670198639</plane_02_plaq>
-          <plane_12_plaq>0.994598537993928</plane_12_plaq>
-          <plane_03_plaq>0.994927928006897</plane_03_plaq>
-          <plane_13_plaq>0.994742137845606</plane_13_plaq>
-          <plane_23_plaq>0.994516203800837</plane_23_plaq>
-          <link>0.379317687901979</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <plane_01_plaq>0.994752408626179</plane_01_plaq>
+          <plane_02_plaq>0.995051671285182</plane_02_plaq>
+          <plane_12_plaq>0.994598535976062</plane_12_plaq>
+          <plane_03_plaq>0.994927926144252</plane_03_plaq>
+          <plane_13_plaq>0.994742138621708</plane_13_plaq>
+          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.96722258204439</re>
-              <im>-0.00121316457792394</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032070271671</re>
-              <im>-0.0012961704569534</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967467518639751</re>
-              <im>-0.00114548282075096</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879538946435787</re>
-              <im>-0.0104402832973089</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>231010453</id>
+      <id>239293875</id>
     </propagator>
 
         </Prop_file_info>
@@ -886,10 +917,10 @@ QQQ on props
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</forward_prop_corr>
+          <forward_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2837778712.3503 25152145.99311 447414.192229708 8781.32065657813 582.134779005244 8346.18984025173 447542.894587651 25144702.0561291</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2837778689.78126 25152146.2896967 447414.243022993 8781.31818438845 582.134912297925 8346.19018544818 447542.898698911 25144700.7898245</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -912,16 +943,16 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.5</chroma>
-            <qdp>1.21.9</qdp>
+            <chroma>3.23.0</chroma>
+            <qdp>1.23.0</qdp>
           </code_version>
-          <run_date>25 Feb 07 17:34:14 EST</run_date>
+          <run_date>01 Jun 07 15:31:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
+            <logical_size>1 1 1 2</logical_size>
+            <subgrid_size>4 4 4 4</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_volume>256</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -949,32 +980,32 @@ QQQ on props
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994764814567235</w_plaq>
-          <s_plaq>0.994800872583356</s_plaq>
-          <t_plaq>0.994728756551113</t_plaq>
-          <plane_01_plaq>0.994752409557501</plane_01_plaq>
-          <plane_02_plaq>0.995051670198639</plane_02_plaq>
-          <plane_12_plaq>0.994598537993928</plane_12_plaq>
-          <plane_03_plaq>0.994927928006897</plane_03_plaq>
-          <plane_13_plaq>0.994742137845606</plane_13_plaq>
-          <plane_23_plaq>0.994516203800837</plane_23_plaq>
-          <link>0.379317687901979</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <plane_01_plaq>0.994752408626179</plane_01_plaq>
+          <plane_02_plaq>0.995051671285182</plane_02_plaq>
+          <plane_12_plaq>0.994598535976062</plane_12_plaq>
+          <plane_03_plaq>0.994927926144252</plane_03_plaq>
+          <plane_13_plaq>0.994742138621708</plane_13_plaq>
+          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.96722258204439</re>
-              <im>-0.00121316457792394</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032070271671</re>
-              <im>-0.0012961704569534</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967467518639751</re>
-              <im>-0.00114548282075096</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879538946435787</re>
-              <im>-0.0104402832973089</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
@@ -1134,11 +1165,11 @@ QQQ on props
         <SinkSmearedProp_correlator>
           <elem>
             <correlator_num>0</correlator_num>
-            <sink_smeared_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>1</correlator_num>
-            <sink_smeared_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</sink_smeared_prop_corr>
           </elem>
         </SinkSmearedProp_correlator>
       </diquark>
@@ -1162,16 +1193,16 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.5</chroma>
-            <qdp>1.21.9</qdp>
+            <chroma>3.23.0</chroma>
+            <qdp>1.23.0</qdp>
           </code_version>
-          <run_date>25 Feb 07 17:34:14 EST</run_date>
+          <run_date>01 Jun 07 15:31:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
+            <logical_size>1 1 1 2</logical_size>
+            <subgrid_size>4 4 4 4</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_volume>256</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -1199,32 +1230,32 @@ QQQ on props
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994764814567235</w_plaq>
-          <s_plaq>0.994800872583356</s_plaq>
-          <t_plaq>0.994728756551113</t_plaq>
-          <plane_01_plaq>0.994752409557501</plane_01_plaq>
-          <plane_02_plaq>0.995051670198639</plane_02_plaq>
-          <plane_12_plaq>0.994598537993928</plane_12_plaq>
-          <plane_03_plaq>0.994927928006897</plane_03_plaq>
-          <plane_13_plaq>0.994742137845606</plane_13_plaq>
-          <plane_23_plaq>0.994516203800837</plane_23_plaq>
-          <link>0.379317687901979</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <plane_01_plaq>0.994752408626179</plane_01_plaq>
+          <plane_02_plaq>0.995051671285182</plane_02_plaq>
+          <plane_12_plaq>0.994598535976062</plane_12_plaq>
+          <plane_03_plaq>0.994927926144252</plane_03_plaq>
+          <plane_13_plaq>0.994742138621708</plane_13_plaq>
+          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.96722258204439</re>
-              <im>-0.00121316457792394</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032070271671</re>
-              <im>-0.0012961704569534</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967467518639751</re>
-              <im>-0.00114548282075096</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879538946435787</re>
-              <im>-0.0104402832973089</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
@@ -1412,14 +1443,26 @@ QQQ on props
         <SinkSmearedProp_correlator>
           <elem>
             <correlator_num>0</correlator_num>
-            <sink_smeared_prop_corr>2837778712.3503 25152145.99311 447414.192229708 8781.32065657813 582.134779005244 8346.18984025173 447542.894587651 25144702.0561291</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778689.78126 25152146.2896967 447414.243022993 8781.31818438845 582.134912297925 8346.19018544818 447542.898698911 25144700.7898245</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>1</correlator_num>
-            <sink_smeared_prop_corr>2837778712.3503 25152145.99311 447414.192229708 8781.32065657813 582.134779005244 8346.18984025173 447542.894587651 25144702.0561291</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778689.78126 25152146.2896967 447414.243022993 8781.31818438845 582.134912297925 8346.19018544818 447542.898698911 25144700.7898245</sink_smeared_prop_corr>
           </elem>
         </SinkSmearedProp_correlator>
       </diquark>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>sh_sh_diquark</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <qio_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>sh_sh_diquark</object_id>
+      </qio_read_named_obj>
     </elem>
     <elem>
       <qqq_diquark>
@@ -1439,16 +1482,16 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.5</chroma>
-            <qdp>1.21.9</qdp>
+            <chroma>3.23.0</chroma>
+            <qdp>1.23.0</qdp>
           </code_version>
-          <run_date>25 Feb 07 17:34:15 EST</run_date>
+          <run_date>01 Jun 07 15:31:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
+            <logical_size>1 1 1 2</logical_size>
+            <subgrid_size>4 4 4 4</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_volume>256</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -1475,32 +1518,32 @@ QQQ on props
           <out_version>5</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994764814567235</w_plaq>
-          <s_plaq>0.994800872583356</s_plaq>
-          <t_plaq>0.994728756551113</t_plaq>
-          <plane_01_plaq>0.994752409557501</plane_01_plaq>
-          <plane_02_plaq>0.995051670198639</plane_02_plaq>
-          <plane_12_plaq>0.994598537993928</plane_12_plaq>
-          <plane_03_plaq>0.994927928006897</plane_03_plaq>
-          <plane_13_plaq>0.994742137845606</plane_13_plaq>
-          <plane_23_plaq>0.994516203800837</plane_23_plaq>
-          <link>0.379317687901979</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <plane_01_plaq>0.994752408626179</plane_01_plaq>
+          <plane_02_plaq>0.995051671285182</plane_02_plaq>
+          <plane_12_plaq>0.994598535976062</plane_12_plaq>
+          <plane_03_plaq>0.994927926144252</plane_03_plaq>
+          <plane_13_plaq>0.994742138621708</plane_13_plaq>
+          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.96722258204439</re>
-              <im>-0.00121316457792394</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032070271671</re>
-              <im>-0.0012961704569534</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967467518639751</re>
-              <im>-0.00114548282075096</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879538946435787</re>
-              <im>-0.0104402832973089</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
@@ -1728,7 +1771,7 @@ QQQ on props
           </ForwardProps>
         </Propagator_input>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.191409103535182 0.0158396873345569 0.0061267042790016 0.00281774782317808 0.00196730083837034 0.00281711298520229 0.00612162651687146 0.0158367227852102</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqq_diquark>
     </elem>
@@ -1760,16 +1803,16 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.22.5</chroma>
-            <qdp>1.21.9</qdp>
+            <chroma>3.23.0</chroma>
+            <qdp>1.23.0</qdp>
           </code_version>
-          <run_date>25 Feb 07 17:34:16 EST</run_date>
+          <run_date>01 Jun 07 15:31:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 8</subgrid_size>
+            <logical_size>1 1 1 2</logical_size>
+            <subgrid_size>4 4 4 4</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>512</subgrid_volume>
+            <subgrid_volume>256</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -1806,32 +1849,32 @@ QQQ on props
           <out_version>5</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994764814567235</w_plaq>
-          <s_plaq>0.994800872583356</s_plaq>
-          <t_plaq>0.994728756551113</t_plaq>
-          <plane_01_plaq>0.994752409557501</plane_01_plaq>
-          <plane_02_plaq>0.995051670198639</plane_02_plaq>
-          <plane_12_plaq>0.994598537993928</plane_12_plaq>
-          <plane_03_plaq>0.994927928006897</plane_03_plaq>
-          <plane_13_plaq>0.994742137845606</plane_13_plaq>
-          <plane_23_plaq>0.994516203800837</plane_23_plaq>
-          <link>0.379317687901979</link>
+          <w_plaq>0.994764814463755</w_plaq>
+          <s_plaq>0.994800871962474</s_plaq>
+          <t_plaq>0.994728756965034</t_plaq>
+          <plane_01_plaq>0.994752408626179</plane_01_plaq>
+          <plane_02_plaq>0.995051671285182</plane_02_plaq>
+          <plane_12_plaq>0.994598535976062</plane_12_plaq>
+          <plane_03_plaq>0.994927926144252</plane_03_plaq>
+          <plane_13_plaq>0.994742138621708</plane_13_plaq>
+          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <link>0.379317688059624</link>
           <pollp>
             <elem>
-              <re>0.96722258204439</re>
-              <im>-0.00121316457792394</im>
+              <re>0.967222581617534</re>
+              <im>-0.00121316458201666</im>
             </elem>
             <elem>
-              <re>0.967032070271671</re>
-              <im>-0.0012961704569534</im>
+              <re>0.967032070310476</re>
+              <im>-0.00129617050743036</im>
             </elem>
             <elem>
-              <re>0.967467518639751</re>
-              <im>-0.00114548282075096</im>
+              <re>0.967467519299438</re>
+              <im>-0.00114548285447806</im>
             </elem>
             <elem>
-              <re>0.879538946435787</re>
-              <im>-0.0104402832973089</im>
+              <re>0.879538947173084</re>
+              <im>-0.0104402833220168</im>
             </elem>
           </pollp>
         </Observables>
@@ -2101,7 +2144,7 @@ QQQ on props
           </ForwardProps>
         </Propagator_input>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2837778712.3503 25152145.99311 447414.192229708 8781.32065657813 582.134779005244 8346.18984025173 447542.894587651 25144702.0561291</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2837778689.78126 25152146.2896967 447414.243022993 8781.31818438845 582.134912297925 8346.19018544818 447542.898698911 25144700.7898245</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqq_diquark>
     </elem>
