@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_w.cc,v 3.2 2006-08-26 05:50:06 edwards Exp $
+// $Id: lwldslash_base_w.cc,v 3.3 2007-06-05 19:48:32 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -10,6 +10,8 @@
 
 namespace Chroma 
 { 
+
+
   //! Take deriv of D
   /*!
    * \param chi     left vector                                 (Read)
@@ -63,64 +65,83 @@ namespace Chroma
       }
     }
 
+    for(int mu = 0; mu < Nd; ++mu) {
 
-    switch (isign)
-    {
-    case PLUS:
-      for(int mu = 0; mu < Nd; ++mu)
-      {
-	// Undaggered:
-        ds_u[mu][rb[cb]]   = anisoWeights[mu] * traceSpin(outerProduct(shift(psi - Gamma(1 << mu)*psi, FORWARD, mu),chi));
-	ds_u[mu][rb[1-cb]] = zero;
+      // Break this up to use fewer expressions:
+      LatticeFermion temp_ferm1;
+      LatticeHalfFermion tmp_h;
 
-	// The piece that comes from the U^daggered term. 
-	// This piece is just -dagger() of the piece from applying
-	// this function on the opposite checkerboard. It therefore
-	// only contributes a factor of 2 to the traceless antihermitian
-	// part of the result. Which should be swept into the taproj
-	// normalisation. Right now until then, I explicitly multiply
-	// the result by 0.5 below.
-
-	// ds_u[mu][rb[1-cb]]  = traceSpin(outerProduct(psi + Gamma(1 << mu)*psi,shift(chi, FORWARD, mu)))*adj(u[mu]);
-       	// ds_u[mu][rb[1-cb]] *= -Real(1);
-	//
-	// From factor of 2 that comes from the U^daggered piece.
-	// This maybe should be absorbed into the taproj normalisation
-	//
-	// ds_u[mu] *= Real(0.5);
-      }
-      break;
-
-    case MINUS:
-      for(int mu = 0; mu < Nd; ++mu)
-      {
-	// Daggered:
-	ds_u[mu][rb[cb]]   = anisoWeights[mu] * traceSpin(outerProduct(shift(psi + Gamma(1 << mu)*psi, FORWARD, mu),chi));
+      switch (isign) {
 	
-	ds_u[mu][rb[1-cb]] = zero;
-	
-	// The piece that comes from the U^daggered term. 
-	// This piece is just -dagger() of the piece from applying
-	// this function on the opposite checkerboard. It therefore
-	// only contributes a factor of 2 to the traceless antihermitian
-	// part of the result. Which should be swept into the taproj
-	// normalisation. Right now until then, I explicitly multiply
-	// the result by 0.5 below.
-	//
-	//        ds_u[mu][rb[1-cb]]  = traceSpin(outerProduct(psi - Gamma(1 << mu)*psi,shift(chi, FORWARD, mu)))*adj(u[mu]);
-	//        ds_u[mu][rb[1-cb]] *= -Real(1);
-	//	 
-	// From factor of 2 that comes from the U^daggered piece.
-	// This maybe should be absorbed into the taproj normalisation
-	//
-	// ds_u[mu] *= Real(0.5);
-      }
-      break;
+      case PLUS:
+	// Undaggered: Minus Projectors
+	{
 
-    default:
-      QDP_error_exit("unknown case");
-    }
+	  switch(mu) { 
+	  case 0:
+	    tmp_h[rb[1-cb]] = spinProjectDir0Minus(psi);
+	    temp_ferm1[rb[1-cb]] = spinReconstructDir0Minus(tmp_h);
+	    break;
+	  case 1:
+	    tmp_h[rb[1-cb]] = spinProjectDir1Minus(psi);
+	    temp_ferm1[rb[1-cb]] = spinReconstructDir1Minus(tmp_h);
+	    break;
+	  case 2:
+	    tmp_h[rb[1-cb]] = spinProjectDir2Minus(psi);
+	    temp_ferm1[rb[1-cb]] = spinReconstructDir2Minus(tmp_h);
+	    break;
+	  case 3:
+	    tmp_h[rb[1-cb]] = spinProjectDir3Minus(psi);
+	    temp_ferm1[rb[1-cb]] = spinReconstructDir3Minus(tmp_h);
+	    break;
+	  default:
+	    break;
+	  };
+	
+	}
+	break;
+
+      case MINUS:
+	{
+	  // Daggered: Plus Projectors
+	  LatticeHalfFermion tmp_h;
+	  switch(mu) { 
+	  case 0:
+	    tmp_h[rb[1-cb]] = spinProjectDir0Plus(psi);
+	    temp_ferm1[rb[1-cb]] = spinReconstructDir0Plus(tmp_h);
+	    break;
+	  case 1:
+	    tmp_h[rb[1-cb]] = spinProjectDir1Plus(psi);
+	    temp_ferm1[rb[1-cb]] = spinReconstructDir1Plus(tmp_h);
+	    break;
+	  case 2:
+	    tmp_h[rb[1-cb]] = spinProjectDir2Plus(psi);
+	    temp_ferm1[rb[1-cb]] = spinReconstructDir2Plus(tmp_h);
+	    break;
+	  case 3:
+	    tmp_h[rb[1-cb]] = spinProjectDir3Plus(psi);
+	    temp_ferm1[rb[1-cb]] = spinReconstructDir3Plus(tmp_h);
+	    break;
+	  default:
+	    break;
+	  };
+	}
+      break;
+      default:
+	QDP_error_exit("unknown case");
+      }
+
+      // QDP Shifts the whole darn thing anyhow
+      LatticeFermion temp_ferm2 = shift(temp_ferm1, FORWARD, mu);
+      LatticeColorMatrix temp_mat;
+      
+      // This step supposedly optimised in QDP++
+      temp_mat[rb[cb]] = traceSpin(outerProduct(temp_ferm2,chi));
     
+      // Just do the bit we need.
+      ds_u[mu][rb[cb]] = anisoWeights[mu] * temp_mat;
+      ds_u[mu][rb[1-cb]] = zero;    
+    }
     getFermBC().zero(ds_u);
 
     END_CODE();
