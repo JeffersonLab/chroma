@@ -4,7 +4,7 @@
 $, = ' ';		# set output field separator
 $\ = "\n";		# set output record separator
 
-die "Usage: run_dq.pl  <stem>  <spectro_stem>  <seqno>\n" unless scalar(@ARGV) == 3;
+die "Usage: run_dq_m.pl  <stem>  <spectro_stem>  <seqno>\n" unless scalar(@ARGV) == 3;
 
 chdir("/scratch");
 
@@ -12,7 +12,7 @@ $stem = $ARGV[0]; chomp $stem;
 $spectro_stem = $ARGV[2]; chomp $spectro_stem;
 $seqno = $ARGV[1]; chomp $seqno;
 
-$builddir = "/u/home/nilmani/chroma_test/exe/"; #link to your chroma binary
+$builddir = "/u/home/nilmani/chroma_test/exe_temp/";
 
 require '/home/edwards/bin/queue_arch_type_maui.pl';
 &determine_arch();
@@ -21,36 +21,35 @@ print "Arch = $arch";
 print "Run = $run";
 print "Host = ", `hostname`;
 
-$qqq_prop = "/home/nilmani/chroma_test/run/baryon/qqq_prop"; #link to qqq_prop file
+$qqq_props = "/home/nilmani/chroma_test/run/baryon/qqq_props";
 
 
 $gauge_type = "SZINQIO";
-$gauge_root = "wlq_6p1_16_64_xi3p0";
-$gauge_cfg = "/scratch/${gauge_root}.lime${seqno}";
-$specdir = "/cache/LHPC/NF0/aniso/6p1_16_64_xi3p0_wl/qqq/cascade/data12"; #where to store output
+$gauge_root = "wl_5p5_x2p38_um0p4086_cfg";
+$gauge_cfg = "/scratch/${gauge_root}_${seqno}.lime";
+$specdir = "/cache/LHPC/NF2/wl/aniso/5p5_16_64_xi3p0/qqq/cascade/um4086_sm3926";
 
-`rcp /cache/LHPC/NF0/aniso/6p1_16_64_xi3p0_wl/cfgs/${gauge_root}.lime${seqno} $gauge_cfg`;
+`rcp /cache/LHPC/NF2/wl/aniso/5p5_16_64_xi3p0/cfgs/${gauge_root}_${seqno}.lime $gauge_cfg`;
+$ud_mass = -0.4086;
+$ud_nu   = 1.0;
 
-$ud_mass = -0.0670;
-$ud_nu   = 0.7385;
+$s_mass = -0.39258;
+$s_nu   = 1.0;
 
-$s_mass = -0.0629;
-$s_nu   = 0.738;
-
-$prop_root = "ud0629_sm0670";
+$prop_root = "ud4086_sm3926";
 
 $anisoP = "true";
-$rho  = 0.22;
-$n_rho = 2;
+#$rho  = 0.22;
+#$n_rho = 2;
 $xi   = 3.0;
-$xi_0 = 2.464;
-$u_s = 0.983599;
-$u_t = 0.960242;
-$ud_clovCoeffR = $ud_nu / ($u_s * $u_s * $u_s);
-$ud_clovCoeffT =  0.5*($ud_nu + 1.0/$xi)/ ($u_t * $u_s * $u_s);
+$xi_0 = 2.38;
+$u_s = 1.0;
+$u_t = 1.0;
+#$ud_clovCoeffR = $ud_nu / ($u_s * $u_s * $u_s);
+#$ud_clovCoeffT =  0.5*($ud_nu + 1.0/$xi)/ ($u_t * $u_s * $u_s);
 
-$s_clovCoeffR = $s_nu / ($u_s * $u_s * $u_s);
-$s_clovCoeffT =  0.5*($s_nu + 1.0/$xi)/ ($u_t * $u_s * $u_s);
+#$s_clovCoeffR = $s_nu / ($u_s * $u_s * $u_s);
+#$s_clovCoeffT =  0.5*($s_nu + 1.0/$xi)/ ($u_t * $u_s * $u_s);
 
 @nrow = (16, 16, 16, 64);
 $t_source = 0;
@@ -75,7 +74,7 @@ $link_smear_fact = 0.15625;
 
 
 $RsdCG = 1.0e-10;
-$MaxCG = 2000;
+$MaxCG = 4000;
 
 $volfmt = "MULTIFILE";
 
@@ -162,10 +161,8 @@ print PROP<<"EOF";
         <obsvP>false</obsvP>
         <numRetries>1</numRetries>
         <FermionAction>
-         <FermAct>CLOVER</FermAct>
+         <FermAct>WILSON</FermAct>
          <Mass>${ud_mass}</Mass>
-         <clovCoeffR>${ud_clovCoeffR}</clovCoeffR>
-         <clovCoeffT>${ud_clovCoeffT}</clovCoeffT>
          <AnisoParam>
            <anisoP>${anisoP}</anisoP>
            <t_dir>3</t_dir>
@@ -173,10 +170,7 @@ print PROP<<"EOF";
            <nu>${ud_nu}</nu>
          </AnisoParam>
          <FermState>
-           <Name>STOUT_FERM_STATE</Name>
-           <rho>${rho}</rho>
-           <n_smear>${n_rho}</n_smear>
-           <orthog_dir>3</orthog_dir>
+           <Name>SIMPLE_FERM_STATE</Name>
            <FermionBC>
              <FermBC>SIMPLE_FERMBC</FermBC>
              <boundary>${bc}</boundary>
@@ -209,10 +203,8 @@ print PROP<<"EOF";
         <obsvP>false</obsvP>
         <numRetries>1</numRetries>
         <FermionAction>
-         <FermAct>CLOVER</FermAct>
+         <FermAct>WILSON</FermAct>
          <Mass>${s_mass}</Mass>
-         <clovCoeffR>${s_clovCoeffR}</clovCoeffR>
-         <clovCoeffT>${s_clovCoeffT}</clovCoeffT>
          <AnisoParam>
            <anisoP>${anisoP}</anisoP>
            <t_dir>3</t_dir>
@@ -220,10 +212,7 @@ print PROP<<"EOF";
            <nu>${s_nu}</nu>
          </AnisoParam>
          <FermState>
-           <Name>STOUT_FERM_STATE</Name>
-           <rho>${rho}</rho>
-           <n_smear>${n_rho}</n_smear>
-           <orthog_dir>3</orthog_dir>
+           <Name>SIMPLE_FERM_STATE</Name>
            <FermionBC>
              <FermBC>SIMPLE_FERMBC</FermBC>
              <boundary>${bc}</boundary>
@@ -299,11 +288,46 @@ print QQ<<"EOF";
       </NamedObject>
     </elem>
 
+
+    <elem>
+      <annotation>
+        Write humongous diquark files and then erase them from memory
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_sh__DIQUARKNAME</object_id>
+        <object_type>QQDiquarkContract</object_type>
+      </NamedObject>
+      <File>
+        <file_name>/scratch/sh_sh__DIQUARKNAME</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
 EOF
 close(QQ);
 
+
 open(QQQ, "> qqq_template");
 print QQQ<<"EOF";
+
+    <elem>
+      <annotation>
+        Read diquarks back again
+      </annotation>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_sh__DIQUARKNAME</object_id>
+        <object_type>QQDiquarkContract</object_type>
+      </NamedObject>
+      <File>
+        <file_name>/scratch/sh_sh__DIQUARKNAME</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
     <elem>
       <Name>QQQ_DIQUARK</Name>
       <Frequency>1</Frequency>
@@ -318,6 +342,13 @@ print QQQ<<"EOF";
         <prop_id>_PROPAGATOR3</prop_id>
         <diquark_id>sh_sh__DIQUARKNAME</diquark_id>
         <qqq_file>sh_sh__QQQNAME</qqq_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <NamedObject>
+        <object_id>sh_sh__DIQUARKNAME</object_id>
       </NamedObject>
     </elem>
 
@@ -339,8 +370,7 @@ close(DISP);
 print "Run the parse_baryons.pl script";
 $data_tmp = "DATA.tmp";
 
-`/u/home/nilmani/chroma_test/run/baryon/parse_baryons_qqqdiquark.pl ${data_tmp} ${qqq_prop} disp_table src_template ud_prop_template s_prop_template snk_template ${prop_root} $seqno qq_template qqq_template`;
-# link to location of parse_baryons_qqqdiquark.pl file
+`/u/home/nilmani/chroma_test/run/baryon/parse_baryons.pl ${data_tmp} ${qqq_props} disp_table src_template ud_prop_template s_prop_template snk_template ${prop_root} $seqno qq_template qqq_template`;
 
 #  Append the data file
 print "Append the ${data_tmp} script";
@@ -392,4 +422,7 @@ system("mv ${seqno}.tar ${seqno}");
 `rcp ${output}.gz ${specdir}`;
 #`rcp ${spectro_stem}.hadspec.xml${seqno}.gz ${specdir}`;
 `rcp -r ${seqno} ${specdir}`;
+chdir("/scratch");
+system("rm *.lime${seqno}*" );
+system("find . -name "*sh_sh*" -exec rm '{}' \;");
 
