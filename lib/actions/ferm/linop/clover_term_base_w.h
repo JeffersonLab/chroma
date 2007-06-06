@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 3.4 2007-03-16 18:25:26 bjoo Exp $
+// $Id: clover_term_base_w.h,v 3.5 2007-06-06 22:10:19 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -76,7 +76,10 @@ namespace Chroma
 
     void deriv_loops(const int u, const int mu, const int cb,
 		     LatticeColorMatrix& ds_u,
-		     const LatticeColorMatrix& Lambda) const;
+		     const LatticeColorMatrix& Lambda, 
+		     const LatticeColorMatrix& Lambda_xplus_mu,
+		     const LatticeColorMatrix& Lambda_xplus_nu,
+		     const LatticeColorMatrix& Lambda_xplus_muplusnu) const;
 
     //! Return flops performed by the operator()
     unsigned long nFlops() const;

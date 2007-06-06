@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 3.3 2007-04-04 20:58:02 bjoo Exp $
+// $Id: clover_term_base_w.cc,v 3.4 2007-06-06 22:10:19 bjoo Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -46,7 +46,10 @@ namespace Chroma
 
   void CloverTermBase::deriv_loops(const int mu, const int nu, const int cb,
 				   LatticeColorMatrix& ds_u,
-				   const LatticeColorMatrix& Lambda) const
+				   const LatticeColorMatrix& Lambda,
+				   const LatticeColorMatrix& Lambda_xplus_mu,
+				   const LatticeColorMatrix& Lambda_xplus_nu,
+				   const LatticeColorMatrix& Lambda_xplus_muplusnu) const
   {
     START_CODE();
 
@@ -81,7 +84,11 @@ namespace Chroma
 
     LatticeColorMatrix u_tmp1, u_tmp2, u_tmp3;
     LatticeColorMatrix u_tmp4,u_tmp5;
-    LatticeColorMatrix lambda_tmp;
+    //    LatticeColorMatrix Lambda_xplus_nu = shift(Lambda,FORWARD,nu);
+    // LatticeColorMatrix Lambda_xplus_mu = shift(Lambda,FORWARD,mu);
+    // LatticeColorMatrix Lambda_xplus_muplusnu = shift(Lambda_xplus_mu, FORWARD,nu);
+
+    LatticeColorMatrix ds_tmp;
 
     //   u_tmp1 =   <-------
     //              |
@@ -128,10 +135,8 @@ namespace Chroma
     //    |         |        re  use  u_tmp1 =  | 
     //    V         |                           V
     //   CB       1-CB       
-    lambda_tmp  = shift(Lambda, FORWARD, nu);
-    u_tmp3[rb[1-cb]] = u[nu]*lambda_tmp;
-    u_tmp4[rb[cb]] = shift(u_tmp3,FORWARD, mu);
-    ds_u[rb[cb]] = u_tmp4*u_tmp1;
+    u_tmp3[rb[cb]] = u_nu_for_mu*Lambda_xplus_muplusnu;
+    ds_u[rb[cb]] = u_tmp3*u_tmp1;
     
     // 2)
     //
@@ -141,13 +146,13 @@ namespace Chroma
     //    |        |       re use u[mu](x+nu) = u_mu_for_nu
     //    V        |
     //    1-CB    CB        
-    u_tmp3[rb[1-cb]] = lambda_tmp*adj(u[nu]);
+    u_tmp3[rb[1-cb]] = Lambda_xplus_nu*adj(u[nu]);
     u_tmp4[rb[1-cb]] = u_nu_for_mu*adj(u_mu_for_nu);
     ds_u[rb[1-cb]] = u_tmp4 * u_tmp3;
 
     // Terms 3) and 4)
     //
-    // These last two can be done on the other checkerboard and then shifted together.
+    // These last two can be done on the other checkerboard and then shifted together. at the very end...
     //
     //  CB      1-CB          
     //    ^       |   
@@ -160,7 +165,7 @@ namespace Chroma
     //         u_tmp1 =   |
     //                    V
     //                    X (CB)
-    u_tmp1[rb[cb]] = adj(u[nu])*Lambda;
+    // u_tmp1[rb[cb]] = adj(u[nu])*Lambda;
 
     // 3)
     //
@@ -169,8 +174,8 @@ namespace Chroma
     //                  u_tmp2 =  |           | = u_tmp1
     //                            |           V
     //                     (1-CB) <--------   X CB
-    u_tmp4 = shift(u_tmp1, FORWARD,mu);
-    u_tmp3[rb[1-cb]] = u_tmp4*u_tmp2;
+    u_tmp4[rb[1-cb]] = adj(u_nu_for_mu)*Lambda_xplus_mu;
+    ds_tmp[rb[1-cb]] = u_tmp4*u_tmp2;
     
     // 4)
     //
@@ -182,12 +187,13 @@ namespace Chroma
     //   CB
     u_tmp4[rb[cb]] = Lambda*u[nu];
     u_tmp5[rb[cb]] = adj(u[mu])*u_tmp4;
-    u_tmp3[rb[cb]] = adj(u_nu_for_mu)*u_tmp5;
+    ds_tmp[rb[cb]] = adj(u_nu_for_mu)*u_tmp5;
     
-    //  u_tmp3 now holds the last 2 terms, one on each of its checkerboards, but Now I need
-    //  to shift them both together onto ds_u  (Hence full both CB additions on ds_u below
-    u_tmp4 = shift(u_tmp3, BACKWARD, nu);
-    ds_u -= u_tmp4;
+    //  ds_tmp now holds the last 2 terms, one on each of its checkerboards, but Now I need
+    //  to shift them both together onto ds_u
+    //  I'll keep them in ds_tmp right, bearing in mind I'll need to bring
+    //  them in with a -ve contribution...
+
 
     // STAPLE TERMS:
     
@@ -208,9 +214,10 @@ namespace Chroma
     //    |        |    re use computed staple 
     //    V        |
     //   1-CB      X CB	  
-    lambda_tmp = shift(Lambda, FORWARD, mu);
-    u_tmp4 = shift(staple_back, BACKWARD, nu);
-    ds_u[rb[1-cb]] += lambda_tmp*staple_for;
+
+    // lambda_tmp = shift(Lambda, FORWARD, mu);
+
+    ds_u[rb[1-cb]] += Lambda_xplus_mu*staple_for;
 
     // 7)
     //
@@ -220,7 +227,11 @@ namespace Chroma
     //    |       |   re use computed staple 
     //    |       |
     //    <-------V 
-    ds_u[rb[cb]]  -= u_tmp4 * Lambda;
+    //
+    // This will need to be shifted back in nu -- add to ds_tmp
+    // has -ve contribution, so makes a +ve contribution to ds_tmp
+    ds_tmp[rb[1-cb]] += staple_back*Lambda_xplus_nu;
+
 
     // 8)
     //
@@ -229,8 +240,14 @@ namespace Chroma
     //    |       |  reuse computed staple 
     //    |       |
     //    <-------V
-    ds_u[rb[1-cb]] -= lambda_tmp*u_tmp4;
+    //
+    // This will need to be shifted back in nu -- add to ds_tmp
+    // has a -ve contribution so makes a +ve contribution to ds_tmp
+    ds_tmp[rb[cb]] += Lambda_xplus_muplusnu * staple_back;
 
+    // Shift and accumulate ds_tmp with a -ve sign - both checkerboards
+    u_tmp4 = shift(ds_tmp, BACKWARD, nu);
+    ds_u -= u_tmp4;
 
     END_CODE();
   }
@@ -257,17 +274,68 @@ namespace Chroma
       ds_u.resize(Nd);
     }
 
-    // Force in each direction
+    ds_u = zero;
+
+    // Get the links
+    const multi1d<LatticeColorMatrix>& u = getU();
+
+    // spin trace gamma_mu gamma_nu X outer Y_dag for each mu, nu
+    // (mu > nu)
+
+    // Total number of nu > mu combinations
+    int Ncomb = Nd*(Nd-1)/2;
+
+    // spin trace gamma_mu gamma_nu X outer Y_dag for each mu, nu
+    // (mu > nu)
+    multi1d<LatticeColorMatrix> s_xy_dag(Ncomb);
+    
+    // shift of spinTraceOuterProd(x,y)  FORWARD mu
+    multi1d<LatticeColorMatrix> s_xy_dag_pm(Ncomb);
+
+    // shift of spinTraceOuterProd(x,y)  FORWARD nu
+    multi1d<LatticeColorMatrix> s_xy_dag_pn(Ncomb);
+
+    // shift of spinTraceOuterProd(x,y)  FORWARD nu + mu 
+    multi1d<LatticeColorMatrix> s_xy_dag_pm_pn(Ncomb);
+
+    // Make a compact index table
+    multi2d<int> index(Nd,Nd);
+    { 
+      int foo = 0;
+      for(int mu=0; mu < Nd; mu++) { 
+	for(int nu=mu+1; nu < Nd; nu++) { 
+	  index(mu,nu) = foo;  // Nu mu and mu nu are the same
+	  index(nu,mu) = foo;  // up to a -ve sign from permuting
+	  foo++;               // gamma_mu and gamma_nu
+	}
+      }
+    }
+
+    // Compute the actual spin traces
+    for(int mu=0; mu < Nd; mu++) {
+      for(int nu=mu+1; nu < Nd; nu++) { 
+
+	Real factor = (Real(-1)/Real(8))*getCloverCoeff(mu,nu);
+	int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
+	LatticeFermion ferm_tmp = Gamma(mu_nu_index)*psi;
+	int idx = index(mu,nu);
+	s_xy_dag[idx] = 
+	  factor*traceSpin( outerProduct(ferm_tmp,chi));
+	s_xy_dag_pm[idx] = shift(s_xy_dag[idx], FORWARD, mu);
+	s_xy_dag_pn[idx] = shift(s_xy_dag[idx], FORWARD, nu);
+	s_xy_dag_pm_pn[idx] = shift(s_xy_dag_pm[idx], FORWARD, nu);
+      }
+    }
+
+    // Now compute the insertions
     for(int mu=0; mu < Nd; mu++) 
     { 
-      // Get the links
-      const multi1d<LatticeColorMatrix>& u = getU();
 
       // I am only computing one checkerboard and intentionally
       // zeroing the other. This means I initialise both checkerboards
       // to zero since I will accumulate into the desired checkerboard
       // during the loops over mu and nu
-      ds_u[mu]  = zero;
+      // ds_u[mu]  = zero;
       
 
       // Now we loop over nu and we build up 
@@ -278,37 +346,35 @@ namespace Chroma
       // write them as 2 sum nu > mu i sigma_mu F_munu
       //
       // 
-      for(int nu = 0; nu < Nd; nu++) 
+      for(int nu = mu+1; nu < Nd; nu++) 
       {
-	if ( mu != nu ) 
-	{
-	  // Index 
-	  int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
-
-	  // The actual coefficient factor
-	  Real factor = (Real(-1)/Real(8))*getCloverCoeff(mu,nu);
-	  
-	  // Account for gamma conventions
-	  // This is because we can only represent gamma_i gamma_j with i < j
-	  // if i > j we need to do it as - gamma_j gamma_i
-	  if( nu < mu) { 
-	    factor *= Real(-1);
-	  }
-	  
-	  // Work out X Y^{\dagger} = Tr_spin gamma_mu gamma_nu F_mu_nu
-	  LatticeFermion ferm_tmp = Gamma(mu_nu_index)*psi;
-	  LatticeColorMatrix sigma_XY_dag = 
-	    factor*traceSpin( outerProduct(ferm_tmp,chi));
-
-	  LatticeColorMatrix ds_tmp;
-	  deriv_loops(mu, nu, cb, ds_tmp, sigma_XY_dag);
-
-	  ds_u[mu] += ds_tmp;
-	} // End if mu != nu
 	
-      } // End loop over nu
-      
+	LatticeColorMatrix ds_tmp=zero;
+	int idx = index(mu,nu);
+
+	ds_tmp=zero;
+	// computes +ve contrib to F[mu]
+	// from mu,nu clover leaf
+	deriv_loops(mu, nu, cb, ds_tmp, s_xy_dag(idx),
+		    s_xy_dag_pm(idx),
+		    s_xy_dag_pn(idx),
+		    s_xy_dag_pm_pn(idx));
+
+	ds_u[mu] += ds_tmp;
+	ds_tmp=zero;
+
+	// computes -ve contribs to F[nu] (because gamma_mu gamma_nu <-> gamma_nu gamma_mu
+	// from mu,nu clover leaf
+	deriv_loops(nu, mu, cb, ds_tmp, s_xy_dag(idx),
+		    s_xy_dag_pn(idx),
+		    s_xy_dag_pm(idx),
+		    s_xy_dag_pm_pn(idx));
+
+	ds_u[nu] -= ds_tmp;
+
+      }
     }
+
 
     // Clear out the deriv on any fixed links
     getFermBC().zero(ds_u);
@@ -377,8 +443,15 @@ namespace Chroma
 
 	  sigma_XY_dag[rb[cb]] *= factor;
 
+
+	  LatticeColorMatrix sigma_XY_dag_xpm = shift(sigma_XY_dag, FORWARD, mu);
+	  LatticeColorMatrix sigma_XY_dag_xpn = shift(sigma_XY_dag, FORWARD, nu);
+	  LatticeColorMatrix sigma_XY_dag_xpmpn = shift(sigma_XY_dag_xpm, FORWARD, nu);
+
 	  LatticeColorMatrix ds_tmp; 
-	  deriv_loops(mu, nu, cb, ds_tmp, sigma_XY_dag);
+	  deriv_loops(mu, nu, cb, ds_tmp, sigma_XY_dag,
+		      sigma_XY_dag_xpm,sigma_XY_dag_xpn,sigma_XY_dag_xpmpn );
+
 	  ds_u[mu] += ds_tmp;
 
 	}  // End if mu != nu
