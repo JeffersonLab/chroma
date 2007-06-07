@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_clover_linop_w.h,v 3.1 2006-10-19 16:01:29 edwards Exp $
+// $Id: eoprec_clover_linop_w.h,v 3.2 2007-06-07 15:41:36 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -45,7 +45,11 @@ namespace Chroma
       {create(fs,param_);}
 
     //! Destructor is automatic
-    ~EvenOddPrecCloverLinOp() {}
+    ~EvenOddPrecCloverLinOp() {
+      QDPIO::cout << "CLOV_LINOP: Time spent in clov deriv (total) = " << clov_deriv_time << endl;
+      QDPIO::cout << "CLOV_LINOP: Time spent in clov apply/invapply (total) = " << clov_apply_time << endl;
+
+    }
 
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
@@ -112,6 +116,9 @@ namespace Chroma
     WilsonDslash D;
     CloverTerm   clov;
     CloverTerm   invclov;  // uggh, only needed for evenEvenLinOp
+    mutable double clov_apply_time;
+    mutable double clov_deriv_time;
+    mutable StopWatch swatch;
   };
 
 } // End Namespace Chroma

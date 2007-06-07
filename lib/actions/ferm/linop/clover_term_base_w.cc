@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 3.4 2007-06-06 22:10:19 bjoo Exp $
+// $Id: clover_term_base_w.cc,v 3.5 2007-06-07 15:41:36 bjoo Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -45,11 +45,9 @@ namespace Chroma
 
 
   void CloverTermBase::deriv_loops(const int mu, const int nu, const int cb,
-				   LatticeColorMatrix& ds_u,
-				   const LatticeColorMatrix& Lambda,
-				   const LatticeColorMatrix& Lambda_xplus_mu,
-				   const LatticeColorMatrix& Lambda_xplus_nu,
-				   const LatticeColorMatrix& Lambda_xplus_muplusnu) const
+				   LatticeColorMatrix& ds_u_mu,
+				   LatticeColorMatrix& ds_u_nu,
+				   const LatticeColorMatrix& Lambda) const
   {
     START_CODE();
 
@@ -78,126 +76,229 @@ namespace Chroma
 
     LatticeColorMatrix staple_for;
     LatticeColorMatrix staple_back;
+    LatticeColorMatrix staple_left;
+    LatticeColorMatrix staple_right;
 
     LatticeColorMatrix u_nu_for_mu = shift(u[nu],FORWARD, mu); // Can reuse these later
     LatticeColorMatrix u_mu_for_nu = shift(u[mu],FORWARD, nu);
+    LatticeColorMatrix Lambda_xplus_mu = shift(Lambda, FORWARD, mu);
+    LatticeColorMatrix Lambda_xplus_nu = shift(Lambda, FORWARD, nu);
+    LatticeColorMatrix Lambda_xplus_muplusnu = shift(Lambda_xplus_mu, FORWARD, nu);
 
-    LatticeColorMatrix u_tmp1, u_tmp2, u_tmp3;
-    LatticeColorMatrix u_tmp4,u_tmp5;
-    //    LatticeColorMatrix Lambda_xplus_nu = shift(Lambda,FORWARD,nu);
-    // LatticeColorMatrix Lambda_xplus_mu = shift(Lambda,FORWARD,mu);
-    // LatticeColorMatrix Lambda_xplus_muplusnu = shift(Lambda_xplus_mu, FORWARD,nu);
+    LatticeColorMatrix u_tmp3;
 
-    LatticeColorMatrix ds_tmp;
+    LatticeColorMatrix ds_tmp_mu;
+    LatticeColorMatrix ds_tmp_nu;
+    {
+      LatticeColorMatrix up_left_corner;
+      LatticeColorMatrix up_right_corner;
+      LatticeColorMatrix low_right_corner;
+      LatticeColorMatrix low_left_corner;
 
-    //   u_tmp1 =   <-------
-    //              |
-    //              |                       ON ALL CHECKERBOARDS
-    //              |                       (Because it's used in staples)  
-    //              V
-    u_tmp1 = adj(u_mu_for_nu)*adj(u[nu]);
+      //   u_tmp1 =   <-------
+      //              |
+      //              |                       ON ALL CHECKERBOARDS
+      //              |                       (Because it's used in staples)  
+      //              V
+      up_left_corner = adj(u_mu_for_nu)*adj(u[nu]);
+      
+      
+      //
+      //              <------^
+      //                     |
+      //                     |
+      //                     |
+      
+      up_right_corner = u_nu_for_mu*adj(u_mu_for_nu);
+      
+      //                       |
+      //                       |
+      //                       |
+      //                       V
+      //                <------
+      low_right_corner = adj(u_nu_for_mu)*adj(u[mu]);
+      
+      //
+      //                    ^
+      //  low left corner=  |                         ON ALL CHECKBERBOARDS
+      //                    |                         (Because it's used in the staples)
+      //                    |  
+      //                     <-------
+      low_left_corner = adj(u[mu])*u[nu];
+      
+      
+      // Now compute the terms of the force:
+      // 
+      // Altogether 8 terms. 4 Upwards with + sign, and 4 Downwards with - sign
+      //                     4 terms use staples and 4 don't
+      
+      // NON STAPLE TERMS FIRST:
+      
+      // 1) mu links
+      //
+      //    <-------  X (CB)                      <--------
+      //    |         ^                           |
+      //    |         |        re  use  u_tmp1 =  | 
+      //    V         |                           V
+      //   CB       1-CB       
+      u_tmp3[rb[cb]] = u_nu_for_mu*Lambda_xplus_muplusnu;
+      ds_u_mu[rb[cb]] = u_tmp3*up_left_corner;
+      
+      //    nu links
+      //    X
+      //     <------
+      //     | 
+      //     |
+      //     |
+      //     V-----> CB
+      //   (1-CB)   
+      //
+      u_tmp3[rb[1-cb]] = adj(u_mu_for_nu)*Lambda_xplus_nu;
+      
+      // accumulate into ds_tmp_nu and shift everything together at the end
+      ds_tmp_nu[rb[1-cb]] = u_tmp3*adj(low_left_corner);
+      
+      
+      
+      // 2)  mu links
+      //
+      //  CB
+      //    X <------ 
+      //    |        ^       re use u[nu](x+mu) = u_nu_for_mu
+      //    |        |       re use u[mu](x+nu) = u_mu_for_nu
+      //    V        |
+      //    1-CB    CB        
+      u_tmp3[rb[1-cb]] = Lambda_xplus_nu*adj(u[nu]);
+      ds_u_mu[rb[1-cb]] = up_right_corner * u_tmp3;
+      
+      //      nu_links
+      //    
+      //     <------
+      //     | 
+      //     |
+      //     |
+      //   X V----->1-CB
+      //   (CB)   
+      //
+      u_tmp3[rb[cb]] = up_left_corner*Lambda;
+      //
+      // accumulate into ds_tmp_nu and shift everything together at the end
+      ds_tmp_nu[rb[cb]] = u_tmp3*u[mu];
+      
+      
+      
+      
+      //
+      // Terms 3) and 4)
+      //
+      // These last two can be done on the other checkerboard and then shifted together. at the very end...
+      //
+      //  CB      1-CB          
+      //    ^       |   
+      //    |       |     
+      //    |       V
+      //    <-------X CB
+      
+      
+      // 3) Mu links
+      //
+      //  Compunte with low_left_corner:     ^           |
+      //                                     |           | 
+      //               low_left_corner    =  |           | 
+      //                                     |           V
+      //                              (1-CB) <--------   X CB
+      u_tmp3[rb[1-cb]] = adj(u_nu_for_mu)*Lambda_xplus_mu;
+      //
+      // accumulate into ds_tmp_mu and shift at the end.
+      ds_tmp_mu[rb[1-cb]] = u_tmp3*low_left_corner;
+      
+      // Nu links
+      // 
+      //  CB    ------>                                     ------->
+      //                |                                          |
+      //                |      reuse adj(up_right_corner):         |
+      //                |                                          |
+      //                V                                          V
+      //  1-CB   <------X
+      u_tmp3[rb[1-cb]] = adj(up_right_corner)*Lambda_xplus_mu;
+      ds_u_nu[rb[1-cb]] = u_tmp3*adj(u[mu]);
+      
+      
+      
+      // 4) Mu links
+      //
+      //  1-CB      CB
+      //   ^        |
+      //   |        |        reuse = u[nu](x+mu) = u_nu_for_mu
+      //   |        |
+      //   X <----- V 1-CB
+      //   CB
+      u_tmp3[rb[cb]] = low_right_corner*Lambda;
+      //
+      // accumulate into ds_tmp_mu and shift at the end.
+      ds_tmp_mu[rb[cb]] = u_tmp3*u[nu];
+      
+      
+      
+      // Nu links
+      // 
+      //  1-CB   ------> X                               
+      //               |                                          |
+      //               |       reuse low_right_corner:            |
+      //               |                                          |
+      //               V                                          V
+      //   CB   <------                                    <------
+      u_tmp3[rb[cb]] =    u_mu_for_nu*Lambda_xplus_muplusnu;
+      ds_u_nu[rb[cb]] =   u_tmp3*low_right_corner;
+      
+      
+      //  ds_tmp_mu now holds the last 2 terms, one on each of its checkerboards, but Now I need
+      //  to shift them both together onto ds_u_mu
+      //  I'll keep them in ds_tmp_mu right, bearing in mind I'll need to bring
+      //  them in with a -ve contribution...
+      
 
-    //  Staple_for =  <--------
-    //                |       ^
-    //                |       |             ON ALL CHECKERBOARDS
-    //                |       |             
-    //                V       |
-    staple_for = u_nu_for_mu*u_tmp1;
+      // STAPLE TERMS:   
+      
+      // Construct the staples
+
+      //  Staple_for =  <--------
+      //                |       ^
+      //                |       |             ON ALL CHECKERBOARDS
+      //                |       |             
+      //                V       |
+      staple_for = u_nu_for_mu*up_left_corner;
 
 
-    //
-    //            ^
-    //  u_tmp2 =  |                         ON ALL CHECKBERBOARDS
-    //            |                         (Because it's used in the staples)
-    //            |  
-    //            <-------
-    u_tmp2 = adj(u[mu])*u[nu];
-
-    //  Staple_back =  ^       |
-    //                 |       |            ON ALL CHECKERBOARDS
-    //                 |       |
-    //                 <------ V
-    //                      
-    staple_back = adj(u_nu_for_mu)*u_tmp2;
-
-
-    // Now compute the terms of the force:
-    // 
-    // Altogether 8 terms. 4 Upwards with + sign, and 4 Downwards with - sign
-    //                     4 terms use staples and 4 don't
-
-    // NON STAPLE TERMS FIRST:
-
-    // 1)
-    //
-    //    <-------  X (CB)                      <--------
-    //    |         ^                           |
-    //    |         |        re  use  u_tmp1 =  | 
-    //    V         |                           V
-    //   CB       1-CB       
-    u_tmp3[rb[cb]] = u_nu_for_mu*Lambda_xplus_muplusnu;
-    ds_u[rb[cb]] = u_tmp3*u_tmp1;
+      // Staple_right =   <-----             ON ALL CHECKERBOARDS
+      //                 |
+      //                 |
+      //                 V
+      //                 ----->
+      staple_right = up_left_corner*u[mu];
+      
+      
+      
+      //                 ----->
+      //                       |
+      //                       |
+      //                       |
+      //                <----- V
+      staple_left  = u_mu_for_nu*low_right_corner;
+      
+      
+      
+      
+      //  Staple_back =  ^       |
+      //                 |       |            ON ALL CHECKERBOARDS
+      //                 |       |
+      //                 <------ V
+      //                      
+      staple_back = adj(u_nu_for_mu)*low_left_corner;
+      
+    }  // Corner pieces go away here
     
-    // 2)
-    //
-    //  CB
-    //    X <------ 
-    //    |        ^       re use u[nu](x+mu) = u_nu_for_mu
-    //    |        |       re use u[mu](x+nu) = u_mu_for_nu
-    //    V        |
-    //    1-CB    CB        
-    u_tmp3[rb[1-cb]] = Lambda_xplus_nu*adj(u[nu]);
-    u_tmp4[rb[1-cb]] = u_nu_for_mu*adj(u_mu_for_nu);
-    ds_u[rb[1-cb]] = u_tmp4 * u_tmp3;
-
-    // Terms 3) and 4)
-    //
-    // These last two can be done on the other checkerboard and then shifted together. at the very end...
-    //
-    //  CB      1-CB          
-    //    ^       |   
-    //    |       |     
-    //    |       V
-    //    <-------X CB
-
-    // Compute on CB:     | 
-    //                    |
-    //         u_tmp1 =   |
-    //                    V
-    //                    X (CB)
-    // u_tmp1[rb[cb]] = adj(u[nu])*Lambda;
-
-    // 3)
-    //
-    //  Compunte with u_tmp2:     ^           |
-    //                            |           | 
-    //                  u_tmp2 =  |           | = u_tmp1
-    //                            |           V
-    //                     (1-CB) <--------   X CB
-    u_tmp4[rb[1-cb]] = adj(u_nu_for_mu)*Lambda_xplus_mu;
-    ds_tmp[rb[1-cb]] = u_tmp4*u_tmp2;
-    
-    // 4)
-    //
-    //  1-CB      CB
-    //   ^        |
-    //   |        |        reuse = u[nu](x+mu) = u_nu_for_mu
-    //   |        |
-    //   X <----- V 1-CB
-    //   CB
-    u_tmp4[rb[cb]] = Lambda*u[nu];
-    u_tmp5[rb[cb]] = adj(u[mu])*u_tmp4;
-    ds_tmp[rb[cb]] = adj(u_nu_for_mu)*u_tmp5;
-    
-    //  ds_tmp now holds the last 2 terms, one on each of its checkerboards, but Now I need
-    //  to shift them both together onto ds_u
-    //  I'll keep them in ds_tmp right, bearing in mind I'll need to bring
-    //  them in with a -ve contribution...
-
-
-    // STAPLE TERMS:
-    
-    // 5)
+    // 5) Mu links
     //
     //    <------- 
     //    |        ^
@@ -205,9 +306,23 @@ namespace Chroma
     //    V        |
     //    x        
     //   CB       1-CB  
-    ds_u[rb[cb]] += staple_for*Lambda;
-    
-    // 6)
+    ds_u_mu[rb[cb]] += staple_for*Lambda;
+
+
+    //  Nu links
+    //
+    //     CB   <---- 1-CB
+    //        |
+    //        |                use staple_right
+    //        V
+    //    1-CB  -----> X CB
+    //
+    //  Accumulate into ds_tmp_nu and shift at the end.
+
+    ds_tmp_nu[rb[1-cb]] += staple_right*Lambda_xplus_mu;
+
+
+    // 6)  Mu links
     //
     //    <------- 
     //    |        ^
@@ -215,11 +330,21 @@ namespace Chroma
     //    V        |
     //   1-CB      X CB	  
 
-    // lambda_tmp = shift(Lambda, FORWARD, mu);
+    ds_u_mu[rb[1-cb]] += Lambda_xplus_mu*staple_for;
 
-    ds_u[rb[1-cb]] += Lambda_xplus_mu*staple_for;
 
-    // 7)
+
+    //  Nu links
+    // 
+    //      <----  X CB
+    //     |
+    //     |                     use adj(staple_right)
+    //     |
+    // CB  V ----> (1-CB)
+    ds_tmp_nu[rb[cb]] += Lambda_xplus_muplusnu * staple_right;
+
+
+    // 7) Mu links
     //
     //   CB      1-CB
     //  X         
@@ -228,12 +353,20 @@ namespace Chroma
     //    |       |
     //    <-------V 
     //
-    // This will need to be shifted back in nu -- add to ds_tmp
-    // has -ve contribution, so makes a +ve contribution to ds_tmp
-    ds_tmp[rb[1-cb]] += staple_back*Lambda_xplus_nu;
+    //  Accumulate into ds_tmp_mu and shift at the end.
+    ds_tmp_mu[rb[1-cb]] += staple_back*Lambda_xplus_nu;
 
+    //   Now for nu
+    //
+    //   (1-CB)  -----> CB         use adj(staple_left)
+    //                |
+    //                |
+    //                V
+    //      CB X <----
+    //
+    ds_u_nu[rb[cb]] += staple_left*Lambda;
 
-    // 8)
+    // 8) Mu links
     //
     //  1-CB      X CB
     //    ^       |
@@ -241,13 +374,24 @@ namespace Chroma
     //    |       |
     //    <-------V
     //
-    // This will need to be shifted back in nu -- add to ds_tmp
-    // has a -ve contribution so makes a +ve contribution to ds_tmp
-    ds_tmp[rb[cb]] += Lambda_xplus_muplusnu * staple_back;
+    // Accumulate into ds_tmp_mu and shift at the end
+    ds_tmp_mu[rb[cb]] += Lambda_xplus_muplusnu * staple_back;
 
-    // Shift and accumulate ds_tmp with a -ve sign - both checkerboards
-    u_tmp4 = shift(ds_tmp, BACKWARD, nu);
-    ds_u -= u_tmp4;
+    // Now for Nu
+    // 
+    //    CB X ------> (1-CB)
+    //               |
+    //               |
+    //               |
+    //               V
+    // 1-CB  <------- CB
+    ds_u_nu[rb[1-cb]] += Lambda_xplus_nu * staple_left;
+
+    // Now shift the accumulated pieces to mu and nu
+    // 
+    // Hope that this is not too slow as an expression
+    ds_u_mu -= shift(ds_tmp_mu, BACKWARD, nu);
+    ds_u_nu -= shift(ds_tmp_nu, BACKWARD, mu); 
 
     END_CODE();
   }
@@ -279,98 +423,37 @@ namespace Chroma
     // Get the links
     const multi1d<LatticeColorMatrix>& u = getU();
 
-    // spin trace gamma_mu gamma_nu X outer Y_dag for each mu, nu
-    // (mu > nu)
-
-    // Total number of nu > mu combinations
-    int Ncomb = Nd*(Nd-1)/2;
-
-    // spin trace gamma_mu gamma_nu X outer Y_dag for each mu, nu
-    // (mu > nu)
-    multi1d<LatticeColorMatrix> s_xy_dag(Ncomb);
-    
-    // shift of spinTraceOuterProd(x,y)  FORWARD mu
-    multi1d<LatticeColorMatrix> s_xy_dag_pm(Ncomb);
-
-    // shift of spinTraceOuterProd(x,y)  FORWARD nu
-    multi1d<LatticeColorMatrix> s_xy_dag_pn(Ncomb);
-
-    // shift of spinTraceOuterProd(x,y)  FORWARD nu + mu 
-    multi1d<LatticeColorMatrix> s_xy_dag_pm_pn(Ncomb);
-
-    // Make a compact index table
-    multi2d<int> index(Nd,Nd);
-    { 
-      int foo = 0;
-      for(int mu=0; mu < Nd; mu++) { 
-	for(int nu=mu+1; nu < Nd; nu++) { 
-	  index(mu,nu) = foo;  // Nu mu and mu nu are the same
-	  index(nu,mu) = foo;  // up to a -ve sign from permuting
-	  foo++;               // gamma_mu and gamma_nu
-	}
-      }
-    }
-
-    // Compute the actual spin traces
-    for(int mu=0; mu < Nd; mu++) {
-      for(int nu=mu+1; nu < Nd; nu++) { 
-
-	Real factor = (Real(-1)/Real(8))*getCloverCoeff(mu,nu);
-	int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
-	LatticeFermion ferm_tmp = Gamma(mu_nu_index)*psi;
-	int idx = index(mu,nu);
-	s_xy_dag[idx] = 
-	  factor*traceSpin( outerProduct(ferm_tmp,chi));
-	s_xy_dag_pm[idx] = shift(s_xy_dag[idx], FORWARD, mu);
-	s_xy_dag_pn[idx] = shift(s_xy_dag[idx], FORWARD, nu);
-	s_xy_dag_pm_pn[idx] = shift(s_xy_dag_pm[idx], FORWARD, nu);
-      }
-    }
 
     // Now compute the insertions
-    for(int mu=0; mu < Nd; mu++) 
-    { 
-
-      // I am only computing one checkerboard and intentionally
-      // zeroing the other. This means I initialise both checkerboards
-      // to zero since I will accumulate into the desired checkerboard
-      // during the loops over mu and nu
-      // ds_u[mu]  = zero;
-      
-
-      // Now we loop over nu and we build up 
-      //
-      // C1+, C2+, C3+, C4+ and C1- C2- C3- C4-
-      //
-      // These are sums over nu != mu but using symmetry we can 
-      // write them as 2 sum nu > mu i sigma_mu F_munu
-      //
-      // 
-      for(int nu = mu+1; nu < Nd; nu++) 
-      {
+    for(int mu=0; mu < Nd; mu++) {
+      for(int nu = mu+1; nu < Nd; nu++) {
 	
-	LatticeColorMatrix ds_tmp=zero;
-	int idx = index(mu,nu);
+	// These will be appropriately overwritten - no need to zero them.
+	// Contributions to mu links from mu-nu clover piece
+	LatticeColorMatrix ds_tmp_mu; 
 
-	ds_tmp=zero;
-	// computes +ve contrib to F[mu]
-	// from mu,nu clover leaf
-	deriv_loops(mu, nu, cb, ds_tmp, s_xy_dag(idx),
-		    s_xy_dag_pm(idx),
-		    s_xy_dag_pn(idx),
-		    s_xy_dag_pm_pn(idx));
+	// -ve contribs  to the nu_links from the mu-nu clover piece 
+	// -ve because of the exchange of gamma_mu gamma_nu <-> gamma_nu gamma_mu
+	LatticeColorMatrix ds_tmp_nu;
 
-	ds_u[mu] += ds_tmp;
-	ds_tmp=zero;
+	// The weight for the terms
+	Real factor = (Real(-1)/Real(8))*getCloverCoeff(mu,nu);
 
-	// computes -ve contribs to F[nu] (because gamma_mu gamma_nu <-> gamma_nu gamma_mu
-	// from mu,nu clover leaf
-	deriv_loops(nu, mu, cb, ds_tmp, s_xy_dag(idx),
-		    s_xy_dag_pn(idx),
-		    s_xy_dag_pm(idx),
-		    s_xy_dag_pm_pn(idx));
+	// Get gamma_mu gamma_nu psi -- no saving here, from storing shifts because
+	// I now only do every mu, nu pair only once.
 
-	ds_u[nu] -= ds_tmp;
+	int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
+	LatticeFermion ferm_tmp = Gamma(mu_nu_index)*psi;
+	LatticeColorMatrix s_xy_dag = traceSpin( outerProduct(ferm_tmp,chi));
+	s_xy_dag *= Real(factor);
+
+	// Compute contributions
+	deriv_loops(mu, nu, cb, ds_tmp_mu, ds_tmp_nu, s_xy_dag);
+
+	// Accumulate them
+	ds_u[mu] += ds_tmp_mu;
+	ds_u[nu] -= ds_tmp_nu;
+
 
       }
     }
@@ -400,31 +483,14 @@ namespace Chroma
     if( ds_u.size() != Nd ) { 
       ds_u.resize(Nd);
     }
+    
+    ds_u = zero;
 
-    // Force in each direction
-    for(int mu=0; mu < Nd; mu++) 
-    { 
-      // I am only computing this checkerboard, so initialise this
-      ds_u[mu] = zero;
-
-      // Now we loop over nu and we build up 
-      //
-      // C1+, C2+, C3+, C4+ and C1- C2- C3- C4-
-      //
-      // These are sums over nu != mu but using symmetry we can 
-      // write them as 2 sum nu > mu i sigma_mu F_munu
-      //
-      // 
- 
-      // WARNING WARNING: CHANGE THIS BACK TO nu = 0 WHEN TESTING IS DONE
-      for(int nu = 0; nu < Nd; nu++) { 
-
-	if ( mu != nu ) {
+    for(int mu=0; mu < Nd; mu++) {
+      for(int nu = mu+1; nu < Nd; nu++) { 
 
 	  // Index 
 	  int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
-	  // QDPIO::cout << "mu = " << mu << " nu= " << nu << endl;
-	  // QDPIO::cout << "mu_nu_index = " << mu_nu_index << endl;
 
 	  // The actual coefficient factor
 	  Real factor = Real(-1)*getCloverCoeff(mu,nu)/Real(8);
@@ -432,30 +498,23 @@ namespace Chroma
 	  // Account for gamma conventions
 	  // This is because we can only represent gamma_i gamma_j with i < j
 	  // if i > j we need to do it as - gamma_j gamma_i
-	  if( nu < mu) { 
-	    factor *= Real(-1);
-	  }
-	  	
 	  LatticeColorMatrix sigma_XY_dag=zero;
 
-	  // Need Sigma On Both Checkerboards
+	  // Get  weight*Tr_spin gamma_mu gamma_nu A^{-1} piece
 	  triacntr(sigma_XY_dag, mu_nu_index, cb);
-
 	  sigma_XY_dag[rb[cb]] *= factor;
 
+	  // These will be overwritten so no need to initialize to zero
+	  LatticeColorMatrix ds_tmp_mu;
+	  LatticeColorMatrix ds_tmp_nu;
 
-	  LatticeColorMatrix sigma_XY_dag_xpm = shift(sigma_XY_dag, FORWARD, mu);
-	  LatticeColorMatrix sigma_XY_dag_xpn = shift(sigma_XY_dag, FORWARD, nu);
-	  LatticeColorMatrix sigma_XY_dag_xpmpn = shift(sigma_XY_dag_xpm, FORWARD, nu);
+	  // Get contributions from the loops and insersions
+	  deriv_loops(mu, nu, cb, ds_tmp_mu, ds_tmp_nu, sigma_XY_dag);
 
-	  LatticeColorMatrix ds_tmp; 
-	  deriv_loops(mu, nu, cb, ds_tmp, sigma_XY_dag,
-		      sigma_XY_dag_xpm,sigma_XY_dag_xpn,sigma_XY_dag_xpmpn );
+	  // Accumulate
+	  ds_u[mu] += ds_tmp_mu;
+	  ds_u[nu] -= ds_tmp_nu;
 
-	  ds_u[mu] += ds_tmp;
-
-	}  // End if mu != nu
-  
       } // End loop over nu
 
     } // end of loop over mu

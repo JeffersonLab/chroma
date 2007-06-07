@@ -1,4 +1,4 @@
-// $Id: eoprec_clover_linop_w.cc,v 3.1 2006-10-19 16:01:29 edwards Exp $
+// $Id: eoprec_clover_linop_w.cc,v 3.2 2007-06-07 15:41:36 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -31,6 +31,9 @@ namespace Chroma
 
     D.create(fs, param.anisoParam);
 
+    clov_deriv_time = 0;
+    clov_apply_time = 0;
+
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
     END_CODE();
   }
@@ -42,8 +45,11 @@ namespace Chroma
   {
     START_CODE();
 
+    swatch.reset(); swatch.start();
     clov.apply(chi, psi, isign, 1);
-    
+    swatch.stop();
+    clov_apply_time += swatch.getTimeInSeconds();
+
     END_CODE();
   }
 
@@ -56,7 +62,10 @@ namespace Chroma
     START_CODE();
 
     // Nuke for testing
+    swatch.reset(); swatch.start();
     clov.apply(chi, psi, isign, 0);
+    swatch.stop();
+    clov_apply_time += swatch.getTimeInSeconds();
     
     END_CODE();
   }
@@ -68,7 +77,10 @@ namespace Chroma
   {
     START_CODE();
 
+    swatch.reset(); swatch.start();
     invclov.apply(chi, psi, isign, 0);
+    swatch.stop();
+    clov_apply_time += swatch.getTimeInSeconds();
     
     END_CODE();
   }
@@ -139,11 +151,19 @@ namespace Chroma
   
     //  tmp1_o  =  D_oe   A^(-1)_ee  D_eo  psi_o
     D.apply(tmp1, psi, isign, 0);
+
+    swatch.reset(); swatch.start();
     invclov.apply(tmp2, tmp1, isign, 0);
+    swatch.stop();
+    clov_apply_time += swatch.getTimeInSeconds();
+
     D.apply(tmp1, tmp2, isign, 1);
 
     //  chi_o  =  A_oo  psi_o  -  tmp1_o
+    swatch.reset(); swatch.start();
     clov.apply(chi, psi, isign, 1);
+    swatch.stop();
+    clov_apply_time += swatch.getTimeInSeconds();
 
     chi[rb[1]] += mquarter*tmp1;
     
@@ -158,9 +178,12 @@ namespace Chroma
 					     enum PlusMinus isign) const
   {
     START_CODE();
-
-    clov.deriv(ds_u, chi, psi, isign, 0);
     
+    swatch.reset(); swatch.start();
+    clov.deriv(ds_u, chi, psi, isign, 0);
+    swatch.stop();
+    clov_deriv_time  += swatch.getTimeInSeconds();
+
     END_CODE();
   }
 
@@ -217,7 +240,10 @@ namespace Chroma
   {   
     START_CODE();
 
+    swatch.reset(); swatch.start();
     clov.deriv(ds_u, chi, psi, isign, 1);
+    swatch.stop();
+    clov_deriv_time += swatch.getTimeInSeconds();
     
     END_CODE();
   }
