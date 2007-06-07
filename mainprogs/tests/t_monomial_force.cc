@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
     hits = 1;
 
     QDPIO::cout << "Calibrating";
-    while( seconds < 10 ) { 
+    while( seconds < 30 ) { 
       hits *= 2;
       swatch.reset();
       swatch.start();
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
     pop(xml_out);
   }
 
-  
+#if 0  
   // Time taproj
   seconds = 0;
   hits = 1;
@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
   write(xml_out, "time_per_hit", (seconds/(double)hits));
   pop(xml_out);
 
-
+#endif
 
   pop(xml_log);   // t_leapfrog
   pop(xml_out);   // t_leapfrog
