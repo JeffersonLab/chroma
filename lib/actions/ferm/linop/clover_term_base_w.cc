@@ -1,4 +1,4 @@
-// $Id: clover_term_base_w.cc,v 3.5 2007-06-07 15:41:36 bjoo Exp $
+// $Id: clover_term_base_w.cc,v 3.6 2007-06-07 15:44:24 bjoo Exp $
 /*! \file
  *  \brief Clover term
  */
@@ -495,9 +495,6 @@ namespace Chroma
 	  // The actual coefficient factor
 	  Real factor = Real(-1)*getCloverCoeff(mu,nu)/Real(8);
 	  
-	  // Account for gamma conventions
-	  // This is because we can only represent gamma_i gamma_j with i < j
-	  // if i > j we need to do it as - gamma_j gamma_i
 	  LatticeColorMatrix sigma_XY_dag=zero;
 
 	  // Get  weight*Tr_spin gamma_mu gamma_nu A^{-1} piece
@@ -513,6 +510,8 @@ namespace Chroma
 
 	  // Accumulate
 	  ds_u[mu] += ds_tmp_mu;
+	  // -ve weight for nu from gamma_mu gamma_nu -> gamma_nu gamma_mu
+	  // commutation.
 	  ds_u[nu] -= ds_tmp_nu;
 
       } // End loop over nu
