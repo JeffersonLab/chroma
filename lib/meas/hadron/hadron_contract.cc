@@ -1,4 +1,4 @@
-// $Id: hadron_contract.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
+// $Id: hadron_contract.cc,v 3.2 2007-06-10 14:49:06 edwards Exp $
 /*! \file
  *  \brief Construct hadron contractions
  */

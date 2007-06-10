@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_meson_2pt_w.h,v 1.2 2007-06-10 14:40:23 edwards Exp $
+// $Id: simple_meson_2pt_w.h,v 1.3 2007-06-10 14:49:06 edwards Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
