@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.95 2007-05-24 20:45:19 bjoo Exp $
+# $Id: Makefile.am,v 3.96 2007-06-10 14:37:31 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -178,9 +178,10 @@ nobase_include_HEADERS = \
         meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h \
 	meas/hadron/hadron_seqsource.h \
+	meas/hadron/hadron_contract.h \
+	meas/hadron/hadron_contract_aggregate.h \
+	meas/hadron/hadron_contract_factory.h \
 	meas/hadron/hadron_2pt.h \
-	meas/hadron/hadron_2pt_aggregate.h \
-	meas/hadron/hadron_2pt_factory.h \
 	meas/hadron/mesQl_w.h \
 	meas/hadron/mesQlPOT_w.h \
 	meas/hadron/barQll_w.h \
@@ -656,6 +657,7 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_fuzwilp.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
+	meas/inline/hadron/inline_hadron_contract.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -888,8 +890,9 @@ libchroma_a_SOURCES = \
 	meas/glue/wilslp.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/hadron_seqsource.cc \
+	meas/hadron/hadron_contract.cc \
+	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc \
-	meas/hadron/hadron_2pt_aggregate.cc \
 	meas/hadron/mesQl_w.cc \
 	meas/hadron/mesQlPOT_w.cc \
 	meas/hadron/barQll_w.cc \
@@ -1219,6 +1222,7 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
+	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
