@@ -1,11 +1,10 @@
-// $Id: simple_meson_2pt_w.cc,v 1.1 2007-05-09 17:19:44 edwards Exp $
+// $Id: simple_meson_2pt_w.cc,v 1.2 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
 
 #include "meas/hadron/simple_meson_2pt_w.h"
-#include "meas/hadron/hadron_2pt_factory.h"
-#include "util/ft/sftmom.h"
+#include "meas/hadron/hadron_contract_factory.h"
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -56,8 +55,8 @@ namespace Chroma
       //-------------------- callback functions ---------------------------------------
 
       //! Construct pion correlator
-      HadronCorrelator* mesDiagGammaCorrs(XMLReader& xml_in,
-					  const std::string& path)
+      HadronContract* mesDiagGammaCorrs(XMLReader& xml_in,
+					const std::string& path)
       {
 	return new DiagGammaMesonCorrs(Params(xml_in, path));   // all gammas
       }
@@ -122,7 +121,7 @@ namespace Chroma
 
 
     // Construct all the correlators
-    std::list<Hadron2PtCorrs_t>
+    std::list< Handle<HadronContractResult_t> >
     DiagGammaMesonCorrs::operator()(const multi1d<LatticeColorMatrix>& u,
 				    const std::string& xml_group,
 				    const std::string& id_tag)
@@ -162,6 +161,7 @@ namespace Chroma
 	push(xml, xml_group);
 	write(xml, id_tag, "diagonal_gamma_mesons");
 	write(xml, "gamma_value", gamma_value);
+	write(xml, "PropHeaders", forward_headers);
 	pop(xml);
 
 	had.xml  = xml.str();
@@ -183,8 +183,8 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheHadron2PtFactory::Instance().registerObject(string("diagonal_gamma_mesons"),
-									  mesDiagGammaCorrs);
+	success &= Chroma::TheHadronContractFactory::Instance().registerObject(string("diagonal_gamma_mesons"),
+									       mesDiagGammaCorrs);
 
 	registered = true;
       }

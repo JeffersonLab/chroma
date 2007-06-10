@@ -1,4 +1,4 @@
-// $Id: readszinferm_w.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
+// $Id: readszinferm_w.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $: readszinqprop_w.cc,v 1.6 2003/04/30 21:19:33 edwards Exp $
 /*!
  * @file
  * @brief  Read an old SZIN-style (checkerboarded) lattice Dirac fermion
@@ -21,7 +21,7 @@ namespace Chroma {
 
 void readSzinFerm(LatticeFermion& q, const string& file)
 {
-  BinaryReader cfg_in(file);
+  BinaryFileReader cfg_in(file);
 
 #if 1
   multi1d<DFermion> sitebuf_prec(Layout::vol());  // Buffer for a fermion

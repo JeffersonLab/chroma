@@ -1,4 +1,4 @@
-// $Id: writemilc.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
+// $Id: writemilc.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 
 /*! \file
  *  \brief Writer a MILC gauge configuration in the 1997 format
@@ -29,7 +29,7 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
 {
   START_CODE();
 
-  BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
+  BinaryFileWriter cfg_out(cfg_file); // for now, cfg_io_location not used
 
   int magic_number = 20103;
   write(cfg_out, magic_number);

@@ -1,4 +1,4 @@
-// $Id: writeszin.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
+// $Id: writeszin.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 
 /*! \file
  *  \brief Write out a configuration written by SZIN up to configuration version 7.
@@ -116,7 +116,7 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   START_CODE();
 
   // The object where data is written
-  BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
+  BinaryFileWriter cfg_out(cfg_file); // for now, cfg_io_location not used
 
   // Dump the header
   writeSzinHeader(cfg_out, header);
@@ -203,7 +203,7 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
   START_CODE();
 
   // The object where data is written
-  BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
+  BinaryFileWriter cfg_out(cfg_file); // for now, cfg_io_location not used
 
   SzinGauge_t header(header0);   // a local copy
 
@@ -305,7 +305,7 @@ void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
   START_CODE();
 
   // The object where data is written
-  BinaryWriter cfg_out(cfg_file); // for now, cfg_io_location not used
+  BinaryFileWriter cfg_out(cfg_file); // for now, cfg_io_location not used
 
   // Force nrow in header to be correct replicated size
   header.nrow = Layout::lattSize();

@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: readmilc.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -24,7 +24,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 {
   START_CODE();
 
-  BinaryReader cfg_in(cfg_file); // for now, cfg_io_location not used
+  BinaryFileReader cfg_in(cfg_file); // for now, cfg_io_location not used
 
   int magic_number;
   read(cfg_in, magic_number);

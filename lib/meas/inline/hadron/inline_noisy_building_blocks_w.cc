@@ -1,4 +1,4 @@
-// $Id: inline_noisy_building_blocks_w.cc,v 3.7 2006-10-14 05:03:05 edwards Exp $
+// $Id: inline_noisy_building_blocks_w.cc,v 3.8 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -292,7 +292,7 @@ namespace Chroma
     //#################################################################################//
 
     // will capture all would-be standard output
-    TextWriter Out( params.bb.OutFileName );
+    TextFileWriter Out( params.bb.OutFileName );
 
     Out <<                                                                      "\n";
     Out << "  NX                                  = " << QDP::Layout::lattSize()[0] << "\n";

@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: readszin.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 
 /*! \file
  *  \brief Read in a configuration written by SZIN up to configuration version 7.
@@ -39,7 +39,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   Real32 bh = 0;       // old beta used for higgs term - not used
 
   // Read in the configuration along with relevant information
-  BinaryReader cfg_in(cfg_file); // for now, cfg_io_location not used
+  BinaryFileReader cfg_in(cfg_file); // for now, cfg_io_location not used
 
   read(cfg_in,date_size);
   read(cfg_in,banner_size);

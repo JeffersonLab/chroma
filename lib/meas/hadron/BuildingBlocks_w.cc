@@ -46,7 +46,7 @@ namespace Chroma {
 //###################################################################################//
 
 static const char* const CVSBuildingBlocks_cc =
-  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 3.6 2006-10-26 04:36:16 kostas Exp $";
+  "$Header: /home/bjoo/fromJLAB/cvsroot/chroma_base/lib/meas/hadron/BuildingBlocks_w.cc,v 3.7 2007-06-10 14:40:23 edwards Exp $";
 
 //###################################################################################//
 // record the CVS info                                                               //
@@ -67,7 +67,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 		 int                                   GammaInsertion,
                  const SftMom &                        Phases,
                  const SftMom &                        PhasesCanonical,
-                 multi2d< BinaryWriter > &             BinaryWriters,
+                 multi2d< BinaryFileWriter > &         BinaryWriters,
 		 multi1d< int > &                      GBB_NLinkPatterns,
 		 multi2d< int > &                      GBB_NMomPerms,
                  const int                             f,
@@ -296,7 +296,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
                BBLinkPattern                         LinkPattern,
                const short int                       PreviousDir,
                const short int                       PreviousMu,
-               multi2d< BinaryWriter > &             BinaryWriters,
+               multi2d< BinaryFileWriter > &         BinaryWriters,
 	       multi1d< int > &                      GBB_NLinkPatterns,
 	       multi2d< int > &                      GBB_NMomPerms,
                const signed short int                T1, 
@@ -479,7 +479,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
 
   const int NumF = B.size();
   const int NumO = BinaryDataFileNames.size1();
-  multi2d< BinaryWriter > BinaryWriters( NumF, NumO );
+  multi2d< BinaryFileWriter > BinaryWriters( NumF, NumO );
   multi1d< int > GBB_NLinkPatterns( NumF );
   multi2d< int > GBB_NMomPerms( NumF, NumO );
 

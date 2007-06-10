@@ -1,4 +1,4 @@
-// $Id: writeszinqprop_w.cc,v 3.0 2006-04-03 04:58:56 edwards Exp $
+// $Id: writeszinqprop_w.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 /*!
  * @file
  * @brief  Write an old SZIN-style (checkerboarded) quark propagator
@@ -23,7 +23,7 @@ namespace Chroma {
 void writeSzinQprop(const LatticePropagator& q, const string& file,
 		    const Real& kappa)
 {
-  BinaryWriter cfg_out(file);
+  BinaryFileWriter cfg_out(file);
 
   //
   // Write propagator field

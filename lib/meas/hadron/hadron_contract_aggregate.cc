@@ -1,9 +1,9 @@
-// $Id: hadron_2pt_aggregate.cc,v 1.1 2007-05-09 17:19:44 edwards Exp $
+// $Id: hadron_contract_aggregate.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 /*! \file
- *  \brief All hadron 2pt constructors
+ *  \brief All hadron contraction constructors
  */
 
-#include "meas/hadron/hadron_2pt_aggregate.h"
+#include "meas/hadron/hadron_contract_aggregate.h"
 
 #include "meas/hadron/simple_meson_2pt_w.h"
 //#include "meas/hadron/simple_baryon_2pt_w.h"
@@ -13,7 +13,7 @@ namespace Chroma
 {
 
   //! Registration aggregator
-  namespace Hadron2PtEnv
+  namespace HadronContractEnv
   {
     namespace
     {

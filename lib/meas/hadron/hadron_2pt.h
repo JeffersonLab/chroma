@@ -1,16 +1,13 @@
 // -*- C++ -*-
-// $Id: hadron_2pt.h,v 1.1 2007-05-09 17:19:44 edwards Exp $
+// $Id: hadron_2pt.h,v 1.2 2007-06-10 14:40:23 edwards Exp $
 /*! \file
- *  \brief Construct hadron correlators
+ *  \brief Construct hadron 2pt correlators
  */
 
 #ifndef __hadron_2pt_h__
 #define __hadron_2pt_h__
 
-#include "chromabase.h"
-#include "io/xml_group_reader.h"
-#include "io/qprop_io.h"
-#include <list>
+#include "meas/hadron/hadron_contract.h"
 
 namespace Chroma
 {
@@ -27,6 +24,8 @@ namespace Chroma
   /*! @ingroup hadron */
   struct Hadron2PtCorrs_t
   {
+    Handle<HadronContractResult_t> serialize() const;  /*!< Serialization function */
+
     //! Momentum projected correlator
     struct Mom_t
     {
@@ -34,7 +33,7 @@ namespace Chroma
       multi1d<DComplex>  corr;   /*!< Momentum projected correlator */
     };
 
-    std::string         xml;    /*!< XML about each correlator group. Used to drive the stripper */
+    std::string         xml;    /*!< XML about each corr group - used to drive the stripper */
     std::list<Mom_t>    corrs;  /*!< Holds momentum projected correlators */
   };
   
@@ -57,30 +56,23 @@ namespace Chroma
    * Supports creation of hadron 2pt correlators
    *
    */
-  class HadronCorrelator
+  class Hadron2PtCorr : public HadronContract
   {
   public:
     //! Virtual destructor to help with cleanup;
-    virtual ~HadronCorrelator() {}
+    virtual ~Hadron2PtCorr() {}
 
     //! Construct the correlators
-    virtual std::list<Hadron2PtCorrs_t> operator()(const multi1d<LatticeColorMatrix>& u,
-						   const std::string& xml_group,
-						   const std::string& id_tag) = 0;
-
-  protected:
-    //! Project onto fixed momenta
-    virtual std::list<Hadron2PtCorrs_t> project(const std::list<Hadron2PtContract_t>& had_list,
-						const Hadron2PtCorrParams_t& p) const;
+    virtual std::list< Handle<HadronContractResult_t> > operator()(
+      const multi1d<LatticeColorMatrix>& u,
+      const std::string& xml_group,
+      const std::string& id_tag) = 0;
     
-    //! Convenience function to read propagator
-    virtual ForwardProp_t readPropHeader(const std::string& prop_id) const;
-
-    //! Convenience function to get t_srce from headers
-    virtual multi1d<int> getTSrce(const multi1d<ForwardProp_t>& forward_headers) const;
-
-    //! Convenience function to get decay_dir from headers
-    virtual int getDecayDir(const multi1d<ForwardProp_t>& forward_headers) const;
+  protected:
+    //! Convenience function to project onto fixed momenta
+    virtual std::list< Handle<HadronContractResult_t> > project(
+      const std::list< Hadron2PtContract_t >& had_list,
+      const Hadron2PtCorrParams_t& p) const;
   };
 
 }

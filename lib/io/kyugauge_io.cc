@@ -1,4 +1,4 @@
-// $Id: kyugauge_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: kyugauge_io.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 
 /*! \file
  *  \brief Read/write a Kentucky gauge configuration
@@ -28,7 +28,7 @@ void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
     QDP_abort(1);
   }
 
-  BinaryReader cfg_in(cfg_file);
+  BinaryFileReader cfg_in(cfg_file);
 
   /* According to Shao Jing the UK config format is:
 
@@ -79,7 +79,7 @@ void writeKYU(const multi1d<LatticeColorMatrix>& u, const string& cfg_file)
     QDP_abort(1);
   }
 
-  BinaryWriter cfg_out(cfg_file);
+  BinaryFileWriter cfg_out(cfg_file);
 
   /* According to Shao Jing the UK config format is:
 

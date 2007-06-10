@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 3.8 2007-02-04 22:40:16 edwards Exp $
+// $Id: chroma.cc,v 3.9 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -206,6 +206,7 @@ int main(int argc, char *argv[])
 
     // Measure inline observables 
     push(xml_out, "InlineObservables");
+    xml_out.flush();
 
     QDPIO::cout << "Doing " << the_measurements.size() 
 		<<" measurements" << endl;
@@ -220,6 +221,8 @@ int main(int argc, char *argv[])
 	push(xml_out, "elem");
 	the_meas(cur_update, xml_out);
 	pop(xml_out); 
+
+	xml_out.flush();
       }
     }
     swatch.stop();

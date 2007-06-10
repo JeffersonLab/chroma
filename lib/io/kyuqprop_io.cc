@@ -1,4 +1,4 @@
-// $Id: kyuqprop_io.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: kyuqprop_io.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 /*!
  * @file
  * @brief  Read/write a Kentucky quark propagator
@@ -36,7 +36,7 @@ void readKYUQprop(LatticePropagator& q, const string& file)
     QDP_abort(1);
   }
 
-  BinaryReader bin(file);
+  BinaryFileReader bin(file);
 
   /* KY Indices: 
      x,y,z,t,snk_col,snk_spin,ri,src_col,src_spin 

@@ -1,4 +1,4 @@
-// $Id: readcppacs.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+// $Id: readcppacs.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
 
 /*! \file
  *  \brief Read a CPPACS gauge configuration 
@@ -58,7 +58,7 @@ typedef unsigned long int   n_uint64_t;
   NZ = Layout::lattSize()[2];
   NY = Layout::lattSize()[1];
   NX = Layout::lattSize()[0];
-  BinaryReader cfg_in(cfg_file)  ;
+  BinaryFileReader cfg_in(cfg_file)  ;
   int magic_number ;
   read(cfg_in, magic_number);
 

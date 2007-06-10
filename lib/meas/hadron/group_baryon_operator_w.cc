@@ -1,4 +1,4 @@
-// $Id: group_baryon_operator_w.cc,v 1.25 2007-04-11 04:55:30 juge Exp $
+// $Id: group_baryon_operator_w.cc,v 1.26 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
@@ -333,7 +333,7 @@ namespace Chroma
                         multi1d<GroupBaryonQQQ>& AQQQ, multi1d<GroupBaryonQQQ>& CQQQ )
     {
       QDPIO::cout << "Reading input from TEXT file : " << params.InputFileName <<endl;
-      TextReader reader( params.InputFileName );
+      TextFileReader reader( params.InputFileName );
 // for testing
 #ifdef REDUCETOTIMEDILUTION
 			params.NdilReduce = 12;

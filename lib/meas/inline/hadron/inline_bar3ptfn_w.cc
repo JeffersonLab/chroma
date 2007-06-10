@@ -1,4 +1,4 @@
-// $Id: inline_bar3ptfn_w.cc,v 3.5 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_bar3ptfn_w.cc,v 3.6 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  * \brief Inline measurement of bar3ptfn
  *
@@ -488,7 +488,7 @@ namespace Chroma
 
     pop(xml_seq_src);  // Sequential_source
 
-//    BinaryWriter  bin_out(params.named_obj.bar3ptfn_file);
+//    BinaryWFileriter  bin_out(params.named_obj.bar3ptfn_file);
 //    write(bin_out, bar3ptfn);
 //    bin_out.close();
 
@@ -497,7 +497,7 @@ namespace Chroma
     // Close the namelist output file XMLDAT
     pop(xml_out);     // bar3ptfn
 
-    BinaryWriter  bin_out(params.named_obj.bar3ptfn_file);
+    BinaryFileWriter  bin_out(params.named_obj.bar3ptfn_file);
     write(bin_out, bar3pt);
     bin_out.close();
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_2pt_factory.h,v 1.1 2007-05-09 17:19:44 edwards Exp $
+// $Id: hadron_contract_factory.h,v 3.1 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  *  \brief Factory for producing hadron correlator objects
  */
@@ -17,13 +17,13 @@ namespace Chroma
   //! Hadron 2pt factory (foundry)
   /*! @ingroup hadron */
   typedef SingletonHolder< 
-    ObjectFactory<HadronCorrelator, 
+    ObjectFactory<HadronContract, 
 		  std::string,
 		  TYPELIST_2(XMLReader&, const std::string&),
-		  HadronCorrelator* (*)(XMLReader&,
-					const std::string&),
+		  HadronContract* (*)(XMLReader&,
+				      const std::string&),
 		  StringFactoryError> >
-  TheHadron2PtFactory;
+  TheHadronContractFactory;
 
 }
 

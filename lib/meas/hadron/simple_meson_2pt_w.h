@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_meson_2pt_w.h,v 1.1 2007-05-09 17:19:44 edwards Exp $
+// $Id: simple_meson_2pt_w.h,v 1.2 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
@@ -41,7 +41,7 @@ namespace Chroma
      *
      * Create all the 16 (Ns=4) simple diagonal meson 2pt correlators
      */
-    class DiagGammaMesonCorrs : public HadronCorrelator
+    class DiagGammaMesonCorrs : public Hadron2PtCorr
     {
     public:
       //! Full constructor
@@ -51,9 +51,9 @@ namespace Chroma
       ~DiagGammaMesonCorrs() {}
       
       //! Construct the correlators
-      std::list<Hadron2PtCorrs_t> operator()(const multi1d<LatticeColorMatrix>& u,
-					     const std::string& xml_group,
-					     const std::string& id_tag);
+      std::list< Handle<HadronContractResult_t> > operator()(const multi1d<LatticeColorMatrix>& u,
+							     const std::string& xml_group,
+							     const std::string& id_tag);
 
     private:
       //! Hide partial constructor

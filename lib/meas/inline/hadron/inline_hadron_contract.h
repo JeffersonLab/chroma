@@ -1,14 +1,14 @@
 // -*- C++ -*-
-// $Id: inline_hadron_2pt_w.h,v 3.2 2007-05-09 17:19:44 edwards Exp $
+// $Id: inline_hadron_contract.h,v 3.1 2007-06-10 14:40:23 edwards Exp $
 /*! \file
- * \brief Inline hadron spectrum calculations
+ * \brief Inline hadron contractions - for correlators
  *
  * Hadron spectrum calculations. The general version that write output
  * into lime files.
  */
 
-#ifndef __inline_hadron_2pt_h__
-#define __inline_hadron_2pt_h__
+#ifndef __inline_hadron_contract_h__
+#define __inline_hadron_contract_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -17,7 +17,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineHadron2PtEnv 
+  namespace InlineHadronContractEnv 
   {
     extern const std::string name;
     bool registerAll();
@@ -42,13 +42,12 @@ namespace Chroma
 	std::string  gauge_id;            /*!< Input gauge field */
 	std::string  output_file;         /*!< Output file for data in QIO/LIME format */
 
-	struct Correlators_t
+	struct Correlator_t
 	{
-	  GroupXML_t            corr_xml;   /*!< xml string holding correlator params */
-	  multi1d<std::string>  prop_ids;   /*!< All the prop ids needed for this correlator */
+	  GroupXML_t xml;                 /*!< XML used for each correlator */
 	};
 
-	multi1d<Correlators_t> correlators;  /*!< The correlators */
+	multi1d<Correlator_t> correlators;  /*!< The correlators */
       };
 
       unsigned long   frequency;
@@ -59,7 +58,7 @@ namespace Chroma
     };
 
 
-    //! Inline measurement of hadron 2pt functions
+    //! Inline measurement of hadron contraction functions
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {

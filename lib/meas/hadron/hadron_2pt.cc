@@ -1,99 +1,40 @@
-// $Id: hadron_2pt.cc,v 1.1 2007-05-09 17:19:44 edwards Exp $
+// $Id: hadron_2pt.cc,v 1.2 2007-06-10 14:40:23 edwards Exp $
 /*! \file
- *  \brief Construct hadron correlators
+ *  \brief Construct hadron 2pt correlators
  */
 
 #include "meas/hadron/hadron_2pt.h"
-#include "meas/inline/io/named_objmap.h"
 #include "util/ft/sftmom.h"
 
 namespace Chroma 
 {
 
-  // Get source location
-  // Default version
-  multi1d<int>
-  HadronCorrelator::getTSrce(const multi1d<ForwardProp_t>& forward_headers) const
+  // Serialize the structure
+  Handle<HadronContractResult_t> Hadron2PtCorrs_t::serialize() const
   {
-    multi1d<int> t_srce = forward_headers[0].source_header.getTSrce();
-    int j_decay = forward_headers[0].source_header.j_decay;
+    Handle<HadronContractResult_t> output;
+    output->xml = xml;
 
-    for(int loop=1; loop < forward_headers.size(); ++loop)
+    // Run over the momentum list 
+    for(std::list<Hadron2PtCorrs_t::Mom_t>::const_iterator mom_ptr= corrs.begin(); 
+	mom_ptr != corrs.end(); 
+	++mom_ptr)
     {
-      multi1d<int> t_srce_b = forward_headers[loop].source_header.getTSrce();
-
-      // Bummer, I wish qdp++ had a multi1d.operator!=()
-      bool same = true;
-      for(int i=0; i < t_srce.size(); ++i)
-      {
-	if (t_srce_b[i] != t_srce[i]) 
-	  same = false;
-      }
-      
-      if (! same)
-      {
-	QDPIO::cerr << __func__ << ": the t_srce in the forward props are not all equal"
-		    << endl;
-	QDP_abort(1);
-      }
-
-      int j_decay_b = forward_headers[loop].source_header.j_decay;
-
-      if (j_decay != j_decay_b)
-      {
-	QDPIO::cerr << __func__ << ": the decay_dir in the forward props are not all equal"
-		    << endl;
-	QDP_abort(1);
-      }
+      write(output->bin, mom_ptr->mom);
+      write(output->bin, mom_ptr->corr);
     }
 
-    return t_srce;
-  }
-
-
-  //
-  // Extract quark prop headers
-  // Default version
-  //
-  ForwardProp_t
-  HadronCorrelator::readPropHeader(const std::string& prop_id) const
-  {
-    ForwardProp_t header;
-
-    try
-    {
-// No snarfing 
-//	ret.prop = TheNamedObjMap::Instance().getData<T>(prop_id);
-	
-      // Snarf the source info. This is will throw if the source_id is not there
-      XMLReader prop_file_xml, prop_record_xml;
-      TheNamedObjMap::Instance().get(prop_id).getFileXML(prop_file_xml);
-      TheNamedObjMap::Instance().get(prop_id).getRecordXML(prop_record_xml);
-   
-      // Try to invert this record XML into a ChromaProp struct
-      read(prop_record_xml, "/Propagator", header);
-    }
-    catch( std::bad_cast ) 
-    {
-      QDPIO::cerr << __func__ << ": caught dynamic cast error" 
-		  << endl;
-      QDP_abort(1);
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << __func__ << ": caught error = " << e 
-		  << endl;
-      QDP_abort(1);
-    }
-
-    return header;
+    return output;
   }
 
 
   //! Project onto fixed momenta
-  std::list<Hadron2PtCorrs_t> HadronCorrelator::project(const std::list<Hadron2PtContract_t>& had_list, 
-							const Hadron2PtCorrParams_t& params) const
+  std::list< Handle<HadronContractResult_t> > 
+  Hadron2PtCorr::project(const std::list<Hadron2PtContract_t>& had_list, 
+			 const Hadron2PtCorrParams_t& params) const
   {
+    std::list< Handle<HadronContractResult_t> > corrs;
+
     SftMom phases(params.mom2_max,
 		  params.t_srce,
 		  params.mom_origin,
@@ -101,8 +42,6 @@ namespace Chroma
 		  params.decay_dir);
 
     int length = phases.numSubsets();
-
-    std::list<Hadron2PtCorrs_t> corrs;
 
     // Run over the input list, 
     for(std::list<Hadron2PtContract_t>::const_iterator had_ptr= had_list.begin(); 
@@ -131,7 +70,7 @@ namespace Chroma
 	had_corrs.corrs.push_back(had_mom);
       }
 
-      corrs.push_back(had_corrs);
+      corrs.push_back(had_corrs.serialize());
     }
 
     return corrs;

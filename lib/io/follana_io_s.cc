@@ -1,5 +1,5 @@
 /*
- *  $Id: follana_io_s.cc,v 3.0 2006-04-03 04:58:55 edwards Exp $
+ *  $Id: follana_io_s.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
  *
  *  These are a few simple I/O routines that we can use until QIO makes its appearance
  *  I have tried to include a simple header by means of a structure.
@@ -13,13 +13,13 @@
 namespace Chroma {
 
 
-void readQpropFollana(char file[], LatticePropagator& quark_prop, bool swap){
-
+void readQpropFollana(char file[], LatticePropagator& quark_prop, bool swap)
+{
   /*
    *  Now the local variables
    */
 
-  BinaryReader prop_in(file);
+  BinaryFileReader prop_in(file);
  
   int x, y, z, t, src_col, snk_col, src_spin, snk_spin, index;
   Propagator site_prop;

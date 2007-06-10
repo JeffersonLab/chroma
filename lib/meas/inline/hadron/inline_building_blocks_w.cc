@@ -1,4 +1,4 @@
-// $Id: inline_building_blocks_w.cc,v 3.10 2006-11-27 20:06:59 edwards Exp $
+// $Id: inline_building_blocks_w.cc,v 3.11 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -289,7 +289,7 @@ namespace Chroma
     //#################################################################################//
 
     // will capture all would-be standard output
-    TextWriter Out( params.bb.OutFileName );
+    TextFileWriter Out( params.bb.OutFileName );
 
     Out <<                                                                      "\n";
     Out << "  NX                                  = " << QDP::Layout::lattSize()[0] << "\n";
