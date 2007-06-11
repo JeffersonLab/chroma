@@ -1,4 +1,4 @@
-// $Id: inline_hadron_contract.cc,v 3.2 2007-06-10 14:49:06 edwards Exp $
+// $Id: inline_hadron_contract.cc,v 3.3 2007-06-11 03:27:06 edwards Exp $
 /*! \file
  * \brief Inline hadron contraction calculations - for correlators
  *
@@ -55,65 +55,6 @@ namespace Chroma
     }
 
 
-    //! Reader for parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t& param)
-    {
-      XMLReader paramtop(xml, path);
-
-      int version;
-      read(paramtop, "version", version);
-
-      switch (version) 
-      {
-      case 1:
-	break;
-
-      default:
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
-	QDP_abort(1);
-      }
-
-      read(paramtop, "mom2_max", param.mom2_max);
-      read(paramtop, "avg_equiv_mom", param.avg_equiv_mom);
-      read(paramtop, "mom_origin", param.mom_origin);
-    }
-
-
-    //! Writer for parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param)
-    {
-      push(xml, path);
-
-      int version = 1;
-      write(xml, "version", version);
-
-      write(xml, "mom2_max", param.mom2_max);
-      write(xml, "avg_equiv_mom", param.avg_equiv_mom);
-      write(xml, "mom_origin", param.mom_origin);
-
-      pop(xml);
-    }
-
-
-    //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t::Correlator_t& input)
-    {
-      XMLReader inputtop(xml, path);
-
-      input.xml = readXMLGroup(inputtop, "Correlators", "CorrelatorType");
-    }
-
-    //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t::Correlator_t& input)
-    {
-      push(xml, path);
-
-      xml << input.xml.xml;
-
-      pop(xml);
-    }
-
-
     //! Propagator input
     void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
     {
@@ -121,7 +62,9 @@ namespace Chroma
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "output_file", input.output_file);
-      read(inputtop, "Correlators", input.correlators);
+      QDPIO::cout << "Read correlators" << endl;
+      input.correlators = readXMLArrayGroup(inputtop, "Correlators", "CorrelatorType");
+      QDPIO::cout << "Finished reading correlators" << endl;
     }
 
     //! Propagator output
@@ -131,7 +74,11 @@ namespace Chroma
 
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "output_file", input.output_file);
-      write(xml, "Correlators", input.correlators);
+
+      for(int i=0; i < input.correlators.size(); ++i)
+      {
+	xml << input.correlators[i].xml;
+      }
 
       pop(xml);
     }
@@ -153,9 +100,6 @@ namespace Chroma
 	  read(paramtop, "Frequency", frequency);
 	else
 	  frequency = 1;
-
-	// Parameters for source construction
-	read(paramtop, "Param", param);
 
 	// Read in the output propagator/source configuration info
 	read(paramtop, "NamedObject", named_obj);
@@ -179,7 +123,6 @@ namespace Chroma
     {
       push(xml_out, path);
     
-      write(xml_out, "Param", param);
       write(xml_out, "NamedObject", named_obj);
       write(xml_out, "xml_file", xml_file);
 
@@ -289,7 +232,7 @@ namespace Chroma
       // Now loop over the various fermion pairs
       for(int lcorr=0; lcorr < params.named_obj.correlators.size(); ++lcorr)
       {
-	const GroupXML_t& had_xml = params.named_obj.correlators[lcorr].xml;
+	const GroupXML_t& had_xml = params.named_obj.correlators[lcorr];
 
 	push(xml_out, "elem");
 
