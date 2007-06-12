@@ -1,35 +1,13 @@
-      Laundry List   -  02 Oct 2005
+          LAUNDRY LIST (12 June 2007)
 
-\item Fix eesu3 to not cause infinite loops compiling on MACS. This
-really means unify the eesuN and the expsuN routines.
-
-\item Get prec and unprec clover fermacts working. Eventually get deriv
-working.
-
-Based on force monitoring tests:
-  \item Fractional power monomials??? 
-  \item Sexton-Weingarten integration for gauge piece ala Degrand???
-  \item SAP for force term???
-
-\item Aniso precond. and even-odd aniso precond. for linops
-\item Aniso precond. and even-odd aniso precond. for HMC
-
-\item Need some kind of reader/writer (??) for ILDG meta-data conventions???
-BJ points out management stuff not workable. Could do physics portion.
-
-\item Make xcheck that uses XMLDiff for complete regression tests.
+\item Add/move-over more contraction methods within the HADRON_CONTRACT
+      task.
 
 \item A. Hart says the subset-ted reunit is slow - should use
 QDP's profile and isolate.
 
-STAGGERED TODO list (Sept 2005)
 -----------------------------------
-
-\item Reduce the number of copies of the gauge configuration
-      used from classes that inherit from the staggered_hadron_corr
-      Probably best to use a singleton or something.
-
-\item Test and add the vector mesons to the inline code.
+STAGGERED TODO list (Sept 2005)
 
 \item add singlet vector operators.
 
@@ -40,7 +18,33 @@ STAGGERED TODO list (Sept 2005)
       inverter that MILC use so we can run 20**3.64
       lattices on a rack of QCDOC
 
+-----------------------------------
 DONE:
+
+\item Test and add the vector mesons to the staggered inline code.
+
+\item Reduce the number of copies of the gauge configuration
+      used from classes that inherit from the staggered_hadron_corr
+      Probably best to use a singleton or something.
+
+Based on force monitoring tests:
+  \item Fractional power monomials
+  \item Sexton-Weingarten integration for gauge piece
+  \item SAP for force term - (BAILED ON THIS: NO LONGER ON TODO)
+
+\item Aniso precond. and even-odd aniso precond. for linops
+\item Aniso precond. and even-odd aniso precond. for HMC
+
+\item Need some kind of reader/writer (??) for ILDG meta-data conventions???
+BJ points out management stuff not workable. Could do physics portion.
+
+\item Make xcheck that uses XMLDiff for complete regression tests.
+
+\item Get prec and unprec clover fermacts working. Eventually get deriv
+working.
+
+\item Fix eesu3 to not cause infinite loops compiling on MACS. This
+really means unify the eesuN and the expsuN routines.
 
 \item (*) Add force monitoring for HMC. Currently, we have energy
 contributions for each monomial. More useful is contributions to force
