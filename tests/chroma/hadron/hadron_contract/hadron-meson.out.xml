@@ -1,0 +1,1759 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+Hadron spectrum input
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_1</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_1</source_id>
+        <prop_id>sh_prop_1</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>2</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>sh_prop_1</prop_id>
+        <smeared_prop_id>sh_pt_sink_1</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>2</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>sh_prop_1</prop_id>
+        <smeared_prop_id>sh_sh_sink_1</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>HADRON_CONTRACT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_file>hadspec.lime</output_file>
+        <Correlators>
+          <elem>
+            <version>1</version>
+            <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+            <mom2_max>3</mom2_max>
+            <avg_equiv_mom>true</avg_equiv_mom>
+            <mom_origin>0 0 0</mom_origin>
+            <first_id>sh_pt_sink_1</first_id> 
+            <second_id>sh_pt_sink_1</second_id>
+         </elem>
+        </Correlators>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.24.0</chroma>
+      <qdp>1.24.0</qdp>
+    </code_version>
+    <run_date>12 Jun 07 11:09:36 EDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info><weak_field>
+</weak_field>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994803997558645</w_plaq>
+    <s_plaq>0.99479844317668</s_plaq>
+    <t_plaq>0.99480955194061</t_plaq>
+    <plane_01_plaq>0.994703591490785</plane_01_plaq>
+    <plane_02_plaq>0.99492682578663</plane_02_plaq>
+    <plane_12_plaq>0.994764912252625</plane_12_plaq>
+    <plane_03_plaq>0.994693187996745</plane_03_plaq>
+    <plane_13_plaq>0.994853910369178</plane_13_plaq>
+    <plane_23_plaq>0.994881557455907</plane_23_plaq>
+    <link>0.379449337740274</link>
+    <pollp>
+      <elem>
+        <re>0.96658587983499</re>
+        <im>-0.00132088747583718</im>
+      </elem>
+      <elem>
+        <re>0.966365774977021</re>
+        <im>-0.00123499089295365</im>
+      </elem>
+      <elem>
+        <re>0.967146154221458</re>
+        <im>-0.00112309936806317</im>
+      </elem>
+      <elem>
+        <re>0.878769261723695</re>
+        <im>-0.00991386471347747</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>12 Jun 07 11:09:36 EDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3491</elem>
+            <elem>1302</elem>
+            <elem>1242</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>sh_source_1</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>6.68018581299261 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>12 Jun 07 11:09:37 EDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
+</StateInfo>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>sh_source_1</source_id>
+            <prop_id>sh_prop_1</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>240228577</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <version>1</version>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>6.68018581299261 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+        <QuarkProp4>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <n_count>45</n_count>
+            <resid>1.143465e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <n_count>45</n_count>
+            <resid>1.167768e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <n_count>45</n_count>
+            <resid>1.231535e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <n_count>45</n_count>
+            <resid>1.136326e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <n_count>45</n_count>
+            <resid>1.12923e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <n_count>45</n_count>
+            <resid>1.041495e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <n_count>45</n_count>
+            <resid>1.353581e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <n_count>45</n_count>
+            <resid>1.384466e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <n_count>45</n_count>
+            <resid>1.194655e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <n_count>45</n_count>
+            <resid>1.340452e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <n_count>45</n_count>
+            <resid>1.494607e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <n_count>45</n_count>
+            <resid>1.189793e-07</resid>
+          </Qprop>
+        </QuarkProp4>
+        <Relaxation_Iterations>
+          <ncg_had>540</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>0.192608933944851 0.0159807816582526 0.00618062946258404 0.00284180980927002 0.00198266748516733 0.0028388977770809 0.00617588851572352 0.0159631273071799</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <sink_smear>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>5</version><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+            <j_decay>3</j_decay>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <prop_id>sh_prop_1</prop_id>
+            <smeared_prop_id>sh_pt_sink_1</smeared_prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Prop_file_info><propagator>
+      <id>240228579</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
+        <Forward_prop_correlator>
+          <forward_prop_corr>0.192608933944851 0.0159807816582526 0.00618062946258404 0.00284180980927002 0.00198266748516733 0.0028388977770809 0.00617588851572352 0.0159631273071799</forward_prop_corr>
+        </Forward_prop_correlator>
+        <SinkSmearedProp_correlator>
+          <sink_smeared_prop_corr>0.192608933944851 0.0159807816582526 0.00618062946258404 0.00284180980927002 0.00198266748516733 0.0028388977770809 0.00617588851572352 0.0159631273071799</sink_smeared_prop_corr>
+        </SinkSmearedProp_correlator>
+      </sink_smear>
+    </elem>
+    <elem>
+      <sink_smear>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>5</version><Sink>
+      <version>2</version>
+      <SinkType>SHELL_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+            <j_decay>3</j_decay>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <prop_id>sh_prop_1</prop_id>
+            <smeared_prop_id>sh_sh_sink_1</smeared_prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Prop_file_info><propagator>
+      <id>240228579</id>
+    </propagator>
+
+        </Prop_file_info>
+        <Prop_record_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Kappa>0.11</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+        </Prop_record_info>
+        <Forward_prop_correlator>
+          <forward_prop_corr>0.192608933944851 0.0159807816582526 0.00618062946258404 0.00284180980927002 0.00198266748516733 0.0028388977770809 0.00617588851572352 0.0159631273071799</forward_prop_corr>
+        </Forward_prop_correlator>
+        <SinkSmearedProp_correlator>
+          <sink_smeared_prop_corr>2.76809946256525 0.0382032752924362 0.00643155318816502 0.00278466689117268 0.00193899148748761 0.00278128644535363 0.00642889702074353 0.0381603250424177</sink_smeared_prop_corr>
+        </SinkSmearedProp_correlator>
+      </sink_smear>
+    </elem>
+    <elem>
+      <HadronContract>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>12 Jun 07 11:09:40 EDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <output_file>hadspec.lime</output_file><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</NamedObject>
+          <xml_file></xml_file>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994803997558645</w_plaq>
+          <s_plaq>0.99479844317668</s_plaq>
+          <t_plaq>0.99480955194061</t_plaq>
+          <plane_01_plaq>0.994703591490785</plane_01_plaq>
+          <plane_02_plaq>0.99492682578663</plane_02_plaq>
+          <plane_12_plaq>0.994764912252625</plane_12_plaq>
+          <plane_03_plaq>0.994693187996745</plane_03_plaq>
+          <plane_13_plaq>0.994853910369178</plane_13_plaq>
+          <plane_23_plaq>0.994881557455907</plane_23_plaq>
+          <link>0.379449337740274</link>
+          <pollp>
+            <elem>
+              <re>0.96658587983499</re>
+              <im>-0.00132088747583718</im>
+            </elem>
+            <elem>
+              <re>0.966365774977021</re>
+              <im>-0.00123499089295365</im>
+            </elem>
+            <elem>
+              <re>0.967146154221458</re>
+              <im>-0.00112309936806317</im>
+            </elem>
+            <elem>
+              <re>0.878769261723695</re>
+              <im>-0.00991386471347747</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <HadronMeasurements>
+          <elem>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.189240289873851</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00246847311063902</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00200301212498744</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00184393834206276</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00180335867480608</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00184348730726924</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00200254714400216</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00246807564690243</re>
+      <im>0</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.191488663680502</re>
+      <im>-3.53826507019558e-22</im>
+    </elem>
+    <elem>
+      <re>0.0157467937169713</re>
+      <im>2.23726506301452e-22</im>
+    </elem>
+    <elem>
+      <re>0.00610770318598952</re>
+      <im>4.55983312669857e-23</im>
+    </elem>
+    <elem>
+      <re>0.00282309866452124</re>
+      <im>-5.14402943431414e-24</im>
+    </elem>
+    <elem>
+      <re>0.00197775693595759</re>
+      <im>7.61264657490208e-24</im>
+    </elem>
+    <elem>
+      <re>0.00282017471545259</re>
+      <im>3.97563681908299e-23</im>
+    </elem>
+    <elem>
+      <re>0.00610219062946271</re>
+      <im>-1.55180375384655e-22</im>
+    </elem>
+    <elem>
+      <re>0.0157308989037119</re>
+      <im>5.49041131582072e-22</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.191477335356467</re>
+      <im>-3.36517752701885e-21</im>
+    </elem>
+    <elem>
+      <re>0.0157465114498336</re>
+      <im>-2.75838884892292e-22</im>
+    </elem>
+    <elem>
+      <re>0.00610714669164736</re>
+      <im>5.86264259146958e-23</im>
+    </elem>
+    <elem>
+      <re>0.00282286719084368</re>
+      <im>-4.66840058209615e-23</im>
+    </elem>
+    <elem>
+      <re>0.00197773792569933</re>
+      <im>-9.40917946779069e-24</im>
+    </elem>
+    <elem>
+      <re>0.00282020101440139</re>
+      <im>-4.69424997623843e-23</im>
+    </elem>
+    <elem>
+      <re>0.00610334888915531</re>
+      <im>-4.32395740515024e-23</im>
+    </elem>
+    <elem>
+      <re>0.0157280243802234</re>
+      <im>6.47268829322744e-23</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.191479824658018</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00201296823615849</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.0018608204791235</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00180850781907793</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00179493839095812</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.0018082405658788</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00186058954932378</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00201333877521392</re>
+      <im>0</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.191499799009762</re>
+      <im>-2.98818996284781e-22</im>
+    </elem>
+    <elem>
+      <re>0.0157539716092288</re>
+      <im>4.30656076289248e-21</im>
+    </elem>
+    <elem>
+      <re>0.00610911970579764</re>
+      <im>1.81049156572544e-22</im>
+    </elem>
+    <elem>
+      <re>0.00282349598637666</re>
+      <im>1.47083052669585e-22</im>
+    </elem>
+    <elem>
+      <re>0.00197793712322891</re>
+      <im>6.24547211871678e-22</im>
+    </elem>
+    <elem>
+      <re>0.00282045965650468</re>
+      <im>-5.12076497958609e-23</im>
+    </elem>
+    <elem>
+      <re>0.00610501539631514</re>
+      <im>-2.6663650057764e-22</im>
+    </elem>
+    <elem>
+      <re>0.0157341355843528</re>
+      <im>-6.52128515421493e-22</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.191457584929594</re>
+      <im>-2.65002818867848e-21</im>
+    </elem>
+    <elem>
+      <re>0.00201792207553808</re>
+      <im>3.03265092077254e-22</im>
+    </elem>
+    <elem>
+      <re>0.00186210767606099</re>
+      <im>3.75850190828782e-23</im>
+    </elem>
+    <elem>
+      <re>0.00180874936631881</re>
+      <im>5.9012874357123e-22</im>
+    </elem>
+    <elem>
+      <re>0.00179495838165167</re>
+      <im>-8.7018754205725e-23</im>
+    </elem>
+    <elem>
+      <re>0.00180831894977018</re>
+      <im>2.45259051621973e-22</im>
+    </elem>
+    <elem>
+      <re>0.00186162872705609</re>
+      <im>1.32129178158275e-22</im>
+    </elem>
+    <elem>
+      <re>0.00201988166190858</re>
+      <im>-6.39824203809767e-22</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.191468668810558</re>
+      <im>5.76394960463435e-21</im>
+    </elem>
+    <elem>
+      <re>0.00202008006635879</re>
+      <im>-5.49465061646006e-21</im>
+    </elem>
+    <elem>
+      <re>0.00186205328827782</re>
+      <im>4.34786809473185e-23</im>
+    </elem>
+    <elem>
+      <re>0.00180869406358397</re>
+      <im>-5.40601304394617e-22</im>
+    </elem>
+    <elem>
+      <re>0.00179506838321686</re>
+      <im>1.82125137603716e-22</im>
+    </elem>
+    <elem>
+      <re>0.00180862019078631</re>
+      <im>2.09069899822778e-22</im>
+    </elem>
+    <elem>
+      <re>0.0018628665147844</re>
+      <im>7.47990993598146e-22</im>
+    </elem>
+    <elem>
+      <re>0.00201799554452009</re>
+      <im>3.03782079960099e-21</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.189258700927894</re>
+      <im>3.51551760335037e-24</im>
+    </elem>
+    <elem>
+      <re>-0.0152879681518243</re>
+      <im>-3.9802897100286e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00596347772079753</re>
+      <im>1.80635566266267e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00278619788150536</re>
+      <im>7.27918939046664e-23</im>
+    </elem>
+    <elem>
+      <re>-0.00196834090456832</re>
+      <im>6.19092989707657e-23</im>
+    </elem>
+    <elem>
+      <re>-0.00278346156846965</re>
+      <im>-2.91038328647954e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00595963720843429</re>
+      <im>-1.27683082365803e-21</im>
+    </elem>
+    <elem>
+      <re>-0.0152697855046426</re>
+      <im>9.52188282625104e-22</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.192588108009659</re>
+      <im>1.01122829884608e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00179089234461571</re>
+      <im>-1.02637604381345e-21</im>
+    </elem>
+    <elem>
+      <re>-0.00179100146851852</re>
+      <im>-3.76677371441335e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00179108832162456</re>
+      <im>1.48065329646992e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00179089855373604</re>
+      <im>-3.67552535309109e-22</im>
+    </elem>
+    <elem>
+      <re>-0.0017909499565576</re>
+      <im>-3.50026646080642e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00179131150798639</re>
+      <im>1.3372150083744e-21</im>
+    </elem>
+    <elem>
+      <re>-0.00179110847057018</re>
+      <im>2.35322544513679e-21</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.190371665168641</re>
+      <im>-4.50591129051776e-21</im>
+    </elem>
+    <elem>
+      <re>-0.0155203638496459</re>
+      <im>-3.08228175752572e-22</im>
+    </elem>
+    <elem>
+      <re>-0.0060358517584973</re>
+      <im>6.49853768736972e-23</im>
+    </elem>
+    <elem>
+      <re>-0.00280465527248452</re>
+      <im>-1.00340885711804e-21</im>
+    </elem>
+    <elem>
+      <re>-0.00197308373026317</re>
+      <im>2.36719058032216e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00280191000638297</re>
+      <im>-2.06795153138257e-25</im>
+    </elem>
+    <elem>
+      <re>-0.00603277192567475</re>
+      <im>-5.02382975155253e-23</im>
+    </elem>
+    <elem>
+      <re>-0.0155001356833964</re>
+      <im>8.55718343686107e-22</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.190382893721107</re>
+      <im>-3.65381186201158e-21</im>
+    </elem>
+    <elem>
+      <re>-0.0155206712079234</re>
+      <im>-3.31399572661714e-21</im>
+    </elem>
+    <elem>
+      <re>-0.00603647979733068</re>
+      <im>-7.87941232245043e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00280492033925839</re>
+      <im>2.31028960146646e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00197311446027015</re>
+      <im>-3.49648598691311e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00280188258329872</re>
+      <im>-3.05643236338344e-22</im>
+    </elem>
+    <elem>
+      <re>-0.00603161870822078</re>
+      <im>-1.53629411736118e-21</im>
+    </elem>
+    <elem>
+      <re>-0.0155029677043785</re>
+      <im>-3.97336207239847e-21</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.190342040608812</re>
+      <im>1.23043116117263e-22</im>
+    </elem>
+    <elem>
+      <re>0.0022467425915238</re>
+      <im>1.13297894525623e-21</im>
+    </elem>
+    <elem>
+      <re>0.00193313566887809</re>
+      <im>3.06987404833742e-22</im>
+    </elem>
+    <elem>
+      <re>0.00182640250386612</re>
+      <im>-4.20879835424637e-22</im>
+    </elem>
+    <elem>
+      <re>0.00179919072797929</re>
+      <im>-3.71843534736728e-22</im>
+    </elem>
+    <elem>
+      <re>0.00182605224472354</re>
+      <im>5.69979140837321e-23</im>
+    </elem>
+    <elem>
+      <re>0.00193321203005326</re>
+      <im>8.40079460230026e-22</im>
+    </elem>
+    <elem>
+      <re>0.00224646867900447</re>
+      <im>-1.60111147317295e-21</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.190361081469746</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.0155134523956804</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00603449413029011</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00280427666803007</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00197290813230211</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00280160958209308</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.00602992550557246</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>-0.015496653268201</re>
+      <im>0</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.190363639921998</re>
+      <im>1.38987022424222e-21</im>
+    </elem>
+    <elem>
+      <re>0.00224196330054838</re>
+      <im>1.91466462411884e-22</im>
+    </elem>
+    <elem>
+      <re>0.00193190239588148</re>
+      <im>-2.30679993325726e-22</im>
+    </elem>
+    <elem>
+      <re>0.00182618056715</re>
+      <im>1.60266243682149e-24</im>
+    </elem>
+    <elem>
+      <re>0.0017991761360463</re>
+      <im>-6.97933641841617e-25</im>
+    </elem>
+    <elem>
+      <re>0.00182598621722718</re>
+      <im>5.19055834377025e-23</im>
+    </elem>
+    <elem>
+      <re>0.00193217592641304</re>
+      <im>6.75380045452476e-23</im>
+    </elem>
+    <elem>
+      <re>0.00223996893328149</re>
+      <im>-3.26943137111584e-22</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.190352654164599</re>
+      <im>1.31625114972501e-21</im>
+    </elem>
+    <elem>
+      <re>0.0022398218188755</re>
+      <im>-6.49078286912704e-23</im>
+    </elem>
+    <elem>
+      <re>0.00193194655003026</re>
+      <im>-3.00369959933318e-22</im>
+    </elem>
+    <elem>
+      <re>0.00182621599560662</re>
+      <im>5.99447450159522e-23</im>
+    </elem>
+    <elem>
+      <re>0.0017990576379816</re>
+      <im>-6.33310156485912e-25</im>
+    </elem>
+    <elem>
+      <re>0.00182567580668547</re>
+      <im>-9.9778661389209e-24</im>
+    </elem>
+    <elem>
+      <re>0.00193092028530373</re>
+      <im>-2.05160178958758e-22</im>
+    </elem>
+    <elem>
+      <re>0.0022417071104428</re>
+      <im>-3.108131151668e-22</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+            <Regression>
+              <Input><elem>
+      <version>1</version>
+      <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <first_id>sh_pt_sink_1</first_id>
+      <second_id>sh_pt_sink_1</second_id>
+    </elem>
+</Input>
+              <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.192608934041345</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.0159807816417015</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00618062944704434</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00284180978997028</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00198266749430331</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00283889776255819</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.00617588851309847</re>
+      <im>0</im>
+    </elem>
+    <elem>
+      <re>0.0159631273054401</re>
+      <im>0</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+              </Diagnostic>
+            </Regression>
+          </elem>
+        </HadronMeasurements>
+      </HadronContract>
+    </elem>
+  </InlineObservables>
+</chroma>
