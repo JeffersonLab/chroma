@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.2 2007-02-22 21:11:49 bjoo Exp $
+//  $Id: sftmom.h,v 3.3 2007-06-12 04:42:49 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -7,84 +7,100 @@
 #ifndef SFTMOM_INCLUDE
 #define SFTMOM_INCLUDE
 
-namespace Chroma {
-
-//! Fourier transform phase factor support
-/*!
- * \ingroup ft
- */
-class SftMom
+namespace Chroma 
 {
-public:
-  //! Constructor about origin
-  SftMom(int mom2_max, bool avg_equiv_mom_=false, int j_decay=-1);
 
-  //! Construct around some fixed origin_offset
-  SftMom(int mom2_max, multi1d<int> origin_offset_,
-         bool avg_equiv_mom_=false, int j_decay=-1) ;
+  //! Param struct for SftMom
+  struct SftMomParams_t
+  {
+    int           mom2_max;           /*!< (mom - mom_origin)^2 <= mom2_max */
+    multi1d<int>  mom_offset;         /*!< Origin for the momentum */
+    bool          avg_equiv_mom;      /*!< average over equivalent momenta */
+    multi1d<int>  origin_offset;      /*<! Coordinate offset of the origin. Used to fix phase factor */
+    int           decay_dir;          /*!< Decay direction */
+  };
 
-  //! Construct around some fixed origin_offset and mom_offset
-  SftMom(int mom2_max, multi1d<int> origin_offset_, multi1d<int> mom_offset_,
-         bool avg_equiv_mom_=false, int j_decay=-1) 
-  { init(mom2_max, origin_offset_, mom_offset_, avg_equiv_mom_, j_decay); }
 
-  //! The set to be used in sumMulti
-  const Set& getSet() const { return sft_set; }
+  //! Fourier transform phase factor support
+  /*!
+   * \ingroup ft
+   */
+  class SftMom
+  {
+  public:
+    //! Constructor about origin
+    SftMom(int mom2_max, bool avg_equiv_mom_=false, int j_decay=-1);
 
-  //! Number of momenta
-  int numMom() const { return num_mom; }
+    //! Construct around some fixed origin_offset
+    SftMom(int mom2_max, multi1d<int> origin_offset_,
+	   bool avg_equiv_mom_=false, int j_decay=-1) ;
 
-  //! Number of subsets - length in decay direction
-  int numSubsets() const { return sft_set.numSubsets(); }
+    //! Construct around some fixed origin_offset and mom_offset
+    SftMom(int mom2_max, multi1d<int> origin_offset_, multi1d<int> mom_offset_,
+	   bool avg_equiv_mom_=false, int j_decay=-1) 
+      { init(mom2_max, origin_offset_, mom_offset_, avg_equiv_mom_, j_decay); }
 
-  //! Number of sites in each subset
-  int numSites() const;
+    //! General constructor
+    SftMom(const SftMomParams_t& p)
+      { init(p.mom2_max, p.origin_offset, p.mom_offset, p.avg_equiv_mom, p.decay_dir); }
 
-  //! Decay direction
-  int getDir() const { return decay_dir; }
+    //! The set to be used in sumMulti
+    const Set& getSet() const { return sft_set; }
 
-  //! Are momenta averaged?
-  bool getAvg() const { return avg_equiv_mom; }
+    //! Number of momenta
+    int numMom() const { return num_mom; }
 
-  //! Momentum offset
-  multi1d<int> getMomOffset() const { return mom_offset; }
+    //! Number of subsets - length in decay direction
+    int numSubsets() const { return sft_set.numSubsets(); }
 
-  //! Convert momenta id to actual array of momenta
-  multi1d<int> numToMom(int mom_num) const { return mom_list[mom_num]; }
+    //! Number of sites in each subset
+    int numSites() const;
 
-  //! Convert array of momenta to momenta id
-  /*! \return id in [0,numMom()-1] or -1 if not in list */
-  int momToNum(const multi1d<int>& mom_in) const;
+    //! Decay direction
+    int getDir() const { return decay_dir; }
 
-  //! Canonically order an array of momenta
-  /*! \return abs(mom[0]) >= abs(mom[1]) >= ... >= abs(mom[mu]) >= ... >= 0 */
-  multi1d<int> canonicalOrder(const multi1d<int>& mom) const;
+    //! Are momenta averaged?
+    bool getAvg() const { return avg_equiv_mom; }
 
-  //! Return the phase for this particular momenta id
-  const LatticeComplex& operator[](int mom_num) const
-    { return phases[mom_num]; }
+    //! Momentum offset
+    multi1d<int> getMomOffset() const { return mom_offset; }
 
-  //! Do a sumMulti(cf*phases,getSubset())
-  multi2d<DComplex> sft(const LatticeComplex& cf) const;
+    //! Convert momenta id to actual array of momenta
+    multi1d<int> numToMom(int mom_num) const { return mom_list[mom_num]; }
 
-  //! Do a sumMulti(cf*phases,getSubset())
-  multi2d<DComplex> sft(const LatticeReal& cf) const;
+    //! Convert array of momenta to momenta id
+    /*! \return id in [0,numMom()-1] or -1 if not in list */
+    int momToNum(const multi1d<int>& mom_in) const;
 
-private:
-  SftMom() {} // hide default constructor
+    //! Canonically order an array of momenta
+    /*! \return abs(mom[0]) >= abs(mom[1]) >= ... >= abs(mom[mu]) >= ... >= 0 */
+    multi1d<int> canonicalOrder(const multi1d<int>& mom) const;
 
-  void init(int mom2_max, multi1d<int> origin_offset, multi1d<int> mom_offset,
-            bool avg_mom_=false, int j_decay=-1);
+    //! Return the phase for this particular momenta id
+    const LatticeComplex& operator[](int mom_num) const
+      { return phases[mom_num]; }
 
-  multi2d<int> mom_list;
-  bool         avg_equiv_mom;
-  int          decay_dir;
-  int          num_mom;
-  multi1d<int> origin_offset;
-  multi1d<int> mom_offset;
-  multi1d<LatticeComplex> phases;
-  Set sft_set;
-};
+    //! Do a sumMulti(cf*phases,getSubset())
+    multi2d<DComplex> sft(const LatticeComplex& cf) const;
+
+    //! Do a sumMulti(cf*phases,getSubset())
+    multi2d<DComplex> sft(const LatticeReal& cf) const;
+
+  private:
+    SftMom() {} // hide default constructor
+
+    void init(int mom2_max, multi1d<int> origin_offset, multi1d<int> mom_offset,
+	      bool avg_mom_=false, int j_decay=-1);
+
+    multi2d<int> mom_list;
+    bool         avg_equiv_mom;
+    int          decay_dir;
+    int          num_mom;
+    multi1d<int> origin_offset;
+    multi1d<int> mom_offset;
+    multi1d<LatticeComplex> phases;
+    Set sft_set;
+  };
 
 }  // end namespace Chroma
 
