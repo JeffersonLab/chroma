@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.3 2007-06-12 04:42:49 edwards Exp $
+//  $Id: sftmom.h,v 3.4 2007-06-12 04:43:52 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -11,6 +11,9 @@ namespace Chroma
 {
 
   //! Param struct for SftMom
+  /*!
+   * \ingroup ft
+   */
   struct SftMomParams_t
   {
     int           mom2_max;           /*!< (mom - mom_origin)^2 <= mom2_max */
