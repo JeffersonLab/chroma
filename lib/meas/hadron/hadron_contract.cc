@@ -1,4 +1,4 @@
-// $Id: hadron_contract.cc,v 3.2 2007-06-10 14:49:06 edwards Exp $
+// $Id: hadron_contract.cc,v 3.3 2007-06-12 16:09:37 edwards Exp $
 /*! \file
  *  \brief Construct hadron contractions
  */
@@ -61,7 +61,7 @@ namespace Chroma
   // Default version
   //
   ForwardProp_t
-  HadronContract::readPropHeader(const std::string& prop_id) const
+  HadronContract::readForwardPropHeader(const std::string& prop_id) const
   {
     ForwardProp_t header;
 
@@ -76,7 +76,7 @@ namespace Chroma
       TheNamedObjMap::Instance().get(prop_id).getRecordXML(prop_record_xml);
    
       // Try to invert this record XML into a ChromaProp struct
-      read(prop_record_xml, "/Propagator", header);
+      read(prop_record_xml, "/SinkSmear", header);
     }
     catch( std::bad_cast ) 
     {

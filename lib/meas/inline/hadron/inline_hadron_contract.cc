@@ -1,4 +1,4 @@
-// $Id: inline_hadron_contract.cc,v 3.3 2007-06-11 03:27:06 edwards Exp $
+// $Id: inline_hadron_contract.cc,v 3.4 2007-06-12 16:09:37 edwards Exp $
 /*! \file
  * \brief Inline hadron contraction calculations - for correlators
  *
@@ -194,7 +194,9 @@ namespace Chroma
       push(xml_out, "HadronContract");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << " HADRONCONTRACT: Spectroscopy for any type of fermion" << endl;
+      QDPIO::cout << InlineHadronContractEnv::name 
+		  << ": hadron contracts and spectroscopy for any type of fermion" 
+		  << endl;
       QDPIO::cout << "    Volume: " << Layout::lattSize()[0];
       for (int i=1; i<Nd; ++i) {
 	QDPIO::cout << " x " << Layout::lattSize()[i];
@@ -239,6 +241,9 @@ namespace Chroma
 	// Factory construction
 	try
 	{
+//	  QDPIO::cout << "xml input = XX" << had_xml.xml << "XX" << endl;
+	  QDPIO::cout << "Contractions for id = " << had_xml.id << endl;
+
 	  // Create and use the hadron 2pt object
 	  std::istringstream  xml_s(had_xml.xml);
 	  XMLReader  hadtop(xml_s);
@@ -250,8 +255,12 @@ namespace Chroma
 	      had_xml.path));
 
 	  // Compute possibly several correlators
+	  QDPIO::cout << InlineHadronContractEnv::name << ": start list" << endl;
+
 	  std::list< Handle<HadronContractResult_t> > hadron_cont =
 	    (*hadronContract)(u, "HadronCorrelator", "CorrelatorType");
+
+	  QDPIO::cout << InlineHadronContractEnv::name << ": finished list" << endl;
 
 	  // Run over the output list
 	  for(std::list< Handle<HadronContractResult_t> >::const_iterator had_ptr= hadron_cont.begin(); 
@@ -259,11 +268,20 @@ namespace Chroma
 	      ++had_ptr)
 	  {
 	    const Handle<HadronContractResult_t>& had_cont = *had_ptr;
-	    XMLBufferWriter xml_buf;
-	    xml_buf << had_cont->xml;
 
+	    // Save regression output in output file 
+	    // NOTE: what is under the "Diagnostic" tag is solely up
+	    // to the user. You can jam whatever you want into
+	    // here. It is used for the regressions to latch onto
+	    // something from the output since it is all in binary.
+	    // The input is written as well to give some context
+	    push(xml_out, "Regression");
+	    write(xml_out, "Input", had_xml.xml);
+	    write(xml_out, "Diagnostic", had_cont->xml_regres);
+	    pop(xml_out);
+	    
 	    // Save the qio output file entry
-	    write(qio_output, xml_buf, had_cont->bin);
+	    write(qio_output, had_cont->xml, had_cont->bin);
 	  }
 	}
 	catch(const std::string& e) 

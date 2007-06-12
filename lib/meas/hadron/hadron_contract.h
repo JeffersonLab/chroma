@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_contract.h,v 3.2 2007-06-10 14:49:06 edwards Exp $
+// $Id: hadron_contract.h,v 3.3 2007-06-12 16:09:37 edwards Exp $
 /*! \file
  *  \brief Construct hadron correlators
  */
@@ -18,8 +18,10 @@ namespace Chroma
   /*! @ingroup hadron */
   struct HadronContractResult_t
   {
-    std::string         xml;    /*!< XML about each corr group - used to drive the stripper */
+    XMLBufferWriter     xml;    /*!< XML about each corr group - used to drive the stripper */
     BinaryBufferWriter  bin;    /*!< Holds momentum projected correlators */
+
+    XMLBufferWriter     xml_regres;  /*!< Sample XML used for regression checking */
   };
   
 
@@ -41,7 +43,7 @@ namespace Chroma
     
   protected:
     //! Convenience function to read propagator
-    virtual ForwardProp_t readPropHeader(const std::string& prop_id) const;
+    virtual ForwardProp_t readForwardPropHeader(const std::string& prop_id) const;
 
     //! Convenience function to get t_srce from headers
     virtual multi1d<int> getTSrce(const multi1d<ForwardProp_t>& forward_headers) const;

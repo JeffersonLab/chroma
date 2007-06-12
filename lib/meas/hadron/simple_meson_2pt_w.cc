@@ -1,4 +1,4 @@
-// $Id: simple_meson_2pt_w.cc,v 1.3 2007-06-10 14:49:06 edwards Exp $
+// $Id: simple_meson_2pt_w.cc,v 1.4 2007-06-12 16:09:37 edwards Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
@@ -41,8 +41,6 @@ namespace Chroma
 			      const LatticePropagator& quark_prop_2, 
 			      int gamma_value)
       {
-	QDPIO::cout << "Simple meson correlator: gamma_value = " << gamma_value << endl;
-
 	// Construct the anti-quark propagator from quark_prop_2
 	int G5 = Ns*Ns-1;
 	LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
@@ -128,9 +126,11 @@ namespace Chroma
     {
       START_CODE();
 
+      QDPIO::cout << "Hadron2Pt: diagonal_gamma_mesons" << endl;
+
       multi1d<ForwardProp_t> forward_headers(2);
-      forward_headers[0] = readPropHeader(params.first_id);
-      forward_headers[1] = readPropHeader(params.second_id);
+      forward_headers[0] = readForwardPropHeader(params.first_id);
+      forward_headers[1] = readForwardPropHeader(params.second_id);
       
       multi1d<int> t_srce = getTSrce(forward_headers);
       int decay_dir       = getDecayDir(forward_headers);
@@ -141,31 +141,27 @@ namespace Chroma
       const LatticePropagator& quark_prop2 = 
 	TheNamedObjMap::Instance().getData<LatticePropagator>(params.second_id);
 
-      // Params
-      Hadron2PtCorrParams_t sft_params;
-
       // Parameters needed for the momentum projection
+      SftMomParams_t sft_params;
       sft_params.mom2_max      = params.mom2_max;
-      sft_params.t_srce        = t_srce;
-      sft_params.mom_origin    = params.mom_origin;
+      sft_params.origin_offset = t_srce;
+      sft_params.mom_offset    = params.mom_origin;
       sft_params.avg_equiv_mom = params.avg_equiv_mom;
       sft_params.decay_dir     = decay_dir;
 
-      std::list<Hadron2PtContract_t> hadron;   // holds the contract lattice correlator
+      std::list< Handle<Hadron2PtContract_t> > hadron;   // holds the contract lattice correlator
 
       for(int gamma_value=0; gamma_value < Ns*Ns; ++gamma_value)
       {
-	Hadron2PtContract_t had;
-	XMLBufferWriter  xml;
+	Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
 
-	push(xml, xml_group);
-	write(xml, id_tag, "diagonal_gamma_mesons");
-	write(xml, "gamma_value", gamma_value);
-	write(xml, "PropHeaders", forward_headers);
-	pop(xml);
+	push(had->xml, xml_group);
+	write(had->xml, id_tag, "diagonal_gamma_mesons");
+	write(had->xml, "gamma_value", gamma_value);
+	write(had->xml, "PropHeaders", forward_headers);
+	pop(had->xml);
 
-	had.xml  = xml.str();
-	had.corr = mesXCorr(quark_prop1, quark_prop2, gamma_value);
+	had->corr = mesXCorr(quark_prop1, quark_prop2, gamma_value);
 
 	hadron.push_back(had);  // push onto end of list
       }

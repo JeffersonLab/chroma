@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_2pt.h,v 1.3 2007-06-10 14:49:06 edwards Exp $
+// $Id: hadron_2pt.h,v 1.4 2007-06-12 16:09:37 edwards Exp $
 /*! \file
  *  \brief Construct hadron 2pt correlators
  */
@@ -8,6 +8,7 @@
 #define __hadron_2pt_h__
 
 #include "meas/hadron/hadron_contract.h"
+#include "util/ft/sftmom.h"
 
 namespace Chroma
 {
@@ -15,7 +16,7 @@ namespace Chroma
   /*! @ingroup hadron */
   struct Hadron2PtContract_t
   {
-    std::string        xml;   /*!< XML about each correlator group. Used to drive the stripper */
+    XMLBufferWriter    xml;   /*!< XML about each correlator group. Used to drive the stripper */
     LatticeComplex     corr;  /*!< Holds correlator after contraction, but before mom. projection */
   };
 
@@ -33,20 +34,10 @@ namespace Chroma
       multi1d<DComplex>  corr;   /*!< Momentum projected correlator */
     };
 
-    std::string         xml;    /*!< XML about each corr group - used to drive the stripper */
+    XMLBufferWriter     xml;    /*!< XML about each corr group - used to drive the stripper */
     std::list<Mom_t>    corrs;  /*!< Holds momentum projected correlators */
-  };
-  
 
-  //! The result of hadron 2pt correlators
-  /*! @ingroup hadron */
-  struct Hadron2PtCorrParams_t
-  {
-    int           mom2_max;           /*!< (mom - mom_origin)^2 <= mom2_max */
-    multi1d<int>  mom_origin;         /*!< Origin for the momentum */
-    bool          avg_equiv_mom;      /*!< average over equivalent momenta */
-    multi1d<int>  t_srce;             /*<! Origin of the prop. Here used to offset momentum phases */
-    int           decay_dir;          /*!< Decay direction */
+    XMLBufferWriter     xml_regres;  /*!< Sample XML used for regression checking */
   };
   
 
@@ -71,8 +62,8 @@ namespace Chroma
   protected:
     //! Convenience function to project onto fixed momenta
     virtual std::list< Handle<HadronContractResult_t> > project(
-      const std::list< Hadron2PtContract_t >& had_list,
-      const Hadron2PtCorrParams_t& p) const;
+      const std::list< Handle<Hadron2PtContract_t> >& had_list,
+      const SftMomParams_t& p) const;
   };
 
 }
