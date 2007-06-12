@@ -152,17 +152,17 @@ Hadron spectrum input
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <output_file>hadspec.lime</output_file>
-        <Correlators>
+        <Contractions>
           <elem>
             <version>1</version>
-            <CorrelatorType>diagonal_gamma_mesons</CorrelatorType>
+            <ContractionType>diagonal_gamma_mesons</ContractionType>
             <mom2_max>3</mom2_max>
             <avg_equiv_mom>true</avg_equiv_mom>
             <mom_origin>0 0 0</mom_origin>
             <first_id>sh_pt_sink_1</first_id> 
             <second_id>sh_pt_sink_1</second_id>
          </elem>
-        </Correlators>
+        </Contractions>
       </NamedObject>
     </elem>
 
