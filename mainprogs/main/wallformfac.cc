@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 3.1 2006-07-04 03:29:35 edwards Exp $
+// $Id: wallformfac.cc,v 3.2 2007-06-12 13:57:10 edwards Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -622,7 +622,7 @@ int main(int argc, char *argv[])
   pop(xml_out);     // wallFormFac
 
   // Dump binary output
-  BinaryWriter  bin_out("wallformfac.dat");
+  BinaryFileWriter  bin_out("wallformfac.dat");
   write(bin_out, form);
   bin_out.close();
 
