@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.4 2007-06-12 04:43:52 edwards Exp $
+//  $Id: sftmom.h,v 3.5 2007-06-12 16:10:01 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -16,6 +16,7 @@ namespace Chroma
    */
   struct SftMomParams_t
   {
+    SftMomParams_t();                 /*!< Default constructor in sftmom.cc */
     int           mom2_max;           /*!< (mom - mom_origin)^2 <= mom2_max */
     multi1d<int>  mom_offset;         /*!< Origin for the momentum */
     bool          avg_equiv_mom;      /*!< average over equivalent momenta */

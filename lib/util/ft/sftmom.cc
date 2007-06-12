@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 3.2 2006-08-30 02:10:19 edwards Exp $
+//  $Id: sftmom.cc,v 3.3 2007-06-12 16:10:01 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.2  2006-08-30 02:10:19  edwards
+//  Revision 3.3  2007-06-12 16:10:01  edwards
+//  Added a default constructor.
+//
+//  Revision 3.2  2006/08/30 02:10:19  edwards
 //  Technically a bug fix. The test for a zero_offset should only be in directions
 //  not in the fourier transform. E.g., there was a missing test of mu==decay_dir.
 //
@@ -77,6 +80,19 @@
 
 namespace Chroma 
 {
+
+  // Param struct for SftMom
+  SftMomParams_t::SftMomParams_t()
+  {
+    mom2_max = 0;              /*!< (mom - mom_origin)^2 <= mom2_max */
+    mom_offset.resize(Nd-1);   /*!< Origin for the momentum */
+    mom_offset = 0;
+    avg_equiv_mom = false;     /*!< average over equivalent momenta */
+    origin_offset.resize(Nd);  /*<! Coordinate offset of the origin. Used to fix phase factor */
+    origin_offset = 0;
+    decay_dir = -1;            /*!< Decay direction */
+  };
+
 
   // Anonymous namespace
   namespace
