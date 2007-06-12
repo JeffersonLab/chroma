@@ -1,4 +1,4 @@
-// $Id: t_dwflinop.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: t_dwflinop.cc,v 3.1 2007-06-12 13:59:14 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -20,7 +20,7 @@ using namespace Chroma;
 
 void readSzinFerm(multi1d<LatticeFermion>& q, const string& file)
 {
-  BinaryReader cfg_in(file);
+  BinaryFileReader cfg_in(file);
 
   //
   // Read propagator field

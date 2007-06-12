@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 3.0 2006-04-03 04:59:15 edwards Exp $
+// $Id: t_io.cc,v 3.1 2007-06-12 13:59:14 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -34,21 +34,21 @@ int main(int argc, char **argv)
     write(xml_out,"d", d);
     pop(xml_out);
 
-    BinaryWriter tobinary("t_io.bin");
+    BinaryFileWriter tobinary("t_io.bin");
     write(tobinary, a);
     write(tobinary, d);
     tobinary.close();
   }
  
   {
-    TextWriter totext("t_io.txt");
+    TextFileWriter totext("t_io.txt");
     totext << int(17) << "\n";
   }
 
   {
     float x;
     QDPIO::cout << "Read some data from t_io.txt\n";
-    TextReader from("t_io.txt");
+    TextFileReader from("t_io.txt");
     from >> x;
     from.close();
     
