@@ -1,4 +1,4 @@
-// $Id: inline_hadron_contract.cc,v 3.4 2007-06-12 16:09:37 edwards Exp $
+// $Id: inline_hadron_contract.cc,v 3.5 2007-06-12 17:55:44 edwards Exp $
 /*! \file
  * \brief Inline hadron contraction calculations - for correlators
  *
@@ -62,8 +62,8 @@ namespace Chroma
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "output_file", input.output_file);
-      QDPIO::cout << "Read correlators" << endl;
-      input.correlators = readXMLArrayGroup(inputtop, "Correlators", "CorrelatorType");
+      QDPIO::cout << "Read contraction list" << endl;
+      input.correlators = readXMLArrayGroup(inputtop, "Contractions", "ContractionType");
       QDPIO::cout << "Finished reading correlators" << endl;
     }
 
@@ -237,6 +237,7 @@ namespace Chroma
 	const GroupXML_t& had_xml = params.named_obj.correlators[lcorr];
 
 	push(xml_out, "elem");
+	write(xml_out, "Input", had_xml.xml);
 
 	// Factory construction
 	try
@@ -258,9 +259,11 @@ namespace Chroma
 	  QDPIO::cout << InlineHadronContractEnv::name << ": start list" << endl;
 
 	  std::list< Handle<HadronContractResult_t> > hadron_cont =
-	    (*hadronContract)(u, "HadronCorrelator", "CorrelatorType");
+	    (*hadronContract)(u, "HadronContraction", "ContractionType");
 
 	  QDPIO::cout << InlineHadronContractEnv::name << ": finished list" << endl;
+
+	  push(xml_out, "HadronContractions");
 
 	  // Run over the output list
 	  for(std::list< Handle<HadronContractResult_t> >::const_iterator had_ptr= hadron_cont.begin(); 
@@ -269,20 +272,24 @@ namespace Chroma
 	  {
 	    const Handle<HadronContractResult_t>& had_cont = *had_ptr;
 
+	    push(xml_out, "elem");
+
 	    // Save regression output in output file 
 	    // NOTE: what is under the "Diagnostic" tag is solely up
 	    // to the user. You can jam whatever you want into
 	    // here. It is used for the regressions to latch onto
-	    // something from the output since it is all in binary.
+	    // something from the output since otherwise it is all in binary.
 	    // The input is written as well to give some context
-	    push(xml_out, "Regression");
-	    write(xml_out, "Input", had_xml.xml);
+	    write(xml_out, "RecordXML", had_cont->xml);
 	    write(xml_out, "Diagnostic", had_cont->xml_regres);
-	    pop(xml_out);
 	    
 	    // Save the qio output file entry
 	    write(qio_output, had_cont->xml, had_cont->bin);
+
+	    pop(xml_out);  // array element
 	  }
+
+	  pop(xml_out);  // HadronContractions
 	}
 	catch(const std::string& e) 
 	{
@@ -293,7 +300,7 @@ namespace Chroma
 
 	pop(xml_out);  // array element
       }
-      pop(xml_out);  // spectroscopy
+      pop(xml_out);  // HadronMeasurements
       pop(xml_out);  // HadronContract
 
       // Close data file
