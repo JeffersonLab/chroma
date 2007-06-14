@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.9 2007-05-31 20:49:00 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 3.10 2007-06-14 21:09:07 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -755,92 +755,404 @@ namespace Chroma
       cchi[ 8] += conj(tri[site].offd[1][12]) * ppsi[11];
       cchi[ 9] += conj(tri[site].offd[1][13]) * ppsi[11];
       cchi[10] += conj(tri[site].offd[1][14]) * ppsi[11];
-#elif 1
+#elif 0
 #warning "Using unrolled clover term - version 2"
       // Unrolled version - collect all LHS terms into 1 expression
-      cchi[ 0] = tri[site].diag[0][ 0]  * ppsi[ 0]
-        +   conj(tri[site].offd[0][ 0]) * ppsi[ 1]
-        +   conj(tri[site].offd[0][ 1]) * ppsi[ 2]
-        +   conj(tri[site].offd[0][ 3]) * ppsi[ 3]
-        +   conj(tri[site].offd[0][ 6]) * ppsi[ 4]
-        +   conj(tri[site].offd[0][10]) * ppsi[ 5];
+      cchi[ 0]  =      tri[site].diag[0][ 0]  * ppsi[ 0];
+      cchi[ 0] += conj(tri[site].offd[0][ 0]) * ppsi[ 1];
+      cchi[ 0] += conj(tri[site].offd[0][ 1]) * ppsi[ 2];
+      cchi[ 0] += conj(tri[site].offd[0][ 3]) * ppsi[ 3];
+      cchi[ 0] += conj(tri[site].offd[0][ 6]) * ppsi[ 4];
+      cchi[ 0] += conj(tri[site].offd[0][10]) * ppsi[ 5];
 
-      cchi[ 1] = tri[site].diag[0][ 1]  * ppsi[ 1]
-        +        tri[site].offd[0][ 0]  * ppsi[ 0]
-        +   conj(tri[site].offd[0][ 2]) * ppsi[ 2]
-        +   conj(tri[site].offd[0][ 4]) * ppsi[ 3]
-        +   conj(tri[site].offd[0][ 7]) * ppsi[ 4]
-        +   conj(tri[site].offd[0][11]) * ppsi[ 5];
+      cchi[ 1]  = tri[site].diag[0][ 1]  * ppsi[ 1];
+      cchi[ 1] += tri[site].offd[0][ 0]  * ppsi[ 0];
+      cchi[ 1] += conj(tri[site].offd[0][ 2]) * ppsi[ 2];
+      cchi[ 1] += conj(tri[site].offd[0][ 4]) * ppsi[ 3];
+      cchi[ 1] += conj(tri[site].offd[0][ 7]) * ppsi[ 4];
+      cchi[ 1] += conj(tri[site].offd[0][11]) * ppsi[ 5];
 
-      cchi[ 2] = tri[site].diag[0][ 2]  * ppsi[ 2]
-	+        tri[site].offd[0][ 1]  * ppsi[ 0]
-        +        tri[site].offd[0][ 2]  * ppsi[ 1]
-        +   conj(tri[site].offd[0][ 5]) * ppsi[ 3]
-        +   conj(tri[site].offd[0][ 8]) * ppsi[ 4]
-        +   conj(tri[site].offd[0][12]) * ppsi[ 5];
+      cchi[ 2]  = tri[site].diag[0][ 2]  * ppsi[ 2];
+      cchi[ 2] += tri[site].offd[0][ 1]  * ppsi[ 0];
+      cchi[ 2] += tri[site].offd[0][ 2]  * ppsi[ 1];
+      cchi[ 2] += conj(tri[site].offd[0][ 5]) * ppsi[ 3];
+      cchi[ 2] += conj(tri[site].offd[0][ 8]) * ppsi[ 4];
+      cchi[ 2] += conj(tri[site].offd[0][12]) * ppsi[ 5];
 
-      cchi[ 3] = tri[site].diag[0][ 3]  * ppsi[ 3]
-        +        tri[site].offd[0][ 3]  * ppsi[ 0]
-        +        tri[site].offd[0][ 4]  * ppsi[ 1]
-        +        tri[site].offd[0][ 5]  * ppsi[ 2]
-        +   conj(tri[site].offd[0][ 9]) * ppsi[ 4]
-        +   conj(tri[site].offd[0][13]) * ppsi[ 5];
+      cchi[ 3]  = tri[site].diag[0][ 3]  * ppsi[ 3];
+      cchi[ 3] += tri[site].offd[0][ 3]  * ppsi[ 0];
+      cchi[ 3] += tri[site].offd[0][ 4]  * ppsi[ 1];
+      cchi[ 3] += tri[site].offd[0][ 5]  * ppsi[ 2];
+      cchi[ 3] += conj(tri[site].offd[0][ 9]) * ppsi[ 4];
+      cchi[ 3] += conj(tri[site].offd[0][13]) * ppsi[ 5];
 
-      cchi[ 4] = tri[site].diag[0][ 4]  * ppsi[ 4]
-        +        tri[site].offd[0][ 6]  * ppsi[ 0]
-        +        tri[site].offd[0][ 7]  * ppsi[ 1]
-        +        tri[site].offd[0][ 8]  * ppsi[ 2]
-        +        tri[site].offd[0][ 9]  * ppsi[ 3]
-        +   conj(tri[site].offd[0][14]) * ppsi[ 5];
+      cchi[ 4]  = tri[site].diag[0][ 4]  * ppsi[ 4];
+      cchi[ 4] += tri[site].offd[0][ 6]  * ppsi[ 0];
+      cchi[ 4] += tri[site].offd[0][ 7]  * ppsi[ 1];
+      cchi[ 4] += tri[site].offd[0][ 8]  * ppsi[ 2];
+      cchi[ 4] += tri[site].offd[0][ 9]  * ppsi[ 3];
+      cchi[ 4] += conj(tri[site].offd[0][14]) * ppsi[ 5];
 
-      cchi[ 5] = tri[site].diag[0][ 5]  * ppsi[ 5]
-        +        tri[site].offd[0][10]  * ppsi[ 0]
-        +        tri[site].offd[0][11]  * ppsi[ 1]
-	+        tri[site].offd[0][12]  * ppsi[ 2]
-	+        tri[site].offd[0][13]  * ppsi[ 3]
-        +        tri[site].offd[0][14]  * ppsi[ 4];
+      cchi[ 5]  = tri[site].diag[0][ 5]  * ppsi[ 5];
+      cchi[ 5] += tri[site].offd[0][10]  * ppsi[ 0];
+      cchi[ 5] += tri[site].offd[0][11]  * ppsi[ 1];
+      cchi[ 5] += tri[site].offd[0][12]  * ppsi[ 2];
+      cchi[ 5] += tri[site].offd[0][13]  * ppsi[ 3];
+      cchi[ 5] += tri[site].offd[0][14]  * ppsi[ 4];
 
-      cchi[ 6] = tri[site].diag[1][ 0]  * ppsi[ 6]
-        +   conj(tri[site].offd[1][ 0]) * ppsi[ 7]
-        +   conj(tri[site].offd[1][ 1]) * ppsi[ 8]
-        +   conj(tri[site].offd[1][ 3]) * ppsi[ 9]
-        +   conj(tri[site].offd[1][ 6]) * ppsi[10]
-        +   conj(tri[site].offd[1][10]) * ppsi[11];
+      cchi[ 6]  = tri[site].diag[1][ 0]  * ppsi[ 6];
+      cchi[ 6] += conj(tri[site].offd[1][ 0]) * ppsi[ 7];
+      cchi[ 6] += conj(tri[site].offd[1][ 1]) * ppsi[ 8];
+      cchi[ 6] += conj(tri[site].offd[1][ 3]) * ppsi[ 9];
+      cchi[ 6] += conj(tri[site].offd[1][ 6]) * ppsi[10];
+      cchi[ 6] += conj(tri[site].offd[1][10]) * ppsi[11];
 
-      cchi[ 7] = tri[site].diag[1][ 1]  * ppsi[ 7]
-        +        tri[site].offd[1][ 0]  * ppsi[ 6]
-        +   conj(tri[site].offd[1][ 2]) * ppsi[ 8]
-        +   conj(tri[site].offd[1][ 4]) * ppsi[ 9]
-        +   conj(tri[site].offd[1][ 7]) * ppsi[10]
-        +   conj(tri[site].offd[1][11]) * ppsi[11];
+      cchi[ 7]  = tri[site].diag[1][ 1]  * ppsi[ 7];
+      cchi[ 7] += tri[site].offd[1][ 0]  * ppsi[ 6];
+      cchi[ 7] += conj(tri[site].offd[1][ 2]) * ppsi[ 8];
+      cchi[ 7] += conj(tri[site].offd[1][ 4]) * ppsi[ 9];
+      cchi[ 7] += conj(tri[site].offd[1][ 7]) * ppsi[10];
+      cchi[ 7] += conj(tri[site].offd[1][11]) * ppsi[11];
 
-      cchi[ 8] = tri[site].diag[1][ 2]  * ppsi[ 8]
-	+        tri[site].offd[1][ 1]  * ppsi[ 6]
-        +        tri[site].offd[1][ 2]  * ppsi[ 7]
-	+   conj(tri[site].offd[1][ 5]) * ppsi[ 9]
-	+   conj(tri[site].offd[1][ 8]) * ppsi[10]
-        +   conj(tri[site].offd[1][12]) * ppsi[11];
+      cchi[ 8]  = tri[site].diag[1][ 2]  * ppsi[ 8];
+      cchi[ 8] += tri[site].offd[1][ 1]  * ppsi[ 6];
+      cchi[ 8] += tri[site].offd[1][ 2]  * ppsi[ 7];
+      cchi[ 8] += conj(tri[site].offd[1][ 5]) * ppsi[ 9];
+      cchi[ 8] += conj(tri[site].offd[1][ 8]) * ppsi[10];
+      cchi[ 8] += conj(tri[site].offd[1][12]) * ppsi[11];
 
-      cchi[ 9] = tri[site].diag[1][ 3]  * ppsi[ 9]
-	+        tri[site].offd[1][ 3]  * ppsi[ 6]
-	+        tri[site].offd[1][ 4]  * ppsi[ 7]
-	+        tri[site].offd[1][ 5]  * ppsi[ 8]
-	+   conj(tri[site].offd[1][ 9]) * ppsi[10]
-	+   conj(tri[site].offd[1][13]) * ppsi[11];
+      cchi[ 9]  = tri[site].diag[1][ 3]  * ppsi[ 9];
+      cchi[ 9] += tri[site].offd[1][ 3]  * ppsi[ 6];
+      cchi[ 9] += tri[site].offd[1][ 4]  * ppsi[ 7];
+      cchi[ 9] += tri[site].offd[1][ 5]  * ppsi[ 8];
+      cchi[ 9] += conj(tri[site].offd[1][ 9]) * ppsi[10];
+      cchi[ 9] += conj(tri[site].offd[1][13]) * ppsi[11];
 
-      cchi[10] = tri[site].diag[1][ 4]  * ppsi[10]
-        +        tri[site].offd[1][ 6]  * ppsi[ 6]
-	+        tri[site].offd[1][ 7]  * ppsi[ 7]
-	+        tri[site].offd[1][ 8]  * ppsi[ 8]
-	+        tri[site].offd[1][ 9]  * ppsi[ 9]
-	+   conj(tri[site].offd[1][14]) * ppsi[11];
+      cchi[10]  = tri[site].diag[1][ 4]  * ppsi[10];
+      cchi[10] += tri[site].offd[1][ 6]  * ppsi[ 6];
+      cchi[10] += tri[site].offd[1][ 7]  * ppsi[ 7];
+      cchi[10] += tri[site].offd[1][ 8]  * ppsi[ 8];
+      cchi[10] += tri[site].offd[1][ 9]  * ppsi[ 9];
+      cchi[10] += conj(tri[site].offd[1][14]) * ppsi[11];
 
-      cchi[11] = tri[site].diag[1][ 5]  * ppsi[11]
-	+        tri[site].offd[1][10]  * ppsi[ 6]
-	+        tri[site].offd[1][11]  * ppsi[ 7]
-	+        tri[site].offd[1][12]  * ppsi[ 8]
-	+        tri[site].offd[1][13]  * ppsi[ 9]
-	+        tri[site].offd[1][14]  * ppsi[10];
+      cchi[11]  = tri[site].diag[1][ 5]  * ppsi[11];
+      cchi[11] += tri[site].offd[1][10]  * ppsi[ 6];
+      cchi[11] += tri[site].offd[1][11]  * ppsi[ 7];
+      cchi[11] += tri[site].offd[1][12]  * ppsi[ 8];
+      cchi[11] += tri[site].offd[1][13]  * ppsi[ 9];
+      cchi[11] += tri[site].offd[1][14]  * ppsi[10];
+#elif 1
+#warning "Using unrolled clover term - version 3"
+      // Unrolled version 3. 
+      // Took unrolled version 2 and wrote out in real() and imag() 
+      // parts. Rearranged so that all the reals follow each other
+      //  in the output so that we can write linearly
+
+
+      cchi[ 0].real()  = tri[site].diag[0][0].elem()  * ppsi[0].real();
+      cchi[ 0].real() += tri[site].offd[0][0].real()  * ppsi[1].real();
+      cchi[ 0].real() += tri[site].offd[0][0].imag()  * ppsi[1].imag();
+      cchi[ 0].real() += tri[site].offd[0][1].real()  * ppsi[2].real();
+      cchi[ 0].real() += tri[site].offd[0][1].imag()  * ppsi[2].imag();
+      cchi[ 0].real() += tri[site].offd[0][3].real()  * ppsi[3].real();
+      cchi[ 0].real() += tri[site].offd[0][3].imag()  * ppsi[3].imag();
+      cchi[ 0].real() += tri[site].offd[0][6].real()  * ppsi[4].real();
+      cchi[ 0].real() += tri[site].offd[0][6].imag()  * ppsi[4].imag();
+      cchi[ 0].real() += tri[site].offd[0][10].real() * ppsi[5].real();
+      cchi[ 0].real() += tri[site].offd[0][10].imag() * ppsi[5].imag();
+
+      cchi[ 0].imag()  = tri[site].diag[0][0].elem()  * ppsi[ 0].imag();
+      cchi[ 0].imag() += tri[site].offd[0][0].real()  * ppsi[1].imag();
+      cchi[ 0].imag() -= tri[site].offd[0][0].imag()  * ppsi[1].real();
+      cchi[ 0].imag() += tri[site].offd[0][3].real()  * ppsi[3].imag();
+      cchi[ 0].imag() -= tri[site].offd[0][3].imag()  * ppsi[3].real();
+      cchi[ 0].imag() += tri[site].offd[0][1].real()  * ppsi[2].imag();
+      cchi[ 0].imag() -= tri[site].offd[0][1].imag()  * ppsi[2].real();
+      cchi[ 0].imag() += tri[site].offd[0][6].real()  * ppsi[4].imag();
+      cchi[ 0].imag() -= tri[site].offd[0][6].imag()  * ppsi[4].real();
+      cchi[ 0].imag() += tri[site].offd[0][10].real() * ppsi[5].imag();
+      cchi[ 0].imag() -= tri[site].offd[0][10].imag() * ppsi[5].real();
+
+
+      cchi[ 1].real()  = tri[site].diag[0][ 1].elem() * ppsi[ 1].real();
+      cchi[ 1].real() += tri[site].offd[0][ 0].real() * ppsi[ 0].real();
+      cchi[ 1].real() -= tri[site].offd[0][ 0].imag() * ppsi[ 0].imag();
+      cchi[ 1].real() += tri[site].offd[0][ 2].real() * ppsi[ 2].real();
+      cchi[ 1].real() += tri[site].offd[0][ 2].imag() * ppsi[ 2].imag();
+      cchi[ 1].real() += tri[site].offd[0][ 4].real() * ppsi[ 3].real();
+      cchi[ 1].real() += tri[site].offd[0][ 4].imag() * ppsi[ 3].imag();
+      cchi[ 1].real() += tri[site].offd[0][ 7].real() * ppsi[ 4].real();
+      cchi[ 1].real() += tri[site].offd[0][ 7].imag() * ppsi[ 4].imag();
+      cchi[ 1].real() += tri[site].offd[0][11].real() * ppsi[ 5].real();
+      cchi[ 1].real() += tri[site].offd[0][11].imag() * ppsi[ 5].imag();
+
+
+      cchi[ 1].imag()  = tri[site].diag[0][ 1].elem() * ppsi[ 1].imag();
+      cchi[ 1].imag() += tri[site].offd[0][ 0].real() * ppsi[ 0].imag();
+      cchi[ 1].imag() += tri[site].offd[0][ 0].imag() * ppsi[ 0].real();
+      cchi[ 1].imag() += tri[site].offd[0][ 2].real() * ppsi[ 2].imag();
+      cchi[ 1].imag() -= tri[site].offd[0][ 2].imag() * ppsi[ 2].real();
+      cchi[ 1].imag() += tri[site].offd[0][ 4].real() * ppsi[ 3].imag();
+      cchi[ 1].imag() -= tri[site].offd[0][ 4].imag() * ppsi[ 3].real();
+      cchi[ 1].imag() += tri[site].offd[0][ 7].real() * ppsi[ 4].imag();
+      cchi[ 1].imag() -= tri[site].offd[0][ 7].imag() * ppsi[ 4].real();
+      cchi[ 1].imag() += tri[site].offd[0][11].real() * ppsi[ 5].imag();
+      cchi[ 1].imag() -= tri[site].offd[0][11].imag() * ppsi[ 5].real();
+
+
+      cchi[ 2].real() = tri[site].diag[0][ 2].elem()  * ppsi[ 2].real();
+      cchi[ 2].real() += tri[site].offd[0][ 1].real() * ppsi[ 0].real();
+      cchi[ 2].real() -= tri[site].offd[0][ 1].imag() * ppsi[ 0].imag();
+      cchi[ 2].real() += tri[site].offd[0][ 2].real() * ppsi[ 1].real();
+      cchi[ 2].real() -= tri[site].offd[0][ 2].imag() * ppsi[ 1].imag();
+      cchi[ 2].real() += tri[site].offd[0][5].real()  * ppsi[ 3].real();
+      cchi[ 2].real() += tri[site].offd[0][5].imag()  * ppsi[ 3].imag();
+      cchi[ 2].real() += tri[site].offd[0][8].real()  * ppsi[ 4].real();
+      cchi[ 2].real() += tri[site].offd[0][8].imag()  * ppsi[ 4].imag();
+      cchi[ 2].real() += tri[site].offd[0][12].real() * ppsi[ 5].real();
+      cchi[ 2].real() += tri[site].offd[0][12].imag() * ppsi[ 5].imag();
+
+
+      cchi[ 2].imag() = tri[site].diag[0][ 2].elem()  * ppsi[ 2].imag();
+      cchi[ 2].imag() += tri[site].offd[0][ 1].real() * ppsi[ 0].imag();
+      cchi[ 2].imag() += tri[site].offd[0][ 1].imag() * ppsi[ 0].real();
+      cchi[ 2].imag() += tri[site].offd[0][ 2].real() * ppsi[ 1].imag();
+      cchi[ 2].imag() += tri[site].offd[0][ 2].imag() * ppsi[ 1].real();
+      cchi[ 2].imag() += tri[site].offd[0][5].real()  * ppsi[ 3].imag();
+      cchi[ 2].imag() -= tri[site].offd[0][5].imag()  * ppsi[ 3].real();
+      cchi[ 2].imag() += tri[site].offd[0][8].real()  * ppsi[ 4].imag();
+      cchi[ 2].imag() -= tri[site].offd[0][8].imag()  * ppsi[ 4].real();
+      cchi[ 2].imag() += tri[site].offd[0][12].real() * ppsi[ 5].imag();
+      cchi[ 2].imag() -= tri[site].offd[0][12].imag() * ppsi[ 5].real();
+
+
+      cchi[ 3].real()  = tri[site].diag[0][ 3].elem() * ppsi[ 3].real();
+      cchi[ 3].real() += tri[site].offd[0][ 3].real() * ppsi[ 0].real();
+      cchi[ 3].real() -= tri[site].offd[0][ 3].imag() * ppsi[ 0].imag();
+      cchi[ 3].real() += tri[site].offd[0][ 4].real() * ppsi[ 1].real();
+      cchi[ 3].real() -= tri[site].offd[0][ 4].imag() * ppsi[ 1].imag();
+      cchi[ 3].real() += tri[site].offd[0][ 5].real() * ppsi[ 2].real();
+      cchi[ 3].real() -= tri[site].offd[0][ 5].imag() * ppsi[ 2].imag();
+      cchi[ 3].real() += tri[site].offd[0][ 9].real() * ppsi[ 4].real();
+      cchi[ 3].real() += tri[site].offd[0][ 9].imag() * ppsi[ 4].imag();
+      cchi[ 3].real() += tri[site].offd[0][13].real() * ppsi[ 5].real();
+      cchi[ 3].real() += tri[site].offd[0][13].imag() * ppsi[ 5].imag();
+
+
+      cchi[ 3].imag()  = tri[site].diag[0][ 3].elem() * ppsi[ 3].imag();
+      cchi[ 3].imag() += tri[site].offd[0][ 3].real() * ppsi[ 0].imag();
+      cchi[ 3].imag() += tri[site].offd[0][ 3].imag() * ppsi[ 0].real();
+      cchi[ 3].imag() += tri[site].offd[0][ 4].real() * ppsi[ 1].imag();
+      cchi[ 3].imag() += tri[site].offd[0][ 4].imag() * ppsi[ 1].real();
+      cchi[ 3].imag() += tri[site].offd[0][ 5].real() * ppsi[ 2].imag();
+      cchi[ 3].imag() += tri[site].offd[0][ 5].imag() * ppsi[ 2].real();
+      cchi[ 3].imag() += tri[site].offd[0][ 9].real() * ppsi[ 4].imag();
+      cchi[ 3].imag() -= tri[site].offd[0][ 9].imag() * ppsi[ 4].real();
+      cchi[ 3].imag() += tri[site].offd[0][13].real() * ppsi[ 5].imag();
+      cchi[ 3].imag() -= tri[site].offd[0][13].imag() * ppsi[ 5].real();
+
+
+      cchi[ 4].real()  = tri[site].diag[0][ 4].elem() * ppsi[ 4].real();
+      cchi[ 4].real() += tri[site].offd[0][ 6].real() * ppsi[ 0].real();
+      cchi[ 4].real() -= tri[site].offd[0][ 6].imag() * ppsi[ 0].imag();
+      cchi[ 4].real() += tri[site].offd[0][ 7].real() * ppsi[ 1].real();
+      cchi[ 4].real() -= tri[site].offd[0][ 7].imag() * ppsi[ 1].imag();
+      cchi[ 4].real() += tri[site].offd[0][ 8].real() * ppsi[ 2].real();
+      cchi[ 4].real() -= tri[site].offd[0][ 8].imag() * ppsi[ 2].imag();
+      cchi[ 4].real() += tri[site].offd[0][ 9].real() * ppsi[ 3].real();
+      cchi[ 4].real() -= tri[site].offd[0][ 9].imag() * ppsi[ 3].imag();
+      cchi[ 4].real() += tri[site].offd[0][14].real() * ppsi[ 5].real();
+      cchi[ 4].real() += tri[site].offd[0][14].imag() * ppsi[ 5].imag();
+
+
+      cchi[ 4].imag()  = tri[site].diag[0][ 4].elem() * ppsi[ 4].imag();
+      cchi[ 4].imag() += tri[site].offd[0][ 6].real() * ppsi[ 0].imag();
+      cchi[ 4].imag() += tri[site].offd[0][ 6].imag() * ppsi[ 0].real();
+      cchi[ 4].imag() += tri[site].offd[0][ 7].real() * ppsi[ 1].imag();
+      cchi[ 4].imag() += tri[site].offd[0][ 7].imag() * ppsi[ 1].real();
+      cchi[ 4].imag() += tri[site].offd[0][ 8].real() * ppsi[ 2].imag();
+      cchi[ 4].imag() += tri[site].offd[0][ 8].imag() * ppsi[ 2].real();
+      cchi[ 4].imag() += tri[site].offd[0][ 9].real() * ppsi[ 3].imag();
+      cchi[ 4].imag() += tri[site].offd[0][ 9].imag() * ppsi[ 3].real();
+      cchi[ 4].imag() += tri[site].offd[0][14].real() * ppsi[ 5].imag();
+      cchi[ 4].imag() -= tri[site].offd[0][14].imag() * ppsi[ 5].real();
+
+
+      cchi[ 5].real()  = tri[site].diag[0][ 5].elem() * ppsi[ 5].real();
+      cchi[ 5].real() += tri[site].offd[0][10].real() * ppsi[ 0].real();
+      cchi[ 5].real() -= tri[site].offd[0][10].imag() * ppsi[ 0].imag();
+      cchi[ 5].real() += tri[site].offd[0][11].real() * ppsi[ 1].real();
+      cchi[ 5].real() -= tri[site].offd[0][11].imag() * ppsi[ 1].imag();
+      cchi[ 5].real() += tri[site].offd[0][12].real() * ppsi[ 2].real();
+      cchi[ 5].real() -= tri[site].offd[0][12].imag() * ppsi[ 2].imag();
+      cchi[ 5].real() += tri[site].offd[0][13].real() * ppsi[ 3].real();
+      cchi[ 5].real() -= tri[site].offd[0][13].imag() * ppsi[ 3].imag();
+      cchi[ 5].real() += tri[site].offd[0][14].real() * ppsi[ 4].real();
+      cchi[ 5].real() -= tri[site].offd[0][14].imag() * ppsi[ 4].imag();
+
+
+      cchi[ 5].imag()  = tri[site].diag[0][ 5].elem() * ppsi[ 5].imag();
+      cchi[ 5].imag() += tri[site].offd[0][10].real() * ppsi[ 0].imag();
+      cchi[ 5].imag() += tri[site].offd[0][10].imag() * ppsi[ 0].real();
+      cchi[ 5].imag() += tri[site].offd[0][11].real() * ppsi[ 1].imag();
+      cchi[ 5].imag() += tri[site].offd[0][11].imag() * ppsi[ 1].real();
+      cchi[ 5].imag() += tri[site].offd[0][12].real() * ppsi[ 2].imag();
+      cchi[ 5].imag() += tri[site].offd[0][12].imag() * ppsi[ 2].real();
+      cchi[ 5].imag() += tri[site].offd[0][13].real() * ppsi[ 3].imag();
+      cchi[ 5].imag() += tri[site].offd[0][13].imag() * ppsi[ 3].real();
+      cchi[ 5].imag() += tri[site].offd[0][14].real() * ppsi[ 4].imag();
+      cchi[ 5].imag() += tri[site].offd[0][14].imag() * ppsi[ 4].real();
+
+
+      cchi[ 6].real()  = tri[site].diag[1][0].elem()  * ppsi[6].real();
+      cchi[ 6].real() += tri[site].offd[1][0].real()  * ppsi[7].real();
+      cchi[ 6].real() += tri[site].offd[1][0].imag()  * ppsi[7].imag();
+      cchi[ 6].real() += tri[site].offd[1][1].real()  * ppsi[8].real();
+      cchi[ 6].real() += tri[site].offd[1][1].imag()  * ppsi[8].imag();
+      cchi[ 6].real() += tri[site].offd[1][3].real()  * ppsi[9].real();
+      cchi[ 6].real() += tri[site].offd[1][3].imag()  * ppsi[9].imag();
+      cchi[ 6].real() += tri[site].offd[1][6].real()  * ppsi[10].real();
+      cchi[ 6].real() += tri[site].offd[1][6].imag()  * ppsi[10].imag();
+      cchi[ 6].real() += tri[site].offd[1][10].real() * ppsi[11].real();
+      cchi[ 6].real() += tri[site].offd[1][10].imag() * ppsi[11].imag();
+
+      cchi[ 6].imag()  = tri[site].diag[1][0].elem()  * ppsi[6].imag();
+      cchi[ 6].imag() += tri[site].offd[1][0].real()  * ppsi[7].imag();
+      cchi[ 6].imag() -= tri[site].offd[1][0].imag()  * ppsi[7].real();
+      cchi[ 6].imag() += tri[site].offd[1][1].real()  * ppsi[8].imag();
+      cchi[ 6].imag() -= tri[site].offd[1][1].imag()  * ppsi[8].real();
+      cchi[ 6].imag() += tri[site].offd[1][3].real()  * ppsi[9].imag();
+      cchi[ 6].imag() -= tri[site].offd[1][3].imag()  * ppsi[9].real();
+      cchi[ 6].imag() += tri[site].offd[1][6].real()  * ppsi[10].imag();
+      cchi[ 6].imag() -= tri[site].offd[1][6].imag()  * ppsi[10].real();
+      cchi[ 6].imag() += tri[site].offd[1][10].real() * ppsi[11].imag();
+      cchi[ 6].imag() -= tri[site].offd[1][10].imag() * ppsi[11].real();
+
+
+      cchi[ 7].real()  = tri[site].diag[1][ 1].elem()  * ppsi[ 7].real();
+      cchi[ 7].real() += tri[site].offd[1][ 0].real()  * ppsi[ 6].real();
+      cchi[ 7].real() -= tri[site].offd[1][ 0].imag()  * ppsi[ 6].imag();
+      cchi[ 7].real() += tri[site].offd[1][ 2].real()  * ppsi[ 8].real();
+      cchi[ 7].real() += tri[site].offd[1][ 2].imag()  * ppsi[ 8].imag();
+      cchi[ 7].real() += tri[site].offd[1][ 4].real()  * ppsi[ 9].real();
+      cchi[ 7].real() += tri[site].offd[1][ 4].imag()  * ppsi[ 9].imag();
+      cchi[ 7].real() += tri[site].offd[1][ 7].real()  * ppsi[10].real();
+      cchi[ 7].real() += tri[site].offd[1][ 7].imag()  * ppsi[10].imag();
+      cchi[ 7].real() += tri[site].offd[1][11].real()  * ppsi[11].real();
+      cchi[ 7].real() += tri[site].offd[1][11].imag()  * ppsi[11].imag();
+
+      cchi[ 7].imag()  = tri[site].diag[1][ 1].elem()  * ppsi[ 7].imag();
+      cchi[ 7].imag() += tri[site].offd[1][ 0].real()  * ppsi[ 6].imag();
+      cchi[ 7].imag() += tri[site].offd[1][ 0].imag()  * ppsi[ 6].real();
+      cchi[ 7].imag() += tri[site].offd[1][ 2].real()  * ppsi[ 8].imag();
+      cchi[ 7].imag() -= tri[site].offd[1][ 2].imag()  * ppsi[ 8].real();
+      cchi[ 7].imag() += tri[site].offd[1][ 4].real()  * ppsi[ 9].imag();
+      cchi[ 7].imag() -= tri[site].offd[1][ 4].imag()  * ppsi[ 9].real();
+      cchi[ 7].imag() += tri[site].offd[1][ 7].real()  * ppsi[10].imag();
+      cchi[ 7].imag() -= tri[site].offd[1][ 7].imag()  * ppsi[10].real();
+      cchi[ 7].imag() += tri[site].offd[1][11].real()  * ppsi[11].imag();
+      cchi[ 7].imag() -= tri[site].offd[1][11].imag()  * ppsi[11].real();
+
+
+      cchi[ 8].real()  = tri[site].diag[1][ 2].elem()  * ppsi[ 8].real();
+      cchi[ 8].real() += tri[site].offd[1][ 1].real()  * ppsi[ 6].real();
+      cchi[ 8].real() -= tri[site].offd[1][ 1].imag()  * ppsi[ 6].imag();
+      cchi[ 8].real() += tri[site].offd[1][ 2].real()  * ppsi[ 7].real();
+      cchi[ 8].real() -= tri[site].offd[1][ 2].imag()  * ppsi[ 7].imag();
+      cchi[ 8].real() += tri[site].offd[1][5].real()   * ppsi[ 9].real();
+      cchi[ 8].real() += tri[site].offd[1][5].imag()   * ppsi[ 9].imag();
+      cchi[ 8].real() += tri[site].offd[1][8].real()   * ppsi[10].real();
+      cchi[ 8].real() += tri[site].offd[1][8].imag()   * ppsi[10].imag();
+      cchi[ 8].real() += tri[site].offd[1][12].real()  * ppsi[11].real();
+      cchi[ 8].real() += tri[site].offd[1][12].imag()  * ppsi[11].imag();
+
+      cchi[ 8].imag() = tri[site].diag[1][ 2].elem()   * ppsi[ 8].imag();
+      cchi[ 8].imag() += tri[site].offd[1][ 1].real()  * ppsi[ 6].imag();
+      cchi[ 8].imag() += tri[site].offd[1][ 1].imag()  * ppsi[ 6].real();
+      cchi[ 8].imag() += tri[site].offd[1][ 2].real()  * ppsi[ 7].imag();
+      cchi[ 8].imag() += tri[site].offd[1][ 2].imag()  * ppsi[ 7].real();
+      cchi[ 8].imag() += tri[site].offd[1][5].real()   * ppsi[ 9].imag();
+      cchi[ 8].imag() -= tri[site].offd[1][5].imag()   * ppsi[ 9].real();
+      cchi[ 8].imag() += tri[site].offd[1][8].real()   * ppsi[10].imag();
+      cchi[ 8].imag() -= tri[site].offd[1][8].imag()   * ppsi[10].real();
+      cchi[ 8].imag() += tri[site].offd[1][12].real()  * ppsi[11].imag();
+      cchi[ 8].imag() -= tri[site].offd[1][12].imag()  * ppsi[11].real();
+
+
+      cchi[ 9].real()  = tri[site].diag[1][ 3].elem()  * ppsi[ 9].real();
+      cchi[ 9].real() += tri[site].offd[1][ 3].real()  * ppsi[ 6].real();
+      cchi[ 9].real() -= tri[site].offd[1][ 3].imag()  * ppsi[ 6].imag();
+      cchi[ 9].real() += tri[site].offd[1][ 4].real()  * ppsi[ 7].real();
+      cchi[ 9].real() -= tri[site].offd[1][ 4].imag()  * ppsi[ 7].imag();
+      cchi[ 9].real() += tri[site].offd[1][ 5].real()  * ppsi[ 8].real();
+      cchi[ 9].real() -= tri[site].offd[1][ 5].imag()  * ppsi[ 8].imag();
+      cchi[ 9].real() += tri[site].offd[1][ 9].real()  * ppsi[10].real();
+      cchi[ 9].real() += tri[site].offd[1][ 9].imag()  * ppsi[10].imag();
+      cchi[ 9].real() += tri[site].offd[1][13].real()  * ppsi[11].real();
+      cchi[ 9].real() += tri[site].offd[1][13].imag()  * ppsi[11].imag();
+
+      cchi[ 9].imag()  = tri[site].diag[1][ 3].elem()  * ppsi[ 9].imag();
+      cchi[ 9].imag() += tri[site].offd[1][ 3].real()  * ppsi[ 6].imag();
+      cchi[ 9].imag() += tri[site].offd[1][ 3].imag()  * ppsi[ 6].real();
+      cchi[ 9].imag() += tri[site].offd[1][ 4].real()  * ppsi[ 7].imag();
+      cchi[ 9].imag() += tri[site].offd[1][ 4].imag()  * ppsi[ 7].real();
+      cchi[ 9].imag() += tri[site].offd[1][ 5].real()  * ppsi[ 8].imag();
+      cchi[ 9].imag() += tri[site].offd[1][ 5].imag()  * ppsi[ 8].real();
+      cchi[ 9].imag() += tri[site].offd[1][ 9].real()  * ppsi[10].imag();
+      cchi[ 9].imag() -= tri[site].offd[1][ 9].imag()  * ppsi[10].real();
+      cchi[ 9].imag() += tri[site].offd[1][13].real()  * ppsi[11].imag();
+      cchi[ 9].imag() -= tri[site].offd[1][13].imag()  * ppsi[11].real();
+
+
+      cchi[10].real()  = tri[site].diag[1][ 4].elem()  * ppsi[10].real();
+      cchi[10].real() += tri[site].offd[1][ 6].real()  * ppsi[ 6].real();
+      cchi[10].real() -= tri[site].offd[1][ 6].imag()  * ppsi[ 6].imag();
+      cchi[10].real() += tri[site].offd[1][ 7].real()  * ppsi[ 7].real();
+      cchi[10].real() -= tri[site].offd[1][ 7].imag()  * ppsi[ 7].imag();
+      cchi[10].real() += tri[site].offd[1][ 8].real()  * ppsi[ 8].real();
+      cchi[10].real() -= tri[site].offd[1][ 8].imag()  * ppsi[ 8].imag();
+      cchi[10].real() += tri[site].offd[1][ 9].real()  * ppsi[ 9].real();
+      cchi[10].real() -= tri[site].offd[1][ 9].imag()  * ppsi[ 9].imag();
+      cchi[10].real() += tri[site].offd[1][14].real()  * ppsi[11].real();
+      cchi[10].real() += tri[site].offd[1][14].imag()  * ppsi[11].imag();
+
+      cchi[10].imag()  = tri[site].diag[1][ 4].elem()  * ppsi[10].imag();
+      cchi[10].imag() += tri[site].offd[1][ 6].real()  * ppsi[ 6].imag();
+      cchi[10].imag() += tri[site].offd[1][ 6].imag()  * ppsi[ 6].real();
+      cchi[10].imag() += tri[site].offd[1][ 7].real()  * ppsi[ 7].imag();
+      cchi[10].imag() += tri[site].offd[1][ 7].imag()  * ppsi[ 7].real();
+      cchi[10].imag() += tri[site].offd[1][ 8].real()  * ppsi[ 8].imag();
+      cchi[10].imag() += tri[site].offd[1][ 8].imag()  * ppsi[ 8].real();
+      cchi[10].imag() += tri[site].offd[1][ 9].real()  * ppsi[ 9].imag();
+      cchi[10].imag() += tri[site].offd[1][ 9].imag()  * ppsi[ 9].real();
+      cchi[10].imag() += tri[site].offd[1][14].real()  * ppsi[11].imag();
+      cchi[10].imag() -= tri[site].offd[1][14].imag()  * ppsi[11].real();
+
+
+      cchi[11].real()  = tri[site].diag[1][ 5].elem()  * ppsi[11].real();
+      cchi[11].real() += tri[site].offd[1][10].real()  * ppsi[ 6].real();
+      cchi[11].real() -= tri[site].offd[1][10].imag()  * ppsi[ 6].imag();
+      cchi[11].real() += tri[site].offd[1][11].real()  * ppsi[ 7].real();
+      cchi[11].real() -= tri[site].offd[1][11].imag()  * ppsi[ 7].imag();
+      cchi[11].real() += tri[site].offd[1][12].real()  * ppsi[ 8].real();
+      cchi[11].real() -= tri[site].offd[1][12].imag()  * ppsi[ 8].imag();
+      cchi[11].real() += tri[site].offd[1][13].real()  * ppsi[ 9].real();
+      cchi[11].real() -= tri[site].offd[1][13].imag()  * ppsi[ 9].imag();
+      cchi[11].real() += tri[site].offd[1][14].real()  * ppsi[10].real();
+      cchi[11].real() -= tri[site].offd[1][14].imag()  * ppsi[10].imag();
+
+      cchi[11].imag()  = tri[site].diag[1][ 5].elem()  * ppsi[11].imag();
+      cchi[11].imag() += tri[site].offd[1][10].real()  * ppsi[ 6].imag();
+      cchi[11].imag() += tri[site].offd[1][10].imag()  * ppsi[ 6].real();
+      cchi[11].imag() += tri[site].offd[1][11].real()  * ppsi[ 7].imag();
+      cchi[11].imag() += tri[site].offd[1][11].imag()  * ppsi[ 7].real();
+      cchi[11].imag() += tri[site].offd[1][12].real()  * ppsi[ 8].imag();
+      cchi[11].imag() += tri[site].offd[1][12].imag()  * ppsi[ 8].real();
+      cchi[11].imag() += tri[site].offd[1][13].real()  * ppsi[ 9].imag();
+      cchi[11].imag() += tri[site].offd[1][13].imag()  * ppsi[ 9].real();
+      cchi[11].imag() += tri[site].offd[1][14].real()  * ppsi[10].imag();
+      cchi[11].imag() += tri[site].offd[1][14].imag()  * ppsi[10].real();
+
 #endif
 
     }
