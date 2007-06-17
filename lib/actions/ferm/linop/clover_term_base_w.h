@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_base_w.h,v 3.6 2007-06-07 15:41:36 bjoo Exp $
+// $Id: clover_term_base_w.h,v 3.7 2007-06-17 02:25:16 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -21,6 +21,10 @@ namespace Chroma
 			 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    typedef LatticeFermion T;
+    typedef multi1d<LatticeColorMatrix> P;
+    typedef multi1d<LatticeColorMatrix> Q;
+
     //! No real need for cleanup here
     virtual ~CloverTermBase() {}
 

@@ -1,4 +1,4 @@
-// $Id: clover_term_bagel_clover.cc,v 1.1 2007-06-17 02:12:28 bjoo Exp $
+// $Id: clover_term_bagel_clover.cc,v 1.2 2007-06-17 02:25:16 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -130,72 +130,64 @@ namespace Chroma
     // Now copy
   void BAGELCloverTerm::create(Handle< FermState<T,P,Q> > fs,
 			     const CloverFermActParams& param_,
-			     const CloverTermBase& from_)
+			     const BAGELCloverTerm& from_)
   {
     START_CODE();
 
+    const BAGELCloverTerm& from = dynamic_cast<const BAGELCloverTerm&>(from_);
+    u = fs->getLinks();
+    fbc = fs->getFermBC();
+    param = param_;
     
-    try { 
-
-      const BAGELCloverTerm& from = dynamic_cast<const BAGELCloverTerm&>(from_);
-      u = fs->getLinks();
-      fbc = fs->getFermBC();
-      param = param_;
-      
-      // Sanity check
-      if (fbc.operator->() == 0) {
-	QDPIO::cerr << "BAGELCloverTerm: error: fbc is null" << endl;
-	QDP_abort(1);
-      }
-      
-      {
-	Real ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
-	param.clovCoeffR *= Real(0.5) * ff;
-	param.clovCoeffT *= Real(0.5);
-      }
-      
-      //
-      // Yuk. Some bits of knowledge of the dslash term are buried in the 
-      // effective mass term. They show up here. If I wanted some more 
-      // complicated dslash then this will have to be fixed/adjusted.
-      //
-      Real diag_mass;
-      {
-	Real ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
-	diag_mass = 1 + (Nd-1)*ff + param.Mass;
-      }
-      
-      
-      /* Calculate F(mu,nu) */
-      //multi1d<LatticeColorMatrix> f;
-      //mesField(f, u);
-      //makeClov(f, diag_mass);
+    // Sanity check
+    if (fbc.operator->() == 0) {
+      QDPIO::cerr << "BAGELCloverTerm: error: fbc is null" << endl;
+      QDP_abort(1);
+    }
     
-      choles_done.resize(rb.numSubsets());
-      for(int i=0; i < rb.numSubsets(); i++) {
-	choles_done[i] = from.choles_done[i];
-      }
+    {
+      Real ff = where(param.anisoParam.anisoP, Real(1) / param.anisoParam.xi_0, Real(1));
+      param.clovCoeffR *= Real(0.5) * ff;
+      param.clovCoeffT *= Real(0.5);
+    }
     
-      tr_log_diag_ = from.tr_log_diag_;
-      
-      tri_diag.resize(from.tri_diag.size());
-      tri_off_diag.resize(from.tri_off_diag.size());
-      for(int site=0; site < from.tri_off_diag.size(); site++) {
-	for(int block = 0; block < 2; block++) { 
-	  for(int comp=0; comp< 6; comp++) { 
-	    tri_diag[site][block][comp] = from.tri_diag[site][block][comp];
-	  }
-	  for(int comp=0; comp < 15; comp++) { 
-	    tri_off_diag[site][block][comp] = from.tri_off_diag[site][block][comp];
-	  }
+    //
+    // Yuk. Some bits of knowledge of the dslash term are buried in the 
+    // effective mass term. They show up here. If I wanted some more 
+    // complicated dslash then this will have to be fixed/adjusted.
+    //
+    Real diag_mass;
+    {
+      Real ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
+      diag_mass = 1 + (Nd-1)*ff + param.Mass;
+    }
+    
+    
+    /* Calculate F(mu,nu) */
+    //multi1d<LatticeColorMatrix> f;
+    //mesField(f, u);
+    //makeClov(f, diag_mass);
+    
+    choles_done.resize(rb.numSubsets());
+    for(int i=0; i < rb.numSubsets(); i++) {
+      choles_done[i] = from.choles_done[i];
+    }
+    
+    tr_log_diag_ = from.tr_log_diag_;
+    
+    tri_diag.resize(from.tri_diag.size());
+    tri_off_diag.resize(from.tri_off_diag.size());
+    for(int site=0; site < from.tri_off_diag.size(); site++) {
+      for(int block = 0; block < 2; block++) { 
+	for(int comp=0; comp< 6; comp++) { 
+	  tri_diag[site][block][comp] = from.tri_diag[site][block][comp];
+	}
+	for(int comp=0; comp < 15; comp++) { 
+	  tri_off_diag[site][block][comp] = from.tri_off_diag[site][block][comp];
 	}
       }
-							 
     }
-    catch(std::bad_cast) { 
-      QDPIO::cout << "Couldnt cast input CloverTerm into a BAGELCloverTerm " << endl;
-      QDP_abort(1);
-    }		    
+			    
     END_CODE();
   }
 

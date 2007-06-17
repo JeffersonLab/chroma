@@ -1,4 +1,4 @@
-// $Id: eoprec_clover_extfield_linop_w.cc,v 3.2 2007-03-05 20:03:16 bjoo Exp $
+// $Id: eoprec_clover_extfield_linop_w.cc,v 3.3 2007-06-17 02:25:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator in an external field
  */
@@ -28,7 +28,7 @@ namespace Chroma
 
     clov.create(efs->getOriginalState(), param);
  
-    invclov = clov;  // make a copy
+    invclov.create(efs->getOriginalState(),param, clov);  // make a copy
     invclov.choles(0);  // invert the cb=0 part
 
     D.create(efs->getU1State(), param.anisoParam);

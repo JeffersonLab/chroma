@@ -1,4 +1,4 @@
-// $Id: eoprec_clover_linop_w.cc,v 3.2 2007-06-07 15:41:36 bjoo Exp $
+// $Id: eoprec_clover_linop_w.cc,v 3.3 2007-06-17 02:25:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -26,7 +26,7 @@ namespace Chroma
 
     clov.create(fs, param);
  
-    invclov = clov;  // make a copy
+    invclov.create(fs,param,clov);  // make a copy
     invclov.choles(0);  // invert the cb=0 part
 
     D.create(fs, param.anisoParam);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_bagel_clover.h,v 1.1 2007-06-17 02:12:28 bjoo Exp $
+// $Id: clover_term_bagel_clover.h,v 1.2 2007-06-17 02:25:16 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -57,7 +57,7 @@ namespace Chroma
     //! Create from another
     void create(Handle< FermState<T,P,Q> > fs, 
 		const CloverFermActParams& param_, 
-		const CloverTermBase& from);
+		const BAGELCloverTerm& from);
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs,

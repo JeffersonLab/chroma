@@ -1,4 +1,4 @@
-// $Id: eoprec_slic_linop_w.cc,v 3.1 2006-10-19 16:01:30 edwards Exp $
+// $Id: eoprec_slic_linop_w.cc,v 3.2 2007-06-17 02:25:16 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -27,7 +27,7 @@ namespace Chroma
     clov.create(fs, param_);
  
 
-    invclov = clov;  // make a copy
+    invclov.create(fs,param_,clov);  // make a copy
     invclov.choles(0);  // invert the cb=0 part
 
     D.create(thin_fs.cast< FermState<T,P,Q> >(), param_.anisoParam);
