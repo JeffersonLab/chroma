@@ -1,5 +1,8 @@
 /* lib/chroma_config_internal.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Use the BAGEL Clover Term Apply library */
+#undef BUILD_BAGEL_CLOVER_TERM
+
 /* Build optimized Continued Frac. (CFZ) LinOp */
 #undef BUILD_CFZ_CFZ_LINOP
 

@@ -159,4 +159,45 @@ dnl - set the parallel compiler environment
   ]
 )
 
+AC_DEFUN(
+  PAC_BAGEL_CLOVER_LINK_CXX_FUNC,
+  [
+dnl - set local parallel compiler environments
+dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
+    pac_BAGEL_CLOVER_CFLAGS="$1"
+    pac_BAGEL_CLOVER_LDFLAGS="$2"
+    pac_BAGEL_CLOVER_LIBS="$3"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+dnl - save the original environment
+    pac_saved_CXXFLAGS="$CXXFLAGS"
+    pac_saved_LDFLAGS="$LDFLAGS"
+    pac_saved_LIBS="$LIBS"
+dnl - set the parallel compiler environment
+    CXXFLAGS="$CXXFLAGS $pac_BAGEL_CLOVER_CFLAGS"
+    LDFLAGS="$LDFLAGS $pac_BAGEL_CLOVER_LDFLAGS"
+    LIBS="$LIBS $pac_BAGEL_CLOVER_LIBS"
+    AC_TRY_LINK(
+      [
+        #include <bagel_clover.h>
+      ],
+      [
+        int argc ; char **argv ;
+	$4
+	$5
+      ],
+      [pac_bagel_clover_working=yes],
+      [pac_bagel_clover_working=no]
+    )
+    CXXFLAGS="$pac_saved_CXXFLAGS"
+    LDFLAGS="$pac_saved_LDFLAGS"
+    LIBS="$pac_saved_LIBS"
+    AC_LANG_RESTORE
+    if test "X${pac_bagel_clover_working}X" = "XyesX" ; then
+       ifelse([$6],,:,[$6])
+    else
+       ifelse([$7],,:,[$7])
+    fi
+  ]
+)
 

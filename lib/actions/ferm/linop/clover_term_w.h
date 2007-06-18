@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_w.h,v 3.0 2006-04-03 04:58:49 edwards Exp $
+// $Id: clover_term_w.h,v 3.1 2007-06-18 19:24:12 bjoo Exp $
 /*! \file
  *  \brief Include possibly optimized Clover terms
  */
@@ -16,12 +16,10 @@
 // The following is an ifdef lis that switches in optimised
 // terms. Currently only optimised dslash is the SSE One;
 
-#ifdef BUILD_SSE_CLOVER_TERM
-// The clover_term_sse_w.h defines the SSE Dslash class
-// The following typedef switches it in.
-# include "clover_term_sse_w.h"
+#ifdef BUILD_BAGEL_CLOVER_TERM
+# include "clover_term_bagel_clover.h"
 namespace Chroma {
-typedef SSECloverTerm CloverTerm;
+typedef BAGELCloverTerm CloverTerm;
 }  // end namespace Chroma
 
 #else

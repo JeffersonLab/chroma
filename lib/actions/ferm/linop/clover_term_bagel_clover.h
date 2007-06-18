@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_bagel_clover.h,v 1.2 2007-06-17 02:25:16 bjoo Exp $
+// $Id: clover_term_bagel_clover.h,v 1.3 2007-06-18 19:24:12 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -20,8 +20,10 @@ namespace Chroma
   //{
   //  RScalar<REAL>   diag[2][2*Nc];
   //}; 
-  
-  typedef  RComplex<REAL> PrimitiveClovOffDiag[2][15];
+ 
+  // Of the 16 elements only 16 are used. but I want to pad
+  // to 16  
+  typedef  RComplex<REAL> PrimitiveClovOffDiag[2][16];
   // struct PrimitiveClovOffDiag {
   //  RComplex<REAL>  offd[2][2*Nc*Nc-Nc];
   //};

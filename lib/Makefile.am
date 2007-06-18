@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.96 2007-06-10 14:37:31 edwards Exp $
+# $Id: Makefile.am,v 3.97 2007-06-18 19:24:10 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -751,6 +751,10 @@ if BUILD_QMT
 AM_CXXFLAGS += @QMT_CXXFLAGS@
 endif
 
+if BUILD_BAGEL_CLOVER_APPLY
+AM_CXXFLAGS += @BAGEL_CLOVER_CXXFLAGS@
+endif
+
 lib_LIBRARIES = libchroma.a
 
 #
@@ -1397,6 +1401,10 @@ nobase_include_HEADERS += actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
 libchroma_a_SOURCES += actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
 endif
 
+if BUILD_BAGEL_CLOVER_APPLY
+nobase_include_HEADERS += actions/ferm/linop/clover_term_bagel_clover.h
+libchroma_a_SOURCES += actions/ferm/linop/clover_term_bagel_clover.cc
+endif
 
 libchroma_a_SOURCES += \
 	init/chroma_init.cc

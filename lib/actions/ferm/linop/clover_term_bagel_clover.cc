@@ -1,4 +1,4 @@
-// $Id: clover_term_bagel_clover.cc,v 1.2 2007-06-17 02:25:16 bjoo Exp $
+// $Id: clover_term_bagel_clover.cc,v 1.3 2007-06-18 19:24:12 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -7,7 +7,7 @@
  */
 
 #include "chromabase.h"
-#include "actions/ferm/linop/clover_term_clover_w.h"
+#include "actions/ferm/linop/clover_term_bagel_clover.h"
 #include "meas/glue/mesfield.h"
 
 #include <bagel_clover.h>
@@ -123,6 +123,25 @@ namespace Chroma
     for(int i=0; i < rb.numSubsets(); i++) {
       choles_done[i] = false;
     }
+
+#if 0
+    // Testing code
+    LatticeFermion foo;
+    LatticeFermion res1=zero;
+    LatticeFermion res2=zero;
+    gaussian(foo);
+    apply(res1,foo,PLUS, 0);
+    applySite(res2,foo,PLUS, 0);
+
+    LatticeFermion diff=res1-res2;
+    XMLFileWriter fred("fred");
+    push(fred, "stuff");
+    write(fred, "diff", diff);
+    pop(fred);
+
+    QDPIO::cout << "sqrt( norm2( diff))= " << sqrt(norm2(diff)) << endl << flush;
+    QDP_abort(1);
+#endif
 
     END_CODE();
   }
@@ -706,7 +725,10 @@ namespace Chroma
       // unsigned long n_sites = rb[cb].siteTable().size();
       int start = rb[cb].start();
       unsigned long n_sites=rb[cb].siteTable().size();
-
+#if 0
+      //Testing code do only one site
+      unsigned long n_sites =1;
+#endif
       // Need to unroll over sites, so instead of having : site, struct { diag, offdiag } 
       // we have site,diag,  and site, offdiag arrays
       //
