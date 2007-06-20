@@ -216,7 +216,7 @@ namespace Chroma {
     }
 
 
-    if( param.disconnected_local ){
+    if(( param.disconnected_local )||(param.disconnected_fuzz)){
       read(paramtop, "Number_sample", param.Nsamp);
       read(paramtop, "CFGNO", param.CFGNO);
       // more work
@@ -229,7 +229,8 @@ namespace Chroma {
       param.volume_source = GAUSSIAN ;
     }
 
-    if(param.Baryon_vary){
+    if(((param.Baryon_vary)||(param.ps4link_singlet_conn_fuzz))||
+       ((param.disconnected_fuzz)||(param.LocalPion_vary))){
       read(paramtop, "fuzz_width", param.fuzz_width);
     }else{
       param.fuzz_width = 0 ;
@@ -255,7 +256,8 @@ namespace Chroma {
     write(xml, "boundary", param.boundary);
     write(xml, "nrow", param.nrow);
     write(xml, "t_srce", param.t_srce);
-
+    write(xml, "volume_source",param.volume_source);
+    write(xml, "fuzz_width", param.fuzz_width);
     pop(xml);
   }
 
@@ -971,8 +973,45 @@ namespace Chroma {
 
 
 
+	  {
+
+	    //testing crap
+	    DComplex productLL;
+	    DComplex productLF;
+	    DComplex productFL;
+	    DComplex productFF;
+
+	    LatticeComplex test_corr_fnLL;
+	    LatticeComplex test_corr_fnLF;
+	    LatticeComplex test_corr_fnFL;
+	    LatticeComplex test_corr_fnFF;
+
+	    test_corr_fnLL = trace(adj(quark_propagator_Lsink_Lsrc)
+				 *quark_propagator_Lsink_Lsrc);
+	    test_corr_fnFL = trace(adj(quark_propagator_Fsink_Lsrc)
+				 *quark_propagator_Fsink_Lsrc);
+	    test_corr_fnLF = trace(adj(quark_propagator_Lsink_Fsrc)
+				 *quark_propagator_Lsink_Fsrc);
+	    test_corr_fnFF = trace(adj(quark_propagator_Fsink_Fsrc)
+				 *quark_propagator_Fsink_Fsrc);
+
+	    productLL = sum(test_corr_fnLL);
+	    productFL = sum(test_corr_fnFL);
+	    productLF = sum(test_corr_fnLF);
+	    productFF = sum(test_corr_fnFF);
+
+	    QDPIO::cout << "product of LL= " << productLL << std::endl; 
+	    QDPIO::cout << "product of FL= " << productFL << std::endl; 
+	    QDPIO::cout << "product of LF= " << productLF << std::endl; 
+	    QDPIO::cout << "product of FF= " << productFF << std::endl; 
+	    // one copy on output
+	  }
+
+
+
 
 	if( do_Baryon_vary ) {
+
 	  compute_vary_baryon_s(xml_out,t_source,
 				fuzz_width,
 				j_decay,t_length,
