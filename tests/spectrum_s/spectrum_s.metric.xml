@@ -7,7 +7,7 @@ xpath="//spectrum_s/Meson_correlators/Lsink_Lsrc/Pseudoscalar/gamma5_CROSS_gamma
 type="real_array" comparison="relative" tolerance="0.001"/>
 
 
-<assertion xpath="//spectrum_s/disconnected_loops//loop_gamma5_cross_gamma5/MeanError/loop" type="real_array" comparison="relative" tolerance="0.001"/>
+<assertion xpath="//spectrum_s/disconnected_loops/fuzz_loops_s/loop_gamma5_cross_one/MeanError/loop" type="real_array" comparison="relative" tolerance="0.001"/>
 
 
 <assertion xpath="//spectrum_s/Computation_4link_pseudoscalar/LocalSource/LocalSink/SingletPseudoscalar/gamma5_CROSS_one/Pi" type="real_array" comparison="relative" tolerance="0.001"/>
