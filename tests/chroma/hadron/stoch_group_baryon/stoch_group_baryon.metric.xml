@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<!-- This is really only here to check the code actually ran correctly -->
+<assertion xpath="/chroma/Observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>
