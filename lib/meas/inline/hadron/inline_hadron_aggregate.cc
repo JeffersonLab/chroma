@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.17 2007-06-10 14:40:23 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.18 2007-06-21 01:16:27 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -35,6 +35,7 @@
 #include "meas/inline/hadron/inline_qqqNucNuc_w.h"
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
+#include "meas/inline/hadron/inline_stoch_group_baryon_w.h"
 
 // Grab all fermacts to make sure they are registered
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -95,6 +96,7 @@ namespace Chroma
 	success &= InlineStaticLightSpecEnv::registerAll();
 	success &= InlineStochMesonEnv::registerAll();
 	success &= InlineStochBaryonEnv::registerAll();
+	success &= InlineStochGroupBaryonEnv::registerAll();
 
 	registered = true;
       }

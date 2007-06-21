@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_baryon_w.h,v 1.1 2007-06-18 19:40:03 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.h,v 1.2 2007-06-21 01:16:27 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  */
@@ -43,13 +43,19 @@ namespace Chroma
       {
 	multi1d<std::string>  operator_coeff_files;   /*!< Files holding group coefficients */
 
-	//! Operators
+	//! Solution files for each quark
 	struct Operator_t
 	{
-	  multi1d<std::string> soln_files;
+	  //! Dilutions for each time slice
+	  struct TimeSlices_t
+	  {
+	    multi1d<std::string> dilution_files;
+	  };
+
+	  multi1d<TimeSlices_t> soln_files;
 	};
 
-	multi1d<Operator_t>   op;                     /*!< All the quarks and their solutions that are needed */
+	multi1d<Operator_t>   quarks;                 /*!< All the quarks and their solutions that are needed */
 
 	std::string           gauge_id;
 	std::string           operator_file;
