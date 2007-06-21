@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.5 2007-06-21 16:06:32 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.6 2007-06-21 19:18:55 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -1366,8 +1366,8 @@ namespace Chroma
 		    } // end for l
 
 		    // Slow fourier-transform
-		    // The FT routine requires all sites, oh well.
-		    multi2d<DComplex> hsum(phases.sft(bar));
+		    // We can restrict the FT routine requires to the t0 subset.
+		    multi2d<DComplex> hsum(phases.sft(bar, cop.t0));
 
 		    // Unpack into separate momentum and correlator
 		    // NOTE: because creation operator is only non-zero on 1 time slice, we only
