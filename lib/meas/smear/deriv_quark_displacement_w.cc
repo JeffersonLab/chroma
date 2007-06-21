@@ -1,4 +1,4 @@
-// $Id: deriv_quark_displacement_w.cc,v 3.3 2006-12-02 18:16:28 edwards Exp $
+// $Id: deriv_quark_displacement_w.cc,v 3.4 2007-06-21 19:18:34 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -102,6 +102,20 @@ namespace Chroma
 							   const std::string& path)
       {
 	return new RightBDisplace<LatticePropagator>(ParamsDir(xml_in, path));
+      }
+
+      //! Construct (right E) source
+      QuarkDisplacement<LatticePropagator>* rightEDisplace(XMLReader& xml_in,
+							   const std::string& path)
+      {
+	return new RightEDisplace<LatticePropagator>(ParamsDir(xml_in, path));
+      }
+
+      //! Construct (right Laplacian) source
+      QuarkDisplacement<LatticePropagator>* rightLapDisplace(XMLReader& xml_in,
+							     const std::string& path)
+      {
+	return new RightLapDisplace<LatticePropagator>(Params(xml_in, path));
       }
 
 
@@ -463,6 +477,50 @@ namespace Chroma
 
       // \f$\Gamma_f \equiv B_i\f$
       fin = rightB(tmp,u,params.deriv_dir,length);
+      tmp = fin;
+
+      END_CODE();
+    }
+
+
+
+    // Construct (right E) source
+    // See corresponding .h file for doxygen comments
+    template<>
+    void
+    RightEDisplace<LatticePropagator>::operator()(LatticePropagator& tmp,
+						  const multi1d<LatticeColorMatrix>& u,
+						  enum PlusMinus isign) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+      int length = plusMinus(isign) * params.deriv_length;
+
+      // \f$\Gamma_f \equiv E_alpha\f$
+      fin = rightE(tmp,u,params.deriv_dir,length);
+      tmp = fin;
+
+      END_CODE();
+    }
+
+
+
+    // Construct (right Laplacian) source
+    // See corresponding .h file for doxygen comments
+    template<>
+    void
+    RightLapDisplace<LatticePropagator>::operator()(LatticePropagator& tmp,
+						    const multi1d<LatticeColorMatrix>& u,
+						    enum PlusMinus isign) const
+    {
+      START_CODE();
+
+      LatticePropagator fin;
+      int length = plusMinus(isign) * params.deriv_length;
+
+      // \f$\Gamma_f \equiv Laplacian\f$
+      fin = rightLap(tmp,u,length);
       tmp = fin;
 
       END_CODE();
@@ -1213,6 +1271,12 @@ namespace Chroma
 
 	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B-DERIV"),
 									     rightBDisplace);
+
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("E-DERIV"),
+									     rightEDisplace);
+
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("LAP-DERIV"),
+									     rightLapDisplace);
 
 
 	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxNABLA_T1-DERIV"),

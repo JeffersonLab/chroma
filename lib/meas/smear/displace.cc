@@ -1,4 +1,4 @@
-//  $Id: displace.cc,v 3.1 2006-12-02 18:16:28 edwards Exp $
+//  $Id: displace.cc,v 3.2 2007-06-21 19:18:34 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -182,6 +182,68 @@ namespace Chroma
 	if (antiSymTensor3d(mu,j,k) != 0)
 	  tmp += Real(antiSymTensor3d(mu,j,k)) * rightNabla(rightNabla(F,u,j,length), u,k,length);
       }
+
+    return tmp;
+  }
+
+
+  //! Apply "E_i" operator to the right onto source
+  /*!
+   * \ingroup smear
+   *
+   * \f$E_0 = (1/sqrt{2})*\nabla_x\nabla_x - \nabla_y\nabla_y\f$
+   * \f$E_1 = -(1/sqrt{6})*\nabla_x\nabla_x + \nabla_y\nabla_y - 2*\nabla_z\nabla_z\f$
+   *
+   * \return $\f E_\alpha F(z,0) \f$
+   */
+  LatticePropagator rightE(const LatticePropagator& F,
+			   const multi1d<LatticeColorMatrix>& u,
+			   int mu, int length)
+  {
+    LatticePropagator tmp;
+
+    switch (mu)
+    {
+    case 0:
+      tmp  = rightNabla(rightNabla(F,u,0,length), u,0,length);
+      tmp -= rightNabla(rightNabla(F,u,1,length), u,1,length);
+      tmp *= Real(1)/Real(sqrt(Real(2)));
+      break;
+
+    case 1:
+      tmp  = rightNabla(rightNabla(F,u,0,length), u,0,length);
+      tmp += rightNabla(rightNabla(F,u,1,length), u,1,length);
+      tmp -= Real(2)*rightNabla(rightNabla(F,u,2,length), u,2,length);
+      tmp *= Real(-1)/Real(sqrt(Real(6)));
+      break;
+
+    default:
+      QDPIO::cerr << __func__ << ": invalid direction for E: mu=" << mu << endl;
+      QDP_abort(1);
+    }
+
+    return tmp;
+  }
+
+
+  //! Apply "Laplacian" operator to the right onto source
+  /*!
+   * \ingroup smear
+   *
+   * \f$Laplacian = \sum_{i=1}^3\nabla_i\nabla_i\f$
+   *
+   * \return $\f \nabla^2 F(z,0) \f$
+   */
+  LatticePropagator rightLap(const LatticePropagator& F,
+			     const multi1d<LatticeColorMatrix>& u,
+			     int length)
+  {
+    LatticePropagator tmp = zero;
+
+    for(int i=0; i < 3; ++i)
+    {
+      tmp += rightNabla(rightNabla(F,u,i,length), u,i,length);
+    }
 
     return tmp;
   }

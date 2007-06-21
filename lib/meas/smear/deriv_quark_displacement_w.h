@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_quark_displacement_w.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
+// $Id: deriv_quark_displacement_w.h,v 3.3 2007-06-21 19:18:34 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  *
@@ -129,6 +129,55 @@ namespace Chroma
 
     private:
       ParamsDir  params;   /*!< source params */
+    };
+
+    //! Construct (right E) source
+    /*!
+     * \ingroup sources
+     *
+     * Operator is  E
+     * The sink interpolator structure is
+     * \f$\Gamma_f \equiv E_i\f$
+     */
+    template<typename T>
+    class RightEDisplace : public QuarkDisplacement<T>
+    {
+    public:
+      //! Full constructor
+      RightEDisplace(const ParamsDir& p) : params(p) {}
+
+      //! Displace the quark
+      void operator()(T& quark, 
+		      const multi1d<LatticeColorMatrix>& u,
+		      enum PlusMinus isign) const;
+
+    private:
+      ParamsDir  params;   /*!< source params */
+    };
+
+
+    //! Construct (right Laplacian) source
+    /*!
+     * \ingroup sources
+     *
+     * Operator is  Laplacian
+     * The sink interpolator structure is
+     * \f$\Gamma_f \equiv Laplacian\f$
+     */
+    template<typename T>
+    class RightLapDisplace : public QuarkDisplacement<T>
+    {
+    public:
+      //! Full constructor
+      RightLapDisplace(const Params& p) : params(p) {}
+
+      //! Displace the quark
+      void operator()(T& quark, 
+		      const multi1d<LatticeColorMatrix>& u,
+		      enum PlusMinus isign) const;
+
+    private:
+      Params  params;   /*!< source params */
     };
 
 

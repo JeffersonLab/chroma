@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: displace.h,v 3.1 2006-12-02 18:16:28 edwards Exp $
+// $Id: displace.h,v 3.2 2007-06-21 19:18:34 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -122,6 +122,33 @@ namespace Chroma
   LatticePropagator rightB(const LatticePropagator& F,
 			   const multi1d<LatticeColorMatrix>& u,
 			   int mu, int length);
+
+
+  //! Apply "E_i" operator to the right onto source
+  /*!
+   * \ingroup smear
+   *
+   * \f$E_0 = (1/sqrt{2})*\nabla_x\nabla_x - \nabla_y\nabla_y\f$
+   * \f$E_1 = -(1/sqrt{6})*\nabla_x\nabla_x + \nabla_y\nabla_y - 2*\nabla_z\nabla_z\f$
+   *
+   * \return $\f E_\alpha F(z,0) \f$
+   */
+  LatticePropagator rightE(const LatticePropagator& F,
+			   const multi1d<LatticeColorMatrix>& u,
+			   int mu, int length);
+
+
+  //! Apply "Laplacian" operator to the right onto source
+  /*!
+   * \ingroup smear
+   *
+   * \f$Laplacian = \sum_{i=1}^3\nabla_i\nabla_i\f$
+   *
+   * \return $\f \nabla^2 F(z,0) \f$
+   */
+  LatticePropagator rightLap(const LatticePropagator& F,
+			     const multi1d<LatticeColorMatrix>& u,
+			     int length);
 
 }  // end namespace Chroma
 
