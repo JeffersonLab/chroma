@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.5 2007-06-12 16:10:01 edwards Exp $
+//  $Id: sftmom.h,v 3.6 2007-06-21 18:18:55 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -84,11 +84,17 @@ namespace Chroma
     const LatticeComplex& operator[](int mom_num) const
       { return phases[mom_num]; }
 
-    //! Do a sumMulti(cf*phases,getSubset())
+    //! Do a sumMulti(cf*phases,getSet())
     multi2d<DComplex> sft(const LatticeComplex& cf) const;
 
-    //! Do a sumMulti(cf*phases,getSubset())
+    //! Do a sum(cf*phases,getSet()[my_subset])
+    multi2d<DComplex> sft(const LatticeComplex& cf, int subset_color) const;
+
+    //! Do a sumMulti(cf*phases,getSet())
     multi2d<DComplex> sft(const LatticeReal& cf) const;
+
+    //! Do a sumMulti(cf*phases,getSet()[my_subset])
+    multi2d<DComplex> sft(const LatticeReal& cf, int subset_color) const;
 
   private:
     SftMom() {} // hide default constructor

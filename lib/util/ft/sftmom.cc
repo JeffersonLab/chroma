@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 3.3 2007-06-12 16:10:01 edwards Exp $
+//  $Id: sftmom.cc,v 3.4 2007-06-21 18:18:55 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.3  2007-06-12 16:10:01  edwards
+//  Revision 3.4  2007-06-21 18:18:55  edwards
+//  Added subset versions of "sft" function.
+//
+//  Revision 3.3  2007/06/12 16:10:01  edwards
 //  Added a default constructor.
 //
 //  Revision 3.2  2006/08/30 02:10:19  edwards
@@ -506,12 +509,44 @@ namespace Chroma
   }
 
   multi2d<DComplex>
+  SftMom::sft(const LatticeComplex& cf, int subset_color) const
+  {
+    int length = sft_set.numSubsets();
+    multi2d<DComplex> hsum(num_mom, length);
+
+    for (int mom_num=0; mom_num < num_mom; ++mom_num)
+    {
+      hsum[mom_num].resize(length);
+      hsum[mom_num] = zero;
+      hsum[mom_num][subset_color] = sum(phases[mom_num]*cf, sft_set[subset_color]);
+    }
+
+    return hsum ;
+  }
+
+  multi2d<DComplex>
   SftMom::sft(const LatticeReal& cf) const
   {
     multi2d<DComplex> hsum(num_mom, sft_set.numSubsets()) ;
 
     for (int mom_num=0; mom_num < num_mom; ++mom_num)
       hsum[mom_num] = sumMulti(phases[mom_num]*cf, sft_set) ;
+
+    return hsum ;
+  }
+
+  multi2d<DComplex>
+  SftMom::sft(const LatticeReal& cf, int subset_color) const
+  {
+    int length = sft_set.numSubsets();
+    multi2d<DComplex> hsum(num_mom, length);
+
+    for (int mom_num=0; mom_num < num_mom; ++mom_num)
+    {
+      hsum[mom_num].resize(length);
+      hsum[mom_num] = zero;
+      hsum[mom_num][subset_color] = sum(phases[mom_num]*cf, sft_set[subset_color]);
+    }
 
     return hsum ;
   }
