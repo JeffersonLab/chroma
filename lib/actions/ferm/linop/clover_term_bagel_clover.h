@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_bagel_clover.h,v 1.3 2007-06-18 19:24:12 bjoo Exp $
+// $Id: clover_term_bagel_clover.h,v 1.4 2007-06-21 13:32:47 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -15,7 +15,8 @@ namespace Chroma
 { 
 
   //! Special structure used for triangular objects
-  typedef  RScalar<REAL> PrimitiveClovDiag[2][6];
+  //  Pad to cache line length
+  typedef  RScalar<REAL> PrimitiveClovDiag[2][8];
   //struct PrimitiveClovDiag
   //{
   //  RScalar<REAL>   diag[2][2*Nc];
@@ -51,10 +52,8 @@ namespace Chroma
 
     //! Empty constructor. Must use create later
     BAGELCloverTerm();
-
-    //! No real need for cleanup here
-    ~BAGELCloverTerm() {}
-
+    //! Free the internals
+    ~BAGELCloverTerm();
 
     //! Create from another
     void create(Handle< FermState<T,P,Q> > fs, 
@@ -131,8 +130,10 @@ namespace Chroma
                                                   // but save the global sum until needed.
     multi1d<bool> choles_done;   // Keep note of whether the decomposition has been done
                                  // on a particular checkerboard. 
-    multi1d<PrimitiveClovDiag>  tri_diag;
-    multi1d<PrimitiveClovOffDiag> tri_off_diag;
+    PrimitiveClovDiag*           tri_diag;
+    PrimitiveClovOffDiag *       tri_off_diag;
+    //multi1d<PrimitiveClovDiag>  tri_diag;
+    //multi1d<PrimitiveClovOffDiag> tri_off_diag;
   };
 
 

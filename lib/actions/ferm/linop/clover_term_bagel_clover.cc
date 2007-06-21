@@ -1,4 +1,4 @@
-// $Id: clover_term_bagel_clover.cc,v 1.3 2007-06-18 19:24:12 bjoo Exp $
+// $Id: clover_term_bagel_clover.cc,v 1.4 2007-06-21 13:32:47 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -77,8 +77,60 @@ namespace Chroma
 #endif
 
   // Empty constructor. Must use create later
-  BAGELCloverTerm::BAGELCloverTerm() {}
+  BAGELCloverTerm::BAGELCloverTerm() {
+    bool retry = false;
 
+    // Allocate the arrays, with proper alignment
+
+    try { 
+      tri_diag = (PrimitiveClovDiag *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*sizeof(PrimitiveClovDiag) , QDP::Allocator::FAST );
+    }
+    catch( std::bad_alloc ) { 
+      retry = true;
+    }
+
+    if( retry ) { 
+      try { 
+	tri_diag = (PrimitiveClovDiag *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*sizeof(PrimitiveClovDiag) , QDP::Allocator::DEFAULT );
+      }
+      catch( std::bad_alloc ) { 
+	QDPIO::cerr << "Failed to allocate the tri_diag" << endl << flush ;
+	QDP_abort(1);
+      }
+    }
+
+
+    retry = false;
+    try { 
+      tri_off_diag = (PrimitiveClovOffDiag *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*sizeof(PrimitiveClovOffDiag) , QDP::Allocator::FAST );
+    }
+    catch( std::bad_alloc ) { 
+      retry = true;
+    }
+
+    if( retry ) { 
+      try { 
+	tri_off_diag = (PrimitiveClovOffDiag *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*sizeof(PrimitiveClovOffDiag) , QDP::Allocator::DEFAULT );
+      }
+      catch( std::bad_alloc ) { 
+	QDPIO::cerr << "Failed to allocate the tri_off_diag" << endl << flush ;
+	QDP_abort(1);
+      }
+    }
+
+
+  }
+
+
+  BAGELCloverTerm::~BAGELCloverTerm() {
+    if ( tri_diag != 0x0 ) { 
+      QDP::Allocator::theQDPAllocator::Instance().free(tri_diag);
+    }
+    
+    if ( tri_off_diag != 0x0 ) { 	
+      QDP::Allocator::theQDPAllocator::Instance().free(tri_off_diag);
+    }	
+  }
 
   //! Creation routine
   void BAGELCloverTerm::create(Handle< FermState<T,P,Q> > fs,
@@ -194,9 +246,10 @@ namespace Chroma
     
     tr_log_diag_ = from.tr_log_diag_;
     
-    tri_diag.resize(from.tri_diag.size());
-    tri_off_diag.resize(from.tri_off_diag.size());
-    for(int site=0; site < from.tri_off_diag.size(); site++) {
+    // Should be allocated by constructor.
+    // tri_diag.resize(from.tri_diag.size());
+    // tri_off_diag.resize(from.tri_off_diag.size());
+    for(int site=0; site < Layout::sitesOnNode(); site++) {
       for(int block = 0; block < 2; block++) { 
 	for(int comp=0; comp< 6; comp++) { 
 	  tri_diag[site][block][comp] = from.tri_diag[site][block][comp];
@@ -358,8 +411,9 @@ namespace Chroma
       }
     */
 
-    tri_diag.resize(nodeSites);  // hold local lattice
-    tri_off_diag.resize(nodeSites);
+    // These are now preallocated
+    //tri_diag.resize(nodeSites);  // hold local lattice
+    // tri_off_diag.resize(nodeSites);
 
     /*# Construct diagonal */
     for(int site = 0; site < nodeSites; ++site)
