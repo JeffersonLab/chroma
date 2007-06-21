@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.3 2007-06-21 01:44:07 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.4 2007-06-21 14:03:07 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -783,14 +783,12 @@ namespace Chroma
       // To prime the work, grab a first chunk of time slices for the
       // rest of the checks
       //
-      QDPIO::cout << __LINE__ << endl;
       multi1d<int> participating_time_slices(quarks[0].time_slices.size());
       for(int t=0; t < quarks[0].time_slices.size(); ++t)
       {
 	participating_time_slices[t] = quarks[0].time_slices[t].dilutions[0].t0;
       }
 
-      QDPIO::cout << __LINE__ << endl;
 //------------------------------------------------------      
 #if defined(STOCH_USE_ALL_TIME_SLICES)
       // Sanity check - this may be relaxed later
@@ -819,7 +817,6 @@ namespace Chroma
 //------------------------------------------------------      
 
 
-      QDPIO::cout << __LINE__ << endl;
 
       //
       // Check for each quark source that the solutions have their diluted
@@ -835,7 +832,6 @@ namespace Chroma
 	  bool first = true;
 	  int  N;
 	  LatticeFermion quark_noise;      // noisy source on entire lattice
-      QDPIO::cout << __LINE__ << endl;
 
 	  // Sanity check - the number of time slices better match
 	  if (participating_time_slices.size() != quarks[n].time_slices.size())
@@ -847,10 +843,8 @@ namespace Chroma
 
 	  for(int t=0; t < quarks[n].time_slices.size(); ++t)
 	  {
-      QDPIO::cout << __LINE__ << endl;
 	    for(int i=0; i < quarks[n].time_slices[t].dilutions.size(); ++i)
 	    {
-      QDPIO::cout << __LINE__ << endl;
 	      // Short-hand
 	      QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t& qq = 
 		quarks[n].time_slices[t].dilutions[i];
@@ -1386,7 +1380,7 @@ namespace Chroma
 		  << " secs" << endl;
 
 
-      // Operator B
+      // Annihilation operator
       swatch.start();
       BaryonOperator_t  annih_oper;
       annih_oper.mom2_max    = params.param.mom2_max;
