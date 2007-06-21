@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_baryon_w.h,v 1.2 2007-06-21 01:16:27 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.h,v 1.3 2007-06-21 16:06:32 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  */
@@ -41,7 +41,13 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	multi1d<std::string>  operator_coeff_files;   /*!< Files holding group coefficients */
+	struct CoeffFiles_t
+	{
+	  std::string          coeff_file;             /*!< Coefficient file name */
+	  std::string          id;                     /*!< ID/tag used in analysis codes*/
+	};
+
+	multi1d<CoeffFiles_t>  operator_coeff_files;   /*!< Files holding group coefficients */
 
 	//! Solution files for each quark
 	struct Operator_t

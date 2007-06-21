@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.4 2007-06-21 14:03:07 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.5 2007-06-21 16:06:32 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -79,6 +79,26 @@ namespace Chroma
       xml << param.sink_quark_smearing.xml;
       xml << param.link_smearing.xml;
 
+      pop(xml);
+    }
+
+
+    // Coefficient files
+    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::CoeffFiles_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "coeff_file", input.coeff_file);
+      read(inputtop, "id", input.id);
+    }
+
+
+    // Coefficient files
+    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::CoeffFiles_t& input)
+    {
+      push(xml, path);
+      write(xml, "coeff_file", input.coeff_file);
+      write(xml, "id", input.id);
       pop(xml);
     }
 
@@ -374,8 +394,11 @@ namespace Chroma
       Seed          seed_m;            /*!< Id of middle quark */
       Seed          seed_r;            /*!< Id of right quark */
 
-      int           mom2_max;
-      int           decay_dir;
+      int           operator_num;      /*!< Operator number within file */
+      std::string   id;                /*!< Tag/ID used in analysis codes */
+
+      int           mom2_max;          /*!< |\vec{p}|^2 */
+      int           decay_dir;         /*!< Direction of decay */
       multi1d<Orderings_t> orderings;  /*!< Array is over quark orderings */
     };
 
@@ -383,21 +406,21 @@ namespace Chroma
     //! BaryonOperator header writer
     void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
     {
-      if( path != "." )
-	push(xml, path);
+      push(xml, path);
 
       int version = 1;
       write(xml, "version", version);
+      write(xml, "id", param.id);
+      write(xml, "operator_num", param.operator_num);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "seed_l", param.seed_l);
       write(xml, "seed_m", param.seed_m);
       write(xml, "seed_r", param.seed_r);
-      xml <<  param.smearing.xml;
       write(xml, "perms", param.perms);
+      xml <<  param.smearing.xml;
 
-      if( path != "." )
-	pop(xml);
+      pop(xml);
     }
 
 
@@ -773,6 +796,20 @@ namespace Chroma
 
 
       //
+      // Initialize the slow Fourier transform phases
+      //
+      SftMom phases(params.param.mom2_max, false, j_decay);
+    
+      // Sanity check - if this doesn't work we have serious problems
+      if (phases.numSubsets() != QDP::Layout::lattSize()[j_decay])
+      {
+	QDPIO::cerr << name << ": number of time slices not equal to that in the decay direction: " 
+		    << QDP::Layout::lattSize()[j_decay]
+		    << endl;
+	QDP_abort(1);
+      }
+
+      //
       // The first sanity check - the time slices for all the dilutions of each
       // quark must be the same. The dilutions do not have to match, though. 
       // We will keep a list of the participating time slices. This should be
@@ -862,9 +899,11 @@ namespace Chroma
 	      }
 
 	      // Build source construction
+//	      QDPIO::cout << "Source_id = " << qq.source_header.source.id << endl;
+//	      QDPIO::cout << "Source = XX" << qq.source_header.source.xml << "XX" << endl;
+
 	      std::istringstream  xml_s(qq.source_header.source.xml);
 	      XMLReader  sourcetop(xml_s);
-//	      QDPIO::cout << "Source = " << qq.source_header.source.id << endl;
 
 	      if (qq.source_header.source.id != DiluteZNQuarkSourceConstEnv::name)
 	      {
@@ -962,6 +1001,19 @@ namespace Chroma
 
 
       //
+      // Another sanity check. The seeds of all the quarks must be different
+      //
+      for(int n=1; n < quarks.size(); ++n)
+      {
+	if ( toBool(quarks[n].seed == quarks[0].seed) )
+	{
+	  QDPIO::cerr << name << ": error, baryon op seeds are the same" << endl;
+	  QDP_abort(1);
+	}
+      }
+
+
+      //
       // Start the file writer
       //
       // There is a file XML
@@ -1015,7 +1067,7 @@ namespace Chroma
 
       for(int i=0; i < coeffs.size(); ++i)
       {
-	const std::string& file = params.named_obj.operator_coeff_files[i];
+	const std::string& file = params.named_obj.operator_coeff_files[i].coeff_file;
 	QDPIO::cout << "Reading operator coefficient file = " << file << endl;
 
 	readCoeffs(coeffs[i], file, params.param.displacement_length);
@@ -1040,6 +1092,8 @@ namespace Chroma
 							  params.param.source_quark_smearing.path);
 
 	// Source smear all the sources up front
+	// NOTE: the creation operator is non-zero on only 1 time slice; however,
+	// the smearing functions work on the entire lattice. Oh well.
 	for(int n=0; n < quarks.size(); ++n)
 	{
 	  QDPIO::cout << "Smearing sources for quark[" << n << "]  over dilutions = " 
@@ -1146,12 +1200,6 @@ namespace Chroma
       //
       // Baryon operators
       //
-      // Initialize the slow Fourier transform phases
-      SftMom phases(params.param.mom2_max, false, j_decay);
-    
-      // Length of lattice in decay direction
-      int length = phases.numSubsets();
-
       if (quarks.size() != 3)
       {
 	QDPIO::cerr << "expecting 3 quarks but have num quarks= " << quarks.size() << endl;
@@ -1212,32 +1260,10 @@ namespace Chroma
       creat_oper.seed_m      = quarks[1].seed;
       creat_oper.seed_r      = quarks[2].seed;
       creat_oper.smearing    = params.param.source_quark_smearing;
+      creat_oper.perms       = perms;
       creat_oper.orderings.resize(num_orderings);
-      creat_oper.perms.resize(num_orderings);
 
-      push(xml_out, "OperatorA");
-
-      // Sanity check
-      if ( toBool(creat_oper.seed_l == creat_oper.seed_m) )
-      {
-	QDPIO::cerr << "baryon op seeds are the same" << endl;
-	QDP_abort(1);
-      }
-
-      // Sanity check
-      if ( toBool(creat_oper.seed_l == creat_oper.seed_r) )
-      {
-	QDPIO::cerr << "baryon op seeds are the same" << endl;
-	QDP_abort(1);
-      }
-
-      // Sanity check
-      if ( toBool(creat_oper.seed_m == creat_oper.seed_r) )
-      {
-	QDPIO::cerr << "baryon op seeds are the same" << endl;
-	QDP_abort(1);
-      }
-
+      push(xml_out, "BaryonCreationOperator");
 
       // Construct creation operator
       QDPIO::cout << "Build creation operator" << endl;
@@ -1245,10 +1271,17 @@ namespace Chroma
       // Loop over all files of operators
       for(int f=0; f < coeffs.size(); ++f)
       {
+	// Set the id to be used in the analysis codes
+	creat_oper.id = params.named_obj.operator_coeff_files[f].id; 
+
 	// Loop over each operator within a file
 	for(int c=0; c < coeffs[f].ops.size(); ++c)
 	{
 	  QDPIO::cout << "Creation operator: f=" << f << "  op= " << c << endl;
+
+	  // The operator number. This is just the operator number within the 
+	  // coefficient file
+	  creat_oper.operator_num = c;
 
 	  // Loop over all orderings and build the operator
 	  swiss.reset();
@@ -1258,7 +1291,7 @@ namespace Chroma
 	  {
 	    QDPIO::cout << "Creation operator: ordering = " << ord << endl;
 
-	    creat_oper.perms[ord] = perms[ord];
+	    creat_oper.orderings[ord].perm = perms[ord];
 	    creat_oper.orderings[ord].time_slices.resize(participating_time_slices.size());
      
 	    const int n0 = perms[ord][0];
@@ -1317,24 +1350,34 @@ namespace Chroma
 		      const SmearedDispColorVector_t& disp_q1 = disp_quarks.find(key1)->second;
 		      const SmearedDispColorVector_t& disp_q2 = disp_quarks.find(key2)->second;
 
-		      // Contract over color indices with antisym tensor
-		      LatticeComplex b_oper =
+		      // Contract over color indices with antisym tensor.
+		      // There is a potential optimization here - the colorcontract of
+		      // the first two quarks could be pulled outside the innermost dilution
+		      // loop.
+		      // NOTE: the creation operator only lives on 1 time slice, so restrict
+		      // the operation to that time slice
+		      LatticeComplex b_oper;
+		      b_oper[phases.getSet()[cop.t0]] =
 			colorContract(disp_q0.quarks[n0].time_slices[t].dilutions[i].source,
 				      disp_q1.quarks[n1].time_slices[t].dilutions[j].source,
 				      disp_q2.quarks[n2].time_slices[t].dilutions[k].source);
 		    
-		      bar += term_q.coeff * b_oper;
+		      bar[phases.getSet()[cop.t0]] += term_q.coeff * b_oper;
 		    } // end for l
 
 		    // Slow fourier-transform
+		    // The FT routine requires all sites, oh well.
 		    multi2d<DComplex> hsum(phases.sft(bar));
 
 		    // Unpack into separate momentum and correlator
+		    // NOTE: because creation operator is only non-zero on 1 time slice, we only
+		    // keep that part
 		    cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
 		    for(int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
 		    {
-		      cop.dilutions(i,j,k).mom_projs[sink_mom_num].mom  = phases.numToMom(sink_mom_num);
-		      cop.dilutions(i,j,k).mom_projs[sink_mom_num].op   = hsum[sink_mom_num];
+		      cop.dilutions(i,j,k).mom_projs[sink_mom_num].mom   = phases.numToMom(sink_mom_num);
+		      cop.dilutions(i,j,k).mom_projs[sink_mom_num].op.resize(1);
+		      cop.dilutions(i,j,k).mom_projs[sink_mom_num].op[0] = hsum[sink_mom_num][cop.t0];
 		    }
 		  } // end for k
 		} // end for j
@@ -1371,7 +1414,7 @@ namespace Chroma
 	} // end for c (operator within a coeff file)
       } // end for f (coeff file)
 
-      pop(xml_out); // OperatorA
+      pop(xml_out); // BaryonCreationOperator
 
       swatch.stop();
 
@@ -1389,32 +1432,10 @@ namespace Chroma
       annih_oper.seed_m      = quarks[1].seed;
       annih_oper.seed_r      = quarks[2].seed;
       annih_oper.smearing    = params.param.sink_quark_smearing;
+      annih_oper.perms       = perms;
       annih_oper.orderings.resize(num_orderings);
-      annih_oper.perms.resize(num_orderings);
 
-      push(xml_out, "OperatorB");
-
-      // Sanity check
-      if ( toBool(annih_oper.seed_l == annih_oper.seed_m) )
-      {
-	QDPIO::cerr << "baryon op seeds are the same" << endl;
-	QDP_abort(1);
-      }
-
-      // Sanity check
-      if ( toBool(annih_oper.seed_l == annih_oper.seed_r) )
-      {
-	QDPIO::cerr << "baryon op seeds are the same" << endl;
-	QDP_abort(1);
-      }
-
-      // Sanity check
-      if ( toBool(annih_oper.seed_m == annih_oper.seed_r) )
-      {
-	QDPIO::cerr << "baryon op seeds are the same" << endl;
-	QDP_abort(1);
-      }
-
+      push(xml_out, "BaryonAnnihilationOperator");
 
       // Construct annihilation operator
       QDPIO::cout << "Build annihilation operator" << endl;
@@ -1422,10 +1443,17 @@ namespace Chroma
       // Loop over all files of operators
       for(int f=0; f < coeffs.size(); ++f)
       {
+	// Set the id to be used in the analysis codes
+	annih_oper.id = params.named_obj.operator_coeff_files[f].id; 
+
 	// Loop over each operator within a file
 	for(int c=0; c < coeffs[f].ops.size(); ++c)
 	{
 	  QDPIO::cout << "Annihilation operator: f=" << f << "  op= " << c << endl;
+
+	  // The operator number. This is just the operator number within the 
+	  // coefficient file
+	  annih_oper.operator_num = c;
 
 	  // Loop over all orderings and build the operator
 	  swiss.reset();
@@ -1435,7 +1463,7 @@ namespace Chroma
 	  {
 	    QDPIO::cout << "Annihilation operator: ordering = " << ord << endl;
 	  
-	    annih_oper.perms[ord] = perms[ord];
+	    annih_oper.orderings[ord].perm = perms[ord];
 	    annih_oper.orderings[ord].time_slices.resize(participating_time_slices.size());
      
 	    const int n0 = perms[ord][0];
