@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.2 2007-06-21 01:16:27 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.3 2007-06-21 01:44:07 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -720,6 +720,9 @@ namespace Chroma
       multi1d<QuarkSourceSolutions_t>  quarks(params.named_obj.quarks.size());
       QDPIO::cout << "Number of quarks= " << params.named_obj.quarks.size() << endl;
 
+      // Grab the decay direction
+      int j_decay;
+
       try
       {
 	QDPIO::cout << "quarks.size= " << quarks.size() << endl;
@@ -752,6 +755,7 @@ namespace Chroma
 	      read(record_xml, "/Propagator/ForwardProp", qq.prop_header);
 
 	      qq.t0 = qq.source_header.t_source;
+	      j_decay = qq.source_header.j_decay;
 	    }
 	  }
 	}
@@ -779,20 +783,22 @@ namespace Chroma
       // To prime the work, grab a first chunk of time slices for the
       // rest of the checks
       //
+      QDPIO::cout << __LINE__ << endl;
       multi1d<int> participating_time_slices(quarks[0].time_slices.size());
       for(int t=0; t < quarks[0].time_slices.size(); ++t)
       {
 	participating_time_slices[t] = quarks[0].time_slices[t].dilutions[0].t0;
       }
 
+      QDPIO::cout << __LINE__ << endl;
 //------------------------------------------------------      
 #if defined(STOCH_USE_ALL_TIME_SLICES)
       // Sanity check - this may be relaxed later
       // The time slices should be the entire length of the time axis
-      if (participating_time_slices.size() != QDP::Layout::lattSize()[quarks[0].decay_dir])
+      if (participating_time_slices.size() != QDP::Layout::lattSize()[j_decay])
       {
 	QDPIO::cerr << name << ": number of time slices not equal to that in the decay direction: " 
-		    << QDP::Layout::lattSize()[quarks[0].decay_dir]
+		    << QDP::Layout::lattSize()[j_decay]
 		    << endl;
 	QDP_abort(1);
       }
@@ -803,7 +809,7 @@ namespace Chroma
 	  if (participating_time_slices[t] != t)
 	  {
 	    QDPIO::cerr << name << ": number of time slices not equal to that in the decay direction: " 
-			<< QDP::Layout::lattSize()[quarks[0].decay_dir]
+			<< QDP::Layout::lattSize()[j_decay]
 			<< endl;
 	    QDP_abort(1);
 	  }
@@ -813,6 +819,7 @@ namespace Chroma
 //------------------------------------------------------      
 
 
+      QDPIO::cout << __LINE__ << endl;
 
       //
       // Check for each quark source that the solutions have their diluted
@@ -828,6 +835,7 @@ namespace Chroma
 	  bool first = true;
 	  int  N;
 	  LatticeFermion quark_noise;      // noisy source on entire lattice
+      QDPIO::cout << __LINE__ << endl;
 
 	  // Sanity check - the number of time slices better match
 	  if (participating_time_slices.size() != quarks[n].time_slices.size())
@@ -839,8 +847,10 @@ namespace Chroma
 
 	  for(int t=0; t < quarks[n].time_slices.size(); ++t)
 	  {
+      QDPIO::cout << __LINE__ << endl;
 	    for(int i=0; i < quarks[n].time_slices[t].dilutions.size(); ++i)
 	    {
+      QDPIO::cout << __LINE__ << endl;
 	      // Short-hand
 	      QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t& qq = 
 		quarks[n].time_slices[t].dilutions[i];
@@ -1142,8 +1152,6 @@ namespace Chroma
       //
       // Baryon operators
       //
-      int j_decay = quarks[0].decay_dir;
-
       // Initialize the slow Fourier transform phases
       SftMom phases(params.param.mom2_max, false, j_decay);
     
@@ -1255,8 +1263,9 @@ namespace Chroma
 	  for(int ord=0; ord < creat_oper.orderings.size(); ++ord)
 	  {
 	    QDPIO::cout << "Creation operator: ordering = " << ord << endl;
-	  
+
 	    creat_oper.perms[ord] = perms[ord];
+	    creat_oper.orderings[ord].time_slices.resize(participating_time_slices.size());
      
 	    const int n0 = perms[ord][0];
 	    const int n1 = perms[ord][1];
@@ -1433,6 +1442,7 @@ namespace Chroma
 	    QDPIO::cout << "Annihilation operator: ordering = " << ord << endl;
 	  
 	    annih_oper.perms[ord] = perms[ord];
+	    annih_oper.orderings[ord].time_slices.resize(participating_time_slices.size());
      
 	    const int n0 = perms[ord][0];
 	    const int n1 = perms[ord][1];
