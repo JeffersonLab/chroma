@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.5 2007-06-17 02:25:16 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 3.6 2007-06-23 21:44:36 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -107,6 +107,7 @@ namespace Chroma
 
     //! Invert the clover term on cb
     void chlclovms(LatticeReal& log_diag, int cb);
+    void ldagdlinv(LatticeReal& tr_log_diag, int cb);
 
     //! Get the u field
     const multi1d<LatticeColorMatrix>& getU() const {return u;}

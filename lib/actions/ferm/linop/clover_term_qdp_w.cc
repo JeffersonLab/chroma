@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.11 2007-06-17 02:25:16 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 3.12 2007-06-23 21:44:36 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -172,7 +172,8 @@ namespace Chroma
     for(int i=0; i < rb.numSubsets(); i++) {
       choles_done[i] = false;
     }
-    
+
+
     END_CODE();
   }
 
@@ -471,8 +472,9 @@ namespace Chroma
     START_CODE();
 
     // When you are doing the cholesky - also fill out the trace_log_diag piece)
-    chlclovms(tr_log_diag_, cb);
-    
+    // chlclovms(tr_log_diag_, cb);
+    // Switch to LDL^\dag inversion
+    ldagdlinv(tr_log_diag_,cb);
     END_CODE();
   }
 
@@ -494,11 +496,213 @@ namespace Chroma
       QDP_abort(1);
     }
 
+
     END_CODE();
 
     return sum(tr_log_diag_, rb[cb]);
   }
 
+
+
+  /*! An LDL^\dag decomposition and inversion? */
+  void QDPCloverTerm::ldagdlinv(LatticeReal& tr_log_diag, int cb)
+  {
+    START_CODE();
+
+    if ( 2*Nc < 3 )
+      QDP_error_exit("Matrix is too small", Nc, Ns);
+
+    // Zero trace log
+    tr_log_diag = zero;
+    RScalar<REAL> zip=0;
+
+    int N = 2*Nc;
+
+    // Loop through the sites.
+    for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
+    {
+      int site = rb[cb].siteTable()[ssite];
+
+      int site_neg_logdet=0;
+      // Loop through the blocks on the site.
+      for(int block=0; block < 2; block++) { 
+
+	// Triangular storage 
+	RScalar<REAL> inv_d[6] QDP_ALIGN16;
+	RComplex<REAL> inv_offd[15] QDP_ALIGN16;
+	RComplex<REAL> v[6] QDP_ALIGN16;
+	RScalar<REAL>  diag_g[6] QDP_ALIGN16;
+	// Algorithm 4.1.2 LDL^\dagger Decomposition
+	// From Golub, van Loan 3rd ed, page 139
+	for(int i=0; i < N; i++) { 
+	  inv_d[i] = tri[site].diag[block][i];
+	}
+	for(int i=0; i < 15; i++) { 
+	  inv_offd[i]  =tri[site].offd[block][i];
+	}
+
+	for(int j=0; j < N; ++j) { 
+
+	  // Compute v(0:j-1)
+	  //
+	  // for i=0:j-2
+          //   v(i) = A(j,i) A(i,i)
+	  // end
+
+
+	  for(int i=0; i < j; i++) { 
+	    int elem_ji = j*(j-1)/2 + i;
+
+	    RComplex<REAL> A_ii = cmplx( inv_d[i], zip );
+	    v[i] = A_ii*adj(inv_offd[elem_ji]);
+	  }
+	  
+	  // v(j) = A(j,j) - A(j, 0:j-2) v(0:j-2)
+	  //                 ^ This is done with a loop over k ie:
+	  //
+	  // v(j) = A(j,j) - sum_k A*(j,k) v(k)     k=0...j-2
+	  //
+	  //      = A(j,j) - sum_k A*(j,k) A(j,k) A(k,k)
+	  //      = A(j,j) - sum_k | A(j,k) |^2 A(k,k)
+ 
+	  v[j] = cmplx(inv_d[j],zip);
+
+	  for(int k=0; k < j; k++) { 
+	    int elem_jk = j*(j-1)/2 + k;
+	    v[j] -= inv_offd[elem_jk]*v[k];
+	  }
+	  
+
+	  // At this point in time v[j] has to be real, since
+	  // A(j,j) is from diag ie real and all | A(j,k) |^2 is real
+	  // as is A(k,k)
+	  
+	  // A(j,j) is the diagonal element - so store it.
+	  inv_d[j] = real( v[j] );
+
+	  // Last line of algorithm:
+	  // A( j+1 : n, j) = ( A(j+1:n, j) - A(j+1:n, 1:j-1)v(1:k-1) ) / v(j)
+	  //
+	  // use k as first colon notation and l as second so
+	  // 
+	  // for k=j+1 < n-1
+	  //      A(k,j) = A(k,j) ;
+	  //      for l=0 < j-1
+	  //         A(k,j) -= A(k, l) v(l)
+	  //      end
+	  //      A(k,j) /= v(j);
+	  //
+	  for(int k=j+1; k < N; k++) { 
+	    int elem_kj = k*(k-1)/2 + j;
+	    for(int l=0; l < j; l++) { 
+	      int elem_kl = k*(k-1)/2 + l;
+	      inv_offd[elem_kj] -= inv_offd[elem_kl] * v[l];
+	    }
+	    inv_offd[elem_kj] /= v[j];
+	  }
+	}
+
+	// Now fix up the inverse
+	RScalar<REAL> one;
+	one.elem() = (REAL)1;
+
+	for(int i=0; i < N; i++) { 
+	  diag_g[i] = one/inv_d[i];
+	
+	  // Compute the trace log
+	  // NB we are always doing trace log | A | 
+	  // (because we are always working with actually A^\dagger A
+	  //  even in one flavour case where we square root)
+	  tr_log_diag.elem(site).elem().elem().elem() += log(fabs(inv_d[i].elem()));
+	  // However, it is worth counting just the no of negative logdets
+	  // on site
+	  if( inv_d[i].elem() < 0 ) { 
+	    site_neg_logdet++;
+	  }
+	}
+	// Now we need to invert the L D L^\dagger 
+	// We can do this by solving:
+	//
+	//  L D L^\dagger M^{-1} = 1   
+	//
+	// This can be done by solving L D X = 1  (X = L^\dagger M^{-1})
+	//
+	// Then solving L^\dagger M^{-1} = X
+	//
+	// LD is lower diagonal and so X will also be lower diagonal.
+	// LD X = 1 can be solved by forward substitution.
+	//
+	// Likewise L^\dagger is strictly upper triagonal and so
+	// L^\dagger M^{-1} = X can be solved by forward substitution.
+	RComplex<REAL> sum;
+	for(int k = 0; k < N; ++k)
+	{
+	  for(int i = 0; i < k; ++i) {
+	    zero_rep(v[i]);
+	  }
+	  
+	  /*# Forward substitution */
+
+	  // The first element is the inverse of the diagonal
+	  v[k] = cmplx(diag_g[k],zip);
+      
+	  for(int i = k+1; i < N; ++i) {
+	    zero_rep(v[i]);
+
+	    for(int j = k; j < i; ++j) {
+	      int elem_ij = i*(i-1)/2+j;	
+
+	      // subtract l_ij*d_j*x_{kj}
+	      v[i] -= inv_offd[elem_ij] *inv_d[j]*v[j];
+
+	    }
+	
+	    // scale out by 1/d_i
+	    v[i] *= diag_g[i];
+	  }
+      
+	  /*# Backward substitution */
+	  // V[N-1] remains unchanged
+	  // Start from V[N-2]
+
+	  for(int i = N-2; (int)i >= (int)k; --i) {
+	    for(int j = i+1; j < N; ++j) {
+	      int elem_ji = j*(j-1)/2 + i;
+	      // Subtract terms of typ (l_ji)*x_kj
+	      v[i] -= adj(inv_offd[elem_ji]) * v[j];
+	    }
+	  }
+
+	  /*# Overwrite column k of invcl.offd */
+	  inv_d[k] = real(v[k]);
+	  for(int i = k+1; i < N; ++i)
+	  {
+	    int elem_ik = i*(i-1)/2+k;
+	    inv_offd[elem_ik] = v[i];
+	  }
+	}
+
+
+	// Overwrite original data
+	for(int i=0; i < N; i++) { 
+	  tri[site].diag[block][i] = inv_d[i];
+	}
+	for(int i=0; i < 15; i++) { 
+	  tri[site].offd[block][i] = inv_offd[i];
+	}
+      }
+
+      if( site_neg_logdet % 2 != 0 ) { 
+	// Report if site had odd number of negative terms. (-ve def)
+	std::cout << "WARNING: Odd number of negative terms in Clover DET (" 
+		  << site_neg_logdet<< ") at site: " << site << endl;
+      }
+    }
+    
+    // This comes from the days when we used to do Cholesky
+    choles_done[cb] = true;
+    END_CODE();
+  }
  
   /*! CHLCLOVMS - Cholesky decompose the clover mass term and uses it to
    *              compute  lower(A^-1) = lower((L.L^dag)^-1)
