@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_bagel_clover.h,v 1.4 2007-06-21 13:32:47 bjoo Exp $
+// $Id: clover_term_bagel_clover.h,v 1.5 2007-06-26 20:42:24 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -113,7 +113,10 @@ namespace Chroma
      */
     void makeClov(const multi1d<LatticeColorMatrix>& f, const Real& diag_mass);
 
-    //! Invert the clover term on cb
+    //! Invert the clover term on cb using LDL^\dagger decomp
+    void ldagdlinv(LatticeReal& tr_log_diag, int cb);
+
+    //! Invert the clover term on cb using Cholesky decomp
     void chlclovms(LatticeReal& log_diag, int cb);
 
     //! Get the u field
