@@ -1,6 +1,11 @@
-//  $Id: sftmom.cc,v 3.4 2007-06-21 18:18:55 edwards Exp $
+//  $Id: sftmom.cc,v 3.5 2007-08-01 19:33:14 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.4  2007-06-21 18:18:55  edwards
+//  Revision 3.5  2007-08-01 19:33:14  edwards
+//  Removed check for origin_offset must be zero in case of momentum averaging.
+//  The check is not needed. The phase of the origin is removed in the correct
+//  way no matter whether the phases are added together or not.
+//
+//  Revision 3.4  2007/06/21 18:18:55  edwards
 //  Added subset versions of "sft" function.
 //
 //  Revision 3.3  2007/06/12 16:10:01  edwards
@@ -195,32 +200,6 @@ namespace Chroma
     mom_offset    = mom_off;    // private copy
     avg_equiv_mom = avg_mom;    // private copy
 
-    // GTF: this is fixable.
-
-    // Averaging over equivalent momenta is only allowed if 
-    // mom_offset is zero.
-    if (avg_equiv_mom) {
-      bool zero_offset = true ;
-
-      for (int mu=0; mu < origin_offset.size(); ++mu) {
-	if (mu == decay_dir) continue;        // RGE: I believe this test should be present
-
-	if (origin_offset[mu] != 0) {
-	  zero_offset = false ;
-	}
-      }
-
-      for (int mu=0; mu < mom_offset.size(); ++mu) {
-	if (mom_offset[mu] != 0) {
-	  zero_offset = false ;
-	}
-      }
-
-      if (!zero_offset) {
-	QDP_error_exit("SftMom: averaging not allowed with non-zero offset") ;
-      }
-    }
-
     sft_set.make(TimeSliceFunc(j_decay)) ;
 
     // determine the number of momenta with mom^2 <= (mom_max)^2
@@ -406,6 +385,10 @@ namespace Chroma
 	}
       } // end if (avg_equiv_mom)
 
+      //
+      // Build the phase. 
+      // RGE: the origin_offset works with or without momentum averaging
+      //
       LatticeReal p_dot_x ;
       p_dot_x = 0. ;
 
@@ -428,6 +411,7 @@ namespace Chroma
     } // end for (int n=0; n < mom_vol; ++n)
 
     // Finish averaging
+    // Momentum averaging works even in the presence of an origin_offset
     if (avg_equiv_mom) {
       for (int mom_num=0; mom_num < num_mom; ++mom_num)
 	phases[mom_num] /= mom_degen[mom_num] ;
