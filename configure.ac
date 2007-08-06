@@ -1,4 +1,4 @@
-AC_INIT(chroma,3.24.0,edwards@jlab.org)
+AC_INIT(chroma,3.23.0_patch1_1,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AM_INIT_AUTOMAKE
@@ -78,15 +78,6 @@ AC_ARG_ENABLE(bagel_wilson_dslash_sloppy,
 	[Enable Sloppy Precision in BAGEL Dslash -- different internal and external precisions]),
 	[bagel_wilson_dslash_sloppy="yes"],
 	[bagel_wilson_dslash_sloppy="no"]
-)
-
-AC_ARG_WITH(bagel_clover,
-  AC_HELP_STRING(
-    [--with-bagel-clover=DIR],
-    [Use the BAGEL Clover Apply Library installed in DIR]
-  ),
-    [bagel_clover_enabled="yes"
-     BAGEL_CLOVER_HOME="${with_bagel_clover}"]
 )
 
 AC_ARG_ENABLE(asqtad_cps_inverter,
@@ -338,65 +329,6 @@ fi
 
 
 AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH, [test "x${bagel_wilson_dslash_enabled}x" = "xyesx" ])
-
-if test "X${bagel_clover_enabled}X" = "XyesX";
-then
-   AC_MSG_NOTICE( [Configuring with BAGEL Clover Apply] )   
-   AC_DEFINE([BUILD_BAGEL_CLOVER_TERM],[], [ Use the BAGEL Clover Term Apply library])
-   if test "X${BAGEL_CLOVER_HOME}X" = "XyesX";
-   then 
-     AC_PATH_PROG([BAGEL_CLOVER_CONFIG], [bagel-clover-config], [])
-   else
-     AC_PATH_PROG([BAGEL_CLOVER_CONFIG], [bagel-clover-config], [], [${BAGEL_CLOVER_HOME}/bin:${PATH}])
-   fi     
-
-dnl check that the program has been found
-   if test "X${BAGEL_CLOVER_CONFIG}X" = "XX"; 
-   then
-     AC_MSG_WARN([bagel-clover-config script for bagel_wilson_dslash not found])
-     AC_SUBST(BAGEL_CLOVER_DSLASH_CXXFLAGS, ${BAGEL_CLOVER_CXXFLAGS})
-     AC_SUBST(BAGEL_CLOVER_DSLASH_LDFLAGS, ${BAGEL_CLOVER_LDFLAGS})
-     AC_SUBST(BAGEL_CLOVER_DSLASH_LIBS, ${BAGEL_CLOVER_LIBS})
-   else 
-     AC_MSG_NOTICE([Found bagel-clover-config configuration program ${BAGEL_CLOVER_CONFIG}])
-     AC_SUBST(BAGEL_CLOVER_CXXFLAGS, "`${BAGEL_CLOVER_CONFIG} --cxxflags`")
-     AC_MSG_NOTICE([Bagel_Clover compile flags: ${BAGEL_CLOVER_CXXFLAGS}])
-     AC_SUBST(BAGEL_CLOVER_LDFLAGS, "`${BAGEL_CLOVER_CONFIG} --ldflags`")
-     AC_MSG_NOTICE([Bagel_Clover link flags : ${BAGEL_CLOVER_LDFLAGS}])
-     AC_SUBST(BAGEL_CLOVER_LIBS,     "`${BAGEL_CLOVER_CONFIG} --libs`")
-     AC_MSG_NOTICE([Bagel Clover libraries flags: ${BAGEL_CLOVER_LIBS}])
-   fi
-else
-   AC_SUBST(BAGEL_CLOVER_CXXFLAGS, "")
-   AC_SUBST(BAGEL_CLOVER_LDFLAGS, "")
-   AC_SUBST(BAGEL_CLOVER_LIBS, "")
-   AC_MSG_NOTICE( [Not using BAGEL Clover] )  
-fi
-
-if test "X${bagel_clover_enabled}X" = "XyesX";
-then
-  AC_MSG_CHECKING([if we can compile/link a simple BAGEL Clover program])
-  PAC_BAGEL_CLOVER_LINK_CXX_FUNC(
-    ${BAGEL_CLOVER_CXXFLAGS},
-    ${BAGEL_CLOVER_LDFLAGS},
-    ${BAGEL_CLOVER_LIBS},
-    [],
-    [bagel_clover(0, 0, 0, 0, 1);],
-    [bagel_clover_link_ok=yes],
-    [bagel_clover_link_ok=no]
-  )
-  if test "X${bagel_clover_link_ok}X" = "XyesX"; 
-  then 
-    AC_MSG_RESULT(yes)
-  else 
-    AC_MSG_RESULT(no)
-    AC_MSG_ERROR([Cannot compile/link a program with Bagel Clover. Use --with-bagel-clover=<dir> to select a working version.])
-  fi 
-
-fi
-
-AM_CONDITIONAL(BUILD_BAGEL_CLOVER_APPLY, [test "x${bagel_clover_enabled}x" = "xyesx" ])
-
 
 dnl QCDOC Asqtad Inverter stuff
 case "$enable_asqtad_cps_inverter" in
