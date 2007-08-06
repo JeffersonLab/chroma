@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.182 2007-07-17 19:16:44 uid4709 Exp $
+# $Id: Makefile.in,v 3.166.2.1 2007-08-06 21:37:45 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -44,11 +44,10 @@ POST_UNINSTALL = :
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 @BUILD_CG_DWF_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@CG_DWF_DIR@ -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
 @BUILD_QMT_TRUE@am__append_4 = @QMT_CXXFLAGS@
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_5 = @BAGEL_CLOVER_CXXFLAGS@
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
-@BUILD_GMP_REMEZ_TRUE@am__append_6 = update/molecdyn/monomial/remez_gmp.h
-@BUILD_GMP_REMEZ_TRUE@am__append_7 = update/molecdyn/monomial/remez_gmp.cc
+@BUILD_GMP_REMEZ_TRUE@am__append_5 = update/molecdyn/monomial/remez_gmp.h
+@BUILD_GMP_REMEZ_TRUE@am__append_6 = update/molecdyn/monomial/remez_gmp.cc
 
 # Taken out for now
 #	meas/inline/hadron/inline_spectrum_w.cc
@@ -58,15 +57,15 @@ POST_UNINSTALL = :
 #
 # Hooks for optimized code
 #
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_8 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_7 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.h \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.h
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_9 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_8 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.cc
 
-@BUILD_CG_DWF_TRUE@am__append_10 = \
+@BUILD_CG_DWF_TRUE@am__append_9 = \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
 @BUILD_CG_DWF_TRUE@        actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_inverter_interface.h \
@@ -76,29 +75,27 @@ POST_UNINSTALL = :
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_bgld_solver.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_altivecf_solver.h
 
-@BUILD_CG_DWF_TRUE@am__append_11 = actions/ferm/qprop/avp_inverter_interface.cc
-@BUILD_CG_DWF_SSE_TRUE@am__append_12 = actions/ferm/qprop/avp_ssef_solver.cc \
+@BUILD_CG_DWF_TRUE@am__append_10 = actions/ferm/qprop/avp_inverter_interface.cc
+@BUILD_CG_DWF_SSE_TRUE@am__append_11 = actions/ferm/qprop/avp_ssef_solver.cc \
 @BUILD_CG_DWF_SSE_TRUE@	actions/ferm/qprop/avp_ssed_solver.cc
 
-@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_13 = actions/ferm/qprop/avp_bglf_solver.cc \
+@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_12 = actions/ferm/qprop/avp_bglf_solver.cc \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@	actions/ferm/qprop/avp_bgld_solver.cc
 
-@BUILD_CG_DWF_ALTIVEC_TRUE@am__append_14 = actions/ferm/qprop/avp_altivecf_solver.cc
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_15 = actions/ferm/linop/lwldslash_w_pab.h \
+@BUILD_CG_DWF_ALTIVEC_TRUE@am__append_13 = actions/ferm/qprop/avp_altivecf_solver.cc
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_14 = actions/ferm/linop/lwldslash_w_pab.h \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	                  actions/ferm/linop/lwldslash_array_pab_w.h
 
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_16 = actions/ferm/linop/lwldslash_w_pab.cc \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_15 = actions/ferm/linop/lwldslash_w_pab.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@		       actions/ferm/linop/lwldslash_array_pab_w.cc
 
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_17 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_18 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_16 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_17 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_19 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_20 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_21 = actions/ferm/linop/clover_term_bagel_clover.h
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_22 = actions/ferm/linop/clover_term_bagel_clover.cc
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_18 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_19 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -157,17 +154,13 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
 	actions/ferm/invert/syssolver_cg_params.cc \
 	actions/ferm/invert/syssolver_mr_params.cc \
-	actions/ferm/invert/syssolver_bicgstab_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
-	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
-	actions/ferm/invert/syssolver_linop_bicgstab.cc \
-	actions/ferm/invert/syssolver_linop_mr.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \
 	actions/ferm/invert/multi_syssolver_mr_params.cc \
 	actions/ferm/invert/multi_syssolver_linop_aggregate.cc \
@@ -182,7 +175,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
 	actions/ferm/qprop/asqtad_qprop.cc \
-	actions/ferm/qprop/hisq_qprop.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
@@ -190,10 +182,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc \
-	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc \
-	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc \
-	actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc \
-	actions/gauge/gaugeacts/aniso_sym_shared_functions.cc \
 	actions/gauge/gaugeacts/wilson_gaugeact_params.cc \
 	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.cc \
@@ -246,9 +234,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
 	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/block.cc \
 	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
-	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
-	meas/hadron/hadron_contract_aggregate.cc \
-	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
+	meas/hadron/hadron_seqsource.cc meas/hadron/mesQl_w.cc \
 	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
 	meas/hadron/spin_insertion_aggregate.cc \
 	meas/hadron/no_spin_insertion.cc meas/hadron/stoch_var.cc \
@@ -458,8 +444,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/meson_seqsrc_w.cc \
 	meas/hadron/simple_meson_seqsrc_w.cc \
 	meas/hadron/deriv_meson_seqsrc_w.cc \
-	meas/hadron/photon_seqsrc_w.cc \
-	meas/hadron/simple_meson_2pt_w.cc meas/hadron/mesons_w.cc \
+	meas/hadron/photon_seqsrc_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/mesons2_w.cc meas/hadron/qqq_w.cc \
 	meas/hadron/qqbar_w.cc \
 	meas/hadron/baryon_operator_aggregate_w.cc \
@@ -512,7 +497,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
-	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
@@ -537,17 +521,15 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
-	meas/inline/hadron/inline_stoch_group_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
-	meas/inline/hadron/inline_npr_w.cc \
 	meas/inline/hadron/inline_stag_to_wils.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_make_source_s.cc \
 	meas/inline/hadron_s/inline_propagator_s.cc \
 	meas/inline/hadron_s/inline_sink_smear_s.cc \
-	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
+	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
 	meas/inline/hadron_s/util_compute_quark_prop_s.cc \
 	meas/inline/hadron_s/util_compute_singlet_ps.cc \
 	meas/inline/hadron_s/util_compute_meson_s.cc \
@@ -591,8 +573,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
-	actions/ferm/fermacts/hisq_fermact_params_s.cc \
-	actions/ferm/fermacts/hisq_fermact_s.cc \
 	actions/ferm/fermacts/klein_gordon_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
@@ -620,7 +600,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
 	util/gauge/stag_phases_s.cc \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc \
-	actions/ferm/linop/clover_term_bagel_clover.cc \
 	init/chroma_init.cc
 @BUILD_GMP_REMEZ_TRUE@am__objects_1 = remez_gmp.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 =  \
@@ -639,7 +618,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_array_pab_w.$(OBJEXT)
 @BUILD_OPT_CFZ_LINOP_TRUE@am__objects_8 = eoprec_ovlap_contfrac5d_linop_array_opt_w.$(OBJEXT)
 @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_9 = asqtad_cps_wrapper_qprop.$(OBJEXT)
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_10 = clover_term_bagel_clover.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	zolotarev_coeffs.$(OBJEXT) \
 	ovext_tuning_strategy_aggregate.$(OBJEXT) \
@@ -660,17 +638,13 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	syssolver_mdagm_aggregate.$(OBJEXT) \
 	syssolver_polyprec_aggregate.$(OBJEXT) \
 	syssolver_cg_params.$(OBJEXT) syssolver_mr_params.$(OBJEXT) \
-	syssolver_bicgstab_params.$(OBJEXT) \
 	syssolver_linop_cg.$(OBJEXT) \
 	syssolver_linop_cg_timing.$(OBJEXT) \
 	syssolver_linop_cg_array.$(OBJEXT) \
 	syssolver_mdagm_cg.$(OBJEXT) \
-	syssolver_mdagm_bicgstab.$(OBJEXT) \
 	syssolver_mdagm_cg_timing.$(OBJEXT) \
 	syssolver_mdagm_cg_array.$(OBJEXT) \
 	syssolver_polyprec_cg.$(OBJEXT) \
-	syssolver_linop_bicgstab.$(OBJEXT) \
-	syssolver_linop_mr.$(OBJEXT) \
 	multi_syssolver_cg_params.$(OBJEXT) \
 	multi_syssolver_mr_params.$(OBJEXT) \
 	multi_syssolver_linop_aggregate.$(OBJEXT) \
@@ -682,16 +656,11 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	eoprec_fermact_qprop.$(OBJEXT) \
 	central_tprec_fermact_qprop_w.$(OBJEXT) \
 	eoprec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
-	asqtad_qprop.$(OBJEXT) hisq_qprop.$(OBJEXT) \
-	gaugeacts_aggregate.$(OBJEXT) plaq_gaugeact.$(OBJEXT) \
-	rect_gaugeact.$(OBJEXT) pg_gaugeact.$(OBJEXT) \
-	spatial_two_plaq_gaugeact.$(OBJEXT) \
+	asqtad_qprop.$(OBJEXT) gaugeacts_aggregate.$(OBJEXT) \
+	plaq_gaugeact.$(OBJEXT) rect_gaugeact.$(OBJEXT) \
+	pg_gaugeact.$(OBJEXT) spatial_two_plaq_gaugeact.$(OBJEXT) \
 	plaq_plus_spatial_two_plaq_gaugeact.$(OBJEXT) \
 	aniso_spectrum_gaugeact.$(OBJEXT) \
-	aniso_sym_gaugeact_params.$(OBJEXT) \
-	aniso_sym_spatial_gaugeact.$(OBJEXT) \
-	aniso_sym_temporal_gaugeact.$(OBJEXT) \
-	aniso_sym_shared_functions.$(OBJEXT) \
 	wilson_gaugeact_params.$(OBJEXT) wilson_gaugeact.$(OBJEXT) \
 	spatial_wilson_gaugeact.$(OBJEXT) \
 	temporal_wilson_gaugeact.$(OBJEXT) lw_tree_gaugeact.$(OBJEXT) \
@@ -730,19 +699,17 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
 	mesplq.$(OBJEXT) polylp.$(OBJEXT) wilslp.$(OBJEXT) \
 	block.$(OBJEXT) fuzglue.$(OBJEXT) gluecor.$(OBJEXT) \
-	polycor.$(OBJEXT) hadron_seqsource.$(OBJEXT) \
-	hadron_contract.$(OBJEXT) hadron_contract_aggregate.$(OBJEXT) \
-	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) mesQlPOT_w.$(OBJEXT) \
-	barQll_w.$(OBJEXT) spin_insertion_aggregate.$(OBJEXT) \
-	no_spin_insertion.$(OBJEXT) stoch_var.$(OBJEXT) \
-	pt_sink_smearing.$(OBJEXT) sh_sink_smearing.$(OBJEXT) \
-	sink_smearing_aggregate.$(OBJEXT) ape_smear.$(OBJEXT) \
-	displace.$(OBJEXT) displacement.$(OBJEXT) fuzz_smear.$(OBJEXT) \
-	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) hyp_smear3d.$(OBJEXT) \
-	laplacian.$(OBJEXT) stout_smear.$(OBJEXT) \
-	link_smearing_aggregate.$(OBJEXT) ape_link_smearing.$(OBJEXT) \
-	hyp_link_smearing.$(OBJEXT) no_link_smearing.$(OBJEXT) \
-	stout_link_smearing.$(OBJEXT) \
+	polycor.$(OBJEXT) hadron_seqsource.$(OBJEXT) mesQl_w.$(OBJEXT) \
+	mesQlPOT_w.$(OBJEXT) barQll_w.$(OBJEXT) \
+	spin_insertion_aggregate.$(OBJEXT) no_spin_insertion.$(OBJEXT) \
+	stoch_var.$(OBJEXT) pt_sink_smearing.$(OBJEXT) \
+	sh_sink_smearing.$(OBJEXT) sink_smearing_aggregate.$(OBJEXT) \
+	ape_smear.$(OBJEXT) displace.$(OBJEXT) displacement.$(OBJEXT) \
+	fuzz_smear.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
+	hyp_smear3d.$(OBJEXT) laplacian.$(OBJEXT) \
+	stout_smear.$(OBJEXT) link_smearing_aggregate.$(OBJEXT) \
+	ape_link_smearing.$(OBJEXT) hyp_link_smearing.$(OBJEXT) \
+	no_link_smearing.$(OBJEXT) stout_link_smearing.$(OBJEXT) \
 	quark_smearing_aggregate.$(OBJEXT) no_quark_smearing.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) \
 	quark_displacement_aggregate.$(OBJEXT) \
@@ -895,9 +862,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	curcor3_w.$(OBJEXT) formfac_w.$(OBJEXT) hybmeson_w.$(OBJEXT) \
 	loops_w.$(OBJEXT) meson_seqsrc_w.$(OBJEXT) \
 	simple_meson_seqsrc_w.$(OBJEXT) deriv_meson_seqsrc_w.$(OBJEXT) \
-	photon_seqsrc_w.$(OBJEXT) simple_meson_2pt_w.$(OBJEXT) \
-	mesons_w.$(OBJEXT) mesons2_w.$(OBJEXT) qqq_w.$(OBJEXT) \
-	qqbar_w.$(OBJEXT) baryon_operator_aggregate_w.$(OBJEXT) \
+	photon_seqsrc_w.$(OBJEXT) mesons_w.$(OBJEXT) \
+	mesons2_w.$(OBJEXT) qqq_w.$(OBJEXT) qqbar_w.$(OBJEXT) \
+	baryon_operator_aggregate_w.$(OBJEXT) \
 	seqsource_aggregate_w.$(OBJEXT) seqpiontest_w.$(OBJEXT) \
 	simple_spin_insertion_w.$(OBJEXT) walldeltaff_w.$(OBJEXT) \
 	walldeltapff_w.$(OBJEXT) wallff_w.$(OBJEXT) \
@@ -939,7 +906,6 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_apply_gaugestate.$(OBJEXT) inline_plaquette.$(OBJEXT) \
 	inline_polylp.$(OBJEXT) inline_wilslp.$(OBJEXT) \
 	inline_fuzwilp.$(OBJEXT) inline_hadron_aggregate.$(OBJEXT) \
-	inline_hadron_contract.$(OBJEXT) \
 	inline_apply_fermstate_w.$(OBJEXT) \
 	inline_make_source_w.$(OBJEXT) \
 	inline_make_source_ferm_w.$(OBJEXT) \
@@ -956,14 +922,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_noisy_building_blocks_w.$(OBJEXT) \
 	inline_mres_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
 	inline_qpropadd_w.$(OBJEXT) inline_qqqNucNuc_w.$(OBJEXT) \
-	inline_stoch_baryon_w.$(OBJEXT) \
-	inline_stoch_group_baryon_w.$(OBJEXT) \
-	inline_stoch_meson_w.$(OBJEXT) inline_npr_vertex_w.$(OBJEXT) \
-	inline_npr_w.$(OBJEXT) inline_stag_to_wils.$(OBJEXT) \
+	inline_stoch_baryon_w.$(OBJEXT) inline_stoch_meson_w.$(OBJEXT) \
+	inline_npr_vertex_w.$(OBJEXT) inline_stag_to_wils.$(OBJEXT) \
 	inline_hadron_aggregate_s.$(OBJEXT) \
 	inline_make_source_s.$(OBJEXT) inline_propagator_s.$(OBJEXT) \
-	inline_sink_smear_s.$(OBJEXT) \
-	inline_apply_fermstate_s.$(OBJEXT) inline_spectrum_s.$(OBJEXT) \
+	inline_sink_smear_s.$(OBJEXT) inline_spectrum_s.$(OBJEXT) \
+	inline_apply_fermstate_s.$(OBJEXT) \
 	util_compute_quark_prop_s.$(OBJEXT) \
 	util_compute_singlet_ps.$(OBJEXT) \
 	util_compute_meson_s.$(OBJEXT) \
@@ -988,7 +952,6 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) fermacts_aggregate_s.$(OBJEXT) \
 	asqtad_fermact_params_s.$(OBJEXT) asqtad_fermact_s.$(OBJEXT) \
-	hisq_fermact_params_s.$(OBJEXT) hisq_fermact_s.$(OBJEXT) \
 	klein_gordon_fermact_s.$(OBJEXT) fermbcs_reader_s.$(OBJEXT) \
 	fermbcs_aggregate_s.$(OBJEXT) simple_fermbc_s.$(OBJEXT) \
 	ferm_createstate_aggregate_s.$(OBJEXT) \
@@ -1007,7 +970,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	pseudoscalar_stoch_conn_s.$(OBJEXT) \
 	deriv_quark_displacement_s.$(OBJEXT) quark_flavor_s.$(OBJEXT) \
 	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_9) \
-	$(am__objects_10) chroma_init.$(OBJEXT)
+	chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -1073,16 +1036,12 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/syssolver_polyprec_aggregate.h \
 	actions/ferm/invert/syssolver_cg_params.h \
 	actions/ferm/invert/syssolver_mr_params.h \
-	actions/ferm/invert/syssolver_bicgstab_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
-	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
 	actions/ferm/invert/syssolver_mdagm_cg_array.h \
-	actions/ferm/invert/syssolver_linop_bicgstab.h \
-	actions/ferm/invert/syssolver_linop_mr.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
 	actions/ferm/invert/multi_syssolver_mr_params.h \
 	actions/ferm/invert/multi_syssolver_linop.h \
@@ -1106,10 +1065,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
-	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.h \
-	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.h \
-	actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.h \
-	actions/gauge/gaugeacts/aniso_sym_shared_functions.h \
 	actions/gauge/gaugeacts/wilson_gaugeact_params.h \
 	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.h \
@@ -1166,11 +1121,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/block.h \
 	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
 	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
-	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
-	meas/hadron/hadron_contract_aggregate.h \
-	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
-	meas/hadron/mesQl_w.h meas/hadron/mesQlPOT_w.h \
-	meas/hadron/barQll_w.h meas/hadron/spin_insertion.h \
+	meas/hadron/hadron_seqsource.h meas/hadron/mesQl_w.h \
+	meas/hadron/mesQlPOT_w.h meas/hadron/barQll_w.h \
+	meas/hadron/spin_insertion.h \
 	meas/hadron/spin_insertion_factory.h \
 	meas/hadron/spin_insertion_aggregate.h \
 	meas/hadron/no_spin_insertion.h meas/hadron/stoch_var.h \
@@ -1442,9 +1395,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/hybmeson_w.h meas/hadron/meson_seqsrc_w.h \
 	meas/hadron/simple_meson_seqsrc_w.h \
 	meas/hadron/deriv_meson_seqsrc_w.h \
-	meas/hadron/photon_seqsrc_w.h meas/hadron/simple_meson_2pt_w.h \
-	meas/hadron/mesons_w.h meas/hadron/mesons2_w.h \
-	meas/hadron/seqpiontest_w.h \
+	meas/hadron/photon_seqsrc_w.h meas/hadron/mesons_w.h \
+	meas/hadron/mesons2_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/baryon_operator_aggregate_w.h \
 	meas/hadron/baryon_operator_factory_w.h \
 	meas/hadron/seqsource_aggregate_w.h \
@@ -1500,8 +1452,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
-	actions/ferm/fermacts/hisq_fermact_params_s.h \
-	actions/ferm/fermacts/hisq_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermacts/klein_gordon_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
@@ -1521,7 +1471,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/klein_gordon_linop_s.h \
 	actions/ferm/qprop/eoprec_staggered_qprop.h \
 	actions/ferm/qprop/asqtad_qprop.h \
-	actions/ferm/qprop/hisq_qprop.h \
 	actions/ferm/qprop/quarkprop4_s.h io/follana_io_s.h io/io_s.h \
 	meas/eig/eig_s.h meas/hadron/baryon_s.h \
 	meas/hadron/ks_local_loops.h meas/hadron/hadron_s.h \
@@ -1539,8 +1488,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
 	util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
-	meas/inline/hadron_s/inline_spectrum_s.h io/inline_io.h \
-	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
+	io/inline_io.h meas/inline/inline.h \
+	meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
 	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
 	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
@@ -1555,7 +1504,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
-	meas/inline/hadron/inline_hadron_contract.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -1580,15 +1528,14 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
 	meas/inline/hadron/inline_qqqNucNuc_w.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
-	meas/inline/hadron/inline_stoch_group_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
 	meas/inline/hadron/inline_npr_vertex_w.h \
-	meas/inline/hadron/inline_npr_w.h \
 	meas/inline/hadron/inline_stag_to_wils.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/inline_make_source_s.h \
 	meas/inline/hadron_s/inline_propagator_s.h \
 	meas/inline/hadron_s/inline_sink_smear_s.h \
+	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/inline_apply_fermstate_s.h \
 	meas/inline/hadron_s/util_compute_quark_prop_s.h \
 	meas/inline/io/io.h meas/inline/io/named_objmap.h \
@@ -1630,8 +1577,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/lwldslash_w_pab.h \
 	actions/ferm/linop/lwldslash_array_pab_w.h \
 	actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h \
-	actions/ferm/qprop/asqtad_cps_wrapper_qprop.h \
-	actions/ferm/linop/clover_term_bagel_clover.h
+	actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
 nobase_includeHEADERS_INSTALL = $(install_sh_DATA)
 nodist_includeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(nobase_include_HEADERS) $(nodist_include_HEADERS)
@@ -1648,21 +1594,12 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BAGEL_CLOVER_CONFIG = @BAGEL_CLOVER_CONFIG@
-BAGEL_CLOVER_CXXFLAGS = @BAGEL_CLOVER_CXXFLAGS@
-BAGEL_CLOVER_DSLASH_CXXFLAGS = @BAGEL_CLOVER_DSLASH_CXXFLAGS@
-BAGEL_CLOVER_DSLASH_LDFLAGS = @BAGEL_CLOVER_DSLASH_LDFLAGS@
-BAGEL_CLOVER_DSLASH_LIBS = @BAGEL_CLOVER_DSLASH_LIBS@
-BAGEL_CLOVER_LDFLAGS = @BAGEL_CLOVER_LDFLAGS@
-BAGEL_CLOVER_LIBS = @BAGEL_CLOVER_LIBS@
 BAGEL_WILSON_DSLASH_CONFIG = @BAGEL_WILSON_DSLASH_CONFIG@
 BAGEL_WILSON_DSLASH_CXXFLAGS = @BAGEL_WILSON_DSLASH_CXXFLAGS@
 BAGEL_WILSON_DSLASH_LDFLAGS = @BAGEL_WILSON_DSLASH_LDFLAGS@
 BAGEL_WILSON_DSLASH_LIBS = @BAGEL_WILSON_DSLASH_LIBS@
 BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE = @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE@
 BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE = @BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@
-BUILD_BAGEL_CLOVER_APPLY_FALSE = @BUILD_BAGEL_CLOVER_APPLY_FALSE@
-BUILD_BAGEL_CLOVER_APPLY_TRUE = @BUILD_BAGEL_CLOVER_APPLY_TRUE@
 BUILD_CG_DWF_ALTIVEC_FALSE = @BUILD_CG_DWF_ALTIVEC_FALSE@
 BUILD_CG_DWF_ALTIVEC_TRUE = @BUILD_CG_DWF_ALTIVEC_TRUE@
 BUILD_CG_DWF_BLUELIGHT_FALSE = @BUILD_CG_DWF_BLUELIGHT_FALSE@
@@ -1852,16 +1789,12 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/syssolver_polyprec_aggregate.h \
 	actions/ferm/invert/syssolver_cg_params.h \
 	actions/ferm/invert/syssolver_mr_params.h \
-	actions/ferm/invert/syssolver_bicgstab_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
-	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
 	actions/ferm/invert/syssolver_mdagm_cg_array.h \
-	actions/ferm/invert/syssolver_linop_bicgstab.h \
-	actions/ferm/invert/syssolver_linop_mr.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
 	actions/ferm/invert/multi_syssolver_mr_params.h \
 	actions/ferm/invert/multi_syssolver_linop.h \
@@ -1885,10 +1818,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
-	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.h \
-	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.h \
-	actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.h \
-	actions/gauge/gaugeacts/aniso_sym_shared_functions.h \
 	actions/gauge/gaugeacts/wilson_gaugeact_params.h \
 	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.h \
@@ -1945,11 +1874,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/block.h \
 	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
 	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
-	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
-	meas/hadron/hadron_contract_aggregate.h \
-	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
-	meas/hadron/mesQl_w.h meas/hadron/mesQlPOT_w.h \
-	meas/hadron/barQll_w.h meas/hadron/spin_insertion.h \
+	meas/hadron/hadron_seqsource.h meas/hadron/mesQl_w.h \
+	meas/hadron/mesQlPOT_w.h meas/hadron/barQll_w.h \
+	meas/hadron/spin_insertion.h \
 	meas/hadron/spin_insertion_factory.h \
 	meas/hadron/spin_insertion_aggregate.h \
 	meas/hadron/no_spin_insertion.h meas/hadron/stoch_var.h \
@@ -2221,9 +2148,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/hybmeson_w.h meas/hadron/meson_seqsrc_w.h \
 	meas/hadron/simple_meson_seqsrc_w.h \
 	meas/hadron/deriv_meson_seqsrc_w.h \
-	meas/hadron/photon_seqsrc_w.h meas/hadron/simple_meson_2pt_w.h \
-	meas/hadron/mesons_w.h meas/hadron/mesons2_w.h \
-	meas/hadron/seqpiontest_w.h \
+	meas/hadron/photon_seqsrc_w.h meas/hadron/mesons_w.h \
+	meas/hadron/mesons2_w.h meas/hadron/seqpiontest_w.h \
 	meas/hadron/baryon_operator_aggregate_w.h \
 	meas/hadron/baryon_operator_factory_w.h \
 	meas/hadron/seqsource_aggregate_w.h \
@@ -2279,8 +2205,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
 	actions/ferm/fermacts/asqtad_fermact_s.h \
-	actions/ferm/fermacts/hisq_fermact_params_s.h \
-	actions/ferm/fermacts/hisq_fermact_s.h \
 	actions/ferm/fermacts/stag_fermact_s.h \
 	actions/ferm/fermacts/klein_gordon_fermact_s.h \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.h \
@@ -2300,7 +2224,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/klein_gordon_linop_s.h \
 	actions/ferm/qprop/eoprec_staggered_qprop.h \
 	actions/ferm/qprop/asqtad_qprop.h \
-	actions/ferm/qprop/hisq_qprop.h \
 	actions/ferm/qprop/quarkprop4_s.h io/follana_io_s.h io/io_s.h \
 	meas/eig/eig_s.h meas/hadron/baryon_s.h \
 	meas/hadron/ks_local_loops.h meas/hadron/hadron_s.h \
@@ -2318,8 +2241,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
 	util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
-	meas/inline/hadron_s/inline_spectrum_s.h io/inline_io.h \
-	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
+	io/inline_io.h meas/inline/inline.h \
+	meas/inline/abs_inline_measurement.h \
 	meas/inline/abs_inline_measurement_factory.h \
 	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
 	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
@@ -2334,7 +2257,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
-	meas/inline/hadron/inline_hadron_contract.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -2359,15 +2281,14 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
 	meas/inline/hadron/inline_qqqNucNuc_w.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
-	meas/inline/hadron/inline_stoch_group_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
 	meas/inline/hadron/inline_npr_vertex_w.h \
-	meas/inline/hadron/inline_npr_w.h \
 	meas/inline/hadron/inline_stag_to_wils.h \
 	meas/inline/hadron_s/hadron_s.h \
 	meas/inline/hadron_s/inline_make_source_s.h \
 	meas/inline/hadron_s/inline_propagator_s.h \
 	meas/inline/hadron_s/inline_sink_smear_s.h \
+	meas/inline/hadron_s/inline_spectrum_s.h \
 	meas/inline/hadron_s/inline_apply_fermstate_s.h \
 	meas/inline/hadron_s/util_compute_quark_prop_s.h \
 	meas/inline/io/io.h meas/inline/io/named_objmap.h \
@@ -2394,9 +2315,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/schrfun/inline_sfpcac_w.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
-	meas/inline/smear/inline_link_smear.h $(am__append_6) \
-	$(am__append_8) $(am__append_10) $(am__append_15) \
-	$(am__append_17) $(am__append_19) $(am__append_21)
+	meas/inline/smear/inline_link_smear.h $(am__append_5) \
+	$(am__append_7) $(am__append_9) $(am__append_14) \
+	$(am__append_16) $(am__append_18)
 nodist_include_HEADERS = chroma_config_internal.h
 
 # Taken out for now
@@ -2415,7 +2336,7 @@ INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 # 
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ \
 	@BAGEL_WILSON_DSLASH_CXXFLAGS@ $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5)
+	$(am__append_3) $(am__append_4)
 lib_LIBRARIES = libchroma.a
 
 #
@@ -2484,17 +2405,13 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
 	actions/ferm/invert/syssolver_cg_params.cc \
 	actions/ferm/invert/syssolver_mr_params.cc \
-	actions/ferm/invert/syssolver_bicgstab_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
-	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
-	actions/ferm/invert/syssolver_linop_bicgstab.cc \
-	actions/ferm/invert/syssolver_linop_mr.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \
 	actions/ferm/invert/multi_syssolver_mr_params.cc \
 	actions/ferm/invert/multi_syssolver_linop_aggregate.cc \
@@ -2509,7 +2426,6 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
 	actions/ferm/qprop/asqtad_qprop.cc \
-	actions/ferm/qprop/hisq_qprop.cc \
 	actions/gauge/gaugeacts/gaugeacts_aggregate.cc \
 	actions/gauge/gaugeacts/plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/rect_gaugeact.cc \
@@ -2517,10 +2433,6 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc \
-	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc \
-	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc \
-	actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc \
-	actions/gauge/gaugeacts/aniso_sym_shared_functions.cc \
 	actions/gauge/gaugeacts/wilson_gaugeact_params.cc \
 	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.cc \
@@ -2573,9 +2485,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
 	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/block.cc \
 	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
-	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
-	meas/hadron/hadron_contract_aggregate.cc \
-	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
+	meas/hadron/hadron_seqsource.cc meas/hadron/mesQl_w.cc \
 	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
 	meas/hadron/spin_insertion_aggregate.cc \
 	meas/hadron/no_spin_insertion.cc meas/hadron/stoch_var.cc \
@@ -2654,7 +2564,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
-	$(am__append_7) actions/ferm/fermacts/fermacts_aggregate_w.cc \
+	$(am__append_6) actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.cc \
@@ -2785,8 +2695,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/meson_seqsrc_w.cc \
 	meas/hadron/simple_meson_seqsrc_w.cc \
 	meas/hadron/deriv_meson_seqsrc_w.cc \
-	meas/hadron/photon_seqsrc_w.cc \
-	meas/hadron/simple_meson_2pt_w.cc meas/hadron/mesons_w.cc \
+	meas/hadron/photon_seqsrc_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/mesons2_w.cc meas/hadron/qqq_w.cc \
 	meas/hadron/qqbar_w.cc \
 	meas/hadron/baryon_operator_aggregate_w.cc \
@@ -2839,7 +2748,6 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
-	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
@@ -2864,17 +2772,15 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
-	meas/inline/hadron/inline_stoch_group_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
-	meas/inline/hadron/inline_npr_w.cc \
 	meas/inline/hadron/inline_stag_to_wils.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_make_source_s.cc \
 	meas/inline/hadron_s/inline_propagator_s.cc \
 	meas/inline/hadron_s/inline_sink_smear_s.cc \
-	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
 	meas/inline/hadron_s/inline_spectrum_s.cc \
+	meas/inline/hadron_s/inline_apply_fermstate_s.cc \
 	meas/inline/hadron_s/util_compute_quark_prop_s.cc \
 	meas/inline/hadron_s/util_compute_singlet_ps.cc \
 	meas/inline/hadron_s/util_compute_meson_s.cc \
@@ -2903,14 +2809,12 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
-	meas/inline/smear/inline_link_smear.cc $(am__append_9) \
-	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_16) $(am__append_18) \
+	meas/inline/smear/inline_link_smear.cc $(am__append_8) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13) $(am__append_15) $(am__append_17) \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
-	actions/ferm/fermacts/hisq_fermact_params_s.cc \
-	actions/ferm/fermacts/hisq_fermact_s.cc \
 	actions/ferm/fermacts/klein_gordon_fermact_s.cc \
 	actions/ferm/fermbcs/fermbcs_reader_s.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_s.cc \
@@ -2936,7 +2840,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
 	meas/smear/deriv_quark_displacement_s.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
-	util/gauge/stag_phases_s.cc $(am__append_20) $(am__append_22) \
+	util/gauge/stag_phases_s.cc $(am__append_19) \
 	init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -3032,10 +2936,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BuildingBlocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_spectrum_gaugeact.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_sym_gaugeact_params.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_sym_shared_functions.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_sym_spatial_gaugeact.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_sym_temporal_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/antisymtensor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ape_link_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ape_smear.Po@am__quote@
@@ -3068,7 +2968,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cfgtype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chroma_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clover_fermact_params_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clover_term_bagel_clover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clover_term_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clover_term_qdp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conjgauge.Po@am__quote@
@@ -3201,13 +3100,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grelax.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/group_baryon_operator_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hadron_2pt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hadron_contract.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hadron_contract_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hadron_seqsource.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hisq_fermact_params_s.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hisq_fermact_s.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hisq_qprop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hotst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hybmeson_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_link_smearing.Po@am__quote@
@@ -3234,7 +3127,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_glue_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_aggregate_s.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_contract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadspec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_io_aggregate.Po@am__quote@
@@ -3250,7 +3142,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_nersc_write_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_noisy_building_blocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_npr_vertex_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_npr_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_plaquette.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_propagator_ferm_w.Po@am__quote@
@@ -3277,7 +3168,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stag_to_wils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_static_light_spec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_baryon_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_group_baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_meson_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_szin_read_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_szin_write_obj.Po@am__quote@
@@ -3485,7 +3375,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_fermstate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_gaugebc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_gaugestate.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_meson_2pt_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_meson_seqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_quark_displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple_spin_insertion_w.Po@am__quote@
@@ -3518,16 +3407,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sun_proj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sunfill.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/symtensor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_bicgstab_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_cg_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_aggregate.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_bicgstab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_cg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_cg_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_cg_timing.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_mr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_aggregate.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_bicgstab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_cg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_cg_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_cg_timing.Po@am__quote@
@@ -4126,20 +4011,6 @@ syssolver_mr_params.obj: actions/ferm/invert/syssolver_mr_params.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_mr_params.obj `if test -f 'actions/ferm/invert/syssolver_mr_params.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_mr_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_mr_params.cc'; fi`
 
-syssolver_bicgstab_params.o: actions/ferm/invert/syssolver_bicgstab_params.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_bicgstab_params.o -MD -MP -MF "$(DEPDIR)/syssolver_bicgstab_params.Tpo" -c -o syssolver_bicgstab_params.o `test -f 'actions/ferm/invert/syssolver_bicgstab_params.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_bicgstab_params.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_bicgstab_params.Tpo" "$(DEPDIR)/syssolver_bicgstab_params.Po"; else rm -f "$(DEPDIR)/syssolver_bicgstab_params.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_bicgstab_params.cc' object='syssolver_bicgstab_params.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_bicgstab_params.o `test -f 'actions/ferm/invert/syssolver_bicgstab_params.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_bicgstab_params.cc
-
-syssolver_bicgstab_params.obj: actions/ferm/invert/syssolver_bicgstab_params.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_bicgstab_params.obj -MD -MP -MF "$(DEPDIR)/syssolver_bicgstab_params.Tpo" -c -o syssolver_bicgstab_params.obj `if test -f 'actions/ferm/invert/syssolver_bicgstab_params.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_bicgstab_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_bicgstab_params.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_bicgstab_params.Tpo" "$(DEPDIR)/syssolver_bicgstab_params.Po"; else rm -f "$(DEPDIR)/syssolver_bicgstab_params.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_bicgstab_params.cc' object='syssolver_bicgstab_params.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_bicgstab_params.obj `if test -f 'actions/ferm/invert/syssolver_bicgstab_params.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_bicgstab_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_bicgstab_params.cc'; fi`
-
 syssolver_linop_cg.o: actions/ferm/invert/syssolver_linop_cg.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_cg.o -MD -MP -MF "$(DEPDIR)/syssolver_linop_cg.Tpo" -c -o syssolver_linop_cg.o `test -f 'actions/ferm/invert/syssolver_linop_cg.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_cg.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_linop_cg.Tpo" "$(DEPDIR)/syssolver_linop_cg.Po"; else rm -f "$(DEPDIR)/syssolver_linop_cg.Tpo"; exit 1; fi
@@ -4196,20 +4067,6 @@ syssolver_mdagm_cg.obj: actions/ferm/invert/syssolver_mdagm_cg.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_mdagm_cg.obj `if test -f 'actions/ferm/invert/syssolver_mdagm_cg.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_mdagm_cg.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_mdagm_cg.cc'; fi`
 
-syssolver_mdagm_bicgstab.o: actions/ferm/invert/syssolver_mdagm_bicgstab.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_mdagm_bicgstab.o -MD -MP -MF "$(DEPDIR)/syssolver_mdagm_bicgstab.Tpo" -c -o syssolver_mdagm_bicgstab.o `test -f 'actions/ferm/invert/syssolver_mdagm_bicgstab.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_mdagm_bicgstab.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_mdagm_bicgstab.Tpo" "$(DEPDIR)/syssolver_mdagm_bicgstab.Po"; else rm -f "$(DEPDIR)/syssolver_mdagm_bicgstab.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_mdagm_bicgstab.cc' object='syssolver_mdagm_bicgstab.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_mdagm_bicgstab.o `test -f 'actions/ferm/invert/syssolver_mdagm_bicgstab.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_mdagm_bicgstab.cc
-
-syssolver_mdagm_bicgstab.obj: actions/ferm/invert/syssolver_mdagm_bicgstab.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_mdagm_bicgstab.obj -MD -MP -MF "$(DEPDIR)/syssolver_mdagm_bicgstab.Tpo" -c -o syssolver_mdagm_bicgstab.obj `if test -f 'actions/ferm/invert/syssolver_mdagm_bicgstab.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_mdagm_bicgstab.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_mdagm_bicgstab.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_mdagm_bicgstab.Tpo" "$(DEPDIR)/syssolver_mdagm_bicgstab.Po"; else rm -f "$(DEPDIR)/syssolver_mdagm_bicgstab.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_mdagm_bicgstab.cc' object='syssolver_mdagm_bicgstab.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_mdagm_bicgstab.obj `if test -f 'actions/ferm/invert/syssolver_mdagm_bicgstab.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_mdagm_bicgstab.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_mdagm_bicgstab.cc'; fi`
-
 syssolver_mdagm_cg_timing.o: actions/ferm/invert/syssolver_mdagm_cg_timing.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_mdagm_cg_timing.o -MD -MP -MF "$(DEPDIR)/syssolver_mdagm_cg_timing.Tpo" -c -o syssolver_mdagm_cg_timing.o `test -f 'actions/ferm/invert/syssolver_mdagm_cg_timing.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_mdagm_cg_timing.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_mdagm_cg_timing.Tpo" "$(DEPDIR)/syssolver_mdagm_cg_timing.Po"; else rm -f "$(DEPDIR)/syssolver_mdagm_cg_timing.Tpo"; exit 1; fi
@@ -4251,34 +4108,6 @@ syssolver_polyprec_cg.obj: actions/ferm/invert/syssolver_polyprec_cg.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_polyprec_cg.cc' object='syssolver_polyprec_cg.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_polyprec_cg.obj `if test -f 'actions/ferm/invert/syssolver_polyprec_cg.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_polyprec_cg.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_polyprec_cg.cc'; fi`
-
-syssolver_linop_bicgstab.o: actions/ferm/invert/syssolver_linop_bicgstab.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_bicgstab.o -MD -MP -MF "$(DEPDIR)/syssolver_linop_bicgstab.Tpo" -c -o syssolver_linop_bicgstab.o `test -f 'actions/ferm/invert/syssolver_linop_bicgstab.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_bicgstab.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_linop_bicgstab.Tpo" "$(DEPDIR)/syssolver_linop_bicgstab.Po"; else rm -f "$(DEPDIR)/syssolver_linop_bicgstab.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_linop_bicgstab.cc' object='syssolver_linop_bicgstab.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_bicgstab.o `test -f 'actions/ferm/invert/syssolver_linop_bicgstab.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_bicgstab.cc
-
-syssolver_linop_bicgstab.obj: actions/ferm/invert/syssolver_linop_bicgstab.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_bicgstab.obj -MD -MP -MF "$(DEPDIR)/syssolver_linop_bicgstab.Tpo" -c -o syssolver_linop_bicgstab.obj `if test -f 'actions/ferm/invert/syssolver_linop_bicgstab.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_bicgstab.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_bicgstab.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_linop_bicgstab.Tpo" "$(DEPDIR)/syssolver_linop_bicgstab.Po"; else rm -f "$(DEPDIR)/syssolver_linop_bicgstab.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_linop_bicgstab.cc' object='syssolver_linop_bicgstab.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_bicgstab.obj `if test -f 'actions/ferm/invert/syssolver_linop_bicgstab.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_bicgstab.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_bicgstab.cc'; fi`
-
-syssolver_linop_mr.o: actions/ferm/invert/syssolver_linop_mr.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_mr.o -MD -MP -MF "$(DEPDIR)/syssolver_linop_mr.Tpo" -c -o syssolver_linop_mr.o `test -f 'actions/ferm/invert/syssolver_linop_mr.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_mr.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_linop_mr.Tpo" "$(DEPDIR)/syssolver_linop_mr.Po"; else rm -f "$(DEPDIR)/syssolver_linop_mr.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_linop_mr.cc' object='syssolver_linop_mr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_mr.o `test -f 'actions/ferm/invert/syssolver_linop_mr.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_mr.cc
-
-syssolver_linop_mr.obj: actions/ferm/invert/syssolver_linop_mr.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_mr.obj -MD -MP -MF "$(DEPDIR)/syssolver_linop_mr.Tpo" -c -o syssolver_linop_mr.obj `if test -f 'actions/ferm/invert/syssolver_linop_mr.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_mr.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_mr.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_linop_mr.Tpo" "$(DEPDIR)/syssolver_linop_mr.Po"; else rm -f "$(DEPDIR)/syssolver_linop_mr.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_linop_mr.cc' object='syssolver_linop_mr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_mr.obj `if test -f 'actions/ferm/invert/syssolver_linop_mr.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_mr.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_mr.cc'; fi`
 
 multi_syssolver_cg_params.o: actions/ferm/invert/multi_syssolver_cg_params.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT multi_syssolver_cg_params.o -MD -MP -MF "$(DEPDIR)/multi_syssolver_cg_params.Tpo" -c -o multi_syssolver_cg_params.o `test -f 'actions/ferm/invert/multi_syssolver_cg_params.cc' || echo '$(srcdir)/'`actions/ferm/invert/multi_syssolver_cg_params.cc; \
@@ -4476,20 +4305,6 @@ asqtad_qprop.obj: actions/ferm/qprop/asqtad_qprop.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_qprop.obj `if test -f 'actions/ferm/qprop/asqtad_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/asqtad_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/asqtad_qprop.cc'; fi`
 
-hisq_qprop.o: actions/ferm/qprop/hisq_qprop.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hisq_qprop.o -MD -MP -MF "$(DEPDIR)/hisq_qprop.Tpo" -c -o hisq_qprop.o `test -f 'actions/ferm/qprop/hisq_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/hisq_qprop.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hisq_qprop.Tpo" "$(DEPDIR)/hisq_qprop.Po"; else rm -f "$(DEPDIR)/hisq_qprop.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/hisq_qprop.cc' object='hisq_qprop.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hisq_qprop.o `test -f 'actions/ferm/qprop/hisq_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/hisq_qprop.cc
-
-hisq_qprop.obj: actions/ferm/qprop/hisq_qprop.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hisq_qprop.obj -MD -MP -MF "$(DEPDIR)/hisq_qprop.Tpo" -c -o hisq_qprop.obj `if test -f 'actions/ferm/qprop/hisq_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/hisq_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/hisq_qprop.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hisq_qprop.Tpo" "$(DEPDIR)/hisq_qprop.Po"; else rm -f "$(DEPDIR)/hisq_qprop.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/hisq_qprop.cc' object='hisq_qprop.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hisq_qprop.obj `if test -f 'actions/ferm/qprop/hisq_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/hisq_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/hisq_qprop.cc'; fi`
-
 gaugeacts_aggregate.o: actions/gauge/gaugeacts/gaugeacts_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugeacts_aggregate.o -MD -MP -MF "$(DEPDIR)/gaugeacts_aggregate.Tpo" -c -o gaugeacts_aggregate.o `test -f 'actions/gauge/gaugeacts/gaugeacts_aggregate.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/gaugeacts_aggregate.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/gaugeacts_aggregate.Tpo" "$(DEPDIR)/gaugeacts_aggregate.Po"; else rm -f "$(DEPDIR)/gaugeacts_aggregate.Tpo"; exit 1; fi
@@ -4587,62 +4402,6 @@ aniso_spectrum_gaugeact.obj: actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc' object='aniso_spectrum_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_spectrum_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc'; fi`
-
-aniso_sym_gaugeact_params.o: actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_sym_gaugeact_params.o -MD -MP -MF "$(DEPDIR)/aniso_sym_gaugeact_params.Tpo" -c -o aniso_sym_gaugeact_params.o `test -f 'actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_sym_gaugeact_params.Tpo" "$(DEPDIR)/aniso_sym_gaugeact_params.Po"; else rm -f "$(DEPDIR)/aniso_sym_gaugeact_params.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc' object='aniso_sym_gaugeact_params.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_sym_gaugeact_params.o `test -f 'actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc
-
-aniso_sym_gaugeact_params.obj: actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_sym_gaugeact_params.obj -MD -MP -MF "$(DEPDIR)/aniso_sym_gaugeact_params.Tpo" -c -o aniso_sym_gaugeact_params.obj `if test -f 'actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_sym_gaugeact_params.Tpo" "$(DEPDIR)/aniso_sym_gaugeact_params.Po"; else rm -f "$(DEPDIR)/aniso_sym_gaugeact_params.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc' object='aniso_sym_gaugeact_params.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_sym_gaugeact_params.obj `if test -f 'actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc'; fi`
-
-aniso_sym_spatial_gaugeact.o: actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_sym_spatial_gaugeact.o -MD -MP -MF "$(DEPDIR)/aniso_sym_spatial_gaugeact.Tpo" -c -o aniso_sym_spatial_gaugeact.o `test -f 'actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_sym_spatial_gaugeact.Tpo" "$(DEPDIR)/aniso_sym_spatial_gaugeact.Po"; else rm -f "$(DEPDIR)/aniso_sym_spatial_gaugeact.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc' object='aniso_sym_spatial_gaugeact.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_sym_spatial_gaugeact.o `test -f 'actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc
-
-aniso_sym_spatial_gaugeact.obj: actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_sym_spatial_gaugeact.obj -MD -MP -MF "$(DEPDIR)/aniso_sym_spatial_gaugeact.Tpo" -c -o aniso_sym_spatial_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_sym_spatial_gaugeact.Tpo" "$(DEPDIR)/aniso_sym_spatial_gaugeact.Po"; else rm -f "$(DEPDIR)/aniso_sym_spatial_gaugeact.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc' object='aniso_sym_spatial_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_sym_spatial_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc'; fi`
-
-aniso_sym_temporal_gaugeact.o: actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_sym_temporal_gaugeact.o -MD -MP -MF "$(DEPDIR)/aniso_sym_temporal_gaugeact.Tpo" -c -o aniso_sym_temporal_gaugeact.o `test -f 'actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_sym_temporal_gaugeact.Tpo" "$(DEPDIR)/aniso_sym_temporal_gaugeact.Po"; else rm -f "$(DEPDIR)/aniso_sym_temporal_gaugeact.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc' object='aniso_sym_temporal_gaugeact.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_sym_temporal_gaugeact.o `test -f 'actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc
-
-aniso_sym_temporal_gaugeact.obj: actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_sym_temporal_gaugeact.obj -MD -MP -MF "$(DEPDIR)/aniso_sym_temporal_gaugeact.Tpo" -c -o aniso_sym_temporal_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_sym_temporal_gaugeact.Tpo" "$(DEPDIR)/aniso_sym_temporal_gaugeact.Po"; else rm -f "$(DEPDIR)/aniso_sym_temporal_gaugeact.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc' object='aniso_sym_temporal_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_sym_temporal_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_sym_temporal_gaugeact.cc'; fi`
-
-aniso_sym_shared_functions.o: actions/gauge/gaugeacts/aniso_sym_shared_functions.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_sym_shared_functions.o -MD -MP -MF "$(DEPDIR)/aniso_sym_shared_functions.Tpo" -c -o aniso_sym_shared_functions.o `test -f 'actions/gauge/gaugeacts/aniso_sym_shared_functions.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_sym_shared_functions.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_sym_shared_functions.Tpo" "$(DEPDIR)/aniso_sym_shared_functions.Po"; else rm -f "$(DEPDIR)/aniso_sym_shared_functions.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_sym_shared_functions.cc' object='aniso_sym_shared_functions.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_sym_shared_functions.o `test -f 'actions/gauge/gaugeacts/aniso_sym_shared_functions.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_sym_shared_functions.cc
-
-aniso_sym_shared_functions.obj: actions/gauge/gaugeacts/aniso_sym_shared_functions.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_sym_shared_functions.obj -MD -MP -MF "$(DEPDIR)/aniso_sym_shared_functions.Tpo" -c -o aniso_sym_shared_functions.obj `if test -f 'actions/gauge/gaugeacts/aniso_sym_shared_functions.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_sym_shared_functions.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_sym_shared_functions.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aniso_sym_shared_functions.Tpo" "$(DEPDIR)/aniso_sym_shared_functions.Po"; else rm -f "$(DEPDIR)/aniso_sym_shared_functions.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/aniso_sym_shared_functions.cc' object='aniso_sym_shared_functions.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o aniso_sym_shared_functions.obj `if test -f 'actions/gauge/gaugeacts/aniso_sym_shared_functions.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/aniso_sym_shared_functions.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/aniso_sym_shared_functions.cc'; fi`
 
 wilson_gaugeact_params.o: actions/gauge/gaugeacts/wilson_gaugeact_params.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_gaugeact_params.o -MD -MP -MF "$(DEPDIR)/wilson_gaugeact_params.Tpo" -c -o wilson_gaugeact_params.o `test -f 'actions/gauge/gaugeacts/wilson_gaugeact_params.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/wilson_gaugeact_params.cc; \
@@ -5777,48 +5536,6 @@ hadron_seqsource.obj: meas/hadron/hadron_seqsource.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/hadron_seqsource.cc' object='hadron_seqsource.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hadron_seqsource.obj `if test -f 'meas/hadron/hadron_seqsource.cc'; then $(CYGPATH_W) 'meas/hadron/hadron_seqsource.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/hadron_seqsource.cc'; fi`
-
-hadron_contract.o: meas/hadron/hadron_contract.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hadron_contract.o -MD -MP -MF "$(DEPDIR)/hadron_contract.Tpo" -c -o hadron_contract.o `test -f 'meas/hadron/hadron_contract.cc' || echo '$(srcdir)/'`meas/hadron/hadron_contract.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hadron_contract.Tpo" "$(DEPDIR)/hadron_contract.Po"; else rm -f "$(DEPDIR)/hadron_contract.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/hadron_contract.cc' object='hadron_contract.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hadron_contract.o `test -f 'meas/hadron/hadron_contract.cc' || echo '$(srcdir)/'`meas/hadron/hadron_contract.cc
-
-hadron_contract.obj: meas/hadron/hadron_contract.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hadron_contract.obj -MD -MP -MF "$(DEPDIR)/hadron_contract.Tpo" -c -o hadron_contract.obj `if test -f 'meas/hadron/hadron_contract.cc'; then $(CYGPATH_W) 'meas/hadron/hadron_contract.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/hadron_contract.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hadron_contract.Tpo" "$(DEPDIR)/hadron_contract.Po"; else rm -f "$(DEPDIR)/hadron_contract.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/hadron_contract.cc' object='hadron_contract.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hadron_contract.obj `if test -f 'meas/hadron/hadron_contract.cc'; then $(CYGPATH_W) 'meas/hadron/hadron_contract.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/hadron_contract.cc'; fi`
-
-hadron_contract_aggregate.o: meas/hadron/hadron_contract_aggregate.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hadron_contract_aggregate.o -MD -MP -MF "$(DEPDIR)/hadron_contract_aggregate.Tpo" -c -o hadron_contract_aggregate.o `test -f 'meas/hadron/hadron_contract_aggregate.cc' || echo '$(srcdir)/'`meas/hadron/hadron_contract_aggregate.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hadron_contract_aggregate.Tpo" "$(DEPDIR)/hadron_contract_aggregate.Po"; else rm -f "$(DEPDIR)/hadron_contract_aggregate.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/hadron_contract_aggregate.cc' object='hadron_contract_aggregate.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hadron_contract_aggregate.o `test -f 'meas/hadron/hadron_contract_aggregate.cc' || echo '$(srcdir)/'`meas/hadron/hadron_contract_aggregate.cc
-
-hadron_contract_aggregate.obj: meas/hadron/hadron_contract_aggregate.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hadron_contract_aggregate.obj -MD -MP -MF "$(DEPDIR)/hadron_contract_aggregate.Tpo" -c -o hadron_contract_aggregate.obj `if test -f 'meas/hadron/hadron_contract_aggregate.cc'; then $(CYGPATH_W) 'meas/hadron/hadron_contract_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/hadron_contract_aggregate.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hadron_contract_aggregate.Tpo" "$(DEPDIR)/hadron_contract_aggregate.Po"; else rm -f "$(DEPDIR)/hadron_contract_aggregate.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/hadron_contract_aggregate.cc' object='hadron_contract_aggregate.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hadron_contract_aggregate.obj `if test -f 'meas/hadron/hadron_contract_aggregate.cc'; then $(CYGPATH_W) 'meas/hadron/hadron_contract_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/hadron_contract_aggregate.cc'; fi`
-
-hadron_2pt.o: meas/hadron/hadron_2pt.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hadron_2pt.o -MD -MP -MF "$(DEPDIR)/hadron_2pt.Tpo" -c -o hadron_2pt.o `test -f 'meas/hadron/hadron_2pt.cc' || echo '$(srcdir)/'`meas/hadron/hadron_2pt.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hadron_2pt.Tpo" "$(DEPDIR)/hadron_2pt.Po"; else rm -f "$(DEPDIR)/hadron_2pt.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/hadron_2pt.cc' object='hadron_2pt.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hadron_2pt.o `test -f 'meas/hadron/hadron_2pt.cc' || echo '$(srcdir)/'`meas/hadron/hadron_2pt.cc
-
-hadron_2pt.obj: meas/hadron/hadron_2pt.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hadron_2pt.obj -MD -MP -MF "$(DEPDIR)/hadron_2pt.Tpo" -c -o hadron_2pt.obj `if test -f 'meas/hadron/hadron_2pt.cc'; then $(CYGPATH_W) 'meas/hadron/hadron_2pt.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/hadron_2pt.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hadron_2pt.Tpo" "$(DEPDIR)/hadron_2pt.Po"; else rm -f "$(DEPDIR)/hadron_2pt.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/hadron_2pt.cc' object='hadron_2pt.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hadron_2pt.obj `if test -f 'meas/hadron/hadron_2pt.cc'; then $(CYGPATH_W) 'meas/hadron/hadron_2pt.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/hadron_2pt.cc'; fi`
 
 mesQl_w.o: meas/hadron/mesQl_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesQl_w.o -MD -MP -MF "$(DEPDIR)/mesQl_w.Tpo" -c -o mesQl_w.o `test -f 'meas/hadron/mesQl_w.cc' || echo '$(srcdir)/'`meas/hadron/mesQl_w.cc; \
@@ -9362,20 +9079,6 @@ photon_seqsrc_w.obj: meas/hadron/photon_seqsrc_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o photon_seqsrc_w.obj `if test -f 'meas/hadron/photon_seqsrc_w.cc'; then $(CYGPATH_W) 'meas/hadron/photon_seqsrc_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/photon_seqsrc_w.cc'; fi`
 
-simple_meson_2pt_w.o: meas/hadron/simple_meson_2pt_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_meson_2pt_w.o -MD -MP -MF "$(DEPDIR)/simple_meson_2pt_w.Tpo" -c -o simple_meson_2pt_w.o `test -f 'meas/hadron/simple_meson_2pt_w.cc' || echo '$(srcdir)/'`meas/hadron/simple_meson_2pt_w.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_meson_2pt_w.Tpo" "$(DEPDIR)/simple_meson_2pt_w.Po"; else rm -f "$(DEPDIR)/simple_meson_2pt_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/simple_meson_2pt_w.cc' object='simple_meson_2pt_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_meson_2pt_w.o `test -f 'meas/hadron/simple_meson_2pt_w.cc' || echo '$(srcdir)/'`meas/hadron/simple_meson_2pt_w.cc
-
-simple_meson_2pt_w.obj: meas/hadron/simple_meson_2pt_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT simple_meson_2pt_w.obj -MD -MP -MF "$(DEPDIR)/simple_meson_2pt_w.Tpo" -c -o simple_meson_2pt_w.obj `if test -f 'meas/hadron/simple_meson_2pt_w.cc'; then $(CYGPATH_W) 'meas/hadron/simple_meson_2pt_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/simple_meson_2pt_w.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/simple_meson_2pt_w.Tpo" "$(DEPDIR)/simple_meson_2pt_w.Po"; else rm -f "$(DEPDIR)/simple_meson_2pt_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/simple_meson_2pt_w.cc' object='simple_meson_2pt_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_meson_2pt_w.obj `if test -f 'meas/hadron/simple_meson_2pt_w.cc'; then $(CYGPATH_W) 'meas/hadron/simple_meson_2pt_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/simple_meson_2pt_w.cc'; fi`
-
 mesons_w.o: meas/hadron/mesons_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesons_w.o -MD -MP -MF "$(DEPDIR)/mesons_w.Tpo" -c -o mesons_w.o `test -f 'meas/hadron/mesons_w.cc' || echo '$(srcdir)/'`meas/hadron/mesons_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/mesons_w.Tpo" "$(DEPDIR)/mesons_w.Po"; else rm -f "$(DEPDIR)/mesons_w.Tpo"; exit 1; fi
@@ -10286,20 +9989,6 @@ inline_hadron_aggregate.obj: meas/inline/hadron/inline_hadron_aggregate.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hadron_aggregate.obj `if test -f 'meas/inline/hadron/inline_hadron_aggregate.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_hadron_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_hadron_aggregate.cc'; fi`
 
-inline_hadron_contract.o: meas/inline/hadron/inline_hadron_contract.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadron_contract.o -MD -MP -MF "$(DEPDIR)/inline_hadron_contract.Tpo" -c -o inline_hadron_contract.o `test -f 'meas/inline/hadron/inline_hadron_contract.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadron_contract.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_hadron_contract.Tpo" "$(DEPDIR)/inline_hadron_contract.Po"; else rm -f "$(DEPDIR)/inline_hadron_contract.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_hadron_contract.cc' object='inline_hadron_contract.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hadron_contract.o `test -f 'meas/inline/hadron/inline_hadron_contract.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadron_contract.cc
-
-inline_hadron_contract.obj: meas/inline/hadron/inline_hadron_contract.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadron_contract.obj -MD -MP -MF "$(DEPDIR)/inline_hadron_contract.Tpo" -c -o inline_hadron_contract.obj `if test -f 'meas/inline/hadron/inline_hadron_contract.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_hadron_contract.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_hadron_contract.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_hadron_contract.Tpo" "$(DEPDIR)/inline_hadron_contract.Po"; else rm -f "$(DEPDIR)/inline_hadron_contract.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_hadron_contract.cc' object='inline_hadron_contract.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hadron_contract.obj `if test -f 'meas/inline/hadron/inline_hadron_contract.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_hadron_contract.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_hadron_contract.cc'; fi`
-
 inline_apply_fermstate_w.o: meas/inline/hadron/inline_apply_fermstate_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_apply_fermstate_w.o -MD -MP -MF "$(DEPDIR)/inline_apply_fermstate_w.Tpo" -c -o inline_apply_fermstate_w.o `test -f 'meas/inline/hadron/inline_apply_fermstate_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_apply_fermstate_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_apply_fermstate_w.Tpo" "$(DEPDIR)/inline_apply_fermstate_w.Po"; else rm -f "$(DEPDIR)/inline_apply_fermstate_w.Tpo"; exit 1; fi
@@ -10636,20 +10325,6 @@ inline_stoch_baryon_w.obj: meas/inline/hadron/inline_stoch_baryon_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_stoch_baryon_w.obj `if test -f 'meas/inline/hadron/inline_stoch_baryon_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_stoch_baryon_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_stoch_baryon_w.cc'; fi`
 
-inline_stoch_group_baryon_w.o: meas/inline/hadron/inline_stoch_group_baryon_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_stoch_group_baryon_w.o -MD -MP -MF "$(DEPDIR)/inline_stoch_group_baryon_w.Tpo" -c -o inline_stoch_group_baryon_w.o `test -f 'meas/inline/hadron/inline_stoch_group_baryon_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_stoch_group_baryon_w.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_stoch_group_baryon_w.Tpo" "$(DEPDIR)/inline_stoch_group_baryon_w.Po"; else rm -f "$(DEPDIR)/inline_stoch_group_baryon_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_stoch_group_baryon_w.cc' object='inline_stoch_group_baryon_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_stoch_group_baryon_w.o `test -f 'meas/inline/hadron/inline_stoch_group_baryon_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_stoch_group_baryon_w.cc
-
-inline_stoch_group_baryon_w.obj: meas/inline/hadron/inline_stoch_group_baryon_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_stoch_group_baryon_w.obj -MD -MP -MF "$(DEPDIR)/inline_stoch_group_baryon_w.Tpo" -c -o inline_stoch_group_baryon_w.obj `if test -f 'meas/inline/hadron/inline_stoch_group_baryon_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_stoch_group_baryon_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_stoch_group_baryon_w.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_stoch_group_baryon_w.Tpo" "$(DEPDIR)/inline_stoch_group_baryon_w.Po"; else rm -f "$(DEPDIR)/inline_stoch_group_baryon_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_stoch_group_baryon_w.cc' object='inline_stoch_group_baryon_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_stoch_group_baryon_w.obj `if test -f 'meas/inline/hadron/inline_stoch_group_baryon_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_stoch_group_baryon_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_stoch_group_baryon_w.cc'; fi`
-
 inline_stoch_meson_w.o: meas/inline/hadron/inline_stoch_meson_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_stoch_meson_w.o -MD -MP -MF "$(DEPDIR)/inline_stoch_meson_w.Tpo" -c -o inline_stoch_meson_w.o `test -f 'meas/inline/hadron/inline_stoch_meson_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_stoch_meson_w.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_stoch_meson_w.Tpo" "$(DEPDIR)/inline_stoch_meson_w.Po"; else rm -f "$(DEPDIR)/inline_stoch_meson_w.Tpo"; exit 1; fi
@@ -10677,20 +10352,6 @@ inline_npr_vertex_w.obj: meas/inline/hadron/inline_npr_vertex_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_npr_vertex_w.cc' object='inline_npr_vertex_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_npr_vertex_w.obj `if test -f 'meas/inline/hadron/inline_npr_vertex_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_npr_vertex_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_npr_vertex_w.cc'; fi`
-
-inline_npr_w.o: meas/inline/hadron/inline_npr_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_npr_w.o -MD -MP -MF "$(DEPDIR)/inline_npr_w.Tpo" -c -o inline_npr_w.o `test -f 'meas/inline/hadron/inline_npr_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_npr_w.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_npr_w.Tpo" "$(DEPDIR)/inline_npr_w.Po"; else rm -f "$(DEPDIR)/inline_npr_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_npr_w.cc' object='inline_npr_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_npr_w.o `test -f 'meas/inline/hadron/inline_npr_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_npr_w.cc
-
-inline_npr_w.obj: meas/inline/hadron/inline_npr_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_npr_w.obj -MD -MP -MF "$(DEPDIR)/inline_npr_w.Tpo" -c -o inline_npr_w.obj `if test -f 'meas/inline/hadron/inline_npr_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_npr_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_npr_w.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_npr_w.Tpo" "$(DEPDIR)/inline_npr_w.Po"; else rm -f "$(DEPDIR)/inline_npr_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_npr_w.cc' object='inline_npr_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_npr_w.obj `if test -f 'meas/inline/hadron/inline_npr_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_npr_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_npr_w.cc'; fi`
 
 inline_stag_to_wils.o: meas/inline/hadron/inline_stag_to_wils.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_stag_to_wils.o -MD -MP -MF "$(DEPDIR)/inline_stag_to_wils.Tpo" -c -o inline_stag_to_wils.o `test -f 'meas/inline/hadron/inline_stag_to_wils.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_stag_to_wils.cc; \
@@ -10762,20 +10423,6 @@ inline_sink_smear_s.obj: meas/inline/hadron_s/inline_sink_smear_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_sink_smear_s.obj `if test -f 'meas/inline/hadron_s/inline_sink_smear_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_sink_smear_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_sink_smear_s.cc'; fi`
 
-inline_apply_fermstate_s.o: meas/inline/hadron_s/inline_apply_fermstate_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_apply_fermstate_s.o -MD -MP -MF "$(DEPDIR)/inline_apply_fermstate_s.Tpo" -c -o inline_apply_fermstate_s.o `test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_apply_fermstate_s.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_apply_fermstate_s.Tpo" "$(DEPDIR)/inline_apply_fermstate_s.Po"; else rm -f "$(DEPDIR)/inline_apply_fermstate_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_apply_fermstate_s.cc' object='inline_apply_fermstate_s.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_apply_fermstate_s.o `test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_apply_fermstate_s.cc
-
-inline_apply_fermstate_s.obj: meas/inline/hadron_s/inline_apply_fermstate_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_apply_fermstate_s.obj -MD -MP -MF "$(DEPDIR)/inline_apply_fermstate_s.Tpo" -c -o inline_apply_fermstate_s.obj `if test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_apply_fermstate_s.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_apply_fermstate_s.Tpo" "$(DEPDIR)/inline_apply_fermstate_s.Po"; else rm -f "$(DEPDIR)/inline_apply_fermstate_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_apply_fermstate_s.cc' object='inline_apply_fermstate_s.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_apply_fermstate_s.obj `if test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_apply_fermstate_s.cc'; fi`
-
 inline_spectrum_s.o: meas/inline/hadron_s/inline_spectrum_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_spectrum_s.o -MD -MP -MF "$(DEPDIR)/inline_spectrum_s.Tpo" -c -o inline_spectrum_s.o `test -f 'meas/inline/hadron_s/inline_spectrum_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_spectrum_s.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_spectrum_s.Tpo" "$(DEPDIR)/inline_spectrum_s.Po"; else rm -f "$(DEPDIR)/inline_spectrum_s.Tpo"; exit 1; fi
@@ -10789,6 +10436,20 @@ inline_spectrum_s.obj: meas/inline/hadron_s/inline_spectrum_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_spectrum_s.cc' object='inline_spectrum_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_spectrum_s.obj `if test -f 'meas/inline/hadron_s/inline_spectrum_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_spectrum_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_spectrum_s.cc'; fi`
+
+inline_apply_fermstate_s.o: meas/inline/hadron_s/inline_apply_fermstate_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_apply_fermstate_s.o -MD -MP -MF "$(DEPDIR)/inline_apply_fermstate_s.Tpo" -c -o inline_apply_fermstate_s.o `test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_apply_fermstate_s.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_apply_fermstate_s.Tpo" "$(DEPDIR)/inline_apply_fermstate_s.Po"; else rm -f "$(DEPDIR)/inline_apply_fermstate_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_apply_fermstate_s.cc' object='inline_apply_fermstate_s.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_apply_fermstate_s.o `test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_apply_fermstate_s.cc
+
+inline_apply_fermstate_s.obj: meas/inline/hadron_s/inline_apply_fermstate_s.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_apply_fermstate_s.obj -MD -MP -MF "$(DEPDIR)/inline_apply_fermstate_s.Tpo" -c -o inline_apply_fermstate_s.obj `if test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_apply_fermstate_s.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_apply_fermstate_s.Tpo" "$(DEPDIR)/inline_apply_fermstate_s.Po"; else rm -f "$(DEPDIR)/inline_apply_fermstate_s.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron_s/inline_apply_fermstate_s.cc' object='inline_apply_fermstate_s.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_apply_fermstate_s.obj `if test -f 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; then $(CYGPATH_W) 'meas/inline/hadron_s/inline_apply_fermstate_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron_s/inline_apply_fermstate_s.cc'; fi`
 
 util_compute_quark_prop_s.o: meas/inline/hadron_s/util_compute_quark_prop_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT util_compute_quark_prop_s.o -MD -MP -MF "$(DEPDIR)/util_compute_quark_prop_s.Tpo" -c -o util_compute_quark_prop_s.o `test -f 'meas/inline/hadron_s/util_compute_quark_prop_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/util_compute_quark_prop_s.cc; \
@@ -11392,34 +11053,6 @@ asqtad_fermact_s.obj: actions/ferm/fermacts/asqtad_fermact_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_fermact_s.obj `if test -f 'actions/ferm/fermacts/asqtad_fermact_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/asqtad_fermact_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/asqtad_fermact_s.cc'; fi`
 
-hisq_fermact_params_s.o: actions/ferm/fermacts/hisq_fermact_params_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hisq_fermact_params_s.o -MD -MP -MF "$(DEPDIR)/hisq_fermact_params_s.Tpo" -c -o hisq_fermact_params_s.o `test -f 'actions/ferm/fermacts/hisq_fermact_params_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/hisq_fermact_params_s.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hisq_fermact_params_s.Tpo" "$(DEPDIR)/hisq_fermact_params_s.Po"; else rm -f "$(DEPDIR)/hisq_fermact_params_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/hisq_fermact_params_s.cc' object='hisq_fermact_params_s.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hisq_fermact_params_s.o `test -f 'actions/ferm/fermacts/hisq_fermact_params_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/hisq_fermact_params_s.cc
-
-hisq_fermact_params_s.obj: actions/ferm/fermacts/hisq_fermact_params_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hisq_fermact_params_s.obj -MD -MP -MF "$(DEPDIR)/hisq_fermact_params_s.Tpo" -c -o hisq_fermact_params_s.obj `if test -f 'actions/ferm/fermacts/hisq_fermact_params_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/hisq_fermact_params_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/hisq_fermact_params_s.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hisq_fermact_params_s.Tpo" "$(DEPDIR)/hisq_fermact_params_s.Po"; else rm -f "$(DEPDIR)/hisq_fermact_params_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/hisq_fermact_params_s.cc' object='hisq_fermact_params_s.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hisq_fermact_params_s.obj `if test -f 'actions/ferm/fermacts/hisq_fermact_params_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/hisq_fermact_params_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/hisq_fermact_params_s.cc'; fi`
-
-hisq_fermact_s.o: actions/ferm/fermacts/hisq_fermact_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hisq_fermact_s.o -MD -MP -MF "$(DEPDIR)/hisq_fermact_s.Tpo" -c -o hisq_fermact_s.o `test -f 'actions/ferm/fermacts/hisq_fermact_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/hisq_fermact_s.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hisq_fermact_s.Tpo" "$(DEPDIR)/hisq_fermact_s.Po"; else rm -f "$(DEPDIR)/hisq_fermact_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/hisq_fermact_s.cc' object='hisq_fermact_s.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hisq_fermact_s.o `test -f 'actions/ferm/fermacts/hisq_fermact_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/hisq_fermact_s.cc
-
-hisq_fermact_s.obj: actions/ferm/fermacts/hisq_fermact_s.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hisq_fermact_s.obj -MD -MP -MF "$(DEPDIR)/hisq_fermact_s.Tpo" -c -o hisq_fermact_s.obj `if test -f 'actions/ferm/fermacts/hisq_fermact_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/hisq_fermact_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/hisq_fermact_s.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hisq_fermact_s.Tpo" "$(DEPDIR)/hisq_fermact_s.Po"; else rm -f "$(DEPDIR)/hisq_fermact_s.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/hisq_fermact_s.cc' object='hisq_fermact_s.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hisq_fermact_s.obj `if test -f 'actions/ferm/fermacts/hisq_fermact_s.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/hisq_fermact_s.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/hisq_fermact_s.cc'; fi`
-
 klein_gordon_fermact_s.o: actions/ferm/fermacts/klein_gordon_fermact_s.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT klein_gordon_fermact_s.o -MD -MP -MF "$(DEPDIR)/klein_gordon_fermact_s.Tpo" -c -o klein_gordon_fermact_s.o `test -f 'actions/ferm/fermacts/klein_gordon_fermact_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/klein_gordon_fermact_s.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/klein_gordon_fermact_s.Tpo" "$(DEPDIR)/klein_gordon_fermact_s.Po"; else rm -f "$(DEPDIR)/klein_gordon_fermact_s.Tpo"; exit 1; fi
@@ -11895,20 +11528,6 @@ asqtad_cps_wrapper_qprop.obj: actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc' object='asqtad_cps_wrapper_qprop.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o asqtad_cps_wrapper_qprop.obj `if test -f 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; then $(CYGPATH_W) 'actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc'; fi`
-
-clover_term_bagel_clover.o: actions/ferm/linop/clover_term_bagel_clover.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT clover_term_bagel_clover.o -MD -MP -MF "$(DEPDIR)/clover_term_bagel_clover.Tpo" -c -o clover_term_bagel_clover.o `test -f 'actions/ferm/linop/clover_term_bagel_clover.cc' || echo '$(srcdir)/'`actions/ferm/linop/clover_term_bagel_clover.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/clover_term_bagel_clover.Tpo" "$(DEPDIR)/clover_term_bagel_clover.Po"; else rm -f "$(DEPDIR)/clover_term_bagel_clover.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/clover_term_bagel_clover.cc' object='clover_term_bagel_clover.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o clover_term_bagel_clover.o `test -f 'actions/ferm/linop/clover_term_bagel_clover.cc' || echo '$(srcdir)/'`actions/ferm/linop/clover_term_bagel_clover.cc
-
-clover_term_bagel_clover.obj: actions/ferm/linop/clover_term_bagel_clover.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT clover_term_bagel_clover.obj -MD -MP -MF "$(DEPDIR)/clover_term_bagel_clover.Tpo" -c -o clover_term_bagel_clover.obj `if test -f 'actions/ferm/linop/clover_term_bagel_clover.cc'; then $(CYGPATH_W) 'actions/ferm/linop/clover_term_bagel_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/clover_term_bagel_clover.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/clover_term_bagel_clover.Tpo" "$(DEPDIR)/clover_term_bagel_clover.Po"; else rm -f "$(DEPDIR)/clover_term_bagel_clover.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/clover_term_bagel_clover.cc' object='clover_term_bagel_clover.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o clover_term_bagel_clover.obj `if test -f 'actions/ferm/linop/clover_term_bagel_clover.cc'; then $(CYGPATH_W) 'actions/ferm/linop/clover_term_bagel_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/clover_term_bagel_clover.cc'; fi`
 
 chroma_init.o: init/chroma_init.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.o -MD -MP -MF "$(DEPDIR)/chroma_init.Tpo" -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc; \
