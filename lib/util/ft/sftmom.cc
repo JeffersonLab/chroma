@@ -1,15 +1,8 @@
-//  $Id: sftmom.cc,v 3.5 2007-08-01 19:33:14 edwards Exp $
+//  $Id: sftmom.cc,v 3.2.2.1 2007-08-06 21:17:49 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.5  2007-08-01 19:33:14  edwards
-//  Removed check for origin_offset must be zero in case of momentum averaging.
-//  The check is not needed. The phase of the origin is removed in the correct
-//  way no matter whether the phases are added together or not.
-//
-//  Revision 3.4  2007/06/21 18:18:55  edwards
-//  Added subset versions of "sft" function.
-//
-//  Revision 3.3  2007/06/12 16:10:01  edwards
-//  Added a default constructor.
+//  Revision 3.2.2.1  2007-08-06 21:17:49  edwards
+//  Removed test for momentum averaging and non-zero source offset.
+//  The code works correctly without this test.
 //
 //  Revision 3.2  2006/08/30 02:10:19  edwards
 //  Technically a bug fix. The test for a zero_offset should only be in directions
@@ -88,19 +81,6 @@
 
 namespace Chroma 
 {
-
-  // Param struct for SftMom
-  SftMomParams_t::SftMomParams_t()
-  {
-    mom2_max = 0;              /*!< (mom - mom_origin)^2 <= mom2_max */
-    mom_offset.resize(Nd-1);   /*!< Origin for the momentum */
-    mom_offset = 0;
-    avg_equiv_mom = false;     /*!< average over equivalent momenta */
-    origin_offset.resize(Nd);  /*<! Coordinate offset of the origin. Used to fix phase factor */
-    origin_offset = 0;
-    decay_dir = -1;            /*!< Decay direction */
-  };
-
 
   // Anonymous namespace
   namespace
@@ -385,10 +365,6 @@ namespace Chroma
 	}
       } // end if (avg_equiv_mom)
 
-      //
-      // Build the phase. 
-      // RGE: the origin_offset works with or without momentum averaging
-      //
       LatticeReal p_dot_x ;
       p_dot_x = 0. ;
 
@@ -411,7 +387,6 @@ namespace Chroma
     } // end for (int n=0; n < mom_vol; ++n)
 
     // Finish averaging
-    // Momentum averaging works even in the presence of an origin_offset
     if (avg_equiv_mom) {
       for (int mom_num=0; mom_num < num_mom; ++mom_num)
 	phases[mom_num] /= mom_degen[mom_num] ;
@@ -493,44 +468,12 @@ namespace Chroma
   }
 
   multi2d<DComplex>
-  SftMom::sft(const LatticeComplex& cf, int subset_color) const
-  {
-    int length = sft_set.numSubsets();
-    multi2d<DComplex> hsum(num_mom, length);
-
-    for (int mom_num=0; mom_num < num_mom; ++mom_num)
-    {
-      hsum[mom_num].resize(length);
-      hsum[mom_num] = zero;
-      hsum[mom_num][subset_color] = sum(phases[mom_num]*cf, sft_set[subset_color]);
-    }
-
-    return hsum ;
-  }
-
-  multi2d<DComplex>
   SftMom::sft(const LatticeReal& cf) const
   {
     multi2d<DComplex> hsum(num_mom, sft_set.numSubsets()) ;
 
     for (int mom_num=0; mom_num < num_mom; ++mom_num)
       hsum[mom_num] = sumMulti(phases[mom_num]*cf, sft_set) ;
-
-    return hsum ;
-  }
-
-  multi2d<DComplex>
-  SftMom::sft(const LatticeReal& cf, int subset_color) const
-  {
-    int length = sft_set.numSubsets();
-    multi2d<DComplex> hsum(num_mom, length);
-
-    for (int mom_num=0; mom_num < num_mom; ++mom_num)
-    {
-      hsum[mom_num].resize(length);
-      hsum[mom_num] = zero;
-      hsum[mom_num][subset_color] = sum(phases[mom_num]*cf, sft_set[subset_color]);
-    }
 
     return hsum ;
   }
