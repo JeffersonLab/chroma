@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.35 2007-08-06 19:18:13 edwards Exp $
+#  $Id: regres.pl,v 3.36 2007-08-07 02:26:41 edwards Exp $
 #
 #  This is the top-level script used by chroma/scripts/run_chroma_xmldiff.pl
 #
@@ -20,10 +20,10 @@ sub regresDirs
 #    );
 
      return ( 
-#	    "$test_dir/chroma/io/szin_write_obj/regres.pl",  These are broken
-#	    "$test_dir/chroma/io/szin_read_obj/regres.pl",
-#	    "$test_dir/chroma/io/nersc_write_obj/regres.pl",
-#	    "$test_dir/chroma/io/nersc_read_obj/regres.pl",
+ 	    "$test_dir/chroma/io/szin_write_obj/regres.pl",
+ 	    "$test_dir/chroma/io/szin_read_obj/regres.pl",
+ 	    "$test_dir/chroma/io/nersc_write_obj/regres.pl",
+ 	    "$test_dir/chroma/io/nersc_read_obj/regres.pl",
 	    "$test_dir/chroma/io/qio_write_obj/regres.pl",
 	    "$test_dir/chroma/io/qio_read_obj/regres.pl",
 	    "$test_dir/chroma/gfix/coulgauge/regres.pl",
