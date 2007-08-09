@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_params.h,v 1.1 2006-09-19 17:53:37 edwards Exp $
+// $Id: stout_fermstate_params.h,v 1.2 2007-08-09 02:30:10 edwards Exp $
 /* \file
  * \brief Stout params
  */
@@ -20,11 +20,10 @@ namespace Chroma
     StoutFermStateParams(XMLReader& in, const std::string& path);
 
     multi2d<Real>  rho;
-    multi1d<bool>  smear_in_this_dirP; // inelegant?
-    int            n_smear;
+    multi1d<bool>  smear_in_this_dirP;
 
+    int            n_smear;
     Real           sm_fact;
-    int            orthog_dir;
   };
 
   void read(XMLReader& xml, const std::string& path, StoutFermStateParams& p);
