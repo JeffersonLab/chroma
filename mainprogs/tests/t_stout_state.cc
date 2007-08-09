@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 3.9 2006-09-19 16:04:23 edwards Exp $
+// $Id: t_stout_state.cc,v 3.10 2007-08-09 13:38:36 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -126,7 +126,6 @@ int main(int argc, char *argv[])
 
   // Setup stout state smearing params.
   StoutFermStateParams s_p;
-  s_p.orthog_dir = orthog_dir;
   s_p.n_smear = n_smear;
   s_p.rho.resize(Nd, Nd);
   s_p.smear_in_this_dirP.resize(Nd);
