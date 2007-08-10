@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.18 2007-06-21 01:16:27 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.19 2007-08-10 21:27:02 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -33,6 +33,7 @@
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
 #include "meas/inline/hadron/inline_qqqNucNuc_w.h"
+#include "meas/inline/hadron/inline_stoch_condensates_w.h"
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
 #include "meas/inline/hadron/inline_stoch_group_baryon_w.h"
@@ -94,6 +95,7 @@ namespace Chroma
 	success &= InlineQQQNucNucEnv::registerAll();
 //	success &= InlineSpectrumQllEnv::registerAll();
 	success &= InlineStaticLightSpecEnv::registerAll();
+	success &= InlineStochCondensatesEnv::registerAll();
 	success &= InlineStochMesonEnv::registerAll();
 	success &= InlineStochBaryonEnv::registerAll();
 	success &= InlineStochGroupBaryonEnv::registerAll();
