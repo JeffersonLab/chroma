@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: handle.h,v 3.1 2006-08-16 17:10:26 bjoo Exp $
+// $Id: handle.h,v 3.2 2007-08-11 01:41:35 edwards Exp $
 /*! @file
  * @brief  Class for counted reference semantics
  *
@@ -48,7 +48,7 @@ namespace Chroma
     //! Assignment (unshare old and share new value)
     Handle& operator=(const Handle& p) 
       {
-	if (this != &p) 
+	if (ptr != p.ptr)
 	{
 	  dispose();
 	  ptr = p.ptr;
