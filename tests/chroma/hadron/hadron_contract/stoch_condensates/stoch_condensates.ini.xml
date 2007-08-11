@@ -1,0 +1,426 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+;
+; 
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source.
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+          </spatial_mask>
+
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>2000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+        <prop_id>zN_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_source</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_prop</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./zN_prop_q1_t0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source.
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>1</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+          </spatial_mask>
+
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>2000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+        <prop_id>zN_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_source</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_prop</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./zN_prop_q1_t1</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source.
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>2</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+          </spatial_mask>
+
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>2000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+        <prop_id>zN_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_source</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_prop</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./zN_prop_q1_t2</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source.
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>3</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+          </spatial_mask>
+
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>2000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+        <prop_id>zN_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_source</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_prop</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./zN_prop_q1_t3</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>HADRON_CONTRACT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_file>stoch_cond.lime</output_file>
+        <Contractions>
+          <annotation>
+           ; STOCH_CONDENSATES
+          </annotation>
+          <elem>
+            <version>1</version>
+            <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+            <mom2_max>3</mom2_max>
+            <avg_equiv_mom>true</avg_equiv_mom>
+            <mom_origin>0 0 0</mom_origin>
+
+            <LinkSmearing>
+              <!-- LinkSmearingType>NONE</LinkSmearingType -->
+              <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+              <link_smear_fact>0.1625</link_smear_fact>
+              <link_smear_num>4</link_smear_num>
+              <no_smear_dir>3</no_smear_dir>
+            </LinkSmearing>
+            <soln_files>
+              <elem>./zN_prop_q1_t0</elem>
+              <elem>./zN_prop_q1_t1</elem>
+              <elem>./zN_prop_q1_t2</elem>
+              <elem>./zN_prop_q1_t3</elem>
+            </soln_files>
+          </elem>
+        </Contractions>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>2 2 2 4</nrow>
+</Param>
+<Cfg>
+  <cfg_type>WEAK_FIELD</cfg_type>
+  <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

@@ -1,0 +1,2242 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+;
+; 
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source.
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+          </spatial_mask>
+
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>2000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+        <prop_id>zN_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_source</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_prop</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./zN_prop_q1_t0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source.
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>1</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+          </spatial_mask>
+
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>2000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+        <prop_id>zN_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_source</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_prop</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./zN_prop_q1_t1</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source.
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>2</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+          </spatial_mask>
+
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>2000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+        <prop_id>zN_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_source</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_prop</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./zN_prop_q1_t2</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source.
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>3</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+          </spatial_mask>
+
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1e-10</RsdCG>
+          <MaxCG>2000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source</source_id>
+        <prop_id>zN_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_source</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>zN_prop</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./zN_prop_q1_t3</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>HADRON_CONTRACT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_file>stoch_cond.lime</output_file>
+        <Contractions>
+          <annotation>
+           ; STOCH_CONDENSATES
+          </annotation>
+          <elem>
+            <version>1</version>
+            <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+            <mom2_max>3</mom2_max>
+            <avg_equiv_mom>true</avg_equiv_mom>
+            <mom_origin>0 0 0</mom_origin>
+
+            <LinkSmearing>
+              <!-- LinkSmearingType>NONE</LinkSmearingType -->
+              <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+              <link_smear_fact>0.1625</link_smear_fact>
+              <link_smear_num>4</link_smear_num>
+              <no_smear_dir>3</no_smear_dir>
+            </LinkSmearing>
+            <soln_files>
+              <elem>./zN_prop_q1_t0</elem>
+              <elem>./zN_prop_q1_t1</elem>
+              <elem>./zN_prop_q1_t2</elem>
+              <elem>./zN_prop_q1_t3</elem>
+            </soln_files>
+          </elem>
+        </Contractions>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>2 2 2 4</nrow>
+</Param>
+<Cfg>
+  <cfg_type>WEAK_FIELD</cfg_type>
+  <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.24.0</chroma>
+      <qdp>1.24.0</qdp>
+    </code_version>
+    <run_date>11 Aug 07 18:37:42 EDT</run_date>
+    <Setgeom>
+      <latt_size>2 2 2 4</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>2 2 2 4</subgrid_size>
+      <total_volume>32</total_volume>
+      <subgrid_volume>32</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info><weak_field>
+</weak_field>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994775466207001</w_plaq>
+    <s_plaq>0.995049628118674</s_plaq>
+    <t_plaq>0.994501304295328</t_plaq>
+    <plane_01_plaq>0.995739730695883</plane_01_plaq>
+    <plane_02_plaq>0.99481059362491</plane_02_plaq>
+    <plane_12_plaq>0.994598560035229</plane_12_plaq>
+    <plane_03_plaq>0.993968695402145</plane_03_plaq>
+    <plane_13_plaq>0.995022147893906</plane_13_plaq>
+    <plane_23_plaq>0.994513069589933</plane_23_plaq>
+    <link>0.379059874763091</link>
+    <pollp>
+      <elem>
+        <re>-0.326030723595371</re>
+        <im>-0.0298151803629783</im>
+      </elem>
+      <elem>
+        <re>-0.325779128354043</re>
+        <im>-0.0289703614641136</im>
+      </elem>
+      <elem>
+        <re>-0.325954266823828</re>
+        <im>-0.0229221047678341</im>
+      </elem>
+      <elem>
+        <re>0.96582156419754</re>
+        <im>-0.00148824815793584</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:42 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+      <version>1</version>
+      <N>4</N>
+      <j_decay>3</j_decay>
+      <t_source>0</t_source>
+      <ran_seed>
+        <Seed>
+          <elem>471</elem>
+          <elem>1694</elem>
+          <elem>3965</elem>
+          <elem>563</elem>
+        </Seed>
+      </ran_seed>
+      <spatial_mask_size>1 1 1</spatial_mask_size>
+      <spatial_mask>
+        <elem>0 0 0</elem>
+      </spatial_mask>
+      <color_mask>0 1 2</color_mask>
+      <spin_mask>0 1 2 3</spin_mask>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>zN_source</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>96.0000000000002 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:42 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1</xi_0>
+        <nu>1</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
+</StateInfo>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>zN_source</source_id>
+            <prop_id>zN_prop</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>245439462</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+          <ran_seed>
+            <Seed>
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+            <elem>0 0 0</elem>
+          </spatial_mask>
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <RNG>
+        <Seed>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
+        </Seed>
+      </RNG>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>96.0000000000002 0 0 0</source_corr>
+        </Source_correlator>
+        <Relaxation_Iterations>
+          <ncg_had>19</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>5.43566088804919 0.502284622409354 0.322882929585752 0.550398138476388</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>zN_source</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>zN_prop</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:43 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+      <version>1</version>
+      <N>4</N>
+      <j_decay>3</j_decay>
+      <t_source>1</t_source>
+      <ran_seed>
+        <Seed>
+          <elem>471</elem>
+          <elem>1694</elem>
+          <elem>3965</elem>
+          <elem>563</elem>
+        </Seed>
+      </ran_seed>
+      <spatial_mask_size>1 1 1</spatial_mask_size>
+      <spatial_mask>
+        <elem>0 0 0</elem>
+      </spatial_mask>
+      <color_mask>0 1 2</color_mask>
+      <spin_mask>0 1 2 3</spin_mask>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>1</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>zN_source</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>0 96.0000000000002 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:43 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1</xi_0>
+        <nu>1</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
+</StateInfo>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>zN_source</source_id>
+            <prop_id>zN_prop</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>245439463</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>1</t_source>
+          <ran_seed>
+            <Seed>
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+            <elem>0 0 0</elem>
+          </spatial_mask>
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>1</t_source>
+      </PropSource>
+      <RNG>
+        <Seed>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
+        </Seed>
+      </RNG>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>0 96.0000000000002 0 0</source_corr>
+        </Source_correlator>
+        <Relaxation_Iterations>
+          <ncg_had>19</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>0.786987100606331 5.81553615467078 0.30141985652064 0.3260455343376</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>zN_source</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>zN_prop</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:43 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+      <version>1</version>
+      <N>4</N>
+      <j_decay>3</j_decay>
+      <t_source>2</t_source>
+      <ran_seed>
+        <Seed>
+          <elem>471</elem>
+          <elem>1694</elem>
+          <elem>3965</elem>
+          <elem>563</elem>
+        </Seed>
+      </ran_seed>
+      <spatial_mask_size>1 1 1</spatial_mask_size>
+      <spatial_mask>
+        <elem>0 0 0</elem>
+      </spatial_mask>
+      <color_mask>0 1 2</color_mask>
+      <spin_mask>0 1 2 3</spin_mask>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>2</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>zN_source</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>0 0 96.0000000000002 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:43 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1</xi_0>
+        <nu>1</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
+</StateInfo>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>zN_source</source_id>
+            <prop_id>zN_prop</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>245439463</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>2</t_source>
+          <ran_seed>
+            <Seed>
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+            <elem>0 0 0</elem>
+          </spatial_mask>
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>2</t_source>
+      </PropSource>
+      <RNG>
+        <Seed>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
+        </Seed>
+      </RNG>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>0 0 96.0000000000002 0</source_corr>
+        </Source_correlator>
+        <Relaxation_Iterations>
+          <ncg_had>19</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>0.250317502032311 0.43479085427248 4.97730162714696 0.40406720394847</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>zN_source</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>zN_prop</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:43 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>2859</elem>
+            <elem>1582</elem>
+            <elem>4074</elem>
+            <elem>2016</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+      <version>1</version>
+      <N>4</N>
+      <j_decay>3</j_decay>
+      <t_source>3</t_source>
+      <ran_seed>
+        <Seed>
+          <elem>471</elem>
+          <elem>1694</elem>
+          <elem>3965</elem>
+          <elem>563</elem>
+        </Seed>
+      </ran_seed>
+      <spatial_mask_size>1 1 1</spatial_mask_size>
+      <spatial_mask>
+        <elem>0 0 0</elem>
+      </spatial_mask>
+      <color_mask>0 1 2</color_mask>
+      <spin_mask>0 1 2 3</spin_mask>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>3</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>zN_source</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>0 0 0 96.0000000000003</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:43 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1</xi_0>
+        <nu>1</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1e-10</RsdCG>
+      <MaxCG>2000</MaxCG>
+    </InvertParam>
+</Param><StateInfo>
+</StateInfo>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>zN_source</source_id>
+            <prop_id>zN_prop</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>245439463</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>3</t_source>
+          <ran_seed>
+            <Seed>
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
+          <spatial_mask_size>1 1 1</spatial_mask_size>
+          <spatial_mask>
+            <elem>0 0 0</elem>
+          </spatial_mask>
+          <color_mask>0 1 2</color_mask>
+          <spin_mask>0 1 2 3</spin_mask>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>3</t_source>
+      </PropSource>
+      <RNG>
+        <Seed>
+          <elem>2859</elem>
+          <elem>1582</elem>
+          <elem>4074</elem>
+          <elem>2016</elem>
+        </Seed>
+      </RNG>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>0 0 0 96.0000000000003</source_corr>
+        </Source_correlator>
+        <Relaxation_Iterations>
+          <ncg_had>19</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>0.450854463338587 0.299496923361964 0.592736108215851 5.99699383172647</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>zN_source</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>zN_prop</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <HadronContract>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.24.0</chroma>
+            <qdp>1.24.0</qdp>
+          </code_version>
+          <run_date>11 Aug 07 18:37:43 EDT</run_date>
+          <Setgeom>
+            <latt_size>2 2 2 4</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>2 2 2 4</subgrid_size>
+            <total_volume>32</total_volume>
+            <subgrid_volume>32</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <output_file>stoch_cond.lime</output_file><elem>
+      <version>1</version>
+      <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <LinkSmearing>
+<!-- LinkSmearingType>NONE</LinkSmearingType -->
+        <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+        <link_smear_fact>0.1625</link_smear_fact>
+        <link_smear_num>4</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+      <soln_files>
+        <elem>./zN_prop_q1_t0</elem>
+        <elem>./zN_prop_q1_t1</elem>
+        <elem>./zN_prop_q1_t2</elem>
+        <elem>./zN_prop_q1_t3</elem>
+      </soln_files>
+    </elem>
+</NamedObject>
+          <xml_file></xml_file>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994775466207001</w_plaq>
+          <s_plaq>0.995049628118674</s_plaq>
+          <t_plaq>0.994501304295328</t_plaq>
+          <plane_01_plaq>0.995739730695883</plane_01_plaq>
+          <plane_02_plaq>0.99481059362491</plane_02_plaq>
+          <plane_12_plaq>0.994598560035229</plane_12_plaq>
+          <plane_03_plaq>0.993968695402145</plane_03_plaq>
+          <plane_13_plaq>0.995022147893906</plane_13_plaq>
+          <plane_23_plaq>0.994513069589933</plane_23_plaq>
+          <link>0.379059874763091</link>
+          <pollp>
+            <elem>
+              <re>-0.326030723595371</re>
+              <im>-0.0298151803629783</im>
+            </elem>
+            <elem>
+              <re>-0.325779128354043</re>
+              <im>-0.0289703614641136</im>
+            </elem>
+            <elem>
+              <re>-0.325954266823828</re>
+              <im>-0.0229221047678341</im>
+            </elem>
+            <elem>
+              <re>0.96582156419754</re>
+              <im>-0.00148824815793584</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <HadronMeasurements>
+          <elem>
+            <Input><elem>
+      <version>1</version>
+      <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+      <mom2_max>3</mom2_max>
+      <avg_equiv_mom>true</avg_equiv_mom>
+      <mom_origin>0 0 0</mom_origin>
+      <LinkSmearing>
+<!-- LinkSmearingType>NONE</LinkSmearingType -->
+        <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+        <link_smear_fact>0.1625</link_smear_fact>
+        <link_smear_num>4</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+      <soln_files>
+        <elem>./zN_prop_q1_t0</elem>
+        <elem>./zN_prop_q1_t1</elem>
+        <elem>./zN_prop_q1_t2</elem>
+        <elem>./zN_prop_q1_t3</elem>
+      </soln_files>
+    </elem>
+</Input>
+            <HadronContractions>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>0</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>20.2921056747437</re>
+      <im>0.855786643922329</im>
+    </elem>
+    <elem>
+      <re>21.112699508667</re>
+      <im>-1.39768586790888</im>
+    </elem>
+    <elem>
+      <re>19.4902219772339</re>
+      <im>0.53904677554965</im>
+    </elem>
+    <elem>
+      <re>21.7246735095978</re>
+      <im>-0.242093794513494</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>1</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.669193498790264</re>
+      <im>0.121396537870169</im>
+    </elem>
+    <elem>
+      <re>0.156403183937073</re>
+      <im>0.406759165693074</im>
+    </elem>
+    <elem>
+      <re>-2.29387851059437</re>
+      <im>-0.238622479140759</im>
+    </elem>
+    <elem>
+      <re>1.0568476319313</re>
+      <im>0.404969012364745</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>2</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-2.7206597016193</re>
+      <im>0.175232650712132</im>
+    </elem>
+    <elem>
+      <re>-1.12812831997871</re>
+      <im>0.084579486399889</im>
+    </elem>
+    <elem>
+      <re>-0.50889914482832</re>
+      <im>0.551491757854819</im>
+    </elem>
+    <elem>
+      <re>-1.03666394203901</re>
+      <im>-0.131154403090477</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>3</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.0430065840482712</re>
+      <im>0.110622882843018</im>
+    </elem>
+    <elem>
+      <re>0.394092537462711</re>
+      <im>1.90155225154012</im>
+    </elem>
+    <elem>
+      <re>-0.0843540504574776</re>
+      <im>-1.45625019073486</im>
+    </elem>
+    <elem>
+      <re>0.275188222527504</re>
+      <im>0.882256988435984</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>4</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.629379034042358</re>
+      <im>0.178815774619579</im>
+    </elem>
+    <elem>
+      <re>-1.35737866163254</re>
+      <im>-0.0627405717968941</im>
+    </elem>
+    <elem>
+      <re>-4.63810774683952</re>
+      <im>0.41155407205224</im>
+    </elem>
+    <elem>
+      <re>-1.33415429294109</re>
+      <im>0.329109462967608</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>5</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.171261012554169</re>
+      <im>2.00061929225922</im>
+    </elem>
+    <elem>
+      <re>-0.338567063212395</re>
+      <im>-6.01337957382202</im>
+    </elem>
+    <elem>
+      <re>0.370562675176188</re>
+      <im>-0.200636580586433</im>
+    </elem>
+    <elem>
+      <re>-0.202260321006179</re>
+      <im>-3.4891147390008</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>6</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.335577974678017</re>
+      <im>4.03598977159709</im>
+    </elem>
+    <elem>
+      <re>0.250959262251854</re>
+      <im>-3.14444801211357</im>
+    </elem>
+    <elem>
+      <re>-0.0322460904717445</re>
+      <im>-4.72255717217922</im>
+    </elem>
+    <elem>
+      <re>-0.0464742863550782</re>
+      <im>0.66880651563406</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>7</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.0339727140963078</re>
+      <im>1.8253231421113</im>
+    </elem>
+    <elem>
+      <re>0.299025944899768</re>
+      <im>-0.350082043558359</im>
+    </elem>
+    <elem>
+      <re>0.151872914284468</re>
+      <im>3.88646243457333</im>
+    </elem>
+    <elem>
+      <re>0.0644185394048691</re>
+      <im>-2.48931512236595</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>8</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-1.17801089957356</re>
+      <im>-0.0515105426311493</im>
+    </elem>
+    <elem>
+      <re>-3.98603784106672</re>
+      <im>-0.0551161002367735</im>
+    </elem>
+    <elem>
+      <re>-2.32435564696789</re>
+      <im>-0.0478866640478373</im>
+    </elem>
+    <elem>
+      <re>1.61381209641695</re>
+      <im>-0.0665869670920074</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>9</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.293760642409325</re>
+      <im>-3.43809328228235</im>
+    </elem>
+    <elem>
+      <re>0.163175385445356</re>
+      <im>-2.73024725401774</im>
+    </elem>
+    <elem>
+      <re>0.557583216577768</re>
+      <im>-1.70261025056243</im>
+    </elem>
+    <elem>
+      <re>-0.241208488121629</re>
+      <im>-0.0491442084312439</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>10</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.159607823938131</re>
+      <im>3.76189124584198</im>
+    </elem>
+    <elem>
+      <re>-0.128483694978058</re>
+      <im>0.862221449613571</im>
+    </elem>
+    <elem>
+      <re>0.851458307355642</re>
+      <im>-0.689583515748382</im>
+    </elem>
+    <elem>
+      <re>-0.346186359412968</re>
+      <im>-0.610427011735737</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>11</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.200221873819828</re>
+      <im>0.746011250419542</im>
+    </elem>
+    <elem>
+      <re>0.403814876452088</re>
+      <im>-1.46634798590094</im>
+    </elem>
+    <elem>
+      <re>0.0609373645856977</re>
+      <im>-1.14405098557472</im>
+    </elem>
+    <elem>
+      <re>0.579931099433452</re>
+      <im>0.766938894987106</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>12</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.184465484693646</re>
+      <im>-0.111834764480591</im>
+    </elem>
+    <elem>
+      <re>0.381427335785702</re>
+      <im>0.491073116660118</im>
+    </elem>
+    <elem>
+      <re>-1.08912335895002</re>
+      <im>-0.0229011308401823</im>
+    </elem>
+    <elem>
+      <re>0.295215934514999</re>
+      <im>-1.2740990165621</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>13</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.749565243721008</re>
+      <im>2.19062200188637</im>
+    </elem>
+    <elem>
+      <re>-0.66760721988976</re>
+      <im>-0.945593625307083</im>
+    </elem>
+    <elem>
+      <re>0.497462511062622</re>
+      <im>3.20106249675155</im>
+    </elem>
+    <elem>
+      <re>0.521889623254538</re>
+      <im>-2.25429552793503</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>14</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.198521732818335</re>
+      <im>-0.304845059290528</im>
+    </elem>
+    <elem>
+      <re>0.038059763610363</re>
+      <im>-0.479586988687515</im>
+    </elem>
+    <elem>
+      <re>0.393599901348352</re>
+      <im>1.72250665910542</im>
+    </elem>
+    <elem>
+      <re>0.432196537032723</re>
+      <im>-0.749978467822075</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>stoch_diagonal_gamma_condensates</ContractionType>
+  <gamma_value>15</gamma_value>
+  <mom2_max>3</mom2_max>
+  <avg_equiv_mom>true</avg_equiv_mom>
+  <decay_dir>3</decay_dir>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>0.863918341696262</re>
+      <im>-1.49011611938477e-08</im>
+    </elem>
+    <elem>
+      <re>0.231711960397661</re>
+      <im>-8.19563865661621e-08</im>
+    </elem>
+    <elem>
+      <re>-0.405661202967167</re>
+      <im>2.5331974029541e-07</im>
+    </elem>
+    <elem>
+      <re>1.00806717574596</re>
+      <im>2.13272869586945e-07</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+            </HadronContractions>
+          </elem>
+        </HadronMeasurements>
+      </HadronContract>
+    </elem>
+  </InlineObservables>
+</chroma>
