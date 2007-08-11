@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.99 2007-08-10 21:27:17 edwards Exp $
+# $Id: Makefile.am,v 3.100 2007-08-11 22:43:18 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -504,6 +504,7 @@ nobase_include_HEADERS += \
 	meas/hadron/deriv_meson_seqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h \
 	meas/hadron/simple_meson_2pt_w.h \
+	meas/hadron/stoch_cond_cont_w.h \
 	meas/hadron/mesons_w.h \
 	meas/hadron/mesons2_w.h \
         meas/hadron/seqpiontest_w.h \
@@ -681,7 +682,6 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
 	meas/inline/hadron/inline_qqqNucNuc_w.h \
-	meas/inline/hadron/inline_stoch_condensates_w.h \
 	meas/inline/hadron/inline_stoch_baryon_w.h \
 	meas/inline/hadron/inline_stoch_group_baryon_w.h \
 	meas/inline/hadron/inline_stoch_meson_w.h \
@@ -1151,6 +1151,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/deriv_meson_seqsrc_w.cc \
 	meas/hadron/photon_seqsrc_w.cc \
 	meas/hadron/simple_meson_2pt_w.cc \
+	meas/hadron/stoch_cond_cont_w.cc \
         meas/hadron/mesons_w.cc \
         meas/hadron/mesons2_w.cc \
 	meas/hadron/qqq_w.cc meas/hadron/qqbar_w.cc \
@@ -1252,7 +1253,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
 	meas/inline/hadron/inline_qqqNucNuc_w.cc \
-	meas/inline/hadron/inline_stoch_condensates_w.cc \
 	meas/inline/hadron/inline_stoch_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_group_baryon_w.cc \
 	meas/inline/hadron/inline_stoch_meson_w.cc \
