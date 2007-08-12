@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: handle.h,v 3.3 2007-08-12 19:23:29 edwards Exp $
+// $Id: handle.h,v 3.4 2007-08-12 20:35:11 edwards Exp $
 /*! @file
  * @brief  Class for counted reference semantics
  *
@@ -62,15 +62,18 @@ namespace Chroma
     template<typename Q>
     Handle<Q> cast()
       {
-	Q* q = dynamic_cast<Q*>(ptr);
-	if( q == 0x0 ) { 
+	Handle<Q> q;
+	q.ptr = dynamic_cast<Q*>(ptr);
+	if( q.ptr == 0x0 ) { 
 	  QDPIO::cerr << "Dynamic cast failed in Handle::cast()" <<endl;
 	  QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << endl;
 	  QDP_abort(1);
 	}
+	delete q.count;
 
+	q.count = count;
 	++*count;
-	return Handle<Q>(q);
+	return q;
       }
 
     //! The cast function requires all Handles<Q> to be friends of Handle<T>
