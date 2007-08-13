@@ -1,4 +1,4 @@
-17/07.2007 -- Balint Joo
+07/17/2007 -- Balint Joo
 	Version 3.24.0 - Loads of I/O related stuff from Robert. Balint had 
         Clover related improvements including support for bagel_clover
         on BG/Ls, speed improvements to clover force etc through
@@ -7,7 +7,7 @@
         former can cope with an indefinite matrix (as long as it is
         invertible) the latter can't.
 
-19/04/2007 -- Robert Edwards
+04/19/2007 -- Robert Edwards
 	Version 3.23.0 - Moved around some monomial files in anticipation of big reorg
         of Remez and InvertParam groups. New output from hadspec.
 
