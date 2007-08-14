@@ -1,3 +1,8 @@
+08/14/2007 -- Robert Edwards
+	Version 3.24.1 - Some rearrangement in "hadron_contract" routines. Now
+        those regressions work in parallel. This code requires at least 
+        QDP++ version 1.24.3 or greater.
+
 07/17/2007 -- Balint Joo
 	Version 3.24.0 - Loads of I/O related stuff from Robert. Balint had 
         Clover related improvements including support for bagel_clover
