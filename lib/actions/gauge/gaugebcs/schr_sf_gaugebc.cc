@@ -1,4 +1,4 @@
-// $Id: schr_sf_gaugebc.cc,v 3.1 2006-04-10 21:21:57 edwards Exp $
+// $Id: schr_sf_gaugebc.cc,v 3.2 2007-08-16 20:38:56 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional base class
  */
@@ -152,6 +152,15 @@ namespace Chroma
 	pokeColor(SFBndFld[mu], cmplx(cos(lftmp),sin(lftmp)), i, i);
       }
     }
+
+
+#if 0
+    XMLFileWriter xml_out("sf_bc.xml");
+    push(xml_out, "SFBC");
+    write(xml_out, "lSFmask", lSFmask);
+    write(xml_out, "SFBndFld", SFBndFld);
+    pop(xml_out);
+#endif
 
     END_CODE();
   }

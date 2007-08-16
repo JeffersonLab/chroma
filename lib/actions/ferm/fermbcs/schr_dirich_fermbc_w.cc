@@ -1,6 +1,6 @@
-// $Id: schr_dirich_fermbc_w.cc,v 3.1 2006-09-20 20:28:00 edwards Exp $
+// $Id: schr_dirich_fermbc_w.cc,v 3.2 2007-08-16 20:38:56 edwards Exp $
 /*! \file
- *  \brief Schroedinger BC - dirichlet ferm BC
+ *  \brief Schroedinger BC - dirichlet BC
  */
 
 #include "actions/ferm/fermbcs/schr_dirich_fermbc_w.h"
@@ -20,7 +20,7 @@ namespace Chroma
 				     SchrFermBCParams(xml, path));
     }
 
-    const std::string name = "SCHROEDINGER_DIRICHLET_FERMBC";
+    const std::string name = "SCHROEDINGER_NONPERT_FERMBC";
 
     static bool registered = false;
 

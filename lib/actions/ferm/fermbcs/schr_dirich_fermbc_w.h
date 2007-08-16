@@ -1,7 +1,7 @@
 // -*- C++ -*-
-// $Id: schr_dirich_fermbc_w.h,v 3.2 2006-09-20 20:28:00 edwards Exp $
+// $Id: schr_dirich_fermbc_w.h,v 3.3 2007-08-16 20:38:56 edwards Exp $
 /*! \file
- *  \brief Schroedinger BC - dirichlet ferm BC
+ *  \brief Schroedinger BC - dirichlet BC
  */
 
 #ifndef __schr_dirich_fermbc_w_h__
@@ -22,7 +22,7 @@ namespace Chroma
   }
 
 
-  //! Concrete class for Schroedinger BC - use for nonpertubative tuning
+  //! Concrete class for Schroedinger BC - dirichlet BC
   /*! @ingroup fermbcs
    *
    *  Schroedinger BC for ferm actions
@@ -49,38 +49,6 @@ namespace Chroma
     int getDir() const {return param.decay_dir;}
 
   protected:
-    //! Construct the mask and boundary fields
-    void initBnd(multi1d<LatticeColorMatrix>& SFBndFl,
-		 multi1d<LatticeBoolean>& lSFmas,
-		 LatticeBoolean& lSFmasF,
-		 const multi1d<LatticeColorMatrix>& SFBndFldG,
-		 const multi1d<LatticeBoolean>& lSFmaskG) const
-    {
-      START_CODE();
-
-      SFBndFl = SFBndFldG;
-      lSFmas = lSFmaskG;
-
-      /* Dirichlet boundary condiditons in all Nd directions for the fermions */
-      LatticeBoolean lbtest = false;
-
-      /* The fermion mask is set on x,y,z,t = 0 and L-1 */
-      for(int mu = 0; mu < Nd; mu++)
-      {
-	LatticeInteger litmp = Layout::latticeCoordinate(mu);
-	lbtest |= (litmp == 0);
-	lbtest |= (litmp == (QDP::Layout::lattSize()[mu]-1));
-      }
-      lSFmasF = lbtest;
-
-      END_CODE();
-    }
-
-    //! Maximum plaquette size. This is what knows about 1x1 plaq or 1x2 rect.
-    /*! \return 1 for 1x1 plaq or 2 for 1x2 rect in decay_dir */
-    int getMaxExtent() const {return param.loop_extent;}
-
-  protected:
     //! Mask which lattice sites have fixed ferm sites
     const LatticeBoolean& lSFmaskF() const {return maskF;}
 
@@ -90,7 +58,10 @@ namespace Chroma
     //! Fixed gauge links on only the lSFmask() sites
     const multi1d<LatticeColorMatrix>& SFBndFld() const {return fld;}
 
-  protected:
+    //! Maximum plaquette size. This is what knows about 1x1 plaq or 1x2 rect.
+    /*! \return 1 for 1x1 plaq or 2 for 1x2 rect in decay_dir */
+    int getMaxExtent() const {return param.loop_extent;}
+
     //! Get the angles on the boundaries
     const multi1d<Real>& getTheta() const {return param.theta;}
 

@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: schr_dirich_gaugebc.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
+// $Id: schr_dirich_gaugebc.h,v 3.2 2007-08-16 20:38:56 edwards Exp $
 /*! \file
- *  \brief Schroedinger BC - dirichlet gauge BC
+ *  \brief Schroedinger BC - dirichlet BC
  */
 
 #ifndef __schr_dirich_gaugebc_h__
 #define __schr_dirich_gaugebc_h__
 
-#include "actions/gauge/gaugebcs/schroedinger_gaugebc.h"
+#include "actions/gauge/gaugebcs/schr_sf_gaugebc.h"
 #include "actions/gauge/gaugebcs/schr_gaugebc_params.h"
 
 namespace Chroma 
@@ -26,7 +26,7 @@ namespace Chroma
    *
    *  Schroedinger BC for gauge actions
    */
-  class SchrDirichletGaugeBC : public SchrGaugeBC
+  class SchrDirichletGaugeBC : public SchrSFGaugeBC
   {
   public:
     //! Only full constructor
@@ -44,6 +44,20 @@ namespace Chroma
     //! Fixed gauge links on only the lSFmask() sites
     const multi1d<LatticeColorMatrix>& SFBndFld() const {return fld;}
 
+  protected:
+    //! Maximum plaquette size. This is what knows about 1x1 plaq or 1x2 rect.
+    /*! \return 1 for 1x1 plaq or 2 for 1x2 rect in decay_dir */
+    int getMaxExtent() const {return param.loop_extent;}
+
+    //! Multiplier on phases
+    const Real& SchrPhiMult() const {return param.SchrPhiMult;}
+
+    //! Get the angles on the boundaries
+    const Phases_t& getPhases() const {return phases;}
+
+    //! Initialize the phases
+    void initPhases();
+
   private:
     // Hide default constuctor
     SchrDirichletGaugeBC() {}
@@ -51,6 +65,7 @@ namespace Chroma
 
   private:
     SchrGaugeBCParams            param;
+    Phases_t                     phases;
     multi1d<LatticeBoolean>      mask;
     multi1d<LatticeColorMatrix>  fld;
   };
