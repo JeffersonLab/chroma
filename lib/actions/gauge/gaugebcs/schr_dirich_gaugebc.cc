@@ -1,4 +1,4 @@
-// $Id: schr_dirich_gaugebc.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
+// $Id: schr_dirich_gaugebc.cc,v 3.2 2007-08-16 18:48:07 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - dirichlet gauge BC
  */
@@ -46,29 +46,33 @@ namespace Chroma
     fld.resize(Nd);
     mask.resize(Nd);
 
-    int j_decay = p.decay_dir;
-    int igluetmp = p.loop_extent;
+//    int j_decay = getDir();
+//    int igluetmp = getMaxExtent();
 
-    /* Dirichlet boundary condiditons in all Nd directions for the fermions */
+    // For convenience, construct all the coordinates
+    multi1d<LatticeInteger> lcoord(Nd);
+    for(int mu = 0; mu < Nd; mu++)
+      lcoord[mu] = Layout::latticeCoordinate(mu);
+
+    // Dirichlet boundary condiditons in all Nd directions for the fermions
     LatticeBoolean lbtest = false;
 
-    /* The fermion mask is set on x,y,z,t = 0 and L-1 */
+    // The fermion mask is set on x,y,z,t = 0 and L-1
     for(int mu = 0; mu < Nd; mu++)
     {
-      LatticeInteger litmp = Layout::latticeCoordinate(mu);
-      lbtest |= (litmp == 0);
-      lbtest |= (litmp == (QDP::Layout::lattSize()[mu]-1));
+      lbtest |= (lcoord[mu] == 0);
+      lbtest |= (lcoord[mu] == (QDP::Layout::lattSize()[mu]-1));
     }
 //    lSFmaskF = lbtest;
 
-    /* The gauge mask is set on x,y,z,t = 0 and L-1 for all mu and mask(cb,mu) on L-2 */
+    // The gauge mask is set on x,y,z,t = 0 and L-1 and L-2 for all mu
     for(int mu = 0; mu < Nd; mu++)
     {
-      LatticeBoolean lbtmp = (Layout::latticeCoordinate(mu) == (QDP::Layout::lattSize()[mu]-2));
+      LatticeBoolean lbtmp = (lcoord[mu] == (QDP::Layout::lattSize()[mu]-2));
       mask[mu] = lbtest | lbtmp;
     }
 
-    /* The boundary fields are always zero */
+    // The boundary fields are always zero
     fld = QDP::zero;
 
     END_CODE();
