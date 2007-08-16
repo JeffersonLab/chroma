@@ -1,4 +1,4 @@
-// $Id: schr_dirich_fermbc_w.cc,v 3.2 2007-08-16 20:38:56 edwards Exp $
+// $Id: schr_dirich_fermbc_w.cc,v 3.3 2007-08-16 20:41:16 edwards Exp $
 /*! \file
  *  \brief Schroedinger BC - dirichlet BC
  */
@@ -20,7 +20,7 @@ namespace Chroma
 				     SchrFermBCParams(xml, path));
     }
 
-    const std::string name = "SCHROEDINGER_NONPERT_FERMBC";
+    const std::string name = "SCHROEDINGER_DIRICHLET_FERMBC";
 
     static bool registered = false;
 
