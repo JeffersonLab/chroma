@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.15 2007-08-19 21:21:00 uid3790 Exp $
+// $Id: hmc.cc,v 3.16 2007-08-19 21:26:24 uid3790 Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -644,6 +644,8 @@ Chroma::initialize(&argc, &argv);
   if (mc_control.start_update_num >= mc_control.n_production_updates)
   {
     QDPIO::cout << "hmc: run is finished" << endl;
+    pop(xml_log);
+    pop(xml_out);
     exit(0);
   }
 
