@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.14 2007-04-16 15:49:48 bjoo Exp $
+// $Id: hmc.cc,v 3.15 2007-08-19 21:21:00 uid3790 Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -639,6 +639,12 @@ Chroma::initialize(&argc, &argv);
   catch(const std::string& e) {
     QDPIO::cerr << "hmc: Caught Exception while reading file: " << e << endl;
     QDP_abort(1);
+  }
+
+  if (mc_control.start_update_num >= mc_control.n_production_updates)
+  {
+    QDPIO::cout << "hmc: run is finished" << endl;
+    exit(0);
   }
 
   QDPIO::cout << "Call QDP create layout" << endl;
