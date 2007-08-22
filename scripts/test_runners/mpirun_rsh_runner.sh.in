@@ -10,7 +10,7 @@
 
 # Hardwire MPI for now
 MPI_HOME=/usr/local/mvapich-0.9.8
-NODES="qcd6n321 qcd6n322"
+NODES="qcd6n321 qcd6n321 qcd6n322 qcd6n322"
 # Nex is the name of the program
 PROG=$1
 
@@ -25,7 +25,7 @@ echo Want to run program: $PROG with args $ARGS on nodes $NODES
 
 # Count nodes
 MPIRUN=${MPI_HOME}/bin/mpirun_rsh
-MPIRUN_ARGS="-rsh -np 2 ${NODES} ${PROG} ${ARGS}"
+MPIRUN_ARGS="-rsh -np 4 ${NODES} ${PROG} ${ARGS}"
 
 # Run program
 ${MPIRUN} ${MPIRUN_ARGS}
