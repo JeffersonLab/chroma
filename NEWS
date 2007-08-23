@@ -1,3 +1,7 @@
+08/23/2007 -- Robert Edwards
+	Version 3.24.2 - Cleaned up some SF Dirichlet code. Mainly, this version
+        marks a QDP++ version that has QIO properly working on mesh machines.
+
 08/14/2007 -- Robert Edwards
 	Version 3.24.1 - Some rearrangement in "hadron_contract" routines. Now
         those regressions work in parallel. This code requires at least 
