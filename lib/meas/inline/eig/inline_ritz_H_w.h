@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_ritz_H_w.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
+// $Id: inline_ritz_H_w.h,v 3.2 2007-08-23 19:02:44 edwards Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -20,56 +20,60 @@ namespace Chroma
   {
     extern const std::string name;
     bool registerAll();
-  }
 
 
-  //! Parameter structure
-  /*! \ingroup inlinehadron */ 
-  struct InlineRitzParams 
-  {
-    InlineRitzParams();
-    InlineRitzParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
-
-    unsigned long     frequency;
-    int            version;
-    std::string    fermact;
-    RitzParams_t   ritz_params;
-    std::string       stateInfo;
-    
-    struct NamedObject_t
+    //! Parameter structure
+    /*! \ingroup inlinehadron */ 
+    struct Params 
     {
-      std::string     gauge_id;
-      std::string     eigen_id;
-    } named_obj;
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
+      void writeXML(XMLWriter& xml_out, const std::string& path);
 
-    std::string xml_file;  // Alternate XML file pattern
-  };
+      unsigned long     frequency;
 
-  //! Inline measurement of Wilson loops
-  /*! \ingroup inlinehadron */
-  class InlineRitz : public AbsInlineMeasurement 
-  {
-  public:
-    ~InlineRitz() {}
-    InlineRitz(const InlineRitzParams& p) : params(p) {}
-    InlineRitz(const InlineRitz& p) : params(p.params) {}
+      struct Param_t
+      {
+	int             version;
+	GroupXML_t      fermact;          /*!< fermion action */
+	RitzParams_t    ritz_params;
+      } param;
+      std::string       stateInfo;
+    
+      struct NamedObject_t
+      {
+	std::string     gauge_id;
+	std::string     eigen_id;
+      } named_obj;
 
-    unsigned long getFrequency(void) const {return params.frequency;}
+      std::string xml_file;  // Alternate XML file pattern
+    };
 
-    //! Do the measurement
-    void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
+    //! Inline measurement of eigenvalues
+    /*! \ingroup inlinehadron */
+    class InlineMeas : public AbsInlineMeasurement 
+    {
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
+      InlineMeas(const InlineMeas& p) : params(p.params) {}
 
-  protected:
-    //! Do the measurement
-    void func(const unsigned long update_no,
-	      XMLWriter& xml_out); 
+      unsigned long getFrequency(void) const {return params.frequency;}
 
-  private:
-    InlineRitzParams params;
-  };
+      //! Do the measurement
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
 
-};
+    protected:
+      //! Do the measurement
+      void func(const unsigned long update_no,
+		XMLWriter& xml_out); 
 
+    private:
+      Params params;
+    };
+
+  } // namespace InlineRitzEnv
+
+} // namespace Chroma
 #endif

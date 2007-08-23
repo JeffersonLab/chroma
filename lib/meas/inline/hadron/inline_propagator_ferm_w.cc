@@ -1,4 +1,4 @@
-// $Id: inline_propagator_ferm_w.cc,v 3.5 2007-02-25 22:39:28 edwards Exp $
+// $Id: inline_propagator_ferm_w.cc,v 3.6 2007-08-23 19:02:44 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator returning only a single lattice fermion
  *
@@ -91,20 +91,6 @@ namespace Chroma
       // Parameters for source construction
       read(paramtop, "Param", param);
 
-      // Read any auxiliary state information
-      if( paramtop.count("StateInfo") == 1 ) {
-	XMLReader xml_state_info(paramtop, "StateInfo");
-	std::ostringstream os;
-	xml_state_info.print(os);
-	stateInfo = os.str();
-      }
-      else { 
-	XMLBufferWriter s_i_xml;
-	push(s_i_xml, "StateInfo");
-	pop(s_i_xml);
-	stateInfo = s_i_xml.printCurrentContext();
-      }
-
       // Read in the output propagator/source configuration info
       read(paramtop, "NamedObject", named_obj);
 
@@ -135,12 +121,6 @@ namespace Chroma
     push(xml, path);
     
     Chroma::write(xml, "Param", input.param);
-    {
-      //QDP::write(xml, "StateInfo", stateInfo);
-      istringstream header_is(input.stateInfo);
-      XMLReader xml_header(header_is);
-      xml << xml_header;
-    }
     Chroma::write(xml, "NamedObject", input.named_obj);
 
     pop(xml);
@@ -307,14 +287,6 @@ namespace Chroma
     QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
 
 
-    // Deal with auxiliary (and polymorphic) state information
-    // eigenvectors, eigenvalues etc. The XML for this should be
-    // stored as a string called "stateInfo" in the param struct.
-
-    // Make a reader for the stateInfo
-    std::istringstream state_info_is(params.stateInfo);
-    XMLReader state_info_xml(state_info_is);
-    string state_info_path="/StateInfo";
     //
     // Try the factories
     //
@@ -334,11 +306,6 @@ namespace Chroma
 	S_f(TheFermionActionFactory::Instance().createObject(params.param.fermact.id,
 							     fermacttop,
 							     params.param.fermact.path));
-
-      
-//      Handle< FermState<T,P,Q> > state(S_f->createState(u,
-//							state_info_xml,
-//							state_info_path));  // uses phase-multiplied u-fields
 
       Handle< FermState<T,P,Q> > state(S_f->createState(u));
 
@@ -399,7 +366,6 @@ namespace Chroma
 
 	push(record_xml, "Propagator");
 	write(record_xml, "ForwardProp", params.param);
-	record_xml << params.stateInfo;  // write out the stateinfo - might be empty
 	record_xml << xml_tmp;  // write out all the stuff under MakeSource
 	pop(record_xml);
       } 

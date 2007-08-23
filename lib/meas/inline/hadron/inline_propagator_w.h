@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_propagator_w.h,v 3.4 2007-03-18 21:58:10 edwards Exp $
+// $Id: inline_propagator_w.h,v 3.5 2007-08-23 19:02:45 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -33,7 +33,6 @@ namespace Chroma
     unsigned long     frequency;
 
     ChromaProp_t      param;
-    std::string       stateInfo;
 
     struct NamedObject_t
     {

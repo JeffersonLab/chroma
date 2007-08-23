@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_sfpcac_w.h,v 1.2 2006-09-20 20:28:03 edwards Exp $
+// $Id: inline_sfpcac_w.h,v 1.3 2007-08-23 19:02:45 edwards Exp $
 /*! \file
  * \brief Inline Schroedinger functional measurements
  */
@@ -18,61 +18,63 @@ namespace Chroma
   {
     extern const std::string name;
     bool registerAll();
-  }
 
-  //! Parameter structure
-  /*! \ingroup inlinehadron */ 
-  struct InlineSFpcacParams 
-  {
-    InlineSFpcacParams();
-    InlineSFpcacParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
 
-    unsigned long     frequency;
-
-    ChromaProp_t      param;
-
-    struct SFpcac_t
+    //! Parameter structure
+    /*! \ingroup inlinehadron */ 
+    struct Params 
     {
-      int  decay_dir;        /*!< decay direction */
-      bool ZVfactP;          /*!< Measure Z_V */
-      bool ZAfactP;          /*!< Measure Z_A */
-      int  x0;               /*!< Starting location of currents */
-      int  y0;               /*!< Ending location of currents */
-    } sfpcac;
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
+      void writeXML(XMLWriter& xml_out, const std::string& path);
 
-    struct NamedObject_t
+      unsigned long     frequency;
+
+      ChromaProp_t      param;
+
+      struct SFpcac_t
+      {
+	int  decay_dir;        /*!< decay direction */
+	bool ZVfactP;          /*!< Measure Z_V */
+	bool ZAfactP;          /*!< Measure Z_A */
+	int  x0;               /*!< Starting location of currents */
+	int  y0;               /*!< Ending location of currents */
+      } sfpcac;
+
+      struct NamedObject_t
+      {
+	std::string     gauge_id;
+      } named_obj;
+
+      std::string xml_file;  // Alternate XML file pattern
+    };
+
+
+    //! Inline measurement of Wilson loops
+    /*! \ingroup inlinehadron */
+    class InlineMeas : public AbsInlineMeasurement 
     {
-      std::string     gauge_id;
-    } named_obj;
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
+      InlineMeas(const InlineMeas& p) : params(p.params) {}
 
-    std::string xml_file;  // Alternate XML file pattern
-  };
+      unsigned long getFrequency(void) const {return params.frequency;}
 
-  //! Inline measurement of Wilson loops
-  /*! \ingroup inlinehadron */
-  class InlineSFpcac : public AbsInlineMeasurement 
-  {
-  public:
-    ~InlineSFpcac() {}
-    InlineSFpcac(const InlineSFpcacParams& p) : params(p) {}
-    InlineSFpcac(const InlineSFpcac& p) : params(p.params) {}
+      //! Do the measurement
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
 
-    unsigned long getFrequency(void) const {return params.frequency;}
+    protected:
+      //! Do the measurement
+      void func(const unsigned long update_no,
+		XMLWriter& xml_out); 
 
-    //! Do the measurement
-    void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
+    private:
+      Params params;
+    };
 
-  protected:
-    //! Do the measurement
-    void func(const unsigned long update_no,
-	      XMLWriter& xml_out); 
-
-  private:
-    InlineSFpcacParams params;
-  };
-
-}
+  } // namespace InlineSFpcacEnv
+}  // namespace Chroma
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 3.9 2007-02-25 22:39:28 edwards Exp $
+// $Id: inline_propagator_w.cc,v 3.10 2007-08-23 19:02:44 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -91,20 +91,6 @@ namespace Chroma
       // Parameters for source construction
       read(paramtop, "Param", param);
 
-      // Read any auxiliary state information
-      if( paramtop.count("Param/StateInfo") == 1 ) {
-	XMLReader xml_state_info(paramtop, "Param/StateInfo");
-	std::ostringstream os;
-	xml_state_info.print(os);
-	stateInfo = os.str();
-      }
-      else { 
-	XMLBufferWriter s_i_xml;
-	push(s_i_xml, "StateInfo");
-	pop(s_i_xml);
-	stateInfo = s_i_xml.printCurrentContext();
-      }
-
       // Read in the output propagator/source configuration info
       read(paramtop, "NamedObject", named_obj);
 
@@ -128,12 +114,6 @@ namespace Chroma
     push(xml_out, path);
     
     write(xml_out, "Param", param);
-    {
-      //QDP::write(xml_out, "StateInfo", stateInfo);
-      istringstream header_is(stateInfo);
-      XMLReader xml_header(header_is);
-      xml_out << xml_header;
-    }
     write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
@@ -340,14 +320,6 @@ namespace Chroma
     QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
 
 
-    // Deal with auxiliary (and polymorphic) state information
-    // eigenvectors, eigenvalues etc. The XML for this should be
-    // stored as a string called "stateInfo" in the param struct.
-
-    // Make a reader for the stateInfo
-    std::istringstream state_info_is(params.stateInfo);
-    XMLReader state_info_xml(state_info_is);
-    string state_info_path="/StateInfo";
     //
     // Try the factories
     //
@@ -372,10 +344,7 @@ namespace Chroma
 							       fermacttop,
 							       params.param.fermact.path));
 
-
 	Handle< FermState<T,P,Q> > state(S_f->createState(u));
-//				 state_info_xml,
-//				 state_info_path));  // uses phase-multiplied u-fields
 
 	QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
 	swatch.start();

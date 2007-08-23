@@ -1,4 +1,4 @@
-// $Id: inline_link_smear.cc,v 3.4 2006-09-20 20:28:03 edwards Exp $
+// $Id: inline_link_smear.cc,v 3.5 2007-08-23 19:02:45 edwards Exp $
 /*! \file
  *  \brief Inline Link smearing
  */
@@ -147,13 +147,13 @@ namespace Chroma
       {
 	std::istringstream  xml_l(params.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-	const string link_path = "/Param";
+//	const string link_path = "/Param";
 	QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
 	
 	Handle< LinkSmearing >
 	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
 								       linktop,
-								       link_path));
+								       params.link_smearing.path));
 	(*linkSmearing)(u_smr);
       }
       catch(const std::string& e) 

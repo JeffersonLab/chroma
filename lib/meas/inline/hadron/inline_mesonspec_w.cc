@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.13 2006-12-10 02:02:42 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.14 2007-08-23 19:02:44 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -558,13 +558,13 @@ namespace Chroma
 	    {
 	      std::istringstream  xml_s(named_obj.correlator_terms[loop].source_spin_insertion.xml);
 	      XMLReader  inserttop(xml_s);
-	      const string insert_path = "/SourceSpinInsertion";
+//	      const string insert_path = "/SourceSpinInsertion";
 	
 	      Handle< SpinInsertion<LatticePropagator> > sourceSpinInsertion(
 		ThePropSpinInsertionFactory::Instance().createObject(
 		  named_obj.correlator_terms[loop].source_spin_insertion.id,
 		  inserttop,
-		  insert_path));
+		  named_obj.correlator_terms[loop].source_spin_insertion.path));
 
 	      prop_1 = (*sourceSpinInsertion)(sink_prop_1);
 	    }
@@ -573,13 +573,13 @@ namespace Chroma
 	    {
 	      std::istringstream  xml_s(named_obj.correlator_terms[loop].sink_spin_insertion.xml);
 	      XMLReader  inserttop(xml_s);
-	      const string insert_path = "/SinkSpinInsertion";
+//	      const string insert_path = "/SinkSpinInsertion";
 	
 	      Handle< SpinInsertion<LatticePropagator> > sinkSpinInsertion(
 		ThePropSpinInsertionFactory::Instance().createObject(
 		  named_obj.correlator_terms[loop].sink_spin_insertion.id,
 		  inserttop,
-		  insert_path));
+		  named_obj.correlator_terms[loop].sink_spin_insertion.path));
 
 	      LatticePropagator prop_tmp = Gamma(G5) * adj(sink_prop_2) * Gamma(G5);
 
