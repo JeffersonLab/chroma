@@ -1,4 +1,4 @@
-// $Id: sfcurcor_w.cc,v 3.1 2006-04-10 21:18:23 edwards Exp $
+// $Id: sfcurcor_w.cc,v 3.2 2007-08-23 19:02:58 edwards Exp $
 
 #include "chromabase.h"
 #include "meas/schrfun/sfcurcor_w.h"
@@ -24,9 +24,9 @@ namespace Chroma
    *           x
    */
 
-  void SFcurcor(const LatticePropagator& quark_propagator, 
-		multi1d<Real>& pseudo_prop, 
+  void SFcurcor(multi1d<Real>& pseudo_prop, 
 		multi1d<Real>& axial_prop, 
+		const LatticePropagator& quark_propagator, 
 		const SftMom& phases)
   {
     START_CODE();
@@ -35,7 +35,7 @@ namespace Chroma
     int length = phases.numSubsets();
 
     /* First compute the pion correlator - the pseudoscalar */
-    LatticeReal corr_fn = real(trace(adj(quark_propagator) * quark_propagator));
+    LatticeReal corr_fn = localNorm2(quark_propagator);
 
     /* Do a slice-wise sum. */
     multi2d<DComplex> hsum;

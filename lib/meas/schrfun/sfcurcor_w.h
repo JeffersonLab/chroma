@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfcurcor_w.h,v 3.1 2006-04-10 21:18:23 edwards Exp $
+// $Id: sfcurcor_w.h,v 3.2 2007-08-23 19:02:58 edwards Exp $
 /*! \file
  * \brief Schroedinger functional correlation functions
  */
@@ -31,9 +31,9 @@ namespace Chroma
    *           x
    */
 
-  void SFcurcor(const LatticePropagator& quark_propagator, 
-		multi1d<Real>& pseudo_prop, 
+  void SFcurcor(multi1d<Real>& pseudo_prop, 
 		multi1d<Real>& axial_prop, 
+		const LatticePropagator& quark_propagator, 
 		const SftMom& phases);
 
 }

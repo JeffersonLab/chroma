@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.h,v 3.1 2006-04-10 21:18:23 edwards Exp $
+// $Id: sfpcac_w.h,v 3.2 2007-08-23 19:02:58 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  *
@@ -17,26 +17,22 @@ namespace Chroma
   
   //! Schroedinger functional stuff
   /*!
-   * NOTE: this routine assumes the chiral basis for the gamma matrices,
-   * in particular the specific forms of gamma_0 (or gamma_4, which here is
-   * actually Gamma(8)) and of gamma_5!
-   *
    * Compute correlation functions between axial current or pseudescalar
    * density and boundary fields using Schroedinger BC.
    *
    * Also computed, on demand, are correlation functions between both
    * boundaries with zero, one (vector current) and two (axial current or
-   * pseudoscalar density) insertions in the bulk.
+   * pseudoscalar density) insertions in the bulk. These currents are
+   * controlled by the ZVfactP and ZAfactP boolean flags.
    *
-   * Compute quark propagators by inverting the Wilson operator using
-   * the kappa's in the array "Kappa". 
+   * Compute quark propagators by using the qprop SystemSolver.
    * The initial guess for the inverter is zero.
    *
-   * The results are written to the namelist file.
+   * The results are written to the xml file.
    *
    * For further details see the comments in the dependent subroutines.
    *
-   * \param state         gauge field ( Read )
+   * \param state         gauge field state ( Read )
    * \param qprop         propagator solver ( Read )
    * \param phases        object holds list of momenta and Fourier phases ( Read )
    * \param ZVfactP       flag for doing Z_V measurements ( Read )
@@ -46,7 +42,6 @@ namespace Chroma
    * \param xml           xml file object ( Write )
    * \param xml_group     string used for writing xml data ( Read )
    */
-
   void SFpcac(Handle< SystemSolver<LatticeFermion> > qprop,
 	      Handle< FermState<LatticeFermion, multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> > > state,

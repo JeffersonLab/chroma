@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.9 2006-06-11 06:30:33 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.10 2007-08-23 19:02:58 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -16,28 +16,22 @@ namespace Chroma
   
   //! Schroedinger functional stuff
   /*!
-   * NOTE: this routine DOES *NOT* assume the chiral basis for the gamma matrices,
-   * in particular the specific forms of gamma_0 (or gamma_4, which here is
-   * actually Gamma(8)) and of gamma_5. Thus, the code is general for any
-   * j_decay. However, to simplify the code and fiddling onto bases, I do
-   * twice the needed work by inverting on all spin components. This is what
-   * enables the code to work easily for arbitrary directions.
-   *
    * Compute correlation functions between axial current or pseudescalar
    * density and boundary fields using Schroedinger BC.
    *
    * Also computed, on demand, are correlation functions between both
    * boundaries with zero, one (vector current) and two (axial current or
-   * pseudoscalar density) insertions in the bulk.
+   * pseudoscalar density) insertions in the bulk. These currents are
+   * controlled by the ZVfactP and ZAfactP boolean flags.
    *
-   * Compute quark solutions by using the supplied SystemSolver.
+   * Compute quark propagators by using the qprop SystemSolver.
    * The initial guess for the inverter is zero.
    *
-   * The results are written to the xml output.
+   * The results are written to the xml file.
    *
    * For further details see the comments in the dependent subroutines.
    *
-   * \param state         gauge field ( Read )
+   * \param state         gauge field state ( Read )
    * \param qprop         propagator solver ( Read )
    * \param phases        object holds list of momenta and Fourier phases ( Read )
    * \param ZVfactP       flag for doing Z_V measurements ( Read )
@@ -47,7 +41,6 @@ namespace Chroma
    * \param xml           xml file object ( Write )
    * \param xml_group     string used for writing xml data ( Read )
    */
-
   void SFpcac(Handle< SystemSolver<LatticeFermion> > qprop,
 	      Handle< FermState<LatticeFermion, multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> > > state,
@@ -79,12 +72,10 @@ namespace Chroma
     int G5 = Ns*Ns-1;
     int jd = 1 << j_decay;
 
-#if 1
     multi1d<Real> pseudo_prop(length);
     multi1d<Real> axial_prop(length);
     multi1d<Real> pseudo_prop_b(length);
     multi1d<Real> axial_prop_b(length);
-#endif
 
        
     // Sanity checks
@@ -169,47 +160,34 @@ namespace Chroma
       /* Time reverse backwards source */
       if (direction == -1)
       {
-	/* Construct the pion axial current divergence and the pion correlator */
-	SFcurcor(quark_prop_b, pseudo_prop, axial_prop, phases);
+	// Construct the pion axial current divergence and the pion correlator
+	SFcurcor(pseudo_prop_b, axial_prop_b, quark_prop_b, phases);
 
-	if ( ZAfactP )
-	{
-	  pseudo_prop_b.resize(length);
-	  axial_prop_b.resize(length);
+	// Normalize to compare to everybody else
+	pseudo_prop_b *= norm;
+	axial_prop_b  *= norm;
 
-	  for(int t = 0; t < length; t++)
-	  {
-	    pseudo_prop_b[t] = pseudo_prop[t] * norm;
-	    axial_prop_b[t] = axial_prop[t] * norm;
-	  }
-	}
-
+	// Time reverse
 	for(int t = 0; t < (length-1)/2 + 1; ++t)
 	{
 	  int t_eff = length - t - 1;
 
-	  Real ftmp = pseudo_prop[t];
-	  pseudo_prop[t] = pseudo_prop[t_eff];
-	  pseudo_prop[t_eff] = ftmp;
+	  pseudo_prop[t]     = pseudo_prop_b[t_eff];
+	  pseudo_prop[t_eff] = pseudo_prop_b[t];
 
-	  ftmp = axial_prop[t];
-	  axial_prop[t] = -axial_prop[t_eff];
-	  axial_prop[t_eff] = -ftmp;
+	  axial_prop[t]      = -axial_prop_b[t_eff];
+	  axial_prop[t_eff]  = -axial_prop_b[t];
 	}
       }
       else
       {
-	/* Construct the pion axial current divergence and the pion correlator */
-	SFcurcor(quark_prop_f, pseudo_prop, axial_prop, phases);
-      }
+	// Construct the pion axial current divergence and the pion correlator
+	SFcurcor(pseudo_prop, axial_prop, quark_prop_f, phases);
 
-      /* Normalize to compare to everybody else */
-      for(int t = 0; t < length; ++t)
-      {
-	pseudo_prop[t] *= norm;
-	axial_prop[t] *= norm;
+	// Normalize to compare to everybody else
+	pseudo_prop *= norm;
+	axial_prop  *= norm;
       }
-
 
       // Write out results
       push(xml_out, "elem");
@@ -222,7 +200,7 @@ namespace Chroma
     pop(xml_out);  // PCAC_measurements
 
 
-    Real f_1;
+    Real f_1 = zero;
 
     if (ZVfactP || ZAfactP)
     {
@@ -231,7 +209,7 @@ namespace Chroma
       kprop *= Real(2)*norm;
       
       /* Construct f_1 */
-      f_1 = 0.5 * real(trace(adj(kprop) * kprop));
+      f_1 = 0.5 * norm2(kprop);
       
       // Construct H'' = H' gamma_5 K, where H' is the propagator
       // from the upper boundary. 
