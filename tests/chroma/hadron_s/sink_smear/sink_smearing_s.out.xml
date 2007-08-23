@@ -147,10 +147,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.21.0</chroma>
-      <qdp>1.21.6</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:13:02 EST</run_date>
+    <run_date>23 Aug 07 17:54:02 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -207,10 +207,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:02 EST</run_date>
+          <run_date>23 Aug 07 17:54:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -307,10 +307,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:02 EST</run_date>
+          <run_date>23 Aug 07 17:54:02 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -388,7 +388,7 @@ Sink smear a prop
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>0</id>
+      <id>246473642</id>
     </make_source>
 
         </Source_file_info>
@@ -520,7 +520,7 @@ Sink smear a prop
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>0</id>
+      <id>246473642</id>
     </propagator>
 
         </Prop_file_info>
@@ -670,7 +670,7 @@ Sink smear a prop
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>0</id>
+      <id>246473642</id>
     </propagator>
 
         </Prop_file_info>

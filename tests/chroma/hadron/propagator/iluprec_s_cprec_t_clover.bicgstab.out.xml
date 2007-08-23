@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: iluprec_s_cprec_t_clover.bicgstab.out.xml,v 1.1 2007-05-01 12:54:17 bjoo Exp $
+; $Id: iluprec_s_cprec_t_clover.bicgstab.out.xml,v 1.2 2007-08-23 23:27:12 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -132,10 +132,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.23.0</chroma>
-      <qdp>1.23.0</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>01 May 07 08:51:44 EDT</run_date>
+    <run_date>23 Aug 07 17:45:20 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -192,10 +192,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.23.0</chroma>
-            <qdp>1.23.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>01 May 07 08:51:44 EDT</run_date>
+          <run_date>23 Aug 07 17:45:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -292,10 +292,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.23.0</chroma>
-            <qdp>1.23.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>01 May 07 08:51:44 EDT</run_date>
+          <run_date>23 Aug 07 17:45:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -331,9 +331,7 @@
       <MaxBiCGStab>1000</MaxBiCGStab>
       <MROver>1.1</MROver>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
@@ -381,7 +379,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>236591504</id>
+      <id>246473120</id>
     </make_source>
 
         </Source_file_info>
@@ -429,80 +427,80 @@
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>10</n_count>
-            <resid>2.767761e-07</resid>
+            <resid>2.384759e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>10</n_count>
-            <resid>2.891946e-07</resid>
+            <resid>2.086383e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>10</n_count>
-            <resid>2.54149e-07</resid>
+            <resid>2.312591e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>10</n_count>
-            <resid>2.317603e-07</resid>
+            <resid>2.095511e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>10</n_count>
-            <resid>2.502223e-07</resid>
+            <resid>2.707382e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>10</n_count>
-            <resid>2.442451e-07</resid>
+            <resid>2.142917e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>10</n_count>
-            <resid>2.586045e-07</resid>
+            <resid>2.207616e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>10</n_count>
-            <resid>2.599116e-07</resid>
+            <resid>2.157624e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>10</n_count>
-            <resid>2.483109e-07</resid>
+            <resid>2.288346e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>10</n_count>
-            <resid>2.92648e-07</resid>
+            <resid>2.40505e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>10</n_count>
-            <resid>2.475158e-07</resid>
+            <resid>2.6487e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>10</n_count>
-            <resid>2.75994e-07</resid>
+            <resid>2.25307e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>120</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.588734342436351 0.044005457899003 0.0154934230377308 0.00913657951146529 0.00757903955725277 0.0091371816436461 0.0155014496113496 0.0440099871078614</prop_corr>
+          <prop_corr>0.588734335562048 0.0440054573931537 0.0154934229893163 0.00913657942411314 0.00757903969241613 0.00913718197157619 0.0155014495815717 0.044009987434547</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

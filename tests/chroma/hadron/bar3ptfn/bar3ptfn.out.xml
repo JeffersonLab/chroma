@@ -421,10 +421,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.21.0</chroma>
-      <qdp>1.21.6</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:13:25 EST</run_date>
+    <run_date>23 Aug 07 17:41:28 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -481,10 +481,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:25 EST</run_date>
+          <run_date>23 Aug 07 17:41:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -581,10 +581,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:25 EST</run_date>
+          <run_date>23 Aug 07 17:41:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -616,9 +616,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <RsdCG>1.0e-12</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
@@ -666,7 +664,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>0</id>
+      <id>246472888</id>
     </make_source>
 
         </Source_file_info>
@@ -714,55 +712,55 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>47</n_count>
-            <resid>1.233667e-07</resid>
+            <resid>1.228661e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>47</n_count>
-            <resid>1.176247e-07</resid>
+            <resid>1.15686e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>47</n_count>
-            <resid>1.34897e-07</resid>
+            <resid>1.311792e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>47</n_count>
-            <resid>1.168402e-07</resid>
+            <resid>1.195279e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>47</n_count>
-            <resid>1.288205e-07</resid>
+            <resid>1.288371e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>47</n_count>
-            <resid>1.022059e-07</resid>
+            <resid>1.044411e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>47</n_count>
-            <resid>1.339582e-07</resid>
+            <resid>1.316692e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>47</n_count>
-            <resid>1.235014e-07</resid>
+            <resid>1.207881e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>47</n_count>
-            <resid>1.159808e-07</resid>
+            <resid>1.146734e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
@@ -774,20 +772,20 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>47</n_count>
-            <resid>1.18755e-07</resid>
+            <resid>9.972813e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>47</n_count>
-            <resid>1.089687e-07</resid>
+            <resid>1.090492e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>564</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</prop_corr>
+          <prop_corr>0.195057150616753 0.0165113005409852 0.00626269128637802 0.00253901400722627 0.00103327026052532 0.000420641964640252 0.000171401928020691 6.99144226695109e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -796,10 +794,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:25 EST</run_date>
+          <run_date>23 Aug 07 17:41:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -957,11 +955,11 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150616753 0.0165113005409852 0.00626269128637802 0.00253901400722627 0.00103327026052532 0.000420641964640252 0.000171401928020691 6.99144226695109e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 6.57714752462444e-05</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 6.57714758552632e-05</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -970,10 +968,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:25 EST</run_date>
+          <run_date>23 Aug 07 17:41:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1194,14 +1192,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150616753 0.0165113005409852 0.00626269128637802 0.00253901400722627 0.00103327026052532 0.000420641964640252 0.000171401928020691 6.99144226695109e-05</forward_prop_corr>
           </elem>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150616753 0.0165113005409852 0.00626269128637802 0.00253901400722627 0.00103327026052532 0.000420641964640252 0.000171401928020691 6.99144226695109e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 2.3377331309133e-09</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 2.33773320582552e-09</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1210,10 +1208,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:26 EST</run_date>
+          <run_date>23 Aug 07 17:41:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1371,11 +1369,11 @@ Calculate bar3ptfn - insertions in 3-pt functions
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+            <forward_prop_corr>0.195057150616753 0.0165113005409852 0.00626269128637802 0.00253901400722627 0.00103327026052532 0.000420641964640252 0.000171401928020691 6.99144226695109e-05</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0 0 0 0 0 0 4.4955468290633e-10</seqsource_corr>
+          <seqsource_corr>0 0 0 0 0 0 0 4.49554688676609e-10</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -1384,10 +1382,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:26 EST</run_date>
+          <run_date>23 Aug 07 17:41:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1419,9 +1417,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <RsdCG>1.0e-12</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_pion</source_id>
@@ -1469,7 +1465,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Source_file_info><seqsource>
-      <id>0</id>
+      <id>246472889</id>
     </seqsource>
 
         </Source_file_info>
@@ -1603,87 +1599,87 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 6.57714752462444e-05</source_corr>
+          <source_corr>0 0 0 0 0 0 0 6.57714758552632e-05</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>48</n_count>
-            <resid>4.380107e-07</resid>
+            <resid>4.396709e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>48</n_count>
-            <resid>4.560167e-07</resid>
+            <resid>4.557611e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>48</n_count>
-            <resid>4.476791e-07</resid>
+            <resid>4.230705e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>48</n_count>
-            <resid>4.386369e-07</resid>
+            <resid>4.39365e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>48</n_count>
-            <resid>4.690709e-07</resid>
+            <resid>4.428528e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>49</n_count>
-            <resid>4.244142e-07</resid>
+            <resid>4.311853e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>48</n_count>
-            <resid>4.368845e-07</resid>
+            <resid>4.514934e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>48</n_count>
-            <resid>4.402129e-07</resid>
+            <resid>4.082233e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>49</n_count>
-            <resid>4.041377e-07</resid>
+            <resid>4.028493e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>49</n_count>
-            <resid>4.090855e-07</resid>
+            <resid>4.305226e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>49</n_count>
-            <resid>4.217762e-07</resid>
+            <resid>4.189339e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>49</n_count>
-            <resid>4.051239e-07</resid>
+            <resid>4.044209e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>581</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>5.15427295541361e-08 1.25997232162932e-07 3.0848432704864e-07 7.55719024759674e-07 1.85144798712108e-06 4.53983310305765e-06 1.11341132834331e-05 2.70417885804534e-05</prop_corr>
+          <prop_corr>5.1542730388492e-08 1.2599723407546e-07 3.0848433449939e-07 7.55719033467428e-07 1.85144800886944e-06 4.53983312005393e-06 1.11341133567899e-05 2.70417883300155e-05</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1692,10 +1688,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:27 EST</run_date>
+          <run_date>23 Aug 07 17:41:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1727,9 +1723,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <RsdCG>1.0e-12</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_U_MIXED_NONREL</source_id>
@@ -1777,7 +1771,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Source_file_info><seqsource>
-      <id>0</id>
+      <id>246472890</id>
     </seqsource>
 
         </Source_file_info>
@@ -1994,87 +1988,87 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 2.3377331309133e-09</source_corr>
+          <source_corr>0 0 0 0 0 0 0 2.33773320582552e-09</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>48</n_count>
-            <resid>4.272143e-07</resid>
+            <resid>4.340297e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>48</n_count>
-            <resid>4.378475e-07</resid>
+            <resid>4.19057e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>48</n_count>
-            <resid>4.272143e-07</resid>
+            <resid>4.340297e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>48</n_count>
-            <resid>4.378475e-07</resid>
+            <resid>4.19057e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>49</n_count>
-            <resid>4.563851e-07</resid>
+            <resid>4.295717e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>49</n_count>
-            <resid>4.2095e-07</resid>
+            <resid>4.321622e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>49</n_count>
-            <resid>4.563851e-07</resid>
+            <resid>4.295717e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>49</n_count>
-            <resid>4.2095e-07</resid>
+            <resid>4.321622e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>49</n_count>
-            <resid>4.576853e-07</resid>
+            <resid>4.326041e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>49</n_count>
-            <resid>4.140537e-07</resid>
+            <resid>4.383414e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>49</n_count>
-            <resid>4.576853e-07</resid>
+            <resid>4.326041e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>49</n_count>
-            <resid>4.140537e-07</resid>
+            <resid>4.383414e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>584</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>1.7631231993588e-12 4.32833311828116e-12 1.06466978194878e-11 2.62037195973453e-11 6.45028954864242e-11 1.58915907331222e-10 3.91558266069254e-10 9.64097074124625e-10</prop_corr>
+          <prop_corr>1.76312324948973e-12 4.32833327439069e-12 1.06466983337005e-11 2.62037209477642e-11 6.45028983611741e-11 1.58915911650476e-10 3.91558285977469e-10 9.64097111777749e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2083,10 +2077,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:27 EST</run_date>
+          <run_date>23 Aug 07 17:41:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2118,9 +2112,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <RsdCG>1.0e-12</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>seqsource_NUCL_D_MIXED_NONREL</source_id>
@@ -2168,7 +2160,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Source_file_info><seqsource>
-      <id>0</id>
+      <id>246472890</id>
     </seqsource>
 
         </Source_file_info>
@@ -2302,87 +2294,87 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0 0 0 0 0 0 0 4.4955468290633e-10</source_corr>
+          <source_corr>0 0 0 0 0 0 0 4.49554688676609e-10</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>48</n_count>
-            <resid>4.426578e-07</resid>
+            <resid>4.149558e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>48</n_count>
-            <resid>4.310885e-07</resid>
+            <resid>4.280498e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>48</n_count>
-            <resid>4.426578e-07</resid>
+            <resid>4.149558e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>48</n_count>
-            <resid>4.310885e-07</resid>
+            <resid>4.280498e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>49</n_count>
-            <resid>4.360579e-07</resid>
+            <resid>4.35244e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>49</n_count>
-            <resid>4.227426e-07</resid>
+            <resid>4.342907e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>49</n_count>
-            <resid>4.360579e-07</resid>
+            <resid>4.35244e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>49</n_count>
-            <resid>4.227426e-07</resid>
+            <resid>4.342907e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>49</n_count>
-            <resid>4.249015e-07</resid>
+            <resid>4.577226e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>49</n_count>
-            <resid>4.234821e-07</resid>
+            <resid>4.280847e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>49</n_count>
-            <resid>4.249015e-07</resid>
+            <resid>4.577226e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>49</n_count>
-            <resid>4.234821e-07</resid>
+            <resid>4.280847e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>584</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>3.39060686385547e-13 8.32367240558437e-13 2.0474195640964e-12 5.03910139095075e-12 1.24042716594163e-11 3.05604194148964e-11 7.5298460350412e-11 1.85400258471162e-10</prop_corr>
+          <prop_corr>3.39060692222451e-13 8.3236724410985e-13 2.04741961777326e-12 5.03910148214345e-12 1.24042719005256e-11 3.05604186630433e-11 7.52984604086147e-11 1.85400260803565e-10</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -2391,10 +2383,10 @@ Calculate bar3ptfn - insertions in 3-pt functions
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:27 EST</run_date>
+          <run_date>23 Aug 07 17:41:33 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2469,7 +2461,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Propagator_file_info><propagator>
-      <id>0</id>
+      <id>246472889</id>
     </propagator>
 
         </Propagator_file_info>
@@ -2534,14 +2526,14 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
         </Propagator_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.195057150556833 0.016511300523912 0.00626269126803688 0.00253901398031684 0.00103327025886441 0.000420641962534281 0.000171401928413306 6.99144219328091e-05</forward_prop_corr>
+          <forward_prop_corr>0.195057150616753 0.0165113005409852 0.00626269128637802 0.00253901400722627 0.00103327026052532 0.000420641964640252 0.000171401928020691 6.99144226695109e-05</forward_prop_corr>
         </Forward_prop_correlator>
         <Wilson_3Pt_fn_measurements>
           <Sequential_source>
             <elem>
               <seq_src_ctr>0</seq_src_ctr>
               <SequentialProp_file_info><propagator>
-      <id>0</id>
+      <id>246472891</id>
     </propagator>
 
               </SequentialProp_file_info>
@@ -2699,7 +2691,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
               </SequentialProp_record_info>
               <Backward_prop_correlator>
-                <backward_prop_corr>5.15427295541361e-08 1.25997232162932e-07 3.0848432704864e-07 7.55719024759674e-07 1.85144798712108e-06 4.53983310305765e-06 1.11341132834331e-05 2.70417885804534e-05</backward_prop_corr>
+                <backward_prop_corr>5.1542730388492e-08 1.2599723407546e-07 3.0848433449939e-07 7.55719033467428e-07 1.85144800886944e-06 4.53983312005393e-06 1.11341133567899e-05 2.70417883300155e-05</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
               <seqsrc_type>pion</seqsrc_type>
@@ -2711,7 +2703,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <elem>
               <seq_src_ctr>1</seq_src_ctr>
               <SequentialProp_file_info><propagator>
-      <id>0</id>
+      <id>246472892</id>
     </propagator>
 
               </SequentialProp_file_info>
@@ -2952,7 +2944,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
               </SequentialProp_record_info>
               <Backward_prop_correlator>
-                <backward_prop_corr>1.7631231993588e-12 4.32833311828116e-12 1.06466978194878e-11 2.62037195973453e-11 6.45028954864242e-11 1.58915907331222e-10 3.91558266069254e-10 9.64097074124625e-10</backward_prop_corr>
+                <backward_prop_corr>1.76312324948973e-12 4.32833327439069e-12 1.06466983337005e-11 2.62037209477642e-11 6.45028983611741e-11 1.58915911650476e-10 3.91558285977469e-10 9.64097111777749e-10</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
               <seqsrc_type>NUCL_U_MIXED_NONREL</seqsrc_type>
@@ -2964,7 +2956,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <elem>
               <seq_src_ctr>2</seq_src_ctr>
               <SequentialProp_file_info><propagator>
-      <id>0</id>
+      <id>246472893</id>
     </propagator>
 
               </SequentialProp_file_info>
@@ -3122,7 +3114,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
 
               </SequentialProp_record_info>
               <Backward_prop_correlator>
-                <backward_prop_corr>3.39060686385547e-13 8.32367240558437e-13 2.0474195640964e-12 5.03910139095075e-12 1.24042716594163e-11 3.05604194148964e-11 7.5298460350412e-11 1.85400258471162e-10</backward_prop_corr>
+                <backward_prop_corr>3.39060692222451e-13 8.3236724410985e-13 2.04741961777326e-12 5.03910148214345e-12 1.24042719005256e-11 3.05604186630433e-11 7.52984604086147e-11 1.85400260803565e-10</backward_prop_corr>
               </Backward_prop_correlator>
               <hadron_type>HADRON</hadron_type>
               <seqsrc_type>NUCL_D_MIXED_NONREL</seqsrc_type>

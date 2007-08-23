@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson-twisted.out.xml,v 3.7 2006-12-02 21:19:51 edwards Exp $
+; $Id: prec_wilson-twisted.out.xml,v 3.8 2007-08-23 23:27:13 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -102,10 +102,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.21.0</chroma>
-      <qdp>1.21.6</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:18:55 EST</run_date>
+    <run_date>23 Aug 07 17:46:48 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -162,10 +162,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:18:55 EST</run_date>
+          <run_date>23 Aug 07 17:46:48 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -250,10 +250,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:18:56 EST</run_date>
+          <run_date>23 Aug 07 17:46:48 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -283,9 +283,7 @@
       <RsdCG>1.0e-8</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>pt_source_0</source_id>
@@ -333,7 +331,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>0</id>
+      <id>246473208</id>
     </make_source>
 
         </Source_file_info>
@@ -369,7 +367,7 @@
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>17</n_count>
-            <resid>7.607363e-08</resid>
+            <resid>7.609849e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
@@ -381,7 +379,7 @@
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>17</n_count>
-            <resid>7.901558e-08</resid>
+            <resid>7.901559e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
@@ -393,7 +391,7 @@
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>17</n_count>
-            <resid>7.607363e-08</resid>
+            <resid>7.609849e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
@@ -405,7 +403,7 @@
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>17</n_count>
-            <resid>7.901558e-08</resid>
+            <resid>7.901559e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
@@ -417,7 +415,7 @@
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>17</n_count>
-            <resid>7.607363e-08</resid>
+            <resid>7.609849e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
@@ -442,7 +440,7 @@
           <ncg_had>204</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.550448071804462 0.018777679812899 0.00191303580449002 0.000304754988300924 0.000111618747904397 0.000304754993139859 0.00191303589970313 0.0187776801839829</prop_corr>
+          <prop_corr>0.550448071804462 0.0187776798129234 0.00191303579260571 0.000304754988313229 0.000111618747950804 0.000304754992981918 0.00191303589953669 0.0187776801842138</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

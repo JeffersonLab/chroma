@@ -191,10 +191,10 @@ Hadron spectrum input
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.24.0</chroma>
-      <qdp>1.24.0</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>12 Jun 07 13:07:37 EDT</run_date>
+    <run_date>23 Aug 07 17:53:59 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -216,32 +216,32 @@ Hadron spectrum input
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994803997558645</w_plaq>
-    <s_plaq>0.99479844317668</s_plaq>
-    <t_plaq>0.99480955194061</t_plaq>
-    <plane_01_plaq>0.994703591490785</plane_01_plaq>
-    <plane_02_plaq>0.99492682578663</plane_02_plaq>
-    <plane_12_plaq>0.994764912252625</plane_12_plaq>
-    <plane_03_plaq>0.994693187996745</plane_03_plaq>
-    <plane_13_plaq>0.994853910369178</plane_13_plaq>
-    <plane_23_plaq>0.994881557455907</plane_23_plaq>
-    <link>0.379449337740274</link>
+    <w_plaq>0.994803997506905</w_plaq>
+    <s_plaq>0.994798443435381</s_plaq>
+    <t_plaq>0.994809551578429</t_plaq>
+    <plane_01_plaq>0.994703592111667</plane_01_plaq>
+    <plane_02_plaq>0.994926826562732</plane_02_plaq>
+    <plane_12_plaq>0.994764911631743</plane_12_plaq>
+    <plane_03_plaq>0.994693187686304</plane_03_plaq>
+    <plane_13_plaq>0.994853908040871</plane_13_plaq>
+    <plane_23_plaq>0.994881559008112</plane_23_plaq>
+    <link>0.379449337626284</link>
     <pollp>
       <elem>
-        <re>0.96658587983499</re>
-        <im>-0.00132088747583718</im>
+        <re>0.966585880688702</re>
+        <im>-0.00132088747318448</im>
       </elem>
       <elem>
-        <re>0.966365774977021</re>
-        <im>-0.00123499089295365</im>
+        <re>0.966365773618842</re>
+        <im>-0.00123499087385426</im>
       </elem>
       <elem>
-        <re>0.967146154221458</re>
-        <im>-0.00112309936806317</im>
+        <re>0.967146154958755</re>
+        <im>-0.00112309937897711</im>
       </elem>
       <elem>
-        <re>0.878769261723695</re>
-        <im>-0.00991386471347747</im>
+        <re>0.87876926199533</re>
+        <im>-0.00991386472378508</im>
       </elem>
     </pollp>
   </Observables>
@@ -251,10 +251,10 @@ Hadron spectrum input
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.0</chroma>
-            <qdp>1.24.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>12 Jun 07 13:07:37 EDT</run_date>
+          <run_date>23 Aug 07 17:53:59 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -312,32 +312,32 @@ Hadron spectrum input
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997558645</w_plaq>
-          <s_plaq>0.99479844317668</s_plaq>
-          <t_plaq>0.99480955194061</t_plaq>
-          <plane_01_plaq>0.994703591490785</plane_01_plaq>
-          <plane_02_plaq>0.99492682578663</plane_02_plaq>
-          <plane_12_plaq>0.994764912252625</plane_12_plaq>
-          <plane_03_plaq>0.994693187996745</plane_03_plaq>
-          <plane_13_plaq>0.994853910369178</plane_13_plaq>
-          <plane_23_plaq>0.994881557455907</plane_23_plaq>
-          <link>0.379449337740274</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658587983499</re>
-              <im>-0.00132088747583718</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365774977021</re>
-              <im>-0.00123499089295365</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.967146154221458</re>
-              <im>-0.00112309936806317</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769261723695</re>
-              <im>-0.00991386471347747</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
@@ -351,10 +351,10 @@ Hadron spectrum input
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.0</chroma>
-            <qdp>1.24.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>12 Jun 07 13:07:37 EDT</run_date>
+          <run_date>23 Aug 07 17:53:59 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -386,9 +386,7 @@ Hadron spectrum input
       <RsdCG>1.0e-12</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_1</source_id>
@@ -406,37 +404,37 @@ Hadron spectrum input
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997558645</w_plaq>
-          <s_plaq>0.99479844317668</s_plaq>
-          <t_plaq>0.99480955194061</t_plaq>
-          <plane_01_plaq>0.994703591490785</plane_01_plaq>
-          <plane_02_plaq>0.99492682578663</plane_02_plaq>
-          <plane_12_plaq>0.994764912252625</plane_12_plaq>
-          <plane_03_plaq>0.994693187996745</plane_03_plaq>
-          <plane_13_plaq>0.994853910369178</plane_13_plaq>
-          <plane_23_plaq>0.994881557455907</plane_23_plaq>
-          <link>0.379449337740274</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658587983499</re>
-              <im>-0.00132088747583718</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365774977021</re>
-              <im>-0.00123499089295365</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.967146154221458</re>
-              <im>-0.00112309936806317</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769261723695</re>
-              <im>-0.00991386471347747</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>240235657</id>
+      <id>246473639</id>
     </make_source>
 
         </Source_file_info>
@@ -484,80 +482,80 @@ Hadron spectrum input
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.143465e-07</resid>
+            <resid>1.146389e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.167768e-07</resid>
+            <resid>1.158391e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.231535e-07</resid>
+            <resid>1.257907e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.136326e-07</resid>
+            <resid>1.142089e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.12923e-07</resid>
+            <resid>1.145996e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.041495e-07</resid>
+            <resid>1.098741e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.353581e-07</resid>
+            <resid>1.255339e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.384466e-07</resid>
+            <resid>1.399763e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.194655e-07</resid>
+            <resid>1.177981e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.340452e-07</resid>
+            <resid>1.322421e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.494607e-07</resid>
+            <resid>1.480853e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.189793e-07</resid>
+            <resid>1.175791e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.192608933944851 0.0159807816582526 0.00618062946258404 0.00284180980927002 0.00198266748516733 0.0028388977770809 0.00617588851572352 0.0159631273071799</prop_corr>
+          <prop_corr>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -598,37 +596,37 @@ Hadron spectrum input
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997558645</w_plaq>
-          <s_plaq>0.99479844317668</s_plaq>
-          <t_plaq>0.99480955194061</t_plaq>
-          <plane_01_plaq>0.994703591490785</plane_01_plaq>
-          <plane_02_plaq>0.99492682578663</plane_02_plaq>
-          <plane_12_plaq>0.994764912252625</plane_12_plaq>
-          <plane_03_plaq>0.994693187996745</plane_03_plaq>
-          <plane_13_plaq>0.994853910369178</plane_13_plaq>
-          <plane_23_plaq>0.994881557455907</plane_23_plaq>
-          <link>0.379449337740274</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658587983499</re>
-              <im>-0.00132088747583718</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365774977021</re>
-              <im>-0.00123499089295365</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.967146154221458</re>
-              <im>-0.00112309936806317</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769261723695</re>
-              <im>-0.00991386471347747</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>240235659</id>
+      <id>246473640</id>
     </propagator>
 
         </Prop_file_info>
@@ -693,10 +691,10 @@ Hadron spectrum input
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.192608933944851 0.0159807816582526 0.00618062946258404 0.00284180980927002 0.00198266748516733 0.0028388977770809 0.00617588851572352 0.0159631273071799</forward_prop_corr>
+          <forward_prop_corr>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.192608933944851 0.0159807816582526 0.00618062946258404 0.00284180980927002 0.00198266748516733 0.0028388977770809 0.00617588851572352 0.0159631273071799</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -743,37 +741,37 @@ Hadron spectrum input
 
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997558645</w_plaq>
-          <s_plaq>0.99479844317668</s_plaq>
-          <t_plaq>0.99480955194061</t_plaq>
-          <plane_01_plaq>0.994703591490785</plane_01_plaq>
-          <plane_02_plaq>0.99492682578663</plane_02_plaq>
-          <plane_12_plaq>0.994764912252625</plane_12_plaq>
-          <plane_03_plaq>0.994693187996745</plane_03_plaq>
-          <plane_13_plaq>0.994853910369178</plane_13_plaq>
-          <plane_23_plaq>0.994881557455907</plane_23_plaq>
-          <link>0.379449337740274</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658587983499</re>
-              <im>-0.00132088747583718</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365774977021</re>
-              <im>-0.00123499089295365</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.967146154221458</re>
-              <im>-0.00112309936806317</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769261723695</re>
-              <im>-0.00991386471347747</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>240235659</id>
+      <id>246473640</id>
     </propagator>
 
         </Prop_file_info>
@@ -838,10 +836,10 @@ Hadron spectrum input
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.192608933944851 0.0159807816582526 0.00618062946258404 0.00284180980927002 0.00198266748516733 0.0028388977770809 0.00617588851572352 0.0159631273071799</forward_prop_corr>
+          <forward_prop_corr>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2.76809946256525 0.0382032752924362 0.00643155318816502 0.00278466689117268 0.00193899148748761 0.00278128644535363 0.00642889702074353 0.0381603250424177</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.76809947271019 0.0382032752656627 0.00643155315548197 0.00278466690774183 0.00193899147927868 0.00278128642715389 0.0064288969655917 0.0381603249060956</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -850,10 +848,10 @@ Hadron spectrum input
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.0</chroma>
-            <qdp>1.24.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>12 Jun 07 13:07:39 EDT</run_date>
+          <run_date>23 Aug 07 17:54:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -888,32 +886,32 @@ Hadron spectrum input
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997558645</w_plaq>
-          <s_plaq>0.99479844317668</s_plaq>
-          <t_plaq>0.99480955194061</t_plaq>
-          <plane_01_plaq>0.994703591490785</plane_01_plaq>
-          <plane_02_plaq>0.99492682578663</plane_02_plaq>
-          <plane_12_plaq>0.994764912252625</plane_12_plaq>
-          <plane_03_plaq>0.994693187996745</plane_03_plaq>
-          <plane_13_plaq>0.994853910369178</plane_13_plaq>
-          <plane_23_plaq>0.994881557455907</plane_23_plaq>
-          <link>0.379449337740274</link>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.96658587983499</re>
-              <im>-0.00132088747583718</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.966365774977021</re>
-              <im>-0.00123499089295365</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.967146154221458</re>
-              <im>-0.00112309936806317</im>
+              <re>0.967146154958755</re>
+              <im>-0.00112309937897711</im>
             </elem>
             <elem>
-              <re>0.878769261723695</re>
-              <im>-0.00991386471347747</im>
+              <re>0.87876926199533</re>
+              <im>-0.00991386472378508</im>
             </elem>
           </pollp>
         </Observables>
@@ -1096,15 +1094,15 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>0.189240289873851</re>
+      <re>0.18924028935362</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00246847311063902</re>
+      <re>-0.00246847307244025</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00200301212498744</re>
+      <re>-0.00200301210315956</re>
       <im>0</im>
     </elem>
     <elem>
@@ -1112,19 +1110,19 @@ Hadron spectrum input
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00180335867480608</re>
+      <re>-0.00180335868935799</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00184348730726924</re>
+      <re>-0.00184348729453632</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00200254714400216</re>
+      <re>-0.00200254714582115</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00246807564690243</re>
+      <re>-0.00246807572329999</re>
       <im>0</im>
     </elem>
   </ZeroMom>
@@ -1299,36 +1297,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>0.191488663680502</re>
-      <im>-3.53826507019558e-22</im>
+      <re>0.191488663513155</re>
+      <im>-2.68058217255466e-21</im>
     </elem>
     <elem>
       <re>0.0157467937169713</re>
-      <im>2.23726506301452e-22</im>
+      <im>-9.10157167749753e-23</im>
     </elem>
     <elem>
-      <re>0.00610770318598952</re>
-      <im>4.55983312669857e-23</im>
+      <re>0.00610770322236931</re>
+      <im>-3.54653687632111e-23</im>
     </elem>
     <elem>
-      <re>0.00282309866452124</re>
-      <im>-5.14402943431414e-24</im>
+      <re>0.00282309867907315</re>
+      <im>-4.82091200753561e-23</im>
     </elem>
     <elem>
-      <re>0.00197775693595759</re>
-      <im>7.61264657490208e-24</im>
+      <re>0.00197775694141455</re>
+      <im>-1.51735943615196e-23</im>
     </elem>
     <elem>
-      <re>0.00282017471545259</re>
-      <im>3.97563681908299e-23</im>
+      <re>0.00282017472272855</re>
+      <im>-4.5171816263638e-23</im>
     </elem>
     <elem>
-      <re>0.00610219062946271</re>
-      <im>-1.55180375384655e-22</im>
+      <re>0.00610219064401463</re>
+      <im>-5.86781247029804e-23</im>
     </elem>
     <elem>
-      <re>0.0157308989037119</re>
-      <im>5.49041131582072e-22</im>
+      <re>0.0157308989109879</re>
+      <im>6.90230522387217e-22</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -1502,36 +1500,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>0.191477335356467</re>
-      <im>-3.36517752701885e-21</im>
+      <re>0.191477334738011</re>
+      <im>-9.45984428030956e-22</im>
     </elem>
     <elem>
-      <re>0.0157465114498336</re>
-      <im>-2.75838884892292e-22</im>
+      <re>0.0157465114571096</re>
+      <im>3.83010473006194e-22</im>
     </elem>
     <elem>
       <re>0.00610714669164736</re>
-      <im>5.86264259146958e-23</im>
+      <im>-3.20532487364298e-24</im>
     </elem>
     <elem>
-      <re>0.00282286719084368</re>
-      <im>-4.66840058209615e-23</im>
+      <re>0.00282286718356772</re>
+      <im>4.9113848870336e-24</im>
     </elem>
     <elem>
-      <re>0.00197773792569933</re>
-      <im>-9.40917946779069e-24</im>
+      <re>0.0019777379311563</re>
+      <im>1.68021061924834e-25</im>
     </elem>
     <elem>
-      <re>0.00282020101440139</re>
-      <im>-4.69424997623843e-23</im>
+      <re>0.00282020100348745</re>
+      <im>-1.61429466418552e-23</im>
     </elem>
     <elem>
-      <re>0.00610334888915531</re>
-      <im>-4.32395740515024e-23</im>
+      <re>0.00610334891098319</re>
+      <im>4.23413076050581e-23</im>
     </elem>
     <elem>
-      <re>0.0157280243802234</re>
-      <im>6.47268829322744e-23</im>
+      <re>0.0157280244275171</re>
+      <im>5.70392731143597e-22</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -1705,35 +1703,35 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.191479824658018</re>
+      <re>-0.191479824985436</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00201296823615849</re>
+      <re>0.0020129681997787</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.0018608204791235</re>
+      <re>0.00186082044638169</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00180850781907793</re>
+      <re>0.00180850781725894</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00179493839095812</re>
+      <re>0.00179493840551004</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.0018082405658788</re>
+      <re>0.00180824056951678</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00186058954932378</re>
+      <re>0.00186058956751367</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00201333877521392</re>
+      <re>0.00201333883342159</re>
       <im>0</im>
     </elem>
   </ZeroMom>
@@ -1908,36 +1906,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>0.191499799009762</re>
-      <im>-2.98818996284781e-22</im>
+      <re>0.191499799831945</re>
+      <im>1.78464217158316e-22</im>
     </elem>
     <elem>
-      <re>0.0157539716092288</re>
-      <im>4.30656076289248e-21</im>
+      <re>0.0157539716383326</re>
+      <im>1.19992887608474e-22</im>
     </elem>
     <elem>
-      <re>0.00610911970579764</re>
-      <im>1.81049156572544e-22</im>
+      <re>0.00610911972034955</re>
+      <im>9.31715562464417e-22</im>
     </elem>
     <elem>
-      <re>0.00282349598637666</re>
-      <im>1.47083052669585e-22</im>
+      <re>0.00282349601184251</re>
+      <im>-2.6787727149647e-22</im>
     </elem>
     <elem>
-      <re>0.00197793712322891</re>
-      <im>6.24547211871678e-22</im>
+      <re>0.00197793711595295</re>
+      <im>-9.49189752904599e-23</im>
     </elem>
     <elem>
-      <re>0.00282045965650468</re>
-      <im>-5.12076497958609e-23</im>
+      <re>0.0028204596528667</re>
+      <im>-7.8892350922245e-23</im>
     </elem>
     <elem>
-      <re>0.00610501539631514</re>
-      <im>-2.6663650057764e-22</im>
+      <re>0.00610501536721131</re>
+      <im>1.04491005941347e-21</im>
     </elem>
     <elem>
-      <re>0.0157341355843528</re>
-      <im>-6.52128515421493e-22</im>
+      <re>0.0157341356498364</re>
+      <im>-5.79078127575404e-22</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -2111,36 +2109,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.191457584929594</re>
-      <im>-2.65002818867848e-21</im>
+      <re>-0.191457585264288</re>
+      <im>-2.58183748693114e-22</im>
     </elem>
     <elem>
-      <re>0.00201792207553808</re>
-      <im>3.03265092077254e-22</im>
+      <re>0.00201792205189122</re>
+      <im>-2.34547062689411e-21</im>
     </elem>
     <elem>
-      <re>0.00186210767606099</re>
-      <im>3.75850190828782e-23</im>
+      <re>0.00186210764331918</re>
+      <im>4.48952277463156e-22</im>
     </elem>
     <elem>
-      <re>0.00180874936631881</re>
-      <im>5.9012874357123e-22</im>
+      <re>0.00180874937541375</re>
+      <im>1.04519440274904e-21</im>
     </elem>
     <elem>
-      <re>0.00179495838165167</re>
-      <im>-8.7018754205725e-23</im>
+      <re>0.00179495838347066</re>
+      <im>-2.31217983841312e-22</im>
     </elem>
     <elem>
-      <re>0.00180831894977018</re>
-      <im>2.45259051621973e-22</im>
+      <re>0.00180831895522715</re>
+      <im>-2.52496881981812e-22</im>
     </elem>
     <elem>
-      <re>0.00186162872705609</re>
-      <im>1.32129178158275e-22</im>
+      <re>0.00186162874524598</re>
+      <im>3.98429636612065e-22</im>
     </elem>
     <elem>
-      <re>0.00201988166190858</re>
-      <im>-6.39824203809767e-22</im>
+      <re>0.0020198817110213</re>
+      <im>5.10887425828064e-22</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -2314,36 +2312,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.191468668810558</re>
-      <im>5.76394960463435e-21</im>
+      <re>-0.191468668963353</re>
+      <im>3.2648818777468e-21</im>
     </elem>
     <elem>
-      <re>0.00202008006635879</re>
-      <im>-5.49465061646006e-21</im>
+      <re>0.00202008004089294</re>
+      <im>-1.39379933215185e-22</im>
     </elem>
     <elem>
-      <re>0.00186205328827782</re>
-      <im>4.34786809473185e-23</im>
+      <re>0.00186205324462207</re>
+      <im>7.22335469911931e-22</im>
     </elem>
     <elem>
-      <re>0.00180869406358397</re>
-      <im>-5.40601304394617e-22</im>
+      <re>0.001808694058127</re>
+      <im>-3.87430719404524e-22</im>
     </elem>
     <elem>
-      <re>0.00179506838321686</re>
-      <im>1.82125137603716e-22</im>
+      <re>0.00179506837775989</re>
+      <im>5.59411585394529e-22</im>
     </elem>
     <elem>
-      <re>0.00180862019078631</re>
-      <im>2.09069899822778e-22</im>
+      <re>0.00180862018896732</re>
+      <im>-2.7875986643037e-22</im>
     </elem>
     <elem>
-      <re>0.0018628665147844</re>
-      <im>7.47990993598146e-22</im>
+      <re>0.00186286653843126</re>
+      <im>2.65382804961739e-22</im>
     </elem>
     <elem>
-      <re>0.00201799554452009</re>
-      <im>3.03782079960099e-21</im>
+      <re>0.00201799561364169</re>
+      <im>2.73579647844257e-21</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -2517,36 +2515,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.189258700927894</re>
-      <im>3.51551760335037e-24</im>
+      <re>-0.189258699498168</re>
+      <im>3.57755614929184e-23</im>
     </elem>
     <elem>
-      <re>-0.0152879681518243</re>
-      <im>-3.9802897100286e-22</im>
+      <re>-0.0152879681154445</re>
+      <im>2.04732371485703e-21</im>
     </elem>
     <elem>
-      <re>-0.00596347772079753</re>
-      <im>1.80635566266267e-22</im>
+      <re>-0.00596347771352157</re>
+      <im>6.63709043997236e-22</im>
     </elem>
     <elem>
-      <re>-0.00278619788150536</re>
-      <im>7.27918939046664e-23</im>
+      <re>-0.00278619791424717</re>
+      <im>7.95980393823293e-22</im>
     </elem>
     <elem>
-      <re>-0.00196834090456832</re>
-      <im>6.19092989707657e-23</im>
+      <re>-0.00196834092639619</re>
+      <im>1.6130021944784e-23</im>
     </elem>
     <elem>
-      <re>-0.00278346156846965</re>
-      <im>-2.91038328647954e-22</im>
+      <re>-0.00278346155755571</re>
+      <im>5.445950357896e-22</im>
     </elem>
     <elem>
-      <re>-0.00595963720843429</re>
-      <im>-1.27683082365803e-21</im>
+      <re>-0.00595963723026216</re>
+      <im>3.50491935175203e-22</im>
     </elem>
     <elem>
-      <re>-0.0152697855046426</re>
-      <im>9.52188282625104e-22</im>
+      <re>-0.0152697854864527</re>
+      <im>-3.02050170552567e-21</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -2720,36 +2718,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>0.192588108009659</re>
-      <im>1.01122829884608e-22</im>
+      <re>0.192588108118798</re>
+      <im>5.28775206574523e-22</im>
     </elem>
     <elem>
-      <re>-0.00179089234461571</re>
-      <im>-1.02637604381345e-21</im>
+      <re>-0.00179089230368845</re>
+      <im>-1.01996539406617e-21</im>
     </elem>
     <elem>
-      <re>-0.00179100146851852</re>
-      <im>-3.76677371441335e-22</im>
+      <re>-0.00179100144850963</re>
+      <im>-1.2935036828798e-22</im>
     </elem>
     <elem>
-      <re>-0.00179108832162456</re>
-      <im>1.48065329646992e-22</im>
+      <re>-0.00179108833617647</re>
+      <im>-2.18815121414418e-22</im>
     </elem>
     <elem>
-      <re>-0.00179089855373604</re>
-      <im>-3.67552535309109e-22</im>
+      <re>-0.00179089854827907</re>
+      <im>2.48981364378461e-22</im>
     </elem>
     <elem>
-      <re>-0.0017909499565576</re>
-      <im>-3.50026646080642e-22</im>
+      <re>-0.00179094994928164</re>
+      <im>-4.37061556157706e-22</im>
     </elem>
     <elem>
-      <re>-0.00179131150798639</re>
-      <im>1.3372150083744e-21</im>
+      <re>-0.00179131151890033</re>
+      <im>-9.15869883855198e-22</im>
     </elem>
     <elem>
-      <re>-0.00179110847057018</re>
-      <im>2.35322544513679e-21</im>
+      <re>-0.00179110854423925</re>
+      <im>1.34959686816855e-21</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -2923,36 +2921,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.190371665168641</re>
-      <im>-4.50591129051776e-21</im>
+      <re>-0.19037166489943</re>
+      <im>7.06412243120286e-22</im>
     </elem>
     <elem>
-      <re>-0.0155203638496459</re>
-      <im>-3.08228175752572e-22</im>
+      <re>-0.0155203639806132</re>
+      <im>-5.76420809857577e-21</im>
     </elem>
     <elem>
-      <re>-0.0060358517584973</re>
-      <im>6.49853768736972e-23</im>
+      <re>-0.00603585176577326</re>
+      <im>9.324393455004e-22</im>
     </elem>
     <elem>
-      <re>-0.00280465527248452</re>
-      <im>-1.00340885711804e-21</im>
+      <re>-0.00280465529067442</re>
+      <im>8.37520370209941e-24</im>
     </elem>
     <elem>
-      <re>-0.00197308373026317</re>
-      <im>2.36719058032216e-22</im>
+      <re>-0.00197308373390115</re>
+      <im>5.10194338947624e-22</im>
     </elem>
     <elem>
-      <re>-0.00280191000638297</re>
-      <im>-2.06795153138257e-25</im>
+      <re>-0.00280190999910701</re>
+      <im>-1.17666442135668e-22</im>
     </elem>
     <elem>
-      <re>-0.00603277192567475</re>
-      <im>-5.02382975155253e-23</im>
+      <re>-0.00603277194022667</re>
+      <im>5.08160314746053e-22</im>
     </elem>
     <elem>
-      <re>-0.0155001356833964</re>
-      <im>8.55718343686107e-22</im>
+      <re>-0.0155001355997229</re>
+      <im>3.83429233191299e-21</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -3126,36 +3124,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.190382893721107</re>
-      <im>-3.65381186201158e-21</im>
+      <re>-0.190382892666094</re>
+      <im>-4.32563761576949e-21</im>
     </elem>
     <elem>
-      <re>-0.0155206712079234</re>
-      <im>-3.31399572661714e-21</im>
+      <re>-0.0155206711569917</re>
+      <im>1.89962027672803e-21</im>
     </elem>
     <elem>
-      <re>-0.00603647979733068</re>
-      <im>-7.87941232245043e-22</im>
+      <re>-0.00603647980460664</re>
+      <im>1.73769967182077e-21</im>
     </elem>
     <elem>
-      <re>-0.00280492033925839</re>
-      <im>2.31028960146646e-22</im>
+      <re>-0.00280492036108626</re>
+      <im>4.8819165777114e-22</im>
     </elem>
     <elem>
-      <re>-0.00197311446027015</re>
-      <im>-3.49648598691311e-22</im>
+      <re>-0.00197311445845116</re>
+      <im>-1.21202962371759e-22</im>
     </elem>
     <elem>
-      <re>-0.00280188258329872</re>
-      <im>-3.05643236338344e-22</im>
+      <re>-0.00280188259785064</re>
+      <im>1.18700417901359e-22</im>
     </elem>
     <elem>
-      <re>-0.00603161870822078</re>
-      <im>-1.53629411736118e-21</im>
+      <re>-0.00603161871549673</re>
+      <im>2.94204879430384e-22</im>
     </elem>
     <elem>
-      <re>-0.0155029677043785</re>
-      <im>-3.97336207239847e-21</im>
+      <re>-0.0155029677116545</re>
+      <im>1.41747737718618e-21</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -3329,36 +3327,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.190342040608812</re>
-      <im>1.23043116117263e-22</im>
+      <re>-0.190342041398253</re>
+      <im>-3.12881066698183e-22</im>
     </elem>
     <elem>
-      <re>0.0022467425915238</re>
-      <im>1.13297894525623e-21</im>
+      <re>0.00224674256060098</re>
+      <im>1.28161296157435e-22</im>
     </elem>
     <elem>
-      <re>0.00193313566887809</re>
-      <im>3.06987404833742e-22</im>
+      <re>0.00193313562340336</re>
+      <im>-6.7859829502319e-22</im>
     </elem>
     <elem>
-      <re>0.00182640250386612</re>
-      <im>-4.20879835424637e-22</im>
+      <re>0.00182640251296107</re>
+      <im>-1.50676118455362e-22</im>
     </elem>
     <elem>
-      <re>0.00179919072797929</re>
-      <im>-3.71843534736728e-22</im>
+      <re>0.00179919073161727</re>
+      <im>3.06263621797758e-22</im>
     </elem>
     <elem>
-      <re>0.00182605224472354</re>
-      <im>5.69979140837321e-23</im>
+      <re>0.00182605224108556</re>
+      <im>-4.52157602336799e-22</im>
     </elem>
     <elem>
-      <re>0.00193321203005326</re>
-      <im>8.40079460230026e-22</im>
+      <re>0.00193321205551911</re>
+      <im>-9.82457923165716e-22</im>
     </elem>
     <elem>
-      <re>0.00224646867900447</re>
-      <im>-1.60111147317295e-21</im>
+      <re>0.00224646873539314</re>
+      <im>5.49299625523495e-22</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -3532,27 +3530,27 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.190361081469746</re>
+      <re>-0.190361080916773</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.0155134523956804</re>
+      <re>-0.0155134524029563</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00603449413029011</re>
+      <re>-0.0060344941157382</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00280427666803007</re>
+      <re>-0.00280427667530603</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00197290813230211</re>
+      <re>-0.00197290814503503</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.00280160958209308</re>
+      <re>-0.00280160956026521</re>
       <im>0</im>
     </elem>
     <elem>
@@ -3560,7 +3558,7 @@ Hadron spectrum input
       <im>0</im>
     </elem>
     <elem>
-      <re>-0.015496653268201</re>
+      <re>-0.0154966532427352</re>
       <im>0</im>
     </elem>
   </ZeroMom>
@@ -3735,36 +3733,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.190363639921998</re>
-      <im>1.38987022424222e-21</im>
+      <re>-0.190363639583666</re>
+      <im>1.07419742297668e-21</im>
     </elem>
     <elem>
-      <re>0.00224196330054838</re>
-      <im>1.91466462411884e-22</im>
+      <re>0.00224196325871162</re>
+      <im>1.76990801692206e-22</im>
     </elem>
     <elem>
-      <re>0.00193190239588148</re>
-      <im>-2.30679993325726e-22</im>
+      <re>0.00193190234676877</re>
+      <im>-1.01019432308039e-22</im>
     </elem>
     <elem>
-      <re>0.00182618056715</re>
-      <im>1.60266243682149e-24</im>
+      <re>0.00182618057442596</re>
+      <im>3.46898869389426e-23</im>
     </elem>
     <elem>
-      <re>0.0017991761360463</re>
-      <im>-6.97933641841617e-25</im>
+      <re>0.00179917613968428</re>
+      <im>1.28859229799276e-23</im>
     </elem>
     <elem>
-      <re>0.00182598621722718</re>
-      <im>5.19055834377025e-23</im>
+      <re>0.00182598621904617</re>
+      <im>-4.97730084209642e-23</im>
     </elem>
     <elem>
-      <re>0.00193217592641304</re>
-      <im>6.75380045452476e-23</im>
+      <re>0.00193217593732697</re>
+      <im>4.03767536502447e-23</im>
     </elem>
     <elem>
-      <re>0.00223996893328149</re>
-      <im>-3.26943137111584e-22</im>
+      <re>0.00223996900422208</re>
+      <im>-4.09971391096594e-23</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -3938,36 +3936,36 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>-0.190352654164599</re>
-      <im>1.31625114972501e-21</im>
+      <re>-0.190352653800801</re>
+      <im>3.66864941424925e-21</im>
     </elem>
     <elem>
-      <re>0.0022398218188755</re>
-      <im>-6.49078286912704e-23</im>
+      <re>0.0022398217843147</re>
+      <im>-1.12470713913069e-22</im>
     </elem>
     <elem>
-      <re>0.00193194655003026</re>
-      <im>-3.00369959933318e-22</im>
+      <re>0.00193194651001249</re>
+      <im>-4.72526924920917e-23</im>
     </elem>
     <elem>
-      <re>0.00182621599560662</re>
-      <im>5.99447450159522e-23</im>
+      <re>0.00182621599378763</re>
+      <im>1.05982515983357e-24</im>
     </elem>
     <elem>
-      <re>0.0017990576379816</re>
-      <im>-6.33310156485912e-25</im>
+      <re>0.00179905764161958</re>
+      <im>4.03250548619601e-24</im>
     </elem>
     <elem>
-      <re>0.00182567580668547</re>
-      <im>-9.9778661389209e-24</im>
+      <re>0.00182567580850446</re>
+      <im>1.67891814954122e-23</im>
     </elem>
     <elem>
-      <re>0.00193092028530373</re>
-      <im>-2.05160178958758e-22</im>
+      <re>0.00193092030531261</re>
+      <im>1.33899861657021e-23</im>
     </elem>
     <elem>
-      <re>0.0022417071104428</re>
-      <im>-3.108131151668e-22</im>
+      <re>0.00224170717592642</re>
+      <im>-1.73242639541575e-22</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
@@ -4141,23 +4139,23 @@ Hadron spectrum input
 <Hadron2Pt>
   <ZeroMom>
     <elem>
-      <re>0.192608934041345</re>
+      <re>0.19260893498722</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.0159807816417015</re>
+      <re>0.0159807816817192</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00618062944704434</re>
+      <re>0.00618062948342413</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00284180978997028</re>
+      <re>0.00284180981543614</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00198266749430331</re>
+      <re>0.00198266749066534</re>
       <im>0</im>
     </elem>
     <elem>
@@ -4165,11 +4163,11 @@ Hadron spectrum input
       <im>0</im>
     </elem>
     <elem>
-      <re>0.00617588851309847</re>
+      <re>0.00617588849854656</re>
       <im>0</im>
     </elem>
     <elem>
-      <re>0.0159631273054401</re>
+      <re>0.0159631273199921</re>
       <im>0</im>
     </elem>
   </ZeroMom>

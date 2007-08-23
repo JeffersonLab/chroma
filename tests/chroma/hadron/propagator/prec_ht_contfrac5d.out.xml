@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_ht_contfrac5d.out.xml,v 3.6 2006-12-02 21:19:51 edwards Exp $
+; $Id: prec_ht_contfrac5d.out.xml,v 3.7 2007-08-23 23:27:12 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -107,10 +107,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.21.0</chroma>
-      <qdp>1.21.6</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:17:46 EST</run_date>
+    <run_date>23 Aug 07 17:45:29 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -167,10 +167,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:17:46 EST</run_date>
+          <run_date>23 Aug 07 17:45:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -267,10 +267,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:17:46 EST</run_date>
+          <run_date>23 Aug 07 17:45:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -303,9 +303,7 @@
       <RsdCG>1.0e-8</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
@@ -353,7 +351,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>0</id>
+      <id>246473129</id>
     </make_source>
 
         </Source_file_info>
@@ -474,7 +472,7 @@
           <ncg_had>1748</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0147753765331289 0.0761933030765864 0.0334144150811983 0.029531149438819 0.0272225567855758 0.029541807254688 0.0334433937015521 0.0761802461438447</prop_corr>
+          <prop_corr>0.0147753755871656 0.0761933103103868 0.0334144003524513 0.029531124495472 0.0272225251193127 0.0295417702058841 0.0334433510070548 0.0761801820830538</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

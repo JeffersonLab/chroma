@@ -266,16 +266,16 @@ QQQ on props
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.23.0</chroma>
-      <qdp>1.23.0</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>01 Jun 07 15:31:14 EDT</run_date>
+    <run_date>23 Aug 07 17:51:03 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
-      <logical_size>1 1 1 2</logical_size>
-      <subgrid_size>4 4 4 4</subgrid_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
       <total_volume>512</total_volume>
-      <subgrid_volume>256</subgrid_volume>
+      <subgrid_volume>512</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
   <RNG>
@@ -326,16 +326,16 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.23.0</chroma>
-            <qdp>1.23.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>01 Jun 07 15:31:14 EDT</run_date>
+          <run_date>23 Aug 07 17:51:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 2</logical_size>
-            <subgrid_size>4 4 4 4</subgrid_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>256</subgrid_volume>
+            <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <RNG>
@@ -428,16 +428,16 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.23.0</chroma>
-            <qdp>1.23.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>01 Jun 07 15:31:14 EDT</run_date>
+          <run_date>23 Aug 07 17:51:03 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 2</logical_size>
-            <subgrid_size>4 4 4 4</subgrid_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>256</subgrid_volume>
+            <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -463,9 +463,7 @@ QQQ on props
       <RsdCG>1.0e-12</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
@@ -513,7 +511,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>239293874</id>
+      <id>246473463</id>
     </make_source>
 
         </Source_file_info>
@@ -563,80 +561,80 @@ QQQ on props
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.232659e-07</resid>
+            <resid>1.287124e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.097333e-07</resid>
+            <resid>1.068587e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.397813e-07</resid>
+            <resid>1.259363e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.199907e-07</resid>
+            <resid>1.291379e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.218479e-07</resid>
+            <resid>1.411425e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.259563e-07</resid>
+            <resid>1.192423e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.048385e-07</resid>
+            <resid>1.213398e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.053114e-07</resid>
+            <resid>1.133735e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.25593e-07</resid>
+            <resid>1.399255e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.180159e-07</resid>
+            <resid>1.229618e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.203633e-07</resid>
+            <resid>1.166291e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.163258e-07</resid>
+            <resid>1.255396e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</prop_corr>
+          <prop_corr>0.19140909998555 0.0158396868298827 0.00612670422091127 0.00281774782452749 0.00196730088247109 0.00281711301955531 0.00612162636429729 0.0158367223750905</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -701,7 +699,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>239293875</id>
+      <id>246473464</id>
     </propagator>
 
         </Prop_file_info>
@@ -768,10 +766,10 @@ QQQ on props
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</forward_prop_corr>
+          <forward_prop_corr>0.19140909998555 0.0158396868298827 0.00612670422091127 0.00281774782452749 0.00196730088247109 0.00281711301955531 0.00612162636429729 0.0158367223750905</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.19140909998555 0.0158396868298827 0.00612670422091127 0.00281774782452749 0.00196730088247109 0.00281711301955531 0.00612162636429729 0.0158367223750905</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -850,7 +848,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>239293875</id>
+      <id>246473464</id>
     </propagator>
 
         </Prop_file_info>
@@ -917,10 +915,10 @@ QQQ on props
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</forward_prop_corr>
+          <forward_prop_corr>0.19140909998555 0.0158396868298827 0.00612670422091127 0.00281774782452749 0.00196730088247109 0.00281711301955531 0.00612162636429729 0.0158367223750905</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2837778689.78126 25152146.2896967 447414.243022993 8781.31818438845 582.134912297925 8346.19018544818 447542.898698911 25144700.7898245</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2837778685.36517 25152146.3520989 447414.253654884 8781.31669642148 582.135307997136 8346.18775599907 447542.89147335 25144702.0680593</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -943,16 +941,16 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.23.0</chroma>
-            <qdp>1.23.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>01 Jun 07 15:31:15 EDT</run_date>
+          <run_date>23 Aug 07 17:51:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 2</logical_size>
-            <subgrid_size>4 4 4 4</subgrid_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>256</subgrid_volume>
+            <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -1165,11 +1163,11 @@ QQQ on props
         <SinkSmearedProp_correlator>
           <elem>
             <correlator_num>0</correlator_num>
-            <sink_smeared_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.19140909998555 0.0158396868298827 0.00612670422091127 0.00281774782452749 0.00196730088247109 0.00281711301955531 0.00612162636429729 0.0158367223750905</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>1</correlator_num>
-            <sink_smeared_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.19140909998555 0.0158396868298827 0.00612670422091127 0.00281774782452749 0.00196730088247109 0.00281711301955531 0.00612162636429729 0.0158367223750905</sink_smeared_prop_corr>
           </elem>
         </SinkSmearedProp_correlator>
       </diquark>
@@ -1193,16 +1191,16 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.23.0</chroma>
-            <qdp>1.23.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>01 Jun 07 15:31:15 EDT</run_date>
+          <run_date>23 Aug 07 17:51:04 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 2</logical_size>
-            <subgrid_size>4 4 4 4</subgrid_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>256</subgrid_volume>
+            <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -1443,11 +1441,11 @@ QQQ on props
         <SinkSmearedProp_correlator>
           <elem>
             <correlator_num>0</correlator_num>
-            <sink_smeared_prop_corr>2837778689.78126 25152146.2896967 447414.243022993 8781.31818438845 582.134912297925 8346.19018544818 447542.898698911 25144700.7898245</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778685.36517 25152146.3520989 447414.253654884 8781.31669642148 582.135307997136 8346.18775599907 447542.89147335 25144702.0680593</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>1</correlator_num>
-            <sink_smeared_prop_corr>2837778689.78126 25152146.2896967 447414.243022993 8781.31818438845 582.134912297925 8346.19018544818 447542.898698911 25144700.7898245</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778685.36517 25152146.3520989 447414.253654884 8781.31669642148 582.135307997136 8346.18775599907 447542.89147335 25144702.0680593</sink_smeared_prop_corr>
           </elem>
         </SinkSmearedProp_correlator>
       </diquark>
@@ -1482,16 +1480,16 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.23.0</chroma>
-            <qdp>1.23.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>01 Jun 07 15:31:17 EDT</run_date>
+          <run_date>23 Aug 07 17:51:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 2</logical_size>
-            <subgrid_size>4 4 4 4</subgrid_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>256</subgrid_volume>
+            <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -1771,7 +1769,7 @@ QQQ on props
           </ForwardProps>
         </Propagator_input>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.19140909828642 0.0158396860947711 0.00612670385513096 0.00281774767233011 0.00196730079477545 0.00281711295158373 0.00612162640545814 0.0158367223081486</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.19140909998555 0.0158396868298827 0.00612670422091127 0.00281774782452749 0.00196730088247109 0.00281711301955531 0.00612162636429729 0.0158367223750905</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqq_diquark>
     </elem>
@@ -1803,16 +1801,16 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.23.0</chroma>
-            <qdp>1.23.0</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>01 Jun 07 15:31:17 EDT</run_date>
+          <run_date>23 Aug 07 17:51:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
-            <logical_size>1 1 1 2</logical_size>
-            <subgrid_size>4 4 4 4</subgrid_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
             <total_volume>512</total_volume>
-            <subgrid_volume>256</subgrid_volume>
+            <subgrid_volume>512</subgrid_volume>
           </Setgeom>
         </ProgramInfo>
         <Input>
@@ -2144,7 +2142,7 @@ QQQ on props
           </ForwardProps>
         </Propagator_input>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2837778689.78126 25152146.2896967 447414.243022993 8781.31818438845 582.134912297925 8346.19018544818 447542.898698911 25144700.7898245</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2837778685.36517 25152146.3520989 447414.253654884 8781.31669642148 582.135307997136 8346.18775599907 447542.89147335 25144702.0680593</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqq_diquark>
     </elem>

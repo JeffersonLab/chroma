@@ -112,10 +112,10 @@ Mres calculation
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.21.0</chroma>
-      <qdp>1.21.6</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:14:39 EST</run_date>
+    <run_date>23 Aug 07 17:44:50 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -172,10 +172,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:14:39 EST</run_date>
+          <run_date>23 Aug 07 17:44:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -260,10 +260,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:14:39 EST</run_date>
+          <run_date>23 Aug 07 17:44:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -295,9 +295,7 @@ Mres calculation
       <RsdCG>1.0e-12</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>pt_source_0</source_id>
@@ -345,7 +343,7 @@ Mres calculation
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>0</id>
+      <id>246473090</id>
     </make_source>
 
         </Source_file_info>
@@ -405,13 +403,13 @@ Mres calculation
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>9.042657e-08</resid>
+            <resid>9.042772e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.060274e-07</resid>
+            <resid>1.06015e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
@@ -423,19 +421,19 @@ Mres calculation
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>8.93173e-08</resid>
+            <resid>8.92889e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.072193e-07</resid>
+            <resid>1.079429e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>9.700778e-08</resid>
+            <resid>9.841155e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
@@ -447,14 +445,14 @@ Mres calculation
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.157301e-07</resid>
+            <resid>1.182082e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.695079540225503 0.0371189149546221 0.00801121116508382 0.00306581874154308 0.00206155289248678 0.00306324859270252 0.00800190487330988 0.0371176433885229</prop_corr>
+          <prop_corr>0.695079540233023 0.037118914927295 0.00801121113505055 0.00306581871821127 0.002061552868331 0.00306324856079051 0.00800190481114972 0.0371176432154208</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -463,10 +461,10 @@ Mres calculation
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:14:40 EST</run_date>
+          <run_date>23 Aug 07 17:44:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -542,16 +540,16 @@ Mres calculation
           </pollp>
         </Observables>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.695079540225503 0.0371189149546221 0.00801121116508382 0.00306581874154308 0.00206155289248678 0.00306324859270252 0.00800190487330988 0.0371176433885229</forward_prop_corr>
+          <forward_prop_corr>0.695079540233023 0.037118914927295 0.00801121113505055 0.00306581871821127 0.002061552868331 0.00306324856079051 0.00800190481114972 0.0371176432154208</forward_prop_corr>
         </Forward_prop_correlator>
         <DeltaProp_correlator>
-          <delta_prop_corr>0.006136091 0.0001277619 0.0001291225 3.882679e-05 1.810089e-05 3.879346e-05 0.0001293666 0.0001278285</delta_prop_corr>
+          <delta_prop_corr>0.006136091 0.0001277625 0.0001291225 3.882683e-05 1.810093e-05 3.879353e-05 0.0001293667 0.0001278288</delta_prop_corr>
         </DeltaProp_correlator>
         <DeltaSqProp_correlator>
-          <delta_sq_prop_corr>0.0001056175 4.159545e-05 1.714404e-05 3.187063e-06 7.829945e-07 3.184012e-06 1.716949e-05 4.160523e-05</delta_sq_prop_corr>
+          <delta_sq_prop_corr>0.0001056175 4.159548e-05 1.714404e-05 3.187064e-06 7.829952e-07 3.184016e-06 1.716948e-05 4.160526e-05</delta_sq_prop_corr>
         </DeltaSqProp_correlator>
         <PsuedoPseudo_correlator>
-          <pseudo_prop_corr>0.6950796 0.03711892 0.008011211 0.003065819 0.002061553 0.003063249 0.008001905 0.03711765</pseudo_prop_corr>
+          <pseudo_prop_corr>0.6950796 0.03711892 0.008011211 0.003065819 0.002061553 0.003063248 0.008001905 0.03711764</pseudo_prop_corr>
         </PsuedoPseudo_correlator>
       </mres>
     </elem>

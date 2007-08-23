@@ -111,10 +111,10 @@ Stout smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.21.0</chroma>
-      <qdp>1.21.6</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:19:08 EST</run_date>
+    <run_date>23 Aug 07 17:54:06 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -497,28 +497,28 @@ Stout smear task
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.998190856693933</w_plaq>
-          <s_plaq>0.999997364201893</s_plaq>
-          <t_plaq>0.996384349185973</t_plaq>
-          <plane_01_plaq>0.999997467578699</plane_01_plaq>
-          <plane_02_plaq>0.999997253529727</plane_02_plaq>
-          <plane_12_plaq>0.999997371497254</plane_12_plaq>
-          <plane_03_plaq>0.996365349274129</plane_03_plaq>
-          <plane_13_plaq>0.996496752370149</plane_13_plaq>
-          <plane_23_plaq>0.996290945913643</plane_23_plaq>
-          <link>0.379497392612393</link>
+          <w_plaq>0.998190967159139</w_plaq>
+          <s_plaq>0.999997510885199</s_plaq>
+          <t_plaq>0.996384423433079</t_plaq>
+          <plane_01_plaq>0.999997613330682</plane_01_plaq>
+          <plane_02_plaq>0.999997403938323</plane_02_plaq>
+          <plane_12_plaq>0.999997515386591</plane_12_plaq>
+          <plane_03_plaq>0.996365427970886</plane_03_plaq>
+          <plane_13_plaq>0.996496818183611</plane_13_plaq>
+          <plane_23_plaq>0.996291024144739</plane_23_plaq>
+          <link>0.379497404494032</link>
           <pollp>
             <elem>
-              <re>0.971852940196792</re>
-              <im>-0.00117131107007632</im>
+              <re>0.971853085483114</re>
+              <im>-0.00117131056830052</im>
             </elem>
             <elem>
-              <re>0.971490055982334</re>
-              <im>-0.00124694666343809</im>
+              <re>0.971490187415232</re>
+              <im>-0.0012469470771066</im>
             </elem>
             <elem>
-              <re>0.971965399842399</re>
-              <im>-0.0011242977703508</im>
+              <re>0.971965544080983</re>
+              <im>-0.00112429949103898</im>
             </elem>
             <elem>
               <re>0.879538947173084</re>
@@ -585,24 +585,24 @@ Stout smear task
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.996436819873957</w_plaq>
-          <s_plaq>0.997343551936663</s_plaq>
-          <t_plaq>0.995530087811252</t_plaq>
-          <plane_01_plaq>0.999998284503818</plane_01_plaq>
-          <plane_02_plaq>0.996132823949059</plane_02_plaq>
-          <plane_12_plaq>0.995899547357112</plane_12_plaq>
-          <plane_03_plaq>0.996039256143073</plane_03_plaq>
-          <plane_13_plaq>0.996034801161538</plane_13_plaq>
+          <w_plaq>0.996436847347973</w_plaq>
+          <s_plaq>0.997343588465204</s_plaq>
+          <t_plaq>0.995530106230742</t_plaq>
+          <plane_01_plaq>0.999998343021919</plane_01_plaq>
+          <plane_02_plaq>0.996132846456021</plane_02_plaq>
+          <plane_12_plaq>0.995899575917671</plane_12_plaq>
+          <plane_03_plaq>0.99603928408275</plane_03_plaq>
+          <plane_13_plaq>0.996034828480333</plane_13_plaq>
           <plane_23_plaq>0.994516206129144</plane_23_plaq>
-          <link>0.379397424325968</link>
+          <link>0.379397427612275</link>
           <pollp>
             <elem>
-              <re>0.970974922762252</re>
-              <im>-0.00117840589329414</im>
+              <re>0.970974972743231</re>
+              <im>-0.00117840557860897</im>
             </elem>
             <elem>
-              <re>0.970710197386021</re>
-              <im>-0.001258079115208</im>
+              <re>0.97071025831004</re>
+              <im>-0.00125807977466745</im>
             </elem>
             <elem>
               <re>0.967467519299438</re>

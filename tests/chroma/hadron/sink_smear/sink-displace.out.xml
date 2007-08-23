@@ -173,10 +173,10 @@ Sink smear a prop
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.21.0</chroma>
-      <qdp>1.21.6</qdp>
+      <chroma>3.24.2</chroma>
+      <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>02 Dec 06 16:13:33 EST</run_date>
+    <run_date>23 Aug 07 17:53:48 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -233,10 +233,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:33 EST</run_date>
+          <run_date>23 Aug 07 17:53:48 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -334,10 +334,10 @@ Sink smear a prop
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.21.0</chroma>
-            <qdp>1.21.6</qdp>
+            <chroma>3.24.2</chroma>
+            <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>02 Dec 06 16:13:33 EST</run_date>
+          <run_date>23 Aug 07 17:53:48 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -369,9 +369,7 @@ Sink smear a prop
       <RsdCG>1.0e-12</RsdCG>
       <MaxCG>1000</MaxCG>
     </InvertParam>
-</Param><StateInfo>
-</StateInfo>
-
+</Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <source_id>sh_source_0</source_id>
@@ -419,7 +417,7 @@ Sink smear a prop
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>0</id>
+      <id>246473628</id>
     </make_source>
 
         </Source_file_info>
@@ -498,7 +496,7 @@ Sink smear a prop
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>23</n_count>
-            <resid>8.376191e-08</resid>
+            <resid>8.377982e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
@@ -516,7 +514,7 @@ Sink smear a prop
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>23</n_count>
-            <resid>8.570068e-08</resid>
+            <resid>8.181107e-08</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
@@ -541,7 +539,7 @@ Sink smear a prop
           <ncg_had>276</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0303537053502259 0.00090918337755248 5.19719612219437e-05 2.7064780834879e-06 2.54931759670547e-07 2.13104947958424e-06 4.25442247126648e-05 0.000870806394804189</prop_corr>
+          <prop_corr>0.0303537053015729 0.000909183374660464 5.1971961102749e-05 2.70647808564726e-06 2.54931758611046e-07 2.13104948548214e-06 4.25442248304406e-05 0.00087080639330306</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -608,7 +606,7 @@ Sink smear a prop
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>0</id>
+      <id>246473629</id>
     </propagator>
 
         </Prop_file_info>
@@ -674,10 +672,10 @@ Sink smear a prop
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.0303537053502259 0.00090918337755248 5.19719612219437e-05 2.7064780834879e-06 2.54931759670547e-07 2.13104947958424e-06 4.25442247126648e-05 0.000870806394804189</forward_prop_corr>
+          <forward_prop_corr>0.0303537053015729 0.000909183374660464 5.1971961102749e-05 2.70647808564726e-06 2.54931758611046e-07 2.13104948548214e-06 4.25442248304406e-05 0.00087080639330306</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.0303537097908958 0.000909183482423782 5.19719671010118e-05 2.7064784354829e-06 2.54931789453793e-07 2.13104970762745e-06 4.25442292021568e-05 0.000870806474279291</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.030353709752596 0.000909183479783058 5.19719669187287e-05 2.70647843978741e-06 2.54931788526936e-07 2.13104971088582e-06 4.25442292353889e-05 0.000870806472528579</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -757,7 +755,7 @@ Sink smear a prop
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>0</id>
+      <id>246473629</id>
     </propagator>
 
         </Prop_file_info>
@@ -823,10 +821,10 @@ Sink smear a prop
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.0303537053502259 0.00090918337755248 5.19719612219437e-05 2.7064780834879e-06 2.54931759670547e-07 2.13104947958424e-06 4.25442247126648e-05 0.000870806394804189</forward_prop_corr>
+          <forward_prop_corr>0.0303537053015729 0.000909183374660464 5.1971961102749e-05 2.70647808564726e-06 2.54931758611046e-07 2.13104948548214e-06 4.25442248304406e-05 0.00087080639330306</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2.05547289356704e-06 2.97327485272956e-05 0.0317786385453575 4.01607180185844e-05 1.64747745368845e-06 1.15660464552325e-07 9.73973933713053e-09 1.30723677644681e-07</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2.0554729168767e-06 2.97327485056444e-05 0.0317786384295242 4.01607173556298e-05 1.64747745087446e-06 1.15660463960619e-07 9.73973938506572e-09 1.30723679847215e-07</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
