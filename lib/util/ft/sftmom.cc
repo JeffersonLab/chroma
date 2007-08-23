@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 3.5 2007-08-01 19:33:14 edwards Exp $
+//  $Id: sftmom.cc,v 3.6 2007-08-23 21:28:31 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.5  2007-08-01 19:33:14  edwards
+//  Revision 3.6  2007-08-23 21:28:31  edwards
+//  Bug fix. Removed some invalid uses of resize within a multi2d.
+//
+//  Revision 3.5  2007/08/01 19:33:14  edwards
 //  Removed check for origin_offset must be zero in case of momentum averaging.
 //  The check is not needed. The phase of the origin is removed in the correct
 //  way no matter whether the phases are added together or not.
@@ -500,7 +503,6 @@ namespace Chroma
 
     for (int mom_num=0; mom_num < num_mom; ++mom_num)
     {
-      hsum[mom_num].resize(length);
       hsum[mom_num] = zero;
       hsum[mom_num][subset_color] = sum(phases[mom_num]*cf, sft_set[subset_color]);
     }
@@ -527,7 +529,6 @@ namespace Chroma
 
     for (int mom_num=0; mom_num < num_mom; ++mom_num)
     {
-      hsum[mom_num].resize(length);
       hsum[mom_num] = zero;
       hsum[mom_num][subset_color] = sum(phases[mom_num]*cf, sft_set[subset_color]);
     }
