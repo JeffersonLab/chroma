@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.100 2007-08-11 22:43:18 edwards Exp $
+# $Id: Makefile.am,v 3.101 2007-08-24 19:22:13 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -524,7 +524,8 @@ nobase_include_HEADERS += \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h \
         meas/schrfun/sfpcac_w.h \
-        meas/schrfun/sfcurcor_w.h \
+        meas/schrfun/sfcorr_w.h \
+        meas/schrfun/sfcurrents_w.h \
         meas/sources/sources_w.h \
         meas/sources/walfil_w.h \
 	update/molecdyn/monomial/monomial_w.h \
@@ -1165,7 +1166,8 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc \
         meas/schrfun/sfpcac_w.cc \
-        meas/schrfun/sfcurcor_w.cc \
+        meas/schrfun/sfcorr_w.cc \
+        meas/schrfun/sfcurrents_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc \
         meas/sources/walfil_w.cc \
