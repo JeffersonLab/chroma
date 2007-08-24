@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.186 2007-08-23 18:49:53 edwards Exp $
+# $Id: Makefile.in,v 3.187 2007-08-24 19:22:23 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -472,7 +472,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc meas/schrfun/sfpcac_w.cc \
-	meas/schrfun/sfcurcor_w.cc \
+	meas/schrfun/sfcorr_w.cc meas/schrfun/sfcurrents_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
@@ -906,7 +906,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	wallnuclff_w.$(OBJEXT) wallpionff_w.$(OBJEXT) \
 	wallrhoff_w.$(OBJEXT) wallrhopiff_w.$(OBJEXT) \
 	wall_qprop_w.$(OBJEXT) npr_vertex_w.$(OBJEXT) \
-	sfpcac_w.$(OBJEXT) sfcurcor_w.$(OBJEXT) \
+	sfpcac_w.$(OBJEXT) sfcorr_w.$(OBJEXT) sfcurrents_w.$(OBJEXT) \
 	deriv_quark_displacement_w.$(OBJEXT) \
 	gamma_displacement_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 	monomial_aggregate_w.$(OBJEXT) \
@@ -1460,8 +1460,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/npr_vertex_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h meas/schrfun/sfpcac_w.h \
-	meas/schrfun/sfcurcor_w.h meas/sources/sources_w.h \
-	meas/sources/walfil_w.h update/molecdyn/monomial/monomial_w.h \
+	meas/schrfun/sfcorr_w.h meas/schrfun/sfcurrents_w.h \
+	meas/sources/sources_w.h meas/sources/walfil_w.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
@@ -2239,8 +2240,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/npr_vertex_w.h \
 	meas/smear/deriv_quark_displacement_w.h \
 	meas/smear/gamma_displacement_w.h meas/schrfun/sfpcac_w.h \
-	meas/schrfun/sfcurcor_w.h meas/sources/sources_w.h \
-	meas/sources/walfil_w.h update/molecdyn/monomial/monomial_w.h \
+	meas/schrfun/sfcorr_w.h meas/schrfun/sfcurrents_w.h \
+	meas/sources/sources_w.h meas/sources/walfil_w.h \
+	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
@@ -2801,7 +2803,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc meas/schrfun/sfpcac_w.cc \
-	meas/schrfun/sfcurcor_w.cc \
+	meas/schrfun/sfcorr_w.cc meas/schrfun/sfcurrents_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
@@ -3472,7 +3474,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqsource_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_gauge_init.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfcurcor_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfcorr_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfcurrents_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfpcac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sftmom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sh_sink_smearing.Po@am__quote@
@@ -9646,19 +9649,33 @@ sfpcac_w.obj: meas/schrfun/sfpcac_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfpcac_w.obj `if test -f 'meas/schrfun/sfpcac_w.cc'; then $(CYGPATH_W) 'meas/schrfun/sfpcac_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sfpcac_w.cc'; fi`
 
-sfcurcor_w.o: meas/schrfun/sfcurcor_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sfcurcor_w.o -MD -MP -MF "$(DEPDIR)/sfcurcor_w.Tpo" -c -o sfcurcor_w.o `test -f 'meas/schrfun/sfcurcor_w.cc' || echo '$(srcdir)/'`meas/schrfun/sfcurcor_w.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sfcurcor_w.Tpo" "$(DEPDIR)/sfcurcor_w.Po"; else rm -f "$(DEPDIR)/sfcurcor_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sfcurcor_w.cc' object='sfcurcor_w.o' libtool=no @AMDEPBACKSLASH@
+sfcorr_w.o: meas/schrfun/sfcorr_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sfcorr_w.o -MD -MP -MF "$(DEPDIR)/sfcorr_w.Tpo" -c -o sfcorr_w.o `test -f 'meas/schrfun/sfcorr_w.cc' || echo '$(srcdir)/'`meas/schrfun/sfcorr_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sfcorr_w.Tpo" "$(DEPDIR)/sfcorr_w.Po"; else rm -f "$(DEPDIR)/sfcorr_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sfcorr_w.cc' object='sfcorr_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfcurcor_w.o `test -f 'meas/schrfun/sfcurcor_w.cc' || echo '$(srcdir)/'`meas/schrfun/sfcurcor_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfcorr_w.o `test -f 'meas/schrfun/sfcorr_w.cc' || echo '$(srcdir)/'`meas/schrfun/sfcorr_w.cc
 
-sfcurcor_w.obj: meas/schrfun/sfcurcor_w.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sfcurcor_w.obj -MD -MP -MF "$(DEPDIR)/sfcurcor_w.Tpo" -c -o sfcurcor_w.obj `if test -f 'meas/schrfun/sfcurcor_w.cc'; then $(CYGPATH_W) 'meas/schrfun/sfcurcor_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sfcurcor_w.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sfcurcor_w.Tpo" "$(DEPDIR)/sfcurcor_w.Po"; else rm -f "$(DEPDIR)/sfcurcor_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sfcurcor_w.cc' object='sfcurcor_w.obj' libtool=no @AMDEPBACKSLASH@
+sfcorr_w.obj: meas/schrfun/sfcorr_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sfcorr_w.obj -MD -MP -MF "$(DEPDIR)/sfcorr_w.Tpo" -c -o sfcorr_w.obj `if test -f 'meas/schrfun/sfcorr_w.cc'; then $(CYGPATH_W) 'meas/schrfun/sfcorr_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sfcorr_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sfcorr_w.Tpo" "$(DEPDIR)/sfcorr_w.Po"; else rm -f "$(DEPDIR)/sfcorr_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sfcorr_w.cc' object='sfcorr_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfcurcor_w.obj `if test -f 'meas/schrfun/sfcurcor_w.cc'; then $(CYGPATH_W) 'meas/schrfun/sfcurcor_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sfcurcor_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfcorr_w.obj `if test -f 'meas/schrfun/sfcorr_w.cc'; then $(CYGPATH_W) 'meas/schrfun/sfcorr_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sfcorr_w.cc'; fi`
+
+sfcurrents_w.o: meas/schrfun/sfcurrents_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sfcurrents_w.o -MD -MP -MF "$(DEPDIR)/sfcurrents_w.Tpo" -c -o sfcurrents_w.o `test -f 'meas/schrfun/sfcurrents_w.cc' || echo '$(srcdir)/'`meas/schrfun/sfcurrents_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sfcurrents_w.Tpo" "$(DEPDIR)/sfcurrents_w.Po"; else rm -f "$(DEPDIR)/sfcurrents_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sfcurrents_w.cc' object='sfcurrents_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfcurrents_w.o `test -f 'meas/schrfun/sfcurrents_w.cc' || echo '$(srcdir)/'`meas/schrfun/sfcurrents_w.cc
+
+sfcurrents_w.obj: meas/schrfun/sfcurrents_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sfcurrents_w.obj -MD -MP -MF "$(DEPDIR)/sfcurrents_w.Tpo" -c -o sfcurrents_w.obj `if test -f 'meas/schrfun/sfcurrents_w.cc'; then $(CYGPATH_W) 'meas/schrfun/sfcurrents_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sfcurrents_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sfcurrents_w.Tpo" "$(DEPDIR)/sfcurrents_w.Po"; else rm -f "$(DEPDIR)/sfcurrents_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sfcurrents_w.cc' object='sfcurrents_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sfcurrents_w.obj `if test -f 'meas/schrfun/sfcurrents_w.cc'; then $(CYGPATH_W) 'meas/schrfun/sfcurrents_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sfcurrents_w.cc'; fi`
 
 deriv_quark_displacement_w.o: meas/smear/deriv_quark_displacement_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT deriv_quark_displacement_w.o -MD -MP -MF "$(DEPDIR)/deriv_quark_displacement_w.Tpo" -c -o deriv_quark_displacement_w.o `test -f 'meas/smear/deriv_quark_displacement_w.cc' || echo '$(srcdir)/'`meas/smear/deriv_quark_displacement_w.cc; \
