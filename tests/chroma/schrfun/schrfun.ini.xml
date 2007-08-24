@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: schrfun.ini.xml,v 1.5 2007-02-04 22:55:47 edwards Exp $
+; $Id: schrfun.ini.xml,v 1.6 2007-08-24 20:58:15 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
@@ -52,22 +52,6 @@
         <gauge_id>default_gauge_field</gauge_id>
       </NamedObject>
     </elem>
-
-<annotation>
-    <elem>
-      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>default_gauge_field</object_id>
-        <object_type>Multi1dLatticeColorMatrix</object_type>
-      </NamedObject>
-      <File>
-        <file_name>szin.cfg</file_name>
-        <trunc>false</trunc>
-      </File>
-    </elem>
-</annotation>
-
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>

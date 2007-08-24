@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun.out.xml,v 1.12 2007-08-23 23:27:17 edwards Exp $
+; $Id: schrfun.out.xml,v 1.13 2007-08-24 20:58:15 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
@@ -55,22 +55,6 @@
         <gauge_id>default_gauge_field</gauge_id>
       </NamedObject>
     </elem>
-
-<annotation>
-    <elem>
-      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>default_gauge_field</object_id>
-        <object_type>Multi1dLatticeColorMatrix</object_type>
-      </NamedObject>
-      <File>
-        <file_name>szin.cfg</file_name>
-        <trunc>false</trunc>
-      </File>
-    </elem>
-</annotation>
-
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
@@ -100,7 +84,7 @@
       <chroma>3.24.2</chroma>
       <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>23 Aug 07 17:54:03 EDT</run_date>
+    <run_date>24 Aug 07 16:57:48 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -125,27 +109,27 @@
 
   </Config_info>
   <Observables>
-    <w_plaq>0.995177348454793</w_plaq>
-    <s_plaq>0.999999970197678</s_plaq>
+    <w_plaq>0.99517734348774</w_plaq>
+    <s_plaq>0.99999996026357</s_plaq>
     <t_plaq>0.990354726711909</t_plaq>
-    <plane_01_plaq>0.999999970197678</plane_01_plaq>
-    <plane_02_plaq>0.999999970197678</plane_02_plaq>
-    <plane_12_plaq>0.999999970197678</plane_12_plaq>
+    <plane_01_plaq>0.99999996026357</plane_01_plaq>
+    <plane_02_plaq>0.99999996026357</plane_02_plaq>
+    <plane_12_plaq>0.99999996026357</plane_12_plaq>
     <plane_03_plaq>0.990354726711909</plane_03_plaq>
     <plane_13_plaq>0.990354726711909</plane_13_plaq>
     <plane_23_plaq>0.990354726711909</plane_23_plaq>
-    <link>0.965140113607049</link>
+    <link>0.965140111744404</link>
     <pollp>
       <elem>
-        <re>0.429049236079057</re>
+        <re>0.42904923359553</re>
         <im>0.168811708688736</im>
       </elem>
       <elem>
-        <re>0.429049236079057</re>
+        <re>0.42904923359553</re>
         <im>0.168811708688736</im>
       </elem>
       <elem>
-        <re>0.429049236079057</re>
+        <re>0.42904923359553</re>
         <im>0.168811708688736</im>
       </elem>
       <elem>
@@ -163,7 +147,7 @@
             <chroma>3.24.2</chroma>
             <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>23 Aug 07 17:54:03 EDT</run_date>
+          <run_date>24 Aug 07 16:57:49 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -225,27 +209,27 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.995177348454793</w_plaq>
-          <s_plaq>0.999999970197678</s_plaq>
+          <w_plaq>0.99517734348774</w_plaq>
+          <s_plaq>0.99999996026357</s_plaq>
           <t_plaq>0.990354726711909</t_plaq>
-          <plane_01_plaq>0.999999970197678</plane_01_plaq>
-          <plane_02_plaq>0.999999970197678</plane_02_plaq>
-          <plane_12_plaq>0.999999970197678</plane_12_plaq>
+          <plane_01_plaq>0.99999996026357</plane_01_plaq>
+          <plane_02_plaq>0.99999996026357</plane_02_plaq>
+          <plane_12_plaq>0.99999996026357</plane_12_plaq>
           <plane_03_plaq>0.990354726711909</plane_03_plaq>
           <plane_13_plaq>0.990354726711909</plane_13_plaq>
           <plane_23_plaq>0.990354726711909</plane_23_plaq>
-          <link>0.965140113607049</link>
+          <link>0.965140111744404</link>
           <pollp>
             <elem>
-              <re>0.429049236079057</re>
+              <re>0.42904923359553</re>
               <im>0.168811708688736</im>
             </elem>
             <elem>
-              <re>0.429049236079057</re>
+              <re>0.42904923359553</re>
               <im>0.168811708688736</im>
             </elem>
             <elem>
-              <re>0.429049236079057</re>
+              <re>0.42904923359553</re>
               <im>0.168811708688736</im>
             </elem>
             <elem>
