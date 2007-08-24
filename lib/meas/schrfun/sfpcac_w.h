@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.h,v 3.2 2007-08-23 19:02:58 edwards Exp $
+// $Id: sfpcac_w.h,v 3.3 2007-08-24 19:23:04 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  *
@@ -8,7 +8,6 @@
 #ifndef __sfpcac_w_h__
 #define __sfpcac_w_h__
 
-#include "chromabase.h"
 #include "fermact.h"
 #include "util/ft/sftmom.h"
 
@@ -17,6 +16,8 @@ namespace Chroma
   
   //! Schroedinger functional stuff
   /*!
+   * @ingroup schrfun
+   *
    * Compute correlation functions between axial current or pseudescalar
    * density and boundary fields using Schroedinger BC.
    *

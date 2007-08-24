@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: sfcurcor_w.h,v 3.2 2007-08-23 19:02:58 edwards Exp $
+// $Id: sfcorr_w.h,v 3.1 2007-08-24 19:23:04 edwards Exp $
 /*! \file
  * \brief Schroedinger functional correlation functions
  */
 
-#ifndef __sfcurcor_w_h__
-#define __sfcurcor_w_h__
+#ifndef __sfcorr_w_h__
+#define __sfcorr_w_h__
 
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
@@ -15,6 +15,8 @@ namespace Chroma
 
   //! Schroedinger functional correlation functions
   /*!
+   * @ingroup schrfun
+   *
    * Construct 'current correlators' and axial density used for the PCAC determination
    * in the Schroedinger Functional
    *
@@ -31,10 +33,10 @@ namespace Chroma
    *           x
    */
 
-  void SFcurcor(multi1d<Real>& pseudo_prop, 
-		multi1d<Real>& axial_prop, 
-		const LatticePropagator& quark_propagator, 
-		const SftMom& phases);
+  void SFcorr(multi1d<Real>& pseudo_prop, 
+	      multi1d<Real>& axial_prop, 
+	      const LatticePropagator& quark_propagator, 
+	      const SftMom& phases);
 
 }
 #endif
