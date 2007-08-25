@@ -1,4 +1,4 @@
-// $Id: quark_displacement_aggregate.cc,v 3.7 2007-08-25 04:49:35 edwards Exp $
+// $Id: quark_displacement_aggregate.cc,v 3.8 2007-08-25 04:51:01 edwards Exp $
 /*! \file
  *  \brief All quark displacements
  */
@@ -54,7 +54,7 @@ namespace Chroma
       write(xml_tmp, "Displacement", non);
       nope.xml  = xml_tmp.str();
       nope.id   = NoQuarkDisplacementEnv::name;
-      nope.path = "/Displacement";
+      nope.path = "Displacement";
 
       return nope;
     }
