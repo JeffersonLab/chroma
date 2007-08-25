@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.187 2007-08-24 19:22:23 edwards Exp $
+# $Id: Makefile.in,v 3.188 2007-08-25 04:22:02 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -471,8 +471,12 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
-	meas/hadron/npr_vertex_w.cc meas/schrfun/sfpcac_w.cc \
-	meas/schrfun/sfcorr_w.cc meas/schrfun/sfcurrents_w.cc \
+	meas/hadron/npr_vertex_w.cc meas/schrfun/sf_pt_source_const.cc \
+	meas/schrfun/sf_sh_source_const.cc \
+	meas/schrfun/sf_wall_source_const.cc \
+	meas/schrfun/sf_source_const_aggregate.cc \
+	meas/schrfun/sfpcac_w.cc meas/schrfun/sfcorr_w.cc \
+	meas/schrfun/sfcurrents_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
@@ -906,7 +910,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	wallnuclff_w.$(OBJEXT) wallpionff_w.$(OBJEXT) \
 	wallrhoff_w.$(OBJEXT) wallrhopiff_w.$(OBJEXT) \
 	wall_qprop_w.$(OBJEXT) npr_vertex_w.$(OBJEXT) \
-	sfpcac_w.$(OBJEXT) sfcorr_w.$(OBJEXT) sfcurrents_w.$(OBJEXT) \
+	sf_pt_source_const.$(OBJEXT) sf_sh_source_const.$(OBJEXT) \
+	sf_wall_source_const.$(OBJEXT) \
+	sf_source_const_aggregate.$(OBJEXT) sfpcac_w.$(OBJEXT) \
+	sfcorr_w.$(OBJEXT) sfcurrents_w.$(OBJEXT) \
 	deriv_quark_displacement_w.$(OBJEXT) \
 	gamma_displacement_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 	monomial_aggregate_w.$(OBJEXT) \
@@ -1177,8 +1184,12 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/spin_insertion_aggregate.h \
 	meas/hadron/no_spin_insertion.h meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
-	meas/sinks/sinks.h meas/sinks/pt_sink_smearing.h \
-	meas/sinks/sh_sink_smearing.h \
+	meas/schrfun/sf_pt_source_const.h \
+	meas/schrfun/sf_sh_source_const.h \
+	meas/schrfun/sf_wall_source_const.h \
+	meas/schrfun/sf_source_const_aggregate.h \
+	meas/schrfun/sf_source_const_factory.h meas/sinks/sinks.h \
+	meas/sinks/pt_sink_smearing.h meas/sinks/sh_sink_smearing.h \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h meas/smear/ape_smear.h \
 	meas/smear/displace.h meas/smear/displacement.h \
@@ -1957,8 +1968,12 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/spin_insertion_aggregate.h \
 	meas/hadron/no_spin_insertion.h meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h meas/schrfun/schrfun.h \
-	meas/sinks/sinks.h meas/sinks/pt_sink_smearing.h \
-	meas/sinks/sh_sink_smearing.h \
+	meas/schrfun/sf_pt_source_const.h \
+	meas/schrfun/sf_sh_source_const.h \
+	meas/schrfun/sf_wall_source_const.h \
+	meas/schrfun/sf_source_const_aggregate.h \
+	meas/schrfun/sf_source_const_factory.h meas/sinks/sinks.h \
+	meas/sinks/pt_sink_smearing.h meas/sinks/sh_sink_smearing.h \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h meas/smear/ape_smear.h \
 	meas/smear/displace.h meas/smear/displacement.h \
@@ -2802,8 +2817,12 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/wallff_w.cc meas/hadron/wallnuclff_w.cc \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
-	meas/hadron/npr_vertex_w.cc meas/schrfun/sfpcac_w.cc \
-	meas/schrfun/sfcorr_w.cc meas/schrfun/sfcurrents_w.cc \
+	meas/hadron/npr_vertex_w.cc meas/schrfun/sf_pt_source_const.cc \
+	meas/schrfun/sf_sh_source_const.cc \
+	meas/schrfun/sf_wall_source_const.cc \
+	meas/schrfun/sf_source_const_aggregate.cc \
+	meas/schrfun/sfpcac_w.cc meas/schrfun/sfcorr_w.cc \
+	meas/schrfun/sfcurrents_w.cc \
 	meas/smear/deriv_quark_displacement_w.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
@@ -3474,6 +3493,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqsource_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_gauge_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_pt_source_const.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_sh_source_const.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_source_const_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_wall_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfcorr_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfcurrents_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sfpcac_w.Po@am__quote@
@@ -9634,6 +9657,62 @@ npr_vertex_w.obj: meas/hadron/npr_vertex_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/npr_vertex_w.cc' object='npr_vertex_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o npr_vertex_w.obj `if test -f 'meas/hadron/npr_vertex_w.cc'; then $(CYGPATH_W) 'meas/hadron/npr_vertex_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/npr_vertex_w.cc'; fi`
+
+sf_pt_source_const.o: meas/schrfun/sf_pt_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_pt_source_const.o -MD -MP -MF "$(DEPDIR)/sf_pt_source_const.Tpo" -c -o sf_pt_source_const.o `test -f 'meas/schrfun/sf_pt_source_const.cc' || echo '$(srcdir)/'`meas/schrfun/sf_pt_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sf_pt_source_const.Tpo" "$(DEPDIR)/sf_pt_source_const.Po"; else rm -f "$(DEPDIR)/sf_pt_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sf_pt_source_const.cc' object='sf_pt_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_pt_source_const.o `test -f 'meas/schrfun/sf_pt_source_const.cc' || echo '$(srcdir)/'`meas/schrfun/sf_pt_source_const.cc
+
+sf_pt_source_const.obj: meas/schrfun/sf_pt_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_pt_source_const.obj -MD -MP -MF "$(DEPDIR)/sf_pt_source_const.Tpo" -c -o sf_pt_source_const.obj `if test -f 'meas/schrfun/sf_pt_source_const.cc'; then $(CYGPATH_W) 'meas/schrfun/sf_pt_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sf_pt_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sf_pt_source_const.Tpo" "$(DEPDIR)/sf_pt_source_const.Po"; else rm -f "$(DEPDIR)/sf_pt_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sf_pt_source_const.cc' object='sf_pt_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_pt_source_const.obj `if test -f 'meas/schrfun/sf_pt_source_const.cc'; then $(CYGPATH_W) 'meas/schrfun/sf_pt_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sf_pt_source_const.cc'; fi`
+
+sf_sh_source_const.o: meas/schrfun/sf_sh_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_sh_source_const.o -MD -MP -MF "$(DEPDIR)/sf_sh_source_const.Tpo" -c -o sf_sh_source_const.o `test -f 'meas/schrfun/sf_sh_source_const.cc' || echo '$(srcdir)/'`meas/schrfun/sf_sh_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sf_sh_source_const.Tpo" "$(DEPDIR)/sf_sh_source_const.Po"; else rm -f "$(DEPDIR)/sf_sh_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sf_sh_source_const.cc' object='sf_sh_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_sh_source_const.o `test -f 'meas/schrfun/sf_sh_source_const.cc' || echo '$(srcdir)/'`meas/schrfun/sf_sh_source_const.cc
+
+sf_sh_source_const.obj: meas/schrfun/sf_sh_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_sh_source_const.obj -MD -MP -MF "$(DEPDIR)/sf_sh_source_const.Tpo" -c -o sf_sh_source_const.obj `if test -f 'meas/schrfun/sf_sh_source_const.cc'; then $(CYGPATH_W) 'meas/schrfun/sf_sh_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sf_sh_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sf_sh_source_const.Tpo" "$(DEPDIR)/sf_sh_source_const.Po"; else rm -f "$(DEPDIR)/sf_sh_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sf_sh_source_const.cc' object='sf_sh_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_sh_source_const.obj `if test -f 'meas/schrfun/sf_sh_source_const.cc'; then $(CYGPATH_W) 'meas/schrfun/sf_sh_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sf_sh_source_const.cc'; fi`
+
+sf_wall_source_const.o: meas/schrfun/sf_wall_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_wall_source_const.o -MD -MP -MF "$(DEPDIR)/sf_wall_source_const.Tpo" -c -o sf_wall_source_const.o `test -f 'meas/schrfun/sf_wall_source_const.cc' || echo '$(srcdir)/'`meas/schrfun/sf_wall_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sf_wall_source_const.Tpo" "$(DEPDIR)/sf_wall_source_const.Po"; else rm -f "$(DEPDIR)/sf_wall_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sf_wall_source_const.cc' object='sf_wall_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_wall_source_const.o `test -f 'meas/schrfun/sf_wall_source_const.cc' || echo '$(srcdir)/'`meas/schrfun/sf_wall_source_const.cc
+
+sf_wall_source_const.obj: meas/schrfun/sf_wall_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_wall_source_const.obj -MD -MP -MF "$(DEPDIR)/sf_wall_source_const.Tpo" -c -o sf_wall_source_const.obj `if test -f 'meas/schrfun/sf_wall_source_const.cc'; then $(CYGPATH_W) 'meas/schrfun/sf_wall_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sf_wall_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sf_wall_source_const.Tpo" "$(DEPDIR)/sf_wall_source_const.Po"; else rm -f "$(DEPDIR)/sf_wall_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sf_wall_source_const.cc' object='sf_wall_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_wall_source_const.obj `if test -f 'meas/schrfun/sf_wall_source_const.cc'; then $(CYGPATH_W) 'meas/schrfun/sf_wall_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sf_wall_source_const.cc'; fi`
+
+sf_source_const_aggregate.o: meas/schrfun/sf_source_const_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_source_const_aggregate.o -MD -MP -MF "$(DEPDIR)/sf_source_const_aggregate.Tpo" -c -o sf_source_const_aggregate.o `test -f 'meas/schrfun/sf_source_const_aggregate.cc' || echo '$(srcdir)/'`meas/schrfun/sf_source_const_aggregate.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sf_source_const_aggregate.Tpo" "$(DEPDIR)/sf_source_const_aggregate.Po"; else rm -f "$(DEPDIR)/sf_source_const_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sf_source_const_aggregate.cc' object='sf_source_const_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_source_const_aggregate.o `test -f 'meas/schrfun/sf_source_const_aggregate.cc' || echo '$(srcdir)/'`meas/schrfun/sf_source_const_aggregate.cc
+
+sf_source_const_aggregate.obj: meas/schrfun/sf_source_const_aggregate.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_source_const_aggregate.obj -MD -MP -MF "$(DEPDIR)/sf_source_const_aggregate.Tpo" -c -o sf_source_const_aggregate.obj `if test -f 'meas/schrfun/sf_source_const_aggregate.cc'; then $(CYGPATH_W) 'meas/schrfun/sf_source_const_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sf_source_const_aggregate.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/sf_source_const_aggregate.Tpo" "$(DEPDIR)/sf_source_const_aggregate.Po"; else rm -f "$(DEPDIR)/sf_source_const_aggregate.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/schrfun/sf_source_const_aggregate.cc' object='sf_source_const_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_source_const_aggregate.obj `if test -f 'meas/schrfun/sf_source_const_aggregate.cc'; then $(CYGPATH_W) 'meas/schrfun/sf_source_const_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/schrfun/sf_source_const_aggregate.cc'; fi`
 
 sfpcac_w.o: meas/schrfun/sfpcac_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sfpcac_w.o -MD -MP -MF "$(DEPDIR)/sfpcac_w.Tpo" -c -o sfpcac_w.o `test -f 'meas/schrfun/sfpcac_w.cc' || echo '$(srcdir)/'`meas/schrfun/sfpcac_w.cc; \
