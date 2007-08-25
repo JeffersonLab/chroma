@@ -1,4 +1,4 @@
-// $Id: quark_smearing_aggregate.cc,v 3.3 2006-09-20 20:28:04 edwards Exp $
+// $Id: quark_smearing_aggregate.cc,v 3.4 2007-08-25 04:51:31 edwards Exp $
 /*! \file
  *  \brief All quark smearing
  */
@@ -41,6 +41,7 @@ namespace Chroma
       write(xml_tmp, "SmearingParam", non);
       nope.xml = xml_tmp.str();
       nope.id = NoQuarkSmearingEnv::name;
+      nope.path = "SmearingParam";
 
       return nope;
     }
