@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 3.11 2007-08-25 04:02:39 edwards Exp $
+// $Id: sh_source_const.cc,v 3.12 2007-08-25 04:37:16 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -107,6 +107,7 @@ namespace Chroma
       {
       case 1:
       {
+	quark_displacement = QuarkDisplacementEnv::nullXMLGroup();
 	quark_displacement.id = SimpleQuarkDisplacementEnv::name;
 	int disp_length = 0;
 	int disp_dir = 0;
