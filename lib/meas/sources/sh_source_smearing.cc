@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 3.7 2006-12-02 04:09:41 edwards Exp $
+// $Id: sh_source_smearing.cc,v 3.8 2007-08-25 04:02:39 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -208,24 +208,24 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-	const string smear_path = "/SmearingParam";
+//	const string smear_path = "/SmearingParam";
 	
 	Handle< QuarkSmearing<LatticePropagator> >
 	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing.id,
 									smeartop,
-									smear_path));
+									params.quark_smearing.path));
 
 	//
 	// Create the quark displacement object
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
-										displace_path));
+										params.quark_displacement.path));
 
 	// Smear and displace
 	if (params.quark_smear_lastP)
@@ -273,24 +273,24 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-	const string smear_path = "/SmearingParam";
+//	const string smear_path = "/SmearingParam";
 	
 	Handle< QuarkSmearing<LatticeStaggeredPropagator> >
 	  quarkSmearing(TheStagPropSmearingFactory::Instance().createObject(params.quark_smearing.id,
 									    smeartop,
-									    smear_path));
+									    params.quark_smearing.path));
 
 	//
 	// Create the quark displacement object
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
 	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										    displacetop,
-										    displace_path));
+										    params.quark_displacement.path));
 
 	// Smear and displace
 	if (params.quark_smear_lastP)
@@ -337,24 +337,24 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-	const string smear_path = "/SmearingParam";
+//	const string smear_path = "/SmearingParam";
 	
 	Handle< QuarkSmearing<LatticeFermion> >
 	  quarkSmearing(TheFermSmearingFactory::Instance().createObject(params.quark_smearing.id,
 									smeartop,
-									smear_path));
+									params.quark_smearing.path));
 
 	//
 	// Create the quark displacement object
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeFermion> >
 	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
-										displace_path));
+										params.quark_displacement.path));
 
 	// Smear and displace
 	if (params.quark_smear_lastP)

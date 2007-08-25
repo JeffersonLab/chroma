@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 3.4 2006-12-02 04:09:41 edwards Exp $
+// $Id: pt_source_smearing.cc,v 3.5 2007-08-25 04:02:39 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -192,12 +192,12 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
-										displace_path));
+										params.quark_displacement.path));
 
 	//
 	// Displace quark source
@@ -231,12 +231,12 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
 	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										    displacetop,
-										    displace_path));
+										    params.quark_displacement.path));
 
 	//
 	// Displace quark source
@@ -270,12 +270,12 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeFermion> >
 	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
-										displace_path));
+										params.quark_displacement.path));
 
 	//
 	// Displace quark source

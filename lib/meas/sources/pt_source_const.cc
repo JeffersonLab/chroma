@@ -1,4 +1,4 @@
-// $Id: pt_source_const.cc,v 3.6 2007-02-04 22:09:03 edwards Exp $
+// $Id: pt_source_const.cc,v 3.7 2007-08-25 04:02:39 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -195,12 +195,12 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
-										displace_path));
+										params.quark_displacement.path));
 
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{
@@ -279,12 +279,12 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
 	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
-										displacetop,
-										displace_path));
+										    displacetop,
+										    params.quark_displacement.path));
 
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{

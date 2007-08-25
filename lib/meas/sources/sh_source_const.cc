@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 3.10 2007-02-04 22:09:03 edwards Exp $
+// $Id: sh_source_const.cc,v 3.11 2007-08-25 04:02:39 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -222,26 +222,26 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-	const string smear_path = "/SmearingParam";
+//	const string smear_path = "/SmearingParam";
         QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
 	
 	Handle< QuarkSmearing<LatticePropagator> >
 	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing.id,
 									smeartop,
-									smear_path));
+									params.quark_smearing.path));
 
 	//
 	// Create the quark displacement object
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
         QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
-										displace_path));
+										params.quark_displacement.path));
 
 	//
 	// Create quark source
@@ -326,13 +326,13 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-	  const string link_path = "/LinkSmearing";
+//	  const string link_path = "/LinkSmearing";
 	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
 	
 	  Handle< LinkSmearing >
 	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
 									 linktop,
-									 link_path));
+									 params.link_smearing.path));
 	  (*linkSmearing)(u_smr);
 	}
 
@@ -341,26 +341,26 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-	const string smear_path = "/SmearingParam";
+//	const string smear_path = "/SmearingParam";
         QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
 	
 	Handle< QuarkSmearing<LatticeStaggeredPropagator> >
 	  quarkSmearing(TheStagPropSmearingFactory::Instance().createObject(params.quark_smearing.id,
-									smeartop,
-									smear_path));
+									    smeartop,
+									    params.quark_smearing.path));
 
 	//
 	// Create the quark displacement object
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
+//	const string displace_path = "/Displacement";
         QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
 	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
-										displacetop,
-										displace_path));
+										    displacetop,
+										    params.quark_displacement.path));
 
 	//
 	// Create quark source
