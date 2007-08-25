@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.101 2007-08-24 19:22:13 edwards Exp $
+# $Id: Makefile.am,v 3.102 2007-08-25 04:09:22 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -192,6 +192,11 @@ nobase_include_HEADERS = \
 	meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h \
         meas/schrfun/schrfun.h \
+	meas/schrfun/sf_pt_source_const.h \
+	meas/schrfun/sf_sh_source_const.h \
+	meas/schrfun/sf_wall_source_const.h \
+	meas/schrfun/sf_source_const_aggregate.h \
+	meas/schrfun/sf_source_const_factory.h \
 	meas/sinks/sinks.h \
         meas/sinks/pt_sink_smearing.h \
         meas/sinks/sh_sink_smearing.h \
@@ -1165,6 +1170,10 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc \
+	meas/schrfun/sf_pt_source_const.cc \
+	meas/schrfun/sf_sh_source_const.cc \
+	meas/schrfun/sf_wall_source_const.cc \
+	meas/schrfun/sf_source_const_aggregate.cc \
         meas/schrfun/sfpcac_w.cc \
         meas/schrfun/sfcorr_w.cc \
         meas/schrfun/sfcurrents_w.cc \
