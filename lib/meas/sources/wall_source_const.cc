@@ -1,4 +1,4 @@
-// $Id: wall_source_const.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
+// $Id: wall_source_const.cc,v 3.2 2007-08-27 20:02:35 uid3790 Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -94,7 +94,7 @@ namespace Chroma
 
       int version = 1;
       write(xml, "version", version);
-
+      write(xml, "SourceType", WallQuarkSourceConstEnv::name);
       write(xml, "j_decay", j_decay);
       write(xml, "t_source", t_source);
       pop(xml);
