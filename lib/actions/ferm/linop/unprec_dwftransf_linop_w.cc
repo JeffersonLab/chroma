@@ -1,4 +1,4 @@
-// $Id: unprec_dwftransf_linop_w.cc,v 3.1 2006-07-03 15:26:09 edwards Exp $
+// $Id: unprec_dwftransf_linop_w.cc,v 3.2 2007-08-27 18:24:05 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -55,11 +55,11 @@ namespace Chroma
 
       tmp = psi; 
       
-      res = InvCG2<LatticeFermion>(*D_denum, 
-				   chi, 
-				   tmp,
-				   invParam.RsdCG,
-				   invParam.MaxCG);
+      res = InvCG2(*D_denum, 
+		   chi, 
+		   tmp,
+		   invParam.RsdCG,
+		   invParam.MaxCG);
       (*D_w)(chi, tmp, PLUS);
    
       break;
@@ -71,11 +71,11 @@ namespace Chroma
       chi = GammaConst<Ns,Ns*Ns-1>()*psi;      
       (*D_denum)(tmp, chi, MINUS);
 
-      res = InvCG2<LatticeFermion>(*D_denum, 
-				   tmp, 
-				   chi,
-				   invParam.RsdCG,
-				   invParam.MaxCG);
+      res = InvCG2(*D_denum, 
+		   tmp, 
+		   chi,
+		   invParam.RsdCG,
+		   invParam.MaxCG);
       
       (*D_w)(tmp, chi, PLUS);
       chi  = GammaConst<Ns,Ns*Ns-1>()*tmp;
@@ -135,11 +135,11 @@ namespace Chroma
     tmp = GammaConst<Ns,Ns*Ns-1>()*chi;
 
     chi = tmp;
-    InvCG2<LatticeFermion>(*D_denum, 
-			   tmp,
-			   chi, 
-			   invParam.RsdCG,
-			   invParam.MaxCG);
+    InvCG2(*D_denum, 
+	   tmp,
+	   chi, 
+	   invParam.RsdCG,
+	   invParam.MaxCG);
 
     (*D_w)(tmp, chi, PLUS);
     chi = GammaConst<Ns,Ns*Ns-1>()*tmp;
