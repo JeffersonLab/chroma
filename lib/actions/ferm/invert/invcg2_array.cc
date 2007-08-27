@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 3.4 2007-02-22 21:11:46 bjoo Exp $
+// $Id: invcg2_array.cc,v 3.5 2007-08-27 14:41:45 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -74,23 +74,26 @@ namespace Chroma
   {
     START_CODE();
 
-    const int N = psi.size();
-    const Subset& s = M.subset();
+    int N = M.size();
+    // Subset subs = M.subset();
 
     SystemSolverResults_t res;
 
     // Move what we can to fast memory
-    multi1d<T> mp(N);            moveToFastMemoryHint(mp);
-    multi1d<T> mmp(N);           moveToFastMemoryHint(mmp);
-    multi1d<T> p(N);             moveToFastMemoryHint(p);
+    multi1d<T> mp(N);            // moveToFastMemoryHint(mp);
+    multi1d<T> mmp(N);           // moveToFastMemoryHint(mmp);
+    multi1d<T> p(N);             // moveToFastMemoryHint(p);
 
-    moveToFastMemoryHint(psi,true);
+    // moveToFastMemoryHint(psi,true);
 
-    multi1d<T> r(N);             moveToFastMemoryHint(r);
-    multi1d<T> chi_internal(N);  moveToFastMemoryHint(chi_internal);
+    multi1d<T> r(N);             // moveToFastMemoryHint(r);
+    multi1d<T> chi_internal(N);  // moveToFastMemoryHint(chi_internal);
+
+    QDPIO::cout << "chi_internal has size" << chi_internal.size() << endl;
+    QDPIO::cout << "chi has size" << chi.size() << endl;
 
     for(int i=0; i < N; i++) {
-      chi_internal[i][s] = chi[i];
+      chi_internal[i][ M.subset() ] = chi[i];
     }
 
     QDPIO::cout << "InvCG2: starting" << endl;
@@ -100,8 +103,8 @@ namespace Chroma
     swatch.reset();
     swatch.start();
 
-    Real chi_sq =  Real(norm2(chi_internal,s));  // 4*Nc*Ns flops per site
-    flopcount.addSiteFlops(4*Nc*Ns*N,s);
+    Real chi_sq =  Real(norm2(chi_internal,M.subset()));  // 4*Nc*Ns flops per site
+    flopcount.addSiteFlops(4*Nc*Ns*N,M.subset());
 
 
     //  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
@@ -118,14 +121,14 @@ namespace Chroma
     flopcount.addFlops(2*M.nFlops());
 
     for(int n=0; n < N; ++n){
-      r[n][s] = chi_internal[n] - mmp[n];
+      r[n][ M.subset() ] = chi_internal[n] - mmp[n];
     }
 
-    flopcount.addSiteFlops(2*Nc*Ns*N,s);
+    flopcount.addSiteFlops(2*Nc*Ns*N,M.subset());
 
 #ifdef PRINT_5D_RESID 
     for(int n=0; n < N; n++) {
-      Double norm_r = norm2(r[n],s);
+      Double norm_r = norm2(r[n],M.subset());
       if( toBool( norm_r > Double(1.0e-20)) ) {
 	QDPIO::cout << "Iteration 0  r[" << n << "] = " << norm_r << endl;
       }
@@ -136,11 +139,11 @@ namespace Chroma
     //  p[1]  :=  r[0]
 
     for(int n=0; n < N; ++n)
-      p[n][s] = r[n];
+      p[n][ M.subset() ] = r[n];
   
     //  Cp = |r[0]|^2
-    Double cp = norm2(r, s);   	       	   /* 4 Nc Ns  flops/cbsite */
-    flopcount.addSiteFlops(4*Nc*Ns*N, s);
+    Double cp = norm2(r, M.subset());   	       	   /* 4 Nc Ns  flops/cbsite */
+    flopcount.addSiteFlops(4*Nc*Ns*N, M.subset());
 
     //QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
 
@@ -177,15 +180,15 @@ namespace Chroma
       M(mp, p, PLUS);  flopcount.addFlops(M.nFlops());
    
       //  d = | mp | ** 2
-      d = norm2(mp, s); flopcount.addSiteFlops(4*Nc*Ns*N,s);
+      d = norm2(mp, M.subset()); flopcount.addSiteFlops(4*Nc*Ns*N,M.subset());
 
       a = Real(c)/Real(d);
 
       //  Psi[k] += a[k] p[k]
       for(int n=0; n < N; ++n) {
-	psi[n][s] += a * p[n];	/* 4 Nc Ns  cbsite flops */
+	psi[n][ M.subset() ] += a * p[n];	/* 4 Nc Ns  cbsite flops */
       }
-      flopcount.addSiteFlops(4*Nc*Ns*N,s);
+      flopcount.addSiteFlops(4*Nc*Ns*N,M.subset());
 
       //  r[k] -= a[k] A . p[k] ;
       //      	       +            +
@@ -195,13 +198,13 @@ namespace Chroma
       flopcount.addFlops(M.nFlops());
 
       for(int n=0; n < N; ++n) {
-	r[n][s] -= a * mmp[n];
+	r[n][ M.subset() ] -= a * mmp[n];
       }
-      flopcount.addSiteFlops(4*Nc*Ns*N, s);
+      flopcount.addSiteFlops(4*Nc*Ns*N, M.subset());
 
 #ifdef PRINT_5D_RESID
       for(int n=0; n < N; n++) {
-	Double norm_r = norm2(r[n],s);
+	Double norm_r = norm2(r[n],M.subset());
 	if( toBool( norm_r > Double(1.0e-20)) )
 	  QDPIO::cout << "Iteration " << k << " r[" << n << "] = " << norm_r << endl;
       }
@@ -210,8 +213,8 @@ namespace Chroma
       //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
 
       //  cp  =  | r[k] |**2
-      cp = norm2(r, s);	                /* 2 Nc Ns  flops */
-      flopcount.addSiteFlops(4*Nc*Ns*N,s);
+      cp = norm2(r, M.subset());	                /* 2 Nc Ns  flops */
+      flopcount.addSiteFlops(4*Nc*Ns*N,M.subset());
 
       //    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 
@@ -230,7 +233,7 @@ namespace Chroma
 	  Double actual_res(zero);
 	  for(int n=0; n < N; ++n)
 	  {
-	    Double norm_r = norm2(chi[n] - mmp[n],s);
+	    Double norm_r = norm2(chi[n] - mmp[n],M.subset());
 //	    QDPIO::cout<<"True residual "<<" r[" << n << "] = "<< sqrt(norm_r/chi_sq)<<endl;
 	    actual_res += norm_r ;
 	  }
@@ -250,9 +253,9 @@ namespace Chroma
 #endif 
       //  p[k+1] := r[k] + b[k+1] p[k]
       for(int n=0; n < N; ++n) {
-	p[n][s] = r[n] + b*p[n];	/* Nc Ns  flops */
+	p[n][ M.subset() ] = r[n] + b*p[n];	/* Nc Ns  flops */
       }
-      flopcount.addSiteFlops(4*Nc*Ns*N,s);
+      flopcount.addSiteFlops(4*Nc*Ns*N,M.subset());
     }
 
     res.n_count = MaxCG;
@@ -268,7 +271,7 @@ namespace Chroma
 
 
   // Fix here for now
-  template<>
+  //  template<>
   SystemSolverResults_t 
   InvCG2(const LinearOperatorArray<LatticeFermion>& M,
 	 const multi1d<LatticeFermion>& chi,
