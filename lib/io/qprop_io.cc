@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.15 2007-02-26 02:12:54 edwards Exp $
+// $Id: qprop_io.cc,v 3.16 2007-08-27 21:17:53 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -69,7 +69,8 @@ namespace Chroma
 
     multi1d<int> boundary;
 
-    try
+    // Throw exception if boundary not found
+//    try
     {
       if (top.count("FermState/FermionBC/boundary") != 0)
       {
@@ -85,15 +86,17 @@ namespace Chroma
       }
       else
       {
-	QDPIO::cerr << "Error: neither FermionBC group nor boundary found" << endl;
-	throw string("Error: neither FermionBC group nor boundary found");
+	std::ostringstream os;
+	os << __func__ << ": Error: neither FermionBC group nor boundary found - throwing exception" << endl;
+	QDPIO::cerr << os.str();
+	throw os.str();
       }
     }
-    catch (const std::string& e) 
-    {
-      QDPIO::cerr << "Error reading fermact: " << e << endl;
-      throw e;
-    }
+//    catch (const std::string& e) 
+//    {
+//      QDPIO::cerr << "Error reading fermact: " << e << endl;
+//      throw e;
+//    }
 
     return boundary;
   }
