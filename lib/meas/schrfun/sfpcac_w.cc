@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.11 2007-08-24 19:23:04 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.12 2007-08-27 20:07:20 uid3790 Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -198,6 +198,18 @@ namespace Chroma
 
     }  // end for direction
     pop(xml_out);  // PCAC_measurements
+
+#if 0
+    {
+      multi1d<Double> prop_corr = sumMulti(localNorm2(quark_prop_f), 
+					   phases.getSet());
+
+      push(xml_out, "Forward_prop_test");
+      write(xml_out, "quark_prop_f", prop_corr);
+      write(xml_out, "pseudo_prop_f", pseudo_prop_f);
+      pop(xml_out);
+    }
+#endif
 
     //
     // Currents
