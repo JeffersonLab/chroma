@@ -4,35 +4,13 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun.out.xml,v 1.14 2007-08-27 20:10:40 uid3790 Exp $
+; $Id: schrfun.out.xml,v 1.15 2007-08-27 21:42:31 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
 </annotation>
 <Param> 
   <InlineMeasurements>
-    <elem>
-      <Name>APPLY_FERM_STATE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>1</version>
-        <FermState>
-           <Name>SIMPLE_FERM_STATE</Name>
-           <FermionBC>
-             <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
-             <SchrPhiMult>1.0</SchrPhiMult>
-             <loop_extent>1</loop_extent>
-             <decay_dir>3</decay_dir>
-             <theta>0 0 0</theta>
-           </FermionBC>
-        </FermState>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <output_id>sf_gauge_field</output_id>
-      </NamedObject>
-    </elem>
-
     <elem>
       <Name>SCHROEDINGER_FUNCTIONAL_PCAC</Name>
       <Frequency>1</Frequency>
@@ -76,7 +54,7 @@
         <y0>3</y0>
       </SFpcac>
       <NamedObject>
-        <gauge_id>sf_gauge_field</gauge_id>
+        <gauge_id>default_gauge_field</gauge_id>
       </NamedObject>
     </elem>
   </InlineMeasurements>
@@ -112,7 +90,7 @@
       <chroma>3.24.2</chroma>
       <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>27 Aug 07 15:55:09 EDT</run_date>
+    <run_date>27 Aug 07 17:36:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -175,109 +153,6 @@
   </Observables>
   <InlineObservables>
     <elem>
-      <apply_ferm_state>
-        <update_no>0</update_no>
-        <Input>
-          <Param>
-            <version>2</version><FermState>
-      <Name>SIMPLE_FERM_STATE</Name>
-      <FermionBC>
-        <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
-        <SchrPhiMult>1.0</SchrPhiMult>
-        <loop_extent>1</loop_extent>
-        <decay_dir>3</decay_dir>
-        <theta>0 0 0</theta>
-      </FermionBC>
-    </FermState>
-</Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <output_id>sf_gauge_field</output_id>
-          </NamedObject>
-        </Input>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Config_info><SF_classical>
-      <cfg_type>CLASSICAL_SF</cfg_type>
-      <GaugeState>
-        <Name>SIMPLE_GAUGE_STATE</Name>
-        <GaugeBC>
-          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
-          <SchrPhiMult>1.0</SchrPhiMult>
-          <decay_dir>3</decay_dir>
-          <loop_extent>1</loop_extent>
-        </GaugeBC>
-      </GaugeState>
-    </SF_classical>
-
-
-
-
-        </Config_info>
-        <Observables>
-          <w_plaq>0.99517734348774</w_plaq>
-          <s_plaq>0.99999996026357</s_plaq>
-          <t_plaq>0.990354726711909</t_plaq>
-          <plane_01_plaq>0.99999996026357</plane_01_plaq>
-          <plane_02_plaq>0.99999996026357</plane_02_plaq>
-          <plane_12_plaq>0.99999996026357</plane_12_plaq>
-          <plane_03_plaq>0.990354726711909</plane_03_plaq>
-          <plane_13_plaq>0.990354726711909</plane_13_plaq>
-          <plane_23_plaq>0.990354726711909</plane_23_plaq>
-          <link>0.965140111744404</link>
-          <pollp>
-            <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
-            </elem>
-            <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
-            </elem>
-            <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
-            </elem>
-            <elem>
-              <re>1</re>
-              <im>0</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Link_observables>
-          <w_plaq>0.99517734348774</w_plaq>
-          <s_plaq>0.99999996026357</s_plaq>
-          <t_plaq>0.990354726711909</t_plaq>
-          <plane_01_plaq>0.99999996026357</plane_01_plaq>
-          <plane_02_plaq>0.99999996026357</plane_02_plaq>
-          <plane_12_plaq>0.99999996026357</plane_12_plaq>
-          <plane_03_plaq>0.990354726711909</plane_03_plaq>
-          <plane_13_plaq>0.990354726711909</plane_13_plaq>
-          <plane_23_plaq>0.990354726711909</plane_23_plaq>
-          <link>0.965140111744404</link>
-          <pollp>
-            <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
-            </elem>
-            <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
-            </elem>
-            <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
-            </elem>
-            <elem>
-              <re>1</re>
-              <im>0</im>
-            </elem>
-          </pollp>
-        </Link_observables>
-      </apply_ferm_state>
-    </elem>
-    <elem>
       <SFpcac>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -285,7 +160,7 @@
             <chroma>3.24.2</chroma>
             <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>27 Aug 07 15:55:10 EDT</run_date>
+          <run_date>27 Aug 07 17:36:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -333,7 +208,7 @@
             <y0>3</y0>
           </SFpcac>
           <NamedObject>
-            <gauge_id>sf_gauge_field</gauge_id>
+            <gauge_id>default_gauge_field</gauge_id>
           </NamedObject>
         </Input>
         <Config_info><SF_classical>
@@ -348,8 +223,6 @@
         </GaugeBC>
       </GaugeState>
     </SF_classical>
-
-
 
 
 

@@ -35,10 +35,78 @@ Hadron spectrum input
         <version>6</version>
         <Source>
           <version>1</version>
-          <SourceType>SF_WALL_SOURCE</SourceType>
+          <SourceType>SF_POINT_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_srce>0 0 0 0</t_srce>
-          <t_source>0</t_source>
+          <direction>PLUS</direction>
+
+          <FermionBC>
+            <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+            <SchrPhiMult>1.0</SchrPhiMult>
+            <decay_dir>3</decay_dir>
+            <loop_extent>1</loop_extent>
+            <theta>0 0 0</theta>
+          </FermionBC>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>sf_gauge_field</gauge_id>
+        <source_id>pt_source_1</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Mass>0.01</Mass>
+          <clovCoeff>1.17</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermState>
+            <Name>SIMPLE_FERM_STATE</Name>
+            <FermionBC>
+              <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+              <SchrPhiMult>1.0</SchrPhiMult>
+              <decay_dir>3</decay_dir>
+              <loop_extent>1</loop_extent>
+              <theta>0 0 0</theta>
+            </FermionBC>
+          </FermState>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>sf_gauge_field</gauge_id>
+        <source_id>pt_source_1</source_id>
+        <prop_id>pt_prop_1</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SF_SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
           <direction>PLUS</direction>
 
           <FermionBC>
@@ -106,6 +174,76 @@ Hadron spectrum input
     </elem>
 
     <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SF_WALL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <t_source>0</t_source>
+          <direction>PLUS</direction>
+
+          <FermionBC>
+            <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+            <SchrPhiMult>1.0</SchrPhiMult>
+            <decay_dir>3</decay_dir>
+            <loop_extent>1</loop_extent>
+            <theta>0 0 0</theta>
+          </FermionBC>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>sf_gauge_field</gauge_id>
+        <source_id>wl_source_1</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Mass>0.01</Mass>
+          <clovCoeff>1.17</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermState>
+            <Name>SIMPLE_FERM_STATE</Name>
+            <FermionBC>
+              <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+              <SchrPhiMult>1.0</SchrPhiMult>
+              <decay_dir>3</decay_dir>
+              <loop_extent>1</loop_extent>
+              <theta>0 0 0</theta>
+            </FermionBC>
+          </FermState>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>sf_gauge_field</gauge_id>
+        <source_id>wl_source_1</source_id>
+        <prop_id>wl_prop_1</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
       <Name>SINK_SMEAR</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -114,18 +252,24 @@ Hadron spectrum input
           <version>2</version>
           <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>sf_gauge_field</gauge_id>
+        <prop_id>pt_prop_1</prop_id>
+        <smeared_prop_id>pt_pt_sink_1</smeared_prop_id>
+      </NamedObject>
+    </elem>
 
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>1</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>2</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
         </Sink>
       </Param>
       <NamedObject>
@@ -142,33 +286,14 @@ Hadron spectrum input
         <version>5</version>
         <Sink>
           <version>2</version>
-          <SinkType>SHELL_SINK</SinkType>
+          <SinkType>POINT_SINK</SinkType>
           <j_decay>3</j_decay>
-
-          <Displacement>
-            <version>1</version>
-            <DisplacementType>NONE</DisplacementType>
-          </Displacement>
-
-          <SmearingParam>
-            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-            <wvf_param>2.0</wvf_param>
-            <wvfIntPar>5</wvfIntPar>
-            <no_smear_dir>3</no_smear_dir>
-          </SmearingParam>
-
-          <LinkSmearing>
-            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
-            <link_smear_fact>2.5</link_smear_fact>
-            <link_smear_num>1</link_smear_num>
-            <no_smear_dir>3</no_smear_dir>
-          </LinkSmearing>
         </Sink>
       </Param>
       <NamedObject>
         <gauge_id>sf_gauge_field</gauge_id>
-        <prop_id>sh_prop_1</prop_id>
-        <smeared_prop_id>sh_sh_sink_1</smeared_prop_id>
+        <prop_id>wl_prop_1</prop_id>
+        <smeared_prop_id>wl_pt_sink_1</smeared_prop_id>
       </NamedObject>
     </elem>
 
@@ -184,7 +309,7 @@ Hadron spectrum input
         <version>1</version>
         <MesonP>true</MesonP>
         <CurrentP>true</CurrentP>
-        <BaryonP>false</BaryonP>
+        <BaryonP>true</BaryonP>
         <time_rev>false</time_rev>
         <mom2_max>0</mom2_max>
         <avg_equiv_mom>true</avg_equiv_mom>
@@ -193,15 +318,17 @@ Hadron spectrum input
         <gauge_id>sf_gauge_field</gauge_id>
         <sink_pairs>
           <elem>
+            <first_id>pt_pt_sink_1</first_id>
+            <second_id>pt_pt_sink_1</second_id>
+          </elem>
+          <elem>
             <first_id>sh_pt_sink_1</first_id>
             <second_id>sh_pt_sink_1</second_id>
           </elem>
-<annotation>
           <elem>
-            <first_id>sh_sh_sink_1</first_id>
-            <second_id>sh_sh_sink_1</second_id>
+            <first_id>wl_pt_sink_1</first_id>
+            <second_id>wl_pt_sink_1</second_id>
           </elem>
-</annotation>
         </sink_pairs>
       </NamedObject>
       <!--  
@@ -223,24 +350,26 @@ regression test spectrum output is kept within the chroma xml output
         <version>1</version>
         <MesonP>true</MesonP>
         <CurrentP>true</CurrentP>
-        <BaryonP>false</BaryonP>
+        <BaryonP>true</BaryonP>
         <time_rev>false</time_rev>
-        <mom2_max>3</mom2_max>
+        <mom2_max>0</mom2_max>
         <avg_equiv_mom>true</avg_equiv_mom>
        </Param>
       <NamedObject>
         <gauge_id>sf_gauge_field</gauge_id>
         <sink_pairs>
           <elem>
+            <first_id>pt_pt_sink_1</first_id>
+            <second_id>pt_pt_sink_1</second_id>
+          </elem>
+          <elem>
             <first_id>sh_pt_sink_1</first_id>
             <second_id>sh_pt_sink_1</second_id>
           </elem>
-<annotation>
           <elem>
-            <first_id>sh_sh_sink_1</first_id>
-            <second_id>sh_sh_sink_1</second_id>
+            <first_id>wl_pt_sink_1</first_id>
+            <second_id>wl_pt_sink_1</second_id>
           </elem>
-</annotation>
         </sink_pairs>
       </NamedObject>
       <xml_file>hadspec.dat.xml</xml_file>

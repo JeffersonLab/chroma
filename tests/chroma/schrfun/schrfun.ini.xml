@@ -1,35 +1,13 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: schrfun.ini.xml,v 1.7 2007-08-27 20:10:40 uid3790 Exp $
+; $Id: schrfun.ini.xml,v 1.8 2007-08-27 21:42:31 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
 </annotation>
 <Param> 
   <InlineMeasurements>
-    <elem>
-      <Name>APPLY_FERM_STATE</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>1</version>
-        <FermState>
-           <Name>SIMPLE_FERM_STATE</Name>
-           <FermionBC>
-             <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
-             <SchrPhiMult>1.0</SchrPhiMult>
-             <loop_extent>1</loop_extent>
-             <decay_dir>3</decay_dir>
-             <theta>0 0 0</theta>
-           </FermionBC>
-        </FermState>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <output_id>sf_gauge_field</output_id>
-      </NamedObject>
-    </elem>
-
     <elem>
       <Name>SCHROEDINGER_FUNCTIONAL_PCAC</Name>
       <Frequency>1</Frequency>
@@ -73,7 +51,7 @@
         <y0>3</y0>
       </SFpcac>
       <NamedObject>
-        <gauge_id>sf_gauge_field</gauge_id>
+        <gauge_id>default_gauge_field</gauge_id>
       </NamedObject>
     </elem>
   </InlineMeasurements>
