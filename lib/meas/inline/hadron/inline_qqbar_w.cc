@@ -1,4 +1,4 @@
-// $Id: inline_qqbar_w.cc,v 3.4 2007-02-25 22:39:28 edwards Exp $
+// $Id: inline_qqbar_w.cc,v 3.5 2007-08-27 21:04:02 edwards Exp $
 /*! \file
  * \brief Inline construction of qqbar
  *
@@ -262,8 +262,6 @@ namespace Chroma
     // Derived from input prop
     int t0                = qqbar.forward_props[0].source_header.t_source;
     int j_decay           = qqbar.forward_props[0].source_header.j_decay;
-    multi1d<int> boundary = getFermActBoundary(qqbar.forward_props[0].prop_header.fermact);
-    int bc_spec           = boundary[j_decay];
 
     // Initialize the slow Fourier transform phases
     SftMom phases(0, true, j_decay);
