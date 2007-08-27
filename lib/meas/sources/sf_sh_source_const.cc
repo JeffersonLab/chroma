@@ -1,10 +1,15 @@
-// $Id: sf_sh_source_const.cc,v 3.1 2007-08-27 20:04:04 uid3790 Exp $
+// $Id: sf_sh_source_const.cc,v 3.2 2007-08-27 21:19:10 edwards Exp $
 /*! \file
  *  \brief Shell source construction for Schroedinger Functional
  */
 
 #include "chromabase.h"
 #include "handle.h"
+#include "fermbc.h"
+
+#include "actions/ferm/fermbcs/fermbcs_aggregate_w.h"
+#include "actions/ferm/fermbcs/fermbc_factory_w.h"
+#include "actions/ferm/fermbcs/schroedinger_fermbc_w.h"
 
 #include "meas/sources/source_const_factory.h"
 #include "meas/sources/sf_sh_source_const.h"
@@ -48,6 +53,8 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	success &= PlusMinusEnv::registered;
+	success &= WilsonTypeFermBCEnv::registerAll();
 	success &= LinkSmearingEnv::registerAll();
 	success &= QuarkSmearingEnv::registerAll();
 	success &= QuarkDisplacementEnv::registerAll();
@@ -98,9 +105,18 @@ namespace Chroma
       else
 	link_smearing = LinkSmearingEnv::nullXMLGroup();
 
+      fermbc = readXMLGroup(paramtop, "FermionBC", "FermBC");
+
       read(paramtop, "direction", direction);
       read(paramtop, "t_srce", t_srce);
       read(paramtop, "j_decay",  j_decay);
+
+      // Sanity check
+      if (j_decay < 0 || j_decay >= Nd)
+      {
+	QDPIO::cerr << name << ": invalid j_decay=" << j_decay << endl;
+	QDP_abort(1);
+      }
     }
 
 
@@ -118,6 +134,7 @@ namespace Chroma
       xml << quark_smearing.xml;
       xml << quark_displacement.xml;
       xml << link_smearing.xml;
+      xml << fermbc.xml;
 
       pop(xml);
     }
@@ -131,6 +148,7 @@ namespace Chroma
     {
       QDPIO::cout << "SF Shell source" << endl;
 
+      // Source
       LatticePropagator quark_source;
 
       // Spin projectors
@@ -182,8 +200,34 @@ namespace Chroma
 										params.quark_displacement.path));
 
 	//
-	// Create quark source
+	// Create the FermBC object
 	//
+	std::istringstream  xml_f(params.fermbc.xml);
+	XMLReader  fermbctop(xml_f);
+        QDPIO::cout << "FermBC type = " << params.fermbc.id << endl;
+	
+	Handle< FermBC<LatticeFermion,
+	  multi1d<LatticeColorMatrix>,
+	  multi1d<LatticeColorMatrix> > > 
+	  fbc(TheWilsonTypeFermBCFactory::Instance().createObject(params.fermbc.id,
+								  fermbctop,
+								  params.fermbc.path));
+
+	// Need to downcast to the appropriate BC
+	const SchrFermBC& fermbc = dynamic_cast<const SchrFermBC&>(*fbc);
+
+	// Location of upper wall source
+	// Check it is legit
+	int tmin = fermbc.getDecayMin();
+	int tmax = fermbc.getDecayMax();
+	int t0 = (params.direction == MINUS) ? tmax : tmin;
+	if (t0 != params.t_srce[params.j_decay])
+	{
+	  QDPIO::cerr << name << ": time slice source location does not agree with this FermBC" << endl;
+	  QDP_abort(1);
+	}
+
+	// Create the source
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{
 	  QDPIO::cout << "color = " << color_source << endl; 
@@ -234,6 +278,11 @@ namespace Chroma
 
 	// do the smearing
 	(*quarkSmearing)(quark_source, u_smr);
+      }
+      catch(std::bad_cast) 
+      {
+	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDP_abort(1);
       }
       catch(const std::string& e) 
       {

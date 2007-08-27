@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sf_wall_source_const.h,v 3.1 2007-08-27 20:04:04 uid3790 Exp $
+// $Id: sf_wall_source_const.h,v 3.2 2007-08-27 21:19:10 edwards Exp $
 /*! \file
  *  \brief Wall source construction fpr Schroedinger Functional
  */
@@ -31,7 +31,6 @@ namespace Chroma
       void writeXML(XMLWriter& in, const std::string& path) const;
     
       GroupXML_t       fermbc;               /*!< xml string holding smearing params */
-
       PlusMinus        direction;            /*!< direction for decay */
 
       int              j_decay;              /*!< decay direction */

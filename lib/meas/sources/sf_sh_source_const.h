@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sf_sh_source_const.h,v 3.1 2007-08-27 20:04:04 uid3790 Exp $
+// $Id: sf_sh_source_const.h,v 3.2 2007-08-27 21:19:10 edwards Exp $
 /*! \file
  *  \brief Shell source construction for Schroedinger Functional
  */
@@ -34,6 +34,7 @@ namespace Chroma
       GroupXML_t       quark_displacement;   /*!< displacement xml */
       GroupXML_t       link_smearing;        /*!< link smearing xml */
 
+      GroupXML_t       fermbc;               /*!< xml string holding smearing params */
       PlusMinus        direction;            /*!< direction for decay */
 
       int              j_decay;              /*!< Decay direction */

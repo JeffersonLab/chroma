@@ -1,4 +1,4 @@
-// $Id: sf_wall_source_const.cc,v 3.1 2007-08-27 20:04:04 uid3790 Exp $
+// $Id: sf_wall_source_const.cc,v 3.2 2007-08-27 21:19:10 edwards Exp $
 /*! \file
  *  \brief Wall source construction for Schroedinger Functional
  */
@@ -77,10 +77,17 @@ namespace Chroma
       }
 
       fermbc = readXMLGroup(paramtop, "FermionBC", "FermBC");
-
+      
       read(paramtop, "direction", direction);
       read(paramtop, "j_decay", j_decay);
       read(paramtop, "t_source", t_source);
+
+      // Sanity check
+      if (j_decay < 0 || j_decay >= Nd)
+      {
+	QDPIO::cerr << name << ": invalid j_decay=" << j_decay << endl;
+	QDP_abort(1);
+      }
     }
 
 
@@ -107,19 +114,6 @@ namespace Chroma
     {
       QDPIO::cout << "SF Wall source" << endl;
 
-      // Sanity check
-      if (params.j_decay < 0 || params.j_decay >= Nd)
-      {
-	QDPIO::cerr << name << ": invalid params.j_decay=" << params.j_decay << endl;
-	QDP_abort(1);
-      }
-      
-      if (params.t_source < 0 || params.t_source >= QDP::Layout::lattSize()[params.j_decay])
-      {
-	QDPIO::cerr << name << ": invalid time_slice=" << params.t_source << endl;
-	QDP_abort(1);
-      }
-      
       // Create the quark source
       LatticePropagator quark_source;
 
@@ -191,6 +185,11 @@ namespace Chroma
 	    FermToProp(chi, quark_source, color_source, spin_source);
 	  }
 	}
+      }
+      catch(std::bad_cast) 
+      {
+	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDP_abort(1);
       }
       catch(const std::string& e) 
       {
