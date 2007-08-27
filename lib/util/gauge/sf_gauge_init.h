@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sf_gauge_init.h,v 3.1 2007-02-04 22:06:42 edwards Exp $
+// $Id: sf_gauge_init.h,v 3.2 2007-08-27 20:06:39 uid3790 Exp $
 /*! \file
  *  \brief Initialize a Schroedinger BC config
  */
@@ -8,7 +8,7 @@
 #define __sf_gauge_init_h__
 
 #include "util/gauge/gauge_init.h"
-#include "actions/gauge/gaugebcs/schr_gaugebc_params.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma
 {
@@ -28,7 +28,7 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
     
-      SchrGaugeBCParams sf;  	/*!< File name */
+      GroupXML_t    cgs;      /*!< Gauge State */
     };
 
 

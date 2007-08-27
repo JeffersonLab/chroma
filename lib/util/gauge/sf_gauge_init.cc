@@ -1,13 +1,16 @@
-// $Id: sf_gauge_init.cc,v 3.1 2007-02-04 22:06:42 edwards Exp $
+// $Id: sf_gauge_init.cc,v 3.2 2007-08-27 20:06:39 uid3790 Exp $
 /*! \file
  *  \brief Initialize a Schroedinger BC config
  */
 
+#include "handle.h"
+#include "util/gauge/sf_gauge_init.h"
 #include "util/gauge/gauge_init_factory.h"
 #include "util/gauge/gauge_init_aggregate.h"
 
-#include "util/gauge/sf_gauge_init.h"
-#include "actions/gauge/gaugebcs/schr_nonpert_gaugebc.h"
+#include "actions/gauge/gaugestates/gauge_createstate_factory.h"
+#include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
+#include "actions/gauge/gaugebcs/schroedinger_gaugebc.h"
 
 namespace Chroma
 {
@@ -30,8 +33,8 @@ namespace Chroma
   namespace SFGaugeInitEnv
   {
     //! Callback function
-    GaugeInit* createSource(XMLReader& xml_in,
-			    const std::string& path)
+    GaugeInit* createCfg(XMLReader& xml_in,
+			 const std::string& path)
     {
       return new GaugeIniter(Params(xml_in, path));
     }
@@ -48,7 +51,8 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= Chroma::TheGaugeInitFactory::Instance().registerObject(name, createSource);
+	success &= CreateGaugeStateEnv::registerAll();
+	success &= Chroma::TheGaugeInitFactory::Instance().registerObject(name, createCfg);
 	registered = true;
       }
       return success;
@@ -60,7 +64,7 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-      read(paramtop, "SFParams", sf);
+      cgs = readXMLGroup(paramtop, "GaugeState", "Name");
     }
 
 
@@ -71,7 +75,7 @@ namespace Chroma
     
       int version = 1;
       write(xml, "cfg_type", SFGaugeInitEnv::name);
-      write(xml, "SFParams", sf);
+      xml << cgs.xml;
 
       pop(xml);
     }
@@ -84,15 +88,51 @@ namespace Chroma
 			    multi1d<LatticeColorMatrix>& u) const
     {
       QDPIO::cout << "Starting up a classical Schroedinger functional config" << endl;
-      SchrNonPertGaugeBC gaugebc(params.sf);
-      
-      u = gaugebc.SFBndFld();
+
+      try
+      {
+	//
+	// Create the GaugeState object
+	//
+	std::istringstream  xml_s(params.cgs.xml);
+	XMLReader  top(xml_s);
+        QDPIO::cout << "GaugeState type = " << params.cgs.id << endl;
+	
+	Handle< CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	  cgs(TheCreateGaugeStateFactory::Instance().createObject(params.cgs.id,
+								  top,
+								  params.cgs.path));
+
+	// Need to downcast to the appropriate BC
+	const SchrGaugeBC& gaugebc = dynamic_cast<const SchrGaugeBC&>(cgs->getBC());
+
+	// Set the fields to the appropriate background field
+	u = gaugebc.SFBndFld();
+
+	// Munge the fields with the state
+	Handle<GaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
+	  state((*cgs)(u));
+
+	// Pull the u fields back out from the state since they might have been
+	// munged with gaugeBC's
+	u = state->getLinks();
+      }
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDP_abort(1);
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception in creating GaugeState: " << e << endl;
+	QDP_abort(1);
+      }
 
       XMLBufferWriter file_xml, record_xml;
       push(file_xml, "gauge");
       write(file_xml, "id", int(0));
       pop(file_xml);
-      write(record_xml, "SF_classical", params.sf);
+      params.writeXML(record_xml, "SF_classical");
 
       gauge_file_xml.open(file_xml);
       gauge_xml.open(record_xml);
