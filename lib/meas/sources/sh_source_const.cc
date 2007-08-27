@@ -1,4 +1,4 @@
-// $Id: sh_source_const.cc,v 3.12 2007-08-25 04:37:16 edwards Exp $
+// $Id: sh_source_const.cc,v 3.13 2007-08-27 20:03:20 uid3790 Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -223,7 +223,6 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-//	const string smear_path = "/SmearingParam";
         QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
 	
 	Handle< QuarkSmearing<LatticePropagator> >
@@ -236,7 +235,6 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-//	const string displace_path = "/Displacement";
         QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
@@ -327,7 +325,6 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-//	  const string link_path = "/LinkSmearing";
 	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
 	
 	  Handle< LinkSmearing >
@@ -342,7 +339,6 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-//	const string smear_path = "/SmearingParam";
         QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
 	
 	Handle< QuarkSmearing<LatticeStaggeredPropagator> >
@@ -355,7 +351,6 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-//	const string displace_path = "/Displacement";
         QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
