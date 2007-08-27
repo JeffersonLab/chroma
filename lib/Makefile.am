@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.103 2007-08-27 20:05:06 uid3790 Exp $
+# $Id: Makefile.am,v 3.104 2007-08-27 21:17:14 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -195,6 +195,7 @@ nobase_include_HEADERS = \
 	meas/sinks/sinks.h \
         meas/sinks/pt_sink_smearing.h \
         meas/sinks/sh_sink_smearing.h \
+        meas/sinks/wall_sink_smearing.h \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h \
 	meas/smear/ape_smear.h \
@@ -911,6 +912,7 @@ libchroma_a_SOURCES = \
 	meas/hadron/stoch_var.cc \
         meas/sinks/pt_sink_smearing.cc \
         meas/sinks/sh_sink_smearing.cc \
+        meas/sinks/wall_sink_smearing.cc \
 	meas/sinks/sink_smearing_aggregate.cc \
 	meas/smear/ape_smear.cc \
         meas/smear/displace.cc \
