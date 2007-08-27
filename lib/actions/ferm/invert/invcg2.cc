@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 3.2 2007-02-22 21:11:46 bjoo Exp $
+// $Id: invcg2.cc,v 3.3 2007-08-27 18:18:53 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -219,26 +219,47 @@ namespace Chroma
   }
 
 
-  // Fix here for now
-  /*! \ingroup invert */
-  template<>
+  //
+  // Explicit versions
+  //
+  // Single precision
   SystemSolverResults_t 
-  InvCG2(const LinearOperator<LatticeFermion>& M,
-	 const LatticeFermion& chi,
-	 LatticeFermion& psi,
+  InvCG2(const LinearOperator<LatticeFermionF>& M,
+	 const LatticeFermionF& chi,
+	 LatticeFermionF& psi,
 	 const Real& RsdCG, 
 	 int MaxCG)
   {
     return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
   }
 
-
-  /*! \ingroup invert */
-  template<>
+  // Double precision
   SystemSolverResults_t 
-  InvCG2(const LinearOperator<LatticeStaggeredFermion>& M,
-	 const LatticeStaggeredFermion& chi,
-	 LatticeStaggeredFermion& psi,
+  InvCG2(const LinearOperator<LatticeFermionD>& M,
+	 const LatticeFermionD& chi,
+	 LatticeFermionD& psi,
+	 const Real& RsdCG, 
+	 int MaxCG)
+  {
+    return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
+  }
+
+  // Single precision
+  SystemSolverResults_t 
+  InvCG2(const LinearOperator<LatticeStaggeredFermionF>& M,
+	 const LatticeStaggeredFermionF& chi,
+	 LatticeStaggeredFermionF& psi,
+	 const Real& RsdCG, 
+	 int MaxCG)
+  {
+    return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
+  }
+
+  // Double precision
+  SystemSolverResults_t 
+  InvCG2(const LinearOperator<LatticeStaggeredFermionD>& M,
+	 const LatticeStaggeredFermionD& chi,
+	 LatticeStaggeredFermionD& psi,
 	 const Real& RsdCG, 
 	 int MaxCG)
   {

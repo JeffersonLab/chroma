@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg2_array.h,v 3.2 2007-08-27 17:52:10 bjoo Exp $
+// $Id: invcg2_array.h,v 3.3 2007-08-27 18:18:54 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -67,11 +67,19 @@ namespace Chroma
    *
    * @{
    */
-  //template<typename T>
+  // Single precision
   SystemSolverResults_t 
-  InvCG2(const LinearOperatorArray<LatticeFermion>& M,
-	 const multi1d<LatticeFermion>& chi,
-	 multi1d<LatticeFermion>& psi,
+  InvCG2(const LinearOperatorArray<LatticeFermionF>& M,
+	 const multi1d<LatticeFermionF>& chi,
+	 multi1d<LatticeFermionF>& psi,
+	 const Real& RsdCG, 
+	 int MaxCG);
+
+  // Double precision
+  SystemSolverResults_t 
+  InvCG2(const LinearOperatorArray<LatticeFermionD>& M,
+	 const multi1d<LatticeFermionD>& chi,
+	 multi1d<LatticeFermionD>& psi,
 	 const Real& RsdCG, 
 	 int MaxCG);
 
