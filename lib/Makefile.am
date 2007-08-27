@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.102 2007-08-25 04:09:22 edwards Exp $
+# $Id: Makefile.am,v 3.103 2007-08-27 20:05:06 uid3790 Exp $
 #
 # Path for all files used in building the library
 
@@ -192,11 +192,6 @@ nobase_include_HEADERS = \
 	meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h \
         meas/schrfun/schrfun.h \
-	meas/schrfun/sf_pt_source_const.h \
-	meas/schrfun/sf_sh_source_const.h \
-	meas/schrfun/sf_wall_source_const.h \
-	meas/schrfun/sf_source_const_aggregate.h \
-	meas/schrfun/sf_source_const_factory.h \
 	meas/sinks/sinks.h \
         meas/sinks/pt_sink_smearing.h \
         meas/sinks/sh_sink_smearing.h \
@@ -239,6 +234,9 @@ nobase_include_HEADERS = \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
+	meas/sources/sf_pt_source_const.h \
+	meas/sources/sf_sh_source_const.h \
+	meas/sources/sf_wall_source_const.h \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/rndz2wall_source_const.h \
 	meas/sources/wall_source_const.h \
@@ -937,6 +935,9 @@ libchroma_a_SOURCES = \
         meas/sources/pt_source_smearing.cc \
         meas/sources/sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
+	meas/sources/sf_pt_source_const.cc \
+	meas/sources/sf_sh_source_const.cc \
+	meas/sources/sf_wall_source_const.cc \
         meas/sources/dilutezN_source_const.cc \
         meas/sources/rndz2wall_source_const.cc \
         meas/sources/wall_source_const.cc \
@@ -1170,10 +1171,6 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc \
-	meas/schrfun/sf_pt_source_const.cc \
-	meas/schrfun/sf_sh_source_const.cc \
-	meas/schrfun/sf_wall_source_const.cc \
-	meas/schrfun/sf_source_const_aggregate.cc \
         meas/schrfun/sfpcac_w.cc \
         meas/schrfun/sfcorr_w.cc \
         meas/schrfun/sfcurrents_w.cc \
