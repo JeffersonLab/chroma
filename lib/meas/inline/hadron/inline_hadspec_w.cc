@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.9 2007-04-18 21:55:08 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.10 2007-08-27 21:19:46 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -279,8 +279,25 @@ namespace Chroma
       // clear def. of a Mass
       QDPIO::cout << "Try action and mass" << endl;
       s.Mass = getMass(s.prop_header.prop_header.fermact);
-      s.bc   = getFermActBoundary(s.prop_header.prop_header.fermact);
+
+      // Only baryons care about boundaries
+      // Try to find them. If not present, assume dirichlet.
+      // This turns off any attempt to time reverse which is the
+      // only thing that the BC are affecting.
+      s.bc.resize(Nd);
+      s.bc = 0;
     
+      try
+      {
+	s.bc = getFermActBoundary(s.prop_header.prop_header.fermact);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineHadSpecEnv::name 
+		    << ": warning, not BC found in these headers. Will assume dirichlet: " << e 
+		    << endl;
+      }
+
       QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << endl;
       QDPIO::cout << "Mass = " << s.Mass << endl;
     }
@@ -406,18 +423,12 @@ namespace Chroma
                   = all_sinks.sink_prop_1.prop_header.source_header.getTSrce();
       int j_decay = all_sinks.sink_prop_1.prop_header.source_header.j_decay;
       int t0      = all_sinks.sink_prop_1.prop_header.source_header.t_source;
-      int bc_spec = all_sinks.sink_prop_1.bc[j_decay] ;
 
       // Sanity checks
       {
 	if (all_sinks.sink_prop_2.prop_header.source_header.j_decay != j_decay)
 	{
 	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
-	  QDP_abort(1);
-	}
-	if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
-	{
-	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
 	  QDP_abort(1);
 	}
 	if (all_sinks.sink_prop_2.prop_header.source_header.t_source != 
@@ -434,6 +445,18 @@ namespace Chroma
 	if (all_sinks.sink_prop_1.sink_type != all_sinks.sink_prop_2.sink_type)
 	{
 	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << endl;
+	  QDP_abort(1);
+	}
+      }
+
+      // Only baryons care about bc
+      int bc_spec = 0;
+      if (params.param.BaryonP) 
+      {
+	bc_spec = all_sinks.sink_prop_1.bc[j_decay] ;
+	if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
+	{
+	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
 	  QDP_abort(1);
 	}
       }
@@ -506,6 +529,8 @@ namespace Chroma
       else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
 	src_type = "Shell";
       else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
+	src_type = "Wall";
+      else if (all_sinks.sink_prop_1.source_type == "SF_WALL_SOURCE")
 	src_type = "Wall";
       else
       {
