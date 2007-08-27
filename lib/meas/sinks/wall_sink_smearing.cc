@@ -1,4 +1,4 @@
-// $Id: wall_sink_smearing.cc,v 1.1 2007-08-27 20:05:42 uid3790 Exp $
+// $Id: wall_sink_smearing.cc,v 1.2 2007-08-27 21:18:29 edwards Exp $
 /*! \file
  *  \brief Wall sink smearing
  */
@@ -8,6 +8,7 @@
 
 #include "meas/sinks/sink_smearing_factory.h"
 #include "meas/sinks/wall_sink_smearing.h"
+#include "util/ft/sftmom.h"
 
 namespace Chroma
 {
@@ -98,21 +99,25 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      if (paramtop.count("LinkSmearing") != 0)
-	link_smearing = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
-      else
-	link_smearing = LinkSmearingEnv::nullXMLGroup();
+      read(paramtop, "j_decay", j_decay);
+
+      // Sanity check
+      if (j_decay < 0 || j_decay >= Nd)
+      {
+	QDPIO::cerr << name << ": invalid params.j_decay=" << j_decay << endl;
+	QDP_abort(1);
+      }
     }
 
 
     // Writer
     void Params::writeXML(XMLWriter& xml, const string& path) const
     {
-      push(xml, path);
       int version = 1;
+      push(xml, path);
       write(xml, "version", version);
-
       write(xml, "SinkType", WallQuarkSinkSmearingEnv::name);
+      write(xml, "j_decay", j_decay);
       pop(xml);
     }
 
@@ -124,30 +129,15 @@ namespace Chroma
     {
       QDPIO::cout << "Wall sink" << endl;
  
-      try
-      {
-	//
-	// Create the quark displacement object
-	//
-	std::istringstream  xml_d(params.quark_displacement.xml);
-	XMLReader  displacetop(xml_d);
-	
-	Handle< QuarkDisplacement<LatticePropagator> >
-	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
-										displacetop,
-										params.quark_displacement.path));
+      // Project onto zero mom. at each time slice, the put back into
+      // original field
+      SftMom phases(0, true, params.j_decay);
+      multi1d<DPropagator> slice_prop(sumMulti(quark_sink, phases.getSet()));
 
-	//
-	// Displace quark source
-	//
-	(*quarkDisplacement)(quark_sink, u_smr, PLUS);
+      for(int t=0; t < phases.numSubsets(); ++t)
+	quark_sink[phases.getSet()[t]] = slice_prop[t];
 
-      }
-      catch(const std::string& e) 
-      {
-	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << endl;
-	QDP_abort(1);
-      }
+      return;
     }
 
 
@@ -159,30 +149,15 @@ namespace Chroma
     {
       QDPIO::cout << "Wall sink" << endl;
  
-      try
-      {
-	//
-	// Create the quark displacement object
-	//
-	std::istringstream  xml_d(params.quark_displacement.xml);
-	XMLReader  displacetop(xml_d);
-	
-	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
-	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
-										    displacetop,
-										    params.quark_displacement.path));
-	
-	//
-	// Displace quark source
-	//
-	(*quarkDisplacement)(quark_sink, u_smr, PLUS);
+      // Project onto zero mom. at each time slice, the put back into
+      // original field
+      SftMom phases(0, true, params.j_decay);
+      multi1d<DStaggeredPropagator> slice_prop(sumMulti(quark_sink, phases.getSet()));
 
-      }
-      catch(const std::string& e) 
-      {
-	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << endl;
-	QDP_abort(1);
-      }
+      for(int t=0; t < phases.numSubsets(); ++t)
+	quark_sink[phases.getSet()[t]] = slice_prop[t];
+
+      return;
     }
 
 
@@ -192,34 +167,18 @@ namespace Chroma
     void
     SinkSmear<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
     {
-//      QDPIO::cout << "Wall sink" << endl;
+      QDPIO::cout << "Wall sink" << endl;
  
-      try
-      {
-	//
-	// Create the quark displacement object
-	//
-	std::istringstream  xml_d(params.quark_displacement.xml);
-	XMLReader  displacetop(xml_d);
-	
-	Handle< QuarkDisplacement<LatticeFermion> >
-	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement.id,
-										displacetop,
-										params.quark_displacement.path));
+      // Project onto zero mom. at each time slice, the put back into
+      // original field
+      SftMom phases(0, true, params.j_decay);
+      multi1d<DFermion> slice_prop(sumMulti(quark_sink, phases.getSet()));
 
-	//
-	// Displace quark source
-	//
-	(*quarkDisplacement)(quark_sink, u_smr, PLUS);
+      for(int t=0; t < phases.numSubsets(); ++t)
+	quark_sink[phases.getSet()[t]] = slice_prop[t];
 
-      }
-      catch(const std::string& e) 
-      {
-	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << endl;
-	QDP_abort(1);
-      }
+      return;
     }
-
   }
 
 }

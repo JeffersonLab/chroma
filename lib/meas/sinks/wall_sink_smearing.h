@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wall_sink_smearing.h,v 1.1 2007-08-27 20:05:42 uid3790 Exp $
+// $Id: wall_sink_smearing.h,v 1.2 2007-08-27 21:18:29 edwards Exp $
 /*! \file
  *  \brief Wall sink smearing
  */
@@ -28,6 +28,8 @@ namespace Chroma
       Params();
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
+
+      int j_decay;    /*! Direction of decay. The wall projection is orthog to this dir */
     };
 
 
@@ -41,10 +43,8 @@ namespace Chroma
     {
     public:
       //! Full constructor
-      SinkSmear(const Params& p, const multi1d<LatticeColorMatrix>& u) : params(p)
-	{
-	  this->create(u_smr, params.link_smearing);
-	}
+      /*! The gauge field is not used, so discard */
+      SinkSmear(const Params& p, const multi1d<LatticeColorMatrix>& u) : params(p) {}
 
       //! Smear the sink
       void operator()(T& obj) const;
