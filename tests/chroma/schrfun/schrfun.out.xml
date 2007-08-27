@@ -4,13 +4,34 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun.out.xml,v 1.13 2007-08-24 20:58:15 edwards Exp $
+; $Id: schrfun.out.xml,v 1.14 2007-08-27 20:10:40 uid3790 Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
 </annotation>
 <Param> 
   <InlineMeasurements>
+    <elem>
+      <Name>APPLY_FERM_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <FermState>
+           <Name>SIMPLE_FERM_STATE</Name>
+           <FermionBC>
+             <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+             <SchrPhiMult>1.0</SchrPhiMult>
+             <loop_extent>1</loop_extent>
+             <decay_dir>3</decay_dir>
+             <theta>0 0 0</theta>
+           </FermionBC>
+        </FermState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>sf_gauge_field</output_id>
+      </NamedObject>
+    </elem>
 
     <elem>
       <Name>SCHROEDINGER_FUNCTIONAL_PCAC</Name>
@@ -22,7 +43,7 @@
         <numRetries>1</numRetries>
         <FermionAction>
           <FermAct>CLOVER</FermAct>
-          <Kappa>0.115</Kappa>
+          <Mass>0.01</Mass>
           <clovCoeff>1.17</clovCoeff>
           <AnisoParam>
             <anisoP>false</anisoP>
@@ -30,13 +51,16 @@
             <xi_0>1.0</xi_0>
             <nu>1.0</nu>
           </AnisoParam>
-          <FermionBC>
-            <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
-            <SchrPhiMult>1.0</SchrPhiMult>
-            <decay_dir>3</decay_dir>
-            <loop_extent>1</loop_extent>
-            <theta>0 0 0</theta>
-          </FermionBC>
+          <FermState>
+            <Name>SIMPLE_FERM_STATE</Name>
+            <FermionBC>
+              <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+              <SchrPhiMult>1.0</SchrPhiMult>
+              <decay_dir>3</decay_dir>
+              <loop_extent>1</loop_extent>
+              <theta>0 0 0</theta>
+            </FermionBC>
+          </FermState>
         </FermionAction>
         <InvertParam>
           <invType>CG_INVERTER</invType>
@@ -52,7 +76,7 @@
         <y0>3</y0>
       </SFpcac>
       <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
+        <gauge_id>sf_gauge_field</gauge_id>
       </NamedObject>
     </elem>
   </InlineMeasurements>
@@ -70,11 +94,15 @@
 
 <Cfg>
  <cfg_type>CLASSICAL_SF</cfg_type>
- <SFParams>
-    <SchrPhiMult>1.0</SchrPhiMult>
-    <decay_dir>3</decay_dir>
-    <loop_extent>1</loop_extent>
- </SFParams>
+ <GaugeState>
+   <Name>SIMPLE_GAUGE_STATE</Name>
+   <GaugeBC>
+     <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+     <SchrPhiMult>1.0</SchrPhiMult>
+     <decay_dir>3</decay_dir>
+     <loop_extent>1</loop_extent>
+   </GaugeBC>
+ </GaugeState>
 </Cfg>
 </chroma>
 
@@ -84,7 +112,7 @@
       <chroma>3.24.2</chroma>
       <qdp>1.24.4</qdp>
     </code_version>
-    <run_date>24 Aug 07 16:57:48 EDT</run_date>
+    <run_date>27 Aug 07 15:55:09 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -102,9 +130,16 @@
     </Seed>
   </RNG>
   <Config_info><SF_classical>
-      <SchrPhiMult>1</SchrPhiMult>
-      <decay_dir>3</decay_dir>
-      <loop_extent>1</loop_extent>
+      <cfg_type>CLASSICAL_SF</cfg_type>
+      <GaugeState>
+        <Name>SIMPLE_GAUGE_STATE</Name>
+        <GaugeBC>
+          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+          <SchrPhiMult>1.0</SchrPhiMult>
+          <decay_dir>3</decay_dir>
+          <loop_extent>1</loop_extent>
+        </GaugeBC>
+      </GaugeState>
     </SF_classical>
 
   </Config_info>
@@ -140,6 +175,109 @@
   </Observables>
   <InlineObservables>
     <elem>
+      <apply_ferm_state>
+        <update_no>0</update_no>
+        <Input>
+          <Param>
+            <version>2</version><FermState>
+      <Name>SIMPLE_FERM_STATE</Name>
+      <FermionBC>
+        <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+        <SchrPhiMult>1.0</SchrPhiMult>
+        <loop_extent>1</loop_extent>
+        <decay_dir>3</decay_dir>
+        <theta>0 0 0</theta>
+      </FermionBC>
+    </FermState>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <output_id>sf_gauge_field</output_id>
+          </NamedObject>
+        </Input>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Config_info><SF_classical>
+      <cfg_type>CLASSICAL_SF</cfg_type>
+      <GaugeState>
+        <Name>SIMPLE_GAUGE_STATE</Name>
+        <GaugeBC>
+          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+          <SchrPhiMult>1.0</SchrPhiMult>
+          <decay_dir>3</decay_dir>
+          <loop_extent>1</loop_extent>
+        </GaugeBC>
+      </GaugeState>
+    </SF_classical>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99517734348774</w_plaq>
+          <s_plaq>0.99999996026357</s_plaq>
+          <t_plaq>0.990354726711909</t_plaq>
+          <plane_01_plaq>0.99999996026357</plane_01_plaq>
+          <plane_02_plaq>0.99999996026357</plane_02_plaq>
+          <plane_12_plaq>0.99999996026357</plane_12_plaq>
+          <plane_03_plaq>0.990354726711909</plane_03_plaq>
+          <plane_13_plaq>0.990354726711909</plane_13_plaq>
+          <plane_23_plaq>0.990354726711909</plane_23_plaq>
+          <link>0.965140111744404</link>
+          <pollp>
+            <elem>
+              <re>0.42904923359553</re>
+              <im>0.168811708688736</im>
+            </elem>
+            <elem>
+              <re>0.42904923359553</re>
+              <im>0.168811708688736</im>
+            </elem>
+            <elem>
+              <re>0.42904923359553</re>
+              <im>0.168811708688736</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Link_observables>
+          <w_plaq>0.99517734348774</w_plaq>
+          <s_plaq>0.99999996026357</s_plaq>
+          <t_plaq>0.990354726711909</t_plaq>
+          <plane_01_plaq>0.99999996026357</plane_01_plaq>
+          <plane_02_plaq>0.99999996026357</plane_02_plaq>
+          <plane_12_plaq>0.99999996026357</plane_12_plaq>
+          <plane_03_plaq>0.990354726711909</plane_03_plaq>
+          <plane_13_plaq>0.990354726711909</plane_13_plaq>
+          <plane_23_plaq>0.990354726711909</plane_23_plaq>
+          <link>0.965140111744404</link>
+          <pollp>
+            <elem>
+              <re>0.42904923359553</re>
+              <im>0.168811708688736</im>
+            </elem>
+            <elem>
+              <re>0.42904923359553</re>
+              <im>0.168811708688736</im>
+            </elem>
+            <elem>
+              <re>0.42904923359553</re>
+              <im>0.168811708688736</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Link_observables>
+      </apply_ferm_state>
+    </elem>
+    <elem>
       <SFpcac>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -147,7 +285,7 @@
             <chroma>3.24.2</chroma>
             <qdp>1.24.4</qdp>
           </code_version>
-          <run_date>24 Aug 07 16:57:49 EDT</run_date>
+          <run_date>27 Aug 07 15:55:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -162,7 +300,7 @@
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>CLOVER</FermAct>
-      <Kappa>0.115</Kappa>
+      <Mass>0.01</Mass>
       <clovCoeff>1.17</clovCoeff>
       <AnisoParam>
         <anisoP>false</anisoP>
@@ -170,13 +308,16 @@
         <xi_0>1.0</xi_0>
         <nu>1.0</nu>
       </AnisoParam>
-      <FermionBC>
-        <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
-        <SchrPhiMult>1.0</SchrPhiMult>
-        <decay_dir>3</decay_dir>
-        <loop_extent>1</loop_extent>
-        <theta>0 0 0</theta>
-      </FermionBC>
+      <FermState>
+        <Name>SIMPLE_FERM_STATE</Name>
+        <FermionBC>
+          <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+          <SchrPhiMult>1.0</SchrPhiMult>
+          <decay_dir>3</decay_dir>
+          <loop_extent>1</loop_extent>
+          <theta>0 0 0</theta>
+        </FermionBC>
+      </FermState>
     </FermionAction>
 <InvertParam>
       <invType>CG_INVERTER</invType>
@@ -192,14 +333,23 @@
             <y0>3</y0>
           </SFpcac>
           <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
+            <gauge_id>sf_gauge_field</gauge_id>
           </NamedObject>
         </Input>
         <Config_info><SF_classical>
-      <SchrPhiMult>1</SchrPhiMult>
-      <decay_dir>3</decay_dir>
-      <loop_extent>1</loop_extent>
+      <cfg_type>CLASSICAL_SF</cfg_type>
+      <GaugeState>
+        <Name>SIMPLE_GAUGE_STATE</Name>
+        <GaugeBC>
+          <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+          <SchrPhiMult>1.0</SchrPhiMult>
+          <decay_dir>3</decay_dir>
+          <loop_extent>1</loop_extent>
+        </GaugeBC>
+      </GaugeState>
     </SF_classical>
+
+
 
 
 
@@ -242,30 +392,30 @@
           <PCAC_measurements>
             <elem>
               <direction>-1</direction>
-              <pseudo_prop>0 2.098655 0.6858961 0.2645564 0.1165186 0.05678693 0.02964644 0</pseudo_prop>
-              <axial_prop>0 -1.257534 -0.4756694 -0.2100718 -0.1030475 -0.05396412 -0.02927431 0</axial_prop>
+              <pseudo_prop>0 3.365129 1.37733 0.7175191 0.477253 0.390939 0.3628245 0</pseudo_prop>
+              <axial_prop>0 -0.6199241 -0.4394631 -0.3911346 -0.3741991 -0.3658284 -0.3594635 0</axial_prop>
             </elem>
             <elem>
               <direction>1</direction>
-              <pseudo_prop>0 3.294776 1.454108 0.6003515 0.2361807 0.0891635 0.03260896 0</pseudo_prop>
-              <axial_prop>-0 -2.265708 -0.9436167 -0.3779113 -0.1487048 -0.05967162 -0.02631178 -0</axial_prop>
+              <pseudo_prop>0 7.877634 4.880032 2.832588 1.554424 0.8079571 0.4198223 0</pseudo_prop>
+              <axial_prop>-0 -0.3958071 -0.3739811 -0.3516217 -0.3316196 -0.3158966 -0.3024663 -0</axial_prop>
             </elem>
           </PCAC_measurements>
           <ZV_measurements>
-            <f_1>0.05892074</f_1>
-            <vector_corr>0 0.043408 0.04310889 0.04268017 0.04213138 0.04147378 0.04071971 0</vector_corr>
+            <f_1>0.7222885</f_1>
+            <vector_corr>0 0.7116981 0.7065569 0.6986403 0.6881527 0.6753489 0.6605205 0</vector_corr>
           </ZV_measurements>
           <ZA_measurements>
-            <f_1>0.05892074</f_1>
-            <f_AA>0.01521001</f_AA>
-            <f_AP_PA>0.009620708</f_AP_PA>
-            <f_PP>-0.003474021</f_PP>
-            <fd_AA>0.1736119</fd_AA>
-            <fd_AP_PA>0.619541</fd_AP_PA>
-            <fd_PP>0.5478758</fd_PP>
+            <f_1>0.7222885</f_1>
+            <f_AA>0.6443572</f_AA>
+            <f_AP_PA>-0.1009538</f_AP_PA>
+            <f_PP>-0.1057963</f_PP>
+            <fd_AA>0.03631656</fd_AA>
+            <fd_AP_PA>0.9323536</fd_AP_PA>
+            <fd_PP>2.108594</fd_PP>
           </ZA_measurements>
           <Relaxation_Iterations>
-            <ncg_had>864</ncg_had>
+            <ncg_had>910</ncg_had>
           </Relaxation_Iterations>
         </sfpcac>
       </SFpcac>
