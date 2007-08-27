@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.14 2007-08-23 19:02:44 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.15 2007-08-27 21:03:36 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -233,8 +233,6 @@ namespace Chroma
       string quark_propagator_id;
       Real Mass;
     
-      multi1d<int> bc; 
-    
       // Now loop over the various fermion masses
       string source_type;
       string source_disp_type;
@@ -302,7 +300,6 @@ namespace Chroma
       // clear def. of a Mass
       QDPIO::cout << "Try action and mass" << endl;
       s.Mass = getMass(s.prop_header.prop_header.fermact);
-      s.bc   = getFermActBoundary(s.prop_header.prop_header.fermact);
     
       QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << endl;
       QDPIO::cout << "Mass = " << s.Mass << endl;
@@ -442,7 +439,6 @@ namespace Chroma
                   = all_sinks[0].sink_prop_1.prop_header.source_header.getTSrce();
       int j_decay = all_sinks[0].sink_prop_1.prop_header.source_header.j_decay;
       int t0      = all_sinks[0].sink_prop_1.prop_header.source_header.t_source;
-      int bc_spec = all_sinks[0].sink_prop_1.bc[j_decay] ;
 
       // Sanity checks
       for(int loop=0; loop < all_sinks.size(); ++loop)
@@ -450,11 +446,6 @@ namespace Chroma
 	if (all_sinks[loop].sink_prop_2.prop_header.source_header.j_decay != j_decay)
 	{
 	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
-	  QDP_abort(1);
-	}
-	if (all_sinks[loop].sink_prop_2.bc[j_decay] != bc_spec)
-	{
-	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
 	  QDP_abort(1);
 	}
 	if (all_sinks[loop].sink_prop_2.prop_header.source_header.t_source != 
