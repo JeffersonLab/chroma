@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun.out.xml,v 1.15 2007-08-27 21:42:31 edwards Exp $
+; $Id: schrfun-pcac.out.xml,v 1.1 2007-08-27 22:53:51 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
