@@ -1,4 +1,4 @@
-// $Id: pt_sink_smearing.cc,v 3.3 2006-11-17 02:17:32 edwards Exp $
+// $Id: pt_sink_smearing.cc,v 3.4 2007-08-27 20:02:01 uid3790 Exp $
 /*! \file
  *  \brief Point sink construction
  */
@@ -101,6 +101,7 @@ namespace Chroma
       {
       case 1:
       {
+	quark_displacement = QuarkDisplacementEnv::nullXMLGroup();  // initialize
 	quark_displacement.id = SimpleQuarkDisplacementEnv::name;
 	int disp_length = 0;
 	int disp_dir = 0;
@@ -174,12 +175,11 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
-										displace_path));
+										params.quark_displacement.path));
 
 	//
 	// Displace quark source
@@ -210,12 +210,11 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
 	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										    displacetop,
-										    displace_path));
+										    params.quark_displacement.path));
 	
 	//
 	// Displace quark source
@@ -246,12 +245,11 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-	const string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeFermion> >
 	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement.id,
 										displacetop,
-										displace_path));
+										params.quark_displacement.path));
 
 	//
 	// Displace quark source
