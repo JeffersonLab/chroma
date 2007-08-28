@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.3 2007-08-27 22:53:51 edwards Exp $
+#  $Id: regres.pl,v 1.4 2007-08-28 17:24:59 uid3790 Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -17,7 +17,7 @@
 	 output      => "schrfun-pcac.candidate.xml",
 	 metric      => "$test_dir/chroma/schrfun/schrfun-pcac.metric.xml" ,
 	 controlfile => "$test_dir/chroma/schrfun/schrfun-pcac.out.xml" ,
-     }
+     },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
