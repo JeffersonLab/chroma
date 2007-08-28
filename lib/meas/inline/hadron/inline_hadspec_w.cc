@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.11 2007-08-27 21:22:37 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.12 2007-08-28 04:56:15 uid3790 Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -294,7 +294,7 @@ namespace Chroma
       catch (const string& e) 
       {
 	QDPIO::cerr << InlineHadSpecEnv::name 
-		    << ": warning, not BC found in these headers. Will assume dirichlet: " << e 
+		    << ": caught exception. No BC found in these headers. Will assume dirichlet: " << e 
 		    << endl;
       }
 
