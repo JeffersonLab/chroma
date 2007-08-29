@@ -1,4 +1,4 @@
-// $Id: eeu1.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: eeu1.cc,v 3.1 2007-08-29 13:15:37 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a U(1) lie algebra element
  */
@@ -22,7 +22,7 @@ namespace Chroma
     
     if ( Nc != 1 )
     {
-      QDPIO::cerr << "eeu1: can only handle U(1)" << endl;
+      QDPIO::cerr << __func__ << ": can only handle U(1)" << endl;
       QDP_abort(1);
     }
 
