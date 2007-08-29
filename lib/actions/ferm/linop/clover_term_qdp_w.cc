@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.14 2007-08-29 13:34:55 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.15 2007-08-29 13:50:25 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -14,12 +14,16 @@
 namespace Chroma 
 { 
 
-
-  //! XML output
-  inline
-  XMLWriter& operator<<(XMLWriter& xml, const PrimitiveClovTriang& d)
+  // Reader/writers
+  void read(XMLReader& xml, const string& path, PrimitiveClovTriang& param)
   {
-    xml.openTag("PrimClovTriang");
+    QDPIO::cerr << __func__ << ": clover term reader not implemented" << endl;
+    QDP_abort(1);
+  }
+
+  void write(XMLWriter& xml, const string& path, const PrimitiveClovTriang& d)
+  {
+    xml.openTag(path);
 
     XMLWriterAPI::AttributeList alist;
 
@@ -54,23 +58,7 @@ namespace Chroma
       }
     }
     xml.closeTag(); // Offd
-
-    xml.closeTag(); // PrimClovTriang
-    return xml;
-  }
-
-
-  // Reader/writers
-  void read(XMLReader& xml, const string& path, PrimitiveClovTriang& param)
-  {
-    QDP_error_exit("clover reader not implemented");
-  }
-
-  void write(XMLWriter& xml, const string& path, const PrimitiveClovTriang& param)
-  {
-    push(xml,path);
-    xml << param;
-    pop(xml);
+    xml.closeTag(); // path
   }
 
 
@@ -263,29 +251,24 @@ namespace Chroma
   {
     START_CODE();
 
-    LatticeColorMatrix f0;
-    LatticeColorMatrix f1;
-    LatticeColorMatrix f2;
-    LatticeColorMatrix f3;
-    LatticeColorMatrix f4;
-    LatticeColorMatrix f5;
-
-    const int nodeSites = QDP::Layout::sitesOnNode();
-
-    START_CODE();
-  
     if ( Nd != 4 )
-      QDP_error_exit("expecting Nd == 4", Nd);
+    {
+      QDPIO::cerr << __func__ << ": expecting Nd==4" << endl;
+      QDP_abort(1);
+    }
   
     if ( Ns != 4 )
-      QDP_error_exit("expecting Ns == 4", Ns);
+    {
+      QDPIO::cerr << __func__ << ": expecting Ns==4" << endl;
+      QDP_abort(1);
+    }
   
-    f0 = f[0] * getCloverCoeff(0,1);
-    f1 = f[1] * getCloverCoeff(0,2);
-    f2 = f[2] * getCloverCoeff(0,3);
-    f3 = f[3] * getCloverCoeff(1,2);
-    f4 = f[4] * getCloverCoeff(1,3);
-    f5 = f[5] * getCloverCoeff(2,3);    
+    LatticeColorMatrix f0 = f[0] * getCloverCoeff(0,1);
+    LatticeColorMatrix f1 = f[1] * getCloverCoeff(0,2);
+    LatticeColorMatrix f2 = f[2] * getCloverCoeff(0,3);
+    LatticeColorMatrix f3 = f[3] * getCloverCoeff(1,2);
+    LatticeColorMatrix f4 = f[4] * getCloverCoeff(1,3);
+    LatticeColorMatrix f5 = f[5] * getCloverCoeff(2,3);    
 
     /* Multiply in the appropriate clover coefficient */
     /*
@@ -324,6 +307,8 @@ namespace Chroma
       QDP_abort(1);
       }
     */
+
+    const int nodeSites = QDP::Layout::sitesOnNode();
 
     tri.resize(nodeSites);  // hold local lattice
     
@@ -440,8 +425,6 @@ namespace Chroma
       
     }
               
-    END_CODE();
-
 #if 0
     {
       XMLFileWriter xml("f.xml");
@@ -509,7 +492,10 @@ namespace Chroma
     START_CODE();
 
     if ( 2*Nc < 3 )
-      QDP_error_exit("Matrix is too small", Nc, Ns);
+    {
+      QDPIO::cerr << __func__ << ": Matrix is too small" << endl;
+      QDP_abort(1);
+    }
 
     // Zero trace log
     tr_log_diag = zero;
@@ -718,7 +704,10 @@ namespace Chroma
     START_CODE();
 
     if ( 2*Nc < 3 )
-      QDP_error_exit("Matrix is too small", Nc, Ns);
+    {
+      QDPIO::cerr << __func__ << ": Matrix is too small" << endl;
+      QDP_abort(1);
+    }
   
     tr_log_diag = zero;
   
@@ -892,7 +881,10 @@ namespace Chroma
     START_CODE();
 
     if ( Ns != 4 )
-      QDP_error_exit("code requires Ns == 4", Ns);
+    {
+      QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << endl;
+      QDP_abort(1);
+    }
 
     int n = 2*Nc;
 
@@ -1439,7 +1431,10 @@ namespace Chroma
     START_CODE();
 
     if ( Ns != 4 )
-      QDP_error_exit("code requires Ns == 4", Ns);
+    {
+      QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << endl;
+      QDP_abort(1);
+    }
 
     int n = 2*Nc;
 
@@ -1864,12 +1859,9 @@ namespace Chroma
       break;
     
     default:
-    {
-      B = zero;
-      QDPIO::cout << "BAD DEFAULT CASE HIT" << endl;
+      QDPIO::cout << __func__ << ": invalid Gamma matrix int" << endl;
+      QDP_abort(1);
     }
-    }
-  
 
     END_CODE();
   }
