@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.13 2007-06-26 20:42:24 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 3.14 2007-08-29 13:34:55 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -90,7 +90,7 @@ namespace Chroma
       
     // Sanity check
     if (fbc.operator->() == 0) {
-      QDPIO::cerr << "BAGELCloverTerm: error: fbc is null" << endl;
+      QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << endl;
       QDP_abort(1);
     }
     
@@ -491,11 +491,10 @@ namespace Chroma
 
     if( choles_done[cb] == false ) 
     {
-      QDPIO::cout << "Error: YOu have not done the Cholesky.on this operator on this subset" << endl;
-      QDPIO::cout << "You sure you shouldn't be asking invclov?" << endl;
+      QDPIO::cout << __func__ << ": Error: you have not done the Cholesky.on this operator on this subset" << endl;
+      QDPIO::cout << "You sure you should not be asking invclov?" << endl;
       QDP_abort(1);
     }
-
 
     END_CODE();
 
