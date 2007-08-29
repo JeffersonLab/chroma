@@ -1,4 +1,4 @@
-// $Id: eesu2.cc,v 3.0 2006-04-03 04:59:12 edwards Exp $
+// $Id: eesu2.cc,v 3.1 2007-08-29 13:14:17 edwards Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(2) lie algebra element
  */
@@ -18,9 +18,9 @@ namespace Chroma
   {
     START_CODE();
 
-    if ( Nc != 1 )
+    if ( Nc != 2 )
     {
-      QDPIO::cerr << "eeu1: can only handle SU(2)" << endl;
+      QDPIO::cerr << __func__ << ": can only handle SU(2)" << endl;
       QDP_abort(1);
     }
 
