@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 3.2 2007-02-22 21:11:50 bjoo Exp $
+// $Id: sunfill.cc,v 3.3 2007-08-29 13:31:47 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -63,7 +63,10 @@ namespace Chroma
     i2 = i1 + del_i;
 
     if ( found == 0 )
-      QDP_error_exit("Trouble with SU2 subgroup index");
+    {
+      QDPIO::cerr << __func__ << ": trouble with SU2 subgroup index" << endl;
+      QDP_abort(1);
+    }
 
     /* 
      * Insert the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k 

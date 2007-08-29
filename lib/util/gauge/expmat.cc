@@ -1,4 +1,4 @@
-// $Id: expmat.cc,v 3.1 2006-08-15 13:17:24 bjoo Exp $
+// $Id: expmat.cc,v 3.2 2007-08-29 13:31:47 edwards Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -82,12 +82,14 @@ void expmat(LatticeColorMatrix& a,
 	break;
 
       default:
-	QDP_error_exit("exact exponentation not implemented for this Nc", Nc);
+	QDPIO::cerr << __func__ << ": exact exponentation not implemented for this Nc=" << Nc << endl;
+	QDP_abort(1);
       }
       break;
 
     default:
-      QDP_error_exit("unknown option", opt);
+      QDPIO::cerr << __func__ << ": unknown option = " << opt << endl;
+      QDP_abort(1);
     }
   }
 
