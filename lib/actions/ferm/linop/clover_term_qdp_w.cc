@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.17 2007-08-30 17:28:23 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.18 2007-08-30 17:36:32 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -269,44 +269,6 @@ namespace Chroma
     LatticeColorMatrix f3 = f[3] * getCloverCoeff(1,2);
     LatticeColorMatrix f4 = f[4] * getCloverCoeff(1,3);
     LatticeColorMatrix f5 = f[5] * getCloverCoeff(2,3);    
-
-    /* Multiply in the appropriate clover coefficient */
-    /*
-      switch (param.anisoParam.t_dir)
-      {
-      case 1:
-      f0 = f[0] * param.clovCoeffT;
-      f1 = f[1] * param.clovCoeffR;
-      f2 = f[2] * param.clovCoeffR;
-      f3 = f[3] * param.clovCoeffT;
-      f4 = f[4] * param.clovCoeffT;
-      f5 = f[5] * param.clovCoeffR;
-      break;
-
-      case 2:
-      f0 = f[0] * param.clovCoeffR;
-      f1 = f[1] * param.clovCoeffT;
-      f2 = f[2] * param.clovCoeffR;
-      f3 = f[3] * param.clovCoeffT;
-      f4 = f[4] * param.clovCoeffR;
-      f5 = f[5] * param.clovCoeffT;
-      break;
-
-      case 3:
-      f0 = f[0] * param.clovCoeffR;
-      f1 = f[1] * param.clovCoeffR;
-      f2 = f[2] * param.clovCoeffT;
-      f3 = f[3] * param.clovCoeffR;
-      f4 = f[4] * param.clovCoeffT;
-      f5 = f[5] * param.clovCoeffT;
-      break;
-
-      default:
-      QDPIO::cerr << __func__ << ": invalid time direction: t_dir= " 
-      << param.anisoParam.t_dir << endl;
-      QDP_abort(1);
-      }
-    */
 
     const int nodeSites = QDP::Layout::sitesOnNode();
 
