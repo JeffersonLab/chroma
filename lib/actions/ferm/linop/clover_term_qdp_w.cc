@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.15 2007-08-29 13:50:25 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.16 2007-08-30 17:27:47 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -522,6 +522,7 @@ namespace Chroma
 	for(int i=0; i < N; i++) { 
 	  inv_d[i] = tri[site].diag[block][i];
 	}
+
 	for(int i=0; i < 15; i++) { 
 	  inv_offd[i]  =tri[site].offd[block][i];
 	}
@@ -678,9 +679,9 @@ namespace Chroma
       }
 
       if( site_neg_logdet != 0 ) { 
-	// Report if site had odd number of negative terms. (-ve def)
-	std::cout << "WARNING: Odd number of negative terms in Clover DET (" 
-		  << site_neg_logdet<< ") at site: " << site << endl;
+	// Report if site has any negative terms. (-ve def)
+	std::cout << "WARNING: found " << site_neg_logdet
+		  << " negative terms in Clover DET at site: " << site << endl;
       }
     }
     
