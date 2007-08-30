@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.16 2007-08-30 17:27:47 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.17 2007-08-30 17:28:23 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -681,7 +681,7 @@ namespace Chroma
       if( site_neg_logdet != 0 ) { 
 	// Report if site has any negative terms. (-ve def)
 	std::cout << "WARNING: found " << site_neg_logdet
-		  << " negative terms in Clover DET at site: " << site << endl;
+		  << " negative eigenvalues in Clover DET at site: " << site << endl;
       }
     }
     
