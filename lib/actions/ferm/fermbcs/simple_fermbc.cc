@@ -1,4 +1,4 @@
- // $Id: simple_fermbc.cc,v 3.0 2006-04-03 04:58:48 edwards Exp $
+ // $Id: simple_fermbc.cc,v 3.1 2007-08-31 03:33:46 edwards Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -19,6 +19,12 @@ namespace Chroma
     XMLReader paramtop(xml, path);
 
     read(paramtop, "boundary", boundary);
+
+    if (boundary.size() != Nd)
+    {
+      QDPIO::cerr << __func__ << ": boundary not the expected length = Nd" << endl;
+      QDP_abort(1);
+    }
   }
 
 
