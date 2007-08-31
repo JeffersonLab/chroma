@@ -31,10 +31,10 @@ yes)
 	;;
 esac
 
-sse_dwf_cg_enabled="@SSE_DWF_CG_ENABLED@"
-case $sse_dwf_cg_enabled in
+cg_dwf_enabled="@CG_DWF_ENABLED@"
+case $cg_dwf_enabled in
 yes)
-	extra_libs="$extra_libs -lsse_dwf_cg"
+	extra_libs="$extra_libs -lcg-dwf"
 	;;
 *)
 	;;

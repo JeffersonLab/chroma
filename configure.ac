@@ -231,7 +231,7 @@ then
 	AC_CONFIG_SUBDIRS(other_libs/cg-dwf)
 	AC_SUBST(CG_DWF_DIR, [cg-dwf])
 	AC_DEFINE([BUILD_CG_DWF],[1],[Build CG DWF])
-	AC_SUBST(CG_DWF_ENABLED,[$enable_cg_dwf])
+	AC_SUBST(CG_DWF_ENABLED,[yes])
 else
 	AC_SUBST(CG_DWF_DIR)
 	AC_MSG_NOTICE([Not building CG DWF])
