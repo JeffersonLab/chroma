@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.16 2007-08-27 21:17:53 edwards Exp $
+// $Id: qprop_io.cc,v 3.17 2007-08-31 03:30:37 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -87,7 +87,7 @@ namespace Chroma
       else
       {
 	std::ostringstream os;
-	os << __func__ << ": Error: neither FermionBC group nor boundary found - throwing exception" << endl;
+	os << __func__ << ": Warning: neither FermionBC group nor boundary found - throwing exception. If this is not caught the code will exit" << endl;
 	QDPIO::cerr << os.str();
 	throw os.str();
       }
@@ -97,6 +97,12 @@ namespace Chroma
 //      QDPIO::cerr << "Error reading fermact: " << e << endl;
 //      throw e;
 //    }
+
+    if (boundary.size() != Nd)
+    {
+      QDPIO::cerr << __func__ << ": boundary is not the expected length = Nd" << endl;
+      QDP_abort(1);
+    }
 
     return boundary;
   }
