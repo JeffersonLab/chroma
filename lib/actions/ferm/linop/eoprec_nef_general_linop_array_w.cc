@@ -1,4 +1,4 @@
-// $Id: eoprec_nef_general_linop_array_w.cc,v 3.1 2006-10-19 16:01:30 edwards Exp $
+// $Id: eoprec_nef_general_linop_array_w.cc,v 3.2 2007-09-01 23:44:10 uid3790 Exp $
 /*! \file
  *  \brief  4D-style even-odd preconditioned NEF domain-wall linear operator
  */
@@ -916,5 +916,5 @@ namespace Chroma
     END_CODE();
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

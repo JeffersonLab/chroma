@@ -1,4 +1,4 @@
-// $Id: lwldslash_qdpopt_w.cc,v 3.3 2007-09-01 23:34:09 uid3790 Exp $
+// $Id: lwldslash_qdpopt_w.cc,v 3.4 2007-09-01 23:44:10 uid3790 Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -227,5 +227,5 @@ namespace Chroma
     END_CODE();
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

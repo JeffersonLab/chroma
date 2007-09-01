@@ -1,4 +1,4 @@
-// $Id: eoprec_ovdwf_linop_array_w.cc,v 3.1 2006-10-19 16:01:30 edwards Exp $
+// $Id: eoprec_ovdwf_linop_array_w.cc,v 3.2 2007-09-01 23:44:10 uid3790 Exp $
 /*! \file
  *  \brief 4D Even Odd preconditioned Overlap-DWF (Borici) linear operator
  */
@@ -305,5 +305,5 @@ namespace Chroma
     chi = c5InvTwoKappa*psi +0.5*tt ;  //really -(-.5)D
   }
   
-}; // End Namespace Chroma
+} // End Namespace Chroma
 

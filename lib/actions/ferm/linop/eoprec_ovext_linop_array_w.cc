@@ -1,4 +1,4 @@
-/* $Id: eoprec_ovext_linop_array_w.cc,v 3.1 2006-10-19 16:01:30 edwards Exp $
+/* $Id: eoprec_ovext_linop_array_w.cc,v 3.2 2007-09-01 23:44:10 uid3790 Exp $
 /*! \file
 *  \brief EvenOddPreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
@@ -442,5 +442,5 @@ namespace Chroma
     END_CODE();
   }
 
-}; // End Namespace Chroma
+} // End Namespace Chroma
 
