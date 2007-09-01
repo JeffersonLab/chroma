@@ -1,4 +1,4 @@
-// $Id: lwldslash_qdpopt_w.cc,v 3.2 2007-02-23 21:38:11 bjoo Exp $
+// $Id: lwldslash_qdpopt_w.cc,v 3.3 2007-09-01 23:34:09 uid3790 Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -75,10 +75,10 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-  
     if (anisoParam.anisoP)
     {
+      Real ff = anisoParam.nu / anisoParam.xi_0;
+  
       // Rescale the u fields by the anisotropy
       for(int mu=0; mu < u.size(); ++mu)
       {
