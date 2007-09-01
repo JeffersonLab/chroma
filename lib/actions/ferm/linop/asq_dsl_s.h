@@ -1,4 +1,5 @@
-//  $Id: asq_dsl_s.h,v 3.2 2007-02-22 21:11:46 bjoo Exp $
+// -*- C++ -*-
+//  $Id: asq_dsl_s.h,v 3.3 2007-09-01 18:53:55 edwards Exp $
 /*! \file
  *  \brief The "asq" or "asqtad" dslash operator D'
  */
