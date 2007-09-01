@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linop_w.h,v 3.2 2007-02-18 18:50:58 bjoo Exp $
+// $Id: linop_w.h,v 3.3 2007-09-01 23:29:28 edwards Exp $
 
 /*! \file
  * \brief Linear operators
@@ -66,7 +66,6 @@
 #include "lg5Rherm_w.h"
 
 #include "unprec_dwftransf_linop_w.h"
-#include "overlapbu_linop_w.h"
 
 #endif
 
