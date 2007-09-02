@@ -513,6 +513,10 @@ mpirun_rsh)
 	AC_MSG_NOTICE([Using mpirun_rsh Testcase Runner: mpirun_rsh_runner.sh])
 	chroma_testcase_runner_script="mpirun_rsh_runner.sh"
 	;;
+7n_mpirun_rsh)
+	AC_MSG_NOTICE([Using 7n_mpirun_rsh Testcase Runner: 7n_mpirun_rsh_runner.sh])
+	chroma_testcase_runner_script="7n_mpirun_rsh_runner.sh"
+	;;
 cobalt)
 	AC_MSG_NOTICE([Using the BG/L Cobalt Testcase Runner: cobalt_runner.sh])
 	chroma_testcase_runner_script="cobalt_runner.sh"
@@ -569,6 +573,7 @@ dnl if we want later. Also this allows us to configure complicated runners
 dnl later with extre --enable options etc
 AC_CONFIG_FILES(scripts/test_runners/trivial_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/mpirun_rsh_runner.sh)
+AC_CONFIG_FILES(scripts/test_runners/7n_mpirun_rsh_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/cobalt_runner.sh)
 
 dnl Copy - dont symlink - the chosen testcase runner to the top builddir for
