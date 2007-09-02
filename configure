@@ -4579,6 +4579,11 @@ mpirun_rsh)
 echo "$as_me: Using mpirun_rsh Testcase Runner: mpirun_rsh_runner.sh" >&6;}
 	chroma_testcase_runner_script="mpirun_rsh_runner.sh"
 	;;
+7n_mpirun_rsh)
+	{ echo "$as_me:$LINENO: Using 7n_mpirun_rsh Testcase Runner: 7n_mpirun_rsh_runner.sh" >&5
+echo "$as_me: Using 7n_mpirun_rsh Testcase Runner: 7n_mpirun_rsh_runner.sh" >&6;}
+	chroma_testcase_runner_script="7n_mpirun_rsh_runner.sh"
+	;;
 cobalt)
 	{ echo "$as_me:$LINENO: Using the BG/L Cobalt Testcase Runner: cobalt_runner.sh" >&5
 echo "$as_me: Using the BG/L Cobalt Testcase Runner: cobalt_runner.sh" >&6;}
@@ -4820,6 +4825,8 @@ fi
           ac_config_files="$ac_config_files scripts/test_runners/trivial_runner.sh"
 
           ac_config_files="$ac_config_files scripts/test_runners/mpirun_rsh_runner.sh"
+
+          ac_config_files="$ac_config_files scripts/test_runners/7n_mpirun_rsh_runner.sh"
 
           ac_config_files="$ac_config_files scripts/test_runners/cobalt_runner.sh"
 
@@ -5470,6 +5477,7 @@ do
   "other_libs/Makefile" ) CONFIG_FILES="$CONFIG_FILES other_libs/Makefile" ;;
   "scripts/test_runners/trivial_runner.sh" ) CONFIG_FILES="$CONFIG_FILES scripts/test_runners/trivial_runner.sh" ;;
   "scripts/test_runners/mpirun_rsh_runner.sh" ) CONFIG_FILES="$CONFIG_FILES scripts/test_runners/mpirun_rsh_runner.sh" ;;
+  "scripts/test_runners/7n_mpirun_rsh_runner.sh" ) CONFIG_FILES="$CONFIG_FILES scripts/test_runners/7n_mpirun_rsh_runner.sh" ;;
   "scripts/test_runners/cobalt_runner.sh" ) CONFIG_FILES="$CONFIG_FILES scripts/test_runners/cobalt_runner.sh" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "RUN" ) CONFIG_COMMANDS="$CONFIG_COMMANDS RUN" ;;
