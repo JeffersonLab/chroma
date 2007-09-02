@@ -103,7 +103,7 @@ AC_ARG_ENABLE(opt_cfz_linop,
 
 AC_ARG_ENABLE(testcase-runner,
   AC_HELP_STRING([--enable-testcase-runner=script],
-    [Use <script> to run testcases: trivial|mpirun_rsh|cobalt]),
+    [Use <script> to run testcases: trivial|mpirun_rsh|cobalt|7n_mpirun_rsh]),
     [chroma_testcase_runner=${enable_testcase_runner}],
     [chroma_testcase_runner="trivial_runner.sh"]
 )
