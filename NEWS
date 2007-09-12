@@ -1,3 +1,7 @@
+09/12/2007 -- Balint Joo
+        Version 3.24.3 - Lots of tydiups and fixes especially t SF related code. 	5D solvers work with GCC-4. Additions for 7n related regression testing.	CG-DWF problems hopefully fixed in the chroma-config script file.
+
+
 08/23/2007 -- Robert Edwards
 	Version 3.24.2 - Cleaned up some SF Dirichlet code. Mainly, this version
         marks a QDP++ version that has QIO properly working on mesh machines.
