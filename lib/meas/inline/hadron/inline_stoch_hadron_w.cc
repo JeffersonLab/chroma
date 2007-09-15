@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.1 2007-09-14 20:43:36 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.2 2007-09-15 02:39:25 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -54,23 +54,23 @@ namespace Chroma
 
 
   // Read solution files
-  void read(XMLReader& xml, const string& path, InlineStochHadronParams::Quarks_t& input)
+  void read(XMLReader& xml, const string& path, InlineStochHadronParams::Flavor_t::Dilutions_t& input)
   {
     XMLReader inputtop(xml, path);
 
     read(inputtop, "soln_files", input.soln_files);
   }
 
-
   // Write solution files
-  void write(XMLWriter& xml, const string& path, const InlineStochHadronParams::Quarks_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineStochHadronParams::Flavor_t::Dilutions_t& input)
   {
     push(xml, path);
     write(xml, "soln_files", input.soln_files);
     pop(xml);s
   }
 
-  // Read Flavors
+
+  // Propagator parameters
   void read(XMLReader& xml, const string& path, InlineStochHadronParams::Flavor_t& input)
   {
     XMLReader inputtop(xml, path);
@@ -79,29 +79,12 @@ namespace Chroma
   }
 
 
-  // Write Flavors
+  // Propagator parameters
   void write(XMLWriter& xml, const string& path, const InlineStochHadronParams::Flavor_t& input)
   {
     push(xml, path);
+
     write(xml, "flavor", input.flavor);
-    pop(xml);s
-  }
-
-  // Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineStochHadronParams::Prop_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "flavors", input.flavors);
-  }
-
-
-  // Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochHadronParams& input)
-  {
-    push(xml, path);
-
-    write(xml, "flavors", input.flavors);
 
     pop(xml);
   }
@@ -130,8 +113,8 @@ namespace Chroma
 
     read(paramtop, "mom2_max", param.mom2_max);
 
-    param.source_quark_smearing = readXMLGroup(paramtop, "CreationOperatorSmearing", "wvf_kind");
-    param.sink_quark_smearing   = readXMLGroup(paramtop, "AnnihilationOperatorSmearing", "wvf_kind");
+    param.source_quark_smearing = readXMLGroup(paramtop, "SourceQuarkSmearing", "wvf_kind");
+    param.sink_quark_smearing   = readXMLGroup(paramtop, "SinkQuarkSmearing", "wvf_kind");
     param.link_smearing         = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
 
     ops = readXMLGroup(paramtop, "HadronOperators", "HadronOperatorType");
@@ -167,7 +150,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
-    read(inputtop, "Prop", input.prop);
+    read(inputtop, "flavors", input.flavors);
   }
 
   //! Propagator parameters
@@ -176,7 +159,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "gauge_id", input.gauge_id);
-    write(xml, "Prop", input.prop);
+    write(xml, "flavors", input.flavors);
 
     pop(xml);
   }
