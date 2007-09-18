@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.2 2007-09-15 02:39:25 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.3 2007-09-18 20:47:10 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -70,12 +70,12 @@ namespace Chroma
   }
 
 
-  // Propagator parameters
+
   void read(XMLReader& xml, const string& path, InlineStochHadronParams::Flavor_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "flavor", input.flavor);
+    read(inputtop, "quark", input.quark);
   }
 
 
@@ -84,7 +84,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    write(xml, "flavor", input.flavor);
+    write(xml, "quark", input.quark);
 
     pop(xml);
   }
@@ -219,61 +219,79 @@ namespace Chroma
 
 
   //--------------------------------------------------------------
-
+ 
   //! Structure holding a source and its solutions
   struct QuarkSourceSolutions_t
   {
     //! Structure holding solutions
-    struct QuarkSolution_t
+    struct TimeSlices_t
     {
-      LatticeFermion     source;
-      LatticeFermion     soln;
-      PropSourceConst_t  source_header;
-      ChromaProp_t       prop_header;
+      struct Dilutions_t
+      {
+	int                t0;
+	LatticeFermion     source;
+	LatticeFermion     soln;
+	PropSourceConst_t  source_header;
+	ChromaProp_t       prop_header;
+      };
+      
+      multi1d<Dilutions_t>  dilutions;
     };
-
-    int   j_decay;
+    int   decay_dir;
     Seed  seed;
-    multi1d<QuarkSolution_t>  dilutions;
+    multi1d<TimeSlices_t>  time_slices;
   };
-
+  
 
   //! Baryon operator
   struct BaryonOperator_t
   {
-    //! Serialize generalized operator object
-    multi1d<Complex> serialize();
-
-    //! Baryon operator
-    struct BaryonOperatorInsertion_t
+    //! Baryon operator time slices
+    struct TimeSlices_t
     {
-      //! Possible operator index
-      struct BaryonOperatorIndex_t
+      int                  t0;          /*!< Source time location */
+      //! Quark orderings within a baryon operator
+      //! Momentum projected correlator
+      struct Mom_t
       {
-	//! Baryon operator element
-	struct BaryonOperatorElement_t
+	multi1d<int>       mom;       /*!< D-1 momentum of this operator */
+	multi1d<DComplex>  op;        /*!< Momentum projected operator */
+	
+      
+	struct Orderings_t
 	{
-	  multi2d<DComplex> elem;              /*!< time slice and momenta number */
+	  //! Baryon operator dilutions
+	  struct Dilutions_t
+	  {
+	    
+	    multi1d<Mom_t> mom_projs;       /*!< Holds momentum projections of the operator */
 	};
-
-	multi1d<BaryonOperatorElement_t> ind;
       };
-    
-      multi3d<BaryonOperatorIndex_t> op;    /*!< hybrid list indices */
-
+	
+      };
+	multi3d<Dilutions_t> dilutions;   /*!< Hybrid list indices */
+      };
+      
+      multi1d<int> perm;                  /*!< This particular permutation of quark orderings */
+      multi1d<TimeSlices_t> time_slices;  /*!< Time slices of the lattice that are used */
     };
-
+    
     multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
-
+    
+    GroupXML_t    smearing;          /*!< String holding quark smearing xml */
+    
     Seed          seed_l;            /*!< Id of left quark */
     Seed          seed_m;            /*!< Id of middle quark */
     Seed          seed_r;            /*!< Id of right quark */
-
-    multi1d<Seed> qid ;
-    int           mom2_max;
-    int           j_decay;
-    multi1d<BaryonOperatorInsertion_t> orderings;  /*!< Array is over quark orderings */
+    
+    int           operator_num;      /*!< Operator number within file */
+    std::string   id;                /*!< Tag/ID used in analysis codes */
+    
+    int           mom2_max;          /*!< |\vec{p}|^2 */
+    int           decay_dir;         /*!< Direction of decay */
+    multi1d<Orderings_t> orderings;  /*!< Array is over quark orderings */
   };
+
 
 
   //! Serialize generalized operator object

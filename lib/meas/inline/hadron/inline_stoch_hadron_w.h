@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_hadron_w.h,v 1.2 2007-09-15 02:39:25 kostas Exp $
+// $Id: inline_stoch_hadron_w.h,v 1.3 2007-09-18 20:47:10 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -54,12 +54,12 @@ namespace Chroma
     } param;
     
     struct Flavor_t{
-      //! Flavor 0: up, 1: down, 2: strange, 3: charm, 4: bottom 
+      //! Assumed flavor ordering: up down strange charm  bottom ... 
       struct Dilutions_t{
 	multi1d<std::string> soln_files;
       };
     
-      multi1d<Dilutions_t>  flavor;
+      multi1d<Dilutions_t>  quark;
     };
     
     //this is not needed. The output file leaves in the operator XML
