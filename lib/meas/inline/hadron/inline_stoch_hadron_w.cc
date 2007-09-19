@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.3 2007-09-18 20:47:10 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.4 2007-09-19 03:42:01 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -243,54 +243,34 @@ namespace Chroma
   };
   
 
-  //! Baryon operator
-  struct BaryonOperator_t
-  {
+ //! Baryon operator
+  struct BaryonOperator_t{
     //! Baryon operator time slices
-    struct TimeSlices_t
-    {
-      int                  t0;          /*!< Source time location */
-      //! Quark orderings within a baryon operator
-      //! Momentum projected correlator
-      struct Mom_t
-      {
-	multi1d<int>       mom;       /*!< D-1 momentum of this operator */
-	multi1d<DComplex>  op;        /*!< Momentum projected operator */
-	
-      
-	struct Orderings_t
-	{
+    struct TimeSlice_t{
+      struct Mom_t{
+	struct Permut_t{
 	  //! Baryon operator dilutions
-	  struct Dilutions_t
-	  {
-	    
-	    multi1d<Mom_t> mom_projs;       /*!< Holds momentum projections of the operator */
-	};
-      };
-	
-      };
-	multi3d<Dilutions_t> dilutions;   /*!< Hybrid list indices */
-      };
-      
-      multi1d<int> perm;                  /*!< This particular permutation of quark orderings */
-      multi1d<TimeSlices_t> time_slices;  /*!< Time slices of the lattice that are used */
-    };
-    
-    multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
-    
+	  struct Dilutions_t{
+	    multi3d<DComplex> d;
+	    //vector<vector<vector<complex<double> > > > d ;
+	  } ;
+	  vector<Dilutions_t> s;
+	  Permut_t(){s.resize(4);}
+	} ;
+	map<Key,Permut_t> p ;
+      } ;
+      map<Key,Mom_t> m;
+    } ;
+    map<int, TimeSlice_t> t;
+  
     GroupXML_t    smearing;          /*!< String holding quark smearing xml */
-    
-    Seed          seed_l;            /*!< Id of left quark */
-    Seed          seed_m;            /*!< Id of middle quark */
-    Seed          seed_r;            /*!< Id of right quark */
-    
-    int           operator_num;      /*!< Operator number within file */
-    std::string   id;                /*!< Tag/ID used in analysis codes */
-    
-    int           mom2_max;          /*!< |\vec{p}|^2 */
-    int           decay_dir;         /*!< Direction of decay */
-    multi1d<Orderings_t> orderings;  /*!< Array is over quark orderings */
-  };
+    multi1d<Seed> seed  ;            /*!< Id of quarks */
+
+   std::string   id;                /*!< Tag/ID used in analysis codes */
+   
+   int           mom2_max;          /*!< |\vec{p}|^2 */
+   int           decay_dir;         /*!< Direction of decay */
+ };
 
 
 
