@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.4 2007-09-19 03:42:01 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.5 2007-09-20 20:15:47 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -54,41 +54,38 @@ namespace Chroma
 
 
   // Read solution files
-  void read(XMLReader& xml, const string& path, InlineStochHadronParams::Flavor_t::Dilutions_t& input)
+  void read(XMLReader& xml, const string& path, InlineStochHadronParams::Flavor_t::TimeSlice_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "soln_files", input.soln_files);
+    read(inputtop, "t", input.t);
+    read(inputtop, "dilution_files", input.dilution_files);
   }
 
   // Write solution files
-  void write(XMLWriter& xml, const string& path, const InlineStochHadronParams::Flavor_t::Dilutions_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineStochHadronParams::Flavor_t::TimeSlice_t& input)
   {
     push(xml, path);
-    write(xml, "soln_files", input.soln_files);
+    write(xml, "t", input.t);
+    write(xml, "dilution_files", input.dilution_files);
     pop(xml);s
   }
 
-
-
+ // Read solution files
   void read(XMLReader& xml, const string& path, InlineStochHadronParams::Flavor_t& input)
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "quark", input.quark);
+    read(inputtop, "time_slices", input.time_slices);
   }
 
-
-  // Propagator parameters
+  // Write solution files
   void write(XMLWriter& xml, const string& path, const InlineStochHadronParams::Flavor_t& input)
   {
     push(xml, path);
-
-    write(xml, "quark", input.quark);
-
-    pop(xml);
+    write(xml, "time_slices", input.time_slices);
+    pop(xml);s
   }
-
 
   // Reader for input parameters
   void read(XMLReader& xml, const string& path, InlineStochHadronParams::Param_t& param)
@@ -237,11 +234,34 @@ namespace Chroma
       
       multi1d<Dilutions_t>  dilutions;
     };
-    int   decay_dir;
+    //int   time_dir;
     Seed  seed;
     multi1d<TimeSlices_t>  time_slices;
   };
   
+  class Key{
+  public:
+    multi1d<int> k;
+    Key(){
+      k.resize(3);
+      k[0]=k[1]=k[2]=0;
+    }
+    Key(int i,int j, int l){
+      k.resize(3);
+       k[0]=i ;  k[1]=j ; k[2]=l ;
+    }
+    Key& set(int i,int j, int l){
+      k[0]=i ; k[1]=j ; k[2]=l ;
+      return *this ;
+    }
+    //     int operator[](const int i){return k[i];} const 
+    
+    ~Key(){} ;
+  };
+  
+  bool operator<(const Key& a, const Key& b){
+    return (a.k<b.k) ;
+  }
 
  //! Baryon operator
   struct BaryonOperator_t{
@@ -254,7 +274,7 @@ namespace Chroma
 	    multi3d<DComplex> d;
 	    //vector<vector<vector<complex<double> > > > d ;
 	  } ;
-	  vector<Dilutions_t> s;
+	  multi1d<Dilutions_t> s;
 	  Permut_t(){s.resize(4);}
 	} ;
 	map<Key,Permut_t> p ;
@@ -265,99 +285,83 @@ namespace Chroma
   
     GroupXML_t    smearing;          /*!< String holding quark smearing xml */
     multi1d<Seed> seed  ;            /*!< Id of quarks */
-
-   std::string   id;                /*!< Tag/ID used in analysis codes */
-   
-   int           mom2_max;          /*!< |\vec{p}|^2 */
-   int           decay_dir;         /*!< Direction of decay */
- };
-
-
-
-  //! Serialize generalized operator object
-  multi1d<Complex> BaryonOperator_t::serialize()
-  {
-    int orderings_size = orderings.size();
-    int op_size3   = orderings[0].op.size3();
-    int op_size2   = orderings[0].op.size2();
-    int op_size1   = orderings[0].op.size1();
-    int ind_size   = orderings[0].op(0,0,0).ind.size();
-    int elem_size2 = orderings[0].op(0,0,0).ind[0].elem.size2();
-    int elem_size1 = orderings[0].op(0,0,0).ind[0].elem.size1();
-
-//    QDPIO::cout << "orderings=" << orderings_size << endl;
-//    QDPIO::cout << "op_size3=" << op_size3 << endl;
-//    QDPIO::cout << "op_size2=" << op_size2 << endl;
-//    QDPIO::cout << "op_size1=" << op_size1 << endl;
-//    QDPIO::cout << "ind_size=" << ind_size << endl;
-//    QDPIO::cout << "elem_size2=" << elem_size2 << endl;
-//    QDPIO::cout << "elem_size1=" << elem_size1 << endl;
-
-    // dreadful hack - use a complex to hold an int
-    Complex ord_sizes, op_sizes1, op_sizes2, elem_sizes;
-    ord_sizes   = cmplx(Real(orderings_size), Real(zero));
-    op_sizes1   = cmplx(Real(op_size2), Real(op_size1));
-    op_sizes2   = cmplx(Real(op_size3), Real(ind_size));
-    elem_sizes  = cmplx(Real(elem_size2), Real(elem_size1));
-
-    multi1d<Complex> mesprop_1d(4 + orderings_size*op_size3*op_size2*op_size1*ind_size*elem_size2*elem_size1);
-
-//    QDPIO::cout << "mesprop_size=" << mesprop_1d.size() << endl;
-
-    int cnt = 0;
-
-    mesprop_1d[cnt++] = ord_sizes;
-    mesprop_1d[cnt++] = op_sizes1;
-    mesprop_1d[cnt++] = op_sizes2;
-    mesprop_1d[cnt++] = elem_sizes;
-
-    for(int s=0; s < orderings.size(); ++s)             // orderings
-    {
-      for(int i=0; i < orderings[s].op.size3(); ++i)             // op_l
-	for(int j=0; j < orderings[s].op.size2(); ++j)           // op_m
-	  for(int k=0; k < orderings[s].op.size1(); ++k)         // op_r
-	    for(int l=0; l < orderings[s].op(i,j,k).ind.size(); ++l)    // ind
-	      for(int a=0; a < orderings[s].op(i,j,k).ind[l].elem.size2(); ++a)    // elem_l
-		for(int b=0; b < orderings[s].op(i,j,k).ind[l].elem.size1(); ++b)  // elem_r
-		  mesprop_1d[cnt++] = orderings[s].op(i,j,k).ind[l].elem(a,b);
-    }
-
-    if (cnt != mesprop_1d.size())
-    {
-      QDPIO::cerr << InlineStochHadronEnv::name << ": size mismatch in serialization" << endl;
-      QDP_abort(1);
-    }
-
-    return mesprop_1d;
-  }
-
+    
+    std::string   id;                /*!< Tag/ID used in analysis codes */
+    
+    int           mom2_max;          /*!< |\vec{p}|^2 */
+    int           time_dir;         /*!< Direction of decay */
+  };
 
   //! BaryonOperator header writer
   void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
   {
-    if( path != "." )
-      push(xml, path);
+    push(xml, path);
 
     int version = 1;
     write(xml, "version", version);
     write(xml, "mom2_max", param.mom2_max);
-    write(xml, "j_decay", param.j_decay);
-    write(xml, "seed_l", param.seed_l);
-    write(xml, "seed_m", param.seed_m);
-    write(xml, "seed_r", param.seed_r);
-    write(xml, "perms", param.perms);
+    write(xml, "time_dir", param.time_dir);
+    write(xml, "seed", param.seed);
+    xml <<  param.smearing.xml;
 
-    if( path != "." )
-      pop(xml);
+    pop(xml);
   }
 
+  //! Key binary writer
+  void write(BinaryWriter& bin, const Key& klidi){
+    write(bin, klidi.k);
+  }
 
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlice_t::Mom_t::Permut_t::Dilutions_t& dil){
+    write(bin, dil.d);
+  }
+  
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlice_t::Mom_t::Permut_t& p){
+    write(bin, p.s);
+  }
+  
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlice_t::Mom_t& mm){
+    map<Key,BaryonOperator_t::TimeSlice_t::Mom_t::Permut_t>::iterator it;
+    for(mm.begin();it != mm.end();it++){
+      write(bin, it->first);
+      write(bin, it->second);
+    }
+  }
+  
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlice_t& tt){
+    map<Key,BaryonOperator_t::TimeSlice_t::Mom_t>::iterator it;
+    for(tt.begin();it != tt.end();it++){
+      write(bin, it->first);
+      write(bin, it->second);
+    }
+  }
+
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, const BaryonOperator_t& bo){
+    int version = 1;
+    write(bin, param.mom2_max);
+    write(bin, param.time_dir);
+    write(bin, param.seed);
+
+    map<int,BaryonOperator_t::TimeSlice_t>::iterator it;
+    for(bo.begin();it != bo.end();it++){
+      write(bin, it->first);
+      write(bin, it->second);
+    }
+  }
+  
 
   //--------------------------------------------------------------
   // Function call
-  void 
-  InlineStochHadron::operator()(unsigned long update_no,
-				XMLWriter& xml_out) 
+  //  void 
+  //InlineStochHadron::operator()(unsigned long update_no,
+  //				XMLWriter& xml_out) 
+  void InlineMeas::operator()(unsigned long update_no,
+			   XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
@@ -380,9 +384,11 @@ namespace Chroma
 
 
   // Function call
-  void 
-  InlineStochHadron::func(unsigned long update_no,
-			  XMLWriter& xml_out) 
+  //void 
+  //InlineStochHadron::func(unsigned long update_no,
+  //			  XMLWriter& xml_out) 
+  void InlineMeas::func(unsigned long update_no,
+			XMLWriter& xml_out) 
   {
     START_CODE();
 
@@ -412,15 +418,15 @@ namespace Chroma
     const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-    push(xml_out, "stoch_baryon");
+    push(xml_out, "stoch_hadron");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineStochHadronEnv::name << ": Stochastic Baryon Operator" << endl;
+    QDPIO::cout << InlineStochHadronEnv::name << ": Stochastic Hadron Operator" << endl;
 
     proginfo(xml_out);    // Print out basic program info
 
     // Write out the input
-    params.write(xml_out, "Input");
+    params.writeXML(xml_out, "Input");
 
     // Write out the config info
     write(xml_out, "Config_info", gauge_xml);
@@ -444,29 +450,65 @@ namespace Chroma
     swatch.reset();
     swatch.start();
 
-    multi1d<QuarkSourceSolutions_t>  quarks(params.named_obj.prop.op.size());
-    QDPIO::cout << "num_quarks= " << params.named_obj.prop.op.size() << endl;
+    multi1d<QuarkSourceSolutions_t>  quarks(params.named_obj.flavors.size());
+    QDPIO::cout << "Number of quark flavors= " << params.named_obj.flavors.size() << endl;
 
+    // Grab the decay direction
+    int time_dir(-1) ;
     try
     {
       QDPIO::cout << "quarks.size= " << quarks.size() << endl;
-      for(int n=0; n < quarks.size(); ++n)
-      {
-	QDPIO::cout << "Attempt to read solutions for source number=" << n << endl;
-	quarks[n].dilutions.resize(params.named_obj.prop.op[n].soln_files.size());
+      for(int n=0; n < quarks.size(); ++n){
+	QDPIO::cout << "Attempt to read solutions for quark number=" << n << endl;
+	quarks[n].time_slices.resize(params.named_obj.flavors[n].time_slices.size());
+	QDPIO::cout << "    time_slices.size= " << quarks[n].time_slices.size() << endl;
+	for(int i(0); i < quarks.size(); i++){
+	  int t = params.named_obj.flavors.time_slices[i].t;
+	  QDPIO::cout << "         ........ on  timeslice t=" << t << endl;
+	  quarks[n].time_slices[i].dilutions.resize(params.named_obj.flavors[n].time_slices[i].dilution_files.size());
+	  QDPIO::cout << "     dilutions.size= " << quarks[n].dilutions.size() << endl;
+	  for(int d=0; d < quarks[n].time_slices[i].dilutions.size(); d++){
+	    QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t& qq = 
+	      quarks[n].time_slices[i].dilutions[d] ;
 
-	QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << endl;
-	for(int i=0; i < quarks[n].dilutions.size(); ++i)
-	{
-	  XMLReader file_xml, record_xml;
-
-	  QDPIO::cout << "reading file= " << params.named_obj.prop.op[n].soln_files[i] << endl;
-	  QDPFileReader from(file_xml, params.named_obj.prop.op[n].soln_files[i], QDPIO_SERIAL);
-	  read(from, record_xml, quarks[n].dilutions[i].soln);
-	  close(from);
+	    XMLReader file_xml, record_xml;
+	    QDPIO::cout << "reading file= " ;
+	    QDPIO::cout << params.named_obj.flavors[n].time_slices[i].dilution_files[d]<<endl;
+	    QDPFileReader from(file_xml,params.named_obj.flavors[n].time_slices[i].dilution_files[d] , QDPIO_SERIAL);
+	    read(from, record_xml, qq.soln);
+	    close(from);
 	
-	  read(record_xml, "/Propagator/PropSource", quarks[n].dilutions[i].source_header);
-	  read(record_xml, "/Propagator/ForwardProp", quarks[n].dilutions[i].prop_header);
+	    read(record_xml, "/Propagator/PropSource",  qq.source_header);
+	    read(record_xml, "/Propagator/ForwardProp", qq.prop_header);
+	    qq.t0 = qq.source_header.t_source ;
+	    if(time_dir<0) time_dir =   qq.source_header.j_decay;
+	    if(time_dir !=   qq.source_header.j_decay){
+	      QDPIO::cerr << "Time direction "<< time_dir <<endl ;
+	      QDPIO::cerr << "Time direction found"<<  qq.source_header.j_decay <<endl ;
+	      throw std::string("Time directions not equal!");
+	    }
+	    if (qq.source_header.source.id != DiluteZNQuarkSourceConstEnv::name){
+	      QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
+	      throw std::string("Bad source...!!");
+	    }
+	    std::istringstream  xml_s(qq.source_header.source.xml);
+	    XMLReader  sourcetop(xml_s);
+	    DiluteZNQuarkSourceConstEnv::Params  srcParams(sourcetop, 
+							   qq.source_header.source.path);
+	    DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
+	    // NEED TO GET THE N. N has to be the same for all sources in a given flavor... 
+	    qq.source = srcConst(u)  ;
+	    if((i==0)&&(d==0)){
+	      quarks[n].seed = srcParams.ran_seed ;  
+	    }
+	    else if(quarks[n].seed != srcParams.ran_seed) {
+	      QDPIO::cerr << "quark source= " << n ;
+	      QDPIO::cerr << " time slice= "<<qq.t0 ;
+	      QDPIO::cerr << " dilution= " << d << " seed does not match" << endl;
+	      throw std::string("seeds do not match...!!");
+	    }
+	    // I AM HERE...
+	  } // dilutions
 	}
       }
     }
