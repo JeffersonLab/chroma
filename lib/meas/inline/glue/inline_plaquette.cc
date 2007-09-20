@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.cc,v 3.7 2007-09-20 19:08:29 edwards Exp $
+// $Id: inline_plaquette.cc,v 3.8 2007-09-20 19:16:57 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -174,7 +174,7 @@ namespace Chroma
   InlinePlaquette::func(const unsigned long update_no, 
 			XMLWriter& xml_out) 
   {
-    QDPIO::cout << name << ": entering" << endl;
+    QDPIO::cout << InlinePlaquetteEnv::name << ": entering" << endl;
 
     START_CODE();
     
@@ -192,7 +192,7 @@ namespace Chroma
 	std::istringstream  xml_s(params.param.cgs.xml);
 	XMLReader  gaugetop(xml_s);
 
-	QDPIO::cout << name << ": create the CreateGaugeState" << endl;
+	QDPIO::cout << InlinePlaquetteEnv::name << ": create the CreateGaugeState" << endl;
 	Handle<CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
 	  cgs(TheCreateGaugeStateFactory::Instance().createObject(params.param.cgs.id,
 								  gaugetop,
@@ -202,17 +202,17 @@ namespace Chroma
 	if (0 == *cgs)
 	{
 	  // This might happen on any node, so report it
-	  cerr << name << ": error - the cgs is null in " << __func__ << endl;
+	  cerr << InlinePlaquetteEnv::name << ": error - the cgs is null in " << __func__ << endl;
 	  QDP_abort(1);
 	}
 
-	QDPIO::cout << name << ": apply createGaugeState" << endl;
+	QDPIO::cout << InlinePlaquetteEnv::name << ": apply createGaugeState" << endl;
 	Handle<GaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
 	  state((*cgs)(u));
 
 	// Pull the u fields back out from the state since they might have been
 	// munged with gaugeBC's
-	QDPIO::cout << name << ": get the links" << endl;
+	QDPIO::cout << InlinePlaquetteEnv::name << ": get the links" << endl;
 	u = state->getLinks();
       }
     }
@@ -229,7 +229,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    QDPIO::cout << name << ": compute plaquette" << endl;
+    QDPIO::cout << InlinePlaquetteEnv::name << ": compute plaquette" << endl;
     push(xml_out, "Plaquette");
     write(xml_out, "update_no", update_no);
 
@@ -265,7 +265,7 @@ namespace Chroma
     
     END_CODE();
 
-    QDPIO::cout << name << ": exiting" << endl;
+    QDPIO::cout << InlinePlaquetteEnv::name << ": exiting" << endl;
   } 
 
 }
