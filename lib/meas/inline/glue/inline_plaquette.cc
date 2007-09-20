@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.cc,v 3.6 2007-04-09 18:41:57 bjoo Exp $
+// $Id: inline_plaquette.cc,v 3.7 2007-09-20 19:08:29 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -22,10 +22,16 @@ namespace Chroma
     namespace
     {
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					      const std::string& path) {
-	
-	InlinePlaquetteParams p(xml_in, path);
-	return new InlinePlaquette(p);
+					      const std::string& path) 
+      {
+	AbsInlineMeasurement* p = new InlinePlaquette(InlinePlaquetteParams(xml_in, path));
+	if (0 == p)
+	{
+	  // This might happen on any node, so report it
+	  cerr << name << ": error creating InlinePlaquette in " << __func__ << endl;
+	  QDP_abort(1);
+	}
+	return p;
       }
 
       //! Local registration flag
@@ -57,14 +63,13 @@ namespace Chroma
 
     int version;
     read(paramtop, "version", version);
+    param.cgs = CreateGaugeStateEnv::nullXMLGroup();
 
     switch (version) 
     {
     case 2:
       if (paramtop.count("GaugeState") != 0)
 	param.cgs = readXMLGroup(paramtop, "GaugeState", "Name");
-      else
-	param.cgs = CreateGaugeStateEnv::nullXMLGroup();
       break;
 
     default:
@@ -169,6 +174,8 @@ namespace Chroma
   InlinePlaquette::func(const unsigned long update_no, 
 			XMLWriter& xml_out) 
   {
+    QDPIO::cout << name << ": entering" << endl;
+
     START_CODE();
     
     // Test and grab a reference to the gauge field
@@ -185,16 +192,27 @@ namespace Chroma
 	std::istringstream  xml_s(params.param.cgs.xml);
 	XMLReader  gaugetop(xml_s);
 
+	QDPIO::cout << name << ": create the CreateGaugeState" << endl;
 	Handle<CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
 	  cgs(TheCreateGaugeStateFactory::Instance().createObject(params.param.cgs.id,
 								  gaugetop,
 								  params.param.cgs.path));
 
+	// Additional paranoia
+	if (0 == *cgs)
+	{
+	  // This might happen on any node, so report it
+	  cerr << name << ": error - the cgs is null in " << __func__ << endl;
+	  QDP_abort(1);
+	}
+
+	QDPIO::cout << name << ": apply createGaugeState" << endl;
 	Handle<GaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
 	  state((*cgs)(u));
 
 	// Pull the u fields back out from the state since they might have been
 	// munged with gaugeBC's
+	QDPIO::cout << name << ": get the links" << endl;
 	u = state->getLinks();
       }
     }
@@ -211,6 +229,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    QDPIO::cout << name << ": compute plaquette" << endl;
     push(xml_out, "Plaquette");
     write(xml_out, "update_no", update_no);
 
@@ -245,6 +264,8 @@ namespace Chroma
     pop(xml_out); // pop("Plaquette");
     
     END_CODE();
+
+    QDPIO::cout << name << ": exiting" << endl;
   } 
 
-};
+}
