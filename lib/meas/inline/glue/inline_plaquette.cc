@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.cc,v 3.8 2007-09-20 19:16:57 edwards Exp $
+// $Id: inline_plaquette.cc,v 3.9 2007-09-20 19:19:20 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -199,7 +199,7 @@ namespace Chroma
 								  params.param.cgs.path));
 
 	// Additional paranoia
-	if (0 == *cgs)
+	if (0 == cgs.operator->())
 	{
 	  // This might happen on any node, so report it
 	  cerr << InlinePlaquetteEnv::name << ": error - the cgs is null in " << __func__ << endl;
