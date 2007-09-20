@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.16 2007-08-19 21:26:24 uid3790 Exp $
+// $Id: hmc.cc,v 3.17 2007-09-20 19:11:55 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -770,22 +770,27 @@ Chroma::initialize(&argc, &argv);
   } 
   catch(std::bad_cast) 
   {
-    QDPIO::cerr << "hmc: caught cast error" << endl;
+    QDPIO::cerr << "HMC: caught cast error" << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_alloc) 
+  { 
+    QDPIO::cerr << "HMC: caught bad memory allocation" << endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
   { 
-    QDPIO::cerr << "hmc: Caught string exception: " << e << endl;
+    QDPIO::cerr << "HMC: Caught string exception: " << e << endl;
     QDP_abort(1);
   }
   catch(std::exception& e) 
   {
-    QDPIO::cerr << "hmc: Caught standard library exception: " << e.what() << endl;
+    QDPIO::cerr << "HMC: Caught standard library exception: " << e.what() << endl;
     QDP_abort(1);
   }
   catch(...) 
   {
-    QDPIO::cerr << "hmc: Caught generic/unknown exception" << endl;
+    QDPIO::cerr << "HMC: Caught generic/unknown exception" << endl;
     QDP_abort(1);
   }
 

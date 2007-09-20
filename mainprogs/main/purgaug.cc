@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.6 2006-09-20 20:28:06 edwards Exp $
+// $Id: purgaug.cc,v 3.7 2007-09-20 19:11:55 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -699,16 +699,29 @@ int main(int argc, char *argv[])
   {
     doHB(u, *S_g, hb_control, the_measurements);
   } 
-  catch( const std::string& e ) { 
-    QDPIO::cerr << "Caught string exception: " << e << endl;
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "PURGAUG: caught cast error" << endl;
     QDP_abort(1);
   }
-  catch( std::exception& e ) {
-    QDPIO::cerr << "Caught standard library exception: " << e.what() << endl;
+  catch(std::bad_alloc) 
+  { 
+    QDPIO::cerr << "PURGAUG: caught bad memory allocation" << endl;
     QDP_abort(1);
   }
-  catch(...) {
-    QDPIO::cerr << "Caught unknown exception " << endl;
+  catch(const std::string& e) 
+  { 
+    QDPIO::cerr << "PURGAUG: Caught string exception: " << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::exception& e) 
+  {
+    QDPIO::cerr << "PURGAUG: Caught standard library exception: " << e.what() << endl;
+    QDP_abort(1);
+  }
+  catch(...) 
+  {
+    QDPIO::cerr << "PURGAUG: Caught generic/unknown exception" << endl;
     QDP_abort(1);
   }
 

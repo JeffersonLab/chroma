@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 3.9 2007-06-10 14:40:23 edwards Exp $
+// $Id: chroma.cc,v 3.10 2007-09-20 19:11:55 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -240,6 +240,11 @@ int main(int argc, char *argv[])
   catch(std::bad_cast) 
   {
     QDPIO::cerr << "CHROMA: caught cast error" << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_alloc) 
+  { 
+    QDPIO::cerr << "CHROMA: caught bad memory allocation" << endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
