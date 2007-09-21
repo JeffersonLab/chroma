@@ -1,4 +1,4 @@
-// $Id: simple_baryon_seqsrc_w.cc,v 3.4 2006-12-11 17:20:34 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.cc,v 3.5 2007-09-21 05:08:05 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -28,47 +28,39 @@ namespace Chroma
   }
 
 
-  namespace SimpleBaryonSeqSourceEnv
+  //! Anonymous namespace
+  /*! \ingroup hadron */
+  namespace
   { 
-    //! The T and Spin struct
     /*! \ingroup hadron */
     struct SpinMatTsp_t
     {
-      GroupXML_t  T_xml;          /*!< Holds source xml params*/
-      SpinMatrix  T;
-
-      GroupXML_t  sp_xml;         /*!< Holds source xml params*/
-      SpinMatrix  sp;
+      SpinMatrix  T;   /*!< Baryon spin projector */
+      SpinMatrix  sp;  /*!< Gamma matrices within the diquark */
     };
+
+    //! Read a spin matrix from a FunctionMap
+    void read(XMLReader& xml, const string& path, SpinMatrix& p)
+    {
+      XMLReader paramtop(xml, path);
+
+      string name;
+      read(paramtop, "name", name);
+
+//    QDPIO::cout << __func__ << ": fire up BarSpinMatFuncMap for name=" << name << endl;
+      p = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(name, xml, path);
+    }
+
+    //! Read a T and sp struct
+    /*! \ingroup hadron */
+    void read(XMLReader& xml, const string& path, SpinMatTsp_t& param)
+    {
+      XMLReader paramtop(xml, path);
+
+      read(paramtop, "Projector", param.T);
+      read(paramtop, "DiquarkSpin", param.sp);
+    }
   }
-
-
-  //! Read a T and sp struct
-  /*! \ingroup hadron */
-  void read(XMLReader& xml, const string& path, SimpleBaryonSeqSourceEnv::SpinMatTsp_t& param)
-  {
-    XMLReader paramtop(xml, path);
-
-    param.T_xml   = readXMLGroup(paramtop, "Projector", "name");
-    param.sp_xml  = readXMLGroup(paramtop, "DiquarkSpin", "name");
-
-    param.T = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(
-      param.T_xml.id, paramtop, param.T_xml.path);
-    param.sp = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(
-      param.sp_xml.id, paramtop, param.sp_xml.path);
-  }
-
-  // Writer
-  void write(XMLWriter& xml, const string& path, const SimpleBaryonSeqSourceEnv::SpinMatTsp_t& param)
-  {
-    push(xml, path);
-
-    xml << param.T_xml.xml;
-    xml << param.sp_xml.xml;
-
-    pop(xml);
-  }
-
 
 
   // Anonymous namespace
