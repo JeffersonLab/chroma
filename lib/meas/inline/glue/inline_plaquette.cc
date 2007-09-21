@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.cc,v 3.11 2007-09-21 11:31:30 edwards Exp $
+// $Id: inline_plaquette.cc,v 3.12 2007-09-21 11:42:18 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -192,6 +192,7 @@ namespace Chroma
 
 	// Set the construct state and modify the fields
 	{
+	  QDPIO::cout << InlinePlaquetteEnv::name << ": drop in cgs xml" << endl;
 	  std::istringstream  xml_s(params.param.cgs.xml);
 	  XMLReader  gaugetop(xml_s);
 
