@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.17 2007-09-20 19:11:55 edwards Exp $
+// $Id: hmc.cc,v 3.18 2007-09-21 04:38:45 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -305,10 +305,10 @@ namespace Chroma
     push(xml_log, "doHMC");
 
     multi1d< Handle< AbsInlineMeasurement > > default_measurements(1);
-    InlinePlaquetteParams plaq_params;
+    InlinePlaquetteEnv::Params plaq_params;
     plaq_params.frequency = 1;
     // It is a handle
-    default_measurements[0] = new InlinePlaquette(plaq_params);
+    default_measurements[0] = new InlinePlaquetteEnv::InlineMeas(plaq_params);
 
     {
       // Initialise the RNG
@@ -775,7 +775,8 @@ Chroma::initialize(&argc, &argv);
   }
   catch(std::bad_alloc) 
   { 
-    QDPIO::cerr << "HMC: caught bad memory allocation" << endl;
+    // This might happen on any node, so report it
+    cerr << "HMC: caught bad memory allocation" << endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 

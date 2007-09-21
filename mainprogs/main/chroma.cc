@@ -1,4 +1,4 @@
-// $Id: chroma.cc,v 3.10 2007-09-20 19:11:55 edwards Exp $
+// $Id: chroma.cc,v 3.11 2007-09-21 04:38:45 edwards Exp $
 /*! \file
  *  \brief Main program to run all measurement codes.
  */
@@ -160,6 +160,12 @@ int main(int argc, char *argv[])
     QDPIO::cerr << "CHROMA: caught cast error" << endl;
     QDP_abort(1);
   }
+  catch(std::bad_alloc) 
+  { 
+    // This might happen on any node, so report it
+    cerr << "CHROMA: caught bad memory allocation" << endl;
+    QDP_abort(1);
+  }
   catch(const std::string& e) 
   {
     QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
@@ -172,7 +178,8 @@ int main(int argc, char *argv[])
   }
   catch(...)
   {
-    QDPIO::cerr << "CHROMA: caught generic exception during measurement" << endl;
+    // This might happen on any node, so report it
+    cerr << "CHROMA: caught generic exception during gaugeInit" << endl;
     QDP_abort(1);
   }
   swatch.stop();
@@ -244,7 +251,8 @@ int main(int argc, char *argv[])
   }
   catch(std::bad_alloc) 
   { 
-    QDPIO::cerr << "CHROMA: caught bad memory allocation" << endl;
+    // This might happen on any node, so report it
+    cerr << "CHROMA: caught bad memory allocation" << endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
@@ -259,7 +267,8 @@ int main(int argc, char *argv[])
   }
   catch(...)
   {
-    QDPIO::cerr << "CHROMA: caught generic exception during measurement" << endl;
+    // This might happen on any node, so report it
+    cerr << "CHROMA: caught generic exception during measurement" << endl;
     QDP_abort(1);
   }
   pop(xml_out);

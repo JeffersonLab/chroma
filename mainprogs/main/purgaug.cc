@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.7 2007-09-20 19:11:55 edwards Exp $
+// $Id: purgaug.cc,v 3.8 2007-09-21 04:38:45 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -513,10 +513,10 @@ namespace Chroma
     push(xml_out, "doHB");
 
     multi1d< Handle< AbsInlineMeasurement > > default_measurements(1);
-    InlinePlaquetteParams plaq_params;
+    InlinePlaquetteEnv::Params plaq_params;
     plaq_params.frequency = 1;
     // It is a handle
-    default_measurements[0] = new InlinePlaquette(plaq_params);
+    default_measurements[0] = new InlinePlaquetteEnv::InlineMeas(plaq_params);
 
     try 
     {
