@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.cc,v 3.10 2007-09-21 04:38:45 edwards Exp $
+// $Id: inline_plaquette.cc,v 3.11 2007-09-21 11:31:30 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -177,13 +177,17 @@ namespace Chroma
 
       START_CODE();
     
+      QDPIO::cout << InlinePlaquetteEnv::name << ": declare things" << endl;
+
       // Test and grab a reference to the gauge field
       multi1d<LatticeColorMatrix> u;
       XMLBufferWriter gauge_xml;
 
       try
       {
+	QDPIO::cout << InlinePlaquetteEnv::name << ": extract gauge field" << endl;
 	u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+	QDPIO::cout << InlinePlaquetteEnv::name << ": extract gauge xml" << endl;
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
 	// Set the construct state and modify the fields
