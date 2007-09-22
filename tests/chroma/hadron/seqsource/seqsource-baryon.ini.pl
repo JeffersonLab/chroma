@@ -129,7 +129,8 @@ foreach $seq_src ("NUCL_U_UNPOL", "NUCL_D_UNPOL",
 		  "NUCL_U_UNPOL_NONREL", "NUCL_D_UNPOL_NONREL", 
 		  "NUCL_U_POL_NONREL", "NUCL_D_POL_NONREL", 
 		  "NUCL_U_MIXED_NONREL", "NUCL_D_MIXED_NONREL",
-		  "NUCL_U_MIXED_NONREL_NEGPAR", "NUCL_D_MIXED_NONREL_NEGPAR")
+		  "NUCL_U_MIXED_NONREL_NEGPAR", "NUCL_D_MIXED_NONREL_NEGPAR",
+		  "NUCL-NUCL_U", "NUCL-NUCL_D")
 {
 
     $prop_ids[1] = "<prop_ids><elem>sh_prop_0</elem><elem>sh_prop_0</elem></prop_ids>";
@@ -141,7 +142,16 @@ foreach $seq_src ("NUCL_U_UNPOL", "NUCL_D_UNPOL",
     if ($seq_src =~ /_U_/)
     {
 	$id_index = 1;
-    } elsif ($seq_src =~ /_D_/)
+    } 
+    elsif ($seq_src =~ /_D_/)
+    {
+	$id_index = 2;
+    }
+    elsif ($seq_src =~ /_U$/)
+    {
+	$id_index = 1;
+    } 
+    elsif ($seq_src =~ /_D$/)
     {
 	$id_index = 2;
     }
@@ -158,6 +168,33 @@ print <<"EOF";
 
       <Name>SEQSOURCE</Name>
       <Frequency>1</Frequency>
+EOF
+
+if ($seq_src eq "NUCL-NUCL_U" || $seq_src eq "NUCL-NUCL_D")
+{
+print <<"EOF";
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>${seq_src}</SeqSourceType>
+          <Projector>
+            <name>TmixedNegPar</name>
+          </Projector>
+          <DiquarkSpin>
+            <name>Cg4gk</name>
+            <k>1</k>
+          </DiquarkSpin>
+          <j_decay>3</j_decay>
+          <t_sink>6</t_sink>
+          <sink_mom>1 0 0</sink_mom>
+        </SeqSource>
+      </Param>
+EOF
+}
+else
+{
+print <<"EOF";
       <Param>
         <version>2</version>
         <SeqSource>
@@ -168,6 +205,10 @@ print <<"EOF";
           <sink_mom>1 0 0</sink_mom>
         </SeqSource>
       </Param>
+EOF
+}
+
+print <<"EOF";
       <PropSink>
         <version>5</version>
         <Sink>
