@@ -30,4 +30,6 @@
 
 <assertion xpath="/chroma/InlineObservables/elem[61]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-6"/>
 
+<assertion xpath="/chroma/InlineObservables/elem[66]/SeqPropTest/LoopBackTest/norm2_diff" type="double" comparison="absolute" tolerance="1.0e-6"/>
+
 </assertions>
