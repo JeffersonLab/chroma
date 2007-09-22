@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.cc,v 3.12 2007-09-21 11:42:18 edwards Exp $
+// $Id: inline_plaquette.cc,v 3.13 2007-09-22 01:19:31 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -187,8 +187,13 @@ namespace Chroma
       {
 	QDPIO::cout << InlinePlaquetteEnv::name << ": extract gauge field" << endl;
 	u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
-	QDPIO::cout << InlinePlaquetteEnv::name << ": extract gauge xml" << endl;
-	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+//	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+
+	QDPIO::cout << InlinePlaquetteEnv::name << ": find gauge xml base" << endl;
+	const NamedObjectBase& nob(TheNamedObjMap::Instance().get(params.named_obj.gauge_id));
+
+	QDPIO::cout << InlinePlaquetteEnv::name << ": finally extract gauge xml" << endl;
+	nob.getRecordXML(gauge_xml);
 
 	// Set the construct state and modify the fields
 	{
