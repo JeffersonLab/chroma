@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: named_obj.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: named_obj.h,v 3.1 2007-09-22 01:19:03 edwards Exp $
 
 /*! @file
  * @brief Named object support
@@ -190,6 +190,12 @@ namespace Chroma
       // Note multi1d's need to be loked up and resized appropriately
       // and no XML files are added at this point
       the_map[id] = dynamic_cast<NamedObjectBase*>(new NamedObject<T>());
+      if (NULL == the_map[id])
+      {
+	ostringstream error_stream;
+        error_stream << "NamedObjectMap::create : error creating NamedObject for id= " << id << endl;
+        throw error_stream.str();
+      }
     }
 
 
