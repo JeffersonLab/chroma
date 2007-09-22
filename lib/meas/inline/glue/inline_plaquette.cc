@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.cc,v 3.13 2007-09-22 01:19:31 edwards Exp $
+// $Id: inline_plaquette.cc,v 3.14 2007-09-22 15:42:57 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -78,14 +78,7 @@ namespace Chroma
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					      const std::string& path) 
       {
-	AbsInlineMeasurement* p = new InlineMeas(Params(xml_in, path));
-	if (0 == p)
-	{
-	  // This might happen on any node, so report it
-	  cerr << name << ": error creating InlinePlaquette in " << __func__ << endl;
-	  QDP_abort(1);
-	}
-	return p;
+	return new InlineMeas(Params(xml_in, path));
       }
 
       //! Local registration flag
@@ -206,14 +199,6 @@ namespace Chroma
 	    cgs(TheCreateGaugeStateFactory::Instance().createObject(params.param.cgs.id,
 								    gaugetop,
 								    params.param.cgs.path));
-
-	  // Additional paranoia
-	  if (0 == cgs.operator->())
-	  {
-	    // This might happen on any node, so report it
-	    cerr << InlinePlaquetteEnv::name << ": error - the cgs is null in " << __func__ << endl;
-	    QDP_abort(1);
-	  }
 
 	  QDPIO::cout << InlinePlaquetteEnv::name << ": apply createGaugeState" << endl;
 	  Handle<GaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
