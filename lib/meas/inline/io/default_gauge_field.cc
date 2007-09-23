@@ -1,4 +1,4 @@
-// $Id: default_gauge_field.cc,v 3.3 2006-06-13 18:19:19 bjoo Exp $
+// $Id: default_gauge_field.cc,v 3.4 2007-09-23 15:42:04 edwards Exp $
 /*! \file
  * \brief Functions to set and get default gauge field
  */
@@ -75,7 +75,7 @@ namespace Chroma
     //! Set the default gauge field
     /*! \ingroup inlineio */
     void set(const multi1d<LatticeColorMatrix>& u,
-	     XMLBufferWriter& gauge_xml)
+	     XMLBufferWriter& record_xml)
     {
       START_CODE();
 
@@ -92,11 +92,10 @@ namespace Chroma
       // Set the default gauge field
       try
       {
-	XMLBufferWriter file_xml, record_xml;
+	XMLBufferWriter file_xml;
 	push(file_xml, "gauge");
 	write(file_xml, "id", int(0));
 	pop(file_xml);
-	record_xml << gauge_xml;
 
 	// Save the gauge field in this private buffer
 	TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(private_id);
