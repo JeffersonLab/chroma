@@ -1,4 +1,4 @@
-// $Id: inline_plaquette.cc,v 3.14 2007-09-22 15:42:57 edwards Exp $
+// $Id: inline_plaquette.cc,v 3.15 2007-09-27 04:33:49 edwards Exp $
 /*! \file
  *  \brief Inline plaquette
  */
@@ -166,47 +166,32 @@ namespace Chroma
     InlineMeas::func(const unsigned long update_no, 
 		     XMLWriter& xml_out) 
     {
-      QDPIO::cout << InlinePlaquetteEnv::name << ": entering" << endl;
-
       START_CODE();
     
-      QDPIO::cout << InlinePlaquetteEnv::name << ": declare things" << endl;
-
       // Test and grab a reference to the gauge field
       multi1d<LatticeColorMatrix> u;
       XMLBufferWriter gauge_xml;
 
       try
       {
-	QDPIO::cout << InlinePlaquetteEnv::name << ": extract gauge field" << endl;
 	u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
-//	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
-
-	QDPIO::cout << InlinePlaquetteEnv::name << ": find gauge xml base" << endl;
-	const NamedObjectBase& nob(TheNamedObjMap::Instance().get(params.named_obj.gauge_id));
-
-	QDPIO::cout << InlinePlaquetteEnv::name << ": finally extract gauge xml" << endl;
-	nob.getRecordXML(gauge_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
 	// Set the construct state and modify the fields
 	{
-	  QDPIO::cout << InlinePlaquetteEnv::name << ": drop in cgs xml" << endl;
 	  std::istringstream  xml_s(params.param.cgs.xml);
 	  XMLReader  gaugetop(xml_s);
 
-	  QDPIO::cout << InlinePlaquetteEnv::name << ": create the CreateGaugeState" << endl;
 	  Handle<CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
 	    cgs(TheCreateGaugeStateFactory::Instance().createObject(params.param.cgs.id,
 								    gaugetop,
 								    params.param.cgs.path));
 
-	  QDPIO::cout << InlinePlaquetteEnv::name << ": apply createGaugeState" << endl;
 	  Handle<GaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
 	    state((*cgs)(u));
 
 	  // Pull the u fields back out from the state since they might have been
 	  // munged with gaugeBC's
-	  QDPIO::cout << InlinePlaquetteEnv::name << ": get the links" << endl;
 	  u = state->getLinks();
 	}
       }
@@ -223,7 +208,6 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      QDPIO::cout << InlinePlaquetteEnv::name << ": compute plaquette" << endl;
       push(xml_out, "Plaquette");
       write(xml_out, "update_no", update_no);
 
@@ -258,8 +242,6 @@ namespace Chroma
       pop(xml_out); // pop("Plaquette");
     
       END_CODE();
-
-      QDPIO::cout << InlinePlaquetteEnv::name << ": exiting" << endl;
     } 
 
   } // namespace InlinePlaquetteEnv
