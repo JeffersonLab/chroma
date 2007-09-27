@@ -1,4 +1,4 @@
-// $Id: syssolver_cg_params.cc,v 3.3 2007-03-05 16:13:58 bjoo Exp $
+// $Id: syssolver_cg_params.cc,v 3.4 2007-09-27 14:47:53 kostas Exp $
 /*! \file
  *  \brief Params of CG inverter
  */
@@ -42,7 +42,7 @@ namespace Chroma
     write(xml, "RsdCG", param.RsdCG);
     write(xml, "MaxCG", param.MaxCG);
     write(xml, "RsdCGRestart", param.RsdCGRestart);
-    write(xml, "MaxCGRestart", param.RsdCGRestart);
+    write(xml, "MaxCGRestart", param.MaxCGRestart);
     pop(xml);
   }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_eigcg_params.h,v 1.2 2007-09-27 04:04:53 kostas Exp $
+// $Id: syssolver_eigcg_params.h,v 1.3 2007-09-27 14:47:53 kostas Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */
@@ -30,6 +30,8 @@ namespace Chroma
     Real  RsdCGRestart ; /*!< CG residual for restart. */
     
     int   vPrecCGvecs  ; /*!< number of vectors for preconditioned CG (if <=0 do regular CG) */
+  std:string eigen_id ; /*!< named buffer holding the eigenvectors */
+
   };
 
 
