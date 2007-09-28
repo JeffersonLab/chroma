@@ -1,4 +1,4 @@
-// $Id: syssolver_eigcg_params.cc,v 1.2 2007-09-27 14:47:53 kostas Exp $
+// $Id: syssolver_eigcg_params.cc,v 1.3 2007-09-28 02:09:42 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */
@@ -31,8 +31,10 @@ namespace Chroma
     }
 
     param.vPrecCGvecs = 0 ;
+    param.vPrecCGvecStart = 0 ;
     if(paramtop.count("vPrecCGvecs")!=0){
       read(paramtop, "vPrecCGvecs", param.vPrecCGvecs);
+      read(paramtop, "vPrecCGvecStart", param.vPrecCGvecStart);
     }
 
     
@@ -53,6 +55,7 @@ namespace Chroma
     write(xml, "Neig_max", param.Neig_max);
     write(xml, "RsdCGRestart", param.RsdCGRestart);
     write(xml, "vPrecCGvecs", param.vPrecCGvecs);
+    write(xml, "vPrecCGvecs", param.vPrecCGvecStart);
     write(xml, "eigen_id", param.eigen_id);
 
     pop(xml);
