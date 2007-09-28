@@ -1,8 +1,11 @@
-// $Id: inv_eigcg2_driver.cc,v 1.1 2007-09-26 02:46:00 kostas Exp $
+// $Id: inv_eigcg2_driver.cc,v 1.2 2007-09-28 02:05:08 kostas Exp $
 /*! \file
  * \brief Eig CG driver
  *
  * Driver
+
+ THIS IS USELESS... it is here to help me remember what I need to do....
+ Will be removed from the repository as soon as I am done...
  */
 
 #include "simpleGramSchmidt.h"
