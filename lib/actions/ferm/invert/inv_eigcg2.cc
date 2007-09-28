@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.1 2007-09-25 21:17:12 edwards Exp $
+// $Id: inv_eigcg2.cc,v 1.2 2007-09-28 02:02:47 kostas Exp $
 #include <sstream>
 #include "inv_stathoCG_w.h"
 #include "octave_debug.h"
@@ -409,34 +409,22 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
   }
 
   // A  should be Hermitian positive definite
-  void vecPrecondCG(LinearOperator<LatticeFermion>& A, 
-		    LatticeFermion& x, 
-		    const LatticeFermion& b, 
-		    const multi1d<Double>& eval, 
-		    const multi1d<LatticeFermion>& evec, 
-		    const Real RsdCG, const int MaxCG, int& n_count){
+  SystemSolverResults_t vecPrecondCG(LinearOperator<LatticeFermion>& A, 
+				     LatticeFermion& x, 
+				     const LatticeFermion& b, 
+				     const multi1d<Double>& eval, 
+				     const multi1d<LatticeFermion>& evec, 
+				     const startV,const endV,
+				     const Real RsdCG, const int MaxCG){
 
 
-    OrderedSubset s(A.subset());
-
-#ifdef DEBUG
-    // CHECK IF vec are eigenvectors...                                         
-    {
-      LatticeFermion Av ;
-      for(int i(0);i<evec.size();i++){
-        A(Av,evec[i],PLUS) ;
-        DComplex rq = innerProduct(evec[i],Av,s);
-        Av[s] -= eval[i]*evec[i] ;
-        Double tt = sqrt(norm2(Av,s));
-	QDPIO::cout<<"vecPrecondCG: error evec["<<i<<"] = "<<tt<<" " ;
-        tt =  sqrt(norm2(evec[i],s));
-	QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
-	QDPIO::cout<<"--- norm = "<<tt<<endl  ;
-      }
-
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+    if(endV>eval.size()){
+      QDP_error_exit("vPrecondCG: not enought evecs eval.size()=%d",eval.size());
     }
-#endif
-
+    OrderedSubset s(A.subset());
  
     LatticeFermion p ; 
     LatticeFermion Ap; 
@@ -463,7 +451,7 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
       /** preconditioning algorithm **/
       z[s]=r ; // not optimal but do it for now...
       /**/
-      for(int i(0);i<evec.size();i++){
+      for(int i(startV);i<endV;i++){
 	DComplex d = innerProduct(evec[i],r,s) ;
 	//QDPIO::cout<<"vecPrecondCG: "<< d<<" "<<(1.0/eval[i]-1.0)<<endl;
 	z[s] += (1.0/eval[i]-1.0)*d*evec[i];
@@ -490,8 +478,8 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
       r_dot_z_old = r_dot_z ;
 
       if(k>MaxCG){
-	n_count = k ;
-	QDP_error_exit("too many CG iterations: count = %d", n_count);
+	res.n_count = k ;
+	QDP_error_exit("too many CG iterations: count = %d", res.n_count);
 	return ;
       }
 #if 1
@@ -499,9 +487,19 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
       QDPIO::cout << "  r_dot_z = " << r_dot_z << endl;
 #endif
     }
-    n_count = k ;
+    
+    res.n_count = k ;
+    res.resid   = sqrt(r_norm2); 
 
-    return ;
+    snoop.stop();
+    QDPIO::cout << "vPrecondCG: time = "
+		<< time 
+		<< " secs" << endl;
+    QDPIO::cout << "vPrecondCG: time per iteration = "
+		<< time/res.n_count 
+		<< " secs/iter" << endl;
+
+    return res ;
   }
   
 void InitGuess(LinearOperator<LatticeFermion>& A, 
@@ -551,105 +549,6 @@ void InitGuess(LinearOperator<LatticeFermion>& A,
 
    n_count = 1 ;
  }
-
-    // A  should be Hermitian positive definite
-  void InitCG(LinearOperator<LatticeFermion>& A, 
-	      LatticeFermion& x, 
-	      const LatticeFermion& b, 
-	      const multi1d<Double>& eval, 
-	      const multi1d<LatticeFermion>& evec, 
-	      const Real RsdCG, const int MaxCG, int& n_count){
-    
-
-    OrderedSubset s(A.subset());
-
-#ifdef DEBUG
-    // CHECK IF vec are eigenvectors...                                         
-    {
-      LatticeFermion Av ;
-      for(int i(0);i<evec.size();i++){
-        A(Av,evec[i],PLUS) ;
-        DComplex rq = innerProduct(evec[i],Av,s);
-        Av[s] -= eval[i]*evec[i] ;
-        Double tt = sqrt(norm2(Av,s));
-	QDPIO::cout<<"InitCG: error evec["<<i<<"] = "<<tt<<" " ;
-        tt =  sqrt(norm2(evec[i],s));
-	QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
-	QDPIO::cout<<"--- norm = "<<tt<<endl  ;
-      }
-
-    }
-#endif
-
- 
-    LatticeFermion p ; 
-    LatticeFermion Ap; 
-    LatticeFermion r,z ;
-
-    Double rsd_sq = (RsdCG * RsdCG) * Real(norm2(b,s));
-    Double alpha,pAp;
-    Real beta ;
-    Double r_dot_z, r_dot_z_old ;
-    //Complex r_dot_z, r_dot_z_old,beta ;
-    //Complex alpha,pAp ;
-
-    int n_count_init ;
-    InitGuess(A,x,b,eval,evec,n_count_init);
-
-    int k = 0 ;
-    A(Ap,x,PLUS) ;
-    r[s] = b - Ap ;
-    Double r_norm2 = norm2(r,s) ;
-
-
-#if 1
-    QDPIO::cout << "InitCG: k = " << k << "  res^2 = " << r_norm2 << endl;
-#endif
-
-
-
-    // Algorithm from page 529 of Golub and Van Loan
-    while(toBool(r_norm2>rsd_sq)){
-      /** preconditioning algorithm **/
-      z[s]=r ; // not optimal but do it for now...
-      /**/
-      
-      /**/
-      /**/
-      r_dot_z = innerProductReal(r,z,s);
-      k++ ;
-      if(k==1){
-	p[s] = z ;	
-      }
-      else{
-	beta = r_dot_z/r_dot_z_old ;
-	p[s] = z + beta*p ; 
-      }
-      //Cheb.Qsq(Ap,p) ;
-      A(Ap,p,PLUS) ;
-      pAp = innerProductReal(p,Ap,s);
-      
-      alpha = r_dot_z/pAp ;
-      x[s] += alpha*p ;
-      r[s] -= alpha*Ap ;
-      r_norm2 =  norm2(r,s) ;
-      r_dot_z_old = r_dot_z ;
-
-      if(k>MaxCG){
-	n_count = k ;
-	QDP_error_exit("too many CG iterations: count = %d", n_count);
-	return ;
-      }
-#if 1
-      QDPIO::cout << "InitCG: k = " << k << "  res^2 = " << r_norm2 ;
-      QDPIO::cout << "  r_dot_z = " << r_dot_z << endl;
-#endif
-    }
-    n_count = k + n_count_init;
-
-    return ;
-  }
-  
 
   
 }// End Namespace Chroma

@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg.cc,v 1.1 2007-09-25 21:17:12 edwards Exp $
+// $Id: syssolver_linop_eigcg.cc,v 1.2 2007-09-28 02:02:47 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -6,13 +6,13 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
-#include "actions/ferm/invert/syssolver_linop_cg.h"
+#include "actions/ferm/invert/syssolver_linop_eigcg.h"
 
 namespace Chroma
 {
 
   //! CG1 system solver namespace
-  namespace LinOpSysSolverCGEnv
+  namespace LinOpSysSolverEigCGEnv
   {
     //! Callback function
     LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
@@ -32,7 +32,7 @@ namespace Chroma
     }
 
     //! Name to be used
-    const std::string name("CG_INVERTER");
+    const std::string name("EIG_CG_INVERTER");
 
     //! Local registration flag
     static bool registered = false;
