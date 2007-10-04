@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.2 2007-09-28 02:02:47 kostas Exp $
+// $Id: inv_eigcg2.cc,v 1.3 2007-10-04 20:39:57 kostas Exp $
 #include <sstream>
 #include "inv_stathoCG_w.h"
 #include "octave_debug.h"
@@ -52,7 +52,37 @@ namespace Chroma
       }
     } 
   }
+   
+  void SubSpaceMatrix(Matrix<DComplex>& H,
+		      LinearOperator<LatticeFermion>& A,
+		      const std::vector< RitzPair<LatticeFermion> >& ritz,
+		      const int Nvecs){
     
+    OrderedSubset s(A.subset());
+    
+    LatticeFermion Ap ;
+    H.N = Nvecs ;
+    if(Nvecs>ritz.size()){
+      H.N = ritz.size();
+    }
+    if(H.N>H.size()){
+      QDPIO::cerr<<"OOPS! your matrix can't take this many matrix elements\n";
+      exit(1);	
+    }
+    // fill H  with zeros
+    H.mat = 0.0 ;
+    
+    for(int i(0);i<H.N;i++){
+      A(Ap,ritz[i].evec,PLUS) ;
+      for(int j(i);j<H.N;j++){
+	H(j,i) = innerProduct(ritz[j].evec, Ap, s) ;
+	//enforce hermiticity
+	H(i,j) = conj(H(j,i));
+	if(i==j) H(i,j) = real(H(i,j));
+      }
+    } 
+  }
+ 
   SystemSolverResults_t InvEigCG2(LinearOperator<LatticeFermion>& A,
 				  LatticeFermion& x, 
 				  const LatticeFermion& b,
