@@ -1,13 +1,16 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.1 2007-09-26 02:46:00 kostas Exp $
+// $Id: containers.h,v 1.2 2007-10-04 21:39:04 edwards Exp $
 
 #ifndef _INV_STATHO_CONTAINERS__H
 #define _INV_STATHO_CONTAINERS__H
 
 #include "chromabase.h"
 #include "handle.h"
+
 namespace LinAlg
 {
+  //! Hold vectors
+  /*! \ingroup invert */
   template<class T> class Vectors
   {
   public:
@@ -20,7 +23,7 @@ namespace LinAlg
     
     ~Vectors(){}
     
-    void AddVector(const T& v,const OrderedSubset& s){
+    void AddVector(const T& v,const Subset& s){
       if(N<vec.size()){
 	vec[N][s] = v ;
 	N++ ;
@@ -28,14 +31,14 @@ namespace LinAlg
     }
 
     void NormalizeAndAddVector(const T& v,const Double& inorm, 
-			       const OrderedSubset& s){
+			       const Subset& s){
       if(N<vec.size()){// inorm is the inverse of the norm
 	vec[N][s] = v  ;
 	vec[N][s] *= inorm  ;
 	N++ ;
       }
     }
-    void AddOrReplaceVector(const T& v,const OrderedSubset& s){
+    void AddOrReplaceVector(const T& v,const Subset& s){
       if(N<vec.size()){
 	vec[N][s] = v ;
 	N++ ;
@@ -46,7 +49,7 @@ namespace LinAlg
     }
 
     // This will only add as many vectors as they fit
-    void AddVectors(multi1d<T>& v,const OrderedSubset& s){
+    void AddVectors(multi1d<T>& v,const Subset& s){
       for(int i(0);i<v.size();i++)
 	AddVector(v[i],s) ;
     }
@@ -58,7 +61,41 @@ namespace LinAlg
     T& operator[](int i){ return vec[i];}
   };
 
-  // This is a square matrix
+
+  //! Holds eigenvalues and eigenvectors
+  /*! \ingroup invert */
+  template<class T> class RitzPairs
+  {
+  public:
+    Vectors<Double> eval;
+    Vectors<T>      evec;
+    int Neig;
+
+    RitzPairs(int N) {init(N);}
+
+    void init(int N)
+      {
+	eval.resize(N);
+	evec.resize(N);
+	Neig = 0;
+      }
+
+    void AddVector(const T& v,const Subset& s){
+      if(N<vec.size()){
+	vec[N][s] = v ;
+	N++ ;
+      }
+    }
+
+    // This will only add as many vectors as they fit
+    void AddVectors(multi1d<T>& v,const Subset& s){
+      for(int i(0);i<v.size();i++)
+	AddVector(v[i],s) ;
+    }
+  };
+
+  //! This is a square matrix
+  /*! \ingroup invert */
   template<class T> class Matrix
   {
   public:

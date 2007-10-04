@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg.h,v 1.2 2007-09-28 02:02:47 kostas Exp $
+// $Id: syssolver_linop_eigcg.h,v 1.3 2007-10-04 21:39:04 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -42,22 +42,22 @@ namespace Chroma
      * \param invParam  inverter parameters ( Read )
      */
     LinOpSysSolverEigCG(Handle< LinearOperator<T> > A_,
-		 const SysSolverEigCGParams& invParam_) : 
+			const SysSolverEigCGParams& invParam_) : 
       A(A_), invParam(invParam_) 
       {
-	if(invParam.Neig_max>0){
-	  GoodEval.vec.resize(invParams.Neig_max) ;
-	  GoodEvec.vec.resize(invParams.Neig_max) ;
-	  GoodEval.N = 0 ;
-	  GoodEvec.N = 0 ;
-	}
-	else{
-	  GoodEval.vec.resize(invParams.Neig) ;
-	  GoodEvec.vec.resize(invParams.Neig) ;
-	  GoodEval.N = 0 ;
-	  GoodEvec.N = 0 ;
-	}
 	// NEED to grab the eignvectors from the named buffer here
+	if (! TheNamedObjMap::Instance().check(invParam.eigen_id))
+	{
+	  TheNamedObjMap::Instance().create<RitzPairs>(invParam.eigen_id);
+	  RitzPairs& GoodEvecs = TheNamedObjMap::Instance().getData<RitzPairs>(invParam.eigen_id);
+
+	  if(invParam.Neig_max>0 ){
+	    GoodEvec.init(invParams.Neig_max);
+	  }
+	  else{
+	    GoodEvec.init(invParams.Neig);
+	  }
+	}
       }
 
     //! Destructor is automatic
@@ -79,13 +79,15 @@ namespace Chroma
 	T chi_tmp;
 	(*A)(chi_tmp, chi, MINUS);
 
+	RitzPairs& GoodEvecs = TheNamedObjMap::Instance().getData<RitzPairs>(invParam.eigen_id);
+
 	multi1d<Double> lambda ; //the eigenvalues
 	multi1d<T> evec(0); // The eigenvectors  
 	SystemSolverResults_t res;  // initialized by a constructor
 	int n_CG(0);
 	// Need to pass the appropriate operators here...
-	InitGuess(*A,psi,chi_tmp,GoodEval.vec,GoodEvec.vec,GoodEvec.N,n_CG);
-	if((GoodEvec.N+invParams.Neig)<=invParams.Neig_max){// if there is space for new
+	InitGuess(*A,psi,chi_tmp,GoodEvecs.eval,GoodEvecs.evec,GoodEvecs.Neig,n_CG);
+	if((GoodEvecs.Neig+invParams.Neig)<=invParams.Neig_max){// if there is space for new
 	  evec.resize(0);// get in there with no evecs so that it computes new
 	  res = InvEigCG2(*A, psi, chi_tmp, eval, evec, 
 			  invParam.Neig, invParam.Nmax, 
@@ -93,34 +95,34 @@ namespace Chroma
 	  res.n_count += n_CG ;
 	  
 	  snoop.start();
-	  GoodEvec.AddVectors(evec,  s);
-	  GoodEval.AddVectors(lambda,s);
+	  GoodEvec.AddVectors(evec,  subset());
+	  GoodEval.AddVectors(lambda,subset());
 	  snoop.stop();
 	  Time = snoop.getTimeInSeconds() ;
-	  QDPIO::cout<<"GoodEval.N= "<<GoodEval.N<<endl;
+	  QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
 	  
 	  snoop.start();
-	  SimpleGramSchmidt(GoodEvec.vec,GoodEvec.N-params.Neig,GoodEvec.N,s);
-	  SimpleGramSchmidt(GoodEvec.vec,GoodEvec.N-params.Neig,GoodEvec.N,s);
+	  SimpleGramSchmidt(GoodEvec.vec,GoodEvecs.Neig-params.Neig,GoodEvecs.Neig,subset());
+	  SimpleGramSchmidt(GoodEvec.vec,GoodEvecs.Neig-params.Neig,GoodEvecs.Neig,subset());
 	  snoop.stop();
 	  Time += snoop.getTimeInSeconds() ;
 	  
 	  snoop.start();
-	  Matrix<DComplex> Htmp(GoodEvec.N) ;
-	  SubSpaceMatrix(Htmp,*MM,GoodEvec.vec,GoodEvec.N);
+	  Matrix<DComplex> Htmp(GoodEvecs.Neig) ;
+	  SubSpaceMatrix(Htmp,*MM,GoodEvec.vec,GoodEvecs.Neig);
 	  //OctavePrintOut(Htmp.mat,Htmp.N,tag("H",i),"RayleighRich.m") ;
 	  char V = 'V' ; char U = 'U' ;
 	  Lapack::zheev(V,U,Htmp.mat,lambda);
-	  evec.resize(GoodEvec.N) ;
+	  evec.resize(GoodEvecs.Neig) ;
 	  //OctavePrintOut(Htmp.mat,Htmp.N,tag("Htmp",i),"RayleighRich.m") ;
-	  for(int k(0);k<GoodEvec.N;k++){
+	  for(int k(0);k<GoodEvecs.Neig;k++){
 	    GoodEval[k] = lambda[k];
 	    evec[k][s] = zero ;
 	    //cout<<k<<endl ;
-	    for(int j(0);j<GoodEvec.N;j++)
+	    for(int j(0);j<GoodEvecs.Neig;j++)
 	      evec[k][s] += conj(Htmp(k,j))*GoodEvec[j] ;
 	    //QDPIO::cout<<"norm(evec["<<k<<"])=";
-	    //QDPIO::cout<< sqrt(norm2(GoodEvec[k],s))<<endl;
+	    //QDPIO::cout<< sqrt(norm2(GoodEvec[k],subset()))<<endl;
 	  }
 	  snoop.stop();
 	  Time += snoop.getTimeInSeconds() ;
@@ -129,22 +131,22 @@ namespace Chroma
 		      << " secs" << endl;
 	  
 	  QDPIO::cout<<"GoodEval.N= "<<GoodEval.N<<endl;
-	  QDPIO::cout<<"GoodEvec.N= "<<GoodEvec.N<<endl;
-	  for(int k(0);k<GoodEvec.N;k++)
+	  QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
+	  for(int k(0);k<GoodEvecs.Neig;k++)
 	    GoodEvec[k][s]  = evec[k] ;
 	  
 	  //Check the quality of eigenvectors
 #ifdef TEST_ALGORITHM
 	  {
 	    LatticeFermion Av ;
-	    for(int k(0);k<GoodEvec.N;k++){
+	    for(int k(0);k<GoodEvecs.Neig;k++){
 	      (*MM)(Av,GoodEvec[k],PLUS) ;
-	      DComplex rq = innerProduct(GoodEvec[k],Av,s);
+	      DComplex rq = innerProduct(GoodEvec[k],Av,subset());
 	      Av[s] -= GoodEval[k]*GoodEvec[k] ;
-	      Double tt = sqrt(norm2(Av,s));
+	      Double tt = sqrt(norm2(Av,subset()));
 	      QDPIO::cout<<"REFINE: error evec["<<k<<"] = "<<tt<<" " ;
 	      QDPIO::cout<<"--- eval ="<<GoodEval[k]<<" ";
-	      tt =  sqrt(norm2(GoodEvec[k],s));
+	      tt =  sqrt(norm2(GoodEvec[k],subset()));
 	      QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
 	      QDPIO::cout<<"--- norm = "<<tt<<endl  ;
 	    } 
@@ -176,7 +178,7 @@ namespace Chroma
 	  res.n_count += n_CG ;
 	  n_CG=0 ;
 	  QDPIO::cout<<"Restart1: "<<endl ;
-	  InitGuess(*A,psi,chi_tmp,GoodEval.vec,GoodEvec.vec,GoodEvec.N, n_CG);
+	  InitGuess(*A,psi,chi_tmp,GoodEval.vec,GoodEvec.vec,GoodEvecs.Neig, n_CG);
 	  res.n_count += n_CG ;
 	  n_CG = res.n_count ;
 	  if(invParams.vPrecCGvecs ==0)
@@ -213,10 +215,6 @@ namespace Chroma
 
     Handle< LinearOperator<T> > A;
     SysSolverEigCGParams invParam;
-
-    Vectors<T> GoodEvec; //
-    Vectors<Double> GoodEval; //
-
   };
 
 } // End namespace
