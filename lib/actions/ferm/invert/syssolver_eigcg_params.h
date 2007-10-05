@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_eigcg_params.h,v 1.4 2007-09-28 02:09:42 kostas Exp $
+// $Id: syssolver_eigcg_params.h,v 1.5 2007-10-05 03:39:34 edwards Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */
@@ -31,7 +31,10 @@ namespace Chroma
     
     int   vPrecCGvecs  ; /*!< number of vectors for preconditioned CG (if <=0 do regular CG) */
     int   vPrecCGvecStart ; /*!< first vector used inpreconditioned CG  */
-  std:string eigen_id ; /*!< named buffer holding the eigenvectors */
+
+    bool  cleanUpEvecs ; /*!< clean up evecs upon destruction of SystemSolver  */
+
+    std:string eigen_id ; /*!< named buffer holding the eigenvectors */
 
   };
 
