@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg.h,v 1.3 2007-10-04 21:39:04 edwards Exp $
+// $Id: syssolver_linop_eigcg.h,v 1.4 2007-10-05 03:38:42 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -61,7 +61,13 @@ namespace Chroma
       }
 
     //! Destructor is automatic
-    ~LinOpSysSolverEigCG() {}
+    ~LinOpSysSolverEigCG()
+      {
+	if (invParam.cleanUpEvecs)
+	{
+	  TheNamedObjMap::Instance().erase(invParam.eigen_id);
+	}
+      }
 
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
