@@ -1,11 +1,10 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.2 2007-10-04 21:39:04 edwards Exp $
+// $Id: containers.h,v 1.3 2007-10-05 03:39:17 edwards Exp $
 
-#ifndef _INV_STATHO_CONTAINERS__H
-#define _INV_STATHO_CONTAINERS__H
+#ifndef _INV_CONTAINERS__H
+#define _INV_CONTAINERS__H
 
 #include "chromabase.h"
-#include "handle.h"
 
 namespace LinAlg
 {
