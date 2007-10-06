@@ -1,14 +1,27 @@
+// -*- C++ -*-
+// $Id: central_tprec_nospin_utils.h,v 1.2 2007-10-06 15:33:09 edwards Exp $
+/*! \file
+ *  \brief Support for time preconditioning
+ */
+
 #ifndef CENTRAL_TPREC_NOSPIN_UTILS_H
 #define CENTRAL_TPREC_NOSPIN_UTILS_H
 
 #include "chromabase.h"
 
-namespace Chroma {
+namespace Chroma 
+{
 
-  namespace CentralTPrecNoSpinUtils {
-    typedef PScalar<PColorMatrix<RComplex<REAL>, 3> > CMat;              // Useful type: ColorMat with no Outer<>
-    typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 2> HVec_site;   // Useful type: Half Vec with no Outer<>
+  //! Support for time preconditioning
+  /*!
+   * \ingroup linop
+   */
+  namespace CentralTPrecNoSpinUtils 
+  {
+    typedef PScalar<PColorMatrix<RComplex<REAL>, Nc> > CMat;              // Useful type: ColorMat with no Outer<>
+    typedef PSpinVector<PColorVector<RComplex<REAL>, Nc>, (Ns>>1) > HVec_site;   // Useful type: Half Vec with no Outer<>
 
+    /*! \ingroup linop */
     inline 
     void TOp(LatticeHalfFermion& chi, 
 	     const LatticeHalfFermion& psi,
@@ -85,7 +98,7 @@ namespace Chroma {
 
 
 
-    
+    /*! \ingroup linop */
     inline 
     void invTOp(LatticeHalfFermion& chi, 
 		const LatticeHalfFermion& psi,
@@ -195,12 +208,10 @@ namespace Chroma {
     }
 		
 
+    /*! \ingroup linop */
     inline 
     void invert3by3( CMat& M_inv, const CMat& M )
     { 
-
-
-
       START_CODE();
     
       int Nvec = 3;
@@ -210,7 +221,7 @@ namespace Chroma {
       // memory by just destroying M, but we never really expect
       // it to be really big: At most 20x20 I should imagine.
       
-      PScalar<PColorMatrix<RComplex<REAL>, 3> > M_tmp;
+      PScalar<PColorMatrix<RComplex<REAL>, Nc> > M_tmp;
       for(int i=0; i < 3; i++) { 
 	for(int j=0; j < 3; j++) { 
 	  M_tmp.elem().elem(i,j).real() = 0;
@@ -219,7 +230,7 @@ namespace Chroma {
 	M_tmp.elem().elem(i,i).real() = 1;
       }
       
-      PScalar<PColorMatrix<RComplex<REAL>, 3> > M_local = M;
+      PScalar<PColorMatrix<RComplex<REAL>, Nc> > M_local = M;
       
       // -----------------------------------------------------------------
       // LU Decompose M_local, in place (Crone's algorithm?)
@@ -349,10 +360,9 @@ namespace Chroma {
 	
       }
     }
-  
 
 
-  }// Namespace 
+  } // Namespace 
   
 } // Namespace chroma
 
