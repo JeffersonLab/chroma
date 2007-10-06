@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_utils.cc,v 1.2 2006-10-20 16:57:18 edwards Exp $
+// $Id: stout_utils.cc,v 1.3 2007-10-06 15:24:22 edwards Exp $
 /*! \file
  *  \brief Stout utilities
  */
@@ -337,9 +337,9 @@ namespace Chroma
       for(int site=0; site < num_sites; site++)  
       { 
 	// Get the traces
-	PColorMatrix<QDP::RComplex<REAL>, 3>  Q_site = Q.elem(site).elem();
-	PColorMatrix<QDP::RComplex<REAL>, 3>  QQ_site = QQ.elem(site).elem();
-	PColorMatrix<QDP::RComplex<REAL>, 3>  QQQ = QQ_site*Q_site;
+	PColorMatrix<QDP::RComplex<REAL>, Nc>  Q_site = Q.elem(site).elem();
+	PColorMatrix<QDP::RComplex<REAL>, Nc>  QQ_site = QQ.elem(site).elem();
+	PColorMatrix<QDP::RComplex<REAL>, Nc>  QQQ = QQ_site*Q_site;
 	
 	Real trQQQ; 
 	trQQQ.elem()  = realTrace(QQQ);
