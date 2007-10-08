@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.3 2007-10-05 03:39:17 edwards Exp $
+// $Id: containers.h,v 1.4 2007-10-08 02:58:49 edwards Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -72,24 +72,34 @@ namespace LinAlg
 
     RitzPairs(int N) {init(N);}
 
-    void init(int N)
-      {
-	eval.resize(N);
-	evec.resize(N);
-	Neig = 0;
-      }
+    void init(int N) {
+      eval.resize(N);
+      evec.resize(N);
+      Neig = 0;
+    }
 
-    void AddVector(const T& v,const Subset& s){
-      if(N<vec.size()){
-	vec[N][s] = v ;
-	N++ ;
+    void AddVector(const Double& e, const T& v,const Subset& s){
+      eval.AddVector(e,s);
+      evec.AddVector(v,s);
+      if (eval.N != evec.N)
+      {
+	QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
+	QDP_abort(1);
       }
+      Neig = evec.N;
     }
 
     // This will only add as many vectors as they fit
-    void AddVectors(multi1d<T>& v,const Subset& s){
+    void AddVectors(const multi1d<T>& e,const multi1d<T>& v,const Subset& s){
+      for(int i(0);i<e.size();i++)
+	AddVector(e[i],s) ;
       for(int i(0);i<v.size();i++)
 	AddVector(v[i],s) ;
+      if (eval.N != evec.N)
+      {
+	QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
+	QDP_abort(1);
+      }
     }
   };
 
