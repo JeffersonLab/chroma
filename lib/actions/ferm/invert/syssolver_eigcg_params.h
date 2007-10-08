@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_eigcg_params.h,v 1.5 2007-10-05 03:39:34 edwards Exp $
+// $Id: syssolver_eigcg_params.h,v 1.6 2007-10-08 20:44:18 edwards Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */
@@ -34,8 +34,7 @@ namespace Chroma
 
     bool  cleanUpEvecs ; /*!< clean up evecs upon destruction of SystemSolver  */
 
-    std:string eigen_id ; /*!< named buffer holding the eigenvectors */
-
+    string eigen_id ; /*!< named buffer holding the eigenvectors */
   };
 
 
