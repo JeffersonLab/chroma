@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.2 2007-06-01 18:54:26 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.3 2007-10-09 03:03:59 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -8,7 +8,9 @@
 #include "meas/inline/io/named_objmap.h"
 
 #include "meas/hadron/diquark_w.h"
+#include "util/info/unique_id.h"
 #include "util/ferm/eigeninfo.h"
+#include "actions/ferm/invert/containers.h"
 
 namespace Chroma
 {
@@ -368,6 +370,48 @@ namespace Chroma
 	close(to);
       }
 
+      //------------------------------------------------------------------------
+      //! Write out an RitzPairs Type
+      void QIOWriteRitzPairsLatticeFermion(const string& buffer_id,
+					   const string& file,
+					   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      {
+	// A shorthand for the object
+	const RitzPairs<LatticeFermion>& obj=TheNamedObjMap::Instance().getData<RitzPairs< LatticeFermion> >(buffer_id);
+	// File XML
+	XMLBufferWriter file_xml;
+	push(file_xml, "RitzPairs");
+	write(file_xml, "id", uniqueId());
+	write(file_xml, "Nmax", obj.evec.size());
+	write(file_xml, "Neig", obj.Neig);
+	pop(file_xml);
+
+//	TheNamedObjMap::Instance().get(invParam.eigen_id).setFileXML(file_xml);
+//	TheNamedObjMap::Instance().get(invParam.eigen_id).setRecordXML(record_xml);
+
+	// get the file XML and record XML out of the named buffer
+//	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+//	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+
+	// Open file
+	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+
+	// Write a record for each eigenvalue (in xml) and eigenvector
+	for(int i=0; i < obj.Neig; ++i)
+	{
+	  XMLBufferWriter record_xml;
+	  push(record_xml, "Eigenvector");
+	  write(record_xml, "eigenNum", i);
+	  write(record_xml, "eigenValue", obj.eval.vec[i]);
+	  pop(record_xml);
+
+	  write(to, record_xml, obj.eval.vec[i]);
+	}
+
+	// Close
+	close(to);
+      }
+
       //! Local registration flag
       bool registered = false;
 
@@ -413,6 +457,9 @@ namespace Chroma
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfo"), 
 								      QIOWriteEigenInfo);
+
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairs"), 
+								      QIOWriteRitzPairsLatticeFermion);
 
 	registered = true;
       }
