@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.3 2007-10-09 03:03:59 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.4 2007-10-09 05:29:05 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -377,7 +377,7 @@ namespace Chroma
 					   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// A shorthand for the object
-	const RitzPairs<LatticeFermion>& obj=TheNamedObjMap::Instance().getData<RitzPairs< LatticeFermion> >(buffer_id);
+	const LinAlg::RitzPairs<LatticeFermion>& obj=TheNamedObjMap::Instance().getData<LinAlg::RitzPairs< LatticeFermion> >(buffer_id);
 	// File XML
 	XMLBufferWriter file_xml;
 	push(file_xml, "RitzPairs");
@@ -458,7 +458,7 @@ namespace Chroma
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfo"), 
 								      QIOWriteEigenInfo);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairs"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
 
 	registered = true;
