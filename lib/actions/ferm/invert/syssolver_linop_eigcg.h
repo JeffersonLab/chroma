@@ -1,18 +1,24 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg.h,v 1.4 2007-10-05 03:38:42 edwards Exp $
+// $Id: syssolver_linop_eigcg.h,v 1.5 2007-10-09 18:07:14 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
 
 #ifndef __syssolver_linop_eigcg_h__
 #define __syssolver_linop_eigcg_h__
-#include "chroma_config.h"
+
 #include "handle.h"
 #include "syssolver.h"
 #include "linearop.h"
+#include "named_obj.h"
+#include "meas/inline/io/named_objmap.h"
+
 #include "actions/ferm/invert/syssolver_linop.h"
 #include "actions/ferm/invert/syssolver_eigcg_params.h"
 #include "actions/ferm/invert/inv_eigcg2.h"
+
+#include "actions/ferm/invert/containers.h"
+#include "actions/ferm/invert/lapack_wrapper.h"
 
 
 namespace Chroma
@@ -38,8 +44,8 @@ namespace Chroma
   public:
     //! Constructor
     /*!
-     * \param M_        Linear operator ( Read )
-     * \param invParam  inverter parameters ( Read )
+     * \param M_         Linear operator ( Read )
+     * \param invParam_  inverter parameters ( Read )
      */
     LinOpSysSolverEigCG(Handle< LinearOperator<T> > A_,
 			const SysSolverEigCGParams& invParam_) : 
@@ -48,14 +54,15 @@ namespace Chroma
 	// NEED to grab the eignvectors from the named buffer here
 	if (! TheNamedObjMap::Instance().check(invParam.eigen_id))
 	{
-	  TheNamedObjMap::Instance().create<RitzPairs>(invParam.eigen_id);
-	  RitzPairs& GoodEvecs = TheNamedObjMap::Instance().getData<RitzPairs>(invParam.eigen_id);
+	  TheNamedObjMap::Instance().create< LinAlg::RitzPairs<T> >(invParam.eigen_id);
+	  LinAlg::RitzPairs<T>& GoodEvecs = 
+	    TheNamedObjMap::Instance().getData< LinAlg::RitzPairs<T> >(invParam.eigen_id);
 
 	  if(invParam.Neig_max>0 ){
-	    GoodEvec.init(invParams.Neig_max);
+	    GoodEvecs.init(invParam.Neig_max);
 	  }
 	  else{
-	    GoodEvec.init(invParams.Neig);
+	    GoodEvecs.init(invParam.Neig);
 	  }
 	}
       }
@@ -85,50 +92,55 @@ namespace Chroma
 	T chi_tmp;
 	(*A)(chi_tmp, chi, MINUS);
 
-	RitzPairs& GoodEvecs = TheNamedObjMap::Instance().getData<RitzPairs>(invParam.eigen_id);
+	LinAlg::RitzPairs<T>& GoodEvecs = TheNamedObjMap::Instance().getData< LinAlg::RitzPairs<T> >(invParam.eigen_id);
 
 	multi1d<Double> lambda ; //the eigenvalues
 	multi1d<T> evec(0); // The eigenvectors  
 	SystemSolverResults_t res;  // initialized by a constructor
 	int n_CG(0);
 	// Need to pass the appropriate operators here...
-	InitGuess(*A,psi,chi_tmp,GoodEvecs.eval,GoodEvecs.evec,GoodEvecs.Neig,n_CG);
-	if((GoodEvecs.Neig+invParams.Neig)<=invParams.Neig_max){// if there is space for new
+	InitGuess(*A,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,GoodEvecs.Neig,n_CG);
+	if((GoodEvecs.Neig+invParam.Neig)<=invParam.Neig_max) // if there is space for new
+	{
+	  StopWatch snoop;
+	  snoop.reset();
+	  snoop.start();
+
 	  evec.resize(0);// get in there with no evecs so that it computes new
-	  res = InvEigCG2(*A, psi, chi_tmp, eval, evec, 
+	  res = InvEigCG2(*A, psi, chi_tmp, lambda, evec, 
 			  invParam.Neig, invParam.Nmax, 
 			  invParam.RsdCG, invParam.MaxCG);
 	  res.n_count += n_CG ;
 	  
 	  snoop.start();
-	  GoodEvec.AddVectors(evec,  subset());
-	  GoodEval.AddVectors(lambda,subset());
+	  GoodEvecs.evec.AddVectors(evec,  subset());
+	  GoodEvecs.eval.AddVectors(lambda,subset());
 	  snoop.stop();
-	  Time = snoop.getTimeInSeconds() ;
+	  double Time = snoop.getTimeInSeconds() ;
 	  QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
 	  
 	  snoop.start();
-	  SimpleGramSchmidt(GoodEvec.vec,GoodEvecs.Neig-params.Neig,GoodEvecs.Neig,subset());
-	  SimpleGramSchmidt(GoodEvec.vec,GoodEvecs.Neig-params.Neig,GoodEvecs.Neig,subset());
+//????	  SimpleGramSchmidt(GoodEvecs.evec,GoodEvecs.Neig-invParam.Neig,GoodEvecs.Neig,subset());
+	  SimpleGramSchmidt(GoodEvecs.evec.vec,GoodEvecs.Neig-invParam.Neig,GoodEvecs.Neig,subset());
 	  snoop.stop();
 	  Time += snoop.getTimeInSeconds() ;
 	  
 	  snoop.start();
-	  Matrix<DComplex> Htmp(GoodEvecs.Neig) ;
-	  SubSpaceMatrix(Htmp,*MM,GoodEvec.vec,GoodEvecs.Neig);
+	  LinAlg::Matrix<DComplex> Htmp(GoodEvecs.Neig) ;
+	  SubSpaceMatrix(Htmp,*A,GoodEvecs.evec.vec,GoodEvecs.Neig);
 	  //OctavePrintOut(Htmp.mat,Htmp.N,tag("H",i),"RayleighRich.m") ;
 	  char V = 'V' ; char U = 'U' ;
 	  Lapack::zheev(V,U,Htmp.mat,lambda);
 	  evec.resize(GoodEvecs.Neig) ;
 	  //OctavePrintOut(Htmp.mat,Htmp.N,tag("Htmp",i),"RayleighRich.m") ;
 	  for(int k(0);k<GoodEvecs.Neig;k++){
-	    GoodEval[k] = lambda[k];
-	    evec[k][s] = zero ;
+	    GoodEvecs.eval[k] = lambda[k];
+	    GoodEvecs.evec[k][subset()] = zero ;
 	    //cout<<k<<endl ;
 	    for(int j(0);j<GoodEvecs.Neig;j++)
-	      evec[k][s] += conj(Htmp(k,j))*GoodEvec[j] ;
+	      evec[k][subset()] += conj(Htmp(k,j))*GoodEvecs.evec[j] ;
 	    //QDPIO::cout<<"norm(evec["<<k<<"])=";
-	    //QDPIO::cout<< sqrt(norm2(GoodEvec[k],subset()))<<endl;
+	    //QDPIO::cout<< sqrt(norm2(GoodEvecs.evec[k],subset()))<<endl;
 	  }
 	  snoop.stop();
 	  Time += snoop.getTimeInSeconds() ;
@@ -136,74 +148,75 @@ namespace Chroma
 		      << Time
 		      << " secs" << endl;
 	  
-	  QDPIO::cout<<"GoodEval.N= "<<GoodEval.N<<endl;
 	  QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
 	  for(int k(0);k<GoodEvecs.Neig;k++)
-	    GoodEvec[k][s]  = evec[k] ;
+	    GoodEvecs.evec[k][subset()]  = evec[k] ;
 	  
 	  //Check the quality of eigenvectors
 #ifdef TEST_ALGORITHM
 	  {
-	    LatticeFermion Av ;
-	    for(int k(0);k<GoodEvecs.Neig;k++){
-	      (*MM)(Av,GoodEvec[k],PLUS) ;
+	    T Av ;
+	    for(int k(0);k<GoodEvecs.Neig;k++)
+	    {
+	      (A*)(Av,GoodEvecs.evec[k],PLUS) ;
 	      DComplex rq = innerProduct(GoodEvec[k],Av,subset());
-	      Av[s] -= GoodEval[k]*GoodEvec[k] ;
+	      Av[subset()] -= GoodEvecs.eval[k]*GoodEvecs.evec[k] ;
 	      Double tt = sqrt(norm2(Av,subset()));
 	      QDPIO::cout<<"REFINE: error evec["<<k<<"] = "<<tt<<" " ;
-	      QDPIO::cout<<"--- eval ="<<GoodEval[k]<<" ";
-	      tt =  sqrt(norm2(GoodEvec[k],subset()));
+	      QDPIO::cout<<"--- eval ="<<GoodEvecs.eval[k]<<" ";
+	      tt =  sqrt(norm2(GoodEvecs.evec[k],subset()));
 	      QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
 	      QDPIO::cout<<"--- norm = "<<tt<<endl  ;
 	    } 
 	  }
 #endif
 	}// if there is space
-	else{// call CG but ask it not to compute vectors
+	else // call CG but ask it not to compute vectors
+	{
 	  evec.resize(0);
 	  n_CG = res.n_count ;
-	  if(invParams.vPrecCGvecs ==0){
+	  if(invParam.vPrecCGvecs ==0){
 	    res =InvEigCG2(*A, 
 			   psi,
 			   chi_tmp,
 			   lambda, 
 			   evec, 
 			   0, //Eigenvectors to keep
-			   invParams.Nmax,  // Max vectors to work with
-			   invParams.RsdCGRestart, // CG residual.... Empirical restart need a param here...
-			   invParams.MaxCG // Max CG itterations
+			   invParam.Nmax,  // Max vectors to work with
+			   invParam.RsdCGRestart, // CG residual.... Empirical restart need a param here...
+			   invParam.MaxCG // Max CG itterations
 			   ); 
 	  }
 	  else
-	    res= vecPrecondCG(*A,psi,chi_tmp,GoodEval.vec,GoodEvec.vec,
-			      invParams.vPrecCGvecStart,
-			      invParams.vPrecCGvecStart+invParams.vPrecCGvecs,
-                              invParams.RsdCG, // CG residual       
-                              invParams.MaxCG // Max CG itterations    
+	    res= vecPrecondCG(*A,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,
+			      invParam.vPrecCGvecStart,
+			      invParam.vPrecCGvecStart+invParam.vPrecCGvecs,
+                              invParam.RsdCG, // CG residual       
+                              invParam.MaxCG // Max CG itterations    
 			      );
 	  res.n_count += n_CG ;
 	  n_CG=0 ;
 	  QDPIO::cout<<"Restart1: "<<endl ;
-	  InitGuess(*A,psi,chi_tmp,GoodEval.vec,GoodEvec.vec,GoodEvecs.Neig, n_CG);
+	  InitGuess(*A,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,GoodEvecs.Neig, n_CG);
 	  res.n_count += n_CG ;
 	  n_CG = res.n_count ;
-	  if(invParams.vPrecCGvecs ==0)
+	  if(invParam.vPrecCGvecs ==0)
 	    res =InvEigCG2(*A,
                            psi,
                            chi_tmp,
                            lambda,
                            evec,
                            0, //Eigenvectors to keep                             
-                           invParams.Nmax,  // Max vectors to work with           
-                           invParams.RsdCG, // CG residual....
-                           invParams.MaxCG // Max CG itterations             
+                           invParam.Nmax,  // Max vectors to work with           
+                           invParam.RsdCG, // CG residual....
+                           invParam.MaxCG // Max CG itterations             
                            );
 	  else
-	    res= vecPrecondCG(*A,psi,chi_tmp,GoodEval.vec,GoodEvec.vec,
-			      invParams.vPrecCGvecStart,
-                              invParams.vPrecCGvecStart+invParams.vPrecCGvecs,
-			      invParams.RsdCG, // CG residual             
-			      invParams.MaxCG // Max CG itterations          
+	    res= vecPrecondCG(*A,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,
+			      invParam.vPrecCGvecStart,
+                              invParam.vPrecCGvecStart+invParam.vPrecCGvecs,
+			      invParam.RsdCG, // CG residual             
+			      invParam.MaxCG // Max CG itterations          
                               );
 	  res.n_count += n_CG ;
 	}

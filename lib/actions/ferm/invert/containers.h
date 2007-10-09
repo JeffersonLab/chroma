@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.6 2007-10-09 05:28:41 edwards Exp $
+// $Id: containers.h,v 1.7 2007-10-09 18:07:14 edwards Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -72,6 +72,7 @@ namespace Chroma
       Vectors<T>      evec;
       int Neig;
 
+      RitzPairs() {init(0);}
       RitzPairs(int N) {init(N);}
 
       void init(int N) {

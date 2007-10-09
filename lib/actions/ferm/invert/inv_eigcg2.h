@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.h,v 1.2 2007-10-09 05:28:41 edwards Exp $
+// $Id: inv_eigcg2.h,v 1.3 2007-10-09 18:07:14 edwards Exp $
 
 #ifndef _INV_EIG_CG2_H
 #define _INV_EIG_CG2_H
@@ -15,8 +15,8 @@ namespace Chroma
 
   template<typename T>
   void SimpleGramSchmidt(multi1d<T>& vec, 
-			 const int f,
-			 const int t,
+			 int f,
+			 int t,
 			 const Subset& sub)
   {
     for(int i(0);i<f;i++){// normalize the first vectors...
@@ -43,23 +43,24 @@ namespace Chroma
   void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
 		      const LinearOperator<LatticeFermion>& A,
 		      const multi1d<LatticeFermion>& evec,
-		      const int Nvecs) ;
+		      int Nvecs) ;
 
-  void InvEigCG2(const LinearOperator<LatticeFermion>& A,
-		 LatticeFermion& x, 
-		 const LatticeFermion& b,
-		 multi1d<Double>& eval, 
-		 multi1d<LatticeFermion>& evec,
-		 const int Neig,
-		 const int Nmax,
-		 const Real RsdCG, const int MaxCG,int& n_count) ;
-
-  void vecPrecondCG(const LinearOperator<LatticeFermion>& A, 
-		    LatticeFermion& x, 
-		    const LatticeFermion& b, 
-		    const multi1d<Double>& eval, 
-		    const multi1d<LatticeFermion>& evec, 
-		    const Real RsdCG, const int MaxCG, int& n_count) ;
+  SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermion>& A,
+				  LatticeFermion& x, 
+				  const LatticeFermion& b,
+				  multi1d<Double>& eval, 
+				  multi1d<LatticeFermion>& evec,
+				  int Neig,
+				  int Nmax,
+				  const Real& RsdCG, int MaxCG) ;
+  
+  SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermion>& A, 
+				     LatticeFermion& x, 
+				     const LatticeFermion& b, 
+				     const multi1d<Double>& eval, 
+				     const multi1d<LatticeFermion>& evec, 
+				     int startV, int endV,
+				     const Real& RsdCG, int MaxCG) ;
 
   void InitGuess(const LinearOperator<LatticeFermion>& A, 
 		 LatticeFermion& x, 
@@ -73,7 +74,7 @@ namespace Chroma
 		 const LatticeFermion& b, 
 		 const multi1d<Double>& eval, 
 		 const multi1d<LatticeFermion>& evec, 
-		 const int N, // number of vectors to use
+		 int N, // number of vectors to use
 		 int& n_count) ;
 
  void InitCG(const LinearOperator<LatticeFermion>& A, 
@@ -81,7 +82,7 @@ namespace Chroma
 	     const LatticeFermion& b, 
 	     const multi1d<Double>& eval, 
 	     const multi1d<LatticeFermion>& evec, 
-	     const Real RsdCG, const int MaxCG, int& n_count) ;
+	     const Real& RsdCG, int MaxCG, int& n_count) ;
   
 
   

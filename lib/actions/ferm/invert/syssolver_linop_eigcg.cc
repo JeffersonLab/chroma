@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg.cc,v 1.2 2007-09-28 02:02:47 kostas Exp $
+// $Id: syssolver_linop_eigcg.cc,v 1.3 2007-10-09 18:07:14 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -19,17 +19,19 @@ namespace Chroma
 						  const std::string& path,
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverCG<LatticeFermion>(A, SysSolverCGParams(xml_in, path));
+      return new LinOpSysSolverEigCG<LatticeFermion>(A, SysSolverEigCGParams(xml_in, path));
     }
 
+#if 0
     //! Callback function
     LinOpSystemSolver<LatticeStaggeredFermion>* createStagFerm(
       XMLReader& xml_in,
       const std::string& path,
       Handle< LinearOperator<LatticeStaggeredFermion> > A)
     {
-      return new LinOpSysSolverCG<LatticeStaggeredFermion>(A, SysSolverCGParams(xml_in, path));
+      return new LinOpSysSolverEigCG<LatticeStaggeredFermion>(A, SysSolverEigCGParams(xml_in, path));
     }
+#endif
 
     //! Name to be used
     const std::string name("EIG_CG_INVERTER");
@@ -44,7 +46,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= Chroma::TheLinOpFermSystemSolverFactory::Instance().registerObject(name, createFerm);
-	success &= Chroma::TheLinOpStagFermSystemSolverFactory::Instance().registerObject(name, createStagFerm);
+//	success &= Chroma::TheLinOpStagFermSystemSolverFactory::Instance().registerObject(name, createStagFerm);
 	registered = true;
       }
       return success;

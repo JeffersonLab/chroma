@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.4 2007-10-09 05:28:41 edwards Exp $
+// $Id: inv_eigcg2.cc,v 1.5 2007-10-09 18:07:14 edwards Exp $
 
 #include "inv_eigcg2.h"
 
@@ -19,14 +19,12 @@ namespace Chroma
   using namespace LinAlg ;
 //  using namespace Octave ;
 
-  //typedef LatticeFermion T ; // save sometyping 
-
   // needs a little clean up... for possible exceptions if the size of H
   // is smaller than hind 
   void SubSpaceMatrix(Matrix<DComplex>& H,
 		      const LinearOperator<LatticeFermion>& A,
 		      const multi1d<LatticeFermion>& evec,
-		      const int Nvecs)
+		      int Nvecs)
   {
     LatticeFermion Ap ;
     H.N = Nvecs ;
@@ -56,9 +54,9 @@ namespace Chroma
 				  const LatticeFermion& b,
 				  multi1d<Double>& eval, 
 				  multi1d<LatticeFermion>& evec,
-				  const int Neig,
-				  const int Nmax,
-				  const Real RsdCG, const int MaxCG)
+				  int Neig,
+				  int Nmax,
+				  const Real& RsdCG, int MaxCG)
   {
     START_CODE();
 
@@ -158,7 +156,7 @@ namespace Chroma
       if(FindEvals){
 	if (vec.N==Nmax){//we already have stored the maximum number of vectors
 	  // The magic begins here....
-QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
+	  QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
 	  H(Nmax-1,Nmax-1) = 1/alpha + beta/alphaprev;
 
 #ifdef DEBUG
@@ -183,14 +181,14 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
 	  multi2d<DComplex> Hevecs_old(H.mat) ;
 
 #ifdef DEBUG
- {
-   multi1d<LatticeFermion> tt_vec(vec.size());
-	  for(int i(0);i<Nmax;i++){
-	    tt_vec[i][A.subset()] = zero ;
-	    for(int j(0);j<Nmax;j++)
-	      tt_vec[i][A.subset()] +=Hevecs(i,j)*vec[j] ; // NEED TO CHECK THE INDEXINT
-	  }
-	  // CHECK IF vec are eigenvectors...
+	  {
+	    multi1d<LatticeFermion> tt_vec(vec.size());
+	    for(int i(0);i<Nmax;i++){
+	      tt_vec[i][A.subset()] = zero ;
+	      for(int j(0);j<Nmax;j++)
+		tt_vec[i][A.subset()] +=Hevecs(i,j)*vec[j] ; // NEED TO CHECK THE INDEXINT
+	    }
+	    // CHECK IF vec are eigenvectors...
 	  
 	    LatticeFermion Av ;
 	    for(int i(0);i<Nmax;i++){
@@ -204,7 +202,7 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
 	      QDPIO::cout<<" --- rq = "<<real(rq)<<" ";
 	      QDPIO::cout<<"--- norm = "<<tt<<endl  ;
 	    }
- }
+	  }
 #endif
 	  multi1d<Double> Heval_old ;
 	  Lapack::zheev(V,U,Nmax-1,Hevecs_old,Heval_old);
@@ -251,8 +249,8 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
 #endif
           Lapack::zheev(V,U,2*Neig,Htmp,Heval);
  	  for(int i(Neig); i< 2*Neig;i++ ) 
-	     for(int j(2*Neig); j<Nmax; j++)
-                Htmp(i,j) =0.0;
+	    for(int j(2*Neig); j<Nmax; j++)
+	      Htmp(i,j) =0.0;
 #ifdef DEBUG
           {
             stringstream tag ;
@@ -409,7 +407,7 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
 				     const multi1d<Double>& eval, 
 				     const multi1d<LatticeFermion>& evec, 
 				     int startV, int endV,
-				     const Real RsdCG, const int MaxCG)
+				     const Real& RsdCG, int MaxCG)
   {
     START_CODE();
 
@@ -497,50 +495,50 @@ QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
   }
   
   void InitGuess(const LinearOperator<LatticeFermion>& A, 
-		LatticeFermion& x, 
-		const LatticeFermion& b, 
-		const multi1d<Double>& eval, 
-		const multi1d<LatticeFermion>& evec, 
-		int& n_count){
+		 LatticeFermion& x, 
+		 const LatticeFermion& b, 
+		 const multi1d<Double>& eval, 
+		 const multi1d<LatticeFermion>& evec, 
+		 int& n_count)
+  {
+    int N = evec.size();
+    InitGuess(A,x,b,eval,evec,N,n_count);
+  }
 
-  int N = evec.size();
-  InitGuess(A,x,b,eval,evec,N,n_count);
- }
+  void InitGuess(const LinearOperator<LatticeFermion>& A, 
+		 LatticeFermion& x, 
+		 const LatticeFermion& b, 
+		 const multi1d<Double>& eval, 
+		 const multi1d<LatticeFermion>& evec, 
+		 int N, // number of vectors to use
+		 int& n_count)
+  {
+    LatticeFermion p ; 
+    LatticeFermion Ap; 
+    LatticeFermion r ;
 
- void InitGuess(const LinearOperator<LatticeFermion>& A, 
-		LatticeFermion& x, 
-		const LatticeFermion& b, 
-		const multi1d<Double>& eval, 
-		const multi1d<LatticeFermion>& evec, 
-		const int N, // number of vectors to use
-		int& n_count)
- {
-   LatticeFermion p ; 
-   LatticeFermion Ap; 
-   LatticeFermion r ;
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
 
-   StopWatch snoop;
-   snoop.reset();
-   snoop.start();
-
-   A(Ap,x,PLUS) ;
-   r[A.subset()] = b - Ap ;
-   // Double r_norm2 = norm2(r,A.subset()) ;
+    A(Ap,x,PLUS) ;
+    r[A.subset()] = b - Ap ;
+    // Double r_norm2 = norm2(r,A.subset()) ;
    
-   for(int i(0);i<N;i++){
-     DComplex d = innerProduct(evec[i],r,A.subset());
-     x[A.subset()] += (d/eval[i])*evec[i];
-     //QDPIO::cout<<"InitCG: "<<d<<" "<<eval[i]<<endl ;
+    for(int i(0);i<N;i++){
+      DComplex d = innerProduct(evec[i],r,A.subset());
+      x[A.subset()] += (d/eval[i])*evec[i];
+      //QDPIO::cout<<"InitCG: "<<d<<" "<<eval[i]<<endl ;
 
-   }
+    }
    
-   snoop.stop();
-   QDPIO::cout << "InitGuess:  time = "
-              << snoop.getTimeInSeconds() 
-              << " secs" << endl;
+    snoop.stop();
+    QDPIO::cout << "InitGuess:  time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
 
-   n_count = 1 ;
- }
+    n_count = 1 ;
+  }
 
   
 }// End Namespace Chroma
