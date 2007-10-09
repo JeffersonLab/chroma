@@ -1,12 +1,12 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.4 2007-10-08 02:58:49 edwards Exp $
+// $Id: containers.h,v 1.5 2007-10-09 03:03:11 edwards Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
 
 #include "chromabase.h"
 
-namespace LinAlg
+namespace Chroma
 {
   //! Hold vectors
   /*! \ingroup invert */
@@ -18,7 +18,7 @@ namespace LinAlg
 
     Vectors():N(0){} 
     Vectors(const multi1d<T>& v):vec(v),N(v.size()){} 
-    Vectors(int size):N(0){vec.resize(size) ; } 
+    Vectors(int size){resize(size); } 
     
     ~Vectors(){}
     
@@ -54,7 +54,7 @@ namespace LinAlg
     }
 
     
-    void ResetN(int N) ;
+    void resize(int n) {N=0;vec.resize(size);} 
     int size() const { return vec.size();}
     int Nvecs() const { return N; } 
     T& operator[](int i){ return vec[i];}
@@ -130,4 +130,5 @@ namespace LinAlg
   };
   
 }
- #endif 
+
+#endif 
