@@ -1,17 +1,15 @@
 // -*- C++ -*-
-// $Id: lapack_wrapper.h,v 1.1 2007-09-26 02:50:35 kostas Exp $
+// $Id: lapack_wrapper.h,v 1.2 2007-10-09 05:28:41 edwards Exp $
 
 #ifndef _LAPACK_WRAPPER_H
 #define _LAPACK_WRAPPER_H
-#include "string"
-#include "string.h"
+
 #include "chromabase.h"
-#include "chroma_lapack.h"
+//#include "chroma_lapack.h"
 
 // NEEDS A LOT OF CLEAN UP
 namespace Lapack
 {
-
   
   int zheev(char& jobz,
 	    char& uplo,
