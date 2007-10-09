@@ -1,11 +1,14 @@
 // -*- C++ -*-
-// $Id: eoprec_slic_linop_w.h,v 3.3 2007-10-09 03:06:51 edwards Exp $
 /*! \file
- *  \brief Even-odd preconditioned Clover fermion linear operator
+ *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
+ *
+ * Here, the relevant terms are smeared and the irrelevant terms are not smeared.
+ * Code provided by Thomas Kaltenbrunner.
+ *
  */
 
-#ifndef __prec_slic_linop_w_h__
-#define __prec_slic_linop_w_h__
+#ifndef __eoprec_slrc_linop_w_h__
+#define __eoprec_slrc_linop_w_h__
 
 #include "state.h"
 #include "fermbc.h"
@@ -18,17 +21,16 @@
 
 namespace Chroma 
 { 
-  //! Even-odd preconditioned SLIC-Dirac operator
+  //! Even-odd preconditioned SLRC-Dirac operator
   /*!
    * \ingroup linop
    *
-   * This routine is specific to Wilson fermions!
-   *
-   * The kernel for SLIC fermions is
+   * Here, the relevant terms are smeared and the irrelevant terms are not smeared.
+   * The kernel for SLRC fermions is
    *
    *      M  =  A + (d+M) - (1/2) D'
    */
-  class EvenOddPrecSLICLinOp : public EvenOddPrecLogDetLinearOperator<LatticeFermion, 
+  class EvenOddPrecSLRCLinOp : public EvenOddPrecLogDetLinearOperator<LatticeFermion, 
 				 multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
@@ -38,15 +40,15 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Partial constructor
-    EvenOddPrecSLICLinOp() {}
+    EvenOddPrecSLRCLinOp() {}
 
     //! Full constructor
-    EvenOddPrecSLICLinOp(Handle< FermState<T,P,Q> > fs,
-			 const CloverFermActParams& param_) : slic_fs(fs)
+    EvenOddPrecSLRCLinOp(Handle< FermState<T,P,Q> > fs,
+			 const CloverFermActParams& param_) : slrc_fs(fs)
       {create(fs, param_);}
 
     //! Destructor is automatic
-    ~EvenOddPrecSLICLinOp() {}
+    ~EvenOddPrecSLRCLinOp() {}
 
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
@@ -109,7 +111,7 @@ namespace Chroma
     Double logDetEvenEvenLinOp(void) const ; 
 
   private:
-    Handle< FermState<T,P,Q> > slic_fs;
+    Handle< FermState<T,P,Q> > slrc_fs;
     Handle< FermState<T,P,Q> > thin_fs;
     CloverFermActParams param;
     WilsonDslash D;

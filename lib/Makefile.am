@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.105 2007-09-01 22:35:43 edwards Exp $
+# $Id: Makefile.am,v 3.106 2007-10-09 03:06:49 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -59,6 +59,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
+        actions/ferm/invert/containers.h \
 	actions/ferm/invert/syssolver_linop.h \
 	actions/ferm/invert/syssolver_linop_factory.h \
 	actions/ferm/invert/syssolver_linop_aggregate.h \
@@ -71,6 +72,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_cg_params.h \
 	actions/ferm/invert/syssolver_mr_params.h \
 	actions/ferm/invert/syssolver_bicgstab_params.h \
+	actions/ferm/invert/syssolver_eigcg_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
@@ -349,6 +351,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
+	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.h \
@@ -469,6 +472,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/polynomial_op.h \
 	actions/ferm/linop/polprec_op.h \
 	actions/ferm/linop/eoprec_slic_linop_w.h \
+	actions/ferm/linop/eoprec_slrc_linop_w.h \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
@@ -806,6 +810,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_cg_params.cc \
 	actions/ferm/invert/syssolver_mr_params.cc \
 	actions/ferm/invert/syssolver_bicgstab_params.cc \
+	actions/ferm/invert/syssolver_eigcg_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
@@ -1039,6 +1044,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
@@ -1124,6 +1130,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc \
 	actions/ferm/linop/eoprec_slic_linop_w.cc \
+	actions/ferm/linop/eoprec_slrc_linop_w.cc \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
