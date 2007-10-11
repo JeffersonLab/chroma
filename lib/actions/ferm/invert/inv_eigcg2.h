@@ -1,89 +1,105 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.h,v 1.3 2007-10-09 18:07:14 edwards Exp $
+// $Id: inv_eigcg2.h,v 1.4 2007-10-11 19:00:09 edwards Exp $
+/*! \file
+ *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
+ */
 
-#ifndef _INV_EIG_CG2_H
-#define _INV_EIG_CG2_H
+#ifndef __inv_eig_cg2_h__
+#define __inv_eig_cg2_h__
 
 #include "linearop.h"
 #include "syssolver.h"
-#include "containers.h"
+#include "actions/ferm/invert/containers.h"
 
-
-// NEEDS A LOT OF CLEAN UP
 namespace Chroma 
 {
 
-  template<typename T>
-  void SimpleGramSchmidt(multi1d<T>& vec, 
-			 int f,
-			 int t,
-			 const Subset& sub)
+  //! Conjugate-Gradient (CGNE) with eigenvector acceleration
+  /*! \ingroup invert
+   * @{
+   */
+  namespace InvEigCG2Env
   {
-    for(int i(0);i<f;i++){// normalize the first vectors...
-      vec[i][sub] /= Real(sqrt(norm2(vec[i],sub))) ;
-    }
-    if(!(t<=vec.size())){
-      QDPIO::cerr<<"SimpleGramSchmidt:: f="<<f<<" t="<<t<<" vec.size()="<<vec.size()<<endl;
-      QDPIO::cerr<<"SimpleGramSchmidt:: Out of bound!\n";
-      exit(1);
-    }
-    for(int i(f);i<t;i++)
-    { // now orthonormalize ther rest
-      for(int k(0);k<i;k++){
-	DComplex dcc = innerProduct(vec[k], vec[i], sub);
-	Complex cc = dcc ;
-	//cout<<"GramS: "<<cc<<" "<<dcc<<endl;
-	vec[i][sub] = vec[i]  - cc*vec[k] ;
-      }
-      Double in = 1.0/sqrt(norm2(vec[i],sub)) ;
-      vec[i][sub] *= Real(in); 
-    }
-  }
+    // LatticeFermionF
+    void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
+			const LinearOperator<LatticeFermionF>& A,
+			const multi1d<LatticeFermionF>& evec,
+			int Nvecs);
 
-  void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
-		      const LinearOperator<LatticeFermion>& A,
-		      const multi1d<LatticeFermion>& evec,
-		      int Nvecs) ;
-
-  SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermion>& A,
-				  LatticeFermion& x, 
-				  const LatticeFermion& b,
-				  multi1d<Double>& eval, 
-				  multi1d<LatticeFermion>& evec,
-				  int Neig,
-				  int Nmax,
-				  const Real& RsdCG, int MaxCG) ;
+    SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermionF>& A,
+				    LatticeFermionF& x, 
+				    const LatticeFermionF& b,
+				    multi1d<Double>& eval, 
+				    multi1d<LatticeFermionF>& evec,
+				    int Neig,
+				    int Nmax,
+				    const Real& RsdCG, int MaxCG);
   
-  SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermion>& A, 
-				     LatticeFermion& x, 
-				     const LatticeFermion& b, 
-				     const multi1d<Double>& eval, 
-				     const multi1d<LatticeFermion>& evec, 
-				     int startV, int endV,
-				     const Real& RsdCG, int MaxCG) ;
+    SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermionF>& A, 
+				       LatticeFermionF& x, 
+				       const LatticeFermionF& b, 
+				       const multi1d<Double>& eval, 
+				       const multi1d<LatticeFermionF>& evec, 
+				       int startV, int endV,
+				       const Real& RsdCG, int MaxCG);
 
-  void InitGuess(const LinearOperator<LatticeFermion>& A, 
-		 LatticeFermion& x, 
-		 const LatticeFermion& b, 
-		 const multi1d<Double>& eval, 
-		 const multi1d<LatticeFermion>& evec, 
-		 int& n_count) ;
+    void InitGuess(const LinearOperator<LatticeFermionF>& A, 
+		   LatticeFermionF& x, 
+		   const LatticeFermionF& b, 
+		   const multi1d<Double>& eval, 
+		   const multi1d<LatticeFermionF>& evec, 
+		   int& n_count);
   
-  void InitGuess(const LinearOperator<LatticeFermion>& A, 
-		 LatticeFermion& x, 
-		 const LatticeFermion& b, 
-		 const multi1d<Double>& eval, 
-		 const multi1d<LatticeFermion>& evec, 
-		 int N, // number of vectors to use
-		 int& n_count) ;
+    void InitGuess(const LinearOperator<LatticeFermionF>& A, 
+		   LatticeFermionF& x, 
+		   const LatticeFermionF& b, 
+		   const multi1d<Double>& eval, 
+		   const multi1d<LatticeFermionF>& evec, 
+		   int N, // number of vectors to use
+		   int& n_count);
 
- void InitCG(const LinearOperator<LatticeFermion>& A, 
-	     LatticeFermion& x, 
-	     const LatticeFermion& b, 
-	     const multi1d<Double>& eval, 
-	     const multi1d<LatticeFermion>& evec, 
-	     const Real& RsdCG, int MaxCG, int& n_count) ;
+
+    // LatticeFermionD
+    void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
+			const LinearOperator<LatticeFermionD>& A,
+			const multi1d<LatticeFermionD>& evec,
+			int Nvecs);
+
+    SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermionD>& A,
+				    LatticeFermionD& x, 
+				    const LatticeFermionD& b,
+				    multi1d<Double>& eval, 
+				    multi1d<LatticeFermionD>& evec,
+				    int Neig,
+				    int Nmax,
+				    const Real& RsdCG, int MaxCG);
   
+    SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermionD>& A, 
+				       LatticeFermionD& x, 
+				       const LatticeFermionD& b, 
+				       const multi1d<Double>& eval, 
+				       const multi1d<LatticeFermionD>& evec, 
+				       int startV, int endV,
+				       const Real& RsdCG, int MaxCG);
+
+    void InitGuess(const LinearOperator<LatticeFermionD>& A, 
+		   LatticeFermionD& x, 
+		   const LatticeFermionD& b, 
+		   const multi1d<Double>& eval, 
+		   const multi1d<LatticeFermionD>& evec, 
+		   int& n_count);
+  
+    void InitGuess(const LinearOperator<LatticeFermionD>& A, 
+		   LatticeFermionD& x, 
+		   const LatticeFermionD& b, 
+		   const multi1d<Double>& eval, 
+		   const multi1d<LatticeFermionD>& evec, 
+		   int N, // number of vectors to use
+		   int& n_count);
+
+  } // namespace EigCG2Env
+
+  /*! @} */  // end of group invert
 
   
 }// End Namespace Chroma
