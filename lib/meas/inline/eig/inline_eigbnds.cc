@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.8 2007-10-13 20:46:29 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.9 2007-10-13 21:04:39 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -368,7 +368,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << name << ": MdagM eigenvalue bounds" << endl;
+    QDPIO::cout << InlineEigBndsMdagMEnv::name << ": MdagM eigenvalue bounds" << endl;
 
     StopWatch snoop;
     snoop.reset();
@@ -435,16 +435,16 @@ namespace Chroma
     }
     else
     {
-      QDPIO::cerr << name << ": no suitable cast found" << endl;
+      QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": no suitable cast found" << endl;
       QDP_abort(1);
     }
 
     snoop.stop();
-    QDPIO::cout << name << ": total time = "
+    QDPIO::cout << InlineEigBndsMdagMEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
 		<< " secs" << endl;
     
-    QDPIO::cout << name << ": ran successfully" << endl;
+    QDPIO::cout << InlineEigBndsMdagMEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 
