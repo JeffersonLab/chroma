@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.18 2007-09-21 04:38:45 edwards Exp $
+// $Id: hmc.cc,v 3.19 2007-10-13 20:55:52 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -476,6 +476,7 @@ namespace Chroma
 	//
 	// NOTE: THIS HEADER STUFF NEEDS A LOT MORE THOUGHT
 	//
+	QDPIO::cout << "HMC: start inline measurements" << endl;
 	{
 	  XMLBufferWriter gauge_xml;
 	  push(gauge_xml, "ChromaHMC");
@@ -484,8 +485,11 @@ namespace Chroma
 	  pop(gauge_xml);
 
 	  // Reset and set the default gauge field
+	  QDPIO::cout << "HMC: initial resetting default gauge field" << endl;
 	  InlineDefaultGaugeField::reset();
+	  QDPIO::cout << "HMC: set default gauge field" << endl;
 	  InlineDefaultGaugeField::set(gauge_state.getQ(), gauge_xml);
+	  QDPIO::cout << "HMC: finished setting default gauge field" << endl;
 
 	  // Measure inline observables 
 	  push(xml_out, "InlineObservables");
@@ -513,20 +517,26 @@ namespace Chroma
 			<<" user measurements" << endl;
 	    for(int m=0; m < user_measurements.size(); m++) 
 	    {
+	      QDPIO::cout << "HMC: considering user measurement number = " << m << endl;
 	      AbsInlineMeasurement& the_meas = *(user_measurements[m]);
 	      if( cur_update % the_meas.getFrequency() == 0 ) 
 	      { 
 		// Caller writes elem rule
 		push(xml_out, "elem");
+		QDPIO::cout << "HMC: calling user measurement number = " << m << endl;
 		the_meas(cur_update, xml_out);
+		QDPIO::cout << "HMC: finished user measurement number = " << m << endl;
 		pop(xml_out); 
 	      }
 	    }
+	    QDPIO::cout << "HMC: finished user measurements" << endl;
 	  }
 	  pop(xml_out); // pop("InlineObservables");
 
 	  // Reset the default gauge field
+	  QDPIO::cout << "HMC: final resetting default gauge field" << endl;
 	  InlineDefaultGaugeField::reset();
+	  QDPIO::cout << "HMC: finished final resetting default gauge field" << endl;
 	}
 
 	swatch.stop();
