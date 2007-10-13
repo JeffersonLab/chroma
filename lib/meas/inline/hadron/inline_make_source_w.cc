@@ -1,4 +1,4 @@
-// $Id: inline_make_source_w.cc,v 3.5 2007-02-25 22:39:28 edwards Exp $
+// $Id: inline_make_source_w.cc,v 3.6 2007-10-13 20:46:29 edwards Exp $
 /*! \file
  * \brief Inline construction of make_source
  *
@@ -155,6 +155,8 @@ namespace Chroma
   {
     START_CODE();
 
+    QDPIO::cout << InlineMakeSourceEnv::name << ": propagator source constructor" << endl;
+
     StopWatch snoop;
     snoop.reset();
     snoop.start();
@@ -187,8 +189,6 @@ namespace Chroma
 
     push(xml_out, "make_source");
     write(xml_out, "update_no", update_no);
-
-    QDPIO::cout << InlineMakeSourceEnv::name << ": propagator source constructor" << endl;
 
     proginfo(xml_out);    // Print out basic program info
 

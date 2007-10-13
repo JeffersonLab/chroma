@@ -1,4 +1,4 @@
-// $Id: inline_mesonspec_w.cc,v 3.15 2007-08-27 21:03:36 edwards Exp $
+// $Id: inline_mesonspec_w.cc,v 3.16 2007-10-13 20:46:29 edwards Exp $
 /*! \file
  * \brief Inline construction of meson spectrum
  *
@@ -361,6 +361,8 @@ namespace Chroma
   {
     START_CODE();
 
+    QDPIO::cout << InlineMesonSpecEnv::name << ": meson spectroscopy for Wilson-like fermions" << endl;
+
     StopWatch snoop;
     snoop.reset();
     snoop.start();
@@ -389,14 +391,6 @@ namespace Chroma
 
     push(xml_out, "MesonSpectrum");
     write(xml_out, "update_no", update_no);
-
-    QDPIO::cout << " MESONSPEC: Meson spectroscopy for Wilson-like fermions" << endl;
-    QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
-    QDPIO::cout << "     volume: " << QDP::Layout::lattSize()[0];
-    for (int i=1; i<Nd; ++i) {
-      QDPIO::cout << " x " << QDP::Layout::lattSize()[i];
-    }
-    QDPIO::cout << endl;
 
     proginfo(xml_out);    // Print out basic program info
 

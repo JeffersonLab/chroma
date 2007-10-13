@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.7 2006-09-20 20:28:01 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.8 2007-10-13 20:46:29 edwards Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -366,6 +366,14 @@ namespace Chroma
   InlineEigBndsMdagM::func(unsigned long update_no,
 			   XMLWriter& xml_out) 
   {
+    START_CODE();
+
+    QDPIO::cout << name << ": MdagM eigenvalue bounds" << endl;
+
+    StopWatch snoop;
+    snoop.reset();
+    snoop.start();
+
     // Typedefs to save typing
     typedef LatticeFermion               T;
     typedef multi1d<LatticeColorMatrix>  P;
@@ -427,9 +435,18 @@ namespace Chroma
     }
     else
     {
-      QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": no suitable cast found" << endl;
+      QDPIO::cerr << name << ": no suitable cast found" << endl;
       QDP_abort(1);
     }
+
+    snoop.stop();
+    QDPIO::cout << name << ": total time = "
+		<< snoop.getTimeInSeconds() 
+		<< " secs" << endl;
+    
+    QDPIO::cout << name << ": ran successfully" << endl;
+
+    END_CODE();
   } 
 
 }

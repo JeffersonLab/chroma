@@ -1,4 +1,4 @@
-// $Id: inline_propagator_w.cc,v 3.10 2007-08-23 19:02:44 edwards Exp $
+// $Id: inline_propagator_w.cc,v 3.11 2007-10-13 20:46:29 edwards Exp $
 /*! \file
  * \brief Inline construction of propagator
  *
@@ -152,6 +152,8 @@ namespace Chroma
   {
     START_CODE();
 
+    QDPIO::cout << InlinePropagatorEnv::name << ": propagator calculation" << endl;
+
     StopWatch snoop;
     snoop.reset();
     snoop.start();
@@ -180,8 +182,6 @@ namespace Chroma
 
     push(xml_out, "propagator");
     write(xml_out, "update_no", update_no);
-
-    QDPIO::cout << InlinePropagatorEnv::name << ": propagator calculation" << endl;
 
     proginfo(xml_out);    // Print out basic program info
 

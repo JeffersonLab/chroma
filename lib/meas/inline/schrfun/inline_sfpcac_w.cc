@@ -1,4 +1,4 @@
-// $Id: inline_sfpcac_w.cc,v 1.4 2007-08-23 19:02:45 edwards Exp $
+// $Id: inline_sfpcac_w.cc,v 1.5 2007-10-13 20:46:29 edwards Exp $
 /*! \file
  * \brief Inline Schroedinger functional measurements
  */
@@ -177,6 +177,8 @@ namespace Chroma
     {
       START_CODE();
 
+      QDPIO::cout << name << ": Schroedinger functional calculation" << endl;
+
       StopWatch snoop;
       snoop.reset();
       snoop.start();
@@ -204,8 +206,6 @@ namespace Chroma
 
       push(xml_out, "SFpcac");
       write(xml_out, "update_no", update_no);
-
-      QDPIO::cout << name << ": Schroedinger functional calculation" << endl;
 
       proginfo(xml_out);    // Print out basic program info
 
