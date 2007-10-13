@@ -1,4 +1,4 @@
-// $Id: inline_wilslp.cc,v 3.10 2007-03-18 21:59:15 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.11 2007-10-13 21:02:57 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
@@ -174,6 +174,8 @@ namespace Chroma
 			 XMLWriter& xml_out) 
   {
     START_CODE();
+
+    QDPIO::cout << InlineWilsonLoopEnv::name << ": Wilson-loop measurements" << endl;
 
     QDP::StopWatch snoop;
     snoop.reset();
