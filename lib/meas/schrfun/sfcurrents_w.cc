@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfcurrents_w.cc,v 3.1 2007-08-24 19:23:04 edwards Exp $
+// $Id: sfcurrents_w.cc,v 3.2 2007-10-16 20:11:17 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -19,6 +19,8 @@ namespace Chroma
   {
     START_CODE();
   
+    QDPIO::cout << __func__ << ": entering" << endl;
+
     // Decay direction
     int j_decay = phases.getDir();
     int jd = 1 << j_decay;
@@ -39,6 +41,8 @@ namespace Chroma
     // Sum the forward propagator over time slices to get Kprop
     Propagator kprop = sum(P_plus * (adj(u[j_decay]) * quark_prop_f), phases.getSet()[tmax]);
 
+    QDPIO::cout << __func__ << ": exiting" << endl;
+
     return kprop;
   }      
 
@@ -56,6 +60,8 @@ namespace Chroma
   {
     START_CODE();
   
+    QDPIO::cout << __func__ << ": entering" << endl;
+
     // Length of lattice in decay direction
     int length = phases.numSubsets();
     int j_decay = phases.getDir();
@@ -97,6 +103,8 @@ namespace Chroma
     write(xml_out, "vector_corr", vector_corr);
     pop(xml_out);
 
+    QDPIO::cout << __func__ << ": exiting" << endl;
+
     END_CODE();
   }
 
@@ -123,6 +131,8 @@ namespace Chroma
   {
     START_CODE();
        
+    QDPIO::cout << __func__ << ": entering" << endl;
+
     // Sanity checks
     if ( x0 < y0 )
     {
@@ -345,6 +355,8 @@ namespace Chroma
     write(xml_out, "fd_AP_PA", fd_AP_PA);
     write(xml_out, "fd_PP", fd_PP);
     pop(xml_out);
+
+    QDPIO::cout << __func__ << ": exiting" << endl;
 
     END_CODE();
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.12 2007-08-27 20:07:20 uid3790 Exp $
+// $Id: sfpcac_w.cc,v 3.13 2007-10-16 20:11:17 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -54,6 +54,8 @@ namespace Chroma
   {
     START_CODE();
   
+    QDPIO::cout << __func__ << ": entering" << endl;
+
     if ( Ns != 4 )
     {
       QDPIO::cerr << __func__ << ": only supports 4 spin components" << endl;
@@ -230,6 +232,8 @@ namespace Chroma
     pop(xml_out);
 
     pop(xml_out);   // xml_group
+
+    QDPIO::cout << __func__ << ": entering" << endl;
 
     END_CODE();
   }
