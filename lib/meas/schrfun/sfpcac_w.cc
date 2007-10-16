@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sfpcac_w.cc,v 3.13 2007-10-16 20:11:17 edwards Exp $
+// $Id: sfpcac_w.cc,v 3.14 2007-10-16 20:12:11 edwards Exp $
 /*! \file
  *  \brief Schroedinger functional application of PCAC
  */
@@ -227,13 +227,15 @@ namespace Chroma
 			     pseudo_prop_f, axial_prop_f, pseudo_prop_b, axial_prop_b,
 			     quark_prop_f, quark_prop_b, qprop, state, phases, x0, y0);
   
+    QDPIO::cout << __func__ << ": print iterations" << endl;
+
     push(xml_out,"Relaxation_Iterations");
     write(xml_out, "ncg_had", ncg_had);
     pop(xml_out);
 
     pop(xml_out);   // xml_group
 
-    QDPIO::cout << __func__ << ": entering" << endl;
+    QDPIO::cout << __func__ << ": exiting" << endl;
 
     END_CODE();
   }
