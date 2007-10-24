@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg.h,v 1.7 2007-10-24 02:38:56 edwards Exp $
+// $Id: syssolver_linop_eigcg.h,v 1.8 2007-10-24 13:40:30 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -14,15 +14,9 @@
 #include "named_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include <qdp-lapack.h>
-
 #include "actions/ferm/invert/syssolver_linop.h"
 #include "actions/ferm/invert/syssolver_eigcg_params.h"
-#include "actions/ferm/invert/inv_eigcg2.h"
-
 #include "actions/ferm/invert/containers.h"
-#include "actions/ferm/invert/norm_gram_schm.h"
-
 
 namespace Chroma
 {
