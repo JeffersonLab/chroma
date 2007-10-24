@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg.cc,v 1.4 2007-10-11 19:00:09 edwards Exp $
+// $Id: syssolver_linop_eigcg.cc,v 1.5 2007-10-24 01:50:15 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -66,6 +66,7 @@ namespace Chroma
     template<typename T>
     SystemSolverResults_t sysSolver(T& psi, const T& chi, 
 				    const LinearOperator<T>& A, 
+				    const LinearOperator<T>& MdagM, 
 				    const SysSolverEigCGParams& invParam)
     {
       START_CODE();
@@ -219,7 +220,7 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverEigCG<LatticeFermionF>::operator()(LatticeFermionF& psi, const LatticeFermionF& chi) const
   {
-    return sysSolver(psi, chi, *MdagM, invParam);
+    return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
 
   // LatticeFermionD
@@ -227,7 +228,7 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverEigCG<LatticeFermionD>::operator()(LatticeFermionD& psi, const LatticeFermionD& chi) const
   {
-    return sysSolver(psi, chi, *MdagM, invParam);
+    return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
 
 #if 0
@@ -237,7 +238,7 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverEigCG<LatticeStaggeredFermionF>::operator()(LatticeStaggeredFermionF& psi, const LatticeStaggeredFermionF& chi) const
   {
-    return sysSolver(psi, chi, *MdagM, invParam);
+    return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
 
   // LatticeStaggeredFermionD
@@ -245,7 +246,7 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverEigCG<LatticeStaggeredFermionD>::operator()(LatticeStaggeredFermionD& psi, const LatticeStaggeredFermionD& chi) const
   {
-    return sysSolver(psi, chi, *MdagM, invParam);
+    return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
 #endif
 
