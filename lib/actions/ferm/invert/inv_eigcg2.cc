@@ -1,10 +1,11 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.6 2007-10-11 19:00:09 edwards Exp $
+// $Id: inv_eigcg2.cc,v 1.7 2007-10-24 02:38:56 edwards Exp $
 
-#include "inv_eigcg2.h"
+#include <qdp-lapack.h>
+//#include <octave_debug.h>
 
-//#include "octave_debug.h"
-#include "actions/ferm/invert/lapack_wrapper.h"
+#include "actions/ferm/invert/inv_eigcg2.h"
+
 #include "actions/ferm/invert/containers.h"
 #include "actions/ferm/invert/norm_gram_schm.h"
 
@@ -183,7 +184,7 @@ namespace Chroma
 	    multi2d<DComplex> Hevecs(H.mat) ;
 	    multi1d<Double> Heval ;
 	    char V = 'V' ; char U = 'U' ;
-	    Lapack::zheev(V,U,Hevecs,Heval);
+	    QDPLapack::zheev(V,U,Hevecs,Heval);
 	    multi2d<DComplex> Hevecs_old(H.mat) ;
 
 #ifdef DEBUG
@@ -211,7 +212,7 @@ namespace Chroma
 	    }
 #endif
 	    multi1d<Double> Heval_old ;
-	    Lapack::zheev(V,U,Nmax-1,Hevecs_old,Heval_old);
+	    QDPLapack::zheev(V,U,Nmax-1,Hevecs_old,Heval_old);
 	    for(int i(0);i<Nmax;i++)	    
 	      Hevecs_old(i,Nmax-1) = Hevecs_old(Nmax-1,i) = 0.0 ;
 #ifdef DEBUG
@@ -239,11 +240,11 @@ namespace Chroma
 	    // zgeqrf(Nmax, 2*Neig, Hevecs, Nmax,
 	    //    TAU_CMPLX_ofsize_2Neig, Workarr, 2*Neig*Lapackblocksize, info);
 	    multi1d<DComplex> TAU ;
-	    Lapack::zgeqrf(Nmax,2*Neig,Hevecs,TAU) ;
+	    QDPLapack::zgeqrf(Nmax,2*Neig,Hevecs,TAU) ;
 	    char R = 'R' ; char L = 'L' ; char N ='N' ; char C = 'C' ;
 	    multi2d<DComplex> Htmp = H.mat ;
-	    Lapack::zunmqr(R,N,Nmax,Nmax,Hevecs,TAU,Htmp);
-	    Lapack::zunmqr(L,C,Nmax,2*Neig,Hevecs,TAU,Htmp);
+	    QDPLapack::zunmqr(R,N,Nmax,Nmax,Hevecs,TAU,Htmp);
+	    QDPLapack::zunmqr(L,C,Nmax,2*Neig,Hevecs,TAU,Htmp);
 	    // Notice that now H is of size 2Neig x 2Neig, 
 	    // but still with LDA = Nmax 
 #ifdef DEBUG
@@ -253,7 +254,7 @@ namespace Chroma
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
-	    Lapack::zheev(V,U,2*Neig,Htmp,Heval);
+	    QDPLapack::zheev(V,U,2*Neig,Htmp,Heval);
 	    for(int i(Neig); i< 2*Neig;i++ ) 
 	      for(int j(2*Neig); j<Nmax; j++)
 		Htmp(i,j) =0.0;
@@ -264,7 +265,7 @@ namespace Chroma
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
-	    Lapack::zunmqr(L,N,Nmax,2*Neig,Hevecs,TAU,Htmp);
+	    QDPLapack::zunmqr(L,N,Nmax,2*Neig,Hevecs,TAU,Htmp);
 #ifdef DEBUG
 	    {
 	      stringstream tag ;
@@ -365,7 +366,7 @@ namespace Chroma
 
 	char V = 'V' ; char U = 'U' ;
 	multi1d<Double> tt_eval ;
-	Lapack::zheev(V,U,Htmp.mat,tt_eval);
+	QDPLapack::zheev(V,U,Htmp.mat,tt_eval);
 	evec.resize(Neig) ;
 	eval.resize(Neig);
 	for(int i(0);i<Neig;i++){
@@ -600,6 +601,60 @@ namespace Chroma
 		   const LatticeFermionF& b, 
 		   const multi1d<Double>& eval, 
 		   const multi1d<LatticeFermionF>& evec, 
+		   int N, // number of vectors to use
+		   int& n_count)
+    {
+      InitGuess_T(A, x, b, eval, evec, N, n_count);
+    }
+
+
+    // LatticeFermionD
+    void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
+			const LinearOperator<LatticeFermionD>& A,
+			const multi1d<LatticeFermionD>& evec,
+			int Nvecs)
+    {
+      SubSpaceMatrix_T<LatticeFermionD>(H, A, evec, Nvecs);
+    }
+
+    SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermionD>& A,
+				    LatticeFermionD& x, 
+				    const LatticeFermionD& b,
+				    multi1d<Double>& eval, 
+				    multi1d<LatticeFermionD>& evec,
+				    int Neig,
+				    int Nmax,
+				    const Real& RsdCG, int MaxCG)
+    {
+      InvEigCG2_T<LatticeFermionD>(A, x, b, eval, evec, Neig, Nmax, RsdCG, MaxCG);
+    }
+  
+    SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermionD>& A, 
+				       LatticeFermionD& x, 
+				       const LatticeFermionD& b, 
+				       const multi1d<Double>& eval, 
+				       const multi1d<LatticeFermionD>& evec, 
+				       int startV, int endV,
+				       const Real& RsdCG, int MaxCG)
+    {
+      vecPrecondCG_T<LatticeFermionD>(A, x, b, eval, evec, startV, endV, RsdCG, MaxCG);
+    }
+
+    void InitGuess(const LinearOperator<LatticeFermionD>& A, 
+		   LatticeFermionD& x, 
+		   const LatticeFermionD& b, 
+		   const multi1d<Double>& eval, 
+		   const multi1d<LatticeFermionD>& evec, 
+		   int& n_count)
+    {
+      InitGuess_T(A, x, b, eval, evec, n_count);
+    }
+  
+    void InitGuess(const LinearOperator<LatticeFermionD>& A, 
+		   LatticeFermionD& x, 
+		   const LatticeFermionD& b, 
+		   const multi1d<Double>& eval, 
+		   const multi1d<LatticeFermionD>& evec, 
 		   int N, // number of vectors to use
 		   int& n_count)
     {

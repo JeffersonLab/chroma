@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg.cc,v 1.5 2007-10-24 01:50:15 edwards Exp $
+// $Id: syssolver_linop_eigcg.cc,v 1.6 2007-10-24 02:38:56 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -112,7 +112,7 @@ namespace Chroma
 	InvEigCG2Env::SubSpaceMatrix(Htmp,MdagM,GoodEvecs.evec.vec,GoodEvecs.Neig);
 	//OctavePrintOut(Htmp.mat,Htmp.N,tag("H",i),"RayleighRich.m") ;
 	char V = 'V' ; char U = 'U' ;
-	Lapack::zheev(V,U,Htmp.mat,lambda);
+	QDPLapack::zheev(V,U,Htmp.mat,lambda);
 	evec.resize(GoodEvecs.Neig) ;
 	//OctavePrintOut(Htmp.mat,Htmp.N,tag("Htmp",i),"RayleighRich.m") ;
 	for(int k(0);k<GoodEvecs.Neig;k++){
